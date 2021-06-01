@@ -25,6 +25,6 @@ export const spikeOptions = {
   tokenGrantType: grantTypeDef,
   tokenAudience: selfAudience,
   spikePublicKeyFullPath: localSpikePublicKeyFullPath,
-  useRedis: false,
+  useRedis: process.env.USE_REDIS === "true",
   tokenRedisKeyName: "spikeToken",
 };

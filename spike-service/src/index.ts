@@ -2,16 +2,26 @@ import path from "path";
 if (process.env.NODE_ENV !== "production") {
   const ENV_PATH = __dirname.includes("dist")
     ? path.join(__dirname, "../../supernova.env")
-    : path.join(__dirname, "../supernova");
+    : path.join(__dirname, "../supernova.env");
+  console.log(ENV_PATH);
   require("dotenv").config({
     path: ENV_PATH,
   });
 }
 import { Server } from "./server";
+import { logger } from "./logger";
 
-function main() {
-  const server: Server = new Server();
-  server.startServer();
+async function main() {
+  try {
+    const server: Server = new Server();
+    await server.startServer();
+    logger.log({ level: "info", message: "Server started successfully" });
+  } catch (error) {
+    logger.log({
+      level: "error",
+      message: `Error while trying to start the server: ${error.message}`,
+    });
+  }
 }
 
 main();
