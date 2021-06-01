@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package RequestService;
+
+service RequestService {
+    rpc CreateHierarchy(CreateHierarchyRequestReq) returns (Request) {}
+    rpc GetRequestById(GetRequestByIdReq) returns (Request) {}
+}
+
+message GetRequestByIdReq{
+    string id = 1;
+}
+
+message CreateHierarchyRequestReq{
+    string newChild = 1;
+    Group parent = 2;
+    string submittedBy = 3;
+    bool commanderApproved = 4;
+    bool securityApproved = 5;
+    repeated string commanders = 6;
+}
+
+message Request{
+    string _id = 1;
+    string type = 2;
+    string newChild = 3;
+    Group parent = 4;
+    string submittedBy = 5;
+    bool commanderApproved = 6;
+    bool securityApproved = 7;
+    repeated string commanders = 8;
+    int32 createdAt = 9;
+    int32 updatedAt = 10; 
+}
+
+message Group{
+    string id = 1;
+    string hierarchy = 2;
+}
