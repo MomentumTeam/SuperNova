@@ -2,8 +2,10 @@ import * as C from "../config";
 import { logger } from "../logger";
 import { CreateHierarchyRequest } from "../models/createHierarchy.model";
 import { ICreateHierarchyRequestReq } from "../interfaces/createHierarchyRequest/createHierarchyRequestReq.interface";
-import { IGetRequestByIdReq } from "../interfaces/getRequestByIdReq.interface";
+import { IGetRequestByIdReq } from "../interfaces/getRequestById/getRequestByIdReq.interface";
 import { ICreateHierarchyRequest } from "../interfaces/createHierarchyRequest/createHierarchyRequest.interface";
+import { ICreateRoleRequestReq } from "../interfaces/createRoleRequest/createRoleRequestReq.interface";
+import { ICreateRoleRequest } from "../interfaces/createRoleRequest/createRoleRequest.interface";
 
 export class RequestRepository {
   private turnObjectIdsToStrings(document: any): void {
@@ -23,7 +25,7 @@ export class RequestRepository {
     }
   }
 
-  async createHierarchy(
+  async createHierarchyRequest(
     createHierarchyRequestReq: ICreateHierarchyRequestReq
   ): Promise<ICreateHierarchyRequest> {
     try {
@@ -38,6 +40,23 @@ export class RequestRepository {
       throw error;
     }
   }
+
+  async createRoleRequest(
+    createRoleRequestReq: ICreateRoleRequestReq
+  ): Promise<ICreateRoleRequest> {
+    try {
+      const createRoleRequest = new CreateHierarchyRequest(
+        createRoleRequestReq
+      );
+      const createdCreateHierarchyRequest = await createRoleRequest.save();
+      const document = createdCreateHierarchyRequest.toObject();
+      this.turnObjectIdsToStrings(document);
+      return document as ICreateRoleRequest;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async getRequestById(getRequestByIdReq: IGetRequestByIdReq) {
     try {
       const request = await CreateHierarchyRequest.findOne(getRequestByIdReq);

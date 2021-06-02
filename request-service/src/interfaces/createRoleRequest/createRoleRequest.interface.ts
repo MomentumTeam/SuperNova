@@ -4,7 +4,11 @@ import { IGroup } from "../group.interface";
 import { ApproverDecision } from "../../enums/approverDecision.enum";
 import { Status } from "../../enums/status.enum";
 import { IRequest } from "../request.interface";
-export interface ICreateHierarchyRequest extends IRequest {
-  newChild: string;
+import { SecurityLevel } from "../../enums/securityLevel.enum";
+import { RoleStatus } from "../../enums/roleStatus.enum";
+export interface ICreateRoleRequest extends IRequest {
+  roleName: string;
   parent: IGroup;
+  securityLevel: SecurityLevel;
+  roleStatus: RoleStatus;
 }

@@ -3,47 +3,21 @@ syntax = "proto3";
 package RequestService;
 
 service RequestService {
-    rpc CreateHierarchy(CreateHierarchyRequestReq) returns (Request) {}
-    rpc GetRequestById(GetRequestByIdReq) returns (Request) {}
+    rpc CreateHierarchyRequest(CreateHierarchyRequestReq) returns (CreateHierarchyRequest) {}
+    rpc CreateRoleRequest(CreateRoleRequestReq) returns (CreateRoleRequest) {}
+    // rpc CreateRoleRequest(CreateRoleRequestReq) returns (Request) {}
+    rpc GetRequestById(GetRequestByIdReq) returns (CreateHierarchyRequest) {}
 }
 
-message GetRequestByIdReq{
-    string _id = 1;
-}
+//Enums
 
 enum Domain{
-    DOMAIN1 = 0;
-    DOMAIN2 = 1;
+    DOMAIN_1 = 0;
+    DOMAIN_2 = 1;
 }
 
 enum RequestType {
     CREATE_HIERARCHY = 0;
-}
-
-message CreateHierarchyRequestReq{
-    string newChild = 1;
-    Group parent = 2;
-    string submittedBy = 3;
-    optional ApproverDecision commanderDecision = 4;
-    optional ApproverDecision securityDecision = 5;
-    repeated string commanders = 6;
-    Domain domain = 7;
-    optional Status status=8;
-}
-
-message Request{
-    string _id = 1;
-    RequestType type = 2;
-    string newChild = 3;
-    Group parent = 4;
-    string submittedBy = 5;
-    ApproverDecision commanderDecision= 6;
-    ApproverDecision securityDecision = 7;
-    repeated string commanders = 8;
-    int64 createdAt = 9;
-    int64 updatedAt = 10; 
-    Domain domain = 11;
-    Status status=12;
 }
 
 enum ApproverDecision{
@@ -58,6 +32,83 @@ enum Status{
     DENIED = 2;
     IN_PROGRESS = 3;
     DONE = 4;
+}
+
+enum SecurityLevel{
+    LEVEL_1=0;
+    LEVEL_2=1;
+    LEVEL_3=2;
+    LEVEL_4=3;
+    LEVEL_5=4;
+    YELLOW=5;
+}
+
+enum RoleStatus{
+    ENABLED=0;
+    DISABLED=1;
+}
+
+//Reqs
+
+message GetRequestByIdReq{
+    string _id = 1;
+}
+
+
+message CreateHierarchyRequestReq{
+    string newChild = 1;
+    Group parent = 2;
+    string submittedBy = 3;
+    optional ApproverDecision commanderDecision = 4;
+    optional ApproverDecision securityDecision = 5;
+    repeated string commanders = 6;
+    Domain domain = 7;
+    optional Status status=8;
+}
+
+message CreateRoleRequestReq{
+    string roleName = 1;
+    Group parent = 2;
+    string submittedBy = 3;
+    optional ApproverDecision commanderDecision = 4;
+    optional ApproverDecision securityDecision = 5;
+    repeated string commanders = 6;
+    Domain domain = 7;
+    SecurityLevel securityLevel = 8;
+    RoleStatus roleStatus = 9;
+    optional Status status = 10;
+}
+
+//Requests
+
+message CreateHierarchyRequest{
+    string _id = 1;
+    RequestType type = 2;
+    string newChild = 3;
+    Group parent = 4;
+    string submittedBy = 5;
+    ApproverDecision commanderDecision= 6;
+    ApproverDecision securityDecision = 7;
+    repeated string commanders = 8;
+    int64 createdAt = 9;
+    int64 updatedAt = 10; 
+    Domain domain = 11;
+    Status status=12;
+}
+
+message CreateRoleRequest{
+    string _id = 1;
+    RequestType type = 2;
+    string roleName = 3;
+    Group parent = 4;
+    string submittedBy = 5;
+    ApproverDecision commanderDecision = 6;
+    ApproverDecision securityDecision = 7;
+    repeated string commanders = 8;
+    Domain domain = 9;
+    SecurityLevel securityLevel = 10;
+    RoleStatus roleStatus = 11;
+    Status status = 12;
 }
 
 message Group{

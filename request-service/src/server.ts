@@ -3,7 +3,11 @@ import * as grpc from "@grpc/grpc-js";
 import * as protoLoader from "@grpc/proto-loader";
 import * as C from "./config";
 import { logger } from "./logger";
-import { getRequestById, createHierarchy } from "./requests/request.controller";
+import {
+  getRequestById,
+  createHierarchyRequest,
+  createRoleRequest,
+} from "./requests/request.controller";
 
 const PROTO_PATH = __dirname.includes("dist")
   ? path.join(__dirname, "../../proto/requestService.proto")
@@ -44,8 +48,9 @@ export class Server {
         label: "initServer",
       });
       this.server.addService(requestServiceDescriptor.RequestService.service, {
-        CreateHierarchy: createHierarchy,
+        CreateHierarchyRequest: createHierarchyRequest,
         GetRequestById: getRequestById,
+        CreateRoleRequest: createRoleRequest,
       });
       logger.log({
         level: "info",

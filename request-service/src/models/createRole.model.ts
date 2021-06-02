@@ -10,22 +10,32 @@ import { RoleStatus } from "../enums/roleStatus.enum";
 import { RequestSchema } from "./request.model";
 const extendSchema = require("mongoose-extend-schema");
 
-const CreateHierarchySchema: Schema = extendSchema(RequestSchema, {
-  newChild: String,
+const CreateRoleSchema: Schema = extendSchema(RequestSchema, {
+  roleName: String,
+  securityLevel: {
+    type: String,
+    enum: SecurityLevel,
+    default: SecurityLevel.YELLOW,
+  },
+  roleStatus: {
+    type: String,
+    enum: RoleStatus,
+    default: RoleStatus.ENABLED,
+  },
   parent: {
     id: mongoose.Schema.Types.ObjectId,
     hierarchy: String,
   },
 });
 
-CreateHierarchySchema.pre<any>("save", function (this: any, next: any) {
+CreateRoleSchema.pre<any>("save", function (this: any, next: any) {
   this.updatedAt = new Date().getTime();
-  this.type = RequestType.CREATE_HIERARCHY;
+  this.type = RequestType.CREATE_ROLE;
   return next();
 });
 
-export const CreateHierarchyRequest = connection.model(
-  "CreateHierarchyRequest",
-  CreateHierarchySchema,
+export const createRoleRequest = connection.model(
+  "CreateRoleRequest",
+  CreateRoleSchema,
   "requests"
 );

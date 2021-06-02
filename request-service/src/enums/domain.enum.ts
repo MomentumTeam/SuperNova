@@ -1,4 +1,4 @@
 export enum Domain {
-  DOMAIN1 = "DOMAIN1",
-  DOMAIN2 = "DOMAIN2",
+  DOMAIN_1 = "DOMAIN_1",
+  DOMAIN_2 = "DOMAIN_2",
 }
