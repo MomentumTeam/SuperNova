@@ -1,9 +1,9 @@
 import * as C from "../config";
 import { logger } from "../logger";
 import { CreateHierarchyRequest } from "../models/createHierarchy.model";
-import { ICreateHierarchyRequestReq } from "../interfaces/createHierarchyRequestReq.interface";
+import { ICreateHierarchyRequestReq } from "../interfaces/createHierarchyRequest/createHierarchyRequestReq.interface";
 import { IGetRequestByIdReq } from "../interfaces/getRequestByIdReq.interface";
-import { ICreateHierarchyRequest } from "../interfaces/createHierarchyRequest.interface";
+import { ICreateHierarchyRequest } from "../interfaces/createHierarchyRequest/createHierarchyRequest.interface";
 
 export class RequestRepository {
   private turnObjectIdsToStrings(document: any): void {
@@ -31,7 +31,6 @@ export class RequestRepository {
         createHierarchyRequestReq
       );
       const createdCreateHierarchyRequest = await createHierarchyRequest.save();
-
       const document = createdCreateHierarchyRequest.toObject();
       this.turnObjectIdsToStrings(document);
       return document as ICreateHierarchyRequest;
@@ -41,7 +40,7 @@ export class RequestRepository {
   }
   async getRequestById(getRequestByIdReq: IGetRequestByIdReq) {
     try {
-      const request = CreateHierarchyRequest.findOne(getRequestByIdReq);
+      const request = await CreateHierarchyRequest.findOne(getRequestByIdReq);
       return request;
     } catch (error) {
       throw error;

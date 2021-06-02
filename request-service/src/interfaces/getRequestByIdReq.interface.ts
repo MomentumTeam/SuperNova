@@ -1,3 +1,3 @@
 export interface IGetRequestByIdReq {
-  _id: string;
+  id: string;
 }

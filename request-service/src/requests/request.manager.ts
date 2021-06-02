@@ -1,7 +1,7 @@
 import { RequestRepository } from "./request.repository";
-import { ICreateHierarchyRequestReq } from "../interfaces/createHierarchyRequestReq.interface";
+import { ICreateHierarchyRequestReq } from "../interfaces/createHierarchyRequest/createHierarchyRequestReq.interface";
 import { IGetRequestByIdReq } from "../interfaces/getRequestByIdReq.interface";
-import { ICreateHierarchyRequest } from "../interfaces/createHierarchyRequest.interface";
+import { ICreateHierarchyRequest } from "../interfaces/createHierarchyRequest/createHierarchyRequest.interface";
 
 export class RequestManager {
   private requestRepository: RequestRepository;

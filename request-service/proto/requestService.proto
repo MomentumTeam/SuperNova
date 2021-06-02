@@ -8,29 +8,56 @@ service RequestService {
 }
 
 message GetRequestByIdReq{
-    string id = 1;
+    string _id = 1;
+}
+
+enum Domain{
+    DOMAIN1 = 0;
+    DOMAIN2 = 1;
+}
+
+enum RequestType {
+    CREATE_HIERARCHY = 0;
 }
 
 message CreateHierarchyRequestReq{
     string newChild = 1;
     Group parent = 2;
     string submittedBy = 3;
-    bool commanderApproved = 4;
-    bool securityApproved = 5;
+    optional ApproverDecision commanderDecision = 4;
+    optional ApproverDecision securityDecision = 5;
     repeated string commanders = 6;
+    Domain domain = 7;
+    optional Status status=8;
 }
 
 message Request{
     string _id = 1;
-    string type = 2;
+    RequestType type = 2;
     string newChild = 3;
     Group parent = 4;
     string submittedBy = 5;
-    bool commanderApproved = 6;
-    bool securityApproved = 7;
+    ApproverDecision commanderDecision= 6;
+    ApproverDecision securityDecision = 7;
     repeated string commanders = 8;
-    int32 createdAt = 9;
-    int32 updatedAt = 10; 
+    int64 createdAt = 9;
+    int64 updatedAt = 10; 
+    Domain domain = 11;
+    Status status=12;
+}
+
+enum ApproverDecision{
+    UNKNOWN = 0;
+    APPROVED = 1;
+    DENIED = 2;
+}
+
+enum Status{
+    SUBMITTED = 0;
+    APPROVED = 1;
+    DENIED = 2;
+    IN_PROGRESS = 3;
+    DONE = 4;
 }
 
 message Group{
