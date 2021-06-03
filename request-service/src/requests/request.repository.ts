@@ -6,6 +6,7 @@ import { IGetRequestByIdReq } from "../interfaces/getRequestById/getRequestByIdR
 import { ICreateHierarchyRequest } from "../interfaces/createHierarchyRequest/createHierarchyRequest.interface";
 import { ICreateRoleRequestReq } from "../interfaces/createRoleRequest/createRoleRequestReq.interface";
 import { ICreateRoleRequest } from "../interfaces/createRoleRequest/createRoleRequest.interface";
+import { Request } from "../models/request.model";
 
 export class RequestRepository {
   private turnObjectIdsToStrings(document: any): void {
@@ -22,6 +23,14 @@ export class RequestRepository {
       document.commanders = document.commanders.map((commander: any) =>
         commander.toString()
       );
+    }
+    if (document.commanderDecision && document.commanderDecision.approverId) {
+      document.commanderDecision.approverId =
+        document.commanderDecision.approverId.toString();
+    }
+    if (document.securityDecision && document.securityDecision.approverId) {
+      document.securityDecision.approverId =
+        document.securityDecision.approverId.toString();
     }
   }
 
@@ -48,8 +57,8 @@ export class RequestRepository {
       const createRoleRequest = new CreateHierarchyRequest(
         createRoleRequestReq
       );
-      const createdCreateHierarchyRequest = await createRoleRequest.save();
-      const document = createdCreateHierarchyRequest.toObject();
+      const createdCreateRoleRequest = await createRoleRequest.save();
+      const document = createdCreateRoleRequest.toObject();
       this.turnObjectIdsToStrings(document);
       return document as ICreateRoleRequest;
     } catch (error) {
@@ -59,7 +68,7 @@ export class RequestRepository {
 
   async getRequestById(getRequestByIdReq: IGetRequestByIdReq) {
     try {
-      const request = await CreateHierarchyRequest.findOne(getRequestByIdReq);
+      const request = await Request.findOne(getRequestByIdReq);
       return request;
     } catch (error) {
       throw error;

@@ -1,4 +1,4 @@
-import { ApproverDecision } from "../enums/approverDecision.enum";
+import { ApproverDecision } from "../interfaces/approverDecision.interface";
 import { Domain } from "../enums/domain.enum";
 import { RequestType } from "../enums/requestType.enum";
 import { Status } from "../enums/status.enum";

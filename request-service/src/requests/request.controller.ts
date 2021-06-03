@@ -52,10 +52,8 @@ export async function createRoleRequest(
 
 export async function getRequestById(call: any, callback: any): Promise<void> {
   try {
-    const createHierarchyResponse = await requestManager.getRequestById(
-      call.request
-    );
-    callback(null, createHierarchyResponse);
+    const requestResponse = await requestManager.getRequestById(call.request);
+    callback(null, requestResponse);
   } catch (error) {
     callback(
       {

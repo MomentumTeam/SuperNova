@@ -2,11 +2,6 @@ import * as mongoose from "mongoose";
 import { Schema } from "mongoose";
 import { connection } from "../mongoose";
 import { RequestType } from "../enums/requestType.enum";
-import { Domain } from "../enums/domain.enum";
-import { ApproverDecision } from "../enums/approverDecision.enum";
-import { Status } from "../enums/status.enum";
-import { SecurityLevel } from "../enums/securityLevel.enum";
-import { RoleStatus } from "../enums/roleStatus.enum";
 import { RequestSchema } from "./request.model";
 const extendSchema = require("mongoose-extend-schema");
 

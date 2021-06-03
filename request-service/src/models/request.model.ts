@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { connection } from "../mongoose";
 import { RequestType } from "../enums/requestType.enum";
 import { Domain } from "../enums/domain.enum";
-import { ApproverDecision } from "../enums/approverDecision.enum";
+import { Decision } from "../enums/Decision.enum";
 import { Status } from "../enums/status.enum";
 const { Schema } = mongoose;
 
@@ -19,14 +19,26 @@ export const RequestSchema = new Schema({
   },
   submittedBy: mongoose.Schema.Types.ObjectId,
   commanderDecision: {
-    type: String,
-    enum: ApproverDecision,
-    default: ApproverDecision.UNKNOWN,
+    approverId: {
+      type: mongoose.Schema.Types.ObjectId,
+      default: null,
+    },
+    approverDecision: {
+      type: String,
+      enum: Decision,
+      defualt: Decision.UNKNOWN,
+    },
   },
   securityDecision: {
-    type: String,
-    enum: ApproverDecision,
-    default: ApproverDecision.UNKNOWN,
+    approverId: {
+      type: mongoose.Schema.Types.ObjectId,
+      default: null,
+    },
+    approverDecision: {
+      type: String,
+      enum: Decision,
+      defualt: Decision.UNKNOWN,
+    },
   },
   commanders: [mongoose.Schema.Types.ObjectId],
   createdAt: { type: Number, default: new Date().getTime() },

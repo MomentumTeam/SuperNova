@@ -6,7 +6,7 @@ service RequestService {
     rpc CreateHierarchyRequest(CreateHierarchyRequestReq) returns (CreateHierarchyRequest) {}
     rpc CreateRoleRequest(CreateRoleRequestReq) returns (CreateRoleRequest) {}
     // rpc CreateRoleRequest(CreateRoleRequestReq) returns (Request) {}
-    rpc GetRequestById(GetRequestByIdReq) returns (CreateHierarchyRequest) {}
+    rpc GetRequestById(GetRequestByIdReq) returns (GeneralRequest) {}
 }
 
 //Enums
@@ -20,7 +20,7 @@ enum RequestType {
     CREATE_HIERARCHY = 0;
 }
 
-enum ApproverDecision{
+enum Decision{
     UNKNOWN = 0;
     APPROVED = 1;
     DENIED = 2;
@@ -52,6 +52,11 @@ enum RoleStatus{
 
 message GetRequestByIdReq{
     string _id = 1;
+}
+
+message ApproverDecision{
+    string approverId = 1;
+    Decision approverDecision = 2;
 }
 
 
@@ -114,4 +119,20 @@ message CreateRoleRequest{
 message Group{
     string id = 1;
     string hierarchy = 2;
+}
+
+message GeneralRequest{
+    string _id = 1;
+    RequestType type = 2;
+    optional string roleName = 3;
+    optional Group parent = 4;
+    optional string newChild = 5;
+    string submittedBy = 6;
+    ApproverDecision commanderDecision = 7;
+    ApproverDecision securityDecision = 8;
+    repeated string commanders = 9;
+    Domain domain = 10;
+    optional SecurityLevel securityLevel = 11;
+    optional RoleStatus roleStatus = 12;
+    Status status = 13;
 }
