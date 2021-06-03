@@ -1,9 +1,10 @@
 import { RequestRepository } from "./request.repository";
-import { ICreateHierarchyRequestReq } from "../interfaces/createHierarchyRequest/createHierarchyRequestReq.interface";
+import { ICreateOGRequestReq } from "../interfaces/createOGRequest/createOGRequestReq.interface";
 import { IGetRequestByIdReq } from "../interfaces/getRequestById/getRequestByIdReq.interface";
-import { ICreateHierarchyRequest } from "../interfaces/createHierarchyRequest/createHierarchyRequest.interface";
+import { ICreateOGRequest } from "../interfaces/createOGRequest/createOGRequest.interface";
 import { ICreateRoleRequest } from "../interfaces/createRoleRequest/createRoleRequest.interface";
 import { ICreateRoleRequestReq } from "../interfaces/createRoleRequest/createRoleRequestReq.interface";
+import { IGetRequestsByCommanderReq } from "../interfaces/getRequestsByCommander/getRequestsByCommanderReq.interface";
 
 export class RequestManager {
   private requestRepository: RequestRepository;
@@ -11,8 +12,8 @@ export class RequestManager {
     this.requestRepository = new RequestRepository();
   }
   async createHierarchyRequest(
-    createHierarchyRequestReq: ICreateHierarchyRequestReq
-  ): Promise<ICreateHierarchyRequest> {
+    createHierarchyRequestReq: ICreateOGRequestReq
+  ): Promise<ICreateOGRequest> {
     try {
       return await this.requestRepository.createHierarchyRequest(
         createHierarchyRequestReq
@@ -37,6 +38,18 @@ export class RequestManager {
   async getRequestById(getRequestByIdReq: IGetRequestByIdReq) {
     try {
       return await this.requestRepository.getRequestById(getRequestByIdReq);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getRequestsByCommander(
+    getRequestsByCommanderReq: IGetRequestsByCommanderReq
+  ) {
+    try {
+      return await this.requestRepository.getRequestsByCommander(
+        getRequestsByCommanderReq
+      );
     } catch (error) {
       throw error;
     }

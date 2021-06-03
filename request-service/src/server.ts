@@ -7,6 +7,7 @@ import {
   getRequestById,
   createHierarchyRequest,
   createRoleRequest,
+  getRequestsByCommander,
 } from "./requests/request.controller";
 
 const PROTO_PATH = __dirname.includes("dist")
@@ -48,9 +49,10 @@ export class Server {
         label: "initServer",
       });
       this.server.addService(requestServiceDescriptor.RequestService.service, {
-        CreateHierarchyRequest: createHierarchyRequest,
+        CreateOGRequest: createHierarchyRequest,
         GetRequestById: getRequestById,
         CreateRoleRequest: createRoleRequest,
+        GetRequestsByCommander: getRequestsByCommander,
       });
       logger.log({
         level: "info",

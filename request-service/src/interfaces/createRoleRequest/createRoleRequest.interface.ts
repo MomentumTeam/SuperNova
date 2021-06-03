@@ -1,14 +1,10 @@
-import { RequestType } from "../../enums/requestType.enum";
-import { Domain } from "../../enums/domain.enum";
 import { IGroup } from "../group.interface";
-import { Decision } from "../../enums/Decision.enum";
-import { Status } from "../../enums/status.enum";
 import { IRequest } from "../request.interface";
-import { SecurityLevel } from "../../enums/securityLevel.enum";
+import { Clearance } from "../../enums/clearance.enum";
 import { RoleStatus } from "../../enums/roleStatus.enum";
 export interface ICreateRoleRequest extends IRequest {
-  roleName: string;
+  jobTitle: string;
   parent: IGroup;
-  securityLevel: SecurityLevel;
+  clearance: Clearance;
   roleStatus: RoleStatus;
 }

@@ -1,4 +1,4 @@
 export enum RequestType {
-  CREATE_HIERARCHY = "CREATE_HIERARCHY",
+  CREATE_OG = "CREATE_OG",
   CREATE_ROLE = "CREATE_ROLE",
 }

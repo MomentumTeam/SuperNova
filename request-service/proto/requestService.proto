@@ -3,21 +3,25 @@ syntax = "proto3";
 package RequestService;
 
 service RequestService {
-    rpc CreateHierarchyRequest(CreateHierarchyRequestReq) returns (CreateHierarchyRequest) {}
+    rpc CreateOGRequest(CreateOGRequestReq) returns (CreateOGRequest) {}
     rpc CreateRoleRequest(CreateRoleRequestReq) returns (CreateRoleRequest) {}
-    // rpc CreateRoleRequest(CreateRoleRequestReq) returns (Request) {}
+    rpc GetRequestsByCommander(GetRequestsByCommanderReq) returns (MultipleGeneralRequests){}
+    // rpc AssignRoleToEntityRequest(AssignRoleToEntityRequestReq) returns (AssignRoleToEntityRequest) {}
     rpc GetRequestById(GetRequestByIdReq) returns (GeneralRequest) {}
 }
 
+
+
 //Enums
 
-enum Domain{
-    DOMAIN_1 = 0;
-    DOMAIN_2 = 1;
+enum Source{
+    SOURCE_1 = 0;
+    SOURCE_2 = 1;
 }
 
 enum RequestType {
-    CREATE_HIERARCHY = 0;
+    CREATE_OG = 0;
+    CREATE_ROLE = 1;
 }
 
 enum Decision{
@@ -34,7 +38,7 @@ enum Status{
     DONE = 4;
 }
 
-enum SecurityLevel{
+enum Clearance{
     LEVEL_1=0;
     LEVEL_2=1;
     LEVEL_3=2;
@@ -50,6 +54,17 @@ enum RoleStatus{
 
 //Reqs
 
+message MultipleGeneralRequests{
+    repeated GeneralRequest requests = 1;
+    int32 totalCount = 2;
+}
+
+message GetRequestsByCommanderReq{
+    string id = 1;
+    int32 from = 2;
+    int32 to = 3;
+}
+
 message GetRequestByIdReq{
     string _id = 1;
 }
@@ -60,36 +75,36 @@ message ApproverDecision{
 }
 
 
-message CreateHierarchyRequestReq{
-    string newChild = 1;
+message CreateOGRequestReq{
+    string name = 1;
     Group parent = 2;
     string submittedBy = 3;
     optional ApproverDecision commanderDecision = 4;
     optional ApproverDecision securityDecision = 5;
     repeated string commanders = 6;
-    Domain domain = 7;
+    Source source = 7;
     optional Status status=8;
 }
 
 message CreateRoleRequestReq{
-    string roleName = 1;
+    string jobTitle = 1;
     Group parent = 2;
     string submittedBy = 3;
     optional ApproverDecision commanderDecision = 4;
     optional ApproverDecision securityDecision = 5;
     repeated string commanders = 6;
-    Domain domain = 7;
-    SecurityLevel securityLevel = 8;
+    Source source = 7;
+    Clearance clearance = 8;
     RoleStatus roleStatus = 9;
     optional Status status = 10;
 }
 
 //Requests
 
-message CreateHierarchyRequest{
+message CreateOGRequest{
     string _id = 1;
     RequestType type = 2;
-    string newChild = 3;
+    string name = 3;
     Group parent = 4;
     string submittedBy = 5;
     ApproverDecision commanderDecision= 6;
@@ -97,42 +112,42 @@ message CreateHierarchyRequest{
     repeated string commanders = 8;
     int64 createdAt = 9;
     int64 updatedAt = 10; 
-    Domain domain = 11;
+    Source source = 11;
     Status status=12;
 }
 
 message CreateRoleRequest{
     string _id = 1;
     RequestType type = 2;
-    string roleName = 3;
+    string jobTitle = 3;
     Group parent = 4;
     string submittedBy = 5;
     ApproverDecision commanderDecision = 6;
     ApproverDecision securityDecision = 7;
     repeated string commanders = 8;
-    Domain domain = 9;
-    SecurityLevel securityLevel = 10;
+    Source source = 9;
+    Clearance clearance = 10;
     RoleStatus roleStatus = 11;
     Status status = 12;
 }
 
 message Group{
     string id = 1;
-    string hierarchy = 2;
+    string fullHierarchy = 2;
 }
 
 message GeneralRequest{
     string _id = 1;
     RequestType type = 2;
-    optional string roleName = 3;
+    optional string jobTitle = 3;
     optional Group parent = 4;
-    optional string newChild = 5;
+    optional string name = 5;
     string submittedBy = 6;
     ApproverDecision commanderDecision = 7;
     ApproverDecision securityDecision = 8;
     repeated string commanders = 9;
-    Domain domain = 10;
-    optional SecurityLevel securityLevel = 11;
+    Source source = 10;
+    optional Clearance clearance = 11;
     optional RoleStatus roleStatus = 12;
     Status status = 13;
 }

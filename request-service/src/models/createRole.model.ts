@@ -2,17 +2,17 @@ import * as mongoose from "mongoose";
 import { Schema } from "mongoose";
 import { connection } from "../mongoose";
 import { RequestType } from "../enums/requestType.enum";
-import { SecurityLevel } from "../enums/securityLevel.enum";
+import { Clearance } from "../enums/clearance.enum";
 import { RoleStatus } from "../enums/roleStatus.enum";
-import { RequestSchema } from "./request.model";
+import { BaseRequestSchema } from "./baseRequest.model";
 const extendSchema = require("mongoose-extend-schema");
 
-const CreateRoleSchema: Schema = extendSchema(RequestSchema, {
-  roleName: String,
-  securityLevel: {
+const CreateRoleSchema: Schema = extendSchema(BaseRequestSchema, {
+  jobTitle: String,
+  clearance: {
     type: String,
-    enum: SecurityLevel,
-    default: SecurityLevel.YELLOW,
+    enum: Clearance,
+    default: Clearance.YELLOW,
   },
   roleStatus: {
     type: String,
@@ -21,7 +21,7 @@ const CreateRoleSchema: Schema = extendSchema(RequestSchema, {
   },
   parent: {
     id: mongoose.Schema.Types.ObjectId,
-    hierarchy: String,
+    fullHierarchy: String,
   },
 });
 
@@ -31,7 +31,7 @@ CreateRoleSchema.pre<any>("save", function (this: any, next: any) {
   return next();
 });
 
-export const createRoleRequest = connection.model(
+export const CreateRoleRequest = connection.model(
   "CreateRoleRequest",
   CreateRoleSchema,
   "requests"

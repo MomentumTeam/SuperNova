@@ -2,25 +2,25 @@ import * as mongoose from "mongoose";
 import { Schema } from "mongoose";
 import { connection } from "../mongoose";
 import { RequestType } from "../enums/requestType.enum";
-import { RequestSchema } from "./request.model";
+import { BaseRequestSchema } from "./baseRequest.model";
 const extendSchema = require("mongoose-extend-schema");
 
-const CreateHierarchySchema: Schema = extendSchema(RequestSchema, {
+const CreateOGSchema: Schema = extendSchema(BaseRequestSchema, {
   newChild: String,
   parent: {
     id: mongoose.Schema.Types.ObjectId,
-    hierarchy: String,
+    fullHierarchy: String,
   },
 });
 
-CreateHierarchySchema.pre<any>("save", function (this: any, next: any) {
+CreateOGSchema.pre<any>("save", function (this: any, next: any) {
   this.updatedAt = new Date().getTime();
-  this.type = RequestType.CREATE_HIERARCHY;
+  this.type = RequestType.CREATE_OG;
   return next();
 });
 
-export const CreateHierarchyRequest = connection.model(
+export const CreateOGRequest = connection.model(
   "CreateHierarchyRequest",
-  CreateHierarchySchema,
+  CreateOGSchema,
   "requests"
 );

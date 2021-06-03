@@ -1,9 +1,9 @@
 import { ApproverDecision } from "../interfaces/approverDecision.interface";
-import { Domain } from "../enums/domain.enum";
+import { Source } from "../enums/source.enum";
 import { Status } from "../enums/status.enum";
 
 export interface IRequestReq {
-  domain: Domain;
+  source: Source;
   submittedBy: string;
   commanderDecision?: ApproverDecision;
   securityDecision?: ApproverDecision;
