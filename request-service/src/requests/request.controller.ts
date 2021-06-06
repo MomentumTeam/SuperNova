@@ -4,18 +4,37 @@ import { ICreateOGRequest } from "../interfaces/createOGRequest/createOGRequest.
 import { ICreateOGRequestReq } from "../interfaces/createOGRequest/createOGRequestReq.interface";
 import { ICreateRoleRequest } from "../interfaces/createRoleRequest/createRoleRequest.interface";
 import { ICreateRoleRequestReq } from "../interfaces/createRoleRequest/createRoleRequestReq.interface";
+import { IAssignRoleToEntityRequest } from "../interfaces/assignRoleToEntityRequest/assignRoleToEntityRequest.interface";
+import { IAssignRoleToEntityRequestReq } from "../interfaces/assignRoleToEntityRequest/createOGRequestReq.interface";
 const requestManager: RequestManager = new RequestManager();
 
-export async function createHierarchyRequest(
+export async function createOGRequest(call: any, callback: any): Promise<void> {
+  try {
+    const createOGResponse: ICreateOGRequest =
+      await requestManager.createOGRequest(call.request as ICreateOGRequestReq);
+    callback(null, createOGResponse);
+  } catch (error) {
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function assignRoleToEntityRequest(
   call: any,
   callback: any
 ): Promise<void> {
   try {
-    const createOGResponse: ICreateOGRequest =
-      await requestManager.createHierarchyRequest(
-        call.request as ICreateOGRequestReq
+    const assignRoleToEntityResponse: IAssignRoleToEntityRequest =
+      await requestManager.assignRoleToEntityRequest(
+        call.request as IAssignRoleToEntityRequestReq
       );
-    callback(null, createOGResponse);
+    callback(null, assignRoleToEntityResponse);
   } catch (error) {
     callback(
       {

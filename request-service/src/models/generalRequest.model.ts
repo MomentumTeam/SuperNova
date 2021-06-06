@@ -66,12 +66,28 @@ export const GeneralRequestSchema = new Schema(
       enum: Status,
       default: Status.SUBMITTED,
     },
+    entity: {
+      id: {
+        type: mongoose.Schema.Types.ObjectId,
+      },
+    },
+    role: {
+      roleId: {
+        type: String,
+      },
+      digitalIdentityUniqueId: {
+        type: String,
+      },
+    },
   },
   { strict: false }
 );
 
 GeneralRequestSchema.pre<any>("save", function (next) {
-  this.updatedAt = new Date().getTime();
+  const func: any = (object: any) => {
+    object.updatedAt = new Date().getTime();
+  };
+  func(this);
   return next();
 });
 

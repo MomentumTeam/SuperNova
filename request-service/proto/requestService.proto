@@ -6,10 +6,13 @@ service RequestService {
     rpc CreateOGRequest(CreateOGRequestReq) returns (CreateOGRequest) {}
     rpc CreateRoleRequest(CreateRoleRequestReq) returns (CreateRoleRequest) {}
     rpc GetRequestsByCommander(GetRequestsByCommanderReq) returns (MultipleGeneralRequests){}
-    // rpc AssignRoleToEntityRequest(AssignRoleToEntityRequestReq) returns (AssignRoleToEntityRequest) {}
+    
+
+    rpc AssignRoleToEntityRequest(AssignRoleToEntityRequestReq) returns (AssignRoleToEntityRequest) {}
+
+
     rpc GetRequestById(GetRequestByIdReq) returns (GeneralRequest) {}
 }
-
 
 
 //Enums
@@ -22,6 +25,7 @@ enum Source{
 enum RequestType {
     CREATE_OG = 0;
     CREATE_ROLE = 1;
+    ASSIGN_ROLE_TO_ENTITY = 2;
 }
 
 enum Decision{
@@ -52,7 +56,74 @@ enum RoleStatus{
     DISABLED=1;
 }
 
+enum Sex{
+    MALE = 0;
+    FEMALE = 1;
+}
+
 //Reqs
+
+message Role{
+    string roleId = 1;
+    string digitalIdentityUniqueId = 2;
+    // string jobTitle = 3;
+    // string directGroup = 4;
+    // string hierarchy = 5;
+    // repeated string hierarchyIds = 6;
+    // string source = 7;
+    // int64 createdAt = 8;
+    // int64 updatedAt = 9;
+}
+
+message Entity{
+    string id = 1;
+    // string displayName = 2;
+    // string directGroup = 3;
+    // string hierarchy = 4;
+    // string entityType = 5;
+    // string identityCard = 6;
+    // string personalNumber = 7;
+    // string serviceType = 8;
+    // string firstName = 9;
+    // string lastName = 10;
+    // string akaUnit = 11;
+    // int64 dischargeDate = 12;
+    // string rank = 13;
+    // string mail = 14;
+    // string jobTitle = 15;
+    // repeated string phone = 16;
+    // repeated string mobilePhone = 17;
+    // string address = 18;
+    // Clearance clearance = 19;
+    // Sex sex = 20;
+    // int64 birthday = 21;
+    // int64 createdAt = 22;
+    // int64 updatedAt = 23;
+    // repeated DigitalIdentity digitalIdentities = 24;
+}
+
+message DigitalIdentity{
+    string type = 1;
+    string source = 2;
+    string mail = 3;
+    string uniqueId = 4;
+    string entityId = 5;
+    int64 createdAt = 6;
+    int64 updatedAt = 7;
+    bool isRoleAttachable = 8;
+    Role role = 9;
+}
+
+message AssignRoleToEntityRequestReq{
+    Entity entity = 1;
+    Role role = 2;
+    string submittedBy = 3;
+    optional ApproverDecision commanderDecision = 4;
+    optional ApproverDecision securityDecision = 5;
+    repeated string commanders = 6;
+    Source source = 7;
+    optional Status status=8;
+}
 
 message MultipleGeneralRequests{
     repeated GeneralRequest requests = 1;
@@ -99,7 +170,23 @@ message CreateRoleRequestReq{
     optional Status status = 10;
 }
 
+
 //Requests
+
+message AssignRoleToEntityRequest{
+    string _id = 1;
+    RequestType type = 2;
+    string submittedBy = 3;
+    optional ApproverDecision commanderDecision = 4;
+    optional ApproverDecision securityDecision = 5;
+    repeated string commanders = 6;
+    Source source = 7;
+    optional Status status = 8;
+    Entity entity = 9;
+    Role role = 10;
+    int64 createdAt = 11;
+    int64 updatedAt = 12; 
+}
 
 message CreateOGRequest{
     string _id = 1;
@@ -150,4 +237,6 @@ message GeneralRequest{
     optional Clearance clearance = 11;
     optional RoleStatus roleStatus = 12;
     Status status = 13;
+    optional Entity entity = 14;
+    optional Role role = 15;
 }

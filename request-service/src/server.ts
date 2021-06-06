@@ -5,9 +5,10 @@ import * as C from "./config";
 import { logger } from "./logger";
 import {
   getRequestById,
-  createHierarchyRequest,
+  createOGRequest,
   createRoleRequest,
   getRequestsByCommander,
+  assignRoleToEntityRequest,
 } from "./requests/request.controller";
 
 const PROTO_PATH = __dirname.includes("dist")
@@ -49,9 +50,10 @@ export class Server {
         label: "initServer",
       });
       this.server.addService(requestServiceDescriptor.RequestService.service, {
-        CreateOGRequest: createHierarchyRequest,
+        CreateOGRequest: createOGRequest,
         GetRequestById: getRequestById,
         CreateRoleRequest: createRoleRequest,
+        AssignRoleToEntityRequest: assignRoleToEntityRequest,
         GetRequestsByCommander: getRequestsByCommander,
       });
       logger.log({

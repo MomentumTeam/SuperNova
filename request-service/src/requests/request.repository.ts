@@ -11,6 +11,8 @@ import { Request } from "../models/baseRequest.model";
 import { GeneralRequest } from "../models/generalRequest.model";
 import { CreateRoleRequest } from "../models/createRole.model";
 import { IGetRequestsByCommanderReq } from "../interfaces/getRequestsByCommander/getRequestsByCommanderReq.interface";
+import { IRequest } from "../interfaces/request.interface";
+import { RequestType } from "../enums/requestType.enum";
 
 export class RequestRepository {
   private turnObjectIdsToStrings(document: any): void {
@@ -36,10 +38,29 @@ export class RequestRepository {
       document.securityDecision.approverId =
         document.securityDecision.approverId.toString();
     }
+    if (document.entity && document.entity.id) {
+      document.entity.id = document.entity.id.toString();
+    }
     for (let key in document) {
       if (key.startsWith("_") && key !== "_id") {
         delete document[key];
       }
+    }
+  }
+
+  async createRequest(
+    createRequestReq: any,
+    type: RequestType
+  ): Promise<IRequest> {
+    try {
+      const request: any = new GeneralRequest(createRequestReq);
+      request.type = type;
+      const createdCreateRequest = await request.save();
+      const document = createdCreateRequest.toObject();
+      this.turnObjectIdsToStrings(document);
+      return document as IRequest;
+    } catch (error) {
+      throw error;
     }
   }
 
