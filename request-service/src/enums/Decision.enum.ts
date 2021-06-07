@@ -1,5 +1,5 @@
 export enum Decision {
-  UNKNOWN = 0,
-  APPROVED = 1,
-  DENIED = 2,
+  UNKNOWN = "UNKNOWN",
+  APPROVED = "APPROVED",
+  DENIED = "DENIED",
 }

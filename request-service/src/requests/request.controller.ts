@@ -6,6 +6,9 @@ import { ICreateRoleRequest } from "../interfaces/createRoleRequest/createRoleRe
 import { ICreateRoleRequestReq } from "../interfaces/createRoleRequest/createRoleRequestReq.interface";
 import { IAssignRoleToEntityRequest } from "../interfaces/assignRoleToEntityRequest/assignRoleToEntityRequest.interface";
 import { IAssignRoleToEntityRequestReq } from "../interfaces/assignRoleToEntityRequest/createOGRequestReq.interface";
+import { ICreateEntityRequest } from "../interfaces/createEntityRequest/createEntityRequest.interface";
+import { ICreateEntityRequestReq } from "../interfaces/createEntityRequest/createEntityRequestReq.interface";
+import { PersonTypeInRequest } from "../enums/PersonTypeInRequest.enum";
 const requestManager: RequestManager = new RequestManager();
 
 export async function createOGRequest(call: any, callback: any): Promise<void> {
@@ -13,6 +16,28 @@ export async function createOGRequest(call: any, callback: any): Promise<void> {
     const createOGResponse: ICreateOGRequest =
       await requestManager.createOGRequest(call.request as ICreateOGRequestReq);
     callback(null, createOGResponse);
+  } catch (error) {
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function createEntityRequest(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    const createEntityResponse: ICreateEntityRequest =
+      await requestManager.createEntityRequest(
+        call.request as ICreateEntityRequestReq
+      );
+    callback(null, createEntityResponse);
   } catch (error) {
     callback(
       {
@@ -90,7 +115,32 @@ export async function getRequestsByCommander(
   callback: any
 ): Promise<void> {
   try {
-    const requests = await requestManager.getRequestsByCommander(call.request);
+    const requests = await requestManager.getRequestsByPersonId(
+      call.request,
+      PersonTypeInRequest.COMMANDER
+    );
+    callback(null, requests);
+  } catch (error) {
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function getRequestsSubmittedBy(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    const requests = await requestManager.getRequestsByPersonId(
+      call.request,
+      PersonTypeInRequest.SUBMITTER_BY
+    );
     callback(null, requests);
   } catch (error) {
     callback(

@@ -5,10 +5,13 @@ package RequestService;
 service RequestService {
     rpc CreateOGRequest(CreateOGRequestReq) returns (CreateOGRequest) {}
     rpc CreateRoleRequest(CreateRoleRequestReq) returns (CreateRoleRequest) {}
-    rpc GetRequestsByCommander(GetRequestsByCommanderReq) returns (MultipleGeneralRequests){}
+
+    rpc GetRequestsByCommander(GetRequestsByPersonIdReq) returns (MultipleGeneralRequests){}
+    rpc GetRequestsSubmittedBy(GetRequestsByPersonIdReq) returns (MultipleGeneralRequests){}
     
 
     rpc AssignRoleToEntityRequest(AssignRoleToEntityRequestReq) returns (AssignRoleToEntityRequest) {}
+    rpc CreateEntityRequest(CreateEntityRequestReq) returns (CreateEntityRequest){}
 
 
     rpc GetRequestById(GetRequestByIdReq) returns (GeneralRequest) {}
@@ -26,6 +29,7 @@ enum RequestType {
     CREATE_OG = 0;
     CREATE_ROLE = 1;
     ASSIGN_ROLE_TO_ENTITY = 2;
+    CREATE_ENTITY=3;
 }
 
 enum Decision{
@@ -59,6 +63,18 @@ enum RoleStatus{
 enum Sex{
     MALE = 0;
     FEMALE = 1;
+}
+
+enum ServiceType{
+    SOLDIER = 0;
+    RESERVED = 1;
+    CIVILIAN = 2;
+}
+
+enum EntityType{
+    SOLDIER = 0;
+    RESERVED = 1;
+    CIVILIAN = 2;
 }
 
 //Reqs
@@ -114,23 +130,13 @@ message DigitalIdentity{
     Role role = 9;
 }
 
-message AssignRoleToEntityRequestReq{
-    Entity entity = 1;
-    Role role = 2;
-    string submittedBy = 3;
-    optional ApproverDecision commanderDecision = 4;
-    optional ApproverDecision securityDecision = 5;
-    repeated string commanders = 6;
-    Source source = 7;
-    optional Status status=8;
-}
 
 message MultipleGeneralRequests{
     repeated GeneralRequest requests = 1;
     int32 totalCount = 2;
 }
 
-message GetRequestsByCommanderReq{
+message GetRequestsByPersonIdReq{
     string id = 1;
     int32 from = 2;
     int32 to = 3;
@@ -170,8 +176,64 @@ message CreateRoleRequestReq{
     optional Status status = 10;
 }
 
+message AssignRoleToEntityRequestReq{
+    Entity entity = 1;
+    Role role = 2;
+    string submittedBy = 3;
+    optional ApproverDecision commanderDecision = 4;
+    optional ApproverDecision securityDecision = 5;
+    repeated string commanders = 6;
+    Source source = 7;
+    optional Status status=8;
+}
+
+message CreateEntityRequestReq{
+    required string firstName = 1;
+    optional string lastName = 2;
+    optional string entityCard = 3;
+    required string personalNumber = 4;
+    optional ServiceType serviceType = 5;
+    repeated string phone = 6;
+    repeated string mobilePhone = 7;
+    string address = 8;
+    Sex sex = 9;
+    int64 birthdate = 10;
+    string submittedBy = 11;
+    ApproverDecision commanderDecision = 12;
+    ApproverDecision securityDecision = 13;
+    repeated string commanders = 14;
+    Source source = 15;
+    Status status = 16;
+    optional EntityType entityType = 17;
+}
 
 //Requests
+
+message CreateEntityRequest{
+    string _id = 1;
+    RequestType type = 2;
+    string submittedBy = 3;
+    ApproverDecision commanderDecision = 4;
+    ApproverDecision securityDecision = 5;
+    repeated string commanders = 6;
+    Source source = 7;
+    Status status = 8;
+    int64 createdAt = 9;
+    int64 updatedAt = 10; 
+    required string firstName = 11;
+    optional string lastName = 12;
+    optional string entityCard = 13;
+    required string personalNumber = 14;
+    ServiceType serviceType = 15;
+    repeated string phone = 16;
+    repeated string mobilePhone = 17;
+    string address = 18;
+    Sex sex = 19;
+    int64 birthdate = 20;
+    EntityType entityType = 21;
+    string generatedKartoffelId = 22;
+
+}
 
 message AssignRoleToEntityRequest{
     string _id = 1;
@@ -188,6 +250,7 @@ message AssignRoleToEntityRequest{
     int64 updatedAt = 12; 
 }
 
+
 message CreateOGRequest{
     string _id = 1;
     RequestType type = 2;
@@ -200,7 +263,8 @@ message CreateOGRequest{
     int64 createdAt = 9;
     int64 updatedAt = 10; 
     Source source = 11;
-    Status status=12;
+    Status status = 12;
+    string generatedKartoffelId = 13;
 }
 
 message CreateRoleRequest{
@@ -216,6 +280,9 @@ message CreateRoleRequest{
     Clearance clearance = 10;
     RoleStatus roleStatus = 11;
     Status status = 12;
+    int64 createdAt = 13;
+    int64 updatedAt = 14; 
+    string generatedKartoffelId = 15;
 }
 
 message Group{
@@ -226,17 +293,35 @@ message Group{
 message GeneralRequest{
     string _id = 1;
     RequestType type = 2;
-    optional string jobTitle = 3;
-    optional Group parent = 4;
-    optional string name = 5;
-    string submittedBy = 6;
-    ApproverDecision commanderDecision = 7;
-    ApproverDecision securityDecision = 8;
-    repeated string commanders = 9;
-    Source source = 10;
-    optional Clearance clearance = 11;
-    optional RoleStatus roleStatus = 12;
-    Status status = 13;
-    optional Entity entity = 14;
-    optional Role role = 15;
+    string submittedBy = 3;
+    ApproverDecision commanderDecision = 4;
+    ApproverDecision securityDecision = 5;
+    repeated string commanders = 6;
+    Source source = 7;
+    Status status = 8;
+    int64 createdAt = 9;
+    int64 updatedAt = 10; 
+    //createOGRequest
+    optional Group parent = 11;
+    optional string name = 12;
+    //createRoleRequest
+    optional string jobTitle = 13;
+    optional Clearance clearance = 14;
+    optional RoleStatus roleStatus = 15;
+    //assignRoleToEntityRequest
+    optional Entity entity = 16;
+    optional Role role = 17;
+    //createEntityRequest
+    optional string firstName = 18;
+    optional string lastName = 19;
+    optional string entityCard = 20;
+    optional string personalNumber = 21;
+    optional ServiceType serviceType = 22;
+    repeated string phone = 23;
+    repeated string mobilePhone = 24;
+    optional string address = 25;
+    optional Sex sex = 26;
+    optional int64 birthdate = 27;
+    optional string generatedKartoffelId = 28;
+    optional EntityType entityType = 29;
 }

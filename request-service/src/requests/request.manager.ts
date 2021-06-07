@@ -4,16 +4,33 @@ import { IGetRequestByIdReq } from "../interfaces/getRequestById/getRequestByIdR
 import { ICreateOGRequest } from "../interfaces/createOGRequest/createOGRequest.interface";
 import { ICreateRoleRequest } from "../interfaces/createRoleRequest/createRoleRequest.interface";
 import { ICreateRoleRequestReq } from "../interfaces/createRoleRequest/createRoleRequestReq.interface";
-import { IGetRequestsByCommanderReq } from "../interfaces/getRequestsByCommander/getRequestsByCommanderReq.interface";
+import { IGetRequestsByPersonIdReq } from "../interfaces/getRequestsByPersonId/getRequestsByPersonIdReq.interface";
 import { IAssignRoleToEntityRequestReq } from "../interfaces/assignRoleToEntityRequest/createOGRequestReq.interface";
 import { IAssignRoleToEntityRequest } from "../interfaces/assignRoleToEntityRequest/assignRoleToEntityRequest.interface";
 import { RequestType } from "../enums/requestType.enum";
+import { ICreateEntityRequest } from "../interfaces/createEntityRequest/createEntityRequest.interface";
+import { ICreateEntityRequestReq } from "../interfaces/createEntityRequest/createEntityRequestReq.interface";
+import { PersonTypeInRequest } from "../enums/PersonTypeInRequest.enum";
 
 export class RequestManager {
   private requestRepository: RequestRepository;
   constructor() {
     this.requestRepository = new RequestRepository();
   }
+
+  async createEntityRequest(
+    createEntityRequestReq: ICreateEntityRequestReq
+  ): Promise<ICreateEntityRequest> {
+    try {
+      return (await this.requestRepository.createRequest(
+        createEntityRequestReq,
+        RequestType.CREATE_ENTITY
+      )) as ICreateEntityRequest;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async createOGRequest(
     createOGRequestReq: ICreateOGRequestReq
   ): Promise<ICreateOGRequest> {
@@ -64,12 +81,14 @@ export class RequestManager {
     }
   }
 
-  async getRequestsByCommander(
-    getRequestsByCommanderReq: IGetRequestsByCommanderReq
+  async getRequestsByPersonId(
+    getRequestsByPersonIdReq: IGetRequestsByPersonIdReq,
+    personTypeInRequest: PersonTypeInRequest
   ) {
     try {
-      return await this.requestRepository.getRequestsByCommander(
-        getRequestsByCommanderReq
+      return await this.requestRepository.getRequestsByPersonId(
+        getRequestsByPersonIdReq,
+        personTypeInRequest
       );
     } catch (error) {
       throw error;

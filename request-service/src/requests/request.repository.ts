@@ -10,9 +10,12 @@ import { ICreateRoleRequest } from "../interfaces/createRoleRequest/createRoleRe
 import { Request } from "../models/baseRequest.model";
 import { GeneralRequest } from "../models/generalRequest.model";
 import { CreateRoleRequest } from "../models/createRole.model";
-import { IGetRequestsByCommanderReq } from "../interfaces/getRequestsByCommander/getRequestsByCommanderReq.interface";
+import { IGetRequestsByPersonIdReq } from "../interfaces/getRequestsByPersonId/getRequestsByPersonIdReq.interface";
 import { IRequest } from "../interfaces/request.interface";
 import { RequestType } from "../enums/requestType.enum";
+import { PersonTypeInRequest } from "../enums/PersonTypeInRequest.enum";
+import { EntityType } from "../enums/entityType.enum";
+import { ServiceType } from "../enums/serviceType.enum";
 
 export class RequestRepository {
   private turnObjectIdsToStrings(document: any): void {
@@ -41,6 +44,9 @@ export class RequestRepository {
     if (document.entity && document.entity.id) {
       document.entity.id = document.entity.id.toString();
     }
+    if (document.generatedKartoffelId) {
+      document.generatedKartoffelId = document.generatedKartoffelId.toString();
+    }
     for (let key in document) {
       if (key.startsWith("_") && key !== "_id") {
         delete document[key];
@@ -53,8 +59,17 @@ export class RequestRepository {
     type: RequestType
   ): Promise<IRequest> {
     try {
+      if (type == RequestType.CREATE_ENTITY) {
+        if (!createRequestReq.entityType) {
+          createRequestReq.entityType = EntityType.CIVILIAN;
+        }
+        if (!createRequestReq.serviceType) {
+          createRequestReq.serviceType = ServiceType.CIVILIAN;
+        }
+      }
       const request: any = new GeneralRequest(createRequestReq);
       request.type = type;
+      request.createdAt = new Date().getTime();
       const createdCreateRequest = await request.save();
       const document = createdCreateRequest.toObject();
       this.turnObjectIdsToStrings(document);
@@ -109,22 +124,27 @@ export class RequestRepository {
     }
   }
 
-  async getRequestsByCommander(
-    getRequestsByCommanderReq: IGetRequestsByCommanderReq
+  async getRequestsByPersonId(
+    getRequestsByPersonIdReq: IGetRequestsByPersonIdReq,
+    personTypeInRequest: PersonTypeInRequest
   ) {
     try {
+      const field =
+        personTypeInRequest === PersonTypeInRequest.COMMANDER
+          ? "commanders"
+          : "submittedBy";
       const totalCount = await Request.count({
-        commanders: getRequestsByCommanderReq.id,
+        [field]: getRequestsByPersonIdReq.id,
       });
       const requests: any = await Request.find(
         {
-          commanders: getRequestsByCommanderReq.id,
+          [field]: getRequestsByPersonIdReq.id,
         },
         {},
         {
-          skip: getRequestsByCommanderReq.from - 1,
+          skip: getRequestsByPersonIdReq.from - 1,
           limit:
-            getRequestsByCommanderReq.to - getRequestsByCommanderReq.from + 1,
+            getRequestsByPersonIdReq.to - getRequestsByPersonIdReq.from + 1,
         }
       );
       if (requests) {
