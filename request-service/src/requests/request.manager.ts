@@ -11,11 +11,41 @@ import { RequestType } from "../enums/requestType.enum";
 import { ICreateEntityRequest } from "../interfaces/createEntityRequest/createEntityRequest.interface";
 import { ICreateEntityRequestReq } from "../interfaces/createEntityRequest/createEntityRequestReq.interface";
 import { PersonTypeInRequest } from "../enums/PersonTypeInRequest.enum";
+import { IRenameOGRequestReq } from "../interfaces/renameOGRequest/renameOGRequestReq.interface";
+import { IRenameOGRequest } from "../interfaces/renameOGRequest/renameOGRequest.interface";
+import { IRenameRoleRequestReq } from "../interfaces/renameRoleRequest/renameRoleRequestReq.interface";
+import { IRenameRoleRequest } from "../interfaces/renameRoleRequest/renameRoleRequest.interface";
 
 export class RequestManager {
   private requestRepository: RequestRepository;
   constructor() {
     this.requestRepository = new RequestRepository();
+  }
+
+  async renameRoleRequest(
+    renameRoleRequestReq: IRenameRoleRequestReq
+  ): Promise<IRenameRoleRequest> {
+    try {
+      return (await this.requestRepository.createRequest(
+        renameRoleRequestReq,
+        RequestType.RENAME_ROLE
+      )) as IRenameRoleRequest;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async renameOGRequest(
+    renameOGRequestReq: IRenameOGRequestReq
+  ): Promise<IRenameOGRequest> {
+    try {
+      return (await this.requestRepository.createRequest(
+        renameOGRequestReq,
+        RequestType.RENAME_OG
+      )) as IRenameOGRequest;
+    } catch (error) {
+      throw error;
+    }
   }
 
   async createEntityRequest(

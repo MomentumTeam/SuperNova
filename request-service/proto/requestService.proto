@@ -5,21 +5,17 @@ package RequestService;
 service RequestService {
     rpc CreateOGRequest(CreateOGRequestReq) returns (CreateOGRequest) {}
     rpc CreateRoleRequest(CreateRoleRequestReq) returns (CreateRoleRequest) {}
-
     rpc GetRequestsByCommander(GetRequestsByPersonIdReq) returns (MultipleGeneralRequests){}
     rpc GetRequestsSubmittedBy(GetRequestsByPersonIdReq) returns (MultipleGeneralRequests){}
-    
-
     rpc AssignRoleToEntityRequest(AssignRoleToEntityRequestReq) returns (AssignRoleToEntityRequest) {}
     rpc CreateEntityRequest(CreateEntityRequestReq) returns (CreateEntityRequest){}
-
-
     rpc GetRequestById(GetRequestByIdReq) returns (GeneralRequest) {}
+    rpc RenameOGRequest(RenameOGRequestReq) returns (RenameOGRequest) {}
+
+    rpc RenameRoleRequest(RenameRoleRequestReq) returns (RenameRoleRequest) {}
 }
 
-
 //Enums
-
 enum Source{
     SOURCE_1 = 0;
     SOURCE_2 = 1;
@@ -30,6 +26,8 @@ enum RequestType {
     CREATE_ROLE = 1;
     ASSIGN_ROLE_TO_ENTITY = 2;
     CREATE_ENTITY=3;
+    RENAME_OG = 4;
+    RENAME_ROLE = 5;
 }
 
 enum Decision{
@@ -130,7 +128,6 @@ message DigitalIdentity{
     Role role = 9;
 }
 
-
 message MultipleGeneralRequests{
     repeated GeneralRequest requests = 1;
     int32 totalCount = 2;
@@ -150,7 +147,6 @@ message ApproverDecision{
     string approverId = 1;
     Decision approverDecision = 2;
 }
-
 
 message CreateOGRequestReq{
     string name = 1;
@@ -207,7 +203,75 @@ message CreateEntityRequestReq{
     optional EntityType entityType = 17;
 }
 
+message RenameOGRequestReq{
+    string submittedBy = 1;
+    optional ApproverDecision commanderDecision = 2;
+    optional ApproverDecision securityDecision = 3;
+    repeated string commanders = 4;
+    Source source = 5;
+    optional Status status=6;
+    Group group = 7;
+    string newName = 8;
+}
+
+message RenameRoleRequestReq{
+    string submittedBy = 1;
+    optional ApproverDecision commanderDecision = 2;
+    optional ApproverDecision securityDecision = 3;
+    repeated string commanders = 4;
+    Source source = 5;
+    optional Status status=6;
+
+    Role role = 7;
+    string newName = 8;
+}
+
 //Requests
+
+message RenameRoleRequest{
+    string _id = 1;
+    string submittedBy = 2;
+    optional ApproverDecision commanderDecision = 3;
+    optional ApproverDecision securityDecision = 4;
+    repeated string commanders = 5;
+    Source source = 6;
+    optional Status status = 7;
+    RequestType type = 8;
+    int64 createdAt = 9;
+    int64 updatedAt = 10; 
+
+    Role role = 11;
+    string newName = 12;
+}
+
+message BaseRequest{
+    string _id = 1;
+    string submittedBy = 2;
+    optional ApproverDecision commanderDecision = 3;
+    optional ApproverDecision securityDecision = 4;
+    repeated string commanders = 5;
+    Source source = 6;
+    optional Status status = 7;
+    RequestType type = 8;
+    int64 createdAt = 9;
+    int64 updatedAt = 10; 
+}
+
+message RenameOGRequest{
+    string _id = 1;
+    string submittedBy = 2;
+    optional ApproverDecision commanderDecision = 3;
+    optional ApproverDecision securityDecision = 4;
+    repeated string commanders = 5;
+    Source source = 6;
+    optional Status status = 7;
+    RequestType type = 8;
+    int64 createdAt = 9;
+    int64 updatedAt = 10; 
+
+    Group group = 11;
+    string newName = 12;
+}
 
 message CreateEntityRequest{
     string _id = 1;
@@ -220,6 +284,7 @@ message CreateEntityRequest{
     Status status = 8;
     int64 createdAt = 9;
     int64 updatedAt = 10; 
+
     required string firstName = 11;
     optional string lastName = 12;
     optional string entityCard = 13;
@@ -237,51 +302,53 @@ message CreateEntityRequest{
 
 message AssignRoleToEntityRequest{
     string _id = 1;
-    RequestType type = 2;
-    string submittedBy = 3;
-    optional ApproverDecision commanderDecision = 4;
-    optional ApproverDecision securityDecision = 5;
-    repeated string commanders = 6;
-    Source source = 7;
-    optional Status status = 8;
-    Entity entity = 9;
-    Role role = 10;
-    int64 createdAt = 11;
-    int64 updatedAt = 12; 
-}
+    string submittedBy = 2;
+    optional ApproverDecision commanderDecision = 3;
+    optional ApproverDecision securityDecision = 4;
+    repeated string commanders = 5;
+    Source source = 6;
+    optional Status status = 7;
+    RequestType type = 8;
+    int64 createdAt = 9;
+    int64 updatedAt = 10; 
 
+    Entity entity = 11;
+    Role role = 12;
+
+}
 
 message CreateOGRequest{
     string _id = 1;
-    RequestType type = 2;
-    string name = 3;
-    Group parent = 4;
-    string submittedBy = 5;
-    ApproverDecision commanderDecision= 6;
-    ApproverDecision securityDecision = 7;
-    repeated string commanders = 8;
+    string submittedBy = 2;
+    optional ApproverDecision commanderDecision = 3;
+    optional ApproverDecision securityDecision = 4;
+    repeated string commanders = 5;
+    Source source = 6;
+    optional Status status = 7;
+    RequestType type = 8;
     int64 createdAt = 9;
     int64 updatedAt = 10; 
-    Source source = 11;
-    Status status = 12;
-    string generatedKartoffelId = 13;
+
+    string name = 11;
+    Group parent = 12;
+    string generatedKartoffelId = 13;  
 }
 
 message CreateRoleRequest{
     string _id = 1;
-    RequestType type = 2;
-    string jobTitle = 3;
-    Group parent = 4;
-    string submittedBy = 5;
-    ApproverDecision commanderDecision = 6;
-    ApproverDecision securityDecision = 7;
-    repeated string commanders = 8;
-    Source source = 9;
-    Clearance clearance = 10;
-    RoleStatus roleStatus = 11;
-    Status status = 12;
-    int64 createdAt = 13;
-    int64 updatedAt = 14; 
+    string submittedBy = 2;
+    optional ApproverDecision commanderDecision = 3;
+    optional ApproverDecision securityDecision = 4;
+    repeated string commanders = 5;
+    Source source = 6;
+    optional Status status = 7;
+    RequestType type = 8;
+    int64 createdAt = 9;
+    int64 updatedAt = 10; 
+    string jobTitle = 11;
+    Group parent = 12;
+    Clearance clearance = 13;
+    RoleStatus roleStatus = 14;
     string generatedKartoffelId = 15;
 }
 
@@ -324,4 +391,9 @@ message GeneralRequest{
     optional int64 birthdate = 27;
     optional string generatedKartoffelId = 28;
     optional EntityType entityType = 29;
+    //renameOGRequest
+    optional Group group = 30;
+    optional string newName = 31;
+    //renameRoleRequest
+    // Role role and string newName
 }

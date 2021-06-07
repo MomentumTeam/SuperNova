@@ -114,6 +114,12 @@ export const GeneralRequestSchema = new Schema(
       type: String,
       enum: EntityType,
     },
+    // renameOGRequest
+    newName: String,
+    group: {
+      id: mongoose.Schema.Types.ObjectId,
+      fullHierarchy: String,
+    },
   },
   { strict: false }
 );

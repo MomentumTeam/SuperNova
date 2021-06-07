@@ -11,6 +11,8 @@ import {
   assignRoleToEntityRequest,
   createEntityRequest,
   getRequestsSubmittedBy,
+  renameOGRequest,
+  renameRoleRequest,
 } from "./requests/request.controller";
 
 const PROTO_PATH = __dirname.includes("dist")
@@ -59,6 +61,8 @@ export class Server {
         GetRequestsByCommander: getRequestsByCommander,
         CreateEntityRequest: createEntityRequest,
         GetRequestsSubmittedBy: getRequestsSubmittedBy,
+        RenameOGRequest: renameOGRequest,
+        renameRoleRequest: renameRoleRequest,
       });
       logger.log({
         level: "info",

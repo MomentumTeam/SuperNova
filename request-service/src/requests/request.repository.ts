@@ -16,6 +16,8 @@ import { RequestType } from "../enums/requestType.enum";
 import { PersonTypeInRequest } from "../enums/PersonTypeInRequest.enum";
 import { EntityType } from "../enums/entityType.enum";
 import { ServiceType } from "../enums/serviceType.enum";
+import { IRenameOGRequest } from "../interfaces/renameOGRequest/renameOGRequest.interface";
+import { IRenameOGRequestReq } from "../interfaces/renameOGRequest/renameOGRequestReq.interface";
 
 export class RequestRepository {
   private turnObjectIdsToStrings(document: any): void {

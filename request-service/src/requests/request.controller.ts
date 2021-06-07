@@ -9,6 +9,10 @@ import { IAssignRoleToEntityRequestReq } from "../interfaces/assignRoleToEntityR
 import { ICreateEntityRequest } from "../interfaces/createEntityRequest/createEntityRequest.interface";
 import { ICreateEntityRequestReq } from "../interfaces/createEntityRequest/createEntityRequestReq.interface";
 import { PersonTypeInRequest } from "../enums/PersonTypeInRequest.enum";
+import { IRenameOGRequest } from "../interfaces/renameOGRequest/renameOGRequest.interface";
+import { IRenameOGRequestReq } from "../interfaces/renameOGRequest/renameOGRequestReq.interface";
+import { IRenameRoleRequest } from "../interfaces/renameRoleRequest/renameRoleRequest.interface";
+import { IRenameRoleRequestReq } from "../interfaces/renameRoleRequest/renameRoleRequestReq.interface";
 const requestManager: RequestManager = new RequestManager();
 
 export async function createOGRequest(call: any, callback: any): Promise<void> {
@@ -16,6 +20,45 @@ export async function createOGRequest(call: any, callback: any): Promise<void> {
     const createOGResponse: ICreateOGRequest =
       await requestManager.createOGRequest(call.request as ICreateOGRequestReq);
     callback(null, createOGResponse);
+  } catch (error) {
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function renameOGRequest(call: any, callback: any): Promise<void> {
+  try {
+    const renameOGRequest: IRenameOGRequest =
+      await requestManager.renameOGRequest(call.request as IRenameOGRequestReq);
+    callback(null, renameOGRequest);
+  } catch (error) {
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function renameRoleRequest(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    const renameRoleRequest: IRenameRoleRequest =
+      await requestManager.renameRoleRequest(
+        call.request as IRenameRoleRequestReq
+      );
+    callback(null, renameRoleRequest);
   } catch (error) {
     callback(
       {
