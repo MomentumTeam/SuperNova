@@ -13,6 +13,9 @@ import {
   getRequestsSubmittedBy,
   renameOGRequest,
   renameRoleRequest,
+  deleteOGRequest,
+  editEntityRequest,
+  deleteRoleRequest,
 } from "./requests/request.controller";
 
 const PROTO_PATH = __dirname.includes("dist")
@@ -62,7 +65,10 @@ export class Server {
         CreateEntityRequest: createEntityRequest,
         GetRequestsSubmittedBy: getRequestsSubmittedBy,
         RenameOGRequest: renameOGRequest,
-        renameRoleRequest: renameRoleRequest,
+        RenameRoleRequest: renameRoleRequest,
+        EditEntityRequest: editEntityRequest,
+        DeleteOGRequest: deleteOGRequest,
+        DeleteRoleRequest: deleteRoleRequest,
       });
       logger.log({
         level: "info",

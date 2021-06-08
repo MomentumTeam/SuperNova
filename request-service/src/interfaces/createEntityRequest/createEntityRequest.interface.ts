@@ -1,18 +1,12 @@
+import { Clearance } from "../../enums/clearance.enum";
 import { EntityType } from "../../enums/entityType.enum";
 import { ServiceType } from "../../enums/serviceType.enum";
 import { Sex } from "../../enums/sex.enum";
+import { IEntity } from "../kartoffelTypes/entity.interface";
 import { IRequest } from "../request.interface";
+import { IEntityProperties } from "../kartoffelTypes/entityProperties.interface";
 
 export interface ICreateEntityRequest extends IRequest {
-  firstName: string;
-  lastName: string;
-  entityCard: string;
-  personalNumber: string;
-  serviceType: ServiceType;
-  phone: string[];
-  mobilePhone: string[];
-  address: string[];
-  sex: Sex;
-  birthdate: number;
-  entityType: EntityType;
+  entityProperties: IEntityProperties;
+  createdEntity: IEntity;
 }

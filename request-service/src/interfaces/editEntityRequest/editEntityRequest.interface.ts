@@ -1,8 +1,8 @@
 import { IEntity } from "../kartoffelTypes/entity.interface";
-import { IRequestReq } from "../requestReq.interface";
 import { IEntityProperties } from "../kartoffelTypes/entityProperties.interface";
+import { IRequest } from "../request.interface";
 
-export interface ICreateEntityRequestReq extends IRequestReq {
+export interface IEditEntityRequest extends IRequest {
+  entity: IEntity;
   entityProperties: IEntityProperties;
-  createdEntity: IEntity;
 }

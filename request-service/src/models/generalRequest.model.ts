@@ -17,11 +17,6 @@ export const GeneralRequestSchema = new Schema(
       type: String,
       enum: RequestType,
     },
-    domain: {
-      type: String,
-      enum: Source,
-      default: Source.SOURCE_1,
-    },
     submittedBy: mongoose.Schema.Types.ObjectId,
     commanderDecision: {
       approverId: {
@@ -44,47 +39,66 @@ export const GeneralRequestSchema = new Schema(
         enum: Decision,
         defualt: Decision.UNKNOWN,
       },
-      commanders: [mongoose.Schema.Types.ObjectId],
-      createdAt: { type: Number, default: new Date().getTime() },
-      updatedAt: { type: Number, default: new Date().getTime() },
-      status: {
-        type: String,
-        enum: Status,
-        default: Status.SUBMITTED,
-      },
-      generatedKartoffelId: {
-        type: mongoose.Schema.Types.ObjectId,
-        default: null,
-      },
+    },
+    commanders: [mongoose.Schema.Types.ObjectId],
+    createdAt: { type: Number, default: new Date().getTime() },
+    updatedAt: { type: Number, default: new Date().getTime() },
+    status: {
+      type: String,
+      enum: Status,
+      default: Status.SUBMITTED,
+    },
+    // createOGRequest
+    ogProperties: {
+      name: String,
+      hierarchy: String,
+      parent: mongoose.Schema.Types.ObjectId,
+    },
+    createdOG: {
+      id: mongoose.Schema.Types.ObjectId,
+      name: String,
+      hierarchy: String,
+      parent: mongoose.Schema.Types.ObjectId,
+    },
 
-      // createOGRequest
-      newChild: String,
-      parent: {
-        id: mongoose.Schema.Types.ObjectId,
-        fullHierarchy: String,
-      },
-
-      // createRoleRequest
+    // createRoleRequest
+    roleProperties: {
       jobTitle: String,
-      clearance: {
+      source: {
         type: String,
-        enum: Clearance,
-        default: Clearance.YELLOW,
+        enum: Source,
+        default: Source.SOURCE_1,
       },
-      roleStatus: {
+    },
+    organizationGroup: {
+      //also for renameOG
+      id: mongoose.Schema.Types.ObjectId,
+      hierarchy: String,
+      name: String,
+    },
+    createdRole: {
+      jobTitle: String,
+      roleId: String,
+      source: {
         type: String,
-        enum: RoleStatus,
-        default: RoleStatus.ENABLED,
+        enum: Source,
+        default: Source.SOURCE_1,
       },
+    },
+    createdDI: {
+      uniqueId: String,
     },
 
     // assignRoleToEntity
     entity: {
+      //also for editEntity
       id: {
         type: mongoose.Schema.Types.ObjectId,
       },
     },
     role: {
+      //also for renameRole
+      jobTitle: String,
       roleId: {
         type: String,
       },
@@ -92,34 +106,61 @@ export const GeneralRequestSchema = new Schema(
         type: String,
       },
     },
+    needToDisconnectDI: {
+      type: Boolean,
+      default: false,
+    },
+    digitalIdentityToDisconnect: {
+      uniqueId: {
+        type: String,
+      },
+    },
 
     // createEntity
-    firstName: String,
-    lastName: String,
-    entityCard: String,
-    personalNumber: String,
-    serviceType: {
-      type: String,
-      enum: ServiceType,
+    entityProperties: {
+      firstName: String,
+      lastName: String,
+      identityCard: String,
+      personalNumber: String,
+      serviceType: {
+        type: String,
+        enum: ServiceType,
+      },
+      phone: [String],
+      mobilePhone: [String],
+      address: [String],
+      sex: {
+        type: String,
+        enum: Sex,
+      },
+      birthdate: Number,
+      entityType: {
+        type: String,
+        enum: EntityType,
+      },
     },
-    phone: [String],
-    mobilePhone: [String],
-    address: [String],
-    sex: {
-      type: String,
-      enum: Sex,
+    createdEntity: {
+      id: {
+        type: mongoose.Schema.Types.ObjectId,
+      },
     },
-    birthdate: Number,
-    entityType: {
-      type: String,
-      enum: EntityType,
-    },
+
     // renameOGRequest
     newName: String,
-    group: {
-      id: mongoose.Schema.Types.ObjectId,
-      fullHierarchy: String,
-    },
+    // and also organizationGroup
+
+    // renameRoleRequest
+    // role: Role
+    newJobTitle: String,
+
+    //editEntity
+    // entity
+
+    //deleteOG
+    // organizationGroup : OrganizationGroup
+
+    //deleteRole
+    // role : Role
   },
   { strict: false }
 );

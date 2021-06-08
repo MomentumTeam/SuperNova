@@ -5,7 +5,7 @@ import { ICreateOGRequest } from "../interfaces/createOGRequest/createOGRequest.
 import { ICreateRoleRequest } from "../interfaces/createRoleRequest/createRoleRequest.interface";
 import { ICreateRoleRequestReq } from "../interfaces/createRoleRequest/createRoleRequestReq.interface";
 import { IGetRequestsByPersonIdReq } from "../interfaces/getRequestsByPersonId/getRequestsByPersonIdReq.interface";
-import { IAssignRoleToEntityRequestReq } from "../interfaces/assignRoleToEntityRequest/createOGRequestReq.interface";
+import { IAssignRoleToEntityRequestReq } from "../interfaces/assignRoleToEntityRequest/assignRoleToEntityRequestReq.interface";
 import { IAssignRoleToEntityRequest } from "../interfaces/assignRoleToEntityRequest/assignRoleToEntityRequest.interface";
 import { RequestType } from "../enums/requestType.enum";
 import { ICreateEntityRequest } from "../interfaces/createEntityRequest/createEntityRequest.interface";
@@ -15,11 +15,56 @@ import { IRenameOGRequestReq } from "../interfaces/renameOGRequest/renameOGReque
 import { IRenameOGRequest } from "../interfaces/renameOGRequest/renameOGRequest.interface";
 import { IRenameRoleRequestReq } from "../interfaces/renameRoleRequest/renameRoleRequestReq.interface";
 import { IRenameRoleRequest } from "../interfaces/renameRoleRequest/renameRoleRequest.interface";
+import { IEditEntityRequestReq } from "../interfaces/editEntityRequest/editEntityRequestReq.interface";
+import { IEditEntityRequest } from "../interfaces/editEntityRequest/editEntityRequest.interface";
+import { IDeleteOGRequest } from "../interfaces/deleteOGRequest/deleteOGRequest.interface.ts";
+import { IDeleteOGRequestReq } from "../interfaces/deleteOGRequest/deleteOGRequestReq.interface";
+import { IDeleteRoleRequest } from "../interfaces/deleteRoleRequest/deleteRoleRequest.interface.ts";
+import { IDeleteRoleRequestReq } from "../interfaces/deleteRoleRequest/deleteRoleRequestReq.interface";
 
 export class RequestManager {
   private requestRepository: RequestRepository;
   constructor() {
     this.requestRepository = new RequestRepository();
+  }
+
+  async editEntityRequest(
+    editEntityRequestReq: IEditEntityRequestReq
+  ): Promise<IEditEntityRequest> {
+    try {
+      return (await this.requestRepository.createRequest(
+        editEntityRequestReq,
+        RequestType.EDIT_ENTITY
+      )) as IEditEntityRequest;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteRoleRequest(
+    deleteRoleRequestReq: IDeleteRoleRequestReq
+  ): Promise<IDeleteRoleRequest> {
+    try {
+      return (await this.requestRepository.createRequest(
+        deleteRoleRequestReq,
+        RequestType.DELETE_ROLE
+      )) as IDeleteRoleRequest;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteOGRequest(
+    deleteOGRequestReq: IDeleteOGRequestReq
+  ): Promise<IDeleteOGRequest> {
+    try {
+      return (await this.requestRepository.createRequest(
+        deleteOGRequestReq,
+        RequestType.DELETE_OG
+      )) as IDeleteOGRequest;
+    } catch (error) {
+      throw error;
+    }
   }
 
   async renameRoleRequest(

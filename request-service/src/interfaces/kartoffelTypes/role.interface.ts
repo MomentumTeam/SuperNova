@@ -1,3 +1,5 @@
+import { Source } from "../../enums/source.enum";
+
 export interface IRole {
   roleId: string;
   jobTitle: string;
@@ -5,7 +7,7 @@ export interface IRole {
   directGroup: string;
   hierarchy: string;
   hierarchyIds: string;
-  source: string;
+  source: Source;
   createdAt: number;
   updatedAt: number;
 }

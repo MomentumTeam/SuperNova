@@ -5,7 +5,7 @@ import { ICreateOGRequestReq } from "../interfaces/createOGRequest/createOGReque
 import { ICreateRoleRequest } from "../interfaces/createRoleRequest/createRoleRequest.interface";
 import { ICreateRoleRequestReq } from "../interfaces/createRoleRequest/createRoleRequestReq.interface";
 import { IAssignRoleToEntityRequest } from "../interfaces/assignRoleToEntityRequest/assignRoleToEntityRequest.interface";
-import { IAssignRoleToEntityRequestReq } from "../interfaces/assignRoleToEntityRequest/createOGRequestReq.interface";
+import { IAssignRoleToEntityRequestReq } from "../interfaces/assignRoleToEntityRequest/assignRoleToEntityRequestReq.interface";
 import { ICreateEntityRequest } from "../interfaces/createEntityRequest/createEntityRequest.interface";
 import { ICreateEntityRequestReq } from "../interfaces/createEntityRequest/createEntityRequestReq.interface";
 import { PersonTypeInRequest } from "../enums/PersonTypeInRequest.enum";
@@ -13,6 +13,12 @@ import { IRenameOGRequest } from "../interfaces/renameOGRequest/renameOGRequest.
 import { IRenameOGRequestReq } from "../interfaces/renameOGRequest/renameOGRequestReq.interface";
 import { IRenameRoleRequest } from "../interfaces/renameRoleRequest/renameRoleRequest.interface";
 import { IRenameRoleRequestReq } from "../interfaces/renameRoleRequest/renameRoleRequestReq.interface";
+import { IEditEntityRequest } from "../interfaces/editEntityRequest/editEntityRequest.interface";
+import { IEditEntityRequestReq } from "../interfaces/editEntityRequest/editEntityRequestReq.interface";
+import { IDeleteOGRequest } from "../interfaces/deleteOGRequest/deleteOGRequest.interface.ts";
+import { IDeleteOGRequestReq } from "../interfaces/deleteOGRequest/deleteOGRequestReq.interface";
+import { IDeleteRoleRequest } from "../interfaces/deleteRoleRequest/deleteRoleRequest.interface.ts";
+import { IDeleteRoleRequestReq } from "../interfaces/deleteRoleRequest/deleteRoleRequestReq.interface";
 const requestManager: RequestManager = new RequestManager();
 
 export async function createOGRequest(call: any, callback: any): Promise<void> {
@@ -32,11 +38,72 @@ export async function createOGRequest(call: any, callback: any): Promise<void> {
   }
 }
 
+export async function deleteRoleRequest(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    const deleteRoleResponse: IDeleteRoleRequest =
+      await requestManager.deleteRoleRequest(
+        call.request as IDeleteRoleRequestReq
+      );
+    callback(null, deleteRoleResponse);
+  } catch (error) {
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function deleteOGRequest(call: any, callback: any): Promise<void> {
+  try {
+    const deleteOGResponse: IDeleteOGRequest =
+      await requestManager.deleteOGRequest(call.request as IDeleteOGRequestReq);
+    callback(null, deleteOGResponse);
+  } catch (error) {
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
 export async function renameOGRequest(call: any, callback: any): Promise<void> {
   try {
     const renameOGRequest: IRenameOGRequest =
       await requestManager.renameOGRequest(call.request as IRenameOGRequestReq);
     callback(null, renameOGRequest);
+  } catch (error) {
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function editEntityRequest(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    const editEntityRequest: IEditEntityRequest =
+      await requestManager.editEntityRequest(
+        call.request as IEditEntityRequestReq
+      );
+    callback(null, editEntityRequest);
   } catch (error) {
     callback(
       {

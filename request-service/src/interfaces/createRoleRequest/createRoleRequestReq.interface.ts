@@ -1,10 +1,10 @@
-import { IGroup } from "../group.interface";
 import { IRequestReq } from "../requestReq.interface";
-import { Clearance } from "../../enums/clearance.enum";
-import { RoleStatus } from "../../enums/roleStatus.enum";
+import { IRole } from "../kartoffelTypes/role.interface";
+import { IDigitalIdentity } from "../kartoffelTypes/digitalIdentity.interface";
+import { IOrganizationGroup } from "../kartoffelTypes/organizationGroup.interface";
 export interface ICreateRoleRequestReq extends IRequestReq {
-  jobTitle: string;
-  parent: IGroup;
-  clearance: Clearance;
-  roleStatus: RoleStatus;
+  roleProperties: IRole;
+  organizationGroup: IOrganizationGroup;
+  createdRole: IRole;
+  createdDI: IDigitalIdentity;
 }

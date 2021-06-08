@@ -1,7 +1,6 @@
-import { IGroup } from "../group.interface";
 import { IRole } from "../kartoffelTypes/role.interface";
 import { IRequest } from "../request.interface";
-export interface IRenameRoleRequest extends IRequest {
-  newJobTitle: string;
+
+export interface IDeleteRoleRequest extends IRequest {
   role: IRole;
 }

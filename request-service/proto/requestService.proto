@@ -11,11 +11,15 @@ service RequestService {
     rpc CreateEntityRequest(CreateEntityRequestReq) returns (CreateEntityRequest){}
     rpc GetRequestById(GetRequestByIdReq) returns (GeneralRequest) {}
     rpc RenameOGRequest(RenameOGRequestReq) returns (RenameOGRequest) {}
-
     rpc RenameRoleRequest(RenameRoleRequestReq) returns (RenameRoleRequest) {}
+    rpc EditEntityRequest(EditEntityRequestReq) returns (EditEntityRequest){}
+
+    rpc DeleteOGRequest(DeleteOGRequestReq) returns (DeleteOGRequest){}
+    rpc DeleteRoleRequest(DeleteRoleRequestReq) returns (DeleteRoleRequest){}
 }
 
 //Enums
+
 enum Source{
     SOURCE_1 = 0;
     SOURCE_2 = 1;
@@ -28,6 +32,7 @@ enum RequestType {
     CREATE_ENTITY=3;
     RENAME_OG = 4;
     RENAME_ROLE = 5;
+    EDIT_ENTITY = 6;
 }
 
 enum Decision{
@@ -75,57 +80,92 @@ enum EntityType{
     CIVILIAN = 2;
 }
 
+enum OGStatus{
+    ACTIVE = 0;
+    IN_ACTIVE = 1;
+}
+
 //Reqs
 
+message OrganizationGroup{
+    optional string id = 1;
+    optional string hierarchy = 2;
+    optional string name = 3;
+    optional Source source = 4;
+    repeated string ancestors = 5;
+    optional OGStatus status = 6;
+    optional bool isLeaf = 7;
+    optional int64 createdAt = 8;
+    optional int64 updatedAt = 9;
+    repeated Entity directEntities = 10;
+    repeated Role directRoles = 11;
+    optional string parent = 12;
+}
+
 message Role{
-    string roleId = 1;
-    string digitalIdentityUniqueId = 2;
-    // string jobTitle = 3;
-    // string directGroup = 4;
-    // string hierarchy = 5;
-    // repeated string hierarchyIds = 6;
-    // string source = 7;
-    // int64 createdAt = 8;
-    // int64 updatedAt = 9;
+    optional string roleId = 1;
+    optional string jobTitle = 2;
+    optional string digitalIdentityUniqueId = 3;
+    optional string directGroup = 4;
+    optional string hierarchy = 5;
+    repeated string hierarchyIds = 6;
+    optional Source source = 7;
+    optional int64 createdAt = 8;
+    optional int64 updatedAt = 9;
 }
 
 message Entity{
-    string id = 1;
-    // string displayName = 2;
-    // string directGroup = 3;
-    // string hierarchy = 4;
-    // string entityType = 5;
-    // string identityCard = 6;
-    // string personalNumber = 7;
-    // string serviceType = 8;
-    // string firstName = 9;
-    // string lastName = 10;
-    // string akaUnit = 11;
-    // int64 dischargeDate = 12;
-    // string rank = 13;
-    // string mail = 14;
-    // string jobTitle = 15;
-    // repeated string phone = 16;
-    // repeated string mobilePhone = 17;
-    // string address = 18;
-    // Clearance clearance = 19;
-    // Sex sex = 20;
-    // int64 birthday = 21;
-    // int64 createdAt = 22;
-    // int64 updatedAt = 23;
-    // repeated DigitalIdentity digitalIdentities = 24;
+    optional string id = 1;
+    optional string displayName = 2;
+    optional string directGroup = 3;
+    optional string hierarchy = 4;
+    optional string entityType = 5;
+    optional string identityCard = 6;
+    optional string personalNumber = 7;
+    optional string serviceType = 8;
+    optional string firstName = 9;
+    optional string lastName = 10;
+    optional string akaUnit = 11;
+    optional int64 dischargeDate = 12;
+    optional string rank = 13;
+    optional string mail = 14;
+    optional string jobTitle = 15;
+    repeated string phone = 16;
+    repeated string mobilePhone = 17;
+    optional string address = 18;
+    optional Clearance clearance = 19;
+    optional Sex sex = 20;
+    optional int64 birthday = 21;
+    optional int64 createdAt = 22;
+    optional int64 updatedAt = 23;
+    repeated DigitalIdentity digitalIdentities = 24;
+}
+
+message EntityProperties{
+    required string firstName = 1;
+    optional string lastName = 2;
+    required string identityCard = 3;
+    optional string personalNumber = 4;
+    optional ServiceType serviceType = 5;
+    repeated string phone = 6;
+    repeated string mobilePhone = 7;
+    optional string address = 8;
+    optional Sex sex = 9;
+    optional int64 birthdate = 10;
+    optional EntityType entityType = 11;
+    Clearance clearance = 12;
 }
 
 message DigitalIdentity{
-    string type = 1;
-    string source = 2;
-    string mail = 3;
-    string uniqueId = 4;
-    string entityId = 5;
-    int64 createdAt = 6;
-    int64 updatedAt = 7;
-    bool isRoleAttachable = 8;
-    Role role = 9;
+    optional string uniqueId = 1;
+    optional string type = 2;
+    optional string source = 3;
+    optional string mail = 4;
+    optional string entityId = 5;
+    optional int64 createdAt = 6;
+    optional int64 updatedAt = 7;
+    optional bool isRoleAttachable = 8;
+    optional Role role = 9;
 }
 
 message MultipleGeneralRequests{
@@ -148,59 +188,64 @@ message ApproverDecision{
     Decision approverDecision = 2;
 }
 
+message BaseReq{
+    string submittedBy = 1;
+    optional ApproverDecision commanderDecision = 2;
+    optional ApproverDecision securityDecision = 3;
+    repeated string commanders = 4;
+    Source source = 5;
+    optional Status status = 6;
+}
+
 message CreateOGRequestReq{
-    string name = 1;
-    Group parent = 2;
-    string submittedBy = 3;
-    optional ApproverDecision commanderDecision = 4;
-    optional ApproverDecision securityDecision = 5;
-    repeated string commanders = 6;
-    Source source = 7;
-    optional Status status=8;
+    string submittedBy = 1;
+    optional ApproverDecision commanderDecision = 2;
+    optional ApproverDecision securityDecision = 3;
+    repeated string commanders = 4;
+    Source source = 5;
+    optional Status status = 6;
+    OrganizationGroup ogProperties = 7;
+    optional OrganizationGroup createdOG = 8;
 }
 
 message CreateRoleRequestReq{
-    string jobTitle = 1;
-    Group parent = 2;
-    string submittedBy = 3;
-    optional ApproverDecision commanderDecision = 4;
-    optional ApproverDecision securityDecision = 5;
-    repeated string commanders = 6;
-    Source source = 7;
-    Clearance clearance = 8;
-    RoleStatus roleStatus = 9;
-    optional Status status = 10;
+    string submittedBy = 1;
+    optional ApproverDecision commanderDecision = 2;
+    optional ApproverDecision securityDecision = 3;
+    repeated string commanders = 4;
+    Source source = 5;
+    optional Status status=6;
+
+    Role roleProperties = 7;
+    optional OrganizationGroup organizationGroup = 8;
+    optional Role createdRole = 9;
+    optional DigitalIdentity createdDI = 10;
 }
 
 message AssignRoleToEntityRequestReq{
-    Entity entity = 1;
-    Role role = 2;
-    string submittedBy = 3;
-    optional ApproverDecision commanderDecision = 4;
-    optional ApproverDecision securityDecision = 5;
-    repeated string commanders = 6;
-    Source source = 7;
-    optional Status status=8;
+    string submittedBy = 1;
+    optional ApproverDecision commanderDecision = 2;
+    optional ApproverDecision securityDecision = 3;
+    repeated string commanders = 4;
+    Source source = 5;
+    optional Status status=6;
+
+    Entity entity = 7;
+    Role role = 8;
+    bool needToDisconnectDI = 9;
+    DigitalIdentity digitalIdentityToDisconnect = 10;
 }
 
 message CreateEntityRequestReq{
-    required string firstName = 1;
-    optional string lastName = 2;
-    optional string entityCard = 3;
-    required string personalNumber = 4;
-    optional ServiceType serviceType = 5;
-    repeated string phone = 6;
-    repeated string mobilePhone = 7;
-    string address = 8;
-    Sex sex = 9;
-    int64 birthdate = 10;
-    string submittedBy = 11;
-    ApproverDecision commanderDecision = 12;
-    ApproverDecision securityDecision = 13;
-    repeated string commanders = 14;
-    Source source = 15;
-    Status status = 16;
-    optional EntityType entityType = 17;
+    string submittedBy = 1;
+    optional ApproverDecision commanderDecision = 2;
+    optional ApproverDecision securityDecision = 3;
+    repeated string commanders = 4;
+    Source source = 5;
+    optional Status status=6;
+
+    EntityProperties entityProperties = 7;
+    Entity createdEntity = 8;
 }
 
 message RenameOGRequestReq{
@@ -210,7 +255,8 @@ message RenameOGRequestReq{
     repeated string commanders = 4;
     Source source = 5;
     optional Status status=6;
-    Group group = 7;
+
+    OrganizationGroup organizationGroup = 7;
     string newName = 8;
 }
 
@@ -223,26 +269,45 @@ message RenameRoleRequestReq{
     optional Status status=6;
 
     Role role = 7;
-    string newName = 8;
+    string newJobTitle = 8;
 }
+
+message EditEntityRequestReq{
+    string submittedBy = 1;
+    optional ApproverDecision commanderDecision = 2;
+    optional ApproverDecision securityDecision = 3;
+    repeated string commanders = 4;
+    Source source = 5;
+    optional Status status=6;
+
+    Entity entity = 7;
+    EntityProperties entityProperties = 8; 
+}
+
+message DeleteOGRequestReq{
+    string submittedBy = 1;
+    optional ApproverDecision commanderDecision = 2;
+    optional ApproverDecision securityDecision = 3;
+    repeated string commanders = 4;
+    Source source = 5;
+    optional Status status = 6; 
+    
+    OrganizationGroup organizationGroup = 7;
+}
+
+message DeleteRoleRequestReq{
+    string submittedBy = 1;
+    optional ApproverDecision commanderDecision = 2;
+    optional ApproverDecision securityDecision = 3;
+    repeated string commanders = 4;
+    Source source = 5;
+    optional Status status = 6; 
+
+    Role role = 7;
+}
+
 
 //Requests
-
-message RenameRoleRequest{
-    string _id = 1;
-    string submittedBy = 2;
-    optional ApproverDecision commanderDecision = 3;
-    optional ApproverDecision securityDecision = 4;
-    repeated string commanders = 5;
-    Source source = 6;
-    optional Status status = 7;
-    RequestType type = 8;
-    int64 createdAt = 9;
-    int64 updatedAt = 10; 
-
-    Role role = 11;
-    string newName = 12;
-}
 
 message BaseRequest{
     string _id = 1;
@@ -257,6 +322,69 @@ message BaseRequest{
     int64 updatedAt = 10; 
 }
 
+message DeleteRoleRequest{
+    string _id = 1;
+    string submittedBy = 2;
+    optional ApproverDecision commanderDecision = 3;
+    optional ApproverDecision securityDecision = 4;
+    repeated string commanders = 5;
+    Source source = 6;
+    optional Status status = 7;
+    RequestType type = 8;
+    int64 createdAt = 9;
+    int64 updatedAt = 10; 
+
+    Role role = 11;
+}
+
+message DeleteOGRequest{
+    string _id = 1;
+    string submittedBy = 2;
+    optional ApproverDecision commanderDecision = 3;
+    optional ApproverDecision securityDecision = 4;
+    repeated string commanders = 5;
+    Source source = 6;
+    optional Status status = 7;
+    RequestType type = 8;
+    int64 createdAt = 9;
+    int64 updatedAt = 10; 
+    
+    OrganizationGroup organizationGroup = 11;
+
+}
+
+message EditEntityRequest{
+    string _id = 1;
+    string submittedBy = 2;
+    optional ApproverDecision commanderDecision = 3;
+    optional ApproverDecision securityDecision = 4;
+    repeated string commanders = 5;
+    Source source = 6;
+    optional Status status = 7;
+    RequestType type = 8;
+    int64 createdAt = 9;
+    int64 updatedAt = 10; 
+
+    Entity entity = 11;
+    EntityProperties entityProperties = 12; 
+}
+
+message RenameRoleRequest{
+    string _id = 1;
+    string submittedBy = 2;
+    optional ApproverDecision commanderDecision = 3;
+    optional ApproverDecision securityDecision = 4;
+    repeated string commanders = 5;
+    Source source = 6;
+    optional Status status = 7;
+    RequestType type = 8;
+    int64 createdAt = 9;
+    int64 updatedAt = 10; 
+
+    Role role = 11;
+    string newJobTitle = 12;
+}
+
 message RenameOGRequest{
     string _id = 1;
     string submittedBy = 2;
@@ -269,7 +397,7 @@ message RenameOGRequest{
     int64 createdAt = 9;
     int64 updatedAt = 10; 
 
-    Group group = 11;
+    OrganizationGroup organizationGroup = 11;
     string newName = 12;
 }
 
@@ -285,19 +413,8 @@ message CreateEntityRequest{
     int64 createdAt = 9;
     int64 updatedAt = 10; 
 
-    required string firstName = 11;
-    optional string lastName = 12;
-    optional string entityCard = 13;
-    required string personalNumber = 14;
-    ServiceType serviceType = 15;
-    repeated string phone = 16;
-    repeated string mobilePhone = 17;
-    string address = 18;
-    Sex sex = 19;
-    int64 birthdate = 20;
-    EntityType entityType = 21;
-    string generatedKartoffelId = 22;
-
+    EntityProperties entityProperties = 11;
+    Entity createdEntity = 12;
 }
 
 message AssignRoleToEntityRequest{
@@ -314,7 +431,8 @@ message AssignRoleToEntityRequest{
 
     Entity entity = 11;
     Role role = 12;
-
+    bool needToDisconnectDI = 13;
+    DigitalIdentity digitalIdentityToDisconnect = 14;
 }
 
 message CreateOGRequest{
@@ -329,9 +447,8 @@ message CreateOGRequest{
     int64 createdAt = 9;
     int64 updatedAt = 10; 
 
-    string name = 11;
-    Group parent = 12;
-    string generatedKartoffelId = 13;  
+    OrganizationGroup ogProperties = 11;
+    optional OrganizationGroup createdOG = 12;
 }
 
 message CreateRoleRequest{
@@ -345,11 +462,12 @@ message CreateRoleRequest{
     RequestType type = 8;
     int64 createdAt = 9;
     int64 updatedAt = 10; 
-    string jobTitle = 11;
-    Group parent = 12;
-    Clearance clearance = 13;
-    RoleStatus roleStatus = 14;
-    string generatedKartoffelId = 15;
+
+
+    Role roleProperties = 11;
+    optional OrganizationGroup organizationGroup = 12;
+    optional Role createdRole = 13;
+    optional DigitalIdentity createdDI = 14;
 }
 
 message Group{
@@ -368,32 +486,43 @@ message GeneralRequest{
     Status status = 8;
     int64 createdAt = 9;
     int64 updatedAt = 10; 
+
     //createOGRequest
-    optional Group parent = 11;
-    optional string name = 12;
+    optional OrganizationGroup ogProperties = 11;
+    optional OrganizationGroup createdOG = 12;
+
     //createRoleRequest
-    optional string jobTitle = 13;
-    optional Clearance clearance = 14;
-    optional RoleStatus roleStatus = 15;
+    Role roleProperties = 13;
+    optional OrganizationGroup organizationGroup = 14;
+    optional Role createdRole = 15;
+    optional DigitalIdentity createdDI = 16;
+
     //assignRoleToEntityRequest
-    optional Entity entity = 16;
-    optional Role role = 17;
+    optional Entity entity = 17;
+    optional Role role = 18;
+    optional bool needToDisconnectDI = 19;
+    optional DigitalIdentity digitalIdentityToDisconnect = 20;
+
     //createEntityRequest
-    optional string firstName = 18;
-    optional string lastName = 19;
-    optional string entityCard = 20;
-    optional string personalNumber = 21;
-    optional ServiceType serviceType = 22;
-    repeated string phone = 23;
-    repeated string mobilePhone = 24;
-    optional string address = 25;
-    optional Sex sex = 26;
-    optional int64 birthdate = 27;
-    optional string generatedKartoffelId = 28;
-    optional EntityType entityType = 29;
+    optional EntityProperties entityProperties = 21;
+    optional Entity createdEntity = 22;
+
     //renameOGRequest
-    optional Group group = 30;
-    optional string newName = 31;
+    // optional OrganizationGroup organizationGroup = 11;
+    string newName = 23;
+
     //renameRoleRequest
-    // Role role and string newName
+    // optional Role role = 11;
+    string newJobTitle = 24;
+
+    //EditEntityRequest
+    // optional Entity entity = 11;
+    // optional Entity entityProperties = 12; 
+    
+    //DeleteOGRequest      
+    // optional OrganizationGroup organizationGroup = 11;
+
+    //DeleteRoleRequest
+    // optional Role role = 11;
+    
 }

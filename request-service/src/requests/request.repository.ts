@@ -24,9 +24,25 @@ export class RequestRepository {
     if (document._id) {
       document._id = document._id.toString();
     }
-    if (document.parent && document.parent.id) {
-      document.parent.id = document.parent.id.toString();
+    if (document.ogProperties && document.ogProperties.id) {
+      document.ogProperties.id = document.ogProperties.id.toString();
     }
+    if (document.createdOG && document.createdOG.id) {
+      document.createdOG.id = document.createdOG.id.toString();
+    }
+    if (document.organizationGroup && document.organizationGroup.id) {
+      document.organizationGroup.id = document.organizationGroup.id.toString();
+    }
+    if (document.entity && document.entity.id) {
+      document.entity.id = document.entity.id.toString();
+    }
+    if (document.createdEntity && document.createdEntity.id) {
+      document.createdEntity.id = document.createdEntity.id.toString();
+    }
+    if (document.entityProperties && document.entityProperties.id) {
+      document.entityProperties.id = document.entityProperties.id.toString();
+    }
+
     if (document.submittedBy) {
       document.submittedBy = document.submittedBy.toString();
     }
@@ -42,12 +58,6 @@ export class RequestRepository {
     if (document.securityDecision && document.securityDecision.approverId) {
       document.securityDecision.approverId =
         document.securityDecision.approverId.toString();
-    }
-    if (document.entity && document.entity.id) {
-      document.entity.id = document.entity.id.toString();
-    }
-    if (document.generatedKartoffelId) {
-      document.generatedKartoffelId = document.generatedKartoffelId.toString();
     }
     for (let key in document) {
       if (key.startsWith("_") && key !== "_id") {
