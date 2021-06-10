@@ -4,11 +4,10 @@ import { RequestType } from "../enums/requestType.enum";
 import { Source } from "../enums/source.enum";
 import { Decision } from "../enums/Decision.enum";
 import { Status } from "../enums/status.enum";
-import { Clearance } from "../enums/clearance.enum";
-import { RoleStatus } from "../enums/roleStatus.enum";
 import { ServiceType } from "../enums/serviceType.enum";
 import { Sex } from "../enums/sex.enum";
 import { EntityType } from "../enums/entityType.enum";
+import { Clearance } from "../enums/clearance.enum";
 const { Schema } = mongoose;
 
 export const GeneralRequestSchema = new Schema(
@@ -19,26 +18,32 @@ export const GeneralRequestSchema = new Schema(
     },
     submittedBy: mongoose.Schema.Types.ObjectId,
     commanderDecision: {
-      approverId: {
-        type: mongoose.Schema.Types.ObjectId,
-        default: null,
+      type: {
+        approverId: {
+          type: mongoose.Schema.Types.ObjectId,
+          default: null,
+        },
+        approverDecision: {
+          type: String,
+          enum: Decision,
+          defualt: Decision.UNKNOWN,
+        },
       },
-      approverDecision: {
-        type: String,
-        enum: Decision,
-        defualt: Decision.UNKNOWN,
-      },
+      default: null,
     },
     securityDecision: {
-      approverId: {
-        type: mongoose.Schema.Types.ObjectId,
-        default: null,
+      type: {
+        approverId: {
+          type: mongoose.Schema.Types.ObjectId,
+          default: null,
+        },
+        approverDecision: {
+          type: String,
+          enum: Decision,
+          defualt: Decision.UNKNOWN,
+        },
       },
-      approverDecision: {
-        type: String,
-        enum: Decision,
-        defualt: Decision.UNKNOWN,
-      },
+      default: null,
     },
     commanders: [mongoose.Schema.Types.ObjectId],
     createdAt: { type: Number, default: new Date().getTime() },
@@ -48,101 +53,216 @@ export const GeneralRequestSchema = new Schema(
       enum: Status,
       default: Status.SUBMITTED,
     },
+    source: {
+      type: String,
+      enum: Source,
+      default: Source.SOURCE_1,
+    },
     // createOGRequest
     ogProperties: {
-      name: String,
-      hierarchy: String,
-      parent: mongoose.Schema.Types.ObjectId,
+      type: {
+        id: String,
+        name: String,
+        hierarchy: String,
+        parent: {
+          id: String,
+          hierarchy: String,
+        },
+      },
+      default: null,
     },
     createdOG: {
-      id: mongoose.Schema.Types.ObjectId,
-      name: String,
-      hierarchy: String,
-      parent: mongoose.Schema.Types.ObjectId,
+      type: {
+        id: String,
+        name: String,
+        hierarchy: String,
+        parent: {
+          id: String,
+          hierarchy: String,
+        },
+      },
+      default: null,
     },
 
     // createRoleRequest
     roleProperties: {
-      jobTitle: String,
-      source: {
-        type: String,
-        enum: Source,
-        default: Source.SOURCE_1,
+      type: {
+        roleId: String,
+        jobTitle: String,
+        digitalIdentityUniqueId: String,
+        source: {
+          type: String,
+          enum: Source,
+          default: Source.SOURCE_1,
+        },
       },
+      default: null,
     },
-    organizationGroup: {
-      //also for renameOG
-      id: mongoose.Schema.Types.ObjectId,
-      hierarchy: String,
-      name: String,
-    },
+    // ogProperties,
     createdRole: {
-      jobTitle: String,
-      roleId: String,
-      source: {
-        type: String,
-        enum: Source,
-        default: Source.SOURCE_1,
+      type: {
+        roleId: String,
+        jobTitle: String,
+        digitalIdentityUniqueId: String,
+        source: {
+          type: String,
+          enum: Source,
+          default: Source.SOURCE_1,
+        },
       },
+      default: null,
     },
     createdDI: {
-      uniqueId: String,
+      type: {
+        uniqueId: String,
+      },
+      default: null,
     },
 
     // assignRoleToEntity
     entity: {
-      //also for editEntity
-      id: {
-        type: mongoose.Schema.Types.ObjectId,
+      type: {
+        //also for editEntity
+        id: {
+          type: mongoose.Schema.Types.ObjectId,
+        },
+        firstName: String,
+        lastName: String,
+        identityCard: String,
+        personalNumber: String,
+        serviceType: {
+          type: String,
+          enum: ServiceType,
+          default: ServiceType.CIVILIAN,
+        },
+        phone: [String],
+        mobilePhone: [String],
+        address: String,
+        sex: {
+          type: String,
+          enum: Sex,
+        },
+        birthdate: Number,
+        entityType: {
+          type: String,
+          enum: EntityType,
+        },
+        clearance: {
+          type: String,
+          enum: Clearance,
+        },
       },
+      default: null,
     },
     role: {
-      //also for renameRole
-      jobTitle: String,
-      roleId: {
-        type: String,
+      type: {
+        roleId: String,
+        jobTitle: String,
+        digitalIdentityUniqueId: String,
+        source: {
+          type: String,
+          enum: Source,
+          default: Source.SOURCE_1,
+        },
       },
-      digitalIdentityUniqueId: {
-        type: String,
-      },
+      default: null,
     },
     needToDisconnectDI: {
       type: Boolean,
       default: false,
     },
     digitalIdentityToDisconnect: {
-      uniqueId: {
-        type: String,
+      type: {
+        uniqueId: {
+          type: String,
+        },
       },
+      default: null,
     },
 
     // createEntity
     entityProperties: {
-      firstName: String,
-      lastName: String,
-      identityCard: String,
-      personalNumber: String,
-      serviceType: {
-        type: String,
-        enum: ServiceType,
+      type: {
+        //also for editEntity
+        id: {
+          type: mongoose.Schema.Types.ObjectId,
+        },
+        firstName: String,
+        lastName: String,
+        identityCard: String,
+        personalNumber: String,
+        serviceType: {
+          type: String,
+          enum: ServiceType,
+          default: ServiceType.CIVILIAN,
+        },
+        phone: [String],
+        mobilePhone: [String],
+        address: String,
+        sex: {
+          type: String,
+          enum: Sex,
+        },
+        birthdate: Number,
+        entityType: {
+          type: String,
+          enum: EntityType,
+        },
+        clearance: {
+          type: String,
+          enum: Clearance,
+        },
       },
-      phone: [String],
-      mobilePhone: [String],
-      address: [String],
-      sex: {
-        type: String,
-        enum: Sex,
-      },
-      birthdate: Number,
-      entityType: {
-        type: String,
-        enum: EntityType,
-      },
+      default: null,
     },
     createdEntity: {
-      id: {
-        type: mongoose.Schema.Types.ObjectId,
+      type: {
+        //also for editEntity
+        id: {
+          type: mongoose.Schema.Types.ObjectId,
+        },
+        firstName: String,
+        lastName: String,
+        identityCard: String,
+        personalNumber: String,
+        serviceType: {
+          type: String,
+          enum: ServiceType,
+          default: ServiceType.CIVILIAN,
+        },
+        phone: [String],
+        mobilePhone: [String],
+        address: String,
+        sex: {
+          type: String,
+          enum: Sex,
+        },
+        birthdate: Number,
+        entityType: {
+          type: String,
+          enum: EntityType,
+        },
+        clearance: {
+          type: String,
+          enum: Clearance,
+        },
       },
+      default: null,
+    },
+
+    organizationGroup: {
+      type: {
+        id: {
+          type: mongoose.Schema.Types.ObjectId,
+        },
+        name: String,
+        hierarchy: String,
+        parent: {
+          id: String,
+          hierarchy: String,
+        },
+      },
+      default: null,
     },
 
     // renameOGRequest

@@ -4,9 +4,9 @@ import { ServiceType } from "../../enums/serviceType.enum";
 import { Sex } from "../../enums/sex.enum";
 import { IEntity } from "../kartoffelTypes/entity.interface";
 import { IRequest } from "../request.interface";
-import { IEntityProperties } from "../kartoffelTypes/entityProperties.interface";
+import { IEntityMin } from "../kartoffelTypes/entityMin.interface";
 
 export interface ICreateEntityRequest extends IRequest {
-  entityProperties: IEntityProperties;
+  entityProperties: IEntityMin;
   createdEntity: IEntity;
 }

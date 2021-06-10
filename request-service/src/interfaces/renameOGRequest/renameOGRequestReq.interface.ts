@@ -1,7 +1,6 @@
-import { IGroup } from "../group.interface";
-import { IOrganizationGroup } from "../kartoffelTypes/organizationGroup.interface";
+import { IOrganizationGroupMin } from "../kartoffelTypes/organizationGroupMin.interface";
 import { IRequestReq } from "../requestReq.interface";
 export interface IRenameOGRequestReq extends IRequestReq {
   newName: string;
-  organizationGroup: IOrganizationGroup;
+  organizationGroup: IOrganizationGroupMin;
 }

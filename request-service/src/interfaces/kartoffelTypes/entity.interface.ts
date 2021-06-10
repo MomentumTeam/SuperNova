@@ -1,28 +1,14 @@
-import { Clearance } from "../../enums/clearance.enum";
-import { Sex } from "../../enums/sex.enum";
 import { IDigitalIdentity } from "./digitalIdentity.interface";
-export interface IEntity {
-  id: string;
+import { IEntityMin } from "./entityMin.interface";
+export interface IEntity extends IEntityMin {
   displayName: string;
-  directGroup: string;
+  irectGroup: string;
   hierarchy: string;
-  entityType: string;
-  identityCard: string;
-  personalNumber: string;
-  serviceType: string;
-  firstName: string;
-  lastName: string;
   akaUnit: string;
-  dischargeDate: string;
+  dischargeDate: number;
   rank: string;
   mail: string;
   jobTitle: string;
-  phone: string[];
-  mobilePhone: string[];
-  address: string;
-  clearance: Clearance;
-  sex: Sex;
-  birthday: number;
   createdAt: number;
   updatedAt: number;
   digitalIdentities: IDigitalIdentity[];

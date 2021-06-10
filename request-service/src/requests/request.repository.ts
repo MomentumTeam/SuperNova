@@ -16,50 +16,96 @@ import { RequestType } from "../enums/requestType.enum";
 import { PersonTypeInRequest } from "../enums/PersonTypeInRequest.enum";
 import { EntityType } from "../enums/entityType.enum";
 import { ServiceType } from "../enums/serviceType.enum";
-import { IRenameOGRequest } from "../interfaces/renameOGRequest/renameOGRequest.interface";
-import { IRenameOGRequestReq } from "../interfaces/renameOGRequest/renameOGRequestReq.interface";
 
 export class RequestRepository {
   private turnObjectIdsToStrings(document: any): void {
+    //_id
     if (document._id) {
       document._id = document._id.toString();
     }
-    if (document.ogProperties && document.ogProperties.id) {
-      document.ogProperties.id = document.ogProperties.id.toString();
-    }
-    if (document.createdOG && document.createdOG.id) {
-      document.createdOG.id = document.createdOG.id.toString();
-    }
-    if (document.organizationGroup && document.organizationGroup.id) {
-      document.organizationGroup.id = document.organizationGroup.id.toString();
-    }
-    if (document.entity && document.entity.id) {
-      document.entity.id = document.entity.id.toString();
-    }
-    if (document.createdEntity && document.createdEntity.id) {
-      document.createdEntity.id = document.createdEntity.id.toString();
-    }
-    if (document.entityProperties && document.entityProperties.id) {
-      document.entityProperties.id = document.entityProperties.id.toString();
-    }
 
+    //submittedBy
     if (document.submittedBy) {
       document.submittedBy = document.submittedBy.toString();
     }
+
+    //commanderDecision
+    if (document.commanderDecision && document.commanderDecision.approverId) {
+      document.commanderDecision.approverId =
+        document.commanderDecision.approverId.toString();
+    }
+
+    //securityDecision
+    if (document.securityDecision && document.securityDecision.approverId) {
+      document.securityDecision.approverId =
+        document.securityDecision.approverId.toString();
+    }
+
+    //commanders
     if (document.commanders) {
       document.commanders = document.commanders.map((commander: any) =>
         commander.toString()
       );
     }
-    if (document.commanderDecision && document.commanderDecision.approverId) {
-      document.commanderDecision.approverId =
-        document.commanderDecision.approverId.toString();
+
+    //ogProperties
+    if (document.ogProperties && document.ogProperties.id) {
+      document.ogProperties.id = document.ogProperties.id.toString();
     }
-    if (document.securityDecision && document.securityDecision.approverId) {
-      document.securityDecision.approverId =
-        document.securityDecision.approverId.toString();
+
+    if (
+      document.ogProperties &&
+      document.ogProperties.parent &&
+      document.ogProperties.parent.id
+    ) {
+      document.ogProperties.parent.id =
+        document.ogProperties.parent.id.toString();
     }
-    for (let key in document) {
+
+    //createdOG
+    if (document.createdOG && document.createdOG.id) {
+      document.createdOG.id = document.createdOG.id.toString();
+    }
+    if (
+      document.createdOG &&
+      document.createdOG.parent &&
+      document.createdOG.parent.id
+    ) {
+      document.createdOG.parent.id = document.createdOG.parent.id.toString();
+    }
+    //roleProperties - no need
+    //cratedRole - no need
+    //createdDI - no need
+
+    //entity
+    if (document.entity && document.entity.id) {
+      document.entity.id = document.entity.id.toString();
+    }
+    //role - no need
+    //needToDisconnectDI - no need
+    //digitalIdentityToDisconnect - no need
+
+    //entityProperties
+    if (document.entityProperties && document.entityProperties.id) {
+      document.entityProperties.id = document.entityProperties.id.toString();
+    }
+
+    //createdEntity
+    if (document.entityProperties && document.entityProperties.id) {
+      document.entityProperties.id = document.entityProperties.id.toString();
+    }
+
+    //organizationGroup
+
+    if (document.organizationGroup && document.organizationGroup.id) {
+      document.organizationGroup.id = document.organizationGroup.id.toString();
+    }
+
+    //newName and newRole - no need
+
+    let keys: any = Object.keys(document);
+
+    for (let key of keys) {
       if (key.startsWith("_") && key !== "_id") {
         delete document[key];
       }

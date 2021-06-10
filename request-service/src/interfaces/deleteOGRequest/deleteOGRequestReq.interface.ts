@@ -1,6 +1,6 @@
-import { IOrganizationGroup } from "../kartoffelTypes/organizationGroup.interface";
+import { IOrganizationGroupMin } from "../kartoffelTypes/organizationGroupMin.interface";
 import { IRequestReq } from "../requestReq.interface";
 
 export interface IDeleteOGRequestReq extends IRequestReq {
-  organizationGroup: IOrganizationGroup;
+  organizationGroup: IOrganizationGroupMin;
 }
