@@ -19,7 +19,26 @@ import { IDeleteOGRequest } from "../interfaces/deleteOGRequest/deleteOGRequest.
 import { IDeleteOGRequestReq } from "../interfaces/deleteOGRequest/deleteOGRequestReq.interface";
 import { IDeleteRoleRequest } from "../interfaces/deleteRoleRequest/deleteRoleRequest.interface.ts";
 import { IDeleteRoleRequestReq } from "../interfaces/deleteRoleRequest/deleteRoleRequestReq.interface";
+import { IRequest } from "../interfaces/request.interface";
 const requestManager: RequestManager = new RequestManager();
+
+export async function updateRequest(call: any, callback: any): Promise<void> {
+  try {
+    const updateRequestResponse: IRequest = await requestManager.updateRequest(
+      call.request
+    );
+    callback(null, updateRequestResponse);
+  } catch (error) {
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
 
 export async function createOGRequest(call: any, callback: any): Promise<void> {
   try {

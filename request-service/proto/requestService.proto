@@ -1,4 +1,5 @@
 syntax = "proto3";
+import "google/protobuf/any.proto";
 
 package RequestService;
 
@@ -19,6 +20,8 @@ service RequestService {
 
     rpc DeleteOGRequest(DeleteOGRequestReq) returns (DeleteOGRequest){}
     rpc DeleteRoleRequest(DeleteRoleRequestReq) returns (DeleteRoleRequest){}
+
+    rpc UpdateRequest(UpdateRequestReq) returns (GeneralRequest){}
 }
 
 //Enums
@@ -91,6 +94,11 @@ enum OGStatus{
 }
 
 //Reqs
+
+message UpdateRequestReq{
+    optional string id = 1;
+    optional GeneralRequest requestProperties = 2;
+}
 
 message OrganizationGroupMin{
     optional string id = 1;
@@ -209,7 +217,7 @@ message GetRequestsByPersonIdReq{
 }
 
 message GetRequestByIdReq{
-    string _id = 1;
+    string id = 1;
 }
 
 message ApproverDecision{
@@ -339,7 +347,7 @@ message DeleteRoleRequestReq{
 //Requests
 
 message BaseRequest{
-    string _id = 1;
+    string id = 1;
     string submittedBy = 2;
     optional ApproverDecision commanderDecision = 3;
     optional ApproverDecision securityDecision = 4;
@@ -352,7 +360,7 @@ message BaseRequest{
 }
 
 message DeleteRoleRequest{
-    string _id = 1;
+    string id = 1;
     string submittedBy = 2;
     optional ApproverDecision commanderDecision = 3;
     optional ApproverDecision securityDecision = 4;
@@ -367,7 +375,7 @@ message DeleteRoleRequest{
 }
 
 message DeleteOGRequest{
-    string _id = 1;
+    string id = 1;
     string submittedBy = 2;
     optional ApproverDecision commanderDecision = 3;
     optional ApproverDecision securityDecision = 4;
@@ -383,7 +391,7 @@ message DeleteOGRequest{
 }
 
 message EditEntityRequest{
-    string _id = 1;
+    string id = 1;
     string submittedBy = 2;
     optional ApproverDecision commanderDecision = 3;
     optional ApproverDecision securityDecision = 4;
@@ -398,7 +406,7 @@ message EditEntityRequest{
 }
 
 message RenameRoleRequest{
-    string _id = 1;
+    string id = 1;
     string submittedBy = 2;
     optional ApproverDecision commanderDecision = 3;
     optional ApproverDecision securityDecision = 4;
@@ -414,7 +422,7 @@ message RenameRoleRequest{
 }
 
 message RenameOGRequest{
-    string _id = 1;
+    string id = 1;
     string submittedBy = 2;
     optional ApproverDecision commanderDecision = 3;
     optional ApproverDecision securityDecision = 4;
@@ -430,7 +438,7 @@ message RenameOGRequest{
 }
 
 message CreateEntityRequest{
-    string _id = 1;
+    string id = 1;
     RequestType type = 2;
     string submittedBy = 3;
     ApproverDecision commanderDecision = 4;
@@ -446,7 +454,7 @@ message CreateEntityRequest{
 }
 
 message AssignRoleToEntityRequest{
-    string _id = 1;
+    string id = 1;
     string submittedBy = 2;
     optional ApproverDecision commanderDecision = 3;
     optional ApproverDecision securityDecision = 4;
@@ -464,7 +472,7 @@ message AssignRoleToEntityRequest{
 }
 
 message CreateOGRequest{
-    string _id = 1;
+    string id = 1;
     string submittedBy = 2;
     optional ApproverDecision commanderDecision = 3;
     optional ApproverDecision securityDecision = 4;
@@ -480,7 +488,7 @@ message CreateOGRequest{
 }
 
 message CreateRoleRequest{
-    string _id = 1;
+    string id = 1;
     string submittedBy = 2;
     optional ApproverDecision commanderDecision = 3;
     optional ApproverDecision securityDecision = 4;
@@ -503,16 +511,16 @@ message Group{
 }
 
 message GeneralRequest{
-    string _id = 1;
-    RequestType type = 2;
-    string submittedBy = 3;
-    ApproverDecision commanderDecision = 4;
-    ApproverDecision securityDecision = 5;
+    optional string id = 1;
+    optional RequestType type = 2;
+    optional string submittedBy = 3;
+    optional ApproverDecision commanderDecision = 4;
+    optional ApproverDecision securityDecision = 5;
     repeated string commanders = 6;
-    Source source = 7;
-    Status status = 8;
-    int64 createdAt = 9;
-    int64 updatedAt = 10; 
+    optional Source source = 7;
+    optional Status status = 8;
+    optional int64 createdAt = 9;
+    optional int64 updatedAt = 10; 
 
     //createOGRequest
     optional OrganizationGroupMin ogProperties = 11;
@@ -550,5 +558,8 @@ message GeneralRequest{
 
     //DeleteRoleRequest
     // optional RoleMin role = 11;
+
+    //UpdateRequest
+    optional GeneralRequest requestProperties = 25;
     
 }

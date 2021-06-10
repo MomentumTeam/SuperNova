@@ -21,11 +21,22 @@ import { IDeleteOGRequest } from "../interfaces/deleteOGRequest/deleteOGRequest.
 import { IDeleteOGRequestReq } from "../interfaces/deleteOGRequest/deleteOGRequestReq.interface";
 import { IDeleteRoleRequest } from "../interfaces/deleteRoleRequest/deleteRoleRequest.interface.ts";
 import { IDeleteRoleRequestReq } from "../interfaces/deleteRoleRequest/deleteRoleRequestReq.interface";
+import { IRequest } from "../interfaces/request.interface";
 
 export class RequestManager {
   private requestRepository: RequestRepository;
   constructor() {
     this.requestRepository = new RequestRepository();
+  }
+
+  async updateRequest(updateRequestReq: any): Promise<IRequest> {
+    try {
+      return (await this.requestRepository.updateRequest(
+        updateRequestReq
+      )) as IRequest;
+    } catch (error) {
+      throw error;
+    }
   }
 
   async editEntityRequest(
@@ -123,9 +134,6 @@ export class RequestManager {
     createRoleRequestReq: ICreateRoleRequestReq
   ): Promise<ICreateRoleRequest> {
     try {
-      // return await this.requestRepository.createRoleRequest(
-      //   createRoleRequestReq
-      // );
       return (await this.requestRepository.createRequest(
         createRoleRequestReq,
         RequestType.CREATE_ROLE

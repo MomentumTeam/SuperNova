@@ -5,7 +5,7 @@ import { Status } from "../enums/status.enum";
 import { EntityType } from "../enums/entityType.enum";
 
 export interface IRequest {
-  _id: string;
+  id: string;
   type: RequestType;
   source: Source;
   submittedBy: string;

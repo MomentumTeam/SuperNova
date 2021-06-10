@@ -1,7 +1,3 @@
-import * as C from "../config";
-import { logger } from "../logger";
-import * as mongoose from "mongoose";
-import { CreateOGRequest } from "../models/createOG.model";
 import { ICreateOGRequestReq } from "../interfaces/createOGRequest/createOGRequestReq.interface";
 import { IGetRequestByIdReq } from "../interfaces/getRequestById/getRequestByIdReq.interface";
 import { ICreateOGRequest } from "../interfaces/createOGRequest/createOGRequest.interface";
@@ -9,7 +5,6 @@ import { ICreateRoleRequestReq } from "../interfaces/createRoleRequest/createRol
 import { ICreateRoleRequest } from "../interfaces/createRoleRequest/createRoleRequest.interface";
 import { Request } from "../models/baseRequest.model";
 import { GeneralRequest } from "../models/generalRequest.model";
-import { CreateRoleRequest } from "../models/createRole.model";
 import { IGetRequestsByPersonIdReq } from "../interfaces/getRequestsByPersonId/getRequestsByPersonIdReq.interface";
 import { IRequest } from "../interfaces/request.interface";
 import { RequestType } from "../enums/requestType.enum";
@@ -22,6 +17,7 @@ export class RequestRepository {
     //_id
     if (document._id) {
       document._id = document._id.toString();
+      document.id = document._id;
     }
 
     //submittedBy
@@ -112,6 +108,24 @@ export class RequestRepository {
     }
   }
 
+  async updateRequest(updateRequestReq: any): Promise<IRequest> {
+    try {
+      const document: any = GeneralRequest.findOne({
+        _id: updateRequestReq.id,
+      });
+      for (let key in updateRequestReq.requestProperties) {
+        if (key !== "id" && !key.startsWith("_")) {
+          document[key] = updateRequestReq[key];
+        }
+      }
+      await document.save();
+      this.turnObjectIdsToStrings(document);
+      return document as IRequest;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async createRequest(
     createRequestReq: any,
     type: RequestType
@@ -137,39 +151,9 @@ export class RequestRepository {
     }
   }
 
-  async createHierarchyRequest(
-    createHierarchyRequestReq: ICreateOGRequestReq
-  ): Promise<ICreateOGRequest> {
-    try {
-      const createHierarchyRequest = new CreateOGRequest(
-        createHierarchyRequestReq
-      );
-      const createdCreateHierarchyRequest = await createHierarchyRequest.save();
-      const document = createdCreateHierarchyRequest.toObject();
-      this.turnObjectIdsToStrings(document);
-      return document as ICreateOGRequest;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async createRoleRequest(
-    createRoleRequestReq: ICreateRoleRequestReq
-  ): Promise<ICreateRoleRequest> {
-    try {
-      const createRoleRequest = new CreateRoleRequest(createRoleRequestReq);
-      const createdCreateRoleRequest = await createRoleRequest.save();
-      const document = createdCreateRoleRequest.toObject();
-      this.turnObjectIdsToStrings(document);
-      return document as ICreateRoleRequest;
-    } catch (error) {
-      throw error;
-    }
-  }
-
   async getRequestById(getRequestByIdReq: IGetRequestByIdReq) {
     try {
-      const request = await Request.findOne(getRequestByIdReq);
+      const request = await Request.findOne({ _id: getRequestByIdReq.id });
       if (request) {
         const document = request.toObject();
         this.turnObjectIdsToStrings(document);

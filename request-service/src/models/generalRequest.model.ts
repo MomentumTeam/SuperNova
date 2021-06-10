@@ -146,6 +146,7 @@ export const GeneralRequestSchema = new Schema(
         entityType: {
           type: String,
           enum: EntityType,
+          default: EntityType.CIVILIAN,
         },
         clearance: {
           type: String,
@@ -207,6 +208,7 @@ export const GeneralRequestSchema = new Schema(
         entityType: {
           type: String,
           enum: EntityType,
+          default: EntityType.CIVILIAN,
         },
         clearance: {
           type: String,
@@ -241,6 +243,7 @@ export const GeneralRequestSchema = new Schema(
         entityType: {
           type: String,
           enum: EntityType,
+          default: EntityType.CIVILIAN,
         },
         clearance: {
           type: String,

@@ -16,6 +16,7 @@ import {
   deleteOGRequest,
   editEntityRequest,
   deleteRoleRequest,
+  updateRequest,
 } from "./requests/request.controller";
 
 const PROTO_PATH = __dirname.includes("dist")
@@ -69,6 +70,7 @@ export class Server {
         EditEntityRequest: editEntityRequest,
         DeleteOGRequest: deleteOGRequest,
         DeleteRoleRequest: deleteRoleRequest,
+        UpdateRequest: updateRequest,
       });
       logger.log({
         level: "info",
