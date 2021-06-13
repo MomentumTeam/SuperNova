@@ -1,8 +1,4 @@
-import { ICreateOGRequestReq } from "../interfaces/createOGRequest/createOGRequestReq.interface";
 import { IGetRequestByIdReq } from "../interfaces/getRequestById/getRequestByIdReq.interface";
-import { ICreateOGRequest } from "../interfaces/createOGRequest/createOGRequest.interface";
-import { ICreateRoleRequestReq } from "../interfaces/createRoleRequest/createRoleRequestReq.interface";
-import { ICreateRoleRequest } from "../interfaces/createRoleRequest/createRoleRequest.interface";
 import { Request } from "../models/baseRequest.model";
 import { GeneralRequest } from "../models/generalRequest.model";
 import { IGetRequestsByPersonIdReq } from "../interfaces/getRequestsByPersonId/getRequestsByPersonIdReq.interface";
@@ -11,6 +7,11 @@ import { RequestType } from "../enums/requestType.enum";
 import { PersonTypeInRequest } from "../enums/PersonTypeInRequest.enum";
 import { EntityType } from "../enums/entityType.enum";
 import { ServiceType } from "../enums/serviceType.enum";
+import { IDeleteRequestReq } from "../interfaces/deleteRequest/deleteRequestReq.interface";
+import {
+  DeleteRequestRes,
+  IDeleteRequestRes,
+} from "../interfaces/deleteRequest/deleteRequestRes.interface";
 
 export class RequestRepository {
   private turnObjectIdsToStrings(document: any): void {
@@ -108,19 +109,33 @@ export class RequestRepository {
     }
   }
 
+  async deleteRequest(
+    deleteRequestReq: IDeleteRequestReq
+  ): Promise<IDeleteRequestRes> {
+    try {
+      await GeneralRequest.deleteOne({ _id: deleteRequestReq.id });
+      return new DeleteRequestRes(true);
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async updateRequest(updateRequestReq: any): Promise<IRequest> {
     try {
-      const document: any = GeneralRequest.findOne({
-        _id: updateRequestReq.id,
-      });
-      for (let key in updateRequestReq.requestProperties) {
-        if (key !== "id" && !key.startsWith("_")) {
-          document[key] = updateRequestReq[key];
-        }
+      const document: any = await GeneralRequest.findOneAndUpdate(
+        { _id: updateRequestReq.id },
+        { $set: updateRequestReq.requestProperties },
+        { new: true }
+      );
+      if (document) {
+        const documentObj = document.toObject();
+        this.turnObjectIdsToStrings(documentObj);
+        return documentObj as IRequest;
+      } else {
+        throw new Error(
+          `A request with {_id: ${updateRequestReq.id}} was not found!`
+        );
       }
-      await document.save();
-      this.turnObjectIdsToStrings(document);
-      return document as IRequest;
     } catch (error) {
       throw error;
     }
@@ -159,7 +174,9 @@ export class RequestRepository {
         this.turnObjectIdsToStrings(document);
         return document;
       } else {
-        return null;
+        throw new Error(
+          `A request with {_id: ${getRequestByIdReq.id}} was not found!`
+        );
       }
     } catch (error) {
       throw error;

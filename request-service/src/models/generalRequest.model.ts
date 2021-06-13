@@ -296,6 +296,14 @@ GeneralRequestSchema.pre<any>("save", function (next) {
   return next();
 });
 
+GeneralRequestSchema.pre<any>("findOneAndUpdate", function (next) {
+  const func: any = (object: any) => {
+    object.updatedAt = new Date().getTime();
+  };
+  func(this._update.$set);
+  return next();
+});
+
 export const GeneralRequest = connection.model(
   "GeneralRequest",
   GeneralRequestSchema,

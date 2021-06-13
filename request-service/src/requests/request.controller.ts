@@ -20,6 +20,7 @@ import { IDeleteOGRequestReq } from "../interfaces/deleteOGRequest/deleteOGReque
 import { IDeleteRoleRequest } from "../interfaces/deleteRoleRequest/deleteRoleRequest.interface.ts";
 import { IDeleteRoleRequestReq } from "../interfaces/deleteRoleRequest/deleteRoleRequestReq.interface";
 import { IRequest } from "../interfaces/request.interface";
+import { IDeleteRequestRes } from "../interfaces/deleteRequest/deleteRequestRes.interface";
 const requestManager: RequestManager = new RequestManager();
 
 export async function updateRequest(call: any, callback: any): Promise<void> {
@@ -28,6 +29,23 @@ export async function updateRequest(call: any, callback: any): Promise<void> {
       call.request
     );
     callback(null, updateRequestResponse);
+  } catch (error) {
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function deleteRequest(call: any, callback: any): Promise<void> {
+  try {
+    const deleteRequestResponse: IDeleteRequestRes =
+      await requestManager.deleteRequest(call.request);
+    callback(null, deleteRequestResponse);
   } catch (error) {
     callback(
       {

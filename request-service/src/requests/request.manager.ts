@@ -22,6 +22,8 @@ import { IDeleteOGRequestReq } from "../interfaces/deleteOGRequest/deleteOGReque
 import { IDeleteRoleRequest } from "../interfaces/deleteRoleRequest/deleteRoleRequest.interface.ts";
 import { IDeleteRoleRequestReq } from "../interfaces/deleteRoleRequest/deleteRoleRequestReq.interface";
 import { IRequest } from "../interfaces/request.interface";
+import { IDeleteRequestReq } from "../interfaces/deleteRequest/deleteRequestReq.interface";
+import { IDeleteRequestRes } from "../interfaces/deleteRequest/deleteRequestRes.interface";
 
 export class RequestManager {
   private requestRepository: RequestRepository;
@@ -34,6 +36,18 @@ export class RequestManager {
       return (await this.requestRepository.updateRequest(
         updateRequestReq
       )) as IRequest;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteRequest(
+    deleteRequestReq: IDeleteRequestReq
+  ): Promise<IDeleteRequestRes> {
+    try {
+      return (await this.requestRepository.deleteRequest(
+        deleteRequestReq
+      )) as IDeleteRequestRes;
     } catch (error) {
       throw error;
     }

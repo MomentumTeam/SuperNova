@@ -2,7 +2,6 @@ import { ApproverDecision } from "../interfaces/approverDecision.interface";
 import { Source } from "../enums/source.enum";
 import { RequestType } from "../enums/requestType.enum";
 import { Status } from "../enums/status.enum";
-import { EntityType } from "../enums/entityType.enum";
 
 export interface IRequest {
   id: string;
