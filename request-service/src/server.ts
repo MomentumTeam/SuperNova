@@ -18,6 +18,7 @@ import {
   deleteRoleRequest,
   updateRequest,
   deleteRequest,
+  getAllRequests,
 } from "./requests/request.controller";
 
 const PROTO_PATH = __dirname.includes("dist")
@@ -73,6 +74,7 @@ export class Server {
         DeleteRoleRequest: deleteRoleRequest,
         UpdateRequest: updateRequest,
         DeleteRequest: deleteRequest,
+        GetAllRequests: getAllRequests,
       });
       logger.log({
         level: "info",

@@ -12,6 +12,7 @@ import {
   DeleteRequestRes,
   IDeleteRequestRes,
 } from "../interfaces/deleteRequest/deleteRequestRes.interface";
+import { IGetAllRequestsReq } from "../interfaces/getAllRequests/getAllRequestsReq.interface";
 
 export class RequestRepository {
   private turnObjectIdsToStrings(document: any): void {
@@ -107,6 +108,16 @@ export class RequestRepository {
         delete document[key];
       }
     }
+
+    if (document.ogProperties) {
+      keys = Object.keys(document.ogProperties);
+
+      for (let key of keys) {
+        if (key.startsWith("_") && key !== "_id") {
+          delete document["ogProperties"][key];
+        }
+      }
+    }
   }
 
   async deleteRequest(
@@ -166,6 +177,36 @@ export class RequestRepository {
     }
   }
 
+  async getAllRequests(getAllRequestsReq: IGetAllRequestsReq) {
+    try {
+      const totalCount = await Request.count({});
+      const requests: any = await Request.find(
+        {},
+        {},
+        {
+          skip: getAllRequestsReq.from - 1,
+          limit: getAllRequestsReq.to - getAllRequestsReq.from + 1,
+        }
+      ).sort([["updatedAt", -1]]);
+      if (requests) {
+        let documents: any = [];
+        for (let i = 0; i < requests.length; i++) {
+          const requestObj: any = requests[i].toObject();
+          this.turnObjectIdsToStrings(requestObj);
+          documents.push(requestObj);
+        }
+        return {
+          requests: documents,
+          totalCount: totalCount,
+        };
+      } else {
+        return null;
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async getRequestById(getRequestByIdReq: IGetRequestByIdReq) {
     try {
       const request = await Request.findOne({ _id: getRequestByIdReq.id });
@@ -205,7 +246,7 @@ export class RequestRepository {
           limit:
             getRequestsByPersonIdReq.to - getRequestsByPersonIdReq.from + 1,
         }
-      );
+      ).sort([["updatedAt", -1]]);
       if (requests) {
         let documents: any = [];
         for (let i = 0; i < requests.length; i++) {

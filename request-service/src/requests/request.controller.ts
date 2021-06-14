@@ -21,6 +21,10 @@ import { IDeleteRoleRequest } from "../interfaces/deleteRoleRequest/deleteRoleRe
 import { IDeleteRoleRequestReq } from "../interfaces/deleteRoleRequest/deleteRoleRequestReq.interface";
 import { IRequest } from "../interfaces/request.interface";
 import { IDeleteRequestRes } from "../interfaces/deleteRequest/deleteRequestRes.interface";
+import { Source } from "../enums/source.enum";
+import { RequestType } from "../enums/requestType.enum";
+import { Decision } from "../enums/Decision.enum";
+import { Status } from "../enums/status.enum";
 const requestManager: RequestManager = new RequestManager();
 
 export async function updateRequest(call: any, callback: any): Promise<void> {
@@ -229,6 +233,22 @@ export async function createRoleRequest(
         call.request as ICreateRoleRequestReq
       );
     callback(null, createRoleResponse);
+  } catch (error) {
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function getAllRequests(call: any, callback: any): Promise<void> {
+  try {
+    const requestsResponse = await requestManager.getAllRequests(call.request);
+    callback(null, requestsResponse);
   } catch (error) {
     callback(
       {

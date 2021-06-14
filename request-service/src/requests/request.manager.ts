@@ -24,6 +24,7 @@ import { IDeleteRoleRequestReq } from "../interfaces/deleteRoleRequest/deleteRol
 import { IRequest } from "../interfaces/request.interface";
 import { IDeleteRequestReq } from "../interfaces/deleteRequest/deleteRequestReq.interface";
 import { IDeleteRequestRes } from "../interfaces/deleteRequest/deleteRequestRes.interface";
+import { IGetAllRequestsReq } from "../interfaces/getAllRequests/getAllRequestsReq.interface";
 
 export class RequestManager {
   private requestRepository: RequestRepository;
@@ -152,6 +153,14 @@ export class RequestManager {
         createRoleRequestReq,
         RequestType.CREATE_ROLE
       )) as ICreateRoleRequest;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getAllRequests(getAllRequestsReq: IGetAllRequestsReq) {
+    try {
+      return await this.requestRepository.getAllRequests(getAllRequestsReq);
     } catch (error) {
       throw error;
     }
