@@ -43,11 +43,33 @@ import {
 } from "../interfaces/kartoffelTypes/successMessage.interface";
 import { ISearchEntitiesByFullNameRequest } from "../interfaces/searchEntitiesByFullName/searchEntitiesByFullNameRequest.interface";
 import { ISearchOGRequest } from "../interfaces/searchOG/searchOGRequest.interface";
+import { SpikeService } from "../spike/spikeService";
+import axios, { AxiosInstance } from "axios";
+import https from "https";
+import * as C from "../config";
+import * as KartoffelMock from "../mock/kartoffel.mock";
 
 export class KartoffelRepository {
+  private spikeService: SpikeService;
+  private axiosKartoffel: AxiosInstance;
+
+  constructor() {
+    this.spikeService = new SpikeService();
+    this.axiosKartoffel = axios.create();
+    this.axiosKartoffel.defaults.httpsAgent = new https.Agent({
+      rejectUnauthorized: false,
+    });
+    this.axiosKartoffel.interceptors.request.use(async (config) => {
+      config.headers.Authorization = await this.spikeService.getSpikeToken();
+      return config;
+    });
+  }
   async searchOG(searchOGRequest: ISearchOGRequest): Promise<IOGArray> {
     try {
-      return new OGArray([]);
+      if (C.devMode) {
+        return new OGArray([KartoffelMock.organizationGroup]);
+      } else {
+      }
     } catch (error) {
       throw error;
     }
@@ -56,19 +78,10 @@ export class KartoffelRepository {
     createOGRequest: ICreateOGRequest
   ): Promise<IOrganizationGroup> {
     try {
-      return new OrganizationGroup(
-        "123456",
-        "צוות מומנטום",
-        "oneTree",
-        ["122as1da25sd1a5sd"],
-        "מערך ספיר/ענף יסודות/מדור קריפטון/צוות מומנטום",
-        "active",
-        true,
-        213513615,
-        6161165114,
-        [],
-        []
-      );
+      if (C.devMode) {
+        return KartoffelMock.organizationGroup;
+      } else {
+      }
     } catch (error) {
       throw error;
     }
@@ -76,17 +89,10 @@ export class KartoffelRepository {
 
   async createDI(createDIRequest: ICreateDIRequest): Promise<IDigitalIdentity> {
     try {
-      return new DigitalIdentity(
-        "domainUser",
-        "oneTree",
-        "T14541@gmail.com",
-        "T14541@gmail.com",
-        "41a654156b415f641d",
-        45415415,
-        14541541,
-        true,
-        null
-      );
+      if (C.devMode) {
+        return KartoffelMock.digitalIdentity;
+      } else {
+      }
     } catch (error) {
       throw error;
     }
@@ -94,17 +100,10 @@ export class KartoffelRepository {
 
   async createRole(createRoleRequest: ICreateRoleRequest): Promise<IRole> {
     try {
-      return new Role(
-        "T14541541@gmail.com",
-        "עתודאי",
-        "T14541541@gmail.com",
-        "561651abf141561",
-        "מערך ספיר/ענף יסודות/מדור קריפטון/צוות מומנטום",
-        [],
-        "oneTree",
-        15413212,
-        15641141
-      );
+      if (C.devMode) {
+        return KartoffelMock.role;
+      } else {
+      }
     } catch (error) {
       throw error;
     }
@@ -114,7 +113,10 @@ export class KartoffelRepository {
     connectRoleAndDIRequest: IConnectRoleAndDIRequest
   ): Promise<ISuccessMessage> {
     try {
-      return new SuccessMessage(true);
+      if (C.devMode) {
+        return new SuccessMessage(true);
+      } else {
+      }
     } catch (error) {
       throw error;
     }
@@ -124,7 +126,10 @@ export class KartoffelRepository {
     searchEntitiesByFullNameRequest: ISearchEntitiesByFullNameRequest
   ): Promise<IEntityArray> {
     try {
-      return new EntityArray([]);
+      if (C.devMode) {
+        return new EntityArray([KartoffelMock.entity]);
+      } else {
+      }
     } catch (error) {
       throw error;
     }
@@ -134,32 +139,10 @@ export class KartoffelRepository {
     getEntityByIdNumberRequest: IGetEntityByIdNumberRequest
   ): Promise<IEntity> {
     try {
-      return new Entity(
-        "5745457",
-        "אהלן/מה/העניינים",
-        "11541121a1213bf321",
-        "אהלן/מה/העניינים",
-        "soldier",
-        "12313151",
-        "25615614",
-        "מילואים",
-        "ברק",
-        "שטינדל",
-        "ספיר",
-        1451454,
-        "קאב",
-        "T45151@gmail.com",
-        "מתכנת",
-        ["0521234567"],
-        ["02821554"],
-        "הכרמל 323",
-        "2",
-        "זכר",
-        1454121,
-        15132121,
-        125412541,
-        []
-      );
+      if (C.devMode) {
+        return KartoffelMock.entity;
+      } else {
+      }
     } catch (error) {
       throw error;
     }
@@ -169,17 +152,10 @@ export class KartoffelRepository {
     getRoleByRoleIdRequest: IGetRoleByRoleIdRequest
   ): Promise<IRole> {
     try {
-      return new Role(
-        "T14541541@gmail.com",
-        "עתודאי",
-        "T14541541@gmail.com",
-        "561651abf141561",
-        "מערך ספיר/ענף יסודות/מדור קריפטון/צוות מומנטום",
-        [],
-        "oneTree",
-        15413212,
-        15641141
-      );
+      if (C.devMode) {
+        return KartoffelMock.role;
+      } else {
+      }
     } catch (error) {
       throw error;
     }
@@ -189,19 +165,10 @@ export class KartoffelRepository {
     getRolesUnderOGRequest: IGetRolesUnderOGRequest
   ): Promise<IRoleArray> {
     try {
-      return new RoleArray([
-        new Role(
-          "T14541541@gmail.com",
-          "עתודאי",
-          "T14541541@gmail.com",
-          "561651abf141561",
-          "מערך ספיר/ענף יסודות/מדור קריפטון/צוות מומנטום",
-          [],
-          "oneTree",
-          15413212,
-          15641141
-        ),
-      ]);
+      if (C.devMode) {
+        return new RoleArray([KartoffelMock.role]);
+      } else {
+      }
     } catch (error) {
       throw error;
     }
@@ -211,7 +178,10 @@ export class KartoffelRepository {
     connectEntityAndDIRequest: IConnectEntityAndDIRequest
   ): Promise<ISuccessMessage> {
     try {
-      return new SuccessMessage(true);
+      if (C.devMode) {
+        return new SuccessMessage(true);
+      } else {
+      }
     } catch (error) {
       throw error;
     }
@@ -221,32 +191,10 @@ export class KartoffelRepository {
     createEntityRequest: ICreateEntityRequest
   ): Promise<IEntity> {
     try {
-      return new Entity(
-        "5745457",
-        "אהלן/מה/העניינים",
-        "11541121a1213bf321",
-        "אהלן/מה/העניינים",
-        "soldier",
-        "12313151",
-        "25615614",
-        "מילואים",
-        "ברק",
-        "שטינדל",
-        "ספיר",
-        1451454,
-        "קאב",
-        "T45151@gmail.com",
-        "מתכנת",
-        ["0521234567"],
-        ["02821554"],
-        "הכרמל 323",
-        "2",
-        "זכר",
-        1454121,
-        15132121,
-        125412541,
-        []
-      );
+      if (C.devMode) {
+        return KartoffelMock.entity;
+      } else {
+      }
     } catch (error) {
       throw error;
     }
@@ -256,32 +204,10 @@ export class KartoffelRepository {
     getEntityByRoleIdRequest: IGetEntityByRoleIdRequest
   ): Promise<IEntity> {
     try {
-      return new Entity(
-        "5745457",
-        "אהלן/מה/העניינים",
-        "11541121a1213bf321",
-        "אהלן/מה/העניינים",
-        "soldier",
-        "12313151",
-        "25615614",
-        "מילואים",
-        "ברק",
-        "שטינדל",
-        "ספיר",
-        1451454,
-        "קאב",
-        "T45151@gmail.com",
-        "מתכנת",
-        ["0521234567"],
-        ["02821554"],
-        "הכרמל 323",
-        "2",
-        "זכר",
-        1454121,
-        15132121,
-        125412541,
-        []
-      );
+      if (C.devMode) {
+        return KartoffelMock.entity;
+      } else {
+      }
     } catch (error) {
       throw error;
     }
@@ -291,7 +217,10 @@ export class KartoffelRepository {
     disconnectDIFromEntityRequest: IDisconnectDIFromEntityRequest
   ): Promise<ISuccessMessage> {
     try {
-      return new SuccessMessage(true);
+      if (C.devMode) {
+        return new SuccessMessage(true);
+      } else {
+      }
     } catch (error) {
       throw error;
     }
@@ -301,32 +230,10 @@ export class KartoffelRepository {
     getEntityByMongoIdRequest: IGetEntityByMongoIdRequest
   ): Promise<IEntity> {
     try {
-      return new Entity(
-        "5745457",
-        "אהלן/מה/העניינים",
-        "11541121a1213bf321",
-        "אהלן/מה/העניינים",
-        "soldier",
-        "12313151",
-        "25615614",
-        "מילואים",
-        "ברק",
-        "שטינדל",
-        "ספיר",
-        1451454,
-        "קאב",
-        "T45151@gmail.com",
-        "מתכנת",
-        ["0521234567"],
-        ["02821554"],
-        "הכרמל 323",
-        "2",
-        "זכר",
-        1454121,
-        15132121,
-        125412541,
-        []
-      );
+      if (C.devMode) {
+        return KartoffelMock.entity;
+      } else {
+      }
     } catch (error) {
       throw error;
     }
@@ -334,7 +241,10 @@ export class KartoffelRepository {
 
   async deleteOG(deleteOGRequest: IDeleteOGRequest): Promise<ISuccessMessage> {
     try {
-      return new SuccessMessage(true);
+      if (C.devMode) {
+        return new SuccessMessage(true);
+      } else {
+      }
     } catch (error) {
       throw error;
     }
@@ -344,21 +254,10 @@ export class KartoffelRepository {
     getChildrenOfOGRequest: IGetChildrenOfOGRequest
   ): Promise<IOGArray> {
     try {
-      return new OGArray([
-        new OrganizationGroup(
-          "123456",
-          "צוות מומנטום",
-          "oneTree",
-          ["122as1da25sd1a5sd"],
-          "מערך ספיר/ענף יסודות/מדור קריפטון/צוות מומנטום",
-          "active",
-          true,
-          213513615,
-          6161165114,
-          [],
-          []
-        ),
-      ]);
+      if (C.devMode) {
+        return new OGArray([KartoffelMock.organizationGroup]);
+      } else {
+      }
     } catch (error) {
       throw error;
     }
@@ -368,7 +267,10 @@ export class KartoffelRepository {
     deleteRoleRequest: IDeleteRoleRequest
   ): Promise<ISuccessMessage> {
     try {
-      return new SuccessMessage(true);
+      if (C.devMode) {
+        return new SuccessMessage(true);
+      } else {
+      }
     } catch (error) {
       throw error;
     }
@@ -376,7 +278,10 @@ export class KartoffelRepository {
 
   async deleteDI(deleteDIRequest: IDeleteDIRequest): Promise<ISuccessMessage> {
     try {
-      return new SuccessMessage(true);
+      if (C.devMode) {
+        return new SuccessMessage(true);
+      } else {
+      }
     } catch (error) {
       throw error;
     }
@@ -386,7 +291,10 @@ export class KartoffelRepository {
     getEntitiesUnderOGRequest: IGetEntitiesUnderOGRequest
   ): Promise<IEntityArray> {
     try {
-      return new EntityArray([]);
+      if (C.devMode) {
+        return new EntityArray([KartoffelMock.entity]);
+      } else {
+      }
     } catch (error) {
       throw error;
     }

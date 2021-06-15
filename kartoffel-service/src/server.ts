@@ -24,7 +24,6 @@ import {
   searchEntitiesByFullName,
   searchOG,
 } from "./kartoffel/kartoffel.controller";
-import { createLogger } from "winston";
 
 const PROTO_PATH = __dirname.includes("dist")
   ? path.join(__dirname, "../../proto/kartoffelService.proto")

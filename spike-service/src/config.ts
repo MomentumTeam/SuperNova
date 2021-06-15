@@ -15,7 +15,7 @@ export const selfAudience = process.env.AUDIENCE || "kartoffel";
 export const grantTypeDef = process.env.GRANT_TYPE || "client_credentials";
 
 export const host = process.env.SS_HOST || "0.0.0.0";
-export const port = process.env.SS_PROT || "8080";
+export const port = process.env.SS_PORT || "8080";
 
 export const spikeOptions = {
   redisHost: redisHost,
