@@ -3,10 +3,32 @@ import * as grpc from "@grpc/grpc-js";
 import * as protoLoader from "@grpc/proto-loader";
 import * as C from "./config";
 import { logger } from "./logger";
+import {
+  connectEntityAndDI,
+  connectRoleAndDI,
+  createDI,
+  createEntity,
+  createOG,
+  createRole,
+  deleteDI,
+  deleteOG,
+  deleteRole,
+  disconnectDIFromEntity,
+  getChildrenOfOG,
+  getEntitiesUnderOG,
+  getEntityByIdNumber,
+  getEntityByMongoId,
+  getEntityByRoleId,
+  getRoleByRoleId,
+  getRolesUnderOG,
+  searchEntitiesByFullName,
+  searchOG,
+} from "./kartoffel/kartoffel.controller";
+import { createLogger } from "winston";
 
 const PROTO_PATH = __dirname.includes("dist")
-  ? path.join(__dirname, "../../proto/spikeService.proto")
-  : path.join(__dirname, "../proto/spikeService.proto");
+  ? path.join(__dirname, "../../proto/kartoffelService.proto")
+  : path.join(__dirname, "../proto/kartoffelService.proto");
 
 export class Server {
   private server: grpc.Server;
@@ -27,8 +49,8 @@ export class Server {
         });
       const protoDescriptor: grpc.GrpcObject =
         grpc.loadPackageDefinition(packageDefinition);
-      const spikeServiceDescriptor: any = protoDescriptor.Spike;
-      return spikeServiceDescriptor;
+      const kartoffelServiceDescriptor: any = protoDescriptor.Kartoffel;
+      return kartoffelServiceDescriptor;
     } catch (error) {
       throw error;
     }
@@ -36,13 +58,33 @@ export class Server {
 
   initServer() {
     try {
-      const spikeServiceDescriptor: any = this.getProtoDescriptor();
+      const kartoffelServiceDescriptor: any = this.getProtoDescriptor();
       logger.log({
         level: "info",
         message: `Proto was loaded successfully from file: ${PROTO_PATH}`,
         label: "initServer",
       });
-      this.server.addService(spikeServiceDescriptor.Spike.service, {});
+      this.server.addService(kartoffelServiceDescriptor.Kartoffel.service, {
+        SearchOG: searchOG,
+        CreateOG: createOG,
+        CreateDI: createDI,
+        CreateRole: createRole,
+        ConnectRoleAndDI: connectRoleAndDI,
+        SearchEntitiesByFullName: searchEntitiesByFullName,
+        GetEntityByIdNumber: getEntityByIdNumber,
+        GetRoleByRoleId: getRoleByRoleId,
+        GetRolesUnderOG: getRolesUnderOG,
+        ConnectEntityAndDI: connectEntityAndDI,
+        CreateEntity: createEntity,
+        GetEntityByRoleId: getEntityByRoleId,
+        DisconnectDIFromEntity: disconnectDIFromEntity,
+        GetEntityByMongoId: getEntityByMongoId,
+        DeleteOG: deleteOG,
+        GetChildrenOfOG: getChildrenOfOG,
+        DeleteRole: deleteRole,
+        DeleteDI: deleteDI,
+        GetEntitiesUnderOG: getEntitiesUnderOG,
+      });
       logger.log({
         level: "info",
         message: `Grpc services were successfully added to the server`,

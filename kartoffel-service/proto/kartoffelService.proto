@@ -30,7 +30,7 @@ message SearchOGRequest{
 }
 
 message OGArray{
-    repeated OrganizationGroup ogArray = 1;
+    repeated OrganizationGroup groups = 1;
 }
 
 // CreateOG
