@@ -106,10 +106,11 @@ message CreateEntityRequest{
     string serviceType = 5;
     repeated string phone = 6;
     repeated string mobilePhone = 7;
-    string clearance = 8;
-    string sex = 9;
-    int64 birthdate = 10;
-    string entityType = 11;
+    string address = 8;
+    string clearance = 9;
+    string sex = 10;
+    int64 birthdate = 11;
+    string entityType = 12;
 }
 
 // GetEntityByRoleId
@@ -154,14 +155,10 @@ message GetEntitiesUnderOGRequest{
     bool direct = 2;
 }
 
-
-
 //SuccessMessage
 message SuccessMessage{
     bool success = 1;
 }
-
-
 
 // Kartoffel enums
 enum Source{

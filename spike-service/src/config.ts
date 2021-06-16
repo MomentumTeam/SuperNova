@@ -1,18 +1,18 @@
-export const clientId = process.env.SPIKE_CLIENT_ID || "enter_client_id";
+export const clientId = process.env.SS_SPIKE_CLIENT_ID || "enter_client_id";
 export const clientSecret =
-  process.env.SPIKE_CLIENT_SECRET || "enter_client_secret";
-export const redisHost = process.env.REDIS_URL || "redis://127.0.0.1:6379";
+  process.env.SS_SPIKE_CLIENT_SECRET || "enter_client_secret";
+export const redisHost = process.env.SS_REDIS_URL || "redis://127.0.0.1:6379";
 export const spikeURL =
-  process.env.SPIKE_TOKEN_URL ||
-  "https://spike.westeurope.cloudapp.azure.com:1337/oauth2/token";
+  process.env.SS_SPIKE_TOKEN_URL ||
+  "https://ospike.northeurope.cloudapp.azure.com/oauth2/token";
 export const spikePubKeyPath =
-  process.env.SPIKE_PUBKEY_PATH ||
-  "https://spike.westeurope.cloudapp.azure.com:1337/.well-known/publickey.pem";
+  process.env.SS_SPIKE_PUBKEY_PATH ||
+  "https://ospike.northeurope.cloudapp.azure.com/.well-known/publickey.pem";
 export const localSpikePublicKeyFullPath =
-  process.env.SPIKE_PUBLIC_KEY_FULL_PATH ||
+  process.env.SS_SPIKE_PUBLIC_KEY_FULL_PATH ||
   "/home/barak/Desktop/SuperNova/spike-service/utils/publickey.pem";
-export const selfAudience = process.env.AUDIENCE || "kartoffel";
-export const grantTypeDef = process.env.GRANT_TYPE || "client_credentials";
+export const selfAudience = process.env.SS_AUDIENCE || "kartoffel";
+export const grantTypeDef = process.env.SS_GRANT_TYPE || "client_credentials";
 
 export const host = process.env.SS_HOST || "0.0.0.0";
 export const port = process.env.SS_PORT || "8080";

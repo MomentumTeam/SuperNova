@@ -6,6 +6,7 @@ export interface ICreateEntityRequest {
   serviceType: string;
   phone: string[];
   mobilePhone: string[];
+  address: string;
   clearance: string;
   sex: string;
   birthdate: number;

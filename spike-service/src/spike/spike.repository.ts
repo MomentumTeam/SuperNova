@@ -6,8 +6,7 @@ import { logger } from "../logger";
 export class SpikeRepository {
   async getSpikeToken(): Promise<string> {
     try {
-      // const token = await getToken();
-      const token = "SADIBALIKJDBSAKJDHBSAKJDHSAD";
+      const token = await getToken();
       logger.log({
         level: "info",
         message: `Token successfully retrieved from Spike`,

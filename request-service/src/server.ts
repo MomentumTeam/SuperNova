@@ -5,21 +5,14 @@ import * as C from "./config";
 import { logger } from "./logger";
 import {
   getRequestById,
-  createOGRequest,
-  createRoleRequest,
   getRequestsByCommander,
-  assignRoleToEntityRequest,
-  createEntityRequest,
   getRequestsSubmittedBy,
-  renameOGRequest,
-  renameRoleRequest,
-  deleteOGRequest,
-  editEntityRequest,
-  deleteRoleRequest,
   updateRequest,
   deleteRequest,
   getAllRequests,
+  createRequestFuncByType,
 } from "./requests/request.controller";
+import { RequestType } from "./enums/requestType.enum";
 
 const PROTO_PATH = __dirname.includes("dist")
   ? path.join(__dirname, "../../proto/requestService.proto")
@@ -60,18 +53,23 @@ export class Server {
         label: "initServer",
       });
       this.server.addService(requestServiceDescriptor.RequestService.service, {
-        CreateOGRequest: createOGRequest,
-        GetRequestById: getRequestById,
-        CreateRoleRequest: createRoleRequest,
-        AssignRoleToEntityRequest: assignRoleToEntityRequest,
+        CreateOGRequest: createRequestFuncByType(RequestType.CREATE_OG),
+        CreateRoleRequest: createRequestFuncByType(RequestType.CREATE_ROLE),
+        AssignRoleToEntityRequest: createRequestFuncByType(
+          RequestType.ASSIGN_ROLE_TO_ENTITY
+        ),
+        CreateEntityRequest: createRequestFuncByType(RequestType.CREATE_ENTITY),
+        RenameOGRequest: createRequestFuncByType(RequestType.RENAME_OG),
+        RenameRoleRequest: createRequestFuncByType(RequestType.RENAME_ROLE),
+        EditEntityRequest: createRequestFuncByType(RequestType.EDIT_ENTITY),
+        DeleteOGRequest: createRequestFuncByType(RequestType.DELETE_OG),
+        DeleteRoleRequest: createRequestFuncByType(RequestType.DELETE_ROLE),
+        DisconectRoleFromEntity: createRequestFuncByType(
+          RequestType.DISCONNECT_ROLE
+        ),
         GetRequestsByCommander: getRequestsByCommander,
-        CreateEntityRequest: createEntityRequest,
         GetRequestsSubmittedBy: getRequestsSubmittedBy,
-        RenameOGRequest: renameOGRequest,
-        RenameRoleRequest: renameRoleRequest,
-        EditEntityRequest: editEntityRequest,
-        DeleteOGRequest: deleteOGRequest,
-        DeleteRoleRequest: deleteRoleRequest,
+        GetRequestById: getRequestById,
         UpdateRequest: updateRequest,
         DeleteRequest: deleteRequest,
         GetAllRequests: getAllRequests,
