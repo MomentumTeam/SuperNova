@@ -140,10 +140,15 @@ export async function getEntityByIdNumber(
   }
 }
 
-export async function getRoleByRoleId(call: any, callback: any): Promise<void> {
+export async function searchRolesByRoleId(
+  call: any,
+  callback: any
+): Promise<void> {
   try {
-    const role: IRole = await kartoffelManager.getRoleByRoleId(call.request);
-    callback(null, role);
+    const roles: IRoleArray = await kartoffelManager.searchRolesByRoleId(
+      call.request
+    );
+    callback(null, roles);
   } catch (error) {
     callback(
       {

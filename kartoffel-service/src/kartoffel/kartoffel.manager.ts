@@ -13,7 +13,7 @@ import { IGetEntitiesUnderOGRequest } from "../interfaces/getEntitiesUnderOG/get
 import { IGetEntityByIdNumberRequest } from "../interfaces/getEntityByIdNumber/getEntityByIdNumber.interface";
 import { IGetEntityByMongoIdRequest } from "../interfaces/getEntityByMongoId/getEntityByMongoIdRequest.interface";
 import { IGetEntityByRoleIdRequest } from "../interfaces/getEntityByRoleId/getEntityByRoleIdRequest.interface";
-import { IGetRoleByRoleIdRequest } from "../interfaces/getRoleByRoleId/getRoleByRoleId.interface";
+import { ISearchRolesByRoleIdRequest } from "../interfaces/searchRolesByRoleId/searchRolesByRoleId.interface";
 import { IGetRolesUnderOGRequest } from "../interfaces/getRolesUnderOG/getRolesUnderOGRequest.interface";
 import {
   DigitalIdentity,
@@ -121,12 +121,12 @@ export class KartoffelManager {
     }
   }
 
-  async getRoleByRoleId(
-    getRoleByRoleIdRequest: IGetRoleByRoleIdRequest
-  ): Promise<IRole> {
+  async searchRolesByRoleId(
+    searchRolesByRoleIdRequest: ISearchRolesByRoleIdRequest
+  ): Promise<IRoleArray> {
     try {
-      return await this.kartoffelRepository.getRoleByRoleId(
-        getRoleByRoleIdRequest
+      return await this.kartoffelRepository.searchRolesByRoleId(
+        searchRolesByRoleIdRequest
       );
     } catch (error) {
       throw error;

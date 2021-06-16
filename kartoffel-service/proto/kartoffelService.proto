@@ -10,7 +10,7 @@ service Kartoffel {
     rpc ConnectRoleAndDI(ConnectRoleAndDIRequest) returns (SuccessMessage){}
     rpc SearchEntitiesByFullName(SearchEntitiesByFullNameRequest) returns (EntityArray){}
     rpc GetEntityByIdNumber(GetEntityByIdNumberRequest) returns (Entity){}
-    rpc GetRoleByRoleId(GetRoleByRoleIdRequest) returns (Role){}
+    rpc SearchRolesByRoleId(SearchRolesByRoleIdRequest) returns (Role){}
     rpc GetRolesUnderOG(GetRolesUnderOGRequest) returns (RoleArray){}
     rpc ConnectEntityAndDI(ConnectEntityAndDIRequest) returns (SuccessMessage){}
     rpc CreateEntity(CreateEntityRequest) returns (Entity){}
@@ -36,7 +36,7 @@ message OGArray{
 // CreateOG
 message CreateOGRequest{
     string name = 1;
-    string parentId = 2;
+    string parent = 2;
     string source = 3;
 }
 
@@ -45,12 +45,14 @@ message CreateDIRequest{
     string type = 1;
     string source = 2;
     string uniqueId = 3;
+    string mail = 4;
+    bool isRoleAttachable = 5;
 }
 
 // CreateRole
 message CreateRoleRequest{
     string jobTitle = 1;
-    string directGroupId = 2;
+    string directGroup = 2;
     string source = 3;
     string roleId = 4;
 }
@@ -74,14 +76,15 @@ message GetEntityByIdNumberRequest{
     string idNumber = 1; //identityCard or personalNumber
 }
 
-// GetRoleByRoleId
-message GetRoleByRoleIdRequest{
+// SearchRolesByRoleId
+message SearchRolesByRoleIdRequest{
     string roleId = 1;
 }
 
 // GetRolesUnderOG
 message GetRolesUnderOGRequest{
     string id = 1; //mongoId of OG
+    bool direct = 2;
 }
 
 message RoleArray{
@@ -148,6 +151,7 @@ message DeleteDIRequest{
 // GetEntitiesUnderOG
 message GetEntitiesUnderOGRequest{
     string id = 1; //mongoIds of OG
+    bool direct = 2;
 }
 
 

@@ -1,6 +1,6 @@
 export interface ICreateRoleRequest {
   jobTitle: string;
-  directGroupId: string;
+  directGroup: string;
   source: string;
   roleId: string;
 }

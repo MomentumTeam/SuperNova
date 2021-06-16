@@ -1,5 +1,5 @@
 export interface ICreateOGRequest {
   name: string;
-  parentId: string;
+  parent: string;
   source: string;
 }
