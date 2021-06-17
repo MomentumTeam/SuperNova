@@ -14,7 +14,7 @@ export interface IRequest {
   commanders: string[] | undefined;
   kartoffelStatus: IKartoffelStatus;
   adStatus: IADStatus;
-  KartoffelParams: IKartoffelParams;
+  kartoffelParams: IKartoffelParams;
   adParams: IADParams;
 
   id: string;
