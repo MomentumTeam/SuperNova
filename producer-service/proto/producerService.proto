@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package Producer;
+
+service Producer {
+    rpc ProduceToKartoffelQueue(ProduceRequest) returns (SuccessMessage) {}
+    rpc ProduceToADQueue(ProduceRequest) returns (SuccessMessage) {}
+}
+
+message ProduceRequest{
+    string id = 1;
+}
+
+message SuccessMessage{
+    bool success = 1;
+}
