@@ -2,8 +2,8 @@ import { ApproverDecision } from "../interfaces/approverDecision.interface";
 import { RequestStatus } from "../enums/requestStatus.enum";
 import { IKartoffelStatus } from "./stageStatuses/kartoffelStatus.interface";
 import { IADStatus } from "./stageStatuses/adStatus.interface";
-import { IKartoffelProperties } from "./stageProperties/kartoffelProperties.interface";
-import { IADProperties } from "./stageProperties/adProperties.interface";
+import { IKartoffelParams } from "./stageParams/kartoffelParams.interface";
+import { IADParams } from "./stageParams/adParams.interface";
 import { RequestType } from "../enums/requestType.enum";
 
 export interface IRequest {
@@ -11,11 +11,11 @@ export interface IRequest {
   status: RequestStatus;
   commanderDecision: ApproverDecision;
   securityDecision: ApproverDecision;
-  commanders: string[];
+  commanders: string[] | undefined;
   kartoffelStatus: IKartoffelStatus;
   adStatus: IADStatus;
-  KartoffelProperties: IKartoffelProperties;
-  adProperties: IADProperties;
+  KartoffelParams: IKartoffelParams;
+  adParams: IADParams;
 
   id: string;
   createdAt: number;

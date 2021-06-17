@@ -17,6 +17,47 @@ import { IUpdateRequestReq } from "../interfaces/updateRequest/updateRequestReq.
 import { IGetRequestsByPersonIdReq } from "../interfaces/getRequestsByPersonId/getRequestsByPersonIdReq.interface";
 
 export class RequestRepository {
+  private cleanUnderscoreFields(document: any): void {
+    let keys: any = Object.keys(document);
+
+    for (let key of keys) {
+      if (key.startsWith("_") && key !== "_id") {
+        delete document[key];
+      }
+    }
+  }
+
+  private cleanNullFields(document: any): void {
+    let keys: any = Object.keys(document);
+
+    for (let key of keys) {
+      if (!document[key] || document[key] == null) {
+        delete document[key];
+      }
+    }
+    if (document.kartoffelParams) {
+      keys = Object.keys(document.kartoffelParams);
+
+      for (let key of keys) {
+        if (
+          !document.kartoffelParams[key] ||
+          document.kartoffelParams[key] == null
+        ) {
+          delete document.kartoffelParams[key];
+        }
+      }
+    }
+    if (document.adParams) {
+      keys = Object.keys(document.adParams);
+
+      for (let key of keys) {
+        if (!document.adParams[key] || document.adParams[key] == null) {
+          delete document.adParams[key];
+        }
+      }
+    }
+  }
+
   private turnObjectIdsToStrings(document: any): void {
     //_id
     if (document._id) {
@@ -52,14 +93,8 @@ export class RequestRepository {
       document.kartoffelProperties.id =
         document.kartoffelProperties.id.toString();
     }
-
-    let keys: any = Object.keys(document);
-
-    for (let key of keys) {
-      if (key.startsWith("_") && key !== "_id") {
-        delete document[key];
-      }
-    }
+    this.cleanUnderscoreFields(document);
+    this.cleanNullFields(document);
   }
 
   async deleteRequest(
@@ -75,9 +110,14 @@ export class RequestRepository {
 
   async updateRequest(updateRequestReq: IUpdateRequestReq): Promise<IRequest> {
     try {
+      let requestUpdate: any = { ...updateRequestReq.requestProperties };
+      if (requestUpdate.commanders && requestUpdate.commanders.length == 0) {
+        delete requestUpdate["commanders"];
+      }
+      this.cleanUnderscoreFields(requestUpdate);
       const document: any = await Request.findOneAndUpdate(
         { _id: updateRequestReq.id },
-        { $set: updateRequestReq.requestProperties },
+        { $set: requestUpdate },
         { new: true }
       );
       if (document) {

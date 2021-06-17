@@ -1,5 +1,4 @@
 syntax = "proto3";
-import "google/protobuf/any.proto";
 
 package RequestService;
 
@@ -13,10 +12,12 @@ service RequestService {
     rpc EditEntityRequest(EditEntityRequestReq) returns (EditEntityRequest){}
     rpc DeleteOGRequest(DeleteOGRequestReq) returns (DeleteOGRequest){}
     rpc DeleteRoleRequest(DeleteRoleRequestReq) returns (DeleteRoleRequest){}
+    
+    rpc DisconectRoleFromEntityRequest(DisconectRoleFromEntityRequestReq) returns (DisconectRoleFromEntityRequest){}
 
     rpc UpdateRequest(UpdateRequestReq) returns (Request){}
     rpc DeleteRequest(DeleteRequestReq) returns (SuccessMessage){}
-    rpc DisconectRoleFromEntity(RequestReq) returns (Request){}
+    
 
     rpc GetRequestsByCommander(GetRequestsByPersonIdReq) returns (RequestArray){}
     rpc GetRequestsSubmittedBy(GetRequestsByPersonIdReq) returns (RequestArray){}
@@ -108,7 +109,18 @@ message DeleteRequestReq{
 
 message UpdateRequestReq{
     string id = 1;
-    RequestReq requestProperties = 2;
+    UpdateRequestProperties requestProperties = 2;
+}
+message UpdateRequestProperties{
+    optional string submittedBy = 1;
+    optional RequestStatus status = 2;
+    optional ApproverDecision commanderDecision = 3;
+    optional ApproverDecision securityDecision = 4;
+    repeated string commanders = 5;  
+    optional KartoffelStatus kartoffelStatus = 6;
+    optional ADStatus adStatus = 7;
+    optional KartoffelParams kartoffelParams = 8;
+    optional ADParams adParams = 9;
 }
 
 //Request messages
@@ -123,8 +135,8 @@ message CreateOGRequestReq{
     KartoffelStatus kartoffelStatus = 6;
     ADStatus adStatus = 7;
 
-    CreateOGKartoffelProperties kartoffelProperties = 8;
-    CreateOGADProperties adProperties = 9;
+    CreateOGKartoffelParams kartoffelParams = 8;
+    CreateOGADParams adParams = 9;
 }
 
 message CreateOGRequest{
@@ -135,21 +147,21 @@ message CreateOGRequest{
     repeated string commanders = 5;  
     KartoffelStatus kartoffelStatus = 6;
     ADStatus adStatus = 7;
-    CreateOGKartoffelProperties kartoffelProperties = 8;
-    CreateOGADProperties adProperties = 9;
+    CreateOGKartoffelParams kartoffelParams = 8;
+    CreateOGADParams adParams = 9;
 
     string id = 10;
     int64 createdAt = 11;
     int64 updatedAt = 12; 
 }
 
-message CreateOGKartoffelProperties{
+message CreateOGKartoffelParams{
     string name = 1;
     string parent = 2;
     string source = 3;
 }
 
-message CreateOGADProperties{
+message CreateOGADParams{
     string ouDisplayName = 1;
     string ouName = 2;
     string name = 3;
@@ -164,8 +176,8 @@ message CreateRoleRequestReq{
     repeated string commanders = 5;  
     KartoffelStatus kartoffelStatus = 6;
     ADStatus adStatus = 7;
-    CreateRoleKartoffelProperties kartoffelProperties = 8;
-    CreateRoleADProperties adProperties = 9;
+    CreateRoleKartoffelParams kartoffelParams = 8;
+    CreateRoleADParams adParams = 9;
 }
 
 message CreateRoleRequest{
@@ -176,14 +188,14 @@ message CreateRoleRequest{
     repeated string commanders = 5;  
     KartoffelStatus kartoffelStatus = 6;
     ADStatus adStatus = 7;
-    CreateRoleKartoffelProperties kartoffelProperties = 8;
-    CreateRoleADProperties adProperties = 9;
+    CreateRoleKartoffelParams kartoffelParams = 8;
+    CreateRoleADParams adParams = 9;
 
     string id = 10;
     int64 createdAt = 11;
     int64 updatedAt = 12; 
 }
-message CreateRoleKartoffelProperties{
+message CreateRoleKartoffelParams{
     //for role
     string jobTitle = 1;
     string directGroup = 2;
@@ -197,7 +209,7 @@ message CreateRoleKartoffelProperties{
     bool isRoleAttachable = 8;
 }
 
-message CreateRoleADProperties{
+message CreateRoleADParams{
     string samAccountName = 1;
     string ouDisplayName = 2;
     string jobTitle = 3;
@@ -212,8 +224,8 @@ message CreateEntityRequestReq{
     repeated string commanders = 5;  
     KartoffelStatus kartoffelStatus = 6;
     ADStatus adStatus = 7;
-    CreateEntityKartoffelProperties kartoffelProperties = 8;
-    CreateEntityADProperties adProperties = 9;
+    CreateEntityKartoffelParams kartoffelParams = 8;
+    CreateEntityADParams adParams = 9;
 }
 
 message CreateEntityRequest{
@@ -224,14 +236,14 @@ message CreateEntityRequest{
     repeated string commanders = 5;  
     KartoffelStatus kartoffelStatus = 6;
     ADStatus adStatus = 7;
-    CreateEntityKartoffelProperties kartoffelProperties = 8;
-    CreateEntityADProperties adProperties = 9;
+    CreateEntityKartoffelParams kartoffelParams = 8;
+    CreateEntityADParams adParams = 9;
 
     string id = 10;
     int64 createdAt = 11;
     int64 updatedAt = 12; 
 }
-message CreateEntityKartoffelProperties{
+message CreateEntityKartoffelParams{
     string firstName = 1;
     string lastName = 2;
     string identityCard = 3;
@@ -246,7 +258,7 @@ message CreateEntityKartoffelProperties{
     string entityType = 12;
 }
 
-message CreateEntityADProperties{
+message CreateEntityADParams{
 
 }
 
@@ -259,8 +271,8 @@ message AssignRoleToEntityRequestReq{
     repeated string commanders = 5;  
     KartoffelStatus kartoffelStatus = 6;
     ADStatus adStatus = 7;
-    AssignRoleToEntityKartoffelProperties kartoffelProperties = 8;
-    AssignRoleToEntityADProperties adProperties = 9;
+    AssignRoleToEntityKartoffelParams kartoffelParams = 8;
+    AssignRoleToEntityADParams adParams = 9;
 }
 
 message AssignRoleToEntityRequest{
@@ -271,19 +283,19 @@ message AssignRoleToEntityRequest{
     repeated string commanders = 5;  
     KartoffelStatus kartoffelStatus = 6;
     ADStatus adStatus = 7;
-    AssignRoleToEntityKartoffelProperties kartoffelProperties = 8;
-    AssignRoleToEntityADProperties adProperties = 9;
+    AssignRoleToEntityKartoffelParams kartoffelParams = 8;
+    AssignRoleToEntityADParams adParams = 9;
 
     string id = 10;
     int64 createdAt = 11;
     int64 updatedAt = 12; 
 }
-message AssignRoleToEntityKartoffelProperties{
+message AssignRoleToEntityKartoffelParams{
     string id = 1;
     string uniqueId = 2;
 }
 
-message AssignRoleToEntityADProperties{
+message AssignRoleToEntityADParams{
     string oldSAMAccountName = 1;
     string newSAMAccountName = 2;
     string upn = 3;
@@ -303,8 +315,8 @@ message RenameOGRequestReq{
     repeated string commanders = 5;  
     KartoffelStatus kartoffelStatus = 6;
     ADStatus adStatus = 7;
-    RenameOGKartoffelProperties kartoffelProperties = 8;
-    RenameOGADProperties adProperties = 9;
+    RenameOGKartoffelParams kartoffelParams = 8;
+    RenameOGADParams adParams = 9;
 }
 
 message RenameOGRequest{
@@ -315,18 +327,18 @@ message RenameOGRequest{
     repeated string commanders = 5;  
     KartoffelStatus kartoffelStatus = 6;
     ADStatus adStatus = 7;
-    RenameOGKartoffelProperties kartoffelProperties = 8;
-    RenameOGADProperties adProperties = 9;
+    RenameOGKartoffelParams kartoffelParams = 8;
+    RenameOGADParams adParams = 9;
 
     string id = 10;
     int64 createdAt = 11;
     int64 updatedAt = 12; 
 }
-message RenameOGKartoffelProperties{
+message RenameOGKartoffelParams{
 //?
 }
 
-message RenameOGADProperties{
+message RenameOGADParams{
 //?
 }
 
@@ -339,8 +351,8 @@ message RenameRoleRequestReq{
     repeated string commanders = 5;  
     KartoffelStatus kartoffelStatus = 6;
     ADStatus adStatus = 7;
-    RenameRoleKartoffelProperties kartoffelProperties = 8;
-    RenameRoleADProperties adProperties = 9;
+    RenameRoleKartoffelParams kartoffelParams = 8;
+    RenameRoleADParams adParams = 9;
 }
 
 message RenameRoleRequest{
@@ -351,18 +363,18 @@ message RenameRoleRequest{
     repeated string commanders = 5;  
     KartoffelStatus kartoffelStatus = 6;
     ADStatus adStatus = 7;
-    RenameRoleKartoffelProperties kartoffelProperties = 8;
-    RenameRoleADProperties adProperties = 9;
+    RenameRoleKartoffelParams kartoffelParams = 8;
+    RenameRoleADParams adParams = 9;
 
     string id = 10;
     int64 createdAt = 11;
     int64 updatedAt = 12; 
 }
-message RenameRoleKartoffelProperties{
+message RenameRoleKartoffelParams{
 //?
 }
 
-message RenameRoleADProperties{
+message RenameRoleADParams{
 //?
 }
 
@@ -375,8 +387,8 @@ message EditEntityRequestReq{
     repeated string commanders = 5;  
     KartoffelStatus kartoffelStatus = 6;
     ADStatus adStatus = 7;
-    EditEntityKartoffelProperties kartoffelProperties = 8;
-    EditEntityADProperties adProperties = 9;
+    EditEntityKartoffelParams kartoffelParams = 8;
+    EditEntityADParams adParams = 9;
 }
 
 message EditEntityRequest{
@@ -387,14 +399,14 @@ message EditEntityRequest{
     repeated string commanders = 5;  
     KartoffelStatus kartoffelStatus = 6;
     ADStatus adStatus = 7;
-    EditEntityKartoffelProperties kartoffelProperties = 8;
-    EditEntityADProperties adProperties = 9;
+    EditEntityKartoffelParams kartoffelParams = 8;
+    EditEntityADParams adParams = 9;
 
     string id = 10;
     int64 createdAt = 11;
     int64 updatedAt = 12; 
 }
-message EditEntityKartoffelProperties{
+message EditEntityKartoffelParams{
     string id = 1;
     string firstName = 2;
     string lastName = 3;
@@ -410,7 +422,7 @@ message EditEntityKartoffelProperties{
     string entityType = 13;
 }
 
-message EditEntityADProperties{
+message EditEntityADParams{
     string samAccountName = 1;
     string firstName = 2;
     string lastName = 3;
@@ -426,8 +438,8 @@ message DeleteOGRequestReq{
     repeated string commanders = 5;  
     KartoffelStatus kartoffelStatus = 6;
     ADStatus adStatus = 7;
-    DeleteOGKartoffelProperties kartoffelProperties = 8;
-    DeleteOGADProperties adProperties = 9;
+    DeleteOGKartoffelParams kartoffelParams = 8;
+    DeleteOGADParams adParams = 9;
 }
 
 message DeleteOGRequest{
@@ -438,18 +450,18 @@ message DeleteOGRequest{
     repeated string commanders = 5;  
     KartoffelStatus kartoffelStatus = 6;
     ADStatus adStatus = 7;
-    DeleteOGKartoffelProperties kartoffelProperties = 8;
-    DeleteOGADProperties adProperties = 9;
+    DeleteOGKartoffelParams kartoffelParams = 8;
+    DeleteOGADParams adParams = 9;
 
     string id = 10;
     int64 createdAt = 11;
     int64 updatedAt = 12; 
 }
-message DeleteOGKartoffelProperties{
+message DeleteOGKartoffelParams{
     string id = 1;
 }
 
-message DeleteOGADProperties{
+message DeleteOGADParams{
     //?
 }
 
@@ -463,8 +475,8 @@ message DeleteRoleRequestReq{
     repeated string commanders = 5;  
     KartoffelStatus kartoffelStatus = 6;
     ADStatus adStatus = 7;
-    DeleteRoleKartoffelProperties kartoffelProperties = 8;
-    DeleteRoleADProperties adProperties = 9;
+    DeleteRoleKartoffelParams kartoffelParams = 8;
+    DeleteRoleADParams adParams = 9;
 }
 
 message DeleteRoleRequest{
@@ -475,58 +487,96 @@ message DeleteRoleRequest{
     repeated string commanders = 5;  
     KartoffelStatus kartoffelStatus = 6;
     ADStatus adStatus = 7;
-    DeleteRoleKartoffelProperties kartoffelProperties = 8;
-    DeleteRoleADProperties adProperties = 9;
+    DeleteRoleKartoffelParams kartoffelParams = 8;
+    DeleteRoleADParams adParams = 9;
 
     string id = 10;
     int64 createdAt = 11;
     int64 updatedAt = 12; 
 }
-message DeleteRoleKartoffelProperties{
+message DeleteRoleKartoffelParams{
     string roleId = 1;
     string uniqueId = 2;
 }
 
-message DeleteRoleADProperties{
+message DeleteRoleADParams{
     string samAccountName = 1;
 }
 
-message KartoffelProperties{
+//DisconectRoleFromEntity
+message DisconectRoleFromEntityRequestReq{
+    string submittedBy = 1;
+    RequestStatus status = 2;
+    ApproverDecision commanderDecision = 3;
+    ApproverDecision securityDecision = 4;
+    repeated string commanders = 5;  
+    KartoffelStatus kartoffelStatus = 6;
+    ADStatus adStatus = 7;
+    DisconectRoleFromEntityKartoffelParams kartoffelParams = 8;
+    DisconectRoleFromEntityADParams adParams = 9;
+}
+
+message DisconectRoleFromEntityRequest{
+    string submittedBy = 1;
+    RequestStatus status = 2;
+    ApproverDecision commanderDecision = 3;
+    ApproverDecision securityDecision = 4;
+    repeated string commanders = 5;  
+    KartoffelStatus kartoffelStatus = 6;
+    ADStatus adStatus = 7;
+    DisconectRoleFromEntityKartoffelParams kartoffelParams = 8;
+    DisconectRoleFromEntityADParams adParams = 9;
+
+    string id = 10;
+    int64 createdAt = 11;
+    int64 updatedAt = 12; 
+}
+message DisconectRoleFromEntityKartoffelParams{
+    string id = 1;
+    string uniqueId = 2;
+}
+
+message DisconectRoleFromEntityADParams{
+    string samAccountName = 1;
+}
+
+
+message KartoffelParams{
     //CreateOG
-    string name = 1;
-    string parent = 2;
-    string source = 3; //for almost all requests
+    optional string name = 1;
+    optional string parent = 2;
+    optional string source = 3; //for almost all requests
 
     //CreateRole
 
     //for role
-    string jobTitle = 4;
-    string directGroup = 5;
-    string roleId = 6;
+    optional string jobTitle = 4;
+    optional string directGroup = 5;
+    optional string roleId = 6;
 
     //forDigitalIdentity
-    string type = 7;
+    optional string type = 7;
     // string source = 2;
-    string uniqueId = 8;
-    string mail = 9;
-    bool isRoleAttachable = 10;
+    optional string uniqueId = 8;
+    optional string mail = 9;
+    optional bool isRoleAttachable = 10;
 
     //AssignRoleToEntity, same as changing role to entity
-    string id = 11;
+    optional string id = 11;
     // string uniqueId = 8;
     //CreateEntity
-    string firstName = 12;
-    string lastName = 13;
-    string identityCard = 14;
-    string personalNumber = 15;
-    string serviceType = 16;
+    optional string firstName = 12;
+    optional string lastName = 13;
+    optional string identityCard = 14;
+    optional string personalNumber = 15;
+    optional string serviceType = 16;
     repeated string phone = 17;
     repeated string mobilePhone = 18;
-    string address = 19;
-    string clearance = 20;
-    string sex = 21;
-    int64 birthdate = 22;
-    string entityType = 23;
+    optional string address = 19;
+    optional string clearance = 20;
+    optional string sex = 21;
+    optional int64 birthdate = 22;
+    optional string entityType = 23;
 
     //RenameOG
     // ?
@@ -561,36 +611,36 @@ message KartoffelProperties{
     // string id = 9;
 }
 
-message ADProperties{
+message ADParams{
     //CreateOG
-    string ouDisplayName = 1;
-    string ouName = 2;
-    string name = 3;
+    optional string ouDisplayName = 1;
+    optional string ouName = 2;
+    optional string name = 3;
 
     //CreateRole
-    string samAccountName = 4;
+    optional string samAccountName = 4;
     // string ouDisplayName = ;
-    string jobTitle = 5;
+    optional string jobTitle = 5;
 
     //AssignRoleToEntity
-    string oldSAMAccountName = 6;
-    string newSAMAccountName = 7;
-    string upn = 8;
-    string firstName = 9;
-    string lastName = 10;
-    string fullName = 11;
-    string rank = 12;
-    string roleSerialCode = 13;
+    optional string oldSAMAccountName = 6;
+    optional string newSAMAccountName = 7;
+    optional string upn = 8;
+    optional string firstName = 9;
+    optional string lastName = 10;
+    optional string fullName = 11;
+    optional string rank = 12;
+    optional string roleSerialCode = 13;
     //CreateEntity - nothing
 
     //RenameOG
     //string ouDisplayName = ;
-    string oldName = 14;
-    string newName = 15;
+    optional string oldName = 14;
+    optional string newName = 15;
 
     //RenameRole
     // string samAccountName = ;
-    string newJobTitle = 16;
+    optional string newJobTitle = 16;
 
     //DeleteOG - ?
 
@@ -612,8 +662,8 @@ message RequestReq{
     repeated string commanders = 5;  
     KartoffelStatus kartoffelStatus = 6;
     ADStatus adStatus = 7;
-    KartoffelProperties kartoffelProperties = 8;
-    ADProperties adProperties = 9;
+    KartoffelParams kartoffelParams = 8;
+    ADParams adParams = 9;
 }
 
 message Request{
@@ -624,8 +674,8 @@ message Request{
     repeated string commanders = 5;  
     KartoffelStatus kartoffelStatus = 6;
     ADStatus adStatus = 7;
-    KartoffelProperties kartoffelProperties = 8;
-    ADProperties adProperties = 9;
+    KartoffelParams kartoffelParams = 8;
+    ADParams adParams = 9;
 
     string id = 10;
     int64 createdAt = 11;

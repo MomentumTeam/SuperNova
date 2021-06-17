@@ -76,7 +76,7 @@ export const RequestSchema = new Schema(
         default: null,
       },
     },
-    kartoffelProperties: {
+    kartoffelParams: {
       name: { type: String, default: null },
       parent: { type: String, default: null },
       source: { type: String, default: null },
@@ -101,7 +101,7 @@ export const RequestSchema = new Schema(
       birthdate: { type: Number, default: null },
       entityType: { type: String, default: null },
     },
-    adProperties: {
+    adParams: {
       ouDisplayName: { type: String, default: null },
       ouName: { type: String, default: null },
       name: { type: String, default: null },
@@ -139,8 +139,4 @@ RequestSchema.pre<any>("findOneAndUpdate", function (next) {
   return next();
 });
 
-export const Request = connection.model(
-  "GeneralRequest",
-  RequestSchema,
-  "requests"
-);
+export const Request = connection.model("Request", RequestSchema, "requests");

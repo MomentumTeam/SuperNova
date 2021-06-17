@@ -1,4 +1,4 @@
-export interface IKartoffelProperties {
+export interface IKartoffelParams {
   //CreateOG
   name: string;
   parent: string;

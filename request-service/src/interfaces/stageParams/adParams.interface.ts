@@ -1,4 +1,4 @@
-export interface IADProperties {
+export interface IADParams {
   //CreateOG
   ouDisplayName: string;
   ouName: string;
