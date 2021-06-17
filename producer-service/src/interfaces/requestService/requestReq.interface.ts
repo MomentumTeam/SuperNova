@@ -13,6 +13,6 @@ export interface IRequestReq {
   commanders: string[];
   kartoffelStatus: IKartoffelStatus;
   adStatus: IADStatus;
-  KartoffelParams: IKartoffelParams;
+  kartoffelParams: IKartoffelParams;
   adParams: IADParams;
 }

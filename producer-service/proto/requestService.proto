@@ -63,6 +63,7 @@ enum Decision{
 
 message SuccessMessage{
     bool success = 1;
+    string message = 2;
 }
 
 message ApproverDecision{

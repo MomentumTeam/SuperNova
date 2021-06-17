@@ -13,4 +13,5 @@ message ProduceRequest{
 
 message SuccessMessage{
     bool success = 1;
+    string message = 2;
 }

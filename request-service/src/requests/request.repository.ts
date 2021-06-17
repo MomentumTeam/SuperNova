@@ -102,7 +102,10 @@ export class RequestRepository {
   ): Promise<ISuccessMessage> {
     try {
       await Request.deleteOne({ _id: deleteRequestReq.id });
-      return new SuccessMessage(true);
+      return new SuccessMessage(
+        true,
+        `Request ${deleteRequestReq.id} was deleted successfully`
+      );
     } catch (error) {
       throw error;
     }
