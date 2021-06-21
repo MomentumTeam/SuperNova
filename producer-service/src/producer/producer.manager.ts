@@ -36,11 +36,34 @@ export class RequestManager {
         break;
       }
       case RequestType.CREATE_ROLE: {
-        message.data = {};
+        message.data = {
+          //for role
+          jobTitle: kartoffelParams.jobTitle,
+          directGroup: kartoffelParams.directGroup,
+          roleId: kartoffelParams.roleId,
+          //for digitalIdentity
+          type: kartoffelParams.jobTitle,
+          source: kartoffelParams.source,
+          uniqueId: kartoffelParams.uniqueId,
+          mail: kartoffelParams.mail,
+          isRoleAttachable: kartoffelParams.isRoleAttachable,
+        };
         break;
       }
       case RequestType.CREATE_ENTITY: {
-        message.data = {};
+        message.data = {
+          firstName : kartoffelParams.firstName,
+          lastName : kartoffelParams.lastName,
+          identityCard : kartoffelParams.identityCard,
+          personalNumber : kartoffelParams.firstName,
+          serviceType : kartoffelParams.serviceType,
+          phone : kartoffelParams.phone,
+          address : kartoffelParams.address,
+          clearance : kartoffelParams.clearance,
+          sex : kartoffelParams.sex,
+          birthdate : kartoffelParams.birthdate,
+          entityType : kartoffelParams.entityType,
+        };
         break;
       }
       case RequestType.ASSIGN_ROLE_TO_ENTITY: {

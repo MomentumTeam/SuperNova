@@ -63,7 +63,7 @@ export class KartoffelRepository {
   async searchOG(searchOGRequest: ISearchOGRequest): Promise<IOGArray> {
     try {
       if (C.devMode) {
-        return new OGArray([this.kartoffelFaker.randomOG()]);
+        return this.kartoffelFaker.randomOGArray();
       } else {
         const res = await this.axiosKartoffel.get(
           `${C.kartoffelUrl}/organizationGroup/search?hierarchyAndName=${searchOGRequest.hierarchyAndName}`
