@@ -11,6 +11,8 @@ import {
   deleteRequest,
   getAllRequests,
   createRequestFuncByType,
+  updateKartoffelStatus,
+  updateADStatus,
 } from "./requests/request.controller";
 import { RequestType } from "./enums/requestType.enum";
 
@@ -71,6 +73,8 @@ export class Server {
         GetRequestsSubmittedBy: getRequestsSubmittedBy,
         GetRequestById: getRequestById,
         UpdateRequest: updateRequest,
+        UpdateKartoffelStatus: updateKartoffelStatus,
+        UpdateADStatus: updateADStatus,
         DeleteRequest: deleteRequest,
         GetAllRequests: getAllRequests,
       });

@@ -52,46 +52,72 @@ export class RequestManager {
       }
       case RequestType.CREATE_ENTITY: {
         message.data = {
-          firstName : kartoffelParams.firstName,
-          lastName : kartoffelParams.lastName,
-          identityCard : kartoffelParams.identityCard,
-          personalNumber : kartoffelParams.firstName,
-          serviceType : kartoffelParams.serviceType,
-          phone : kartoffelParams.phone,
-          address : kartoffelParams.address,
-          clearance : kartoffelParams.clearance,
-          sex : kartoffelParams.sex,
-          birthdate : kartoffelParams.birthdate,
-          entityType : kartoffelParams.entityType,
+          firstName: kartoffelParams.firstName,
+          lastName: kartoffelParams.lastName,
+          identityCard: kartoffelParams.identityCard,
+          personalNumber: kartoffelParams.firstName,
+          serviceType: kartoffelParams.serviceType,
+          phone: kartoffelParams.phone,
+          address: kartoffelParams.address,
+          clearance: kartoffelParams.clearance,
+          sex: kartoffelParams.sex,
+          birthdate: kartoffelParams.birthdate,
+          entityType: kartoffelParams.entityType,
         };
         break;
       }
       case RequestType.ASSIGN_ROLE_TO_ENTITY: {
-        message.data = {};
+        message.data = {
+          id: kartoffelParams.id,
+          uniqueId: kartoffelParams.uniqueId,
+        };
         break;
       }
       case RequestType.RENAME_OG: {
+        //TODO
         message.data = {};
         break;
       }
       case RequestType.RENAME_ROLE: {
+        //TODO
         message.data = {};
         break;
       }
       case RequestType.EDIT_ENTITY: {
-        message.data = {};
+        message.data = {
+          id: kartoffelParams.id,
+          firstName: kartoffelParams.firstName,
+          lastName: kartoffelParams.lastName,
+          identityCard: kartoffelParams.identityCard,
+          personalNumber: kartoffelParams.firstName,
+          serviceType: kartoffelParams.serviceType,
+          phone: kartoffelParams.phone,
+          address: kartoffelParams.address,
+          clearance: kartoffelParams.clearance,
+          sex: kartoffelParams.sex,
+          birthdate: kartoffelParams.birthdate,
+          entityType: kartoffelParams.entityType,
+        };
         break;
       }
       case RequestType.DELETE_OG: {
-        message.data = {};
+        message.data = {
+          id: kartoffelParams.id,
+        };
         break;
       }
       case RequestType.DELETE_ROLE: {
-        message.data = {};
+        message.data = {
+          roleId: kartoffelParams.roleId,
+          uniqueId: kartoffelParams.uniqueId,
+        };
         break;
       }
       case RequestType.DISCONNECT_ROLE: {
-        message.data = {};
+        message.data = {
+          id: kartoffelParams.id,
+          uniqueId: kartoffelParams.uniqueId,
+        };
         break;
       }
     }
@@ -115,39 +141,65 @@ export class RequestManager {
         break;
       }
       case RequestType.CREATE_ROLE: {
-        message.data = {};
+        message.data = {
+          samAccountName: adParams.samAccountName,
+          ouDisplayName: adParams.ouDisplayName,
+          jobTitle: adParams.jobTitle,
+        };
         break;
       }
       case RequestType.CREATE_ENTITY: {
+        //probably nothing
         message.data = {};
         break;
       }
       case RequestType.ASSIGN_ROLE_TO_ENTITY: {
-        message.data = {};
+        message.data = {
+          oldSAMAccountName: adParams.oldSAMAccountName,
+          newSAMAccountName: adParams.newSAMAccountName,
+          upn: adParams.upn,
+          firstName: adParams.firstName,
+          lastName: adParams.lastName,
+          fullName: adParams.fullName,
+          rank: adParams.rank,
+          roleSerialCode: adParams.roleSerialCode,
+        };
         break;
       }
       case RequestType.RENAME_OG: {
+        //?
         message.data = {};
         break;
       }
       case RequestType.RENAME_ROLE: {
+        //?
         message.data = {};
         break;
       }
       case RequestType.EDIT_ENTITY: {
-        message.data = {};
+        message.data = {
+          samAccountName: adParams.samAccountName,
+          firstName: adParams.firstName,
+          lastName: adParams.lastName,
+          fullName: adParams.fullName,
+        };
         break;
       }
       case RequestType.DELETE_OG: {
+        //TODO
         message.data = {};
         break;
       }
       case RequestType.DELETE_ROLE: {
-        message.data = {};
+        message.data = {
+          samAccountName: adParams.samAccountName,
+        };
         break;
       }
       case RequestType.DISCONNECT_ROLE: {
-        message.data = {};
+        message.data = {
+          samAccountName: adParams.samAccountName,
+        };
         break;
       }
     }

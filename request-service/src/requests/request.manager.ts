@@ -8,6 +8,8 @@ import { IRequest } from "../interfaces/request.interface";
 import { IRequestArray } from "../interfaces/requestArray.interface";
 import { IRequestReq } from "../interfaces/requestReq.interface";
 import { ISuccessMessage } from "../interfaces/successMessage.interface";
+import { IUpdateADStatusReq } from "../interfaces/updateADStatus/updateADStatus.interface";
+import { IUpdateKartoffelStatusReq } from "../interfaces/updateKartoffelStatus/updateKartoffelStatusReq.interface";
 import { RequestRepository } from "./request.repository";
 export class RequestManager {
   private requestRepository: RequestRepository;
@@ -19,6 +21,30 @@ export class RequestManager {
     try {
       return (await this.requestRepository.updateRequest(
         updateRequestReq
+      )) as IRequest;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateKartoffelStatus(
+    updateKartoffelStatusReq: IUpdateKartoffelStatusReq
+  ): Promise<IRequest> {
+    try {
+      return (await this.requestRepository.updateKartoffelStatus(
+        updateKartoffelStatusReq
+      )) as IRequest;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateADStatus(
+    updateADStatusReq: IUpdateADStatusReq
+  ): Promise<IRequest> {
+    try {
+      return (await this.requestRepository.updateADStatus(
+        updateADStatusReq
       )) as IRequest;
     } catch (error) {
       throw error;

@@ -32,6 +32,45 @@ export function createRequestFuncByType(type: RequestType) {
   return func;
 }
 
+export async function updateKartoffelStatus(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    const updateResponse: IRequest = await requestManager.updateKartoffelStatus(
+      call.request
+    );
+    callback(null, updateResponse);
+  } catch (error) {
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function updateADStatus(call: any, callback: any): Promise<void> {
+  try {
+    const updateResponse: IRequest = await requestManager.updateADStatus(
+      call.request
+    );
+    callback(null, updateResponse);
+  } catch (error) {
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
 export async function updateRequest(call: any, callback: any): Promise<void> {
   try {
     const updateRequestResponse: IRequest = await requestManager.updateRequest(

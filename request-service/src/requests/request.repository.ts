@@ -15,6 +15,10 @@ import {
 } from "../interfaces/successMessage.interface";
 import { IUpdateRequestReq } from "../interfaces/updateRequest/updateRequestReq.interface";
 import { IGetRequestsByPersonIdReq } from "../interfaces/getRequestsByPersonId/getRequestsByPersonIdReq.interface";
+import { IUpdateKartoffelStatusReq } from "../interfaces/updateKartoffelStatus/updateKartoffelStatusReq.interface";
+import { StageStatus } from "../enums/stageStatus.enum";
+import { RequestStatus } from "../enums/requestStatus.enum";
+import { IUpdateADStatusReq } from "../interfaces/updateADStatus/updateADStatus.interface";
 
 export class RequestRepository {
   private cleanUnderscoreFields(document: any): void {
@@ -132,6 +136,55 @@ export class RequestRepository {
           `A request with {_id: ${updateRequestReq.id}} was not found!`
         );
       }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateKartoffelStatus(
+    updateKartoffelStatusReq: IUpdateKartoffelStatusReq
+  ): Promise<IRequest> {
+    try {
+      this.cleanUnderscoreFields(updateKartoffelStatusReq);
+      let requestUpdate: IUpdateRequestReq = {
+        id: updateKartoffelStatusReq.requestId,
+        requestProperties: {
+          kartoffelStatus: {
+            status: updateKartoffelStatusReq.status,
+            message: updateKartoffelStatusReq.message,
+            createdId: updateKartoffelStatusReq.createdId,
+          },
+        },
+      };
+      if (updateKartoffelStatusReq.status === StageStatus.DONE) {
+        requestUpdate.requestProperties.status = RequestStatus.DONE;
+      } else {
+        requestUpdate.requestProperties.status = RequestStatus.FAILED;
+      }
+      return await this.updateRequest(requestUpdate);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateADStatus(
+    updateADStatusReq: IUpdateADStatusReq
+  ): Promise<IRequest> {
+    try {
+      this.cleanUnderscoreFields(updateADStatusReq);
+      let requestUpdate: IUpdateRequestReq = {
+        id: updateADStatusReq.requestId,
+        requestProperties: {
+          adStatus: {
+            status: updateADStatusReq.status,
+            message: updateADStatusReq.message,
+          },
+        },
+      };
+      if (updateADStatusReq.status === StageStatus.FAILED) {
+        requestUpdate.requestProperties.status = RequestStatus.FAILED;
+      }
+      return await this.updateRequest(requestUpdate);
     } catch (error) {
       throw error;
     }

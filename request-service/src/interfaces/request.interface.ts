@@ -7,18 +7,18 @@ import { IADParams } from "./stageParams/adParams.interface";
 import { RequestType } from "../enums/requestType.enum";
 
 export interface IRequest {
-  submittedBy: string;
-  status: RequestStatus;
-  commanderDecision: ApproverDecision;
-  securityDecision: ApproverDecision;
-  commanders: string[] | undefined;
-  kartoffelStatus: IKartoffelStatus;
-  adStatus: IADStatus;
-  kartoffelParams: IKartoffelParams;
-  adParams: IADParams;
+  submittedBy?: string;
+  status?: RequestStatus;
+  commanderDecision?: ApproverDecision;
+  securityDecision?: ApproverDecision;
+  commanders?: string[] | undefined;
+  kartoffelStatus?: IKartoffelStatus;
+  adStatus?: IADStatus;
+  kartoffelParams?: IKartoffelParams;
+  adParams?: IADParams;
 
-  id: string;
-  createdAt: number;
-  updatedAt: number;
-  type: RequestType;
+  id?: string;
+  createdAt?: number;
+  updatedAt?: number;
+  type?: RequestType;
 }

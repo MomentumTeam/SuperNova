@@ -12,18 +12,35 @@ service RequestService {
     rpc EditEntityRequest(EditEntityRequestReq) returns (EditEntityRequest){}
     rpc DeleteOGRequest(DeleteOGRequestReq) returns (DeleteOGRequest){}
     rpc DeleteRoleRequest(DeleteRoleRequestReq) returns (DeleteRoleRequest){}
-    
     rpc DisconectRoleFromEntityRequest(DisconectRoleFromEntityRequestReq) returns (DisconectRoleFromEntityRequest){}
-
     rpc UpdateRequest(UpdateRequestReq) returns (Request){}
-    rpc DeleteRequest(DeleteRequestReq) returns (SuccessMessage){}
-    
 
+    rpc UpdateKartoffelStatus(UpdateKartoffelStatusReq) returns (Request){}
+    rpc UpdateADStatus(UpdateADStatusReq) returns (Request){}
+
+
+    rpc DeleteRequest(DeleteRequestReq) returns (SuccessMessage){}
     rpc GetRequestsByCommander(GetRequestsByPersonIdReq) returns (RequestArray){}
     rpc GetRequestsSubmittedBy(GetRequestsByPersonIdReq) returns (RequestArray){}
     rpc GetAllRequests(GetAllRequestsReq) returns (RequestArray){}
     rpc GetRequestById(GetRequestByIdReq) returns (Request) {}
+
+
 }
+
+message UpdateKartoffelStatusReq{
+    string requestId = 1;
+    StageStatus status = 2;
+    string message = 3;
+    optional string createdId = 4;
+}
+
+message UpdateADStatusReq{
+    string requestId = 1;
+    StageStatus status = 2;
+    string message = 3;
+}
+
 
 //Enums
 
