@@ -1,10 +1,13 @@
 import { RequestManager } from "./request.manager";
 import * as grpc from "@grpc/grpc-js";
 import { PersonTypeInRequest } from "../enums/personTypeInRequest.enum";
-import { IRequest } from "../interfaces/request.interface";
-import { RequestType } from "../enums/requestType.enum";
-import { IRequestReq } from "../interfaces/requestReq.interface";
-import { ISuccessMessage } from "../interfaces/successMessage.interface";
+import {
+  Request,
+  RequestReq,
+  RequestType,
+  SuccessMessage,
+} from "../interfaces/protoc/proto/requestService";
+
 const requestManager: RequestManager = new RequestManager();
 
 export function createRequestFuncByType(type: RequestType) {
@@ -14,7 +17,7 @@ export function createRequestFuncByType(type: RequestType) {
   ): Promise<void> {
     try {
       const response = await requestManager.createRequest(
-        call.request as IRequestReq,
+        call.request as RequestReq,
         type
       );
       callback(null, response);
@@ -37,7 +40,7 @@ export async function updateKartoffelStatus(
   callback: any
 ): Promise<void> {
   try {
-    const updateResponse: IRequest = await requestManager.updateKartoffelStatus(
+    const updateResponse: Request = await requestManager.updateKartoffelStatus(
       call.request
     );
     callback(null, updateResponse);
@@ -55,7 +58,7 @@ export async function updateKartoffelStatus(
 
 export async function updateADStatus(call: any, callback: any): Promise<void> {
   try {
-    const updateResponse: IRequest = await requestManager.updateADStatus(
+    const updateResponse: Request = await requestManager.updateADStatus(
       call.request
     );
     callback(null, updateResponse);
@@ -73,7 +76,7 @@ export async function updateADStatus(call: any, callback: any): Promise<void> {
 
 export async function updateRequest(call: any, callback: any): Promise<void> {
   try {
-    const updateRequestResponse: IRequest = await requestManager.updateRequest(
+    const updateRequestResponse: Request = await requestManager.updateRequest(
       call.request
     );
     callback(null, updateRequestResponse);
@@ -91,7 +94,7 @@ export async function updateRequest(call: any, callback: any): Promise<void> {
 
 export async function deleteRequest(call: any, callback: any): Promise<void> {
   try {
-    const deleteRequestResponse: ISuccessMessage =
+    const deleteRequestResponse: SuccessMessage =
       await requestManager.deleteRequest(call.request);
     callback(null, deleteRequestResponse);
   } catch (error) {

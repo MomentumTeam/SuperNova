@@ -1,24 +1,20 @@
-import { IGetRequestByIdReq } from "../interfaces/getRequestById/getRequestByIdReq.interface";
-import { Request } from "../models/request.model";
-import { IRequest } from "../interfaces/request.interface";
-import { RequestType } from "../enums/requestType.enum";
 import { PersonTypeInRequest } from "../enums/personTypeInRequest.enum";
-import { IDeleteRequestReq } from "../interfaces/deleteRequest/deleteRequestReq.interface";
-import { IGetAllRequestsReq } from "../interfaces/getAllRequests/getAllRequestsReq.interface";
 import {
-  IRequestArray,
+  DeleteReq,
+  GetAllRequestsReq,
+  GetRequestByIdReq,
+  GetRequestsByPersonIdReq,
+  Request,
   RequestArray,
-} from "../interfaces/requestArray.interface";
-import {
-  ISuccessMessage,
+  RequestStatus,
+  RequestType,
+  StageStatus,
   SuccessMessage,
-} from "../interfaces/successMessage.interface";
-import { IUpdateRequestReq } from "../interfaces/updateRequest/updateRequestReq.interface";
-import { IGetRequestsByPersonIdReq } from "../interfaces/getRequestsByPersonId/getRequestsByPersonIdReq.interface";
-import { IUpdateKartoffelStatusReq } from "../interfaces/updateKartoffelStatus/updateKartoffelStatusReq.interface";
-import { StageStatus } from "../enums/stageStatus.enum";
-import { RequestStatus } from "../enums/requestStatus.enum";
-import { IUpdateADStatusReq } from "../interfaces/updateADStatus/updateADStatus.interface";
+  UpdateADStatusReq,
+  UpdateKartoffelStatusReq,
+  UpdateReq,
+} from "../interfaces/protoc/proto/requestService";
+import { RequestModel } from "../models/request.model";
 
 export class RequestRepository {
   private cleanUnderscoreFields(document: any): void {
@@ -101,40 +97,37 @@ export class RequestRepository {
     this.cleanNullFields(document);
   }
 
-  async deleteRequest(
-    deleteRequestReq: IDeleteRequestReq
-  ): Promise<ISuccessMessage> {
+  async deleteRequest(deleteReq: DeleteReq): Promise<SuccessMessage> {
     try {
-      await Request.deleteOne({ _id: deleteRequestReq.id });
-      return new SuccessMessage(
-        true,
-        `Request ${deleteRequestReq.id} was deleted successfully`
-      );
+      await RequestModel.deleteOne({ _id: deleteReq.id });
+      const res: SuccessMessage = {
+        success: true,
+        message: `Request ${deleteReq.id} was deleted successfully`,
+      };
+      return res;
     } catch (error) {
       throw error;
     }
   }
 
-  async updateRequest(updateRequestReq: IUpdateRequestReq): Promise<IRequest> {
+  async updateRequest(updateReq: UpdateReq): Promise<Request> {
     try {
-      let requestUpdate: any = { ...updateRequestReq.requestProperties };
+      let requestUpdate: any = { ...updateReq.requestProperties };
       if (requestUpdate.commanders && requestUpdate.commanders.length == 0) {
         delete requestUpdate["commanders"];
       }
       this.cleanUnderscoreFields(requestUpdate);
-      const document: any = await Request.findOneAndUpdate(
-        { _id: updateRequestReq.id },
+      const document: any = await RequestModel.findOneAndUpdate(
+        { _id: updateReq.id },
         { $set: requestUpdate },
         { new: true }
       );
       if (document) {
         const documentObj = document.toObject();
         this.turnObjectIdsToStrings(documentObj);
-        return documentObj as IRequest;
+        return documentObj as Request;
       } else {
-        throw new Error(
-          `A request with {_id: ${updateRequestReq.id}} was not found!`
-        );
+        throw new Error(`A request with {_id: ${updateReq.id}} was not found!`);
       }
     } catch (error) {
       throw error;
@@ -142,11 +135,11 @@ export class RequestRepository {
   }
 
   async updateKartoffelStatus(
-    updateKartoffelStatusReq: IUpdateKartoffelStatusReq
-  ): Promise<IRequest> {
+    updateKartoffelStatusReq: UpdateKartoffelStatusReq
+  ): Promise<Request> {
     try {
       this.cleanUnderscoreFields(updateKartoffelStatusReq);
-      let requestUpdate: IUpdateRequestReq = {
+      let requestUpdate: any = {
         id: updateKartoffelStatusReq.requestId,
         requestProperties: {
           kartoffelStatus: {
@@ -156,7 +149,7 @@ export class RequestRepository {
           },
         },
       };
-      if (updateKartoffelStatusReq.status === StageStatus.DONE) {
+      if (updateKartoffelStatusReq.status === StageStatus.STAGE_DONE) {
         requestUpdate.requestProperties.status = RequestStatus.DONE;
       } else {
         requestUpdate.requestProperties.status = RequestStatus.FAILED;
@@ -167,12 +160,10 @@ export class RequestRepository {
     }
   }
 
-  async updateADStatus(
-    updateADStatusReq: IUpdateADStatusReq
-  ): Promise<IRequest> {
+  async updateADStatus(updateADStatusReq: UpdateADStatusReq): Promise<Request> {
     try {
       this.cleanUnderscoreFields(updateADStatusReq);
-      let requestUpdate: IUpdateRequestReq = {
+      let requestUpdate: any = {
         id: updateADStatusReq.requestId,
         requestProperties: {
           adStatus: {
@@ -181,7 +172,7 @@ export class RequestRepository {
           },
         },
       };
-      if (updateADStatusReq.status === StageStatus.FAILED) {
+      if (updateADStatusReq.status === StageStatus.STAGE_FAILED) {
         requestUpdate.requestProperties.status = RequestStatus.FAILED;
       }
       return await this.updateRequest(requestUpdate);
@@ -193,26 +184,26 @@ export class RequestRepository {
   async createRequest(
     createRequestReq: any,
     type: RequestType
-  ): Promise<IRequest> {
+  ): Promise<Request> {
     try {
-      const request: any = new Request(createRequestReq);
+      const request: any = new RequestModel(createRequestReq);
       request.type = type;
       request.createdAt = new Date().getTime();
       const createdCreateRequest = await request.save();
       const document = createdCreateRequest.toObject();
       this.turnObjectIdsToStrings(document);
-      return document as IRequest;
+      return document as Request;
     } catch (error) {
       throw error;
     }
   }
 
   async getAllRequests(
-    getAllRequestsReq: IGetAllRequestsReq
-  ): Promise<IRequestArray> {
+    getAllRequestsReq: GetAllRequestsReq
+  ): Promise<RequestArray> {
     try {
-      const totalCount = await Request.count({});
-      const requests: any = await Request.find(
+      const totalCount = await RequestModel.count({});
+      const requests: any = await RequestModel.find(
         {},
         {},
         {
@@ -227,24 +218,29 @@ export class RequestRepository {
           this.turnObjectIdsToStrings(requestObj);
           documents.push(requestObj);
         }
-        return new RequestArray(documents, totalCount);
+
+        return {
+          requests: documents,
+          totalCount: totalCount,
+        };
       } else {
-        return new RequestArray([], 0);
+        return {
+          requests: [],
+          totalCount: 0,
+        };
       }
     } catch (error) {
       throw error;
     }
   }
 
-  async getRequestById(
-    getRequestByIdReq: IGetRequestByIdReq
-  ): Promise<IRequest> {
+  async getRequestById(getRequestByIdReq: GetRequestByIdReq): Promise<Request> {
     try {
-      const request = await Request.findOne({ _id: getRequestByIdReq.id });
+      const request = await RequestModel.findOne({ _id: getRequestByIdReq.id });
       if (request) {
         const document = request.toObject();
         this.turnObjectIdsToStrings(document);
-        return document as IRequest;
+        return document as Request;
       } else {
         throw new Error(
           `A request with {_id: ${getRequestByIdReq.id}} was not found!`
@@ -256,7 +252,7 @@ export class RequestRepository {
   }
 
   async getRequestsByPersonId(
-    getRequestsByPersonIdReq: IGetRequestsByPersonIdReq,
+    getRequestsByPersonIdReq: GetRequestsByPersonIdReq,
     personTypeInRequest: PersonTypeInRequest
   ) {
     try {
@@ -264,10 +260,10 @@ export class RequestRepository {
         personTypeInRequest === PersonTypeInRequest.COMMANDER
           ? "commanders"
           : "submittedBy";
-      const totalCount = await Request.count({
+      const totalCount = await RequestModel.count({
         [field]: getRequestsByPersonIdReq.id,
       });
-      const requests: any = await Request.find(
+      const requests: any = await RequestModel.find(
         {
           [field]: getRequestsByPersonIdReq.id,
         },

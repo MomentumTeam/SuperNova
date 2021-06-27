@@ -1,15 +1,17 @@
 import { PersonTypeInRequest } from "../enums/personTypeInRequest.enum";
-import { RequestType } from "../enums/requestType.enum";
-import { IDeleteRequestReq } from "../interfaces/deleteRequest/deleteRequestReq.interface";
-import { IGetAllRequestsReq } from "../interfaces/getAllRequests/getAllRequestsReq.interface";
-import { IGetRequestByIdReq } from "../interfaces/getRequestById/getRequestByIdReq.interface";
-import { IGetRequestsByPersonIdReq } from "../interfaces/getRequestsByPersonId/getRequestsByPersonIdReq.interface";
-import { IRequest } from "../interfaces/request.interface";
-import { IRequestArray } from "../interfaces/requestArray.interface";
-import { IRequestReq } from "../interfaces/requestReq.interface";
-import { ISuccessMessage } from "../interfaces/successMessage.interface";
-import { IUpdateADStatusReq } from "../interfaces/updateADStatus/updateADStatus.interface";
-import { IUpdateKartoffelStatusReq } from "../interfaces/updateKartoffelStatus/updateKartoffelStatusReq.interface";
+import {
+  DeleteReq,
+  GetAllRequestsReq,
+  GetRequestByIdReq,
+  GetRequestsByPersonIdReq,
+  Request,
+  RequestArray,
+  RequestReq,
+  RequestType,
+  SuccessMessage,
+  UpdateADStatusReq,
+  UpdateKartoffelStatusReq,
+} from "../interfaces/protoc/proto/requestService";
 import { RequestRepository } from "./request.repository";
 export class RequestManager {
   private requestRepository: RequestRepository;
@@ -17,69 +19,65 @@ export class RequestManager {
     this.requestRepository = new RequestRepository();
   }
 
-  async updateRequest(updateRequestReq: any): Promise<IRequest> {
+  async updateRequest(updateRequestReq: any): Promise<Request> {
     try {
       return (await this.requestRepository.updateRequest(
         updateRequestReq
-      )) as IRequest;
+      )) as Request;
     } catch (error) {
       throw error;
     }
   }
 
   async updateKartoffelStatus(
-    updateKartoffelStatusReq: IUpdateKartoffelStatusReq
-  ): Promise<IRequest> {
+    updateKartoffelStatusReq: UpdateKartoffelStatusReq
+  ): Promise<Request> {
     try {
       return (await this.requestRepository.updateKartoffelStatus(
         updateKartoffelStatusReq
-      )) as IRequest;
+      )) as Request;
     } catch (error) {
       throw error;
     }
   }
 
-  async updateADStatus(
-    updateADStatusReq: IUpdateADStatusReq
-  ): Promise<IRequest> {
+  async updateADStatus(updateADStatusReq: UpdateADStatusReq): Promise<Request> {
     try {
       return (await this.requestRepository.updateADStatus(
         updateADStatusReq
-      )) as IRequest;
+      )) as Request;
     } catch (error) {
       throw error;
     }
   }
 
-  async deleteRequest(
-    deleteRequestReq: IDeleteRequestReq
-  ): Promise<ISuccessMessage> {
+  async deleteRequest(deleteRequestReq: DeleteReq): Promise<SuccessMessage> {
     try {
       return (await this.requestRepository.deleteRequest(
         deleteRequestReq
-      )) as ISuccessMessage;
+      )) as SuccessMessage;
     } catch (error) {
       throw error;
     }
   }
 
   async createRequest(
-    createRequest: IRequestReq,
+    createRequest: RequestReq,
     type: RequestType
-  ): Promise<IRequest> {
+  ): Promise<Request> {
     try {
       return (await this.requestRepository.createRequest(
         createRequest,
         type
-      )) as IRequest;
+      )) as Request;
     } catch (error) {
       throw error;
     }
   }
 
   async getAllRequests(
-    getAllRequestsReq: IGetAllRequestsReq
-  ): Promise<IRequestArray> {
+    getAllRequestsReq: GetAllRequestsReq
+  ): Promise<RequestArray> {
     try {
       return await this.requestRepository.getAllRequests(getAllRequestsReq);
     } catch (error) {
@@ -87,9 +85,7 @@ export class RequestManager {
     }
   }
 
-  async getRequestById(
-    getRequestByIdReq: IGetRequestByIdReq
-  ): Promise<IRequest> {
+  async getRequestById(getRequestByIdReq: GetRequestByIdReq): Promise<Request> {
     try {
       return await this.requestRepository.getRequestById(getRequestByIdReq);
     } catch (error) {
@@ -98,7 +94,7 @@ export class RequestManager {
   }
 
   async getRequestsByPersonId(
-    getRequestsByPersonIdReq: IGetRequestsByPersonIdReq,
+    getRequestsByPersonIdReq: GetRequestsByPersonIdReq,
     personTypeInRequest: PersonTypeInRequest
   ) {
     try {
