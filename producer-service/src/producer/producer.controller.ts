@@ -1,6 +1,6 @@
 import { RequestManager } from "./producer.manager";
 import * as grpc from "@grpc/grpc-js";
-import { ISuccessMessage } from "../interfaces/successMessage.interface";
+import { SuccessMessage } from "../interfaces/protoc/proto/producerService";
 const requestManager: RequestManager = new RequestManager();
 
 export async function produceToKartoffelQueue(
@@ -8,7 +8,7 @@ export async function produceToKartoffelQueue(
   callback: any
 ): Promise<void> {
   try {
-    const successMessage: ISuccessMessage =
+    const successMessage: SuccessMessage =
       await requestManager.produceToKartoffelQueue(call.request);
     callback(null, successMessage);
   } catch (error) {
@@ -28,7 +28,7 @@ export async function produceToADQueue(
   callback: any
 ): Promise<void> {
   try {
-    const successMessage: ISuccessMessage =
+    const successMessage: SuccessMessage =
       await requestManager.produceToADQueue(call.request);
     callback(null, successMessage);
   } catch (error) {

@@ -3,27 +3,44 @@ syntax = "proto3";
 package RequestService;
 
 service RequestService {
-    rpc CreateOGRequest(CreateOGRequestReq) returns (CreateOGRequest) {}
-    rpc CreateRoleRequest(CreateRoleRequestReq) returns (CreateRoleRequest) {}
-    rpc CreateEntityRequest(CreateEntityRequestReq) returns (CreateEntityRequest){}
-    rpc AssignRoleToEntityRequest(AssignRoleToEntityRequestReq) returns (AssignRoleToEntityRequest) {}
-    rpc RenameOGRequest(RenameOGRequestReq) returns (RenameOGRequest) {}
-    rpc RenameRoleRequest(RenameRoleRequestReq) returns (RenameRoleRequest) {}
-    rpc EditEntityRequest(EditEntityRequestReq) returns (EditEntityRequest){}
-    rpc DeleteOGRequest(DeleteOGRequestReq) returns (DeleteOGRequest){}
-    rpc DeleteRoleRequest(DeleteRoleRequestReq) returns (DeleteRoleRequest){}
-    
-    rpc DisconectRoleFromEntityRequest(DisconectRoleFromEntityRequestReq) returns (DisconectRoleFromEntityRequest){}
+    rpc CreateOGRequest(CreateOGReq) returns (CreateOGRes) {}
+    rpc CreateRoleRequest(CreateRoleReq) returns (CreateRoleRes) {}
+    rpc CreateEntityRequest(CreateEntityReq) returns (CreateEntityRes){}
+    rpc AssignRoleToEntityRequest(AssignRoleToEntityReq) returns (AssignRoleToEntityRes) {}
+    rpc RenameOGRequest(RenameOGReq) returns (RenameOGRes) {}
+    rpc RenameRoleRequest(RenameRoleReq) returns (EditEntityRes) {}
+    rpc EditEntityRequest(EditEntityReq) returns (EditEntityRes){}
+    rpc DeleteOGRequest(DeleteOGReq) returns (DeleteOGRes){}
+    rpc DeleteRoleRequest(DeleteRoleReq) returns (DeleteRoleRes){}
+    rpc DisconectRoleFromEntityRequest(DisconectRoleFromEntityReq) returns (DisconectRoleFromEntityRes){}
+    rpc UpdateRequest(UpdateReq) returns (Request){}
 
-    rpc UpdateRequest(UpdateRequestReq) returns (Request){}
-    rpc DeleteRequest(DeleteRequestReq) returns (SuccessMessage){}
-    
+    rpc UpdateKartoffelStatus(UpdateKartoffelStatusReq) returns (Request){}
+    rpc UpdateADStatus(UpdateADStatusReq) returns (Request){}
 
+
+    rpc DeleteRequest(DeleteReq) returns (SuccessMessage){}
     rpc GetRequestsByCommander(GetRequestsByPersonIdReq) returns (RequestArray){}
     rpc GetRequestsSubmittedBy(GetRequestsByPersonIdReq) returns (RequestArray){}
     rpc GetAllRequests(GetAllRequestsReq) returns (RequestArray){}
     rpc GetRequestById(GetRequestByIdReq) returns (Request) {}
+
+
 }
+
+message UpdateKartoffelStatusReq{
+    string requestId = 1;
+    StageStatus status = 2;
+    string message = 3;
+    optional string createdId = 4;
+}
+
+message UpdateADStatusReq{
+    string requestId = 1;
+    StageStatus status = 2;
+    string message = 3;
+}
+
 
 //Enums
 
@@ -49,14 +66,14 @@ enum RequestStatus{
 }
 
 enum StageStatus{
-    UNKNOWN = 0;
-    IN_PROGRESS = 1;
-    DONE = 2;
-    FAILED = 3;
+    STAGE_UNKNOWN = 0;
+    STAGE_IN_PROGRESS = 1;
+    STAGE_DONE = 2;
+    STAGE_FAILED = 3;
 }
 
 enum Decision{
-    UNKNOWN = 0;
+    DECISION_UNKNOWN = 0;
     APPROVED = 1;
     DENIED = 2;
 }
@@ -74,7 +91,7 @@ message ApproverDecision{
 message KartoffelStatus{
     StageStatus status = 1;
     string message = 2;
-    string createdId = 3;
+    optional string createdId = 3;
 }
 
 message ADStatus{
@@ -104,15 +121,15 @@ message GetRequestByIdReq{
     string id = 1;
 }
 
-message DeleteRequestReq{
+message DeleteReq{
     string id = 1;
 }
 
-message UpdateRequestReq{
+message UpdateReq{
     string id = 1;
-    UpdateRequestProperties requestProperties = 2;
+    UpdateReqProperties requestProperties = 2;
 }
-message UpdateRequestProperties{
+message UpdateReqProperties{
     optional string submittedBy = 1;
     optional RequestStatus status = 2;
     optional ApproverDecision commanderDecision = 3;
@@ -127,7 +144,7 @@ message UpdateRequestProperties{
 //Request messages
 
 //CreateOG
-message CreateOGRequestReq{
+message CreateOGReq{
     string submittedBy = 1;
     RequestStatus status = 2;
     ApproverDecision commanderDecision = 3;
@@ -140,7 +157,7 @@ message CreateOGRequestReq{
     CreateOGADParams adParams = 9;
 }
 
-message CreateOGRequest{
+message CreateOGRes{
     string submittedBy = 1;
     RequestStatus status = 2;
     ApproverDecision commanderDecision = 3;
@@ -169,7 +186,7 @@ message CreateOGADParams{
 }
 
 //CreateRole
-message CreateRoleRequestReq{
+message CreateRoleReq{
     string submittedBy = 1;
     RequestStatus status = 2;
     ApproverDecision commanderDecision = 3;
@@ -181,12 +198,12 @@ message CreateRoleRequestReq{
     CreateRoleADParams adParams = 9;
 }
 
-message CreateRoleRequest{
+message CreateRoleRes{
     string submittedBy = 1;
     RequestStatus status = 2;
     ApproverDecision commanderDecision = 3;
     ApproverDecision securityDecision = 4;
-    repeated string commanders = 5;  
+    repeated string commanders = 5;
     KartoffelStatus kartoffelStatus = 6;
     ADStatus adStatus = 7;
     CreateRoleKartoffelParams kartoffelParams = 8;
@@ -217,7 +234,7 @@ message CreateRoleADParams{
 }
 
 //CreateEntity
-message CreateEntityRequestReq{
+message CreateEntityReq{
     string submittedBy = 1;
     RequestStatus status = 2;
     ApproverDecision commanderDecision = 3;
@@ -229,7 +246,7 @@ message CreateEntityRequestReq{
     CreateEntityADParams adParams = 9;
 }
 
-message CreateEntityRequest{
+message CreateEntityRes{
     string submittedBy = 1;
     RequestStatus status = 2;
     ApproverDecision commanderDecision = 3;
@@ -264,7 +281,7 @@ message CreateEntityADParams{
 }
 
 //AssignRoleToEntity
-message AssignRoleToEntityRequestReq{
+message AssignRoleToEntityReq{
     string submittedBy = 1;
     RequestStatus status = 2;
     ApproverDecision commanderDecision = 3;
@@ -276,7 +293,7 @@ message AssignRoleToEntityRequestReq{
     AssignRoleToEntityADParams adParams = 9;
 }
 
-message AssignRoleToEntityRequest{
+message AssignRoleToEntityRes{
     string submittedBy = 1;
     RequestStatus status = 2;
     ApproverDecision commanderDecision = 3;
@@ -308,7 +325,7 @@ message AssignRoleToEntityADParams{
 }
 
 //RenameOG
-message RenameOGRequestReq{
+message RenameOGReq{
     string submittedBy = 1;
     RequestStatus status = 2;
     ApproverDecision commanderDecision = 3;
@@ -320,7 +337,7 @@ message RenameOGRequestReq{
     RenameOGADParams adParams = 9;
 }
 
-message RenameOGRequest{
+message RenameOGRes{
     string submittedBy = 1;
     RequestStatus status = 2;
     ApproverDecision commanderDecision = 3;
@@ -344,7 +361,7 @@ message RenameOGADParams{
 }
 
 //RenameRole
-message RenameRoleRequestReq{
+message RenameRoleReq{
     string submittedBy = 1;
     RequestStatus status = 2;
     ApproverDecision commanderDecision = 3;
@@ -356,7 +373,7 @@ message RenameRoleRequestReq{
     RenameRoleADParams adParams = 9;
 }
 
-message RenameRoleRequest{
+message RenameRoleRes{
     string submittedBy = 1;
     RequestStatus status = 2;
     ApproverDecision commanderDecision = 3;
@@ -380,7 +397,7 @@ message RenameRoleADParams{
 }
 
 //EditEntity
-message EditEntityRequestReq{
+message EditEntityReq{
     string submittedBy = 1;
     RequestStatus status = 2;
     ApproverDecision commanderDecision = 3;
@@ -392,7 +409,7 @@ message EditEntityRequestReq{
     EditEntityADParams adParams = 9;
 }
 
-message EditEntityRequest{
+message EditEntityRes{
     string submittedBy = 1;
     RequestStatus status = 2;
     ApproverDecision commanderDecision = 3;
@@ -431,7 +448,7 @@ message EditEntityADParams{
 }
 
 //DeleteOG
-message DeleteOGRequestReq{
+message DeleteOGReq{
     string submittedBy = 1;
     RequestStatus status = 2;
     ApproverDecision commanderDecision = 3;
@@ -443,7 +460,7 @@ message DeleteOGRequestReq{
     DeleteOGADParams adParams = 9;
 }
 
-message DeleteOGRequest{
+message DeleteOGRes{
     string submittedBy = 1;
     RequestStatus status = 2;
     ApproverDecision commanderDecision = 3;
@@ -468,7 +485,7 @@ message DeleteOGADParams{
 
 
 //DeleteRole
-message DeleteRoleRequestReq{
+message DeleteRoleReq{
     string submittedBy = 1;
     RequestStatus status = 2;
     ApproverDecision commanderDecision = 3;
@@ -480,7 +497,7 @@ message DeleteRoleRequestReq{
     DeleteRoleADParams adParams = 9;
 }
 
-message DeleteRoleRequest{
+message DeleteRoleRes{
     string submittedBy = 1;
     RequestStatus status = 2;
     ApproverDecision commanderDecision = 3;
@@ -505,7 +522,7 @@ message DeleteRoleADParams{
 }
 
 //DisconectRoleFromEntity
-message DisconectRoleFromEntityRequestReq{
+message DisconectRoleFromEntityReq{
     string submittedBy = 1;
     RequestStatus status = 2;
     ApproverDecision commanderDecision = 3;
@@ -517,7 +534,7 @@ message DisconectRoleFromEntityRequestReq{
     DisconectRoleFromEntityADParams adParams = 9;
 }
 
-message DisconectRoleFromEntityRequest{
+message DisconectRoleFromEntityRes{
     string submittedBy = 1;
     RequestStatus status = 2;
     ApproverDecision commanderDecision = 3;
