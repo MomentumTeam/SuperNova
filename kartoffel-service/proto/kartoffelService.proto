@@ -161,41 +161,41 @@ message SuccessMessage{
 }
 
 // Kartoffel enums
-enum Source{
-    SOURCE_1 = 0;
-    SOURCE_2 = 1;
-}
+// enum Source{
+//     SOURCE_1 = 0;
+//     SOURCE_2 = 1;
+// }
 
-enum OGStatus{
-    ACTIVE = 0;
-    IN_ACTIVE = 1;
-}
+// enum OGStatus{
+//     ACTIVE = 0;
+//     IN_ACTIVE = 1;
+// }
 
-enum Sex{
-    MALE = 0;
-    FEMALE = 1;
-}
+// enum Sex{
+//     MALE = 0;
+//     FEMALE = 1;
+// }
 
-enum ServiceType{
-    SOLDIER = 0;
-    RESERVED = 1;
-    CIVILIAN = 2;
-}
+// enum ServiceType{
+//     SOLDIER = 0;
+//     RESERVED = 1;
+//     CIVILIAN = 2;
+// }
 
-enum EntityType{
-    SOLDIER = 0;
-    RESERVED = 1;
-    CIVILIAN = 2;
-}
+// enum EntityType{
+//     SOLDIER = 0;
+//     RESERVED = 1;
+//     CIVILIAN = 2;
+// }
 
-enum Clearance{
-    LEVEL_1 = 0;
-    LEVEL_2 = 1;
-    LEVEL_3 = 2;
-    LEVEL_4 = 3;
-    LEVEL_5 = 4;
-    YELLOW = 5;
-}
+// enum Clearance{
+//     LEVEL_1 = 0;
+//     LEVEL_2 = 1;
+//     LEVEL_3 = 2;
+//     LEVEL_4 = 3;
+//     LEVEL_5 = 4;
+//     YELLOW = 5;
+// }
 
 
 // Kartoffel messages
@@ -233,10 +233,10 @@ message Entity{
     string directGroup = 3;
     string hierarchy = 4;
     string entityType = 5;
-    required string identityCard = 6;
+    string identityCard = 6;
     string personalNumber = 7;
     string serviceType = 8;
-    required string firstName = 9;
+    string firstName = 9;
     string lastName = 10;
     string akaUnit = 11;
     int64 dischargeDay = 12;

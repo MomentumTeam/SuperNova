@@ -1,48 +1,32 @@
-import { IConnectEntityAndDIRequest } from "../interfaces/connectEntityAndDI/connectEntityAndDIRequest.interface";
-import { IConnectRoleAndDIRequest } from "../interfaces/connectRoleAndDI/connectRoleAndDIRequest.interface";
-import { ICreateDIRequest } from "../interfaces/createDI/createDIRequest.interface";
-import { ICreateEntityRequest } from "../interfaces/createEntity/createEntityRequest.interface";
-import { ICreateOGRequest } from "../interfaces/createOG/crateOGRequest.interface";
-import { ICreateRoleRequest } from "../interfaces/createRole/createRoleRequest.interface";
-import { IDeleteDIRequest } from "../interfaces/deleteDI/deleteDIRequest.interface";
-import { IDeleteOGRequest } from "../interfaces/deleteOG/deleteOGRequest.interface";
-import { IDeleteRoleRequest } from "../interfaces/deleteRole/deleteRoleRequest.interface";
-import { IDisconnectDIFromEntityRequest } from "../interfaces/disconnectDIFromEntity/disconnectDIFromEntityRequest.interface";
-import { IGetChildrenOfOGRequest } from "../interfaces/getChildrenOfOG/getChildrenOfOGRequest.interface";
-import { IGetEntitiesUnderOGRequest } from "../interfaces/getEntitiesUnderOG/getEntitiesUnderOGRequest.interface";
-import { IGetEntityByIdNumberRequest } from "../interfaces/getEntityByIdNumber/getEntityByIdNumber.interface";
-import { IGetEntityByMongoIdRequest } from "../interfaces/getEntityByMongoId/getEntityByMongoIdRequest.interface";
-import { IGetEntityByRoleIdRequest } from "../interfaces/getEntityByRoleId/getEntityByRoleIdRequest.interface";
-import { ISearchRolesByRoleIdRequest } from "../interfaces/searchRolesByRoleId/searchRolesByRoleId.interface";
-import { IGetRolesUnderOGRequest } from "../interfaces/getRolesUnderOG/getRolesUnderOGRequest.interface";
 import {
-  DigitalIdentity,
-  IDigitalIdentity,
-} from "../interfaces/kartoffelTypes/digitalIdentity.interface";
-import { Entity, IEntity } from "../interfaces/kartoffelTypes/entity.interface";
-import {
-  EntityArray,
-  IEntityArray,
-} from "../interfaces/kartoffelTypes/entityArray.interface";
-import {
-  IOGArray,
+  SearchOGRequest,
   OGArray,
-} from "../interfaces/kartoffelTypes/ogArray.interface";
-import {
-  IOrganizationGroup,
+  CreateOGRequest,
   OrganizationGroup,
-} from "../interfaces/kartoffelTypes/organizationGroup.interface";
-import { IRole, Role } from "../interfaces/kartoffelTypes/role.interface";
-import {
-  IRoleArray,
-  RoleArray,
-} from "../interfaces/kartoffelTypes/roleArray.interface";
-import {
-  ISuccessMessage,
+  CreateDIRequest,
+  DigitalIdentity,
+  CreateRoleRequest,
+  Role,
+  ConnectRoleAndDIRequest,
   SuccessMessage,
-} from "../interfaces/kartoffelTypes/successMessage.interface";
-import { ISearchEntitiesByFullNameRequest } from "../interfaces/searchEntitiesByFullName/searchEntitiesByFullNameRequest.interface";
-import { ISearchOGRequest } from "../interfaces/searchOG/searchOGRequest.interface";
+  SearchEntitiesByFullNameRequest,
+  EntityArray,
+  GetEntityByIdNumberRequest,
+  Entity,
+  SearchRolesByRoleIdRequest,
+  RoleArray,
+  GetRolesUnderOGRequest,
+  ConnectEntityAndDIRequest,
+  CreateEntityRequest,
+  GetEntityByRoleIdRequest,
+  DisconnectDIFromEntityRequest,
+  GetEntityByMongoIdRequest,
+  DeleteOGRequest,
+  GetChildrenOfOGRequest,
+  DeleteRoleRequest,
+  DeleteDIRequest,
+  GetEntitiesUnderOGRequest,
+} from "../interfaces/protoc/proto/kartoffelService";
 import { KartoffelRepository } from "./kartoffel.repository";
 
 export class KartoffelManager {
@@ -51,7 +35,7 @@ export class KartoffelManager {
     this.kartoffelRepository = new KartoffelRepository();
   }
 
-  async searchOG(searchOGRequest: ISearchOGRequest): Promise<IOGArray> {
+  async searchOG(searchOGRequest: SearchOGRequest): Promise<OGArray> {
     try {
       return await this.kartoffelRepository.searchOG(searchOGRequest);
     } catch (error) {
@@ -59,9 +43,7 @@ export class KartoffelManager {
     }
   }
 
-  async createOG(
-    createOGRequest: ICreateOGRequest
-  ): Promise<IOrganizationGroup> {
+  async createOG(createOGRequest: CreateOGRequest): Promise<OrganizationGroup> {
     try {
       return await this.kartoffelRepository.createOG(createOGRequest);
     } catch (error) {
@@ -69,7 +51,7 @@ export class KartoffelManager {
     }
   }
 
-  async createDI(createDIRequest: ICreateDIRequest): Promise<IDigitalIdentity> {
+  async createDI(createDIRequest: CreateDIRequest): Promise<DigitalIdentity> {
     try {
       return await this.kartoffelRepository.createDI(createDIRequest);
     } catch (error) {
@@ -77,7 +59,7 @@ export class KartoffelManager {
     }
   }
 
-  async createRole(createRoleRequest: ICreateRoleRequest): Promise<IRole> {
+  async createRole(createRoleRequest: CreateRoleRequest): Promise<Role> {
     try {
       return await this.kartoffelRepository.createRole(createRoleRequest);
     } catch (error) {
@@ -86,8 +68,8 @@ export class KartoffelManager {
   }
 
   async connectRoleAndDI(
-    connectRoleAndDIRequest: IConnectRoleAndDIRequest
-  ): Promise<ISuccessMessage> {
+    connectRoleAndDIRequest: ConnectRoleAndDIRequest
+  ): Promise<SuccessMessage> {
     try {
       return await this.kartoffelRepository.connectRoleAndDI(
         connectRoleAndDIRequest
@@ -98,8 +80,8 @@ export class KartoffelManager {
   }
 
   async searchEntitiesByFullName(
-    searchEntitiesByFullNameRequest: ISearchEntitiesByFullNameRequest
-  ): Promise<IEntityArray> {
+    searchEntitiesByFullNameRequest: SearchEntitiesByFullNameRequest
+  ): Promise<EntityArray> {
     try {
       return await this.kartoffelRepository.searchEntitiesByFullName(
         searchEntitiesByFullNameRequest
@@ -110,8 +92,8 @@ export class KartoffelManager {
   }
 
   async getEntityByIdNumber(
-    getEntityByIdNumberRequest: IGetEntityByIdNumberRequest
-  ): Promise<IEntity> {
+    getEntityByIdNumberRequest: GetEntityByIdNumberRequest
+  ): Promise<Entity> {
     try {
       return await this.kartoffelRepository.getEntityByIdNumber(
         getEntityByIdNumberRequest
@@ -122,8 +104,8 @@ export class KartoffelManager {
   }
 
   async searchRolesByRoleId(
-    searchRolesByRoleIdRequest: ISearchRolesByRoleIdRequest
-  ): Promise<IRoleArray> {
+    searchRolesByRoleIdRequest: SearchRolesByRoleIdRequest
+  ): Promise<RoleArray> {
     try {
       return await this.kartoffelRepository.searchRolesByRoleId(
         searchRolesByRoleIdRequest
@@ -134,8 +116,8 @@ export class KartoffelManager {
   }
 
   async getRolesUnderOG(
-    getRolesUnderOGRequest: IGetRolesUnderOGRequest
-  ): Promise<IRoleArray> {
+    getRolesUnderOGRequest: GetRolesUnderOGRequest
+  ): Promise<RoleArray> {
     try {
       return await this.kartoffelRepository.getRolesUnderOG(
         getRolesUnderOGRequest
@@ -146,8 +128,8 @@ export class KartoffelManager {
   }
 
   async connectEntityAndDI(
-    connectEntityAndDIRequest: IConnectEntityAndDIRequest
-  ): Promise<ISuccessMessage> {
+    connectEntityAndDIRequest: ConnectEntityAndDIRequest
+  ): Promise<SuccessMessage> {
     try {
       return await this.kartoffelRepository.connectEntityAndDI(
         connectEntityAndDIRequest
@@ -158,8 +140,8 @@ export class KartoffelManager {
   }
 
   async createEntity(
-    createEntityRequest: ICreateEntityRequest
-  ): Promise<IEntity> {
+    createEntityRequest: CreateEntityRequest
+  ): Promise<Entity> {
     try {
       return await this.kartoffelRepository.createEntity(createEntityRequest);
     } catch (error) {
@@ -168,8 +150,8 @@ export class KartoffelManager {
   }
 
   async getEntityByRoleId(
-    getEntityByRoleIdRequest: IGetEntityByRoleIdRequest
-  ): Promise<IEntity> {
+    getEntityByRoleIdRequest: GetEntityByRoleIdRequest
+  ): Promise<Entity> {
     try {
       return await this.kartoffelRepository.getEntityByRoleId(
         getEntityByRoleIdRequest
@@ -180,8 +162,8 @@ export class KartoffelManager {
   }
 
   async disconnectDIFromEntity(
-    disconnectDIFromEntityRequest: IDisconnectDIFromEntityRequest
-  ): Promise<ISuccessMessage> {
+    disconnectDIFromEntityRequest: DisconnectDIFromEntityRequest
+  ): Promise<SuccessMessage> {
     try {
       return await this.kartoffelRepository.disconnectDIFromEntity(
         disconnectDIFromEntityRequest
@@ -192,8 +174,8 @@ export class KartoffelManager {
   }
 
   async getEntityByMongoId(
-    getEntityByMongoIdRequest: IGetEntityByMongoIdRequest
-  ): Promise<IEntity> {
+    getEntityByMongoIdRequest: GetEntityByMongoIdRequest
+  ): Promise<Entity> {
     try {
       return await this.kartoffelRepository.getEntityByMongoId(
         getEntityByMongoIdRequest
@@ -203,7 +185,7 @@ export class KartoffelManager {
     }
   }
 
-  async deleteOG(deleteOGRequest: IDeleteOGRequest): Promise<ISuccessMessage> {
+  async deleteOG(deleteOGRequest: DeleteOGRequest): Promise<SuccessMessage> {
     try {
       return await this.kartoffelRepository.deleteOG(deleteOGRequest);
     } catch (error) {
@@ -212,8 +194,8 @@ export class KartoffelManager {
   }
 
   async getChildrenOfOG(
-    getChildrenOfOGRequest: IGetChildrenOfOGRequest
-  ): Promise<IOGArray> {
+    getChildrenOfOGRequest: GetChildrenOfOGRequest
+  ): Promise<OGArray> {
     try {
       return await this.kartoffelRepository.getChildrenOfOG(
         getChildrenOfOGRequest
@@ -224,8 +206,8 @@ export class KartoffelManager {
   }
 
   async deleteRole(
-    deleteRoleRequest: IDeleteRoleRequest
-  ): Promise<ISuccessMessage> {
+    deleteRoleRequest: DeleteRoleRequest
+  ): Promise<SuccessMessage> {
     try {
       return await this.kartoffelRepository.deleteRole(deleteRoleRequest);
     } catch (error) {
@@ -233,7 +215,7 @@ export class KartoffelManager {
     }
   }
 
-  async deleteDI(deleteDIRequest: IDeleteDIRequest): Promise<ISuccessMessage> {
+  async deleteDI(deleteDIRequest: DeleteDIRequest): Promise<SuccessMessage> {
     try {
       return await this.kartoffelRepository.deleteDI(deleteDIRequest);
     } catch (error) {
@@ -242,8 +224,8 @@ export class KartoffelManager {
   }
 
   async getEntitiesUnderOG(
-    getEntitiesUnderOGRequest: IGetEntitiesUnderOGRequest
-  ): Promise<IEntityArray> {
+    getEntitiesUnderOGRequest: GetEntitiesUnderOGRequest
+  ): Promise<EntityArray> {
     try {
       return await this.kartoffelRepository.getEntitiesUnderOG(
         getEntitiesUnderOGRequest

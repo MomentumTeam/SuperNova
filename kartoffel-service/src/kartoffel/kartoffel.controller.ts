@@ -1,20 +1,21 @@
 import * as grpc from "@grpc/grpc-js";
-import { IDigitalIdentity } from "../interfaces/kartoffelTypes/digitalIdentity.interface";
-import { IEntity } from "../interfaces/kartoffelTypes/entity.interface";
-import { IEntityArray } from "../interfaces/kartoffelTypes/entityArray.interface";
-import { IOGArray } from "../interfaces/kartoffelTypes/ogArray.interface";
-import { IOrganizationGroup } from "../interfaces/kartoffelTypes/organizationGroup.interface";
-import { IRole } from "../interfaces/kartoffelTypes/role.interface";
-import { IRoleArray } from "../interfaces/kartoffelTypes/roleArray.interface";
-import { ISuccessMessage } from "../interfaces/kartoffelTypes/successMessage.interface";
-import { ISearchOGRequest } from "../interfaces/searchOG/searchOGRequest.interface";
+import {
+  OGArray,
+  OrganizationGroup,
+  DigitalIdentity,
+  Role,
+  SuccessMessage,
+  EntityArray,
+  Entity,
+  RoleArray,
+} from "../interfaces/protoc/proto/kartoffelService";
 import { KartoffelManager } from "./kartoffel.manager";
 
 const kartoffelManager: KartoffelManager = new KartoffelManager();
 
 export async function searchOG(call: any, callback: any): Promise<void> {
   try {
-    const ogArray: IOGArray = await kartoffelManager.searchOG(call.request);
+    const ogArray: OGArray = await kartoffelManager.searchOG(call.request);
     callback(null, ogArray);
   } catch (error) {
     callback(
@@ -30,7 +31,7 @@ export async function searchOG(call: any, callback: any): Promise<void> {
 
 export async function createOG(call: any, callback: any): Promise<void> {
   try {
-    const organizationGroup: IOrganizationGroup =
+    const organizationGroup: OrganizationGroup =
       await kartoffelManager.createOG(call.request);
     callback(null, organizationGroup);
   } catch (error) {
@@ -47,7 +48,7 @@ export async function createOG(call: any, callback: any): Promise<void> {
 
 export async function createDI(call: any, callback: any): Promise<void> {
   try {
-    const digitalIdentity: IDigitalIdentity = await kartoffelManager.createDI(
+    const digitalIdentity: DigitalIdentity = await kartoffelManager.createDI(
       call.request
     );
     callback(null, digitalIdentity);
@@ -65,7 +66,7 @@ export async function createDI(call: any, callback: any): Promise<void> {
 
 export async function createRole(call: any, callback: any): Promise<void> {
   try {
-    const createdRole: IRole = await kartoffelManager.createRole(call.request);
+    const createdRole: Role = await kartoffelManager.createRole(call.request);
     callback(null, createdRole);
   } catch (error) {
     callback(
@@ -84,7 +85,7 @@ export async function connectRoleAndDI(
   callback: any
 ): Promise<void> {
   try {
-    const successMessage: ISuccessMessage =
+    const successMessage: SuccessMessage =
       await kartoffelManager.connectRoleAndDI(call.request);
     callback(null, successMessage);
   } catch (error) {
@@ -104,7 +105,7 @@ export async function searchEntitiesByFullName(
   callback: any
 ): Promise<void> {
   try {
-    const entityArray: IEntityArray =
+    const entityArray: EntityArray =
       await kartoffelManager.searchEntitiesByFullName(call.request);
     callback(null, entityArray);
   } catch (error) {
@@ -124,7 +125,7 @@ export async function getEntityByIdNumber(
   callback: any
 ): Promise<void> {
   try {
-    const entity: IEntity = await kartoffelManager.getEntityByIdNumber(
+    const entity: Entity = await kartoffelManager.getEntityByIdNumber(
       call.request
     );
     callback(null, entity);
@@ -145,7 +146,7 @@ export async function searchRolesByRoleId(
   callback: any
 ): Promise<void> {
   try {
-    const roles: IRoleArray = await kartoffelManager.searchRolesByRoleId(
+    const roles: RoleArray = await kartoffelManager.searchRolesByRoleId(
       call.request
     );
     callback(null, roles);
@@ -163,7 +164,7 @@ export async function searchRolesByRoleId(
 
 export async function getRolesUnderOG(call: any, callback: any): Promise<void> {
   try {
-    const roleArray: IRoleArray = await kartoffelManager.getRolesUnderOG(
+    const roleArray: RoleArray = await kartoffelManager.getRolesUnderOG(
       call.request
     );
     callback(null, roleArray);
@@ -184,7 +185,7 @@ export async function connectEntityAndDI(
   callback: any
 ): Promise<void> {
   try {
-    const successMessage: ISuccessMessage =
+    const successMessage: SuccessMessage =
       await kartoffelManager.connectEntityAndDI(call.request);
     callback(null, successMessage);
   } catch (error) {
@@ -201,7 +202,7 @@ export async function connectEntityAndDI(
 
 export async function createEntity(call: any, callback: any): Promise<void> {
   try {
-    const entity: IEntity = await kartoffelManager.createEntity(call.request);
+    const entity: Entity = await kartoffelManager.createEntity(call.request);
     callback(null, entity);
   } catch (error) {
     callback(
@@ -220,7 +221,7 @@ export async function getEntityByRoleId(
   callback: any
 ): Promise<void> {
   try {
-    const entity: IEntity = await kartoffelManager.getEntityByRoleId(
+    const entity: Entity = await kartoffelManager.getEntityByRoleId(
       call.request
     );
     callback(null, entity);
@@ -241,7 +242,7 @@ export async function disconnectDIFromEntity(
   callback: any
 ): Promise<void> {
   try {
-    const successMessage: ISuccessMessage =
+    const successMessage: SuccessMessage =
       await kartoffelManager.disconnectDIFromEntity(call.request);
     callback(null, successMessage);
   } catch (error) {
@@ -261,7 +262,7 @@ export async function getEntityByMongoId(
   callback: any
 ): Promise<void> {
   try {
-    const entity: IEntity = await kartoffelManager.getEntityByMongoId(
+    const entity: Entity = await kartoffelManager.getEntityByMongoId(
       call.request
     );
     callback(null, entity);
@@ -279,7 +280,7 @@ export async function getEntityByMongoId(
 
 export async function deleteOG(call: any, callback: any): Promise<void> {
   try {
-    const successMessage: ISuccessMessage = await kartoffelManager.deleteOG(
+    const successMessage: SuccessMessage = await kartoffelManager.deleteOG(
       call.request
     );
     callback(null, successMessage);
@@ -297,7 +298,7 @@ export async function deleteOG(call: any, callback: any): Promise<void> {
 
 export async function getChildrenOfOG(call: any, callback: any): Promise<void> {
   try {
-    const children: IOGArray = await kartoffelManager.getChildrenOfOG(
+    const children: OGArray = await kartoffelManager.getChildrenOfOG(
       call.request
     );
     callback(null, children);
@@ -315,7 +316,7 @@ export async function getChildrenOfOG(call: any, callback: any): Promise<void> {
 
 export async function deleteRole(call: any, callback: any): Promise<void> {
   try {
-    const successMessage: ISuccessMessage = await kartoffelManager.deleteRole(
+    const successMessage: SuccessMessage = await kartoffelManager.deleteRole(
       call.request
     );
     callback(null, successMessage);
@@ -333,7 +334,7 @@ export async function deleteRole(call: any, callback: any): Promise<void> {
 
 export async function deleteDI(call: any, callback: any): Promise<void> {
   try {
-    const successMessage: ISuccessMessage = await kartoffelManager.deleteDI(
+    const successMessage: SuccessMessage = await kartoffelManager.deleteDI(
       call.request
     );
     callback(null, successMessage);
@@ -354,7 +355,7 @@ export async function getEntitiesUnderOG(
   callback: any
 ): Promise<void> {
   try {
-    const entityArray: IEntityArray = await kartoffelManager.getEntitiesUnderOG(
+    const entityArray: EntityArray = await kartoffelManager.getEntitiesUnderOG(
       call.request
     );
     callback(null, entityArray);

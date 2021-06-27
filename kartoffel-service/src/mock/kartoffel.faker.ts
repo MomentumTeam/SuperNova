@@ -1,108 +1,94 @@
+import faker from "faker";
 import {
-  DigitalIdentity,
-  IDigitalIdentity,
-} from "../interfaces/kartoffelTypes/digitalIdentity.interface";
-import { Entity, IEntity } from "../interfaces/kartoffelTypes/entity.interface";
-import {
-  IOrganizationGroup,
   OrganizationGroup,
-} from "../interfaces/kartoffelTypes/organizationGroup.interface";
-import { IRole, Role } from "../interfaces/kartoffelTypes/role.interface";
-import * as faker from "faker";
-import {
-  EntityArray,
-  IEntityArray,
-} from "../interfaces/kartoffelTypes/entityArray.interface";
-import {
-  IOGArray,
+  DigitalIdentity,
+  Role,
+  Entity,
   OGArray,
-} from "../interfaces/kartoffelTypes/ogArray.interface";
-import {
-  IRoleArray,
   RoleArray,
-} from "../interfaces/kartoffelTypes/roleArray.interface";
+  EntityArray,
+} from "../interfaces/protoc/proto/kartoffelService";
 
 export class KartoffelFaker {
   constructor() {}
 
-  randomOG(): IOrganizationGroup {
-    const organizationGroup: IOrganizationGroup = new OrganizationGroup(
-      faker.datatype.uuid(),
-      faker.company.companyName(),
-      "oneTree",
-      [faker.datatype.uuid()],
-      `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
-      "active",
-      true,
-      faker.datatype.datetime().getTime(),
-      faker.datatype.datetime().getTime(),
-      [],
-      []
-    );
+  randomOG(): OrganizationGroup {
+    const organizationGroup: OrganizationGroup = {
+      id: faker.datatype.uuid(),
+      name: faker.company.companyName(),
+      source: "oneTree",
+      ancestors: [faker.datatype.uuid()],
+      hierarchy: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
+      status: "active",
+      isLeaf: true,
+      createdAt: faker.datatype.datetime().getTime(),
+      updatedAt: faker.datatype.datetime().getTime(),
+      directEntities: [],
+      directRoles: [],
+    };
     return organizationGroup;
   }
 
-  randomDI(): IDigitalIdentity {
-    const digitalIdentity: IDigitalIdentity = new DigitalIdentity(
-      "domainUser",
-      "oneTree",
-      faker.internet.email(),
-      faker.internet.email(),
-      faker.datatype.uuid(),
-      faker.datatype.datetime().getTime(),
-      faker.datatype.datetime().getTime(),
-      true,
-      null
-    );
+  randomDI(): DigitalIdentity {
+    const digitalIdentity: DigitalIdentity = {
+      type: "domainUser",
+      source: "oneTree",
+      mail: faker.internet.email(),
+      uniqueId: faker.internet.email(),
+      entityId: faker.datatype.uuid(),
+      createdAt: faker.datatype.datetime().getTime(),
+      updatedAt: faker.datatype.datetime().getTime(),
+      isRoleAttachable: true,
+      role: undefined,
+    };
     return digitalIdentity;
   }
 
-  randomRole(): IRole {
-    const role: IRole = new Role(
-      faker.internet.email(),
-      faker.name.jobTitle(),
-      faker.internet.email(),
-      faker.datatype.uuid(),
-      `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
-      [],
-      "oneTree",
-      faker.datatype.datetime().getTime(),
-      faker.datatype.datetime().getTime()
-    );
+  randomRole(): Role {
+    const role: Role = {
+      roleId: faker.internet.email(),
+      jobTitle: faker.name.jobTitle(),
+      digitalIdentityUniqueId: faker.internet.email(),
+      directGroup: faker.datatype.uuid(),
+      hierarchy: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
+      hierarchyIds: [],
+      source: "oneTree",
+      createdAt: faker.datatype.datetime().getTime(),
+      updatedAt: faker.datatype.datetime().getTime(),
+    };
     return role;
   }
-
-  randomEntity(): IEntity {
-    const entity: IEntity = new Entity(
-      faker.datatype.uuid(),
-      `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
-      faker.datatype.uuid(),
-      `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
-      "soldier",
-      faker.datatype.uuid(),
-      faker.datatype.uuid(),
-      "מילואים",
-      faker.name.firstName(),
-      faker.name.lastName(),
-      faker.company.companyName(),
-      faker.datatype.datetime().getTime(),
-      "אזרח",
-      faker.internet.email(),
-      faker.name.jobTitle(),
-      [faker.phone.phoneNumber()],
-      [faker.phone.phoneNumber()],
-      `${faker.address.streetAddress()}, ${faker.address.country()}`,
-      "2",
-      "זכר",
-      faker.datatype.datetime().getTime(),
-      faker.datatype.datetime().getTime(),
-      faker.datatype.datetime().getTime(),
-      []
-    );
+  randomEntity(): Entity {
+    const entity: Entity = {
+      id: faker.datatype.uuid(),
+      displayName: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
+      directGroup: faker.datatype.uuid(),
+      hierarchy: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
+      entityType: "soldier",
+      identityCard: faker.datatype.uuid(),
+      personalNumber: faker.datatype.uuid(),
+      serviceType: "מילואים",
+      firstName: faker.name.firstName(),
+      lastName: faker.name.lastName(),
+      akaUnit: faker.company.companyName(),
+      dischargeDay: faker.datatype.datetime().getTime(),
+      rank: "אזרח",
+      mail: faker.internet.email(),
+      jobTitle: faker.name.jobTitle(),
+      phone: [faker.phone.phoneNumber()],
+      mobilePhone: [faker.phone.phoneNumber()],
+      address: `${faker.address.streetAddress()}, ${faker.address.country()}`,
+      clearance: "2",
+      sex: "זכר",
+      birthdate: faker.datatype.datetime().getTime(),
+      createdAt: faker.datatype.datetime().getTime(),
+      updatedAt: faker.datatype.datetime().getTime(),
+      digitalIdentities: [],
+    };
     return entity;
   }
 
-  randomOGArray(): IOGArray {
+  randomOGArray(): OGArray {
     const length = faker.datatype.number({
       min: 1,
       max: 10,
@@ -111,10 +97,12 @@ export class KartoffelFaker {
     for (let i = 0; i < length; i++) {
       ogArray.push(this.randomOG());
     }
-    return new OGArray(ogArray);
+    return {
+      groups: ogArray,
+    };
   }
 
-  randomRoleArray(): IRoleArray {
+  randomRoleArray(): RoleArray {
     const length = faker.datatype.number({
       min: 1,
       max: 10,
@@ -123,10 +111,10 @@ export class KartoffelFaker {
     for (let i = 0; i < length; i++) {
       roleArray.push(this.randomRole());
     }
-    return new RoleArray(roleArray);
+    return { roles: roleArray };
   }
 
-  randomEntityArray(): IEntityArray {
+  randomEntityArray(): EntityArray {
     const length = faker.datatype.number({
       min: 1,
       max: 10,
@@ -135,6 +123,6 @@ export class KartoffelFaker {
     for (let i = 0; i < length; i++) {
       entityArray.push(this.randomEntity());
     }
-    return new EntityArray(entityArray);
+    return { entities: entityArray };
   }
 }
