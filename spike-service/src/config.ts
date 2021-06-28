@@ -9,13 +9,18 @@ export const spikePubKeyPath =
   process.env.SS_SPIKE_PUBKEY_PATH ||
   "https://ospike.northeurope.cloudapp.azure.com/.well-known/publickey.pem";
 export const localSpikePublicKeyFullPath =
-  process.env.SS_SPIKE_PUBLIC_KEY_FULL_PATH ||
-  "/home/barak/Desktop/SuperNova/spike-service/utils/publickey.pem";
+  process.env.NODE_ENV === "production"
+    ? "/app/utils/publickey.pem"
+    : process.env.SS_SPIKE_PUBLIC_KEY_FULL_PATH ||
+      "/home/barak/Desktop/SuperNova/spike-service/utils/publickey.pem";
 export const selfAudience = process.env.SS_AUDIENCE || "kartoffel";
 export const grantTypeDef = process.env.SS_GRANT_TYPE || "client_credentials";
 
 export const host = process.env.SS_HOST || "0.0.0.0";
-export const port = process.env.SS_PORT || "8080";
+export const port =
+  process.env.NODE_ENV === "production"
+    ? "8080"
+    : process.env.SS_PORT || "8080";
 
 export const spikeOptions = {
   redisHost: redisHost,

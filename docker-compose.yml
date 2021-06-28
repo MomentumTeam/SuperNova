@@ -1,0 +1,53 @@
+version: "3.8"
+services:
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    environment:
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - /home/barry/mongodb/database:/data/db
+    ports:
+      - 27017:27017
+    restart: unless-stopped
+
+  spike-service:
+    image: spike-service
+    build: ./spike-service/
+    env_file:
+      - ./supernova.env
+    ports:
+      - "8080:8080"
+
+  request-service:
+    image: request-service
+    build: ./request-service/
+    env_file:
+      - ./supernova.env
+    ports:
+      - "8081:8080"
+    depends_on:
+      - mongodb
+    environment:
+      - RS_MONGO_URL=mongodb://mongodb:27017/supernova
+
+  kartoffel-service:
+    image: kartoffel-service
+    build: ./kartoffel-service/
+    env_file:
+      - ./supernova.env
+    ports:
+      - "8082:8080"
+    depends_on:
+      - spike-service
+
+  producer-service:
+    image: producer-service
+    build: ./producer-service/
+    env_file:
+      - ./supernova.env
+    ports:
+      - "8083:8080"
+    depends_on:
+      - spike-service
