@@ -9,6 +9,7 @@ export async function produceToKartoffelQueue(
 ): Promise<void> {
   try {
     const successMessage: ISuccessMessage =
+    
       await requestManager.produceToKartoffelQueue(call.request);
     callback(null, successMessage);
   } catch (error) {

@@ -2,6 +2,7 @@ import axios from "axios";
 import * as C from "../config";
 export class ProducerRepository {
   async pushIntoKartoffelQueue(message: any) {
+    console.log('pushIntoKartoffelQueue',message )
     try {
       await axios.post(`${C.queueApi}/kartoffelQueue`, message);
     } catch (error) {
