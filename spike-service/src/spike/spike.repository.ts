@@ -7,19 +7,11 @@ export class SpikeRepository {
   async getSpikeToken(): Promise<string> {
     try {
       const token = await getToken();
-      logger.log({
-        level: "info",
-        message: `Token successfully retrieved from Spike`,
-        label: "getSpikeToken",
-      });
+      logger.info(`Token successfully retrieved from Spike`, { token: token });
       return token;
-    } catch (error) {
-      logger.log({
-        level: "error",
-        message: `Error while requesting Spike token: ${error.message}`,
-        label: "getSpikeToken",
-      });
-      throw error;
+    } catch (err) {
+      logger.error(`Error while requesting Spike token`, { err: err });
+      throw err;
     }
   }
 }
