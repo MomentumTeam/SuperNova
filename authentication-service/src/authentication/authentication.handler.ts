@@ -15,7 +15,7 @@ export class AuthenticationHandler {
         app.use(passport.initialize());
         app.use(passport.session());
 
-        // passport.serializeUser(this.serialize);
+        passport.serializeUser(this.serialize);
         passport.deserializeUser(this.deserialize);
 
         this.configurePassport();
@@ -29,6 +29,8 @@ export class AuthenticationHandler {
     protected static configurePassport() { }
 
     static handleUser(req: Request, res: Response) {
+        const secret = "supeNova";
+
         const minute = 60;
         const hour = 60 * minute;
         const day = 24 * hour;
@@ -36,8 +38,10 @@ export class AuthenticationHandler {
 
         const iat = Math.floor(Date.now() / 1000);
         const exp = iat + expiresIn;
+        console.log('exp', req.user)
 
         const user: IUser = { ...req.user, iat, exp };
+        console.log('user', user)
 
         try {
             const name = handleUserName(user);
@@ -47,12 +51,27 @@ export class AuthenticationHandler {
         } catch (err) {
             console.log(`Error: ${err} \n User: ${user}; name: ${user.name}; id: ${user.id}`);
             return res.redirect('/auth/unauthorized');
+            
         }
+        
+        console.log('req.user.RelayState ', req.user.RelayState);
+        console.log('')
 
-        const constRedirectURI = config.clientEndpoint;
+        const constRedirectURI = req.user.RelayState || config.clientEndpoint;
+        console.log('config.clientEndpoint', config.clientEndpoint)
+        console.log('')
+
+        console.log('req.user', req.user)
+        console.log('')
+
+        console.log('constRedirectURI', constRedirectURI)
         const userToken = jwt.sign(JSON.parse(JSON.stringify(user)), config.authentication.secret);
+        console.log('userToken', userToken)
+        console.log('')
+        console.log('config.authentication.token', config.authentication.token)
 
-        res.cookie(config.authentication.token, userToken);
+        res.cookie("ppp", userToken);
+        console.log('res', res)
         res.redirect(constRedirectURI);
     }
 }
@@ -84,6 +103,7 @@ export class ShragaAuthenticationHandler extends AuthenticationHandler {
 
     protected static configurePassport() {
         const shragaURL = config.authentication.shragaURL;
+        console.log('shragaURL', shragaURL)
         const useEnrichId = config.authentication.useEnrichId;
         const allowedProviders = [config.authentication.allowedProvider];
         passport.use(new ShragaStrategy({ shragaURL, useEnrichId, allowedProviders }, (profile: any, done: any) => {
@@ -92,6 +112,7 @@ export class ShragaAuthenticationHandler extends AuthenticationHandler {
     }
 
     static authenticate() {
+        console.log('hragaAuthenticationHandler')
         return passport.authenticate('shraga', this.handleUser);
     }
 

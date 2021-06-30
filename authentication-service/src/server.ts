@@ -1,15 +1,15 @@
-import express from 'express';
+import * as express from 'express';
 import * as http from 'http';
 import * as bodyParser from 'body-parser';
 import * as path from 'path';
-import helmet from 'helmet';
-import morgan from 'morgan';
-import session from 'express-session';
-import cookieParser from 'cookie-parser';
+import * as helmet from 'helmet';
+import * as morgan from 'morgan';
+import * as session from 'express-session';
+import * as cookieParser from 'cookie-parser';
 import { config } from './config';
 import { userErrorHandler, serverErrorHandler, unknownErrorHandler } from './utils/errors/errorHandler';
-import { ShragaAuthenticationRouter } from './authentication/routers/shraga.authentication.router';
 import { ShragaAuthenticationHandler } from './authentication/authentication.handler';
+import { ShragaAuthenticationRouter } from './authentication/routers/shraga.authentication.router';
 
 export class Server {
     public app: express.Application;
