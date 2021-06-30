@@ -1,7 +1,13 @@
 export const clientId = process.env.SS_SPIKE_CLIENT_ID || "enter_client_id";
 export const clientSecret =
   process.env.SS_SPIKE_CLIENT_SECRET || "enter_client_secret";
-export const redisHost = process.env.SS_REDIS_URL || "redis://127.0.0.1:6379";
+export const redisHost = process.env.SS_REDIS_HOST || "127.0.0.1";
+export const redisPort = process.env.SS_REDIS_PORT || "6379";
+export const redisPassword = process.env.SS_REDIS_PASSWORD;
+
+export const redisFullUrl = redisPassword
+  ? `redis://:${process.env.SS_REDIS_PASSWORD}@${process.env.SS_REDIS_HOST}:${process.env.SS_REDIS_PORT}`
+  : `redis://${redisHost}:${redisPort}`;
 export const spikeURL =
   process.env.SS_SPIKE_TOKEN_URL ||
   "https://ospike.northeurope.cloudapp.azure.com/oauth2/token";
@@ -23,7 +29,7 @@ export const port =
     : process.env.SS_PORT || "8080";
 
 export const spikeOptions = {
-  redisHost: redisHost,
+  redisHost: redisFullUrl,
   ClientId: clientId,
   ClientSecret: clientSecret,
   spikeURL: spikeURL,

@@ -7,9 +7,19 @@ services:
       - PUID=1000
       - PGID=1000
     volumes:
-      - /home/barry/mongodb/database:/data/db
+      - ./data/db:/data/db
     ports:
       - 27017:27017
+    restart: unless-stopped
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    command: redis-server --appendonly yes --requirepass "mozart"
+    volumes:
+      - ./data/data:/data
+    ports:
+      - 6379:6379
     restart: unless-stopped
 
   spike-service:
@@ -19,6 +29,12 @@ services:
       - ./supernova.env
     ports:
       - "8080:8080"
+    depends_on:
+      - redis
+    environment:
+      - SS_REDIS_HOST=redis
+      - SS_REDIS_PORT=6379
+      - SS_REDIS_PASSWORD=mozart
 
   request-service:
     image: request-service
@@ -41,6 +57,8 @@ services:
       - "8082:8080"
     depends_on:
       - spike-service
+    environment:
+      - KS_USE_FAKER=true
 
   producer-service:
     image: producer-service
@@ -50,4 +68,4 @@ services:
     ports:
       - "8083:8080"
     depends_on:
-      - spike-service
+      - kartoffel-service
