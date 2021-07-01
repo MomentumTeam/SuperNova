@@ -42,7 +42,7 @@ export default class KartoffelController {
     static async searchOG(req: Request, res: Response) {
         console.log('SearchOG')
 
-        kartoffelClient.SearchOG({ hierarchyAndName: req.params.hierarchyAndName }, (err: any, response: OGArray) => {
+        kartoffelClient.SearchOG({ hierarchyAndName: req.query.hierarchyAndName }, (err: any, response: OGArray) => {
             if (err) {
                 res.send(null);
             }
@@ -54,7 +54,7 @@ export default class KartoffelController {
     static async searchEntitiesByFullName(req: Request, res: Response) {
         console.log('SearchEntitiesByFullName')
 
-        kartoffelClient.SearchEntitiesByFullName({ fullName: req.params.fullName }, (err: any, response: EntityArray) => {
+        kartoffelClient.SearchEntitiesByFullName({ fullName: req.query.fullName }, (err: any, response: EntityArray) => {
             if (err) {
                 res.send(null);
             }
@@ -89,7 +89,7 @@ export default class KartoffelController {
     static async getRolesUnderOG(req: Request, res: Response) {
         console.log('GetRolesUnderOG')
 
-        kartoffelClient.GetRolesUnderOG({ id: req.params.id, direct: req.params.direct  }, (err: any, response: RoleArray) => {
+        kartoffelClient.GetRolesUnderOG({ id: req.params.id, direct: req.query.direct  }, (err: any, response: RoleArray) => {
             if (err) {
                 res.send(null);
             }
@@ -113,6 +113,7 @@ export default class KartoffelController {
 
     static async getEntityByMongoId(req: Request, res: Response) {
         console.log('GetEntityByMongoId')
+        console.log('req.params', req.params)
 
         kartoffelClient.GetEntityByRoleId({ id: req.params.id }, (err: any, response: Entity) => {
             if (err) {
@@ -140,7 +141,7 @@ export default class KartoffelController {
     static async getEntitiesUnderOG(req: Request, res: Response) {
         console.log('GetEntitiesUnderOG')
 
-        kartoffelClient.GetEntitiesUnderOG({ id: req.params.id , direct: req.params.direct }, (err: any, response: EntityArray) => {
+        kartoffelClient.GetEntitiesUnderOG({ id: req.params.id , direct: req.query.direct }, (err: any, response: EntityArray) => {
             if (err) {
                 res.send(null);
             }
