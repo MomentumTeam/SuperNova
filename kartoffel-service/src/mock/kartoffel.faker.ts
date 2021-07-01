@@ -7,6 +7,7 @@ import {
   OGArray,
   RoleArray,
   EntityArray,
+  OGTree,
 } from "../interfaces/protoc/proto/kartoffelService";
 
 export class KartoffelFaker {
@@ -86,6 +87,41 @@ export class KartoffelFaker {
       digitalIdentities: [],
     };
     return entity;
+  }
+
+  randomOGTree(): OGTree {
+    return {
+      id: faker.datatype.uuid(),
+      name: faker.name.firstName(),
+      children: [
+        {
+          id: faker.datatype.uuid(),
+          name: faker.name.firstName(),
+          children: [],
+        },
+        {
+          id: faker.datatype.uuid(),
+          name: faker.name.firstName(),
+          children: [
+            {
+              id: faker.datatype.uuid(),
+              name: faker.name.firstName(),
+              children: [],
+            },
+            {
+              id: faker.datatype.uuid(),
+              name: faker.name.firstName(),
+              children: [],
+            },
+          ],
+        },
+        {
+          id: faker.datatype.uuid(),
+          name: faker.name.firstName(),
+          children: [],
+        },
+      ],
+    };
   }
 
   randomOGArray(): OGArray {

@@ -22,8 +22,10 @@ import {
   GetEntityByIdNumberRequest,
   GetEntityByMongoIdRequest,
   GetEntityByRoleIdRequest,
+  GetOGTreeRequest,
   GetRolesUnderOGRequest,
   OGArray,
+  OGTree,
   OrganizationGroup,
   Role,
   RoleArray,
@@ -32,6 +34,7 @@ import {
   SearchRolesByRoleIdRequest,
   SuccessMessage,
 } from "../interfaces/protoc/proto/kartoffelService";
+import { resolveModuleName } from "typescript";
 
 export class KartoffelRepository {
   private spikeService: SpikeService;
@@ -50,6 +53,20 @@ export class KartoffelRepository {
       return config;
     });
   }
+
+  async getOGTree(getOGTreeRequest: GetOGTreeRequest): Promise<OGTree> {
+    try {
+      if (C.useFaker) {
+        return this.kartoffelFaker.randomOGTree();
+      } else {
+        //TODO
+        return this.kartoffelFaker.randomOGTree();
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async searchOG(searchOGRequest: SearchOGRequest): Promise<OGArray> {
     try {
       if (C.useFaker) {

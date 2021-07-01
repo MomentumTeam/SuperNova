@@ -22,6 +22,17 @@ service Kartoffel {
     rpc DeleteRole(DeleteRoleRequest) returns (SuccessMessage){}
     rpc DeleteDI(DeleteDIRequest) returns (SuccessMessage){}
     rpc GetEntitiesUnderOG(GetEntitiesUnderOGRequest) returns (EntityArray){}
+    rpc GetOGTree(GetOGTreeRequest) returns (OGTree){}
+}
+
+message GetOGTreeRequest{
+    string rootId = 1;
+}
+
+message OGTree{
+    string id = 1;
+    string name = 2;
+    repeated OGTree children = 3;
 }
 
 // SearchOG

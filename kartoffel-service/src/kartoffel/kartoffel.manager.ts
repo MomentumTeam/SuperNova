@@ -26,6 +26,8 @@ import {
   DeleteRoleRequest,
   DeleteDIRequest,
   GetEntitiesUnderOGRequest,
+  GetOGTreeRequest,
+  OGTree,
 } from "../interfaces/protoc/proto/kartoffelService";
 import { KartoffelRepository } from "./kartoffel.repository";
 
@@ -188,6 +190,14 @@ export class KartoffelManager {
   async deleteOG(deleteOGRequest: DeleteOGRequest): Promise<SuccessMessage> {
     try {
       return await this.kartoffelRepository.deleteOG(deleteOGRequest);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getOGTree(getOGTreeRequest: GetOGTreeRequest): Promise<OGTree> {
+    try {
+      return await this.kartoffelRepository.getOGTree(getOGTreeRequest);
     } catch (error) {
       throw error;
     }
