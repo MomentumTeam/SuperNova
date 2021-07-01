@@ -1,3 +1,4 @@
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 import path from "path";
 if (process.env.NODE_ENV !== "production") {
   const ENV_PATH = __dirname.includes("dist")
@@ -15,13 +16,9 @@ async function main() {
   try {
     const server: Server = new Server();
     await server.startServer();
-    logger.log({ level: "info", message: "Server started successfully" });
+    logger.info("Server started successfully");
   } catch (error) {
-    logger.log({
-      level: "error",
-      label: "main",
-      message: `Error while trying to start the server: ${error.message}`,
-    });
+    logger.error(`Error while trying to start the server: ${error.message}`);
   }
 }
 

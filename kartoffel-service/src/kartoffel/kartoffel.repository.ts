@@ -52,7 +52,7 @@ export class KartoffelRepository {
   }
   async searchOG(searchOGRequest: SearchOGRequest): Promise<OGArray> {
     try {
-      if (C.devMode) {
+      if (C.useFaker) {
         return this.kartoffelFaker.randomOGArray();
       } else {
         const res = await this.axiosKartoffel.get(
@@ -66,7 +66,7 @@ export class KartoffelRepository {
   }
   async createOG(createOGRequest: CreateOGRequest): Promise<OrganizationGroup> {
     try {
-      if (C.devMode) {
+      if (C.useFaker) {
         return this.kartoffelFaker.randomOG();
       } else {
         const res = await this.axiosKartoffel.post(
@@ -82,7 +82,7 @@ export class KartoffelRepository {
 
   async createDI(createDIRequest: CreateDIRequest): Promise<DigitalIdentity> {
     try {
-      if (C.devMode) {
+      if (C.useFaker) {
         return this.kartoffelFaker.randomDI();
       } else {
         const res = await this.axiosKartoffel.post(
@@ -98,7 +98,7 @@ export class KartoffelRepository {
 
   async createRole(createRoleRequest: CreateRoleRequest): Promise<Role> {
     try {
-      if (C.devMode) {
+      if (C.useFaker) {
         return this.kartoffelFaker.randomRole();
       } else {
         const res = await this.axiosKartoffel.post(
@@ -116,7 +116,7 @@ export class KartoffelRepository {
     connectRoleAndDIRequest: ConnectRoleAndDIRequest
   ): Promise<SuccessMessage> {
     try {
-      if (C.devMode) {
+      if (C.useFaker) {
         return { success: true };
       } else {
         await this.axiosKartoffel.patch(
@@ -136,7 +136,7 @@ export class KartoffelRepository {
     searchEntitiesByFullNameRequest: SearchEntitiesByFullNameRequest
   ): Promise<EntityArray> {
     try {
-      if (C.devMode) {
+      if (C.useFaker) {
         return this.kartoffelFaker.randomEntityArray();
       } else {
         const res = await this.axiosKartoffel.get(
@@ -153,7 +153,7 @@ export class KartoffelRepository {
     getEntityByIdNumberRequest: GetEntityByIdNumberRequest
   ): Promise<Entity> {
     try {
-      if (C.devMode) {
+      if (C.useFaker) {
         return this.kartoffelFaker.randomEntity();
       } else {
         const res = await this.axiosKartoffel.get(
@@ -170,7 +170,7 @@ export class KartoffelRepository {
     searchRolesByRoleIdRequest: SearchRolesByRoleIdRequest
   ): Promise<RoleArray> {
     try {
-      if (C.devMode) {
+      if (C.useFaker) {
         return this.kartoffelFaker.randomRoleArray();
       } else {
         const res = await this.axiosKartoffel.get(
@@ -187,7 +187,7 @@ export class KartoffelRepository {
     getRolesUnderOGRequest: GetRolesUnderOGRequest
   ): Promise<RoleArray> {
     try {
-      if (C.devMode) {
+      if (C.useFaker) {
         return this.kartoffelFaker.randomRoleArray();
       } else {
         const res = await this.axiosKartoffel.get(
@@ -204,7 +204,7 @@ export class KartoffelRepository {
     connectEntityAndDIRequest: ConnectEntityAndDIRequest
   ): Promise<SuccessMessage> {
     try {
-      if (C.devMode) {
+      if (C.useFaker) {
         return { success: true };
       } else {
         const res = await this.axiosKartoffel.patch(
@@ -224,7 +224,7 @@ export class KartoffelRepository {
     createEntityRequest: CreateEntityRequest
   ): Promise<Entity> {
     try {
-      if (C.devMode) {
+      if (C.useFaker) {
         return this.kartoffelFaker.randomEntity();
       } else {
         const res = await this.axiosKartoffel.post(
@@ -242,7 +242,7 @@ export class KartoffelRepository {
     getEntityByRoleIdRequest: GetEntityByRoleIdRequest
   ): Promise<Entity> {
     try {
-      if (C.devMode) {
+      if (C.useFaker) {
         return this.kartoffelFaker.randomEntity();
       } else {
         const res = await this.axiosKartoffel.get(
@@ -259,7 +259,7 @@ export class KartoffelRepository {
     disconnectDIFromEntityRequest: DisconnectDIFromEntityRequest
   ): Promise<SuccessMessage> {
     try {
-      if (C.devMode) {
+      if (C.useFaker) {
         return { success: true };
       } else {
         await this.axiosKartoffel.patch(
@@ -279,7 +279,7 @@ export class KartoffelRepository {
     getEntityByMongoIdRequest: GetEntityByMongoIdRequest
   ): Promise<Entity> {
     try {
-      if (C.devMode) {
+      if (C.useFaker) {
         return this.kartoffelFaker.randomEntity();
       } else {
         const res = await this.axiosKartoffel.get(
@@ -294,7 +294,7 @@ export class KartoffelRepository {
 
   async deleteOG(deleteOGRequest: DeleteOGRequest): Promise<SuccessMessage> {
     try {
-      if (C.devMode) {
+      if (C.useFaker) {
         return { success: true };
       } else {
         await this.axiosKartoffel.delete(
@@ -311,7 +311,7 @@ export class KartoffelRepository {
     getChildrenOfOGRequest: GetChildrenOfOGRequest
   ): Promise<OGArray> {
     try {
-      if (C.devMode) {
+      if (C.useFaker) {
         return this.kartoffelFaker.randomOGArray();
       } else {
         const res = await this.axiosKartoffel.get(
@@ -328,7 +328,7 @@ export class KartoffelRepository {
     deleteRoleRequest: DeleteRoleRequest
   ): Promise<SuccessMessage> {
     try {
-      if (C.devMode) {
+      if (C.useFaker) {
         return { success: true };
       } else {
         await this.axiosKartoffel.delete(
@@ -343,7 +343,7 @@ export class KartoffelRepository {
 
   async deleteDI(deleteDIRequest: DeleteDIRequest): Promise<SuccessMessage> {
     try {
-      if (C.devMode) {
+      if (C.useFaker) {
         return { success: true };
       } else {
         await this.axiosKartoffel.delete(
@@ -360,7 +360,7 @@ export class KartoffelRepository {
     getEntitiesUnderOGRequest: GetEntitiesUnderOGRequest
   ): Promise<EntityArray> {
     try {
-      if (C.devMode) {
+      if (C.useFaker) {
         return this.kartoffelFaker.randomEntityArray();
       } else {
         const res = await this.axiosKartoffel.get(
