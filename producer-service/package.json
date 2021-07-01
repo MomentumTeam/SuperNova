@@ -1,29 +1,26 @@
 {
-  "name": "spike-service",
+  "name": "produce-service",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "index.js",
   "scripts": {
     "start": "NODE_ENV='development' ts-node ./src/index.ts",
     "prod": "NODE_ENV='production' ts-node ./src/index.ts",
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@elastic/ecs-winston-format": "^1.1.0",
     "@grpc/grpc-js": "^1.3.2",
     "@grpc/proto-loader": "^0.6.2",
-    "@types/node": "^15.6.1",
+    "@types/node": "^15.12.2",
+    "axios": "^0.21.1",
     "dotenv": "^10.0.0",
     "nodemon": "^2.0.7",
-    "spike-get-token": "^1.1.13",
     "ts-node": "^10.0.0",
-    "typescript": "^4.3.2",
-    "winston": "^3.3.3",
-    "winston-daily-rotate-file": "^4.5.5"
+    "ts-proto": "^1.81.3",
+    "typescript": "^4.3.3",
+    "winston": "^3.3.3"
   }
 }

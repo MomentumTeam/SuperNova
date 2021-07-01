@@ -109,3 +109,6 @@ dist
 *node_modules/
 .vscode/
 *.vscode/
+*.pem
+
+data
