@@ -53,7 +53,7 @@ export class AuthenticationHandler {
         const constRedirectURI = req.user.RelayState || config.clientEndpoint;
         const userToken = jwt.sign(JSON.parse(JSON.stringify(user)), config.authentication.secret);
 
-        res.redirect(`${constRedirectURI}?token=${userToken}`);
+        res.redirect(`${constRedirectURI}?token=${userToken}&id=${user.id}`);
     }
 }
 
