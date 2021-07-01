@@ -33,6 +33,6 @@ export const config = {
         allowedProvider: process.env.SHRAGA_PROVIDERS || 'Genesis',
         unauthorized: './401/index.html',
     },
-    clientEndpoint: process.env.CLIENT_ENDPOINT || 'http://localhost:2000/api/requests/ui',
+    clientEndpoint: process.env.CLIENT_ENDPOINT || 'http://localhost:3001',
     support: process.env.UNAUTHORIZED_SUPPORT_URL || 'https://open.rocket.chat',
 };

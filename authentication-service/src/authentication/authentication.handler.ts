@@ -38,41 +38,22 @@ export class AuthenticationHandler {
 
         const iat = Math.floor(Date.now() / 1000);
         const exp = iat + expiresIn;
-        console.log('exp', req.user)
 
         const user: IUser = { ...req.user, iat, exp };
-        console.log('user', user)
 
         try {
             const name = handleUserName(user);
             user.firstName = name.firstName;
             user.lastName = name.lastName;
-
         } catch (err) {
             console.log(`Error: ${err} \n User: ${user}; name: ${user.name}; id: ${user.id}`);
             return res.redirect('/auth/unauthorized');
-            
         }
-        
-        console.log('req.user.RelayState ', req.user.RelayState);
-        console.log('')
 
         const constRedirectURI = req.user.RelayState || config.clientEndpoint;
-        console.log('config.clientEndpoint', config.clientEndpoint)
-        console.log('')
-
-        console.log('req.user', req.user)
-        console.log('')
-
-        console.log('constRedirectURI', constRedirectURI)
         const userToken = jwt.sign(JSON.parse(JSON.stringify(user)), config.authentication.secret);
-        console.log('userToken', userToken)
-        console.log('')
-        console.log('config.authentication.token', config.authentication.token)
 
-        res.cookie("ppp", userToken);
-        console.log('res', res)
-        res.redirect(constRedirectURI);
+        res.redirect(`${constRedirectURI}?token=${userToken}`);
     }
 }
 
