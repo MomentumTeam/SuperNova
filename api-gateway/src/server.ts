@@ -5,7 +5,8 @@ import mainRouter from "./mainRouter";
 import { logger } from "./logger";
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
-const auth = require('./auth/auth')
+import cors from 'cors';
+const auth = require('./auth/auth');
 
 
 export class Server {
@@ -18,12 +19,15 @@ export class Server {
         this.server = http.createServer(this.app);
     }
 
-
     private configureMiddlewares() {
+        this.app.use(cors());
         this.app.use(cookieParser());
         this.app.use(bodyParser.json());
-        
+
         this.app.use("/api",auth,mainRouter);
+        this.app.get("/api/auth/login", (req, res) => {
+            res.redirect(`http://${config.authentication.authServiceUrl}/auth/login`);
+        });
     }
 
     listen() {

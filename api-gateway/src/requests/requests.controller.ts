@@ -42,9 +42,7 @@ enum StageStatus{
 
 export default class RequestsController {
     static async ui(req: Request, res: Response) {
-        res.send("ghgfhgfhgfhgfhghghghghg")
-
-        
+        res.send("ghgfhgfhgfhgfhghghghghg");
     }
 
     static async getRequestById(req: Request, res: Response) {
