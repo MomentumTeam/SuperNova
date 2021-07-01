@@ -1,47 +1,37 @@
-import { IConnectEntityAndDIRequest } from "../interfaces/connectEntityAndDI/connectEntityAndDIRequest.interface";
-import { IConnectRoleAndDIRequest } from "../interfaces/connectRoleAndDI/connectRoleAndDIRequest.interface";
-import { ICreateDIRequest } from "../interfaces/createDI/createDIRequest.interface";
-import { ICreateEntityRequest } from "../interfaces/createEntity/createEntityRequest.interface";
-import { ICreateOGRequest } from "../interfaces/createOG/crateOGRequest.interface";
-import { ICreateRoleRequest } from "../interfaces/createRole/createRoleRequest.interface";
-import { IDeleteDIRequest } from "../interfaces/deleteDI/deleteDIRequest.interface";
-import { IDeleteOGRequest } from "../interfaces/deleteOG/deleteOGRequest.interface";
-import { IDeleteRoleRequest } from "../interfaces/deleteRole/deleteRoleRequest.interface";
-import { IDisconnectDIFromEntityRequest } from "../interfaces/disconnectDIFromEntity/disconnectDIFromEntityRequest.interface";
-import { IGetChildrenOfOGRequest } from "../interfaces/getChildrenOfOG/getChildrenOfOGRequest.interface";
-import { IGetEntitiesUnderOGRequest } from "../interfaces/getEntitiesUnderOG/getEntitiesUnderOGRequest.interface";
-import { IGetEntityByIdNumberRequest } from "../interfaces/getEntityByIdNumber/getEntityByIdNumber.interface";
-import { IGetEntityByMongoIdRequest } from "../interfaces/getEntityByMongoId/getEntityByMongoIdRequest.interface";
-import { IGetEntityByRoleIdRequest } from "../interfaces/getEntityByRoleId/getEntityByRoleIdRequest.interface";
-import { ISearchRolesByRoleIdRequest } from "../interfaces/searchRolesByRoleId/searchRolesByRoleId.interface";
-import { IGetRolesUnderOGRequest } from "../interfaces/getRolesUnderOG/getRolesUnderOGRequest.interface";
-import { IDigitalIdentity } from "../interfaces/kartoffelTypes/digitalIdentity.interface";
-import { IEntity } from "../interfaces/kartoffelTypes/entity.interface";
-import {
-  EntityArray,
-  IEntityArray,
-} from "../interfaces/kartoffelTypes/entityArray.interface";
-import {
-  IOGArray,
-  OGArray,
-} from "../interfaces/kartoffelTypes/ogArray.interface";
-import { IOrganizationGroup } from "../interfaces/kartoffelTypes/organizationGroup.interface";
-import { IRole } from "../interfaces/kartoffelTypes/role.interface";
-import {
-  IRoleArray,
-  RoleArray,
-} from "../interfaces/kartoffelTypes/roleArray.interface";
-import {
-  ISuccessMessage,
-  SuccessMessage,
-} from "../interfaces/kartoffelTypes/successMessage.interface";
-import { ISearchEntitiesByFullNameRequest } from "../interfaces/searchEntitiesByFullName/searchEntitiesByFullNameRequest.interface";
-import { ISearchOGRequest } from "../interfaces/searchOG/searchOGRequest.interface";
 import { SpikeService } from "../spike/spikeService";
 import axios, { AxiosInstance } from "axios";
 import https from "https";
 import * as C from "../config";
 import { KartoffelFaker } from "../mock/kartoffel.faker";
+import {
+  ConnectEntityAndDIRequest,
+  ConnectRoleAndDIRequest,
+  CreateDIRequest,
+  CreateEntityRequest,
+  CreateOGRequest,
+  CreateRoleRequest,
+  DeleteDIRequest,
+  DeleteOGRequest,
+  DeleteRoleRequest,
+  DigitalIdentity,
+  DisconnectDIFromEntityRequest,
+  Entity,
+  EntityArray,
+  GetChildrenOfOGRequest,
+  GetEntitiesUnderOGRequest,
+  GetEntityByIdNumberRequest,
+  GetEntityByMongoIdRequest,
+  GetEntityByRoleIdRequest,
+  GetRolesUnderOGRequest,
+  OGArray,
+  OrganizationGroup,
+  Role,
+  RoleArray,
+  SearchEntitiesByFullNameRequest,
+  SearchOGRequest,
+  SearchRolesByRoleIdRequest,
+  SuccessMessage,
+} from "../interfaces/protoc/proto/kartoffelService";
 
 export class KartoffelRepository {
   private spikeService: SpikeService;
@@ -60,64 +50,62 @@ export class KartoffelRepository {
       return config;
     });
   }
-  async searchOG(searchOGRequest: ISearchOGRequest): Promise<IOGArray> {
+  async searchOG(searchOGRequest: SearchOGRequest): Promise<OGArray> {
     try {
-      if (C.devMode) {
+      if (C.useFaker) {
         return this.kartoffelFaker.randomOGArray();
       } else {
         const res = await this.axiosKartoffel.get(
           `${C.kartoffelUrl}/organizationGroup/search?hierarchyAndName=${searchOGRequest.hierarchyAndName}`
         );
-        return new OGArray(res.data as IOrganizationGroup[]);
+        return { groups: res.data };
       }
     } catch (error) {
       throw error;
     }
   }
-  async createOG(
-    createOGRequest: ICreateOGRequest
-  ): Promise<IOrganizationGroup> {
+  async createOG(createOGRequest: CreateOGRequest): Promise<OrganizationGroup> {
     try {
-      if (C.devMode) {
+      if (C.useFaker) {
         return this.kartoffelFaker.randomOG();
       } else {
         const res = await this.axiosKartoffel.post(
           `${C.kartoffelUrl}/organizationGroup`,
           createOGRequest
         );
-        return res.data as IOrganizationGroup;
+        return res.data as OrganizationGroup;
       }
     } catch (error) {
       throw error;
     }
   }
 
-  async createDI(createDIRequest: ICreateDIRequest): Promise<IDigitalIdentity> {
+  async createDI(createDIRequest: CreateDIRequest): Promise<DigitalIdentity> {
     try {
-      if (C.devMode) {
+      if (C.useFaker) {
         return this.kartoffelFaker.randomDI();
       } else {
         const res = await this.axiosKartoffel.post(
           `${C.kartoffelUrl}/digitalIdentities`,
           createDIRequest
         );
-        return res.data as IDigitalIdentity;
+        return res.data as DigitalIdentity;
       }
     } catch (error) {
       throw error;
     }
   }
 
-  async createRole(createRoleRequest: ICreateRoleRequest): Promise<IRole> {
+  async createRole(createRoleRequest: CreateRoleRequest): Promise<Role> {
     try {
-      if (C.devMode) {
+      if (C.useFaker) {
         return this.kartoffelFaker.randomRole();
       } else {
         const res = await this.axiosKartoffel.post(
           `${C.kartoffelUrl}/roles`,
           createRoleRequest
         );
-        return res.data as IRole;
+        return res.data as Role;
       }
     } catch (error) {
       throw error;
@@ -125,11 +113,11 @@ export class KartoffelRepository {
   }
 
   async connectRoleAndDI(
-    connectRoleAndDIRequest: IConnectRoleAndDIRequest
-  ): Promise<ISuccessMessage> {
+    connectRoleAndDIRequest: ConnectRoleAndDIRequest
+  ): Promise<SuccessMessage> {
     try {
-      if (C.devMode) {
-        return new SuccessMessage(true);
+      if (C.useFaker) {
+        return { success: true };
       } else {
         await this.axiosKartoffel.patch(
           `${C.kartoffelUrl}/roles/${connectRoleAndDIRequest.id}/connectDigitalIdentity`,
@@ -137,7 +125,7 @@ export class KartoffelRepository {
             digitalIdentityUniqueId: connectRoleAndDIRequest.uniqueId,
           }
         );
-        return new SuccessMessage(true);
+        return { success: true };
       }
     } catch (error) {
       throw error;
@@ -145,16 +133,16 @@ export class KartoffelRepository {
   }
 
   async searchEntitiesByFullName(
-    searchEntitiesByFullNameRequest: ISearchEntitiesByFullNameRequest
-  ): Promise<IEntityArray> {
+    searchEntitiesByFullNameRequest: SearchEntitiesByFullNameRequest
+  ): Promise<EntityArray> {
     try {
-      if (C.devMode) {
+      if (C.useFaker) {
         return this.kartoffelFaker.randomEntityArray();
       } else {
         const res = await this.axiosKartoffel.get(
           `${C.kartoffelUrl}/entities/search?fullName=${searchEntitiesByFullNameRequest.fullName}`
         );
-        return new EntityArray(res.data as IEntity[]);
+        return { entities: res.data as Entity[] };
       }
     } catch (error) {
       throw error;
@@ -162,16 +150,16 @@ export class KartoffelRepository {
   }
 
   async getEntityByIdNumber(
-    getEntityByIdNumberRequest: IGetEntityByIdNumberRequest
-  ): Promise<IEntity> {
+    getEntityByIdNumberRequest: GetEntityByIdNumberRequest
+  ): Promise<Entity> {
     try {
-      if (C.devMode) {
+      if (C.useFaker) {
         return this.kartoffelFaker.randomEntity();
       } else {
         const res = await this.axiosKartoffel.get(
           `${C.kartoffelUrl}/entities/identifier/${getEntityByIdNumberRequest.idNumber}`
         );
-        return res.data as IEntity;
+        return res.data as Entity;
       }
     } catch (error) {
       throw error;
@@ -179,16 +167,16 @@ export class KartoffelRepository {
   }
 
   async searchRolesByRoleId(
-    searchRolesByRoleIdRequest: ISearchRolesByRoleIdRequest
-  ): Promise<IRoleArray> {
+    searchRolesByRoleIdRequest: SearchRolesByRoleIdRequest
+  ): Promise<RoleArray> {
     try {
-      if (C.devMode) {
+      if (C.useFaker) {
         return this.kartoffelFaker.randomRoleArray();
       } else {
         const res = await this.axiosKartoffel.get(
           `${C.kartoffelUrl}/roles/search?roleId=${searchRolesByRoleIdRequest.roleId}`
         );
-        return new RoleArray([res.data as IRole]);
+        return { roles: res.data as Role[] };
       }
     } catch (error) {
       throw error;
@@ -196,16 +184,16 @@ export class KartoffelRepository {
   }
 
   async getRolesUnderOG(
-    getRolesUnderOGRequest: IGetRolesUnderOGRequest
-  ): Promise<IRoleArray> {
+    getRolesUnderOGRequest: GetRolesUnderOGRequest
+  ): Promise<RoleArray> {
     try {
-      if (C.devMode) {
+      if (C.useFaker) {
         return this.kartoffelFaker.randomRoleArray();
       } else {
         const res = await this.axiosKartoffel.get(
           `${C.kartoffelUrl}/roles/hierarchy/${getRolesUnderOGRequest.id}?direct=${getRolesUnderOGRequest.direct}`
         );
-        return new RoleArray(res.data as IRole[]);
+        return { roles: res.data as Role[] };
       }
     } catch (error) {
       throw error;
@@ -213,11 +201,11 @@ export class KartoffelRepository {
   }
 
   async connectEntityAndDI(
-    connectEntityAndDIRequest: IConnectEntityAndDIRequest
-  ): Promise<ISuccessMessage> {
+    connectEntityAndDIRequest: ConnectEntityAndDIRequest
+  ): Promise<SuccessMessage> {
     try {
-      if (C.devMode) {
-        return new SuccessMessage(true);
+      if (C.useFaker) {
+        return { success: true };
       } else {
         const res = await this.axiosKartoffel.patch(
           `${C.kartoffelUrl}/entities/${connectEntityAndDIRequest.id}/connectDigitalIdentity`,
@@ -225,7 +213,7 @@ export class KartoffelRepository {
             digitalIdentityUniqueId: connectEntityAndDIRequest.uniqueId,
           }
         );
-        return new SuccessMessage(true);
+        return { success: true };
       }
     } catch (error) {
       throw error;
@@ -233,17 +221,17 @@ export class KartoffelRepository {
   }
 
   async createEntity(
-    createEntityRequest: ICreateEntityRequest
-  ): Promise<IEntity> {
+    createEntityRequest: CreateEntityRequest
+  ): Promise<Entity> {
     try {
-      if (C.devMode) {
+      if (C.useFaker) {
         return this.kartoffelFaker.randomEntity();
       } else {
         const res = await this.axiosKartoffel.post(
           `${C.kartoffelUrl}/entities`,
           createEntityRequest
         );
-        return res.data as IEntity;
+        return res.data as Entity;
       }
     } catch (error) {
       throw error;
@@ -251,16 +239,16 @@ export class KartoffelRepository {
   }
 
   async getEntityByRoleId(
-    getEntityByRoleIdRequest: IGetEntityByRoleIdRequest
-  ): Promise<IEntity> {
+    getEntityByRoleIdRequest: GetEntityByRoleIdRequest
+  ): Promise<Entity> {
     try {
-      if (C.devMode) {
+      if (C.useFaker) {
         return this.kartoffelFaker.randomEntity();
       } else {
         const res = await this.axiosKartoffel.get(
           `${C.kartoffelUrl}/entities/role/${getEntityByRoleIdRequest.roleId}`
         );
-        return res.data as IEntity;
+        return res.data as Entity;
       }
     } catch (error) {
       throw error;
@@ -268,11 +256,11 @@ export class KartoffelRepository {
   }
 
   async disconnectDIFromEntity(
-    disconnectDIFromEntityRequest: IDisconnectDIFromEntityRequest
-  ): Promise<ISuccessMessage> {
+    disconnectDIFromEntityRequest: DisconnectDIFromEntityRequest
+  ): Promise<SuccessMessage> {
     try {
-      if (C.devMode) {
-        return new SuccessMessage(true);
+      if (C.useFaker) {
+        return { success: true };
       } else {
         await this.axiosKartoffel.patch(
           `${C.kartoffelUrl}/entities/${disconnectDIFromEntityRequest.id}/disconnectDIgitalIdentity`,
@@ -280,7 +268,7 @@ export class KartoffelRepository {
             digitalIdentityUniqueId: disconnectDIFromEntityRequest.uniqueId,
           }
         );
-        return new SuccessMessage(true);
+        return { success: true };
       }
     } catch (error) {
       throw error;
@@ -288,31 +276,31 @@ export class KartoffelRepository {
   }
 
   async getEntityByMongoId(
-    getEntityByMongoIdRequest: IGetEntityByMongoIdRequest
-  ): Promise<IEntity> {
+    getEntityByMongoIdRequest: GetEntityByMongoIdRequest
+  ): Promise<Entity> {
     try {
-      if (C.devMode) {
+      if (C.useFaker) {
         return this.kartoffelFaker.randomEntity();
       } else {
         const res = await this.axiosKartoffel.get(
           `${C.kartoffelUrl}/entities/${getEntityByMongoIdRequest.id}`
         );
-        return res.data as IEntity;
+        return res.data as Entity;
       }
     } catch (error) {
       throw error;
     }
   }
 
-  async deleteOG(deleteOGRequest: IDeleteOGRequest): Promise<ISuccessMessage> {
+  async deleteOG(deleteOGRequest: DeleteOGRequest): Promise<SuccessMessage> {
     try {
-      if (C.devMode) {
-        return new SuccessMessage(true);
+      if (C.useFaker) {
+        return { success: true };
       } else {
         await this.axiosKartoffel.delete(
           `${C.kartoffelUrl}/groups/${deleteOGRequest.id}`
         );
-        return new SuccessMessage(true);
+        return { success: true };
       }
     } catch (error) {
       throw error;
@@ -320,16 +308,16 @@ export class KartoffelRepository {
   }
 
   async getChildrenOfOG(
-    getChildrenOfOGRequest: IGetChildrenOfOGRequest
-  ): Promise<IOGArray> {
+    getChildrenOfOGRequest: GetChildrenOfOGRequest
+  ): Promise<OGArray> {
     try {
-      if (C.devMode) {
+      if (C.useFaker) {
         return this.kartoffelFaker.randomOGArray();
       } else {
         const res = await this.axiosKartoffel.get(
           `${C.kartoffelUrl}/groups/${getChildrenOfOGRequest.id}/children?expanded=true`
         );
-        return new OGArray(res.data as IOrganizationGroup[]);
+        return { groups: res.data as OrganizationGroup[] };
       }
     } catch (error) {
       throw error;
@@ -337,31 +325,31 @@ export class KartoffelRepository {
   }
 
   async deleteRole(
-    deleteRoleRequest: IDeleteRoleRequest
-  ): Promise<ISuccessMessage> {
+    deleteRoleRequest: DeleteRoleRequest
+  ): Promise<SuccessMessage> {
     try {
-      if (C.devMode) {
-        return new SuccessMessage(true);
+      if (C.useFaker) {
+        return { success: true };
       } else {
         await this.axiosKartoffel.delete(
           `${C.kartoffelUrl}/roles/${deleteRoleRequest.roleId}`
         );
-        return new SuccessMessage(true);
+        return { success: true };
       }
     } catch (error) {
       throw error;
     }
   }
 
-  async deleteDI(deleteDIRequest: IDeleteDIRequest): Promise<ISuccessMessage> {
+  async deleteDI(deleteDIRequest: DeleteDIRequest): Promise<SuccessMessage> {
     try {
-      if (C.devMode) {
-        return new SuccessMessage(true);
+      if (C.useFaker) {
+        return { success: true };
       } else {
         await this.axiosKartoffel.delete(
           `${C.kartoffelUrl}/digitalIdentities/${deleteDIRequest.uniqueId}`
         );
-        return new SuccessMessage(true);
+        return { success: true };
       }
     } catch (error) {
       throw error;
@@ -369,16 +357,16 @@ export class KartoffelRepository {
   }
 
   async getEntitiesUnderOG(
-    getEntitiesUnderOGRequest: IGetEntitiesUnderOGRequest
-  ): Promise<IEntityArray> {
+    getEntitiesUnderOGRequest: GetEntitiesUnderOGRequest
+  ): Promise<EntityArray> {
     try {
-      if (C.devMode) {
+      if (C.useFaker) {
         return this.kartoffelFaker.randomEntityArray();
       } else {
         const res = await this.axiosKartoffel.get(
           `${C.kartoffelUrl}/entities/group/${getEntitiesUnderOGRequest.id}?direct=${getEntitiesUnderOGRequest.direct}`
         );
-        return new EntityArray(res.data as IEntity[]);
+        return { entities: res.data as Entity[] };
       }
     } catch (error) {
       throw error;

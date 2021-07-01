@@ -2,9 +2,12 @@ import path from "path";
 import * as grpc from "@grpc/grpc-js";
 import * as protoLoader from "@grpc/proto-loader";
 import * as C from "../config";
-import { IRequest } from "../interfaces/requestService/request.interface";
-import { IRequestReq } from "../interfaces/requestService/requestReq.interface";
-import { IGetRequestByIdReq } from "../interfaces/requestService/getRequestById/getRequestByIdReq.interface";
+import {
+  GetRequestByIdReq,
+  Request,
+  RequestReq,
+  RequestType,
+} from "../interfaces/protoc/proto/requestService";
 
 const PROTO_PATH = __dirname.includes("dist")
   ? path.join(__dirname, "../../../proto/requestService.proto")
@@ -34,133 +37,134 @@ export class RequestService {
     this.client = this.initClient();
   }
 
-  async createOGRequest(req: IRequestReq): Promise<IRequest> {
+  async createOGRequest(req: RequestReq): Promise<Request> {
     return new Promise((resolve, reject) => {
       this.client.CreateOGRequest(req, (err: any, res: any) => {
         if (err) {
           reject(err);
         } else {
-          resolve(res as IRequest);
+          resolve(res as Request);
         }
       });
     });
   }
 
-  async createRoleRequest(req: IRequestReq): Promise<IRequest> {
+  async createRoleRequest(req: RequestReq): Promise<Request> {
     return new Promise((resolve, reject) => {
       this.client.CreateRoleRequest(req, (err: any, res: any) => {
         if (err) {
           reject(err);
         } else {
-          resolve(res as IRequest);
+          resolve(res as Request);
         }
       });
     });
   }
 
-  async assignRoleToEntityRequest(req: IRequestReq): Promise<IRequest> {
+  async assignRoleToEntityRequest(req: RequestReq): Promise<Request> {
     return new Promise((resolve, reject) => {
       this.client.AssignRoleToEntityRequest(req, (err: any, res: any) => {
         if (err) {
           reject(err);
         } else {
-          resolve(res as IRequest);
+          resolve(res as Request);
         }
       });
     });
   }
 
-  async createEntityRequest(req: IRequestReq): Promise<IRequest> {
+  async createEntityRequest(req: RequestReq): Promise<Request> {
     return new Promise((resolve, reject) => {
       this.client.CreateEntityRequest(req, (err: any, res: any) => {
         if (err) {
           reject(err);
         } else {
-          resolve(res as IRequest);
+          resolve(res as Request);
         }
       });
     });
   }
 
-  async renameOGRequest(req: IRequestReq): Promise<IRequest> {
+  async renameOGRequest(req: RequestReq): Promise<Request> {
     return new Promise((resolve, reject) => {
       this.client.RenameOGRequest(req, (err: any, res: any) => {
         if (err) {
           reject(err);
         } else {
-          resolve(res as IRequest);
+          resolve(res as Request);
         }
       });
     });
   }
 
-  async renameRoleRequest(req: IRequestReq): Promise<IRequest> {
+  async renameRoleRequest(req: RequestReq): Promise<Request> {
     return new Promise((resolve, reject) => {
       this.client.RenameRoleRequest(req, (err: any, res: any) => {
         if (err) {
           reject(err);
         } else {
-          resolve(res as IRequest);
+          resolve(res as Request);
         }
       });
     });
   }
 
-  async editEntityRequest(req: IRequestReq): Promise<IRequest> {
+  async editEntityRequest(req: RequestReq): Promise<Request> {
     return new Promise((resolve, reject) => {
       this.client.EditEntityRequest(req, (err: any, res: any) => {
         if (err) {
           reject(err);
         } else {
-          resolve(res as IRequest);
+          resolve(res as Request);
         }
       });
     });
   }
 
-  async deleteOGRequest(req: IRequestReq): Promise<IRequest> {
+  async deleteOGRequest(req: RequestReq): Promise<Request> {
     return new Promise((resolve, reject) => {
       this.client.DeleteOGRequest(req, (err: any, res: any) => {
         if (err) {
           reject(err);
         } else {
-          resolve(res as IRequest);
+          resolve(res as Request);
         }
       });
     });
   }
 
-  async deleteRoleRequest(req: IRequestReq): Promise<IRequest> {
+  async deleteRoleRequest(req: RequestReq): Promise<Request> {
     return new Promise((resolve, reject) => {
       this.client.DeleteRoleRequest(req, (err: any, res: any) => {
         if (err) {
           reject(err);
         } else {
-          resolve(res as IRequest);
+          resolve(res as Request);
         }
       });
     });
   }
 
-  async disconectRoleFromEntityRequest(req: IRequestReq): Promise<IRequest> {
+  async disconectRoleFromEntityRequest(req: RequestReq): Promise<Request> {
     return new Promise((resolve, reject) => {
       this.client.DisconectRoleFromEntityRequest(req, (err: any, res: any) => {
         if (err) {
           reject(err);
         } else {
-          resolve(res as IRequest);
+          resolve(res as Request);
         }
       });
     });
   }
 
-  async getRequestById(req: IGetRequestByIdReq): Promise<IRequest> {
+  async getRequestById(req: GetRequestByIdReq): Promise<Request> {
     return new Promise((resolve, reject) => {
       this.client.GetRequestById(req, (err: any, res: any) => {
         if (err) {
           reject(err);
         } else {
-          resolve(res as IRequest);
+          res.type = RequestType[res.type];
+          resolve(res as Request);
         }
       });
     });

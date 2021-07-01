@@ -14,7 +14,7 @@ import {
   updateKartoffelStatus,
   updateADStatus,
 } from "./requests/request.controller";
-import { RequestType } from "./enums/requestType.enum";
+import { RequestType } from "./interfaces/protoc/proto/requestService";
 
 const PROTO_PATH = __dirname.includes("dist")
   ? path.join(__dirname, "../../proto/requestService.proto")

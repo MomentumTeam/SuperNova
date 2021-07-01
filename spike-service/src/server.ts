@@ -23,41 +23,30 @@ export class Server {
 
   private async getSpikePubKey() {
     if (!fs.existsSync(C.localSpikePublicKeyFullPath)) {
-      logger.log({
-        level: "info",
-        message: `Spike public key does not exist at ${C.localSpikePublicKeyFullPath}`,
-        label: "getSpikePubKey",
-      });
+      logger.info(
+        `Spike public key does not exist at ${C.localSpikePublicKeyFullPath}`
+      );
       try {
         const response = await axios.get(C.spikePubKeyPath);
         if (response.status === 200) {
           fs.appendFileSync(C.localSpikePublicKeyFullPath, response.data);
-          logger.log({
-            level: "info",
-            message: `Spike public key successfully obtained, and saved into path ${C.localSpikePublicKeyFullPath}`,
-            label: "getSpikePubKey",
-          });
+          logger.info(
+            `Spike public key successfully obtained, and saved into path ${C.localSpikePublicKeyFullPath}`,
+            { pubKey: response.data }
+          );
         } else {
-          logger.log({
-            level: "error",
-            message: `Error while downloading Spike public key, statusCode: ${response.status}`,
-            label: "getSpikePubKey",
-          });
+          logger.info(
+            `Error while downloading Spike public key, statusCode: ${response.status}`
+          );
         }
       } catch (err) {
-        logger.log({
-          level: "error",
-          message: `Error while downloading Spike public key, ${err.message}`,
-          label: "getSpikePubKey",
-        });
+        logger.error(`Error while downloading Spike public key`, { err: err });
       }
     }
     this.spikeKey = fs.readFileSync(C.localSpikePublicKeyFullPath);
-    logger.log({
-      level: "info",
-      message: `Spike public key was found at ${C.localSpikePublicKeyFullPath}`,
-      label: "getSpikePubKey",
-    });
+    logger.info(
+      `Spike public key was found at ${C.localSpikePublicKeyFullPath}`
+    );
   }
 
   private getProtoDescriptor() {
@@ -74,33 +63,22 @@ export class Server {
         grpc.loadPackageDefinition(packageDefinition);
       const spikeServiceDescriptor: any = protoDescriptor.Spike;
       return spikeServiceDescriptor;
-    } catch (error) {
-      throw error;
+    } catch (err) {
+      logger.error(`Error while loading the proto file`, { err: err });
+      throw err;
     }
   }
 
   initServer() {
     try {
       const spikeServiceDescriptor: any = this.getProtoDescriptor();
-      logger.log({
-        level: "info",
-        message: `Proto was loaded successfully from file: ${PROTO_PATH}`,
-        label: "initServer",
-      });
+      logger.info(`Proto was loaded successfully from file: ${PROTO_PATH}`);
       this.server.addService(spikeServiceDescriptor.Spike.service, {
         GetSpikeToken: getSpikeToken,
       });
-      logger.log({
-        level: "info",
-        message: `Grpc services were successfully added to the server`,
-        label: "initServer",
-      });
+      logger.info(`Grpc services were successfully added to the server`);
     } catch (error) {
-      logger.log({
-        level: "error",
-        message: `Error while initializing the server: ${error.message}`,
-        label: "initServer",
-      });
+      logger.error(`Error while initializing the server: ${error.message}`);
     }
   }
 

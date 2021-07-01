@@ -1,9 +1,11 @@
 import mongoose from "mongoose";
 import { connection } from "../mongoose";
-import { RequestType } from "../enums/requestType.enum";
-import { Decision } from "../enums/decision.enum";
-import { RequestStatus } from "../enums/requestStatus.enum";
-import { StageStatus } from "../enums/stageStatus.enum";
+import {
+  Decision,
+  RequestStatus,
+  RequestType,
+  StageStatus,
+} from "../interfaces/protoc/proto/requestService";
 const { Schema } = mongoose;
 
 export const RequestSchema = new Schema(
@@ -30,7 +32,7 @@ export const RequestSchema = new Schema(
         approverDecision: {
           type: String,
           enum: Decision,
-          defualt: Decision.UNKNOWN,
+          defualt: Decision.DECISION_UNKNOWN,
         },
       },
       default: null,
@@ -44,7 +46,7 @@ export const RequestSchema = new Schema(
         approverDecision: {
           type: String,
           enum: Decision,
-          defualt: Decision.UNKNOWN,
+          defualt: Decision.DECISION_UNKNOWN,
         },
       },
       default: null,
@@ -54,7 +56,7 @@ export const RequestSchema = new Schema(
       status: {
         type: String,
         enum: StageStatus,
-        default: StageStatus.UNKNOWN,
+        default: StageStatus.STAGE_UNKNOWN,
       },
       createdId: {
         type: String,
@@ -69,7 +71,7 @@ export const RequestSchema = new Schema(
       status: {
         type: String,
         enum: StageStatus,
-        default: StageStatus.UNKNOWN,
+        default: StageStatus.STAGE_UNKNOWN,
       },
       message: {
         type: String,
@@ -139,4 +141,8 @@ RequestSchema.pre<any>("findOneAndUpdate", function (next) {
   return next();
 });
 
-export const Request = connection.model("Request", RequestSchema, "requests");
+export const RequestModel = connection.model(
+  "Request",
+  RequestSchema,
+  "requests"
+);

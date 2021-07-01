@@ -1,13 +1,12 @@
-import { RequestType } from "../enums/requestService/requestType.enum";
-import { IProduceRequest } from "../interfaces/produceRequest.interface";
-import { GetRequestByIdReq } from "../interfaces/requestService/getRequestById/getRequestByIdReq.interface";
-import { IRequest } from "../interfaces/requestService/request.interface";
-import { IADParams } from "../interfaces/requestService/stageParams/adParams.interface";
-import { IKartoffelParams } from "../interfaces/requestService/stageParams/kartoffelParams.interface";
 import {
-  ISuccessMessage,
+  ProduceRequest,
   SuccessMessage,
-} from "../interfaces/successMessage.interface";
+} from "../interfaces/protoc/proto/producerService";
+import {
+  ADParams,
+  Request,
+  RequestType,
+} from "../interfaces/protoc/proto/requestService";
 import { RequestService } from "../services/request.service";
 import { ProducerRepository } from "./producer.repository";
 
@@ -19,13 +18,13 @@ export class RequestManager {
     this.requestService = new RequestService();
   }
 
-  generateKartoffelQueueMessage(request: IRequest): any {
+  generateKartoffelQueueMessage(request: Request): any {
     const message: any = {
       requestId: request.id,
       type: request.type,
       domain: "domain1",
     };
-    const kartoffelParams: IKartoffelParams = request.kartoffelParams;
+    const kartoffelParams: any = request.kartoffelParams;
     switch (request.type) {
       case RequestType.CREATE_OG: {
         message.data = {
@@ -124,13 +123,13 @@ export class RequestManager {
     return message;
   }
 
-  generateADQueueMessage(request: IRequest): any {
+  generateADQueueMessage(request: Request): any {
     const message: any = {
       requestId: request.id,
       type: request.type,
       domain: "domain1",
     };
-    const adParams: IADParams = request.adParams;
+    const adParams: any = request.adParams;
     switch (request.type) {
       case RequestType.CREATE_OG: {
         message.data = {
@@ -207,38 +206,38 @@ export class RequestManager {
   }
 
   async produceToKartoffelQueue(
-    produceRequest: IProduceRequest
-  ): Promise<ISuccessMessage> {
+    produceRequest: ProduceRequest
+  ): Promise<SuccessMessage> {
     try {
-      const request: IRequest = await this.requestService.getRequestById(
-        new GetRequestByIdReq(produceRequest.id)
-      );
+      const request: Request = await this.requestService.getRequestById({
+        id: produceRequest.id,
+      });
       const message = this.generateKartoffelQueueMessage(request);
       await this.producerRepository.pushIntoKartoffelQueue(message);
 
-      return new SuccessMessage(
-        true,
-        "Message pushed to Kartoffel queue successfully"
-      );
+      return {
+        success: true,
+        message: "Message pushed to Kartoffel queue successfully",
+      };
     } catch (error) {
       throw error;
     }
   }
 
   async produceToADQueue(
-    produceRequest: IProduceRequest
-  ): Promise<ISuccessMessage> {
+    produceRequest: ProduceRequest
+  ): Promise<SuccessMessage> {
     try {
-      const request: IRequest = await this.requestService.getRequestById(
-        new GetRequestByIdReq(produceRequest.id)
-      );
+      const request: Request = await this.requestService.getRequestById({
+        id: produceRequest.id,
+      });
       const message = this.generateADQueueMessage(request);
       await this.producerRepository.pushIntoADQueue(message);
 
-      return new SuccessMessage(
-        true,
-        "Message pushed to AD queue successfully"
-      );
+      return {
+        success: true,
+        message: "Message pushed to AD queue successfully",
+      };
     } catch (error) {
       throw error;
     }
