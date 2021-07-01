@@ -5,9 +5,9 @@ const RequestsRouter: Router = Router();
 RequestsRouter.get('/ui',RequestsController.ui);
 
 RequestsRouter.get('/abc',RequestsController.getRequestById);
-RequestsRouter.get('/getAllRequests/:from/:to',RequestsController.getAllRequests);
-RequestsRouter.get('/getRequestsSubmittedBy/:id/:from/:to',RequestsController.getRequestsSubmittedBy);
-RequestsRouter.get('/getRequestsByCommander/:id/:from/:to',RequestsController.getRequestsByCommander);
+RequestsRouter.get('/getAllRequests',RequestsController.getAllRequests);
+RequestsRouter.get('/getRequestsSubmittedBy/:id',RequestsController.getRequestsSubmittedBy);
+RequestsRouter.get('/getRequestsByCommander/:id',RequestsController.getRequestsByCommander);
 RequestsRouter.put('/updateADStatus', RequestsController.updateADStatus);
 
 

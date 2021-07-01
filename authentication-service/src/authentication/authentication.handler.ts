@@ -93,7 +93,6 @@ export class ShragaAuthenticationHandler extends AuthenticationHandler {
     }
 
     static authenticate() {
-        console.log('hragaAuthenticationHandler')
         return passport.authenticate('shraga', this.handleUser);
     }
 

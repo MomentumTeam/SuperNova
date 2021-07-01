@@ -60,7 +60,7 @@ export default class RequestsController {
     static async getAllRequests(req: Request, res: Response) {
         console.log('GetAllRequests')
 
-        requestsClient.GetAllRequests({ from: req.params.from, to: req.params.to }, (err: any, response: RequestArray) => {
+        requestsClient.GetAllRequests({ from: req.query.from, to: req.query.to }, (err: any, response: RequestArray) => {
             if (err) {
                 res.send(err);
             }
@@ -71,7 +71,7 @@ export default class RequestsController {
     static async getRequestsSubmittedBy(req: Request, res: Response) {
         console.log('GetRequestsSubmittedBy');
 
-        requestsClient.GetRequestsSubmittedBy({ id: req.params.id, from: req.params.from, to: req.params.to }, (err: any, response: RequestArray) => {
+        requestsClient.GetRequestsSubmittedBy({ id: req.params.id, from: req.query.from, to: req.query.to }, (err: any, response: RequestArray) => {
             if (err) {
                 console.log('err', err)
                 res.send(err);
@@ -84,7 +84,7 @@ export default class RequestsController {
     static async getRequestsByCommander(req: Request, res: Response) {
         console.log('GetRequestsByCommander')
 
-        requestsClient.GetRequestsByCommander({ id: req.params.id, from: req.params.from, to: req.params.to }, (err: any, response: RequestArray) => {
+        requestsClient.GetRequestsByCommander({ id: req.params.id, from: req.query.from, to: req.query.to }, (err: any, response: RequestArray) => {
             if (err) {
                 res.send(err);
             }
