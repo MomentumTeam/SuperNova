@@ -23,6 +23,7 @@ import {
   getRolesUnderOG,
   searchEntitiesByFullName,
   searchOG,
+  getOGTree,
 } from "./kartoffel/kartoffel.controller";
 
 const PROTO_PATH = __dirname.includes("dist")
@@ -83,6 +84,7 @@ export class Server {
         DeleteRole: deleteRole,
         DeleteDI: deleteDI,
         GetEntitiesUnderOG: getEntitiesUnderOG,
+        GetOGTree: getOGTree,
       });
       logger.log({
         level: "info",

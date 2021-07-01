@@ -8,6 +8,7 @@ import {
   EntityArray,
   Entity,
   RoleArray,
+  OGTree,
 } from "../interfaces/protoc/proto/kartoffelService";
 import { KartoffelManager } from "./kartoffel.manager";
 
@@ -17,6 +18,22 @@ export async function searchOG(call: any, callback: any): Promise<void> {
   try {
     const ogArray: OGArray = await kartoffelManager.searchOG(call.request);
     callback(null, ogArray);
+  } catch (error) {
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function getOGTree(call: any, callback: any): Promise<void> {
+  try {
+    const ogTree: OGTree = await kartoffelManager.getOGTree(call.request);
+    callback(null, ogTree);
   } catch (error) {
     callback(
       {

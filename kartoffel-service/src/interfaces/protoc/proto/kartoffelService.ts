@@ -4,6 +4,16 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "Kartoffel";
 
+export interface GetOGTreeRequest {
+  rootId: string;
+}
+
+export interface OGTree {
+  id: string;
+  name: string;
+  children: OGTree[];
+}
+
 /** SearchOG */
 export interface SearchOGRequest {
   hierarchyAndName: string;
@@ -218,6 +228,165 @@ export interface DigitalIdentity {
   isRoleAttachable: boolean;
   role: Role | undefined;
 }
+
+const baseGetOGTreeRequest: object = { rootId: "" };
+
+export const GetOGTreeRequest = {
+  encode(
+    message: GetOGTreeRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.rootId !== "") {
+      writer.uint32(10).string(message.rootId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): GetOGTreeRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseGetOGTreeRequest } as GetOGTreeRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.rootId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetOGTreeRequest {
+    const message = { ...baseGetOGTreeRequest } as GetOGTreeRequest;
+    if (object.rootId !== undefined && object.rootId !== null) {
+      message.rootId = String(object.rootId);
+    } else {
+      message.rootId = "";
+    }
+    return message;
+  },
+
+  toJSON(message: GetOGTreeRequest): unknown {
+    const obj: any = {};
+    message.rootId !== undefined && (obj.rootId = message.rootId);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<GetOGTreeRequest>): GetOGTreeRequest {
+    const message = { ...baseGetOGTreeRequest } as GetOGTreeRequest;
+    if (object.rootId !== undefined && object.rootId !== null) {
+      message.rootId = object.rootId;
+    } else {
+      message.rootId = "";
+    }
+    return message;
+  },
+};
+
+const baseOGTree: object = { id: "", name: "" };
+
+export const OGTree = {
+  encode(
+    message: OGTree,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.name !== "") {
+      writer.uint32(18).string(message.name);
+    }
+    for (const v of message.children) {
+      OGTree.encode(v!, writer.uint32(26).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): OGTree {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseOGTree } as OGTree;
+    message.children = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        case 2:
+          message.name = reader.string();
+          break;
+        case 3:
+          message.children.push(OGTree.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): OGTree {
+    const message = { ...baseOGTree } as OGTree;
+    message.children = [];
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    if (object.name !== undefined && object.name !== null) {
+      message.name = String(object.name);
+    } else {
+      message.name = "";
+    }
+    if (object.children !== undefined && object.children !== null) {
+      for (const e of object.children) {
+        message.children.push(OGTree.fromJSON(e));
+      }
+    }
+    return message;
+  },
+
+  toJSON(message: OGTree): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    message.name !== undefined && (obj.name = message.name);
+    if (message.children) {
+      obj.children = message.children.map((e) =>
+        e ? OGTree.toJSON(e) : undefined
+      );
+    } else {
+      obj.children = [];
+    }
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<OGTree>): OGTree {
+    const message = { ...baseOGTree } as OGTree;
+    message.children = [];
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    if (object.name !== undefined && object.name !== null) {
+      message.name = object.name;
+    } else {
+      message.name = "";
+    }
+    if (object.children !== undefined && object.children !== null) {
+      for (const e of object.children) {
+        message.children.push(OGTree.fromPartial(e));
+      }
+    }
+    return message;
+  },
+};
 
 const baseSearchOGRequest: object = { hierarchyAndName: "" };
 
@@ -3396,6 +3565,7 @@ export interface Kartoffel {
   DeleteRole(request: DeleteRoleRequest): Promise<SuccessMessage>;
   DeleteDI(request: DeleteDIRequest): Promise<SuccessMessage>;
   GetEntitiesUnderOG(request: GetEntitiesUnderOGRequest): Promise<EntityArray>;
+  GetOGTree(request: GetOGTreeRequest): Promise<OGTree>;
 }
 
 export class KartoffelClientImpl implements Kartoffel {
@@ -3421,6 +3591,7 @@ export class KartoffelClientImpl implements Kartoffel {
     this.DeleteRole = this.DeleteRole.bind(this);
     this.DeleteDI = this.DeleteDI.bind(this);
     this.GetEntitiesUnderOG = this.GetEntitiesUnderOG.bind(this);
+    this.GetOGTree = this.GetOGTree.bind(this);
   }
   SearchOG(request: SearchOGRequest): Promise<OGArray> {
     const data = SearchOGRequest.encode(request).finish();
@@ -3590,6 +3761,12 @@ export class KartoffelClientImpl implements Kartoffel {
       data
     );
     return promise.then((data) => EntityArray.decode(new _m0.Reader(data)));
+  }
+
+  GetOGTree(request: GetOGTreeRequest): Promise<OGTree> {
+    const data = GetOGTreeRequest.encode(request).finish();
+    const promise = this.rpc.request("Kartoffel.Kartoffel", "GetOGTree", data);
+    return promise.then((data) => OGTree.decode(new _m0.Reader(data)));
   }
 }
 
