@@ -115,7 +115,7 @@ export default class KartoffelController {
         console.log('GetEntityByMongoId')
         console.log('req.params', req.params)
 
-        kartoffelClient.GetEntityByRoleId({ id: req.params.id }, (err: any, response: Entity) => {
+        kartoffelClient.GetEntityByMongoId({ id: req.params.id }, (err: any, response: Entity) => {
             if (err) {
                 res.send(null);
             }
