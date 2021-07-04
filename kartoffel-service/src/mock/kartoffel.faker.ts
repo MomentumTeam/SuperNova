@@ -1,4 +1,5 @@
-import faker from "faker";
+import faker from 'faker';
+import mongoose from 'mongoose';
 import {
   OrganizationGroup,
   DigitalIdentity,
@@ -8,19 +9,19 @@ import {
   RoleArray,
   EntityArray,
   OGTree,
-} from "../interfaces/protoc/proto/kartoffelService";
+} from '../interfaces/protoc/proto/kartoffelService';
 
 export class KartoffelFaker {
   constructor() {}
 
   randomOG(): OrganizationGroup {
     const organizationGroup: OrganizationGroup = {
-      id: faker.datatype.uuid(),
+      id: mongoose.Types.ObjectId().toString(),
       name: faker.company.companyName(),
-      source: "oneTree",
-      ancestors: [faker.datatype.uuid()],
+      source: 'oneTree',
+      ancestors: [mongoose.Types.ObjectId().toString()],
       hierarchy: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
-      status: "active",
+      status: 'active',
       isLeaf: true,
       createdAt: faker.datatype.datetime().getTime(),
       updatedAt: faker.datatype.datetime().getTime(),
@@ -32,11 +33,11 @@ export class KartoffelFaker {
 
   randomDI(): DigitalIdentity {
     const digitalIdentity: DigitalIdentity = {
-      type: "domainUser",
-      source: "oneTree",
+      type: 'domainUser',
+      source: 'oneTree',
       mail: faker.internet.email(),
       uniqueId: faker.internet.email(),
-      entityId: faker.datatype.uuid(),
+      entityId: mongoose.Types.ObjectId().toString(),
       createdAt: faker.datatype.datetime().getTime(),
       updatedAt: faker.datatype.datetime().getTime(),
       isRoleAttachable: true,
@@ -53,7 +54,7 @@ export class KartoffelFaker {
       directGroup: faker.datatype.uuid(),
       hierarchy: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
       hierarchyIds: [],
-      source: "oneTree",
+      source: 'oneTree',
       createdAt: faker.datatype.datetime().getTime(),
       updatedAt: faker.datatype.datetime().getTime(),
     };
@@ -61,26 +62,26 @@ export class KartoffelFaker {
   }
   randomEntity(): Entity {
     const entity: Entity = {
-      id: faker.datatype.uuid(),
+      id: mongoose.Types.ObjectId().toString(),
       displayName: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
-      directGroup: faker.datatype.uuid(),
+      directGroup: mongoose.Types.ObjectId().toString(),
       hierarchy: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
-      entityType: "soldier",
-      identityCard: faker.datatype.uuid(),
-      personalNumber: faker.datatype.uuid(),
-      serviceType: "מילואים",
+      entityType: 'soldier',
+      identityCard: mongoose.Types.ObjectId().toString(),
+      personalNumber: mongoose.Types.ObjectId().toString(),
+      serviceType: 'מילואים',
       firstName: faker.name.firstName(),
       lastName: faker.name.lastName(),
       akaUnit: faker.company.companyName(),
       dischargeDay: faker.datatype.datetime().getTime(),
-      rank: "אזרח",
+      rank: 'אזרח',
       mail: faker.internet.email(),
       jobTitle: faker.name.jobTitle(),
       phone: [faker.phone.phoneNumber()],
       mobilePhone: [faker.phone.phoneNumber()],
       address: `${faker.address.streetAddress()}, ${faker.address.country()}`,
-      clearance: "2",
-      sex: "זכר",
+      clearance: '2',
+      sex: 'זכר',
       birthdate: faker.datatype.datetime().getTime(),
       createdAt: faker.datatype.datetime().getTime(),
       updatedAt: faker.datatype.datetime().getTime(),
@@ -91,32 +92,32 @@ export class KartoffelFaker {
 
   randomOGTree(): OGTree {
     return {
-      id: faker.datatype.uuid(),
+      id: mongoose.Types.ObjectId().toString(),
       name: faker.name.firstName(),
       children: [
         {
-          id: faker.datatype.uuid(),
+          id: mongoose.Types.ObjectId().toString(),
           name: faker.name.firstName(),
           children: [],
         },
         {
-          id: faker.datatype.uuid(),
+          id: mongoose.Types.ObjectId().toString(),
           name: faker.name.firstName(),
           children: [
             {
-              id: faker.datatype.uuid(),
+              id: mongoose.Types.ObjectId().toString(),
               name: faker.name.firstName(),
               children: [],
             },
             {
-              id: faker.datatype.uuid(),
+              id: mongoose.Types.ObjectId().toString(),
               name: faker.name.firstName(),
               children: [],
             },
           ],
         },
         {
-          id: faker.datatype.uuid(),
+          id: mongoose.Types.ObjectId().toString(),
           name: faker.name.firstName(),
           children: [],
         },
