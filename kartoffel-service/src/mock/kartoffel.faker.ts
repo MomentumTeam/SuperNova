@@ -90,38 +90,27 @@ export class KartoffelFaker {
     return entity;
   }
 
+  randomChildrenAray(layers: number): OGTree[] {
+    if (layers == 0) {
+      return [];
+    }
+    let children = [];
+    const childrenCount = Math.floor(Math.random() * 4);
+    for (let i = 0; i < childrenCount; i++) {
+      children.push({
+        id: mongoose.Types.ObjectId().toString(),
+        name: faker.name.firstName(),
+        children: this.randomChildrenAray(layers - 1),
+      });
+    }
+    return children;
+  }
+
   randomOGTree(): OGTree {
     return {
       id: mongoose.Types.ObjectId().toString(),
       name: faker.name.firstName(),
-      children: [
-        {
-          id: mongoose.Types.ObjectId().toString(),
-          name: faker.name.firstName(),
-          children: [],
-        },
-        {
-          id: mongoose.Types.ObjectId().toString(),
-          name: faker.name.firstName(),
-          children: [
-            {
-              id: mongoose.Types.ObjectId().toString(),
-              name: faker.name.firstName(),
-              children: [],
-            },
-            {
-              id: mongoose.Types.ObjectId().toString(),
-              name: faker.name.firstName(),
-              children: [],
-            },
-          ],
-        },
-        {
-          id: mongoose.Types.ObjectId().toString(),
-          name: faker.name.firstName(),
-          children: [],
-        },
-      ],
+      children: this.randomChildrenAray(2),
     };
   }
 
