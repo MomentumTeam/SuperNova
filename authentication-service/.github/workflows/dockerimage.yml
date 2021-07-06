@@ -1,0 +1,56 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches:
+    - develop
+    - ci
+
+jobs:
+
+  test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: scm checkout
+      uses: actions/checkout@v1
+
+    - name: Build the test image and run it
+      run: docker build . --file test.Dockerfile --tag ${{ secrets.acr_registry }}$GITHUB_REPOSITORY:test
+
+    - name: Run test
+      run: docker run ${{ secrets.acr_registry }}$GITHUB_REPOSITORY:test 
+
+
+  image:
+    needs: test
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: scm checkout
+      uses: actions/checkout@v1
+
+    - name: Build the develop branch
+      run: docker build . --file Dockerfile --tag ${{ secrets.acr_registry }}/$GITHUB_REPOSITORY:develop
+
+
+
+
+    - name: Docker Login 
+      uses: azure/docker-login@v1
+      with:
+       login-server: ${{ secrets.acr_registry }}
+       username: ${{ secrets.acr_username }}
+       password: ${{ secrets.acr_password }}
+
+    - name: Push container
+      run: docker push ${{ secrets.acr_registry }}/$GITHUB_REPOSITORY:develop
+
+
+
+
+
+
+
