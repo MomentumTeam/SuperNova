@@ -94,15 +94,26 @@ export default class RequestsController {
 
     static async updateADStatus(req: Request, res: Response) {
         console.log('UpdateADStatus')
+        
+        const status: string = req.body.Status;
+        let stageStatus: StageStatus = (<any>StageStatus)["IN_PROGRESS"];
 
-        const status: string = req.body.status;
-        const stageStatus: StageStatus = (<any>StageStatus)[status];
 
-        requestsClient.UpdateADStatus({ requestId: req.body.requestId, status: stageStatus, message: req.body.message }, (err: any, response: RequestS) => {
+        if (status === "true")
+        {
+            stageStatus = (<any>StageStatus)["DONE"];
+
+        }
+        else if(status === "false") {
+            stageStatus = (<any>StageStatus)["FAILED"];
+
+        }
+
+        requestsClient.UpdateADStatus({ requestId: req.body.RequestID, status: stageStatus, message: req.body.ErrorID }, (err: any, response: RequestS) => {
             if (err) {
-                res.send(err);
+                res.status(500).end(err.message);
             }
-            res.send(response);
+            res.status(200);
           });
     }
 
