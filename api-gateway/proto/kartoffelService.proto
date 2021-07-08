@@ -34,9 +34,7 @@ message GetPictureByEntityIdRequest{
     string id = 1;
 }
 message Image {
-    int32 width = 1;
-    int32 height = 2;
-    bytes data = 3;
+    string image = 1;
 }
 
 message GetEntityByDigitalIdentityRequest{
@@ -284,6 +282,8 @@ message Entity{
     int64 createdAt = 22;
     int64 updatedAt = 23;
     repeated DigitalIdentity digitalIdentities = 24;
+    string picture = 25;
+
 }
 
 message DigitalIdentity{

@@ -56,9 +56,7 @@ export class KartoffelFaker {
         })
         .then((res) => {
           const image: Image = {
-            width: 40,
-            height: 40,
-            data: new Uint8Array(res.data),
+            image: Buffer.from(res.data).toString('base64'),
           };
           resolve(image);
         })
@@ -114,7 +112,7 @@ export class KartoffelFaker {
         createdAt: faker.datatype.datetime().getTime(),
         updatedAt: faker.datatype.datetime().getTime(),
         digitalIdentities: [],
-        picture: picture,
+        picture: picture.image,
       };
       return entity;
     } catch (err) {

@@ -64,12 +64,8 @@ export class KartoffelRepository {
         return image;
       } else {
         //TODO
-        const res = await this.axiosKartoffel.get('https://picsum.photos/200');
-        return {
-          width: 10,
-          height: 10,
-          data: new Uint8Array(),
-        };
+        const image: Image = await this.kartoffelFaker.randomPicture();
+        return image;
       }
     } catch (error) {
       throw error;

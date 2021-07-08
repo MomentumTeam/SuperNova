@@ -9,9 +9,7 @@ export interface GetPictureByEntityIdRequest {
 }
 
 export interface Image {
-  width: number;
-  height: number;
-  data: Uint8Array;
+  image: string;
 }
 
 export interface GetEntityByDigitalIdentityRequest {
@@ -231,7 +229,7 @@ export interface Entity {
   createdAt: number;
   updatedAt: number;
   digitalIdentities: DigitalIdentity[];
-  picture: Image | undefined;
+  picture: string;
 }
 
 export interface DigitalIdentity {
@@ -315,18 +313,12 @@ export const GetPictureByEntityIdRequest = {
   },
 };
 
-const baseImage: object = { width: 0, height: 0 };
+const baseImage: object = { image: "" };
 
 export const Image = {
   encode(message: Image, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.width !== 0) {
-      writer.uint32(8).int32(message.width);
-    }
-    if (message.height !== 0) {
-      writer.uint32(16).int32(message.height);
-    }
-    if (message.data.length !== 0) {
-      writer.uint32(26).bytes(message.data);
+    if (message.image !== "") {
+      writer.uint32(10).string(message.image);
     }
     return writer;
   },
@@ -335,18 +327,11 @@ export const Image = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseImage } as Image;
-    message.data = new Uint8Array();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.width = reader.int32();
-          break;
-        case 2:
-          message.height = reader.int32();
-          break;
-        case 3:
-          message.data = reader.bytes();
+          message.image = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -358,50 +343,26 @@ export const Image = {
 
   fromJSON(object: any): Image {
     const message = { ...baseImage } as Image;
-    message.data = new Uint8Array();
-    if (object.width !== undefined && object.width !== null) {
-      message.width = Number(object.width);
+    if (object.image !== undefined && object.image !== null) {
+      message.image = String(object.image);
     } else {
-      message.width = 0;
-    }
-    if (object.height !== undefined && object.height !== null) {
-      message.height = Number(object.height);
-    } else {
-      message.height = 0;
-    }
-    if (object.data !== undefined && object.data !== null) {
-      message.data = bytesFromBase64(object.data);
+      message.image = "";
     }
     return message;
   },
 
   toJSON(message: Image): unknown {
     const obj: any = {};
-    message.width !== undefined && (obj.width = message.width);
-    message.height !== undefined && (obj.height = message.height);
-    message.data !== undefined &&
-      (obj.data = base64FromBytes(
-        message.data !== undefined ? message.data : new Uint8Array()
-      ));
+    message.image !== undefined && (obj.image = message.image);
     return obj;
   },
 
   fromPartial(object: DeepPartial<Image>): Image {
     const message = { ...baseImage } as Image;
-    if (object.width !== undefined && object.width !== null) {
-      message.width = object.width;
+    if (object.image !== undefined && object.image !== null) {
+      message.image = object.image;
     } else {
-      message.width = 0;
-    }
-    if (object.height !== undefined && object.height !== null) {
-      message.height = object.height;
-    } else {
-      message.height = 0;
-    }
-    if (object.data !== undefined && object.data !== null) {
-      message.data = object.data;
-    } else {
-      message.data = new Uint8Array();
+      message.image = "";
     }
     return message;
   },
@@ -3121,6 +3082,7 @@ const baseEntity: object = {
   birthdate: 0,
   createdAt: 0,
   updatedAt: 0,
+  picture: "",
 };
 
 export const Entity = {
@@ -3200,8 +3162,8 @@ export const Entity = {
     for (const v of message.digitalIdentities) {
       DigitalIdentity.encode(v!, writer.uint32(194).fork()).ldelim();
     }
-    if (message.picture !== undefined) {
-      Image.encode(message.picture, writer.uint32(202).fork()).ldelim();
+    if (message.picture !== "") {
+      writer.uint32(202).string(message.picture);
     }
     return writer;
   },
@@ -3291,7 +3253,7 @@ export const Entity = {
           );
           break;
         case 25:
-          message.picture = Image.decode(reader, reader.uint32());
+          message.picture = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -3430,9 +3392,9 @@ export const Entity = {
       }
     }
     if (object.picture !== undefined && object.picture !== null) {
-      message.picture = Image.fromJSON(object.picture);
+      message.picture = String(object.picture);
     } else {
-      message.picture = undefined;
+      message.picture = "";
     }
     return message;
   },
@@ -3483,10 +3445,7 @@ export const Entity = {
     } else {
       obj.digitalIdentities = [];
     }
-    message.picture !== undefined &&
-      (obj.picture = message.picture
-        ? Image.toJSON(message.picture)
-        : undefined);
+    message.picture !== undefined && (obj.picture = message.picture);
     return obj;
   },
 
@@ -3619,9 +3578,9 @@ export const Entity = {
       }
     }
     if (object.picture !== undefined && object.picture !== null) {
-      message.picture = Image.fromPartial(object.picture);
+      message.picture = object.picture;
     } else {
-      message.picture = undefined;
+      message.picture = "";
     }
     return message;
   },
@@ -4115,29 +4074,6 @@ var globalThis: any = (() => {
   if (typeof global !== "undefined") return global;
   throw "Unable to locate global object";
 })();
-
-const atob: (b64: string) => string =
-  globalThis.atob ||
-  ((b64) => globalThis.Buffer.from(b64, "base64").toString("binary"));
-function bytesFromBase64(b64: string): Uint8Array {
-  const bin = atob(b64);
-  const arr = new Uint8Array(bin.length);
-  for (let i = 0; i < bin.length; ++i) {
-    arr[i] = bin.charCodeAt(i);
-  }
-  return arr;
-}
-
-const btoa: (bin: string) => string =
-  globalThis.btoa ||
-  ((bin) => globalThis.Buffer.from(bin, "binary").toString("base64"));
-function base64FromBytes(arr: Uint8Array): string {
-  const bin: string[] = [];
-  for (const byte of arr) {
-    bin.push(String.fromCharCode(byte));
-  }
-  return btoa(bin.join(""));
-}
 
 type Builtin =
   | Date
