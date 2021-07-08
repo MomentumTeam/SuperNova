@@ -2,7 +2,7 @@ export const config = {
   server: {
     port: +(process.env.AS_PORT || 9000),
     name: 'authentication-service',
-    endpoint: process.env.AS_HOST || 'http://localhost:9000/auth',
+    endpoint: process.env.AS_ENDPOINT || 'http://localhost:9000/auth',
   },
   cors: {
     allowedOrigins: process.env.AS_ALLOWED_ORIGINS
@@ -37,7 +37,7 @@ export const config = {
     allowedProvider: process.env.AS_SHRAGA_PROVIDERS || 'Genesis',
     unauthorized: './401/index.html',
   },
-  clientEndpoint: process.env.AS_CLIENT_ENDPOINT || 'http://localhost:2000',
+  clientEndpoint: process.env.AS_CLIENT_ENDPOINT || 'http://localhost:3000',
   support:
     process.env.AS_UNAUTHORIZED_SUPPORT_URL || 'https://open.rocket.chat',
 };

@@ -96,7 +96,7 @@ services:
       - '9000:8080'
     environment:
       - AS_SHRAGA_URL=https://shraga-prod.northeurope.cloudapp.azure.com
-      - AS_CLIENT_ENDPOINT=http://localhost:2000
+      - AS_CLIENT_ENDPOINT=http://localhost:3000
 
   api-gateway:
     image: api-gateway
@@ -110,7 +110,7 @@ services:
       - producer-service
       - request-service
     environment:
-      - GATEWAY_KS_KARTOFFEL_URL=kartoffel-service:8080
-      - GATEWAY_RS_HOST=request-service:8080
+      - GATEWAY_KS_URL=kartoffel-service:8080
+      - GATEWAY_RS_URL=request-service:8080
       - GATEWAY_PS_URL=producer-service:8080
       - GATEWAY_AS_URL=http://localhost:9000

@@ -4,6 +4,27 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "Kartoffel";
 
+export interface GetPictureByEntityIdRequest {
+  id: string;
+}
+
+export interface Image {
+  width: number;
+  height: number;
+  data: Uint8Array;
+}
+
+export interface GetEntityByDigitalIdentityRequest {
+  diUniqueId: string;
+}
+
+/** SearchEntitiesByFullName */
+export interface SearchEntitiesByFullNameRequest {
+  fullName: string;
+  from: number;
+  to: number;
+}
+
 export interface GetOGTreeRequest {
   rootId: string;
 }
@@ -55,11 +76,6 @@ export interface ConnectRoleAndDIRequest {
   uniqueId: string;
 }
 
-/** SearchEntitiesByFullName */
-export interface SearchEntitiesByFullNameRequest {
-  fullName: string;
-}
-
 export interface EntityArray {
   entities: Entity[];
 }
@@ -70,8 +86,8 @@ export interface GetEntityByIdNumberRequest {
   idNumber: string;
 }
 
-/** SearchRolesByRoleId */
-export interface SearchRolesByRoleIdRequest {
+/** GetRoleByRoleId */
+export interface GetRoleByRoleIdRequest {
   roleId: string;
 }
 
@@ -215,6 +231,7 @@ export interface Entity {
   createdAt: number;
   updatedAt: number;
   digitalIdentities: DigitalIdentity[];
+  picture: Image | undefined;
 }
 
 export interface DigitalIdentity {
@@ -228,6 +245,343 @@ export interface DigitalIdentity {
   isRoleAttachable: boolean;
   role: Role | undefined;
 }
+
+const baseGetPictureByEntityIdRequest: object = { id: "" };
+
+export const GetPictureByEntityIdRequest = {
+  encode(
+    message: GetPictureByEntityIdRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GetPictureByEntityIdRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseGetPictureByEntityIdRequest,
+    } as GetPictureByEntityIdRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetPictureByEntityIdRequest {
+    const message = {
+      ...baseGetPictureByEntityIdRequest,
+    } as GetPictureByEntityIdRequest;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+
+  toJSON(message: GetPictureByEntityIdRequest): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<GetPictureByEntityIdRequest>
+  ): GetPictureByEntityIdRequest {
+    const message = {
+      ...baseGetPictureByEntityIdRequest,
+    } as GetPictureByEntityIdRequest;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+};
+
+const baseImage: object = { width: 0, height: 0 };
+
+export const Image = {
+  encode(message: Image, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.width !== 0) {
+      writer.uint32(8).int32(message.width);
+    }
+    if (message.height !== 0) {
+      writer.uint32(16).int32(message.height);
+    }
+    if (message.data.length !== 0) {
+      writer.uint32(26).bytes(message.data);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Image {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseImage } as Image;
+    message.data = new Uint8Array();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.width = reader.int32();
+          break;
+        case 2:
+          message.height = reader.int32();
+          break;
+        case 3:
+          message.data = reader.bytes();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Image {
+    const message = { ...baseImage } as Image;
+    message.data = new Uint8Array();
+    if (object.width !== undefined && object.width !== null) {
+      message.width = Number(object.width);
+    } else {
+      message.width = 0;
+    }
+    if (object.height !== undefined && object.height !== null) {
+      message.height = Number(object.height);
+    } else {
+      message.height = 0;
+    }
+    if (object.data !== undefined && object.data !== null) {
+      message.data = bytesFromBase64(object.data);
+    }
+    return message;
+  },
+
+  toJSON(message: Image): unknown {
+    const obj: any = {};
+    message.width !== undefined && (obj.width = message.width);
+    message.height !== undefined && (obj.height = message.height);
+    message.data !== undefined &&
+      (obj.data = base64FromBytes(
+        message.data !== undefined ? message.data : new Uint8Array()
+      ));
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<Image>): Image {
+    const message = { ...baseImage } as Image;
+    if (object.width !== undefined && object.width !== null) {
+      message.width = object.width;
+    } else {
+      message.width = 0;
+    }
+    if (object.height !== undefined && object.height !== null) {
+      message.height = object.height;
+    } else {
+      message.height = 0;
+    }
+    if (object.data !== undefined && object.data !== null) {
+      message.data = object.data;
+    } else {
+      message.data = new Uint8Array();
+    }
+    return message;
+  },
+};
+
+const baseGetEntityByDigitalIdentityRequest: object = { diUniqueId: "" };
+
+export const GetEntityByDigitalIdentityRequest = {
+  encode(
+    message: GetEntityByDigitalIdentityRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.diUniqueId !== "") {
+      writer.uint32(10).string(message.diUniqueId);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GetEntityByDigitalIdentityRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseGetEntityByDigitalIdentityRequest,
+    } as GetEntityByDigitalIdentityRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.diUniqueId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetEntityByDigitalIdentityRequest {
+    const message = {
+      ...baseGetEntityByDigitalIdentityRequest,
+    } as GetEntityByDigitalIdentityRequest;
+    if (object.diUniqueId !== undefined && object.diUniqueId !== null) {
+      message.diUniqueId = String(object.diUniqueId);
+    } else {
+      message.diUniqueId = "";
+    }
+    return message;
+  },
+
+  toJSON(message: GetEntityByDigitalIdentityRequest): unknown {
+    const obj: any = {};
+    message.diUniqueId !== undefined && (obj.diUniqueId = message.diUniqueId);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<GetEntityByDigitalIdentityRequest>
+  ): GetEntityByDigitalIdentityRequest {
+    const message = {
+      ...baseGetEntityByDigitalIdentityRequest,
+    } as GetEntityByDigitalIdentityRequest;
+    if (object.diUniqueId !== undefined && object.diUniqueId !== null) {
+      message.diUniqueId = object.diUniqueId;
+    } else {
+      message.diUniqueId = "";
+    }
+    return message;
+  },
+};
+
+const baseSearchEntitiesByFullNameRequest: object = {
+  fullName: "",
+  from: 0,
+  to: 0,
+};
+
+export const SearchEntitiesByFullNameRequest = {
+  encode(
+    message: SearchEntitiesByFullNameRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.fullName !== "") {
+      writer.uint32(10).string(message.fullName);
+    }
+    if (message.from !== 0) {
+      writer.uint32(16).int32(message.from);
+    }
+    if (message.to !== 0) {
+      writer.uint32(24).int32(message.to);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): SearchEntitiesByFullNameRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseSearchEntitiesByFullNameRequest,
+    } as SearchEntitiesByFullNameRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.fullName = reader.string();
+          break;
+        case 2:
+          message.from = reader.int32();
+          break;
+        case 3:
+          message.to = reader.int32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SearchEntitiesByFullNameRequest {
+    const message = {
+      ...baseSearchEntitiesByFullNameRequest,
+    } as SearchEntitiesByFullNameRequest;
+    if (object.fullName !== undefined && object.fullName !== null) {
+      message.fullName = String(object.fullName);
+    } else {
+      message.fullName = "";
+    }
+    if (object.from !== undefined && object.from !== null) {
+      message.from = Number(object.from);
+    } else {
+      message.from = 0;
+    }
+    if (object.to !== undefined && object.to !== null) {
+      message.to = Number(object.to);
+    } else {
+      message.to = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: SearchEntitiesByFullNameRequest): unknown {
+    const obj: any = {};
+    message.fullName !== undefined && (obj.fullName = message.fullName);
+    message.from !== undefined && (obj.from = message.from);
+    message.to !== undefined && (obj.to = message.to);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<SearchEntitiesByFullNameRequest>
+  ): SearchEntitiesByFullNameRequest {
+    const message = {
+      ...baseSearchEntitiesByFullNameRequest,
+    } as SearchEntitiesByFullNameRequest;
+    if (object.fullName !== undefined && object.fullName !== null) {
+      message.fullName = object.fullName;
+    } else {
+      message.fullName = "";
+    }
+    if (object.from !== undefined && object.from !== null) {
+      message.from = object.from;
+    } else {
+      message.from = 0;
+    }
+    if (object.to !== undefined && object.to !== null) {
+      message.to = object.to;
+    } else {
+      message.to = 0;
+    }
+    return message;
+  },
+};
 
 const baseGetOGTreeRequest: object = { rootId: "" };
 
@@ -954,75 +1308,6 @@ export const ConnectRoleAndDIRequest = {
   },
 };
 
-const baseSearchEntitiesByFullNameRequest: object = { fullName: "" };
-
-export const SearchEntitiesByFullNameRequest = {
-  encode(
-    message: SearchEntitiesByFullNameRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.fullName !== "") {
-      writer.uint32(10).string(message.fullName);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): SearchEntitiesByFullNameRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseSearchEntitiesByFullNameRequest,
-    } as SearchEntitiesByFullNameRequest;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.fullName = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): SearchEntitiesByFullNameRequest {
-    const message = {
-      ...baseSearchEntitiesByFullNameRequest,
-    } as SearchEntitiesByFullNameRequest;
-    if (object.fullName !== undefined && object.fullName !== null) {
-      message.fullName = String(object.fullName);
-    } else {
-      message.fullName = "";
-    }
-    return message;
-  },
-
-  toJSON(message: SearchEntitiesByFullNameRequest): unknown {
-    const obj: any = {};
-    message.fullName !== undefined && (obj.fullName = message.fullName);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<SearchEntitiesByFullNameRequest>
-  ): SearchEntitiesByFullNameRequest {
-    const message = {
-      ...baseSearchEntitiesByFullNameRequest,
-    } as SearchEntitiesByFullNameRequest;
-    if (object.fullName !== undefined && object.fullName !== null) {
-      message.fullName = object.fullName;
-    } else {
-      message.fullName = "";
-    }
-    return message;
-  },
-};
-
 const baseEntityArray: object = {};
 
 export const EntityArray = {
@@ -1159,11 +1444,11 @@ export const GetEntityByIdNumberRequest = {
   },
 };
 
-const baseSearchRolesByRoleIdRequest: object = { roleId: "" };
+const baseGetRoleByRoleIdRequest: object = { roleId: "" };
 
-export const SearchRolesByRoleIdRequest = {
+export const GetRoleByRoleIdRequest = {
   encode(
-    message: SearchRolesByRoleIdRequest,
+    message: GetRoleByRoleIdRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.roleId !== "") {
@@ -1175,12 +1460,10 @@ export const SearchRolesByRoleIdRequest = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): SearchRolesByRoleIdRequest {
+  ): GetRoleByRoleIdRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseSearchRolesByRoleIdRequest,
-    } as SearchRolesByRoleIdRequest;
+    const message = { ...baseGetRoleByRoleIdRequest } as GetRoleByRoleIdRequest;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1195,10 +1478,8 @@ export const SearchRolesByRoleIdRequest = {
     return message;
   },
 
-  fromJSON(object: any): SearchRolesByRoleIdRequest {
-    const message = {
-      ...baseSearchRolesByRoleIdRequest,
-    } as SearchRolesByRoleIdRequest;
+  fromJSON(object: any): GetRoleByRoleIdRequest {
+    const message = { ...baseGetRoleByRoleIdRequest } as GetRoleByRoleIdRequest;
     if (object.roleId !== undefined && object.roleId !== null) {
       message.roleId = String(object.roleId);
     } else {
@@ -1207,18 +1488,16 @@ export const SearchRolesByRoleIdRequest = {
     return message;
   },
 
-  toJSON(message: SearchRolesByRoleIdRequest): unknown {
+  toJSON(message: GetRoleByRoleIdRequest): unknown {
     const obj: any = {};
     message.roleId !== undefined && (obj.roleId = message.roleId);
     return obj;
   },
 
   fromPartial(
-    object: DeepPartial<SearchRolesByRoleIdRequest>
-  ): SearchRolesByRoleIdRequest {
-    const message = {
-      ...baseSearchRolesByRoleIdRequest,
-    } as SearchRolesByRoleIdRequest;
+    object: DeepPartial<GetRoleByRoleIdRequest>
+  ): GetRoleByRoleIdRequest {
+    const message = { ...baseGetRoleByRoleIdRequest } as GetRoleByRoleIdRequest;
     if (object.roleId !== undefined && object.roleId !== null) {
       message.roleId = object.roleId;
     } else {
@@ -2921,6 +3200,9 @@ export const Entity = {
     for (const v of message.digitalIdentities) {
       DigitalIdentity.encode(v!, writer.uint32(194).fork()).ldelim();
     }
+    if (message.picture !== undefined) {
+      Image.encode(message.picture, writer.uint32(202).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -3007,6 +3289,9 @@ export const Entity = {
           message.digitalIdentities.push(
             DigitalIdentity.decode(reader, reader.uint32())
           );
+          break;
+        case 25:
+          message.picture = Image.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -3144,6 +3429,11 @@ export const Entity = {
         message.digitalIdentities.push(DigitalIdentity.fromJSON(e));
       }
     }
+    if (object.picture !== undefined && object.picture !== null) {
+      message.picture = Image.fromJSON(object.picture);
+    } else {
+      message.picture = undefined;
+    }
     return message;
   },
 
@@ -3193,6 +3483,10 @@ export const Entity = {
     } else {
       obj.digitalIdentities = [];
     }
+    message.picture !== undefined &&
+      (obj.picture = message.picture
+        ? Image.toJSON(message.picture)
+        : undefined);
     return obj;
   },
 
@@ -3323,6 +3617,11 @@ export const Entity = {
       for (const e of object.digitalIdentities) {
         message.digitalIdentities.push(DigitalIdentity.fromPartial(e));
       }
+    }
+    if (object.picture !== undefined && object.picture !== null) {
+      message.picture = Image.fromPartial(object.picture);
+    } else {
+      message.picture = undefined;
     }
     return message;
   },
@@ -3545,11 +3844,7 @@ export interface Kartoffel {
   CreateDI(request: CreateDIRequest): Promise<DigitalIdentity>;
   CreateRole(request: CreateRoleRequest): Promise<Role>;
   ConnectRoleAndDI(request: ConnectRoleAndDIRequest): Promise<SuccessMessage>;
-  SearchEntitiesByFullName(
-    request: SearchEntitiesByFullNameRequest
-  ): Promise<EntityArray>;
-  GetEntityByIdNumber(request: GetEntityByIdNumberRequest): Promise<Entity>;
-  SearchRolesByRoleId(request: SearchRolesByRoleIdRequest): Promise<Role>;
+  GetRoleByRoleId(request: GetRoleByRoleIdRequest): Promise<Role>;
   GetRolesUnderOG(request: GetRolesUnderOGRequest): Promise<RoleArray>;
   ConnectEntityAndDI(
     request: ConnectEntityAndDIRequest
@@ -3564,8 +3859,16 @@ export interface Kartoffel {
   GetChildrenOfOG(request: GetChildrenOfOGRequest): Promise<OGArray>;
   DeleteRole(request: DeleteRoleRequest): Promise<SuccessMessage>;
   DeleteDI(request: DeleteDIRequest): Promise<SuccessMessage>;
-  GetEntitiesUnderOG(request: GetEntitiesUnderOGRequest): Promise<EntityArray>;
   GetOGTree(request: GetOGTreeRequest): Promise<OGTree>;
+  SearchEntitiesByFullName(
+    request: SearchEntitiesByFullNameRequest
+  ): Promise<EntityArray>;
+  GetEntityByIdNumber(request: GetEntityByIdNumberRequest): Promise<Entity>;
+  GetEntitiesUnderOG(request: GetEntitiesUnderOGRequest): Promise<EntityArray>;
+  GetEntityByDigitalIdentity(
+    request: GetEntityByDigitalIdentityRequest
+  ): Promise<Entity>;
+  GetPictureByEntityId(request: GetPictureByEntityIdRequest): Promise<Image>;
 }
 
 export class KartoffelClientImpl implements Kartoffel {
@@ -3577,9 +3880,7 @@ export class KartoffelClientImpl implements Kartoffel {
     this.CreateDI = this.CreateDI.bind(this);
     this.CreateRole = this.CreateRole.bind(this);
     this.ConnectRoleAndDI = this.ConnectRoleAndDI.bind(this);
-    this.SearchEntitiesByFullName = this.SearchEntitiesByFullName.bind(this);
-    this.GetEntityByIdNumber = this.GetEntityByIdNumber.bind(this);
-    this.SearchRolesByRoleId = this.SearchRolesByRoleId.bind(this);
+    this.GetRoleByRoleId = this.GetRoleByRoleId.bind(this);
     this.GetRolesUnderOG = this.GetRolesUnderOG.bind(this);
     this.ConnectEntityAndDI = this.ConnectEntityAndDI.bind(this);
     this.CreateEntity = this.CreateEntity.bind(this);
@@ -3590,8 +3891,13 @@ export class KartoffelClientImpl implements Kartoffel {
     this.GetChildrenOfOG = this.GetChildrenOfOG.bind(this);
     this.DeleteRole = this.DeleteRole.bind(this);
     this.DeleteDI = this.DeleteDI.bind(this);
-    this.GetEntitiesUnderOG = this.GetEntitiesUnderOG.bind(this);
     this.GetOGTree = this.GetOGTree.bind(this);
+    this.SearchEntitiesByFullName = this.SearchEntitiesByFullName.bind(this);
+    this.GetEntityByIdNumber = this.GetEntityByIdNumber.bind(this);
+    this.GetEntitiesUnderOG = this.GetEntitiesUnderOG.bind(this);
+    this.GetEntityByDigitalIdentity =
+      this.GetEntityByDigitalIdentity.bind(this);
+    this.GetPictureByEntityId = this.GetPictureByEntityId.bind(this);
   }
   SearchOG(request: SearchOGRequest): Promise<OGArray> {
     const data = SearchOGRequest.encode(request).finish();
@@ -3629,33 +3935,11 @@ export class KartoffelClientImpl implements Kartoffel {
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
-  SearchEntitiesByFullName(
-    request: SearchEntitiesByFullNameRequest
-  ): Promise<EntityArray> {
-    const data = SearchEntitiesByFullNameRequest.encode(request).finish();
+  GetRoleByRoleId(request: GetRoleByRoleIdRequest): Promise<Role> {
+    const data = GetRoleByRoleIdRequest.encode(request).finish();
     const promise = this.rpc.request(
       "Kartoffel.Kartoffel",
-      "SearchEntitiesByFullName",
-      data
-    );
-    return promise.then((data) => EntityArray.decode(new _m0.Reader(data)));
-  }
-
-  GetEntityByIdNumber(request: GetEntityByIdNumberRequest): Promise<Entity> {
-    const data = GetEntityByIdNumberRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "GetEntityByIdNumber",
-      data
-    );
-    return promise.then((data) => Entity.decode(new _m0.Reader(data)));
-  }
-
-  SearchRolesByRoleId(request: SearchRolesByRoleIdRequest): Promise<Role> {
-    const data = SearchRolesByRoleIdRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "SearchRolesByRoleId",
+      "GetRoleByRoleId",
       data
     );
     return promise.then((data) => Role.decode(new _m0.Reader(data)));
@@ -3753,6 +4037,34 @@ export class KartoffelClientImpl implements Kartoffel {
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
+  GetOGTree(request: GetOGTreeRequest): Promise<OGTree> {
+    const data = GetOGTreeRequest.encode(request).finish();
+    const promise = this.rpc.request("Kartoffel.Kartoffel", "GetOGTree", data);
+    return promise.then((data) => OGTree.decode(new _m0.Reader(data)));
+  }
+
+  SearchEntitiesByFullName(
+    request: SearchEntitiesByFullNameRequest
+  ): Promise<EntityArray> {
+    const data = SearchEntitiesByFullNameRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "SearchEntitiesByFullName",
+      data
+    );
+    return promise.then((data) => EntityArray.decode(new _m0.Reader(data)));
+  }
+
+  GetEntityByIdNumber(request: GetEntityByIdNumberRequest): Promise<Entity> {
+    const data = GetEntityByIdNumberRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "GetEntityByIdNumber",
+      data
+    );
+    return promise.then((data) => Entity.decode(new _m0.Reader(data)));
+  }
+
   GetEntitiesUnderOG(request: GetEntitiesUnderOGRequest): Promise<EntityArray> {
     const data = GetEntitiesUnderOGRequest.encode(request).finish();
     const promise = this.rpc.request(
@@ -3763,10 +4075,26 @@ export class KartoffelClientImpl implements Kartoffel {
     return promise.then((data) => EntityArray.decode(new _m0.Reader(data)));
   }
 
-  GetOGTree(request: GetOGTreeRequest): Promise<OGTree> {
-    const data = GetOGTreeRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "GetOGTree", data);
-    return promise.then((data) => OGTree.decode(new _m0.Reader(data)));
+  GetEntityByDigitalIdentity(
+    request: GetEntityByDigitalIdentityRequest
+  ): Promise<Entity> {
+    const data = GetEntityByDigitalIdentityRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "GetEntityByDigitalIdentity",
+      data
+    );
+    return promise.then((data) => Entity.decode(new _m0.Reader(data)));
+  }
+
+  GetPictureByEntityId(request: GetPictureByEntityIdRequest): Promise<Image> {
+    const data = GetPictureByEntityIdRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "GetPictureByEntityId",
+      data
+    );
+    return promise.then((data) => Image.decode(new _m0.Reader(data)));
   }
 }
 
@@ -3787,6 +4115,29 @@ var globalThis: any = (() => {
   if (typeof global !== "undefined") return global;
   throw "Unable to locate global object";
 })();
+
+const atob: (b64: string) => string =
+  globalThis.atob ||
+  ((b64) => globalThis.Buffer.from(b64, "base64").toString("binary"));
+function bytesFromBase64(b64: string): Uint8Array {
+  const bin = atob(b64);
+  const arr = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; ++i) {
+    arr[i] = bin.charCodeAt(i);
+  }
+  return arr;
+}
+
+const btoa: (bin: string) => string =
+  globalThis.btoa ||
+  ((bin) => globalThis.Buffer.from(bin, "binary").toString("base64"));
+function base64FromBytes(arr: Uint8Array): string {
+  const bin: string[] = [];
+  for (const byte of arr) {
+    bin.push(String.fromCharCode(byte));
+  }
+  return btoa(bin.join(""));
+}
 
 type Builtin =
   | Date

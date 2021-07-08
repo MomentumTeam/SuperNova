@@ -19,8 +19,8 @@ import {
 } from '../interfaces/protoc/proto/requestService';
 
 const PROTO_PATH = __dirname.includes('dist')
-  ? path.join(__dirname, '../../proto/requestService.proto')
-  : path.join(__dirname, '../proto/requestService.proto');
+  ? path.join(__dirname, '../../../proto/requestService.proto')
+  : path.join(__dirname, '../../proto/requestService.proto');
 
 const packageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(
   PROTO_PATH,

@@ -1,41 +1,45 @@
-import { Router } from "express";
-import KartoffelController from "./kartoffel.controller";
+import { Router } from 'express';
+import KartoffelController from './kartoffel.controller';
 
 const KartoffelRouter: Router = Router();
 
-KartoffelRouter.get("/searchOG", KartoffelController.searchOG);
+KartoffelRouter.get('/searchOG', KartoffelController.searchOG);
 KartoffelRouter.get(
-  "/searchEntitiesByFullName",
+  '/searchEntitiesByFullName',
   KartoffelController.searchEntitiesByFullName
 );
 KartoffelRouter.get(
-  "/getEntityByIdNumber/:idNumber",
+  '/getEntityByIdNumber/:idNumber',
   KartoffelController.getEntityByIdNumber
 );
 KartoffelRouter.get(
-  "/searchRolesByRoleId/:roleId",
-  KartoffelController.searchRolesByRoleId
+  '/getRoleByRoleId/:roleId',
+  KartoffelController.getRoleByRoleId
 );
 KartoffelRouter.get(
-  "/getRolesUnderOG/:id",
+  '/getRolesUnderOG/:id',
   KartoffelController.getRolesUnderOG
 );
 KartoffelRouter.get(
-  "/getEntityByRoleId/:roleId",
+  '/getEntityByRoleId/:roleId',
   KartoffelController.getEntityByRoleId
 );
 KartoffelRouter.get(
-  "/getEntityByMongoId/:id",
+  '/getEntityByMongoId/:id',
   KartoffelController.getEntityByMongoId
 );
 KartoffelRouter.get(
-  "/getChildrenOfOG/:id",
+  '/getChildrenOfOG/:id',
   KartoffelController.getChildrenOfOG
 );
 KartoffelRouter.get(
-  "/getEntitiesUnderOG/:id",
+  '/getEntitiesUnderOG/:id',
   KartoffelController.getEntitiesUnderOG
 );
-KartoffelRouter.get("/getOGTree/:rootId", KartoffelController.getOGTree);
+KartoffelRouter.get(
+  '/getPictureByEntityId/:id',
+  KartoffelController.getPictureByEntityId
+);
+KartoffelRouter.get('/getOGTree/:rootId', KartoffelController.getOGTree);
 
 export default KartoffelRouter;

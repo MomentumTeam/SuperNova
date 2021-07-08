@@ -8,9 +8,7 @@ service Kartoffel {
     rpc CreateDI(CreateDIRequest) returns (DigitalIdentity){}
     rpc CreateRole(CreateRoleRequest) returns (Role){}
     rpc ConnectRoleAndDI(ConnectRoleAndDIRequest) returns (SuccessMessage){}
-    rpc SearchEntitiesByFullName(SearchEntitiesByFullNameRequest) returns (EntityArray){}
-    rpc GetEntityByIdNumber(GetEntityByIdNumberRequest) returns (Entity){}
-    rpc SearchRolesByRoleId(SearchRolesByRoleIdRequest) returns (Role){}
+    rpc GetRoleByRoleId(GetRoleByRoleIdRequest) returns (Role){}
     rpc GetRolesUnderOG(GetRolesUnderOGRequest) returns (RoleArray){}
     rpc ConnectEntityAndDI(ConnectEntityAndDIRequest) returns (SuccessMessage){}
     rpc CreateEntity(CreateEntityRequest) returns (Entity){}
@@ -21,8 +19,35 @@ service Kartoffel {
     rpc GetChildrenOfOG(GetChildrenOfOGRequest) returns (OGArray){}
     rpc DeleteRole(DeleteRoleRequest) returns (SuccessMessage){}
     rpc DeleteDI(DeleteDIRequest) returns (SuccessMessage){}
-    rpc GetEntitiesUnderOG(GetEntitiesUnderOGRequest) returns (EntityArray){}
     rpc GetOGTree(GetOGTreeRequest) returns (OGTree){}
+
+    rpc SearchEntitiesByFullName(SearchEntitiesByFullNameRequest) returns (EntityArray){}
+    rpc GetEntityByIdNumber(GetEntityByIdNumberRequest) returns (Entity){}
+    rpc GetEntitiesUnderOG(GetEntitiesUnderOGRequest) returns (EntityArray){}
+    rpc GetEntityByDigitalIdentity(GetEntityByDigitalIdentityRequest) returns (Entity){}
+    rpc GetPictureByEntityId(GetPictureByEntityIdRequest) returns (Image){}
+
+
+}
+
+message GetPictureByEntityIdRequest{
+    string id = 1;
+}
+message Image {
+    int32 width = 1;
+    int32 height = 2;
+    bytes data = 3;
+}
+
+message GetEntityByDigitalIdentityRequest{
+    string diUniqueId = 1;
+}
+
+// SearchEntitiesByFullName
+message SearchEntitiesByFullNameRequest{
+    string fullName = 1;
+    int32 from = 2;
+    int32 to = 3;
 }
 
 message GetOGTreeRequest{
@@ -74,10 +99,6 @@ message ConnectRoleAndDIRequest{
     string uniqueId = 2; //uniqueId of DI
 }
 
-// SearchEntitiesByFullName
-message SearchEntitiesByFullNameRequest{
-    string fullName = 1;
-}
 message EntityArray{
     repeated Entity entities = 1;
 }
@@ -87,8 +108,8 @@ message GetEntityByIdNumberRequest{
     string idNumber = 1; //identityCard or personalNumber
 }
 
-// SearchRolesByRoleId
-message SearchRolesByRoleIdRequest{
+// GetRoleByRoleId
+message GetRoleByRoleIdRequest{
     string roleId = 1;
 }
 
@@ -276,4 +297,3 @@ message DigitalIdentity{
     bool isRoleAttachable = 8;
     Role role = 9;
 }
-
