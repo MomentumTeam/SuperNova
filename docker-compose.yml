@@ -1,4 +1,4 @@
-version: "3.8"
+version: '3.8'
 services:
   # elasticsearch:
   #   image: docker.elastic.co/elasticsearch/elasticsearch:7.13.2
@@ -45,7 +45,7 @@ services:
     env_file:
       - ./supernova.env
     ports:
-      - "8080:8080"
+      - '8080:8080'
     depends_on:
       - redis
     environment:
@@ -59,7 +59,7 @@ services:
     env_file:
       - ./supernova.env
     ports:
-      - "8081:8080"
+      - '8081:8080'
     depends_on:
       - mongodb
     environment:
@@ -71,7 +71,7 @@ services:
     env_file:
       - ./supernova.env
     ports:
-      - "8082:8080"
+      - '8082:8080'
     depends_on:
       - spike-service
     environment:
@@ -83,6 +83,34 @@ services:
     env_file:
       - ./supernova.env
     ports:
-      - "8083:8080"
+      - '8083:8080'
     depends_on:
       - kartoffel-service
+
+  authentication-service:
+    image: authentication-service
+    build: ./authentication-service/
+    env_file:
+      - ./supernova.env
+    ports:
+      - '9000:8080'
+    environment:
+      - AS_SHRAGA_URL=https://shraga-prod.northeurope.cloudapp.azure.com
+      - AS_CLIENT_ENDPOINT=http://localhost:3000
+
+  api-gateway:
+    image: api-gateway
+    build: ./api-gateway/
+    env_file:
+      - ./supernova.env
+    ports:
+      - '2000:8080'
+    depends_on:
+      - kartoffel-service
+      - producer-service
+      - request-service
+    environment:
+      - GATEWAY_KS_URL=kartoffel-service:8080
+      - GATEWAY_RS_URL=request-service:8080
+      - GATEWAY_PS_URL=producer-service:8080
+      - GATEWAY_AS_URL=http://localhost:9000

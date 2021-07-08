@@ -1,8 +1,8 @@
-import path from "path";
-import * as grpc from "@grpc/grpc-js";
-import * as protoLoader from "@grpc/proto-loader";
-import * as C from "./config";
-import { logger } from "./logger";
+import path from 'path';
+import * as grpc from '@grpc/grpc-js';
+import * as protoLoader from '@grpc/proto-loader';
+import * as C from './config';
+import { logger } from './logger';
 import {
   connectEntityAndDI,
   connectRoleAndDI,
@@ -19,16 +19,17 @@ import {
   getEntityByIdNumber,
   getEntityByMongoId,
   getEntityByRoleId,
-  searchRolesByRoleId,
   getRolesUnderOG,
   searchEntitiesByFullName,
   searchOG,
   getOGTree,
-} from "./kartoffel/kartoffel.controller";
+  getPictureByEntityId,
+  getRoleByRoleId,
+} from './kartoffel/kartoffel.controller';
 
-const PROTO_PATH = __dirname.includes("dist")
-  ? path.join(__dirname, "../../proto/kartoffelService.proto")
-  : path.join(__dirname, "../proto/kartoffelService.proto");
+const PROTO_PATH = __dirname.includes('dist')
+  ? path.join(__dirname, '../../proto/kartoffelService.proto')
+  : path.join(__dirname, '../proto/kartoffelService.proto');
 
 export class Server {
   private server: grpc.Server;
@@ -60,9 +61,9 @@ export class Server {
     try {
       const kartoffelServiceDescriptor: any = this.getProtoDescriptor();
       logger.log({
-        level: "info",
+        level: 'info',
         message: `Proto was loaded successfully from file: ${PROTO_PATH}`,
-        label: "initServer",
+        label: 'initServer',
       });
       this.server.addService(kartoffelServiceDescriptor.Kartoffel.service, {
         SearchOG: searchOG,
@@ -72,7 +73,7 @@ export class Server {
         ConnectRoleAndDI: connectRoleAndDI,
         SearchEntitiesByFullName: searchEntitiesByFullName,
         GetEntityByIdNumber: getEntityByIdNumber,
-        SearchRolesByRoleId: searchRolesByRoleId,
+        GetRoleByRoleId: getRoleByRoleId,
         GetRolesUnderOG: getRolesUnderOG,
         ConnectEntityAndDI: connectEntityAndDI,
         CreateEntity: createEntity,
@@ -85,17 +86,18 @@ export class Server {
         DeleteDI: deleteDI,
         GetEntitiesUnderOG: getEntitiesUnderOG,
         GetOGTree: getOGTree,
+        GetPictureByEntityId: getPictureByEntityId,
       });
       logger.log({
-        level: "info",
+        level: 'info',
         message: `Grpc services were successfully added to the server`,
-        label: "initServer",
+        label: 'initServer',
       });
     } catch (error) {
       logger.log({
-        level: "error",
+        level: 'error',
         message: `Error while initializing the server: ${error.message}`,
-        label: "initServer",
+        label: 'initServer',
       });
     }
   }

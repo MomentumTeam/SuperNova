@@ -13,7 +13,6 @@ import {
   EntityArray,
   GetEntityByIdNumberRequest,
   Entity,
-  SearchRolesByRoleIdRequest,
   RoleArray,
   GetRolesUnderOGRequest,
   ConnectEntityAndDIRequest,
@@ -28,13 +27,28 @@ import {
   GetEntitiesUnderOGRequest,
   GetOGTreeRequest,
   OGTree,
-} from "../interfaces/protoc/proto/kartoffelService";
-import { KartoffelRepository } from "./kartoffel.repository";
+  GetPictureByEntityIdRequest,
+  Image,
+  GetRoleByRoleIdRequest,
+} from '../interfaces/protoc/proto/kartoffelService';
+import { KartoffelRepository } from './kartoffel.repository';
 
 export class KartoffelManager {
   private kartoffelRepository: KartoffelRepository;
   constructor() {
     this.kartoffelRepository = new KartoffelRepository();
+  }
+
+  async getPictureByEntityId(
+    getPictureByEntityIdRequest: GetPictureByEntityIdRequest
+  ): Promise<Image> {
+    try {
+      return await this.kartoffelRepository.getPictureByEntityId(
+        getPictureByEntityIdRequest
+      );
+    } catch (error) {
+      throw error;
+    }
   }
 
   async searchOG(searchOGRequest: SearchOGRequest): Promise<OGArray> {
@@ -105,12 +119,12 @@ export class KartoffelManager {
     }
   }
 
-  async searchRolesByRoleId(
-    searchRolesByRoleIdRequest: SearchRolesByRoleIdRequest
-  ): Promise<RoleArray> {
+  async getRoleByRoleId(
+    getRoleByRoleIdRequest: GetRoleByRoleIdRequest
+  ): Promise<Role> {
     try {
-      return await this.kartoffelRepository.searchRolesByRoleId(
-        searchRolesByRoleIdRequest
+      return await this.kartoffelRepository.getRoleByRoleId(
+        getRoleByRoleIdRequest
       );
     } catch (error) {
       throw error;

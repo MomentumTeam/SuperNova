@@ -1,5 +1,6 @@
 import faker from 'faker';
 import mongoose from 'mongoose';
+import axios from 'axios';
 import {
   OrganizationGroup,
   DigitalIdentity,
@@ -9,6 +10,7 @@ import {
   RoleArray,
   EntityArray,
   OGTree,
+  Image,
 } from '../interfaces/protoc/proto/kartoffelService';
 
 export class KartoffelFaker {
@@ -46,6 +48,24 @@ export class KartoffelFaker {
     return digitalIdentity;
   }
 
+  async randomPicture(): Promise<Image> {
+    return new Promise((resolve, reject) => {
+      axios
+        .get('https://picsum.photos/200', {
+          responseType: 'arraybuffer',
+        })
+        .then((res) => {
+          const image: Image = {
+            image: Buffer.from(res.data).toString('base64'),
+          };
+          resolve(image);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  }
+
   randomRole(): Role {
     const role: Role = {
       roleId: faker.internet.email(),
@@ -60,68 +80,67 @@ export class KartoffelFaker {
     };
     return role;
   }
-  randomEntity(): Entity {
-    const entity: Entity = {
-      id: mongoose.Types.ObjectId().toString(),
-      displayName: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
-      directGroup: mongoose.Types.ObjectId().toString(),
-      hierarchy: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
-      entityType: 'soldier',
-      identityCard: mongoose.Types.ObjectId().toString(),
-      personalNumber: mongoose.Types.ObjectId().toString(),
-      serviceType: 'מילואים',
-      firstName: faker.name.firstName(),
-      lastName: faker.name.lastName(),
-      akaUnit: faker.company.companyName(),
-      dischargeDay: faker.datatype.datetime().getTime(),
-      rank: 'אזרח',
-      mail: faker.internet.email(),
-      jobTitle: faker.name.jobTitle(),
-      phone: [faker.phone.phoneNumber()],
-      mobilePhone: [faker.phone.phoneNumber()],
-      address: `${faker.address.streetAddress()}, ${faker.address.country()}`,
-      clearance: '2',
-      sex: 'זכר',
-      birthdate: faker.datatype.datetime().getTime(),
-      createdAt: faker.datatype.datetime().getTime(),
-      updatedAt: faker.datatype.datetime().getTime(),
-      digitalIdentities: [],
-    };
-    return entity;
+  async randomEntity(): Promise<Entity> {
+    try {
+      const picture: Image = await this.randomPicture();
+      const entity: Entity = {
+        id: mongoose.Types.ObjectId().toString(),
+        displayName: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
+        directGroup: mongoose.Types.ObjectId().toString(),
+        hierarchy: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
+        entityType: 'soldier',
+        identityCard: faker.datatype
+          .number({ min: 100000, max: 999999 })
+          .toString(),
+        personalNumber: faker.datatype
+          .number({ min: 100000000, max: 999999999 })
+          .toString(),
+        serviceType: 'מילואים',
+        firstName: faker.name.firstName(),
+        lastName: faker.name.lastName(),
+        akaUnit: faker.company.companyName(),
+        dischargeDay: faker.datatype.datetime().getTime(),
+        rank: 'אזרח',
+        mail: faker.internet.email(),
+        jobTitle: faker.name.jobTitle(),
+        phone: [faker.phone.phoneNumber()],
+        mobilePhone: [faker.phone.phoneNumber()],
+        address: `${faker.address.streetAddress()}, ${faker.address.country()}`,
+        clearance: '2',
+        sex: 'זכר',
+        birthdate: faker.datatype.datetime().getTime(),
+        createdAt: faker.datatype.datetime().getTime(),
+        updatedAt: faker.datatype.datetime().getTime(),
+        digitalIdentities: [],
+        picture: picture.image,
+      };
+      return entity;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  randomChildrenAray(layers: number): OGTree[] {
+    if (layers == 0) {
+      return [];
+    }
+    let children = [];
+    const childrenCount = Math.floor(Math.random() * 4);
+    for (let i = 0; i < childrenCount; i++) {
+      children.push({
+        id: mongoose.Types.ObjectId().toString(),
+        name: faker.name.firstName(),
+        children: this.randomChildrenAray(layers - 1),
+      });
+    }
+    return children;
   }
 
   randomOGTree(): OGTree {
     return {
       id: mongoose.Types.ObjectId().toString(),
       name: faker.name.firstName(),
-      children: [
-        {
-          id: mongoose.Types.ObjectId().toString(),
-          name: faker.name.firstName(),
-          children: [],
-        },
-        {
-          id: mongoose.Types.ObjectId().toString(),
-          name: faker.name.firstName(),
-          children: [
-            {
-              id: mongoose.Types.ObjectId().toString(),
-              name: faker.name.firstName(),
-              children: [],
-            },
-            {
-              id: mongoose.Types.ObjectId().toString(),
-              name: faker.name.firstName(),
-              children: [],
-            },
-          ],
-        },
-        {
-          id: mongoose.Types.ObjectId().toString(),
-          name: faker.name.firstName(),
-          children: [],
-        },
-      ],
+      children: this.randomChildrenAray(2),
     };
   }
 
@@ -151,15 +170,20 @@ export class KartoffelFaker {
     return { roles: roleArray };
   }
 
-  randomEntityArray(): EntityArray {
-    const length = faker.datatype.number({
-      min: 1,
-      max: 10,
-    });
-    let entityArray = [];
-    for (let i = 0; i < length; i++) {
-      entityArray.push(this.randomEntity());
+  async randomEntityArray(): Promise<EntityArray> {
+    try {
+      const length = faker.datatype.number({
+        min: 1,
+        max: 10,
+      });
+      let entityArray = [];
+      for (let i = 0; i < length; i++) {
+        let entity: Entity = await this.randomEntity();
+        entityArray.push(entity);
+      }
+      return { entities: entityArray };
+    } catch (err) {
+      throw err;
     }
-    return { entities: entityArray };
   }
 }
