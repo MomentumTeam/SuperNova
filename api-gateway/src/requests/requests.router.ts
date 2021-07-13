@@ -3,7 +3,7 @@ import RequestsController from './requests.controller';
 
 const RequestsRouter: Router = Router();
 
-RequestsRouter.get('/:id',RequestsController.getRequestById);
+RequestsRouter.get('/getRequestById/:id',RequestsController.getRequestById);
 RequestsRouter.get('/getAllRequests',RequestsController.getAllRequests);
 RequestsRouter.get('/getRequestsSubmittedBy/:id',RequestsController.getRequestsSubmittedBy);
 RequestsRouter.get('/getRequestsByCommander/:id', RequestsController.getRequestsByCommander);

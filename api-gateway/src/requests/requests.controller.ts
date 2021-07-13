@@ -41,16 +41,12 @@ enum StageStatus{
 }
 
 export default class RequestsController {
-    static async ui(req: Request, res: Response) {
-        res.send("ghgfhgfhgfhgfhghghghghg");
-    }
 
     static async getRequestById(req: Request, res: Response) {
         console.log('GetRequestById')
 
-        requestsClient.GetRequestById({ id: "60d0473693f396e9719e8297"}, (err: any, response: RequestS) => {
+        requestsClient.GetRequestById({ id: req.params.id }, (err: any, response: RequestS) => {
             if (err) {
-                console.log('err')
                 res.send(err);
             }
             res.send(response);
@@ -73,10 +69,8 @@ export default class RequestsController {
 
         requestsClient.GetRequestsSubmittedBy({ id: req.params.id, from: req.query.from, to: req.query.to }, (err: any, response: RequestArray) => {
             if (err) {
-                console.log('err', err)
                 res.send(err);
             }
-            console.log('response', response)
             res.send(response);
         });
     }
