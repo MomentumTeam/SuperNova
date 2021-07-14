@@ -1,245 +1,328 @@
 import { Request, Response } from 'express';
 import * as grpc from '@grpc/grpc-js';
-import * as protoLoader from "@grpc/proto-loader";
-import path from "path";
-import * as config from "../config";
-import { Request as RequestS, RequestArray, SuccessMessage, CreateOGRes, CreateRoleRes, CreateEntityRes, AssignRoleToEntityRes, RenameOGRes, EditEntityRes, DeleteOGRes, DeleteRoleRes, DisconectRoleFromEntityRes, } from "../interfaces/protoc/proto/requestService";
+import * as protoLoader from '@grpc/proto-loader';
+import path from 'path';
+import * as config from '../config';
+import {
+  Request as RequestS,
+  RequestArray,
+  SuccessMessage,
+  CreateOGRes,
+  CreateRoleRes,
+  CreateEntityRes,
+  AssignRoleToEntityRes,
+  RenameOGRes,
+  EditEntityRes,
+  DeleteOGRes,
+  DeleteRoleRes,
+  DisconectRoleFromEntityRes,
+} from '../interfaces/protoc/proto/requestService';
 
-const PROTO_PATH = __dirname.includes("dist")
-  ? path.join(__dirname, "../../proto/requestService.proto")
-    : path.join(__dirname, "../proto/requestService.proto");
-  
-
+const PROTO_PATH = __dirname.includes('dist')
+  ? path.join(__dirname, '../../proto/requestService.proto')
+  : path.join(__dirname, '../proto/requestService.proto');
 
 const packageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(
-    PROTO_PATH,
-    {
-        keepCase: true,
-        longs: String,
-        enums: String,
-        defaults: true,
-        oneofs: true,
-    }
+  PROTO_PATH,
+  {
+    keepCase: true,
+    longs: String,
+    enums: String,
+    defaults: true,
+    oneofs: true,
+  }
 );
-
 
 const protoDescriptor: any =
-    grpc.loadPackageDefinition(packageDefinition).RequestService;
-  
+  grpc.loadPackageDefinition(packageDefinition).RequestService;
 
 const requestsClient: any = new protoDescriptor.RequestService(
-
-    config.requestServiceUrl,
-    grpc.credentials.createInsecure()
+  config.requestServiceUrl,
+  grpc.credentials.createInsecure()
 );
 
-enum StageStatus{
-    UNKNOWN = "UNKNOWN",
-    IN_PROGRESS = "IN_PROGRESS",
-    DONE = "DONE",
-    FAILED = "FAILED",
+enum StageStatus {
+  UNKNOWN = 'UNKNOWN',
+  IN_PROGRESS = 'IN_PROGRESS',
+  DONE = 'DONE',
+  FAILED = 'FAILED',
 }
 
 export default class RequestsController {
+  static async getRequestById(req: Request, res: Response) {
+    console.log('GetRequestById');
 
-    static async getRequestById(req: Request, res: Response) {
-        console.log('GetRequestById')
-
-        requestsClient.GetRequestById({ id: req.params.id }, (err: any, response: RequestS) => {
-            if (err) {
-                res.send(err);
-            }
-            res.send(response);
-        });
-    }
-
-    static async getAllRequests(req: Request, res: Response) {
-        console.log('GetAllRequests')
-
-        requestsClient.GetAllRequests({ from: req.query.from, to: req.query.to }, (err: any, response: RequestArray) => {
-            if (err) {
-                res.send(err);
-            }
-            res.send(response);
-        });
-    }
-
-    static async getRequestsSubmittedBy(req: Request, res: Response) {
-        console.log('GetRequestsSubmittedBy');
-
-        requestsClient.GetRequestsSubmittedBy({ id: req.params.id, from: req.query.from, to: req.query.to }, (err: any, response: RequestArray) => {
-            if (err) {
-                res.send(err);
-            }
-            res.send(response);
-        });
-    }
-
-    static async getRequestsByCommander(req: Request, res: Response) {
-        console.log('GetRequestsByCommander')
-
-        requestsClient.GetRequestsByCommander({ id: req.params.id, from: req.query.from, to: req.query.to }, (err: any, response: RequestArray) => {
-            if (err) {
-                res.send(err);
-            }
-            res.send(response);
-          });
-    }
-
-    static async updateADStatus(req: Request, res: Response) {
-        console.log('UpdateADStatus')
-        
-        const status: string = req.body.Status;
-        let stageStatus: StageStatus = (<any>StageStatus)["IN_PROGRESS"];
-
-
-        if (status === "true")
-        {
-            stageStatus = (<any>StageStatus)["DONE"];
-
+    requestsClient.GetRequestById(
+      { id: req.params.id },
+      (err: any, response: RequestS) => {
+        if (err) {
+          res.send(err);
         }
-        else if(status === "false") {
-            stageStatus = (<any>StageStatus)["FAILED"];
+        res.send(response);
+      }
+    );
+  }
 
+  static async getAllRequests(req: Request, res: Response) {
+    console.log('GetAllRequests');
+
+    requestsClient.GetAllRequests(
+      { from: req.query.from, to: req.query.to },
+      (err: any, response: RequestArray) => {
+        if (err) {
+          res.send(err);
         }
+        res.send(response);
+      }
+    );
+  }
 
-        requestsClient.UpdateADStatus({ requestId: req.body.RequestID, status: stageStatus, message: req.body.ErrorID }, (err: any, response: RequestS) => {
-            if (err) {
-                res.status(500).end(err.message);
-            }
-            res.status(200);
-          });
+  static async getMyRequests(req: any, res: Response) {
+    console.log('getMyRequests');
+
+    requestsClient.GetRequestsSubmittedBy(
+      { id: req.user.id, from: req.query.from, to: req.query.to },
+      (err: any, response: RequestArray) => {
+        if (err) {
+          console.log('err', err);
+          res.send(err);
+        }
+        console.log('response', response);
+        res.send(response);
+      }
+    );
+  }
+
+  static async getRequestsAsCommander(req: any, res: Response) {
+    console.log('getRequestsAsCommander');
+
+    requestsClient.GetRequestsByCommander(
+      { id: req.user.id, from: req.query.from, to: req.query.to },
+      (err: any, response: RequestArray) => {
+        if (err) {
+          res.send(err);
+        }
+        res.send(response);
+      }
+    );
+
+  static async getRequestsSubmittedBy(req: Request, res: Response) {
+    console.log('GetRequestsSubmittedBy');
+
+    requestsClient.GetRequestsSubmittedBy(
+      { id: req.params.id, from: req.query.from, to: req.query.to },
+      (err: any, response: RequestArray) => {
+        if (err) {
+          res.send(err);
+        }
+        res.send(response);
+      }
+    );
+  }
+
+  static async getRequestsByCommander(req: Request, res: Response) {
+    console.log('GetRequestsByCommander');
+
+    requestsClient.GetRequestsByCommander(
+      { id: req.params.id, from: req.query.from, to: req.query.to },
+      (err: any, response: RequestArray) => {
+        if (err) {
+          res.send(err);
+        }
+        res.send(response);
+      }
+    );
+  }
+
+  static async updateADStatus(req: Request, res: Response) {
+    console.log('UpdateADStatus');
+
+    const status: string = req.body.Status;
+    let stageStatus: StageStatus = (<any>StageStatus)['IN_PROGRESS'];
+
+    if (status === 'true') {
+      stageStatus = (<any>StageStatus)['DONE'];
+    } else if (status === 'false') {
+      stageStatus = (<any>StageStatus)['FAILED'];
     }
 
-    static async updateRequest(req: Request, res: Response) {
-        console.log('UpdateRequest')
+    requestsClient.UpdateADStatus(
+      {
+        requestId: req.body.RequestID,
+        status: stageStatus,
+        message: req.body.ErrorID,
+      },
+      (err: any, response: RequestS) => {
+        if (err) {
+          res.status(500).end(err.message);
+        }
+        res.status(200);
+      }
+    );
+  }
 
-        requestsClient.UpdateRequest(req.body, (err: any, response: RequestS) => {
-            if (err) {
-                res.send(err);
-            }
-            res.send(response);
-          });
-    }
+  static async updateRequest(req: Request, res: Response) {
+    console.log('UpdateRequest');
 
-    static async renameOGRequest(req: Request, res: Response) {
-        console.log('RenameOGRequest')
+    requestsClient.UpdateRequest(req.body, (err: any, response: RequestS) => {
+      if (err) {
+        res.send(err);
+      }
+      res.send(response);
+    });
+  }
 
-        requestsClient.RenameOGRequest(req.body, (err: any, response: RenameOGRes) => {
-            if (err) {
-                res.send(err);
-            }
-            res.send(response);
-          });
-    }
+  static async renameOGRequest(req: Request, res: Response) {
+    console.log('RenameOGRequest');
 
-    static async renameRoleRequest(req: Request, res: Response) {
-        console.log('RenameRoleRequest')
+    requestsClient.RenameOGRequest(
+      req.body,
+      (err: any, response: RenameOGRes) => {
+        if (err) {
+          res.send(err);
+        }
+        res.send(response);
+      }
+    );
+  }
 
-        requestsClient.RenameRoleRequest(req.body, (err: any, response: EditEntityRes) => {
-            if (err) {
-                res.send(err);
-            }
-            res.send(response);
-          });
-    }
+  static async renameRoleRequest(req: Request, res: Response) {
+    console.log('RenameRoleRequest');
 
-    static async createOGRequest(req: Request, res: Response) {
-        console.log('createOGRequest')
+    requestsClient.RenameRoleRequest(
+      req.body,
+      (err: any, response: EditEntityRes) => {
+        if (err) {
+          res.send(err);
+        }
+        res.send(response);
+      }
+    );
+  }
 
-        requestsClient.CreateOGRequest(req.body, (err: any, response: CreateOGRes) => {
-            if (err) {
-                res.send(err);
-            }
-            res.send(response);
-          });
-    }
+  static async createOGRequest(req: Request, res: Response) {
+    console.log('createOGRequest');
 
-    static async createRoleRequest(req: Request, res: Response) {
-        console.log('createRoleRequest')
+    requestsClient.CreateOGRequest(
+      req.body,
+      (err: any, response: CreateOGRes) => {
+        if (err) {
+          res.send(err);
+        }
+        res.send(response);
+      }
+    );
+  }
 
-        requestsClient.CreateRoleRequest(req.body, (err: any, response: CreateRoleRes) => {
-            if (err) {
-                res.send(err);
-            }
-            res.send(response);
-          });
-    }
+  static async createRoleRequest(req: Request, res: Response) {
+    console.log('createRoleRequest');
 
-    static async createEntityRequest(req: Request, res: Response) {
-        console.log('CreateEntityRequest')
+    requestsClient.CreateRoleRequest(
+      req.body,
+      (err: any, response: CreateRoleRes) => {
+        if (err) {
+          res.send(err);
+        }
+        res.send(response);
+      }
+    );
+  }
 
-        requestsClient.CreateEntityRequest(req.body, (err: any, response: CreateEntityRes) => {
-            if (err) {
-                res.send(err);
-            }
-            res.send(response);
-          });
-    }
+  static async createEntityRequest(req: Request, res: Response) {
+    console.log('CreateEntityRequest');
 
-    static async assignRoleToEntityRequest(req: Request, res: Response) {
-        console.log('AssignRoleToEntityRequest')
+    requestsClient.CreateEntityRequest(
+      req.body,
+      (err: any, response: CreateEntityRes) => {
+        if (err) {
+          res.send(err);
+        }
+        res.send(response);
+      }
+    );
+  }
 
-        requestsClient.AssignRoleToEntityRequest(req.body, (err: any, response: AssignRoleToEntityRes) => {
-            if (err) {
-                res.send(err);
-            }
-            res.send(response);
-          });
-    }
+  static async assignRoleToEntityRequest(req: Request, res: Response) {
+    console.log('AssignRoleToEntityRequest');
 
-    static async editEntityRequest(req: Request, res: Response) {
-        console.log('EditEntityRequest')
+    requestsClient.AssignRoleToEntityRequest(
+      req.body,
+      (err: any, response: AssignRoleToEntityRes) => {
+        if (err) {
+          res.send(err);
+        }
+        res.send(response);
+      }
+    );
+  }
 
-        requestsClient.EditEntityRequest(req.body, (err: any, response: EditEntityRes) => {
-            if (err) {
-                res.send(err);
-            }
-            res.send(response);
-          });
-    }
+  static async editEntityRequest(req: Request, res: Response) {
+    console.log('EditEntityRequest');
 
-    static async disconectRoleFromEntityRequest(req: Request, res: Response) {
-        console.log('DisconectRoleFromEntityRequest')
+    requestsClient.EditEntityRequest(
+      req.body,
+      (err: any, response: EditEntityRes) => {
+        if (err) {
+          res.send(err);
+        }
+        res.send(response);
+      }
+    );
+  }
 
-        requestsClient.DisconectRoleFromEntityRequest(req.body, (err: any, response: DisconectRoleFromEntityRes) => {
-            if (err) {
-                res.send(err);
-            }
-            res.send(response);
-          });
-    }
+  static async disconectRoleFromEntityRequest(req: Request, res: Response) {
+    console.log('DisconectRoleFromEntityRequest');
 
-    static async deleteRoleRequest(req: Request, res: Response) {
-        console.log('DeleteRoleRequest')
+    requestsClient.DisconectRoleFromEntityRequest(
+      req.body,
+      (err: any, response: DisconectRoleFromEntityRes) => {
+        if (err) {
+          res.send(err);
+        }
+        res.send(response);
+      }
+    );
+  }
 
-        requestsClient.DeleteRoleRequest(req.body, (err: any, response: DeleteRoleRes) => {
-            if (err) {
-                res.send(err);
-            }
-            res.send(response);
-          });
-    }
+  static async deleteRoleRequest(req: Request, res: Response) {
+    console.log('DeleteRoleRequest');
 
-    static async deleteOGRequest(req: Request, res: Response) {
-        console.log('DeleteOGRequest')
+    requestsClient.DeleteRoleRequest(
+      req.body,
+      (err: any, response: DeleteRoleRes) => {
+        if (err) {
+          res.send(err);
+        }
+        res.send(response);
+      }
+    );
+  }
 
-        requestsClient.DeleteOGRequest(req.body, (err: any, response: DeleteOGRes) => {
-            if (err) {
-                res.send(err);
-            }
-            res.send(response);
-          });
-    }
+  static async deleteOGRequest(req: Request, res: Response) {
+    console.log('DeleteOGRequest');
 
-    static async deleteRequest(req: Request, res: Response) {
-        console.log('DeleteRequest')
+    requestsClient.DeleteOGRequest(
+      req.body,
+      (err: any, response: DeleteOGRes) => {
+        if (err) {
+          res.send(err);
+        }
+        res.send(response);
+      }
+    );
+  }
 
-        requestsClient.DeleteRequest(req.body, (err: any, response: SuccessMessage) => {
-            if (err) {
-                res.send(err);
-            }
-            res.send(response);
-          });
-    }
+  static async deleteRequest(req: Request, res: Response) {
+    console.log('DeleteRequest');
+
+    requestsClient.DeleteRequest(
+      req.body,
+      (err: any, response: SuccessMessage) => {
+        if (err) {
+          res.send(err);
+        }
+        res.send(response);
+      }
+    );
+  }
 }

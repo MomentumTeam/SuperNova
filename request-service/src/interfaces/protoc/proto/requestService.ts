@@ -317,6 +317,7 @@ export interface CreateOGRes {
   id: string;
   createdAt: number;
   updatedAt: number;
+  type: RequestType;
 }
 
 export interface CreateOGKartoffelParams {
@@ -357,6 +358,7 @@ export interface CreateRoleRes {
   id: string;
   createdAt: number;
   updatedAt: number;
+  type: RequestType;
 }
 
 export interface CreateRoleKartoffelParams {
@@ -404,6 +406,7 @@ export interface CreateEntityRes {
   id: string;
   createdAt: number;
   updatedAt: number;
+  type: RequestType;
 }
 
 export interface CreateEntityKartoffelParams {
@@ -449,6 +452,7 @@ export interface AssignRoleToEntityRes {
   id: string;
   createdAt: number;
   updatedAt: number;
+  type: RequestType;
 }
 
 export interface AssignRoleToEntityKartoffelParams {
@@ -493,6 +497,7 @@ export interface RenameOGRes {
   id: string;
   createdAt: number;
   updatedAt: number;
+  type: RequestType;
 }
 
 /** ? */
@@ -561,6 +566,7 @@ export interface EditEntityRes {
   id: string;
   createdAt: number;
   updatedAt: number;
+  type: RequestType;
 }
 
 export interface EditEntityKartoffelParams {
@@ -612,6 +618,7 @@ export interface DeleteOGRes {
   id: string;
   createdAt: number;
   updatedAt: number;
+  type: RequestType;
 }
 
 export interface DeleteOGKartoffelParams {
@@ -647,6 +654,7 @@ export interface DeleteRoleRes {
   id: string;
   createdAt: number;
   updatedAt: number;
+  type: RequestType;
 }
 
 export interface DeleteRoleKartoffelParams {
@@ -684,6 +692,7 @@ export interface DisconectRoleFromEntityRes {
   id: string;
   createdAt: number;
   updatedAt: number;
+  type: RequestType;
 }
 
 export interface DisconectRoleFromEntityKartoffelParams {
@@ -2390,6 +2399,7 @@ const baseCreateOGRes: object = {
   id: "",
   createdAt: 0,
   updatedAt: 0,
+  type: 0,
 };
 
 export const CreateOGRes = {
@@ -2447,6 +2457,9 @@ export const CreateOGRes = {
     }
     if (message.updatedAt !== 0) {
       writer.uint32(96).int64(message.updatedAt);
+    }
+    if (message.type !== 0) {
+      writer.uint32(104).int32(message.type);
     }
     return writer;
   },
@@ -2506,6 +2519,9 @@ export const CreateOGRes = {
           break;
         case 12:
           message.updatedAt = longToNumber(reader.int64() as Long);
+          break;
+        case 13:
+          message.type = reader.int32() as any;
           break;
         default:
           reader.skipType(tag & 7);
@@ -2598,6 +2614,11 @@ export const CreateOGRes = {
     } else {
       message.updatedAt = 0;
     }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = requestTypeFromJSON(object.type);
+    } else {
+      message.type = 0;
+    }
     return message;
   },
 
@@ -2639,6 +2660,7 @@ export const CreateOGRes = {
     message.id !== undefined && (obj.id = message.id);
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
     message.updatedAt !== undefined && (obj.updatedAt = message.updatedAt);
+    message.type !== undefined && (obj.type = requestTypeToJSON(message.type));
     return obj;
   },
 
@@ -2724,6 +2746,11 @@ export const CreateOGRes = {
       message.updatedAt = object.updatedAt;
     } else {
       message.updatedAt = 0;
+    }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = object.type;
+    } else {
+      message.type = 0;
     }
     return message;
   },
@@ -3232,6 +3259,7 @@ const baseCreateRoleRes: object = {
   id: "",
   createdAt: 0,
   updatedAt: 0,
+  type: 0,
 };
 
 export const CreateRoleRes = {
@@ -3289,6 +3317,9 @@ export const CreateRoleRes = {
     }
     if (message.updatedAt !== 0) {
       writer.uint32(96).int64(message.updatedAt);
+    }
+    if (message.type !== 0) {
+      writer.uint32(104).int32(message.type);
     }
     return writer;
   },
@@ -3348,6 +3379,9 @@ export const CreateRoleRes = {
           break;
         case 12:
           message.updatedAt = longToNumber(reader.int64() as Long);
+          break;
+        case 13:
+          message.type = reader.int32() as any;
           break;
         default:
           reader.skipType(tag & 7);
@@ -3440,6 +3474,11 @@ export const CreateRoleRes = {
     } else {
       message.updatedAt = 0;
     }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = requestTypeFromJSON(object.type);
+    } else {
+      message.type = 0;
+    }
     return message;
   },
 
@@ -3481,6 +3520,7 @@ export const CreateRoleRes = {
     message.id !== undefined && (obj.id = message.id);
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
     message.updatedAt !== undefined && (obj.updatedAt = message.updatedAt);
+    message.type !== undefined && (obj.type = requestTypeToJSON(message.type));
     return obj;
   },
 
@@ -3566,6 +3606,11 @@ export const CreateRoleRes = {
       message.updatedAt = object.updatedAt;
     } else {
       message.updatedAt = 0;
+    }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = object.type;
+    } else {
+      message.type = 0;
     }
     return message;
   },
@@ -4176,6 +4221,7 @@ const baseCreateEntityRes: object = {
   id: "",
   createdAt: 0,
   updatedAt: 0,
+  type: 0,
 };
 
 export const CreateEntityRes = {
@@ -4233,6 +4279,9 @@ export const CreateEntityRes = {
     }
     if (message.updatedAt !== 0) {
       writer.uint32(96).int64(message.updatedAt);
+    }
+    if (message.type !== 0) {
+      writer.uint32(104).int32(message.type);
     }
     return writer;
   },
@@ -4295,6 +4344,9 @@ export const CreateEntityRes = {
           break;
         case 12:
           message.updatedAt = longToNumber(reader.int64() as Long);
+          break;
+        case 13:
+          message.type = reader.int32() as any;
           break;
         default:
           reader.skipType(tag & 7);
@@ -4387,6 +4439,11 @@ export const CreateEntityRes = {
     } else {
       message.updatedAt = 0;
     }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = requestTypeFromJSON(object.type);
+    } else {
+      message.type = 0;
+    }
     return message;
   },
 
@@ -4428,6 +4485,7 @@ export const CreateEntityRes = {
     message.id !== undefined && (obj.id = message.id);
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
     message.updatedAt !== undefined && (obj.updatedAt = message.updatedAt);
+    message.type !== undefined && (obj.type = requestTypeToJSON(message.type));
     return obj;
   },
 
@@ -4513,6 +4571,11 @@ export const CreateEntityRes = {
       message.updatedAt = object.updatedAt;
     } else {
       message.updatedAt = 0;
+    }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = object.type;
+    } else {
+      message.type = 0;
     }
     return message;
   },
@@ -5157,6 +5220,7 @@ const baseAssignRoleToEntityRes: object = {
   id: "",
   createdAt: 0,
   updatedAt: 0,
+  type: 0,
 };
 
 export const AssignRoleToEntityRes = {
@@ -5214,6 +5278,9 @@ export const AssignRoleToEntityRes = {
     }
     if (message.updatedAt !== 0) {
       writer.uint32(96).int64(message.updatedAt);
+    }
+    if (message.type !== 0) {
+      writer.uint32(104).int32(message.type);
     }
     return writer;
   },
@@ -5279,6 +5346,9 @@ export const AssignRoleToEntityRes = {
           break;
         case 12:
           message.updatedAt = longToNumber(reader.int64() as Long);
+          break;
+        case 13:
+          message.type = reader.int32() as any;
           break;
         default:
           reader.skipType(tag & 7);
@@ -5371,6 +5441,11 @@ export const AssignRoleToEntityRes = {
     } else {
       message.updatedAt = 0;
     }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = requestTypeFromJSON(object.type);
+    } else {
+      message.type = 0;
+    }
     return message;
   },
 
@@ -5412,6 +5487,7 @@ export const AssignRoleToEntityRes = {
     message.id !== undefined && (obj.id = message.id);
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
     message.updatedAt !== undefined && (obj.updatedAt = message.updatedAt);
+    message.type !== undefined && (obj.type = requestTypeToJSON(message.type));
     return obj;
   },
 
@@ -5501,6 +5577,11 @@ export const AssignRoleToEntityRes = {
       message.updatedAt = object.updatedAt;
     } else {
       message.updatedAt = 0;
+    }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = object.type;
+    } else {
+      message.type = 0;
     }
     return message;
   },
@@ -6099,6 +6180,7 @@ const baseRenameOGRes: object = {
   id: "",
   createdAt: 0,
   updatedAt: 0,
+  type: 0,
 };
 
 export const RenameOGRes = {
@@ -6156,6 +6238,9 @@ export const RenameOGRes = {
     }
     if (message.updatedAt !== 0) {
       writer.uint32(96).int64(message.updatedAt);
+    }
+    if (message.type !== 0) {
+      writer.uint32(104).int32(message.type);
     }
     return writer;
   },
@@ -6215,6 +6300,9 @@ export const RenameOGRes = {
           break;
         case 12:
           message.updatedAt = longToNumber(reader.int64() as Long);
+          break;
+        case 13:
+          message.type = reader.int32() as any;
           break;
         default:
           reader.skipType(tag & 7);
@@ -6307,6 +6395,11 @@ export const RenameOGRes = {
     } else {
       message.updatedAt = 0;
     }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = requestTypeFromJSON(object.type);
+    } else {
+      message.type = 0;
+    }
     return message;
   },
 
@@ -6348,6 +6441,7 @@ export const RenameOGRes = {
     message.id !== undefined && (obj.id = message.id);
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
     message.updatedAt !== undefined && (obj.updatedAt = message.updatedAt);
+    message.type !== undefined && (obj.type = requestTypeToJSON(message.type));
     return obj;
   },
 
@@ -6433,6 +6527,11 @@ export const RenameOGRes = {
       message.updatedAt = object.updatedAt;
     } else {
       message.updatedAt = 0;
+    }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = object.type;
+    } else {
+      message.type = 0;
     }
     return message;
   },
@@ -7561,6 +7660,7 @@ const baseEditEntityRes: object = {
   id: "",
   createdAt: 0,
   updatedAt: 0,
+  type: 0,
 };
 
 export const EditEntityRes = {
@@ -7618,6 +7718,9 @@ export const EditEntityRes = {
     }
     if (message.updatedAt !== 0) {
       writer.uint32(96).int64(message.updatedAt);
+    }
+    if (message.type !== 0) {
+      writer.uint32(104).int32(message.type);
     }
     return writer;
   },
@@ -7677,6 +7780,9 @@ export const EditEntityRes = {
           break;
         case 12:
           message.updatedAt = longToNumber(reader.int64() as Long);
+          break;
+        case 13:
+          message.type = reader.int32() as any;
           break;
         default:
           reader.skipType(tag & 7);
@@ -7769,6 +7875,11 @@ export const EditEntityRes = {
     } else {
       message.updatedAt = 0;
     }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = requestTypeFromJSON(object.type);
+    } else {
+      message.type = 0;
+    }
     return message;
   },
 
@@ -7810,6 +7921,7 @@ export const EditEntityRes = {
     message.id !== undefined && (obj.id = message.id);
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
     message.updatedAt !== undefined && (obj.updatedAt = message.updatedAt);
+    message.type !== undefined && (obj.type = requestTypeToJSON(message.type));
     return obj;
   },
 
@@ -7895,6 +8007,11 @@ export const EditEntityRes = {
       message.updatedAt = object.updatedAt;
     } else {
       message.updatedAt = 0;
+    }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = object.type;
+    } else {
+      message.type = 0;
     }
     return message;
   },
@@ -8614,6 +8731,7 @@ const baseDeleteOGRes: object = {
   id: "",
   createdAt: 0,
   updatedAt: 0,
+  type: 0,
 };
 
 export const DeleteOGRes = {
@@ -8671,6 +8789,9 @@ export const DeleteOGRes = {
     }
     if (message.updatedAt !== 0) {
       writer.uint32(96).int64(message.updatedAt);
+    }
+    if (message.type !== 0) {
+      writer.uint32(104).int32(message.type);
     }
     return writer;
   },
@@ -8730,6 +8851,9 @@ export const DeleteOGRes = {
           break;
         case 12:
           message.updatedAt = longToNumber(reader.int64() as Long);
+          break;
+        case 13:
+          message.type = reader.int32() as any;
           break;
         default:
           reader.skipType(tag & 7);
@@ -8822,6 +8946,11 @@ export const DeleteOGRes = {
     } else {
       message.updatedAt = 0;
     }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = requestTypeFromJSON(object.type);
+    } else {
+      message.type = 0;
+    }
     return message;
   },
 
@@ -8863,6 +8992,7 @@ export const DeleteOGRes = {
     message.id !== undefined && (obj.id = message.id);
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
     message.updatedAt !== undefined && (obj.updatedAt = message.updatedAt);
+    message.type !== undefined && (obj.type = requestTypeToJSON(message.type));
     return obj;
   },
 
@@ -8948,6 +9078,11 @@ export const DeleteOGRes = {
       message.updatedAt = object.updatedAt;
     } else {
       message.updatedAt = 0;
+    }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = object.type;
+    } else {
+      message.type = 0;
     }
     return message;
   },
@@ -9362,6 +9497,7 @@ const baseDeleteRoleRes: object = {
   id: "",
   createdAt: 0,
   updatedAt: 0,
+  type: 0,
 };
 
 export const DeleteRoleRes = {
@@ -9419,6 +9555,9 @@ export const DeleteRoleRes = {
     }
     if (message.updatedAt !== 0) {
       writer.uint32(96).int64(message.updatedAt);
+    }
+    if (message.type !== 0) {
+      writer.uint32(104).int32(message.type);
     }
     return writer;
   },
@@ -9478,6 +9617,9 @@ export const DeleteRoleRes = {
           break;
         case 12:
           message.updatedAt = longToNumber(reader.int64() as Long);
+          break;
+        case 13:
+          message.type = reader.int32() as any;
           break;
         default:
           reader.skipType(tag & 7);
@@ -9570,6 +9712,11 @@ export const DeleteRoleRes = {
     } else {
       message.updatedAt = 0;
     }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = requestTypeFromJSON(object.type);
+    } else {
+      message.type = 0;
+    }
     return message;
   },
 
@@ -9611,6 +9758,7 @@ export const DeleteRoleRes = {
     message.id !== undefined && (obj.id = message.id);
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
     message.updatedAt !== undefined && (obj.updatedAt = message.updatedAt);
+    message.type !== undefined && (obj.type = requestTypeToJSON(message.type));
     return obj;
   },
 
@@ -9696,6 +9844,11 @@ export const DeleteRoleRes = {
       message.updatedAt = object.updatedAt;
     } else {
       message.updatedAt = 0;
+    }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = object.type;
+    } else {
+      message.type = 0;
     }
     return message;
   },
@@ -10165,6 +10318,7 @@ const baseDisconectRoleFromEntityRes: object = {
   id: "",
   createdAt: 0,
   updatedAt: 0,
+  type: 0,
 };
 
 export const DisconectRoleFromEntityRes = {
@@ -10222,6 +10376,9 @@ export const DisconectRoleFromEntityRes = {
     }
     if (message.updatedAt !== 0) {
       writer.uint32(96).int64(message.updatedAt);
+    }
+    if (message.type !== 0) {
+      writer.uint32(104).int32(message.type);
     }
     return writer;
   },
@@ -10290,6 +10447,9 @@ export const DisconectRoleFromEntityRes = {
           break;
         case 12:
           message.updatedAt = longToNumber(reader.int64() as Long);
+          break;
+        case 13:
+          message.type = reader.int32() as any;
           break;
         default:
           reader.skipType(tag & 7);
@@ -10386,6 +10546,11 @@ export const DisconectRoleFromEntityRes = {
     } else {
       message.updatedAt = 0;
     }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = requestTypeFromJSON(object.type);
+    } else {
+      message.type = 0;
+    }
     return message;
   },
 
@@ -10427,6 +10592,7 @@ export const DisconectRoleFromEntityRes = {
     message.id !== undefined && (obj.id = message.id);
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
     message.updatedAt !== undefined && (obj.updatedAt = message.updatedAt);
+    message.type !== undefined && (obj.type = requestTypeToJSON(message.type));
     return obj;
   },
 
@@ -10519,6 +10685,11 @@ export const DisconectRoleFromEntityRes = {
       message.updatedAt = object.updatedAt;
     } else {
       message.updatedAt = 0;
+    }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = object.type;
+    } else {
+      message.type = 0;
     }
     return message;
   },

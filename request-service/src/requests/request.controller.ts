@@ -1,12 +1,12 @@
-import { RequestManager } from "./request.manager";
-import * as grpc from "@grpc/grpc-js";
-import { PersonTypeInRequest } from "../enums/personTypeInRequest.enum";
+import { RequestManager } from './request.manager';
+import * as grpc from '@grpc/grpc-js';
+import { PersonTypeInRequest } from '../enums/personTypeInRequest.enum';
 import {
   Request,
   RequestReq,
   RequestType,
   SuccessMessage,
-} from "../interfaces/protoc/proto/requestService";
+} from '../interfaces/protoc/proto/requestService';
 
 const requestManager: RequestManager = new RequestManager();
 

@@ -4,8 +4,9 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
+    "start": "NODE_ENV='development' ts-node ./src/index.ts",
+    "prod": "NODE_ENV='production' ts-node ./src/index.ts",
     "build": "tsc",
-    "start": "ts-node ./src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

@@ -31,9 +31,11 @@ export class Server {
       swaggerUi.serve,
       swaggerUi.setup(swaggerDocument)
     );
-    
+
     // this.app.use("/api",auth,mainRouter);
-    this.app.use('/api', mainRouter);
+    // this.app.use('/api', mainRouter);
+    this.app.use('/api', auth, mainRouter);
+    // this.app.use('/api', mainRouter);
     this.app.get('/api/auth/login', (req, res) => {
       res.redirect(`http://${config.authentication.authServiceUrl}/auth/login`);
     });

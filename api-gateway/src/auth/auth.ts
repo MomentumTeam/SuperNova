@@ -1,58 +1,64 @@
-import { Request, Response,NextFunction} from 'express';
-import jwt, { JwtPayload } from "jsonwebtoken";
-import * as config from "../config";
+import { Request, Response, NextFunction } from 'express';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import * as config from '../config';
 
-module.exports = (req: Request, res:Response, next:NextFunction) => {
-  
+module.exports = (req: any, res: Response, next: NextFunction) => {
   try {
     console.log('req.cookie', req.cookies);
-      const cookie = req.cookies[`${config.authentication.token}`];
-    
-      // console.log('cookie', cookie);
+    const cookie = req.cookies[`${config.authentication.token}`];
 
-      const authorization = req.headers.authorization as string;
-      console.log('authorization', authorization)
-      
-      if (authorization) {
-        console.log('authorization')
+    // console.log('cookie', cookie);
 
-        jwt.verify(authorization as string, config.authentication.secret, function (err, decoded) {
+    const authorization = req.headers.authorization as string;
+    console.log('authorization', authorization);
+
+    if (authorization) {
+      console.log('authorization');
+
+      jwt.verify(
+        authorization as string,
+        config.authentication.secret,
+        function (err, decoded) {
           if (err) {
             // console.log('err', err.message)
-            console.log('err')
-            res.redirect(`http://${config.authentication.authServiceUrl}/auth/login`);
-          }
-          else {
+            console.log('err');
+            res.redirect(
+              `http://${config.authentication.authServiceUrl}/auth/login`
+            );
+          } else {
             console.log('decoded', decoded);
+            req.user = decoded;
+            next();
+          }
+        }
+      );
+    } else {
+      if (cookie) {
+        console.log('cookie');
+
+        jwt.verify(cookie as string, 'superNova', function (err, decoded) {
+          if (err) {
+            // console.log('err', err.message)
+            console.log('err');
+            res.redirect(
+              `http://${config.authentication.authServiceUrl}/auth/login`
+            );
+          } else {
+            console.log('decoded', decoded);
+            req.user = decoded;
             next();
           }
         });
+      } else {
+        res.redirect(
+          `http://${config.authentication.authServiceUrl}/auth/login`
+        );
       }
-      else {        
-        if (cookie) {
-          console.log('cookie')
-
-          jwt.verify(cookie as string, 'superNova', function (err, decoded) {
-            if (err) {
-              // console.log('err', err.message)
-              console.log('err')
-              res.redirect(`http://${config.authentication.authServiceUrl}/auth/login`);
-            }
-            else {
-              console.log('decoded', decoded);
-              next();
-            }
-          });
-      }
-      else {
-          res.redirect(`http://${config.authentication.authServiceUrl}/auth/login`)
-        }
-      }
-            
-  } catch(err) {
-      console.log('catch',err)
+    }
+  } catch (err) {
+    console.log('catch', err);
     res.status(401).json({
-      error: new Error('Invalid request!')
+      error: new Error('Invalid request!'),
     });
   }
 };

@@ -1,4 +1,4 @@
-import * as grpc from "@grpc/grpc-js";
+import * as grpc from '@grpc/grpc-js';
 import {
   OGArray,
   OrganizationGroup,
@@ -9,10 +9,32 @@ import {
   Entity,
   RoleArray,
   OGTree,
-} from "../interfaces/protoc/proto/kartoffelService";
-import { KartoffelManager } from "./kartoffel.manager";
+  Image,
+} from '../interfaces/protoc/proto/kartoffelService';
+import { KartoffelManager } from './kartoffel.manager';
 
 const kartoffelManager: KartoffelManager = new KartoffelManager();
+
+export async function getPictureByEntityId(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    const image: Image = await kartoffelManager.getPictureByEntityId(
+      call.request
+    );
+    callback(null, image);
+  } catch (error) {
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
 
 export async function searchOG(call: any, callback: any): Promise<void> {
   try {
@@ -158,15 +180,12 @@ export async function getEntityByIdNumber(
   }
 }
 
-export async function searchRolesByRoleId(
-  call: any,
-  callback: any
-): Promise<void> {
+export async function getRoleByRoleId(call: any, callback: any): Promise<void> {
   try {
-    const roles: RoleArray = await kartoffelManager.searchRolesByRoleId(
+    const role: Role = await kartoffelManager.getRoleByRoleId(
       call.request
     );
-    callback(null, roles);
+    callback(null, role);
   } catch (error) {
     callback(
       {
