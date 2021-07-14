@@ -5,7 +5,7 @@ const NotificationRouter: Router = Router();
 
 NotificationRouter.post('/markAsRead', NotificationController.markAsRead);
 
-NotificationRouter.post(
+NotificationRouter.get(
   '/getMyNotifications',
   NotificationController.getMyNotifications
 );

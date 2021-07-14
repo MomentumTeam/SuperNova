@@ -9,6 +9,6 @@ const mainRouter = Router();
 mainRouter.use('/kartoffel', KartoffelRouter);
 mainRouter.use('/requests', RequestsRouter);
 mainRouter.use('/producer', ProducerRouter);
-mainRouter.use('notifications', NotificationRouter);
+mainRouter.use('/notifications', NotificationRouter);
 
 export default mainRouter;
