@@ -170,7 +170,8 @@ message CreateOGRes{
 
     string id = 10;
     int64 createdAt = 11;
-    int64 updatedAt = 12; 
+    int64 updatedAt = 12;
+    RequestType type = 13; 
 }
 
 message CreateOGKartoffelParams{
@@ -212,6 +213,7 @@ message CreateRoleRes{
     string id = 10;
     int64 createdAt = 11;
     int64 updatedAt = 12; 
+    RequestType type = 13;
 }
 message CreateRoleKartoffelParams{
     //for role
@@ -260,6 +262,7 @@ message CreateEntityRes{
     string id = 10;
     int64 createdAt = 11;
     int64 updatedAt = 12; 
+    RequestType type = 13;
 }
 message CreateEntityKartoffelParams{
     string firstName = 1;
@@ -307,6 +310,7 @@ message AssignRoleToEntityRes{
     string id = 10;
     int64 createdAt = 11;
     int64 updatedAt = 12; 
+    RequestType type = 13;
 }
 message AssignRoleToEntityKartoffelParams{
     string id = 1;
@@ -351,6 +355,7 @@ message RenameOGRes{
     string id = 10;
     int64 createdAt = 11;
     int64 updatedAt = 12; 
+    RequestType type = 13;
 }
 message RenameOGKartoffelParams{
 //?
@@ -423,6 +428,7 @@ message EditEntityRes{
     string id = 10;
     int64 createdAt = 11;
     int64 updatedAt = 12; 
+    RequestType type = 13;
 }
 message EditEntityKartoffelParams{
     string id = 1;
@@ -474,6 +480,7 @@ message DeleteOGRes{
     string id = 10;
     int64 createdAt = 11;
     int64 updatedAt = 12; 
+    RequestType type = 13;
 }
 message DeleteOGKartoffelParams{
     string id = 1;
@@ -511,6 +518,7 @@ message DeleteRoleRes{
     string id = 10;
     int64 createdAt = 11;
     int64 updatedAt = 12; 
+    RequestType type = 13;
 }
 message DeleteRoleKartoffelParams{
     string roleId = 1;
@@ -548,6 +556,7 @@ message DisconectRoleFromEntityRes{
     string id = 10;
     int64 createdAt = 11;
     int64 updatedAt = 12; 
+    RequestType type = 13;
 }
 message DisconectRoleFromEntityKartoffelParams{
     string id = 1;
