@@ -1,4 +1,4 @@
-import { PersonTypeInRequest } from "../enums/personTypeInRequest.enum";
+import { PersonTypeInRequest } from '../enums/personTypeInRequest.enum';
 import {
   DeleteReq,
   GetAllRequestsReq,
@@ -13,15 +13,15 @@ import {
   UpdateADStatusReq,
   UpdateKartoffelStatusReq,
   UpdateReq,
-} from "../interfaces/protoc/proto/requestService";
-import { RequestModel } from "../models/request.model";
+} from '../interfaces/protoc/proto/requestService';
+import { RequestModel } from '../models/request.model';
 
 export class RequestRepository {
   private cleanUnderscoreFields(document: any): void {
     let keys: any = Object.keys(document);
 
     for (let key of keys) {
-      if (key.startsWith("_") && key !== "_id") {
+      if (key.startsWith('_') && key !== '_id') {
         delete document[key];
       }
     }
@@ -114,7 +114,7 @@ export class RequestRepository {
     try {
       let requestUpdate: any = { ...updateReq.requestProperties };
       if (requestUpdate.commanders && requestUpdate.commanders.length == 0) {
-        delete requestUpdate["commanders"];
+        delete requestUpdate['commanders'];
       }
       this.cleanUnderscoreFields(requestUpdate);
       const document: any = await RequestModel.findOneAndUpdate(
@@ -210,7 +210,7 @@ export class RequestRepository {
           skip: getAllRequestsReq.from - 1,
           limit: getAllRequestsReq.to - getAllRequestsReq.from + 1,
         }
-      ).sort([["updatedAt", -1]]);
+      ).sort([['updatedAt', -1]]);
       if (requests) {
         let documents: any = [];
         for (let i = 0; i < requests.length; i++) {
@@ -258,8 +258,8 @@ export class RequestRepository {
     try {
       const field =
         personTypeInRequest === PersonTypeInRequest.COMMANDER
-          ? "commanders"
-          : "submittedBy";
+          ? 'commanders'
+          : 'submittedBy';
       const totalCount = await RequestModel.count({
         [field]: getRequestsByPersonIdReq.id,
       });
@@ -273,7 +273,7 @@ export class RequestRepository {
           limit:
             getRequestsByPersonIdReq.to - getRequestsByPersonIdReq.from + 1,
         }
-      ).sort([["updatedAt", -1]]);
+      ).sort([['updatedAt', -1]]);
       if (requests) {
         let documents: any = [];
         for (let i = 0; i < requests.length; i++) {

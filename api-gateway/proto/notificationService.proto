@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package NotificationService;
+
+service NotificationService {
+    rpc CreateNotification(CreateNotificationReq) returns (Notification) {}
+    rpc GetNotificationsByOwnerId(GetNotificationsByOwnerIdReq) returns (NotificationArray) {}
+    rpc MarkAsRead(NotificationIdArray) returns (SuccessMessage){}
+}
+
+message SuccessMessage{
+    bool success = 1;
+}
+
+message NotificationIdArray{
+    repeated string notificationIds = 1;
+}
+
+enum NotificationType{
+    REQUEST_SUBMITTED = 0;
+    REQUEST_APPROVED_1 = 1;
+    REQUEST_DECLINED_1 = 2;
+    REQUEST_APPROVED_2 = 3;
+    REQUEST_DECLINED_2 = 4;
+    REQUEST_DONE = 5;
+    REQUEST_FAILED = 6;
+
+}
+
+message CreateNotificationReq{
+    NotificationType type = 1;
+    string ownerId = 2;
+    string requestId = 3;
+    string message = 4;
+}
+
+message Notification{
+    string id = 1;
+    NotificationType type = 2;
+    string ownerId = 3;
+    string requestId = 4;
+    string message = 5;
+    int64 createdAt = 6;
+    bool read = 7;
+}
+
+message GetNotificationsByOwnerIdReq{
+    string ownerId = 1;
+    int64 startTime = 2;
+    int32 from = 3;
+    int32 to = 4; 
+}
+
+message NotificationArray{
+    repeated Notification notifications = 1;
+    int32 totalCount = 2;
+}

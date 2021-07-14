@@ -17,6 +17,8 @@ import {
   DeleteRoleRes,
   DisconectRoleFromEntityRes,
 } from '../interfaces/protoc/proto/requestService';
+import { notificationsClient } from '../notifications/notifications.controller';
+import { NotificationType } from '../interfaces/protoc/proto/notificationService';
 
 const PROTO_PATH = __dirname.includes('dist')
   ? path.join(__dirname, '../../../proto/requestService.proto')
@@ -73,6 +75,36 @@ export default class RequestsController {
 
     requestsClient.GetAllRequests(
       { from: req.query.from, to: req.query.to },
+      (err: any, response: RequestArray) => {
+        if (err) {
+          res.send(err);
+        }
+        res.send(response);
+      }
+    );
+  }
+
+  static async getMyRequests(req: any, res: Response) {
+    console.log('getMyRequests');
+
+    requestsClient.GetRequestsSubmittedBy(
+      { id: req.user.id, from: req.query.from, to: req.query.to },
+      (err: any, response: RequestArray) => {
+        if (err) {
+          console.log('err', err);
+          res.send(err);
+        }
+        console.log('response', response);
+        res.send(response);
+      }
+    );
+  }
+
+  static async getRequestsAsCommander(req: any, res: Response) {
+    console.log('getRequestsAsCommander');
+
+    requestsClient.GetRequestsByCommander(
+      { id: req.user.id, from: req.query.from, to: req.query.to },
       (err: any, response: RequestArray) => {
         if (err) {
           res.send(err);
@@ -144,7 +176,7 @@ export default class RequestsController {
     });
   }
 
-  static async renameOGRequest(req: Request, res: Response) {
+  static async renameOGRequest(req: any, res: Response) {
     console.log('RenameOGRequest');
 
     requestsClient.RenameOGRequest(
@@ -153,12 +185,22 @@ export default class RequestsController {
         if (err) {
           res.send(err);
         }
-        res.send(response);
+        notificationsClient.CreateNotification(
+          {
+            type: NotificationType.REQUEST_SUBMITTED,
+            ownerId: req.user.id,
+            requestId: response.id,
+            message: 'בקשת עריכת היררכיה נוצרה בהצלחה',
+          },
+          (notificationErr: any, notificationResponse: RenameOGRes) => {
+            res.send(response);
+          }
+        );
       }
     );
   }
 
-  static async renameRoleRequest(req: Request, res: Response) {
+  static async renameRoleRequest(req: any, res: Response) {
     console.log('RenameRoleRequest');
 
     requestsClient.RenameRoleRequest(
@@ -167,12 +209,22 @@ export default class RequestsController {
         if (err) {
           res.send(err);
         }
-        res.send(response);
+        notificationsClient.CreateNotification(
+          {
+            type: NotificationType.REQUEST_SUBMITTED,
+            ownerId: req.user.id,
+            requestId: response.id,
+            message: 'בקשת עריכת תפקיד נוצרה בהצלחה',
+          },
+          (notificationErr: any, notificationResponse: RenameOGRes) => {
+            res.send(response);
+          }
+        );
       }
     );
   }
 
-  static async createOGRequest(req: Request, res: Response) {
+  static async createOGRequest(req: any, res: Response) {
     console.log('createOGRequest');
 
     requestsClient.CreateOGRequest(
@@ -181,12 +233,22 @@ export default class RequestsController {
         if (err) {
           res.send(err);
         }
-        res.send(response);
+        notificationsClient.CreateNotification(
+          {
+            type: NotificationType.REQUEST_SUBMITTED,
+            ownerId: req.user.id,
+            requestId: response.id,
+            message: 'בקשת יצירת היררכיה נוצרה בהצלחה',
+          },
+          (notificationErr: any, notificationResponse: RenameOGRes) => {
+            res.send(response);
+          }
+        );
       }
     );
   }
 
-  static async createRoleRequest(req: Request, res: Response) {
+  static async createRoleRequest(req: any, res: Response) {
     console.log('createRoleRequest');
 
     requestsClient.CreateRoleRequest(
@@ -195,12 +257,22 @@ export default class RequestsController {
         if (err) {
           res.send(err);
         }
-        res.send(response);
+        notificationsClient.CreateNotification(
+          {
+            type: NotificationType.REQUEST_SUBMITTED,
+            ownerId: req.user.id,
+            requestId: response.id,
+            message: 'בקשת יצירת תפקיד נוצרה בהצלחה',
+          },
+          (notificationErr: any, notificationResponse: RenameOGRes) => {
+            res.send(response);
+          }
+        );
       }
     );
   }
 
-  static async createEntityRequest(req: Request, res: Response) {
+  static async createEntityRequest(req: any, res: Response) {
     console.log('CreateEntityRequest');
 
     requestsClient.CreateEntityRequest(
@@ -209,12 +281,22 @@ export default class RequestsController {
         if (err) {
           res.send(err);
         }
-        res.send(response);
+        notificationsClient.CreateNotification(
+          {
+            type: NotificationType.REQUEST_SUBMITTED,
+            ownerId: req.user.id,
+            requestId: response.id,
+            message: 'בקשת יצירת ישות נוצרה בהצלחה',
+          },
+          (notificationErr: any, notificationResponse: RenameOGRes) => {
+            res.send(response);
+          }
+        );
       }
     );
   }
 
-  static async assignRoleToEntityRequest(req: Request, res: Response) {
+  static async assignRoleToEntityRequest(req: any, res: Response) {
     console.log('AssignRoleToEntityRequest');
 
     requestsClient.AssignRoleToEntityRequest(
@@ -223,12 +305,22 @@ export default class RequestsController {
         if (err) {
           res.send(err);
         }
-        res.send(response);
+        notificationsClient.CreateNotification(
+          {
+            type: NotificationType.REQUEST_SUBMITTED,
+            ownerId: req.user.id,
+            requestId: response.id,
+            message: 'בקשת שיוך תפקיד לישות נוצרה בהצלחה',
+          },
+          (notificationErr: any, notificationResponse: RenameOGRes) => {
+            res.send(response);
+          }
+        );
       }
     );
   }
 
-  static async editEntityRequest(req: Request, res: Response) {
+  static async editEntityRequest(req: any, res: Response) {
     console.log('EditEntityRequest');
 
     requestsClient.EditEntityRequest(
@@ -237,12 +329,22 @@ export default class RequestsController {
         if (err) {
           res.send(err);
         }
-        res.send(response);
+        notificationsClient.CreateNotification(
+          {
+            type: NotificationType.REQUEST_SUBMITTED,
+            ownerId: req.user.id,
+            requestId: response.id,
+            message: 'בקשת עריכת ישות נוצרה בהצלחה',
+          },
+          (notificationErr: any, notificationResponse: RenameOGRes) => {
+            res.send(response);
+          }
+        );
       }
     );
   }
 
-  static async disconectRoleFromEntityRequest(req: Request, res: Response) {
+  static async disconectRoleFromEntityRequest(req: any, res: Response) {
     console.log('DisconectRoleFromEntityRequest');
 
     requestsClient.DisconectRoleFromEntityRequest(
@@ -251,12 +353,22 @@ export default class RequestsController {
         if (err) {
           res.send(err);
         }
-        res.send(response);
+        notificationsClient.CreateNotification(
+          {
+            type: NotificationType.REQUEST_SUBMITTED,
+            ownerId: req.user.id,
+            requestId: response.id,
+            message: 'בקשת ניתוק תפקיד נוצרה בהצלחה',
+          },
+          (notificationErr: any, notificationResponse: RenameOGRes) => {
+            res.send(response);
+          }
+        );
       }
     );
   }
 
-  static async deleteRoleRequest(req: Request, res: Response) {
+  static async deleteRoleRequest(req: any, res: Response) {
     console.log('DeleteRoleRequest');
 
     requestsClient.DeleteRoleRequest(
@@ -265,12 +377,23 @@ export default class RequestsController {
         if (err) {
           res.send(err);
         }
+        notificationsClient.CreateNotification(
+          {
+            type: NotificationType.REQUEST_SUBMITTED,
+            ownerId: req.user.id,
+            requestId: response.id,
+            message: 'בקשת מחיקת תפקיד נוצרה בהצלחה',
+          },
+          (notificationErr: any, notificationResponse: RenameOGRes) => {
+            res.send(response);
+          }
+        );
         res.send(response);
       }
     );
   }
 
-  static async deleteOGRequest(req: Request, res: Response) {
+  static async deleteOGRequest(req: any, res: Response) {
     console.log('DeleteOGRequest');
 
     requestsClient.DeleteOGRequest(
@@ -279,7 +402,17 @@ export default class RequestsController {
         if (err) {
           res.send(err);
         }
-        res.send(response);
+        notificationsClient.CreateNotification(
+          {
+            type: NotificationType.REQUEST_SUBMITTED,
+            ownerId: req.user.id,
+            requestId: response.id,
+            message: 'בקשת מחיקת היררכיה נוצרה בהצלחה',
+          },
+          (notificationErr: any, notificationResponse: RenameOGRes) => {
+            res.send(response);
+          }
+        );
       }
     );
   }

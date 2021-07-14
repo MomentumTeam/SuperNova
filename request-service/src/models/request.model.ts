@@ -1,11 +1,11 @@
-import mongoose from "mongoose";
-import { connection } from "../mongoose";
+import mongoose from 'mongoose';
+import { connection } from '../mongoose';
 import {
   Decision,
   RequestStatus,
   RequestType,
   StageStatus,
-} from "../interfaces/protoc/proto/requestService";
+} from '../interfaces/protoc/proto/requestService';
 const { Schema } = mongoose;
 
 export const RequestSchema = new Schema(
@@ -13,7 +13,7 @@ export const RequestSchema = new Schema(
     createdAt: { type: Number, default: new Date().getTime() },
     updatedAt: { type: Number, default: new Date().getTime() },
     type: {
-      type: String,
+      type: Number,
       enum: RequestType,
     },
 
@@ -125,7 +125,7 @@ export const RequestSchema = new Schema(
   { strict: false }
 );
 
-RequestSchema.pre<any>("save", function (next) {
+RequestSchema.pre<any>('save', function (next) {
   const func: any = (object: any) => {
     object.updatedAt = new Date().getTime();
   };
@@ -133,7 +133,7 @@ RequestSchema.pre<any>("save", function (next) {
   return next();
 });
 
-RequestSchema.pre<any>("findOneAndUpdate", function (next) {
+RequestSchema.pre<any>('findOneAndUpdate', function (next) {
   const func: any = (object: any) => {
     object.updatedAt = new Date().getTime();
   };
@@ -142,7 +142,7 @@ RequestSchema.pre<any>("findOneAndUpdate", function (next) {
 });
 
 export const RequestModel = connection.model(
-  "Request",
+  'Request',
   RequestSchema,
-  "requests"
+  'requests'
 );
