@@ -6,7 +6,10 @@ import { logger } from './logger';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import swaggerUi from 'swagger-ui-express';
+
 const auth = require('./auth/auth');
+import { swaggerDocument } from './swagger';
 
 export class Server {
   public app: express.Application;
@@ -23,8 +26,14 @@ export class Server {
     this.app.use(cookieParser());
     this.app.use(bodyParser.json());
 
+    this.app.use(
+      '/api-docs',
+      swaggerUi.serve,
+      swaggerUi.setup(swaggerDocument)
+    );
+
+    // this.app.use('/api', mainRouter); //For swagger usage
     this.app.use('/api', auth, mainRouter);
-    // this.app.use('/api', mainRouter);
     this.app.get('/api/auth/login', (req, res) => {
       res.redirect(`http://${config.authentication.authServiceUrl}/auth/login`);
     });

@@ -173,7 +173,7 @@ export class KartoffelRepository {
     try {
       if (C.useFaker) {
         const entityArray: EntityArray =
-          await this.kartoffelFaker.randomEntityArray();
+          await this.kartoffelFaker.randomEntityArray(false);
         return entityArray;
       } else {
         const res = await this.axiosKartoffel.get(
@@ -191,7 +191,7 @@ export class KartoffelRepository {
   ): Promise<Entity> {
     try {
       if (C.useFaker) {
-        const entity: Entity = await this.kartoffelFaker.randomEntity();
+        const entity: Entity = await this.kartoffelFaker.randomEntity(true);
         return entity;
       } else {
         const res = await this.axiosKartoffel.get(
@@ -263,7 +263,7 @@ export class KartoffelRepository {
   ): Promise<Entity> {
     try {
       if (C.useFaker) {
-        const entity: Entity = await this.kartoffelFaker.randomEntity();
+        const entity: Entity = await this.kartoffelFaker.randomEntity(false);
         return entity;
       } else {
         const res = await this.axiosKartoffel.post(
@@ -282,7 +282,7 @@ export class KartoffelRepository {
   ): Promise<Entity> {
     try {
       if (C.useFaker) {
-        const entity: Entity = await this.kartoffelFaker.randomEntity();
+        const entity: Entity = await this.kartoffelFaker.randomEntity(true);
         return entity;
       } else {
         const res = await this.axiosKartoffel.get(
@@ -320,7 +320,7 @@ export class KartoffelRepository {
   ): Promise<Entity> {
     try {
       if (C.useFaker) {
-        const entity: Entity = await this.kartoffelFaker.randomEntity();
+        const entity: Entity = await this.kartoffelFaker.randomEntity(true);
         return entity;
       } else {
         const res = await this.axiosKartoffel.get(
@@ -403,7 +403,7 @@ export class KartoffelRepository {
     try {
       if (C.useFaker) {
         const entityArray: EntityArray =
-          await this.kartoffelFaker.randomEntityArray();
+          await this.kartoffelFaker.randomEntityArray(false);
         return entityArray;
       } else {
         const res = await this.axiosKartoffel.get(

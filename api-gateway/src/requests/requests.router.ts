@@ -3,6 +3,13 @@ import RequestsController from './requests.controller';
 
 const RequestsRouter: Router = Router();
 
+RequestsRouter.get('/getMyRequests', RequestsController.getMyRequests);
+RequestsRouter.get(
+  '/getRequestsAsCommander',
+  RequestsController.getRequestsAsCommander
+);
+
+RequestsRouter.get('/getRequestById/:id', RequestsController.getRequestById);
 RequestsRouter.get('/getAllRequests', RequestsController.getAllRequests);
 RequestsRouter.get(
   '/getRequestsSubmittedBy/:id',
@@ -11,11 +18,6 @@ RequestsRouter.get(
 RequestsRouter.get(
   '/getRequestsByCommander/:id',
   RequestsController.getRequestsByCommander
-);
-RequestsRouter.get('/getMyRequests', RequestsController.getMyRequests);
-RequestsRouter.get(
-  '/getRequestsAsCommander',
-  RequestsController.getRequestsAsCommander
 );
 
 RequestsRouter.get('/:id', RequestsController.getRequestById);

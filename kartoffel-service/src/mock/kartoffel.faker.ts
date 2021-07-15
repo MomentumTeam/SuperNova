@@ -80,9 +80,11 @@ export class KartoffelFaker {
     };
     return role;
   }
-  async randomEntity(): Promise<Entity> {
+  async randomEntity(needPicture: boolean): Promise<Entity> {
     try {
-      const picture: Image = await this.randomPicture();
+      const picture: Image = needPicture
+        ? await this.randomPicture()
+        : { image: 'pictureUrl' };
       const entity: Entity = {
         id: mongoose.Types.ObjectId().toString(),
         displayName: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
@@ -170,7 +172,7 @@ export class KartoffelFaker {
     return { roles: roleArray };
   }
 
-  async randomEntityArray(): Promise<EntityArray> {
+  async randomEntityArray(needPicture: boolean): Promise<EntityArray> {
     try {
       const length = faker.datatype.number({
         min: 1,
@@ -178,7 +180,7 @@ export class KartoffelFaker {
       });
       let entityArray = [];
       for (let i = 0; i < length; i++) {
-        let entity: Entity = await this.randomEntity();
+        let entity: Entity = await this.randomEntity(needPicture);
         entityArray.push(entity);
       }
       return { entities: entityArray };
