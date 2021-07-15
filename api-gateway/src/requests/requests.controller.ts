@@ -19,8 +19,8 @@ import {
 } from '../interfaces/protoc/proto/requestService';
 
 const PROTO_PATH = __dirname.includes('dist')
-  ? path.join(__dirname, '../../proto/requestService.proto')
-  : path.join(__dirname, '../proto/requestService.proto');
+  ? path.join(__dirname, '../../../proto/requestService.proto')
+  : path.join(__dirname, '../../proto/requestService.proto');
 
 const packageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(
   PROTO_PATH,
@@ -105,6 +105,7 @@ export default class RequestsController {
         res.send(response);
       }
     );
+  }
 
   static async getRequestsSubmittedBy(req: Request, res: Response) {
     console.log('GetRequestsSubmittedBy');
@@ -138,12 +139,12 @@ export default class RequestsController {
     console.log('UpdateADStatus');
 
     const status: string = req.body.Status;
-    let stageStatus: StageStatus = (<any>StageStatus)['IN_PROGRESS'];
+    let stageStatus: StageStatus = StageStatus.IN_PROGRESS;
 
     if (status === 'true') {
-      stageStatus = (<any>StageStatus)['DONE'];
+      stageStatus = StageStatus.DONE;
     } else if (status === 'false') {
-      stageStatus = (<any>StageStatus)['FAILED'];
+      stageStatus = StageStatus.FAILED;
     }
 
     requestsClient.UpdateADStatus(
@@ -156,7 +157,7 @@ export default class RequestsController {
         if (err) {
           res.status(500).end(err.message);
         }
-        res.status(200);
+        res.status(200).send();
       }
     );
   }

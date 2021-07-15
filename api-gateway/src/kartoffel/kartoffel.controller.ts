@@ -163,6 +163,19 @@ export default class KartoffelController {
     );
   }
 
+  static async getMyUser(req: any, res: Response) {
+    console.log('getMyUser');
+    kartoffelClient.GetEntityByMongoId(
+      { id: req.user.id },
+      (err: any, response: Entity) => {
+        if (err) {
+          res.send(null);
+        }
+        res.send(response);
+      }
+    );
+  }
+
   static async getEntityByMongoId(req: Request, res: Response) {
     console.log('GetEntityByMongoId');
     console.log('req.params', req.params);

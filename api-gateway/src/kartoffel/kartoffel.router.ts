@@ -4,6 +4,7 @@ import KartoffelController from './kartoffel.controller';
 const KartoffelRouter: Router = Router();
 
 KartoffelRouter.get('/searchOG', KartoffelController.searchOG);
+KartoffelRouter.get('/getMyUser', KartoffelController.getMyUser);
 KartoffelRouter.get(
   '/searchEntitiesByFullName',
   KartoffelController.searchEntitiesByFullName

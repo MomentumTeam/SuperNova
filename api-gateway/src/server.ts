@@ -9,7 +9,7 @@ import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
 
 const auth = require('./auth/auth');
-const swaggerDocument = require('../swagger.json');
+import { swaggerDocument } from './swagger';
 
 export class Server {
   public app: express.Application;
@@ -32,10 +32,8 @@ export class Server {
       swaggerUi.setup(swaggerDocument)
     );
 
-    // this.app.use("/api",auth,mainRouter);
-    // this.app.use('/api', mainRouter);
+    // this.app.use('/api', mainRouter); //For swagger usage
     this.app.use('/api', auth, mainRouter);
-    // this.app.use('/api', mainRouter);
     this.app.get('/api/auth/login', (req, res) => {
       res.redirect(`http://${config.authentication.authServiceUrl}/auth/login`);
     });
