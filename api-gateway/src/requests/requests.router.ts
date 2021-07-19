@@ -20,8 +20,6 @@ RequestsRouter.get(
   RequestsController.getRequestsByCommander
 );
 
-RequestsRouter.get('/:id', RequestsController.getRequestById);
-
 RequestsRouter.put('/updateADStatus', RequestsController.updateADStatus);
 RequestsRouter.put('/updateRequest', RequestsController.updateRequest);
 RequestsRouter.put('/renameOGRequest', RequestsController.renameOGRequest);

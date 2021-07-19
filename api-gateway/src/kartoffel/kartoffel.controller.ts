@@ -37,11 +37,11 @@ const kartoffelClient: any = new protoDescriptor.Kartoffel(
 );
 
 export default class KartoffelController {
-  static async getPictureByEntityId(req: Request, res: Response) {
-    console.log('getRoleByRoleId');
+  static async getPictureByEntityId(req: any, res: Response) {
+    console.log('getPictureByEntityId');
 
     kartoffelClient.GetPictureByEntityId(
-      { id: req.query.id },
+      { id: req.user.id },
       (err: any, response: Image) => {
         if (err) {
           res.send(null);
@@ -55,7 +55,7 @@ export default class KartoffelController {
     console.log('getRoleByRoleId');
 
     kartoffelClient.GetRoleByRoleId(
-      { roleId: req.query.roleId },
+      { roleId: req.params.roleId },
       (err: any, response: Role) => {
         if (err) {
           res.send(null);
@@ -69,7 +69,7 @@ export default class KartoffelController {
     console.log('getOGTree');
 
     kartoffelClient.GetOGTree(
-      { rootId: req.query.rootId },
+      { rootId: req.params.rootId },
       (err: any, response: OGTree) => {
         if (err) {
           res.send(null);
@@ -165,6 +165,7 @@ export default class KartoffelController {
 
   static async getMyUser(req: any, res: Response) {
     console.log('getMyUser');
+
     kartoffelClient.GetEntityByMongoId(
       { id: req.user.id },
       (err: any, response: Entity) => {
@@ -178,7 +179,6 @@ export default class KartoffelController {
 
   static async getEntityByMongoId(req: Request, res: Response) {
     console.log('GetEntityByMongoId');
-    console.log('req.params', req.params);
 
     kartoffelClient.GetEntityByMongoId(
       { id: req.params.id },

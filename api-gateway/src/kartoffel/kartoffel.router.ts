@@ -38,7 +38,7 @@ KartoffelRouter.get(
   KartoffelController.getEntitiesUnderOG
 );
 KartoffelRouter.get(
-  '/getPictureByEntityId/:id',
+  '/getPictureByEntityId',
   KartoffelController.getPictureByEntityId
 );
 KartoffelRouter.get('/getOGTree/:rootId', KartoffelController.getOGTree);
