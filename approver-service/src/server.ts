@@ -6,7 +6,10 @@ import { logger } from './logger';
 import {
   addCommanderApprover,
   addSecurityApprover,
+  addSuperSecurityApprover,
+  getAllCommanderApprovers,
   getAllSecurityApprovers,
+  getAllSuperSecurityApprovers,
   getUserType,
   searchApproverByDisplayName,
   searchApproverByDomainUser,
@@ -61,8 +64,11 @@ export class Server {
           SearchApproverByDisplayName: searchApproverByDisplayName,
           SearchApproverByDomainUser: searchApproverByDomainUser,
           GetAllSecurityApprovers: getAllSecurityApprovers,
+          GetAllCommanderApprovers: getAllCommanderApprovers,
           UpdateCommanderDecision: updateCommanderDecision,
           UpdateSecurityDecision: updateSecurityDecision,
+          GetAllSuperSecurityApprovers: getAllSuperSecurityApprovers,
+          AddSuperSecurityApprover: addSuperSecurityApprover,
         }
       );
       logger.log({

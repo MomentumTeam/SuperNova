@@ -42,6 +42,18 @@ export class ApproverManager {
     }
   }
 
+  async addSuperSecurityApprover(
+    addSecurityApproverReq: AddApproverReq
+  ): Promise<Approver> {
+    try {
+      return (await this.approverRepository.addSuperSecurityApprover(
+        addSecurityApproverReq
+      )) as Approver;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async getUserType(getUserTypeReq: GetUserTypeReq): Promise<GetUserTypeRes> {
     try {
       return (await this.approverRepository.getUserType(
@@ -88,11 +100,23 @@ export class ApproverManager {
     }
   }
 
+  async getAllSuperSecurityApprovers(
+    getAllSecurityApproversReq: GetAllApproversReq
+  ): Promise<ApproverArray> {
+    try {
+      return await this.approverRepository.getAllSuperSecurityApprovers(
+        getAllSecurityApproversReq
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async getAllCommanderApprovers(
     getAllSecurityApproversReq: GetAllApproversReq
   ): Promise<ApproverArray> {
     try {
-      return await this.approverRepository.getAllSecurityApprovers(
+      return await this.approverRepository.getAllCommanderApprovers(
         getAllSecurityApproversReq
       );
     } catch (error) {

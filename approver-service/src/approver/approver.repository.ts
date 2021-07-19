@@ -10,6 +10,8 @@ import {
   SuccessMessage,
   UpdateDecisionReq,
   UserType,
+  userTypeFromJSON,
+  userTypeToJSON,
 } from '../interfaces/protoc/proto/approverService';
 import { Entity } from '../interfaces/protoc/proto/kartoffelService';
 import { ApproverModel } from '../models/approver.model';
@@ -42,6 +44,19 @@ export class ApproverRepository {
       return await this.addApprover(
         addCommanderApproverReq,
         UserType.COMMANDER
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async addSuperSecurityApprover(
+    addSecurityApproverReq: AddApproverReq
+  ): Promise<Approver> {
+    try {
+      return await this.addApprover(
+        addSecurityApproverReq,
+        UserType.SUPER_SECURITY
       );
     } catch (error) {
       throw error;
@@ -97,7 +112,7 @@ export class ApproverRepository {
       );
       let approversResult: Approver[] = getMongoApproverArray(mongoApprovers);
 
-      if (searchByDisplayNameReq.type !== UserType.SECURITY) {
+      if (userTypeFromJSON(searchByDisplayNameReq.type) !== UserType.SECURITY) {
         const kartoffelEntities =
           await KartoffelService.searchEntitiesByFullName({
             fullName: searchByDisplayNameReq.displayName,
@@ -165,7 +180,20 @@ export class ApproverRepository {
   ): Promise<ApproverArray> {
     try {
       const mongoApprovers: any = await ApproverModel.find({
-        type: UserType.SECURITY,
+        type: userTypeToJSON(UserType.SECURITY),
+      });
+      return { approvers: getMongoApproverArray(mongoApprovers) };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getAllSuperSecurityApprovers(
+    getAllSecurityApproversReq: GetAllApproversReq
+  ): Promise<ApproverArray> {
+    try {
+      const mongoApprovers: any = await ApproverModel.find({
+        type: userTypeToJSON(UserType.SUPER_SECURITY),
       });
       return { approvers: getMongoApproverArray(mongoApprovers) };
     } catch (error) {
@@ -178,7 +206,7 @@ export class ApproverRepository {
   ): Promise<ApproverArray> {
     try {
       const mongoApprovers: any = await ApproverModel.find({
-        type: UserType.COMMANDER,
+        type: userTypeToJSON(UserType.COMMANDER),
       });
       return { approvers: getMongoApproverArray(mongoApprovers) };
     } catch (error) {

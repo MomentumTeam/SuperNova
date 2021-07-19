@@ -3,7 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { ApproverDecision } from "../proto/requestService";
 
-export const protobufPackage = "Approver";
+export const protobufPackage = "ApproverService";
 
 export enum RequestStatus {
   SUBMITTED = 0,
@@ -57,8 +57,9 @@ export function requestStatusToJSON(object: RequestStatus): string {
 
 export enum UserType {
   SECURITY = 0,
-  COMMANDER = 1,
-  SOLDIER = 2,
+  SUPER_SECURITY = 1,
+  COMMANDER = 2,
+  SOLDIER = 3,
   UNRECOGNIZED = -1,
 }
 
@@ -68,9 +69,12 @@ export function userTypeFromJSON(object: any): UserType {
     case "SECURITY":
       return UserType.SECURITY;
     case 1:
+    case "SUPER_SECURITY":
+      return UserType.SUPER_SECURITY;
+    case 2:
     case "COMMANDER":
       return UserType.COMMANDER;
-    case 2:
+    case 3:
     case "SOLDIER":
       return UserType.SOLDIER;
     case -1:
@@ -84,6 +88,8 @@ export function userTypeToJSON(object: UserType): string {
   switch (object) {
     case UserType.SECURITY:
       return "SECURITY";
+    case UserType.SUPER_SECURITY:
+      return "SUPER_SECURITY";
     case UserType.COMMANDER:
       return "COMMANDER";
     case UserType.SOLDIER:
@@ -1022,6 +1028,7 @@ export const Approver = {
 export interface ApproverService {
   AddCommanderApprover(request: AddApproverReq): Promise<Approver>;
   AddSecurityApprover(request: AddApproverReq): Promise<Approver>;
+  AddSuperSecurityApprover(request: AddApproverReq): Promise<Approver>;
   GetUserType(request: GetUserTypeReq): Promise<GetUserTypeRes>;
   SearchApproverByDisplayName(
     request: SearchByDisplayNameReq
@@ -1030,6 +1037,9 @@ export interface ApproverService {
     request: SearchByDomainUserReq
   ): Promise<ApproverArray>;
   GetAllSecurityApprovers(request: GetAllApproversReq): Promise<ApproverArray>;
+  GetAllSuperSecurityApprovers(
+    request: GetAllApproversReq
+  ): Promise<ApproverArray>;
   GetAllCommanderApprovers(request: GetAllApproversReq): Promise<ApproverArray>;
   UpdateCommanderDecision(request: UpdateDecisionReq): Promise<SuccessMessage>;
   UpdateSecurityDecision(request: UpdateDecisionReq): Promise<SuccessMessage>;
@@ -1041,12 +1051,15 @@ export class ApproverServiceClientImpl implements ApproverService {
     this.rpc = rpc;
     this.AddCommanderApprover = this.AddCommanderApprover.bind(this);
     this.AddSecurityApprover = this.AddSecurityApprover.bind(this);
+    this.AddSuperSecurityApprover = this.AddSuperSecurityApprover.bind(this);
     this.GetUserType = this.GetUserType.bind(this);
     this.SearchApproverByDisplayName =
       this.SearchApproverByDisplayName.bind(this);
     this.SearchApproverByDomainUser =
       this.SearchApproverByDomainUser.bind(this);
     this.GetAllSecurityApprovers = this.GetAllSecurityApprovers.bind(this);
+    this.GetAllSuperSecurityApprovers =
+      this.GetAllSuperSecurityApprovers.bind(this);
     this.GetAllCommanderApprovers = this.GetAllCommanderApprovers.bind(this);
     this.UpdateCommanderDecision = this.UpdateCommanderDecision.bind(this);
     this.UpdateSecurityDecision = this.UpdateSecurityDecision.bind(this);
@@ -1054,7 +1067,7 @@ export class ApproverServiceClientImpl implements ApproverService {
   AddCommanderApprover(request: AddApproverReq): Promise<Approver> {
     const data = AddApproverReq.encode(request).finish();
     const promise = this.rpc.request(
-      "Approver.ApproverService",
+      "ApproverService.ApproverService",
       "AddCommanderApprover",
       data
     );
@@ -1064,8 +1077,18 @@ export class ApproverServiceClientImpl implements ApproverService {
   AddSecurityApprover(request: AddApproverReq): Promise<Approver> {
     const data = AddApproverReq.encode(request).finish();
     const promise = this.rpc.request(
-      "Approver.ApproverService",
+      "ApproverService.ApproverService",
       "AddSecurityApprover",
+      data
+    );
+    return promise.then((data) => Approver.decode(new _m0.Reader(data)));
+  }
+
+  AddSuperSecurityApprover(request: AddApproverReq): Promise<Approver> {
+    const data = AddApproverReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "ApproverService.ApproverService",
+      "AddSuperSecurityApprover",
       data
     );
     return promise.then((data) => Approver.decode(new _m0.Reader(data)));
@@ -1074,7 +1097,7 @@ export class ApproverServiceClientImpl implements ApproverService {
   GetUserType(request: GetUserTypeReq): Promise<GetUserTypeRes> {
     const data = GetUserTypeReq.encode(request).finish();
     const promise = this.rpc.request(
-      "Approver.ApproverService",
+      "ApproverService.ApproverService",
       "GetUserType",
       data
     );
@@ -1086,7 +1109,7 @@ export class ApproverServiceClientImpl implements ApproverService {
   ): Promise<ApproverArray> {
     const data = SearchByDisplayNameReq.encode(request).finish();
     const promise = this.rpc.request(
-      "Approver.ApproverService",
+      "ApproverService.ApproverService",
       "SearchApproverByDisplayName",
       data
     );
@@ -1098,7 +1121,7 @@ export class ApproverServiceClientImpl implements ApproverService {
   ): Promise<ApproverArray> {
     const data = SearchByDomainUserReq.encode(request).finish();
     const promise = this.rpc.request(
-      "Approver.ApproverService",
+      "ApproverService.ApproverService",
       "SearchApproverByDomainUser",
       data
     );
@@ -1108,8 +1131,20 @@ export class ApproverServiceClientImpl implements ApproverService {
   GetAllSecurityApprovers(request: GetAllApproversReq): Promise<ApproverArray> {
     const data = GetAllApproversReq.encode(request).finish();
     const promise = this.rpc.request(
-      "Approver.ApproverService",
+      "ApproverService.ApproverService",
       "GetAllSecurityApprovers",
+      data
+    );
+    return promise.then((data) => ApproverArray.decode(new _m0.Reader(data)));
+  }
+
+  GetAllSuperSecurityApprovers(
+    request: GetAllApproversReq
+  ): Promise<ApproverArray> {
+    const data = GetAllApproversReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "ApproverService.ApproverService",
+      "GetAllSuperSecurityApprovers",
       data
     );
     return promise.then((data) => ApproverArray.decode(new _m0.Reader(data)));
@@ -1120,7 +1155,7 @@ export class ApproverServiceClientImpl implements ApproverService {
   ): Promise<ApproverArray> {
     const data = GetAllApproversReq.encode(request).finish();
     const promise = this.rpc.request(
-      "Approver.ApproverService",
+      "ApproverService.ApproverService",
       "GetAllCommanderApprovers",
       data
     );
@@ -1130,7 +1165,7 @@ export class ApproverServiceClientImpl implements ApproverService {
   UpdateCommanderDecision(request: UpdateDecisionReq): Promise<SuccessMessage> {
     const data = UpdateDecisionReq.encode(request).finish();
     const promise = this.rpc.request(
-      "Approver.ApproverService",
+      "ApproverService.ApproverService",
       "UpdateCommanderDecision",
       data
     );
@@ -1140,7 +1175,7 @@ export class ApproverServiceClientImpl implements ApproverService {
   UpdateSecurityDecision(request: UpdateDecisionReq): Promise<SuccessMessage> {
     const data = UpdateDecisionReq.encode(request).finish();
     const promise = this.rpc.request(
-      "Approver.ApproverService",
+      "ApproverService.ApproverService",
       "UpdateSecurityDecision",
       data
     );

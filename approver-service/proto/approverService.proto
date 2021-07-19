@@ -1,15 +1,17 @@
 syntax = "proto3";
 import "/home/barak/Desktop/SuperNova/approver-service/proto/requestService.proto";
+// import "proto/requestService.proto";
 package ApproverService;
 
 service ApproverService {
     rpc AddCommanderApprover(AddApproverReq) returns (Approver) {}
     rpc AddSecurityApprover(AddApproverReq) returns (Approver) {}
+    rpc AddSuperSecurityApprover(AddApproverReq) returns (Approver) {}
     rpc GetUserType(GetUserTypeReq) returns (GetUserTypeRes) {}
     rpc SearchApproverByDisplayName(SearchByDisplayNameReq) returns (ApproverArray) {}
     rpc SearchApproverByDomainUser(SearchByDomainUserReq) returns (ApproverArray) {}
-
     rpc GetAllSecurityApprovers(GetAllApproversReq) returns (ApproverArray) {}
+    rpc GetAllSuperSecurityApprovers(GetAllApproversReq) returns (ApproverArray) {}
     rpc GetAllCommanderApprovers(GetAllApproversReq) returns (ApproverArray) {}
     rpc UpdateCommanderDecision(UpdateDecisionReq) returns (SuccessMessage) {}
     rpc UpdateSecurityDecision(UpdateDecisionReq) returns (SuccessMessage) {}
@@ -80,6 +82,7 @@ enum RequestStatus{
 
 enum UserType{
     SECURITY = 0;
-    COMMANDER = 1;
-    SOLDIER = 2;
+    SUPER_SECURITY = 1;
+    COMMANDER = 2;
+    SOLDIER = 3;
 }

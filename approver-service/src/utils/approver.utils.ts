@@ -40,7 +40,7 @@ export function getMongoApproverArray(approverMongoArray: any): Approver[] {
     let documents: any = [];
     for (let i = 0; i < approverMongoArray.length; i++) {
       const requestObj: any = approverMongoArray[i].toObject();
-      turnObjectIdsToStrings(approverMongoArray);
+      turnObjectIdsToStrings(requestObj);
       documents.push(requestObj);
     }
     return documents as Approver[];
