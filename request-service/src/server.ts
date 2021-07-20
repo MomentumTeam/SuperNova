@@ -1,8 +1,8 @@
-import path from "path";
-import * as grpc from "@grpc/grpc-js";
-import * as protoLoader from "@grpc/proto-loader";
-import * as C from "./config";
-import { logger } from "./logger";
+import path from 'path';
+import * as grpc from '@grpc/grpc-js';
+import * as protoLoader from '@grpc/proto-loader';
+import * as C from './config';
+import { logger } from './logger';
 import {
   getRequestById,
   getRequestsByCommander,
@@ -13,12 +13,12 @@ import {
   createRequestFuncByType,
   updateKartoffelStatus,
   updateADStatus,
-} from "./requests/request.controller";
-import { RequestType } from "./interfaces/protoc/proto/requestService";
+} from './requests/request.controller';
+import { RequestType } from './interfaces/protoc/proto/requestService';
 
-const PROTO_PATH = __dirname.includes("dist")
-  ? path.join(__dirname, "../../proto/requestService.proto")
-  : path.join(__dirname, "../proto/requestService.proto");
+const PROTO_PATH = __dirname.includes('dist')
+  ? path.join(__dirname, '../../proto/requestService.proto')
+  : path.join(__dirname, '../proto/requestService.proto');
 
 export class Server {
   private server: grpc.Server;
@@ -50,15 +50,18 @@ export class Server {
     try {
       const requestServiceDescriptor: any = this.getProtoDescriptor();
       logger.log({
-        level: "info",
+        level: 'info',
         message: `Proto was loaded successfully from file: ${PROTO_PATH}`,
-        label: "initServer",
+        label: 'initServer',
       });
       this.server.addService(requestServiceDescriptor.RequestService.service, {
         CreateOGRequest: createRequestFuncByType(RequestType.CREATE_OG),
         CreateRoleRequest: createRequestFuncByType(RequestType.CREATE_ROLE),
         AssignRoleToEntityRequest: createRequestFuncByType(
           RequestType.ASSIGN_ROLE_TO_ENTITY
+        ),
+        CreateApproverRequest: createRequestFuncByType(
+          RequestType.ADD_APPROVER
         ),
         CreateEntityRequest: createRequestFuncByType(RequestType.CREATE_ENTITY),
         RenameOGRequest: createRequestFuncByType(RequestType.RENAME_OG),
@@ -79,15 +82,15 @@ export class Server {
         GetAllRequests: getAllRequests,
       });
       logger.log({
-        level: "info",
+        level: 'info',
         message: `Grpc services were successfully added to the server`,
-        label: "initServer",
+        label: 'initServer',
       });
     } catch (error) {
       logger.log({
-        level: "error",
+        level: 'error',
         message: `Error while initializing the server: ${error.message}`,
-        label: "initServer",
+        label: 'initServer',
       });
     }
   }

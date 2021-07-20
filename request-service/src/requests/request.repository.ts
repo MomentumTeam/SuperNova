@@ -1,13 +1,16 @@
 import { PersonTypeInRequest } from '../enums/personTypeInRequest.enum';
 import {
+  CreateApproverReq,
   DeleteReq,
   GetAllRequestsReq,
   GetRequestByIdReq,
+  GetRequestBySerialNumberReq,
   GetRequestsByPersonIdReq,
   Request,
   RequestArray,
   RequestStatus,
   RequestType,
+  requestTypeToJSON,
   StageStatus,
   SuccessMessage,
   UpdateADStatusReq,
@@ -58,6 +61,13 @@ export class RequestRepository {
     }
   }
 
+  private turnIdOfApproverToString(approver: any) {
+    if (approver.id) {
+      approver.id = approver.id.toString();
+    }
+    return approver;
+  }
+
   private turnObjectIdsToStrings(document: any): void {
     //_id
     if (document._id) {
@@ -67,25 +77,23 @@ export class RequestRepository {
 
     //submittedBy
     if (document.submittedBy) {
-      document.submittedBy = document.submittedBy.toString();
+      this.turnIdOfApproverToString(document.submittedBy);
     }
 
     //commanderDecision
-    if (document.commanderDecision && document.commanderDecision.approverId) {
-      document.commanderDecision.approverId =
-        document.commanderDecision.approverId.toString();
+    if (document.commanderDecision && document.commanderDecision.approver) {
+      this.turnIdOfApproverToString(document.commanderDecision.approver);
     }
 
     //securityDecision
-    if (document.securityDecision && document.securityDecision.approverId) {
-      document.securityDecision.approverId =
-        document.securityDecision.approverId.toString();
+    if (document.securityDecision && document.securityDecision.approver) {
+      this.turnIdOfApproverToString(document.securityDecision.approver);
     }
 
     //commanders
     if (document.commanders) {
       document.commanders = document.commanders.map((commander: any) =>
-        commander.toString()
+        this.turnIdOfApproverToString(commander)
       );
     }
 
@@ -187,7 +195,7 @@ export class RequestRepository {
   ): Promise<Request> {
     try {
       const request: any = new RequestModel(createRequestReq);
-      request.type = type;
+      request.type = requestTypeToJSON(type);
       request.createdAt = new Date().getTime();
       const createdCreateRequest = await request.save();
       const document = createdCreateRequest.toObject();
@@ -228,6 +236,27 @@ export class RequestRepository {
           requests: [],
           totalCount: 0,
         };
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getRequestBySerialNumber(
+    getRequestBySerialNumberReq: GetRequestBySerialNumberReq
+  ): Promise<Request> {
+    try {
+      const request = await RequestModel.findOne({
+        serialNumber: getRequestBySerialNumberReq.serialNumber,
+      });
+      if (request) {
+        const document = request.toObject();
+        this.turnObjectIdsToStrings(document);
+        return document as Request;
+      } else {
+        throw new Error(
+          `A request with {serialNumber: ${getRequestBySerialNumberReq.serialNumber}} was not found!`
+        );
       }
     } catch (error) {
       throw error;
