@@ -14,18 +14,13 @@ service RequestService {
     rpc DeleteRoleRequest(DeleteRoleReq) returns (DeleteRoleRes){}
     rpc DisconectRoleFromEntityRequest(DisconectRoleFromEntityReq) returns (DisconectRoleFromEntityRes){}
     rpc UpdateRequest(UpdateReq) returns (Request){}
-
     rpc UpdateKartoffelStatus(UpdateKartoffelStatusReq) returns (Request){}
     rpc UpdateADStatus(UpdateADStatusReq) returns (Request){}
-
-
     rpc DeleteRequest(DeleteReq) returns (SuccessMessage){}
     rpc GetRequestsByCommander(GetRequestsByPersonIdReq) returns (RequestArray){}
     rpc GetRequestsSubmittedBy(GetRequestsByPersonIdReq) returns (RequestArray){}
     rpc GetAllRequests(GetAllRequestsReq) returns (RequestArray){}
     rpc GetRequestById(GetRequestByIdReq) returns (Request) {}
-
-
 }
 
 message UpdateKartoffelStatusReq{
@@ -40,7 +35,6 @@ message UpdateADStatusReq{
     StageStatus status = 2;
     string message = 3;
 }
-
 
 //Enums
 
