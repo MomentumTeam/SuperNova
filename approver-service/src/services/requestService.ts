@@ -33,9 +33,9 @@ export default class RequestService {
     return new Promise((resolve, reject) => {
       requestClient.UpdateRequest(updateReq, (err: any, request: Request) => {
         if (err) {
-          throw reject(err);
+          reject(err);
         } else {
-          return resolve(request);
+          resolve(request);
         }
       });
     });

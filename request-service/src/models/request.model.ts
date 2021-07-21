@@ -23,7 +23,7 @@ const RequestSchema = new Schema(
     approversComments: { type: String, default: '' },
     submittedBy: {
       type: {
-        id: { type: String, default: null },
+        id: { type: mongoose.Schema.Types.ObjectId, default: null },
         displayName: { type: String, default: null },
         identityCard: { type: String, default: null },
         personalNumber: { type: String, default: null },
@@ -39,7 +39,7 @@ const RequestSchema = new Schema(
       type: {
         approver: {
           type: {
-            id: { type: String, default: null },
+            id: { type: mongoose.Schema.Types.ObjectId, default: null },
             displayName: { type: String, default: null },
             identityCard: { type: String, default: null },
             personalNumber: { type: String, default: null },
@@ -66,7 +66,7 @@ const RequestSchema = new Schema(
       type: {
         approver: {
           type: {
-            id: { type: String, default: null },
+            id: { type: mongoose.Schema.Types.ObjectId, default: null },
             displayName: { type: String, default: null },
             identityCard: { type: String, default: null },
             personalNumber: { type: String, default: null },
@@ -91,7 +91,15 @@ const RequestSchema = new Schema(
     },
     commanders: [
       {
-        id: { type: String, default: null },
+        id: { type: mongoose.Schema.Types.ObjectId, default: null },
+        displayName: { type: String, default: null },
+        identityCard: { type: String, default: null },
+        personalNumber: { type: String, default: null },
+      },
+    ],
+    securityApprovers: [
+      {
+        id: { type: mongoose.Schema.Types.ObjectId, default: null },
         displayName: { type: String, default: null },
         identityCard: { type: String, default: null },
         personalNumber: { type: String, default: null },
