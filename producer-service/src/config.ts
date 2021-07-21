@@ -1,7 +1,10 @@
-export const host = process.env.PS_HOST || "0.0.0.0";
+export const host = process.env.PS_HOST || '0.0.0.0';
 export const port =
-  process.env.NODE_ENV === "production"
-    ? "8080"
-    : process.env.PS_PORT || "8080";
-export const queueApi = process.env.PS_QUEUE_API || "https://www.google.com";
-export const requestServiceUrl = process.env.PS_RS_URL || "0.0.0.0:8082";
+  process.env.NODE_ENV === 'production'
+    ? '8080'
+    : process.env.PS_PORT || '8083';
+export const queueApi = process.env.PS_QUEUE_API || 'https://www.google.com';
+export const requestServiceUrl = process.env.PS_RS_URL || '0.0.0.0:8081';
+export const devMode = process.env.PS_DEV_MODE
+  ? process.env.PS_DEV_MODE === 'true'
+  : true;

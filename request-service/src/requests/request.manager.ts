@@ -1,8 +1,9 @@
-import { PersonTypeInRequest } from "../enums/personTypeInRequest.enum";
+import { PersonTypeInRequest } from '../enums/personTypeInRequest.enum';
 import {
   DeleteReq,
   GetAllRequestsReq,
   GetRequestByIdReq,
+  GetRequestBySerialNumberReq,
   GetRequestsByPersonIdReq,
   Request,
   RequestArray,
@@ -11,8 +12,8 @@ import {
   SuccessMessage,
   UpdateADStatusReq,
   UpdateKartoffelStatusReq,
-} from "../interfaces/protoc/proto/requestService";
-import { RequestRepository } from "./request.repository";
+} from '../interfaces/protoc/proto/requestService';
+import { RequestRepository } from './request.repository';
 export class RequestManager {
   private requestRepository: RequestRepository;
   constructor() {
@@ -88,6 +89,18 @@ export class RequestManager {
   async getRequestById(getRequestByIdReq: GetRequestByIdReq): Promise<Request> {
     try {
       return await this.requestRepository.getRequestById(getRequestByIdReq);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getRequestBySerialNumber(
+    getRequestBySerialNumberReq: GetRequestBySerialNumberReq
+  ) {
+    try {
+      return await this.requestRepository.getRequestBySerialNumber(
+        getRequestBySerialNumberReq
+      );
     } catch (error) {
       throw error;
     }

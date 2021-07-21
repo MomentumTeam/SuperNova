@@ -7,17 +7,29 @@ import {
   StageStatus,
 } from '../interfaces/protoc/proto/requestService';
 const { Schema } = mongoose;
+import autoIncrement from 'mongoose-auto-increment';
 
-export const RequestSchema = new Schema(
+autoIncrement.initialize(connection);
+
+const RequestSchema = new Schema(
   {
     createdAt: { type: Number, default: new Date().getTime() },
     updatedAt: { type: Number, default: new Date().getTime() },
     type: {
-      type: Number,
+      type: String,
       enum: RequestType,
     },
-
-    submittedBy: mongoose.Schema.Types.ObjectId,
+    comments: { type: String, default: '' },
+    approversComments: { type: String, default: '' },
+    submittedBy: {
+      type: {
+        id: { type: mongoose.Schema.Types.ObjectId, default: null },
+        displayName: { type: String, default: null },
+        identityCard: { type: String, default: null },
+        personalNumber: { type: String, default: null },
+      },
+      default: null,
+    },
     status: {
       type: String,
       enum: RequestStatus,
@@ -25,11 +37,24 @@ export const RequestSchema = new Schema(
     },
     commanderDecision: {
       type: {
-        approverId: {
-          type: mongoose.Schema.Types.ObjectId,
+        approver: {
+          type: {
+            id: { type: mongoose.Schema.Types.ObjectId, default: null },
+            displayName: { type: String, default: null },
+            identityCard: { type: String, default: null },
+            personalNumber: { type: String, default: null },
+          },
           default: null,
         },
-        approverDecision: {
+        reason: {
+          type: String,
+          default: '',
+        },
+        date: {
+          type: Number,
+          default: new Date().getTime(),
+        },
+        decision: {
           type: String,
           enum: Decision,
           defualt: Decision.DECISION_UNKNOWN,
@@ -39,11 +64,24 @@ export const RequestSchema = new Schema(
     },
     securityDecision: {
       type: {
-        approverId: {
-          type: mongoose.Schema.Types.ObjectId,
+        approver: {
+          type: {
+            id: { type: mongoose.Schema.Types.ObjectId, default: null },
+            displayName: { type: String, default: null },
+            identityCard: { type: String, default: null },
+            personalNumber: { type: String, default: null },
+          },
           default: null,
         },
-        approverDecision: {
+        reason: {
+          type: String,
+          default: '',
+        },
+        date: {
+          type: Number,
+          default: new Date().getTime(),
+        },
+        decision: {
           type: String,
           enum: Decision,
           defualt: Decision.DECISION_UNKNOWN,
@@ -51,7 +89,22 @@ export const RequestSchema = new Schema(
       },
       default: null,
     },
-    commanders: [mongoose.Schema.Types.ObjectId],
+    commanders: [
+      {
+        id: { type: mongoose.Schema.Types.ObjectId, default: null },
+        displayName: { type: String, default: null },
+        identityCard: { type: String, default: null },
+        personalNumber: { type: String, default: null },
+      },
+    ],
+    securityApprovers: [
+      {
+        id: { type: mongoose.Schema.Types.ObjectId, default: null },
+        displayName: { type: String, default: null },
+        identityCard: { type: String, default: null },
+        personalNumber: { type: String, default: null },
+      },
+    ],
     kartoffelStatus: {
       status: {
         type: String,
@@ -124,6 +177,13 @@ export const RequestSchema = new Schema(
   },
   { strict: false }
 );
+
+RequestSchema.plugin(autoIncrement.plugin, {
+  model: 'Request',
+  field: 'serialNumber',
+  startAt: 1,
+  incrementBy: 1,
+});
 
 RequestSchema.pre<any>('save', function (next) {
   const func: any = (object: any) => {

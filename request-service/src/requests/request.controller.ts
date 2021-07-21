@@ -35,6 +35,27 @@ export function createRequestFuncByType(type: RequestType) {
   return func;
 }
 
+export async function getRequestBySerialNumber(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    const requestsResponse = await requestManager.getRequestBySerialNumber(
+      call.request
+    );
+    callback(null, requestsResponse);
+  } catch (error) {
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
 export async function updateKartoffelStatus(
   call: any,
   callback: any

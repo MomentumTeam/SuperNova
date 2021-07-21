@@ -1,14 +1,19 @@
 import { PersonTypeInRequest } from '../enums/personTypeInRequest.enum';
 import {
+  Decision,
+  decisionFromJSON,
   DeleteReq,
   GetAllRequestsReq,
   GetRequestByIdReq,
+  GetRequestBySerialNumberReq,
   GetRequestsByPersonIdReq,
   Request,
   RequestArray,
   RequestStatus,
   RequestType,
+  requestTypeToJSON,
   StageStatus,
+  stageStatusFromJSON,
   SuccessMessage,
   UpdateADStatusReq,
   UpdateKartoffelStatusReq,
@@ -58,6 +63,13 @@ export class RequestRepository {
     }
   }
 
+  private turnIdOfApproverToString(approver: any) {
+    if (approver.id) {
+      approver.id = approver.id.toString();
+    }
+    return approver;
+  }
+
   private turnObjectIdsToStrings(document: any): void {
     //_id
     if (document._id) {
@@ -67,26 +79,31 @@ export class RequestRepository {
 
     //submittedBy
     if (document.submittedBy) {
-      document.submittedBy = document.submittedBy.toString();
+      this.turnIdOfApproverToString(document.submittedBy);
     }
 
     //commanderDecision
-    if (document.commanderDecision && document.commanderDecision.approverId) {
-      document.commanderDecision.approverId =
-        document.commanderDecision.approverId.toString();
+    if (document.commanderDecision && document.commanderDecision.approver) {
+      this.turnIdOfApproverToString(document.commanderDecision.approver);
     }
 
     //securityDecision
-    if (document.securityDecision && document.securityDecision.approverId) {
-      document.securityDecision.approverId =
-        document.securityDecision.approverId.toString();
+    if (document.securityDecision && document.securityDecision.approver) {
+      this.turnIdOfApproverToString(document.securityDecision.approver);
     }
 
     //commanders
     if (document.commanders) {
-      document.commanders = document.commanders.map((commander: any) =>
-        commander.toString()
-      );
+      document.commanders.forEach((commander: any) => {
+        this.turnIdOfApproverToString(commander);
+      });
+    }
+
+    //securityApprovers
+    if (document.securityApprovers) {
+      document.securityApprovers.forEach((securityApprover: any) => {
+        this.turnIdOfApproverToString(securityApprover);
+      });
     }
 
     if (document.kartoffelProperties && document.kartoffelProperties.id) {
@@ -110,20 +127,194 @@ export class RequestRepository {
     }
   }
 
-  async updateRequest(updateReq: UpdateReq): Promise<Request> {
+  async updateRequest(updateReq: any): Promise<Request> {
+    //TODO CHECK MORE
     try {
       let requestUpdate: any = { ...updateReq.requestProperties };
-      if (requestUpdate.commanders && requestUpdate.commanders.length == 0) {
-        delete requestUpdate['commanders'];
-      }
       this.cleanUnderscoreFields(requestUpdate);
-      const document: any = await RequestModel.findOneAndUpdate(
+
+      let commanderApproverIdInUpdate: any = undefined,
+        securityApproverIdInUpdate: any = undefined,
+        commanderApproverDecisionInUpdate: Decision = Decision.DECISION_UNKNOWN,
+        securityApproverDecisionInUpdate: Decision = Decision.DECISION_UNKNOWN;
+      let commanderApproverDecisionInDocument: Decision =
+          Decision.DECISION_UNKNOWN,
+        securityApproverDecisionInDocument: Decision =
+          Decision.DECISION_UNKNOWN;
+
+      let kartoffelStageStatusInUpdate: any = undefined;
+      let adStageStatusInUpdate: any = undefined;
+      let kartoffelStageStatusInDocument: StageStatus =
+        StageStatus.STAGE_UNKNOWN;
+      let adStageStatusInDocument: StageStatus = StageStatus.STAGE_UNKNOWN;
+
+      if (
+        updateReq &&
+        updateReq.requestProperties &&
+        updateReq.requestProperties.kartoffelStatus &&
+        updateReq.requestProperties.kartoffelStatus.status
+      ) {
+        // kartoffel status in update
+        kartoffelStageStatusInUpdate = stageStatusFromJSON(
+          updateReq.requestProperties.kartoffelStatus.status
+        );
+      }
+
+      if (
+        updateReq &&
+        updateReq.requestProperties &&
+        updateReq.requestProperties.adStatus &&
+        updateReq.requestProperties.adStatus.status
+      ) {
+        // ad status in update
+        adStageStatusInUpdate = stageStatusFromJSON(
+          updateReq.requestProperties.adStatus.status
+        );
+      }
+
+      if (
+        updateReq &&
+        updateReq.requestProperties &&
+        updateReq.requestProperties.commanderDecision &&
+        updateReq.requestProperties.commanderDecision.approver
+      ) {
+        // commander decision
+        commanderApproverIdInUpdate =
+          updateReq.requestProperties.commanderDecision.approver.id;
+        commanderApproverDecisionInUpdate = decisionFromJSON(
+          updateReq.requestProperties.commanderDecision.decision
+        );
+      }
+
+      if (
+        updateReq &&
+        updateReq.requestProperties &&
+        updateReq.requestProperties.securityDecision &&
+        updateReq.requestProperties.securityDecision.approver
+      ) {
+        // security decision
+        securityApproverIdInUpdate =
+          updateReq.requestProperties.securityDecision.approver.id;
+        securityApproverDecisionInUpdate = decisionFromJSON(
+          updateReq.requestProperties.securityDecision.decision
+        );
+      }
+
+      if (
+        commanderApproverIdInUpdate ||
+        securityApproverIdInUpdate ||
+        kartoffelStageStatusInUpdate ||
+        adStageStatusInUpdate
+      ) {
+        //update includes decision update
+        const documentBefore = await RequestModel.findOne({
+          _id: updateReq.id,
+        });
+        if (documentBefore) {
+          const documentBeforeObj: any = documentBefore.toObject();
+          this.turnObjectIdsToStrings(documentBeforeObj);
+
+          if (
+            documentBeforeObj.kartoffelStatus &&
+            documentBeforeObj.kartoffelStatus.status
+          ) {
+            // kartoffel status in document
+            kartoffelStageStatusInDocument = stageStatusFromJSON(
+              documentBeforeObj.kartoffelStatus.status
+            );
+          }
+
+          if (documentBeforeObj.adStatus && documentBeforeObj.adStatus.status) {
+            // ad status in document
+            adStageStatusInDocument = stageStatusFromJSON(
+              documentBeforeObj.adStatus.status
+            );
+          }
+
+          if (
+            (kartoffelStageStatusInDocument === StageStatus.STAGE_DONE ||
+              kartoffelStageStatusInUpdate === StageStatus.STAGE_DONE) &&
+            (adStageStatusInDocument === StageStatus.STAGE_DONE ||
+              adStageStatusInUpdate === StageStatus.STAGE_DONE)
+          ) {
+            requestUpdate.status = RequestStatus.DONE;
+          } else if (
+            kartoffelStageStatusInDocument === StageStatus.STAGE_FAILED ||
+            kartoffelStageStatusInUpdate === StageStatus.STAGE_FAILED ||
+            adStageStatusInDocument === StageStatus.STAGE_FAILED ||
+            adStageStatusInUpdate === StageStatus.STAGE_FAILED
+          ) {
+            requestUpdate.status = RequestStatus.FAILED;
+          }
+
+          if (
+            (commanderApproverIdInUpdate &&
+              (!documentBeforeObj.commanders ||
+                !documentBeforeObj.commanders.includes(
+                  (commander: any) =>
+                    commander.id === commanderApproverIdInUpdate
+                ))) ||
+            (securityApproverIdInUpdate &&
+              (!documentBeforeObj.securityApprovers ||
+                (securityApproverIdInUpdate &&
+                  !documentBeforeObj.securityApprovers.includes(
+                    (securityApprover: any) =>
+                      securityApprover.id === securityApproverIdInUpdate
+                  ))))
+          ) {
+            //if one of the approvers does not exist in commanders or securityApprovers, so it is not allowed
+            throw new Error(
+              `Commander or security approver is not allowed to decide on this request!`
+            );
+          }
+
+          if (
+            documentBeforeObj.commanderDecision &&
+            documentBeforeObj.commanderDecision.decision
+          ) {
+            // commander decision in document
+            commanderApproverDecisionInDocument = decisionFromJSON(
+              documentBeforeObj.commanderDecision.decision
+            );
+          }
+
+          if (
+            documentBeforeObj.securityDecision &&
+            documentBeforeObj.securityDecision.decision
+          ) {
+            // commander decision in document
+            securityApproverDecisionInDocument = decisionFromJSON(
+              documentBeforeObj.securityDecision.decision
+            );
+          }
+
+          if (
+            commanderApproverDecisionInUpdate === Decision.DENIED ||
+            securityApproverDecisionInUpdate === Decision.DENIED
+          ) {
+            requestUpdate.status = RequestStatus.DECLINED;
+          } else if (
+            (commanderApproverDecisionInUpdate === Decision.APPROVED ||
+              commanderApproverDecisionInDocument === Decision.APPROVED) &&
+            (securityApproverDecisionInUpdate === Decision.APPROVED ||
+              securityApproverDecisionInDocument === Decision.APPROVED)
+          ) {
+            requestUpdate.status = RequestStatus.IN_PROGRESS;
+          }
+        } else {
+          throw new Error(
+            `A request with {_id: ${updateReq.id}} was not found!`
+          );
+        }
+      }
+
+      const documentAfter: any = await RequestModel.findOneAndUpdate(
         { _id: updateReq.id },
         { $set: requestUpdate },
         { new: true }
       );
-      if (document) {
-        const documentObj = document.toObject();
+      if (documentAfter) {
+        const documentObj = documentAfter.toObject();
         this.turnObjectIdsToStrings(documentObj);
         return documentObj as Request;
       } else {
@@ -187,7 +378,7 @@ export class RequestRepository {
   ): Promise<Request> {
     try {
       const request: any = new RequestModel(createRequestReq);
-      request.type = type;
+      request.type = requestTypeToJSON(type);
       request.createdAt = new Date().getTime();
       const createdCreateRequest = await request.save();
       const document = createdCreateRequest.toObject();
@@ -228,6 +419,27 @@ export class RequestRepository {
           requests: [],
           totalCount: 0,
         };
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getRequestBySerialNumber(
+    getRequestBySerialNumberReq: GetRequestBySerialNumberReq
+  ): Promise<Request> {
+    try {
+      const request = await RequestModel.findOne({
+        serialNumber: getRequestBySerialNumberReq.serialNumber,
+      });
+      if (request) {
+        const document = request.toObject();
+        this.turnObjectIdsToStrings(document);
+        return document as Request;
+      } else {
+        throw new Error(
+          `A request with {serialNumber: ${getRequestBySerialNumberReq.serialNumber}} was not found!`
+        );
       }
     } catch (error) {
       throw error;
@@ -292,4 +504,7 @@ export class RequestRepository {
       throw error;
     }
   }
+}
+function decisionFromJson(decision: any) {
+  throw new Error('Function not implemented.');
 }

@@ -1,35 +1,17 @@
-import path from "path";
-import * as grpc from "@grpc/grpc-js";
-import * as protoLoader from "@grpc/proto-loader";
-import * as C from "../config";
+import path from 'path';
+import * as grpc from '@grpc/grpc-js';
+import * as protoLoader from '@grpc/proto-loader';
+import * as C from '../config';
 import {
   GetRequestByIdReq,
   Request,
   RequestReq,
   RequestType,
-} from "../interfaces/protoc/proto/requestService";
+} from '../interfaces/protoc/proto/requestService';
 
-const PROTO_PATH = __dirname.includes("dist")
-  ? path.join(__dirname, "../../../proto/requestService.proto")
-  : path.join(__dirname, "../../proto/requestService.proto");
-
-const packageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(
-  PROTO_PATH,
-  {
-    keepCase: true,
-    longs: String,
-    enums: String,
-    defaults: true,
-    oneofs: true,
-  }
-);
-const protoDescriptor: any =
-  grpc.loadPackageDefinition(packageDefinition).RequestService;
-
-const client: any = new protoDescriptor.RequestService(
-  C.requestServiceUrl,
-  grpc.credentials.createInsecure()
-);
+const PROTO_PATH = __dirname.includes('dist')
+  ? path.join(__dirname, '../../../proto/requestService.proto')
+  : path.join(__dirname, '../../proto/requestService.proto');
 
 export class RequestService {
   client: any;

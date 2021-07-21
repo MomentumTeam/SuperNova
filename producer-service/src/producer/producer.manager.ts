@@ -1,14 +1,13 @@
 import {
   ProduceRequest,
   SuccessMessage,
-} from "../interfaces/protoc/proto/producerService";
+} from '../interfaces/protoc/proto/producerService';
 import {
-  ADParams,
   Request,
   RequestType,
-} from "../interfaces/protoc/proto/requestService";
-import { RequestService } from "../services/request.service";
-import { ProducerRepository } from "./producer.repository";
+} from '../interfaces/protoc/proto/requestService';
+import { RequestService } from '../services/request.service';
+import { ProducerRepository } from './producer.repository';
 
 export class RequestManager {
   private producerRepository: ProducerRepository;
@@ -22,7 +21,7 @@ export class RequestManager {
     const message: any = {
       requestId: request.id,
       type: request.type,
-      domain: "domain1",
+      domain: 'domain1',
     };
     const kartoffelParams: any = request.kartoffelParams;
     switch (request.type) {
@@ -127,7 +126,7 @@ export class RequestManager {
     const message: any = {
       requestId: request.id,
       type: request.type,
-      domain: "domain1",
+      domain: 'domain1',
     };
     const adParams: any = request.adParams;
     switch (request.type) {
@@ -217,7 +216,7 @@ export class RequestManager {
 
       return {
         success: true,
-        message: "Message pushed to Kartoffel queue successfully",
+        message: 'Message pushed to Kartoffel queue successfully',
       };
     } catch (error) {
       throw error;
@@ -236,7 +235,7 @@ export class RequestManager {
 
       return {
         success: true,
-        message: "Message pushed to AD queue successfully",
+        message: 'Message pushed to AD queue successfully',
       };
     } catch (error) {
       throw error;
