@@ -16,6 +16,7 @@ import {
   DeleteOGRes,
   DeleteRoleRes,
   DisconectRoleFromEntityRes,
+  StageStatus
 } from '../interfaces/protoc/proto/requestService';
 
 const PROTO_PATH = __dirname.includes('dist')
@@ -40,13 +41,6 @@ const requestsClient: any = new protoDescriptor.RequestService(
   config.requestServiceUrl,
   grpc.credentials.createInsecure()
 );
-
-enum StageStatus {
-  UNKNOWN = 'UNKNOWN',
-  IN_PROGRESS = 'IN_PROGRESS',
-  DONE = 'DONE',
-  FAILED = 'FAILED',
-}
 
 export default class RequestsController {
   static async getRequestById(req: Request, res: Response) {
@@ -139,12 +133,12 @@ export default class RequestsController {
     console.log('UpdateADStatus');
 
     const status: string = req.body.Status;
-    let stageStatus: StageStatus = StageStatus.IN_PROGRESS;
+    let stageStatus: StageStatus = StageStatus.STAGE_IN_PROGRESS;
 
     if (status === 'true') {
-      stageStatus = StageStatus.DONE;
+      stageStatus = StageStatus.STAGE_DONE;
     } else if (status === 'false') {
-      stageStatus = StageStatus.FAILED;
+      stageStatus = StageStatus.STAGE_FAILED;
     }
 
     requestsClient.UpdateADStatus(

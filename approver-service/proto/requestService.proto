@@ -1,5 +1,5 @@
 syntax = "proto3";
-// import "/home/barak/Desktop/SuperNova/request-service/proto/approverService.proto";
+// import "/home/liora/Desktop/SuperNova/request-service/proto/approverService.proto";
 // import "proto/approverService.proto";
 package RequestService;
 
