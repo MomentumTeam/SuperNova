@@ -7,6 +7,7 @@ import {
   Entity,
   SearchEntitiesByFullNameRequest,
   GetEntityByRoleIdRequest,
+  GetEntityByMongoIdRequest,
 } from '../interfaces/protoc/proto/kartoffelService';
 
 const PROTO_PATH = __dirname.includes('dist')
@@ -58,6 +59,24 @@ export default class KartoffelService {
     return new Promise((resolve, reject) => {
       kartoffelClient.GetEntityByRoleId(
         getEntityByRoleId,
+        (err: any, entity: Entity) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(entity);
+          }
+        }
+      );
+    });
+  }
+
+  static async getEntityByMongoId(
+    getEntityByMongoId: GetEntityByMongoIdRequest
+  ): Promise<Entity> {
+    console.log('getEntityByMongoId');
+    return new Promise((resolve, reject) => {
+      kartoffelClient.GetEntityByMongoId(
+        getEntityByMongoId,
         (err: any, entity: Entity) => {
           if (err) {
             reject(err);
