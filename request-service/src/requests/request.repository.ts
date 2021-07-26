@@ -19,7 +19,6 @@ import {
   SuccessMessage,
   UpdateADStatusReq,
   UpdateKartoffelStatusReq,
-  UpdateReq,
 } from '../interfaces/protoc/proto/requestService';
 import { RequestModel } from '../models/request.model';
 

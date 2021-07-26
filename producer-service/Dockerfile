@@ -7,10 +7,10 @@ RUN apk update
 WORKDIR /app
 
 # copy configs to /app folder
-COPY package*.json ./
-COPY tsconfig.json ./
+COPY ./producer-service/package*.json ./
+COPY ./producer-service/tsconfig.json ./
 # copy source code to /app/src folder
-COPY src /app/src
+COPY ./producer-service/src /app/src
 COPY proto /app/proto
 
 # check files list

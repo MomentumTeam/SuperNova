@@ -7,11 +7,11 @@ RUN apk update
 WORKDIR /app
 
 # copy configs to /app folder
-COPY package*.json ./
-COPY tsconfig.json ./
+COPY ./authentication-service/package*.json ./
+COPY ./authentication-service/tsconfig.json ./
 # copy source code to /app/src folder
-COPY src /app/src
-COPY 401 /app/401
+COPY ./authentication-service/src /app/src
+COPY ./authentication-service/401 /app/401
 
 # check files list
 RUN ls -a

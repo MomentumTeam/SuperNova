@@ -1,4 +1,3 @@
-import path from 'path';
 import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 import * as C from './config';
@@ -8,10 +7,9 @@ import {
   getNotificationsByOwnerId,
   markAsRead,
 } from './notification/notification.controller';
+import { findPath } from './utils/path';
 
-const PROTO_PATH = __dirname.includes('dist')
-  ? path.join(__dirname, '../../proto/notificationService.proto')
-  : path.join(__dirname, '../proto/notificationService.proto');
+const PROTO_PATH = `${findPath('proto')}/notificationService.proto`;
 
 export class Server {
   private server: grpc.Server;

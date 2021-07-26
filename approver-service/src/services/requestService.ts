@@ -1,12 +1,10 @@
 import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
-import path from 'path';
 import * as config from '../config';
 import { Request, UpdateReq } from '../interfaces/protoc/proto/requestService';
+import { findPath } from '../utils/path';
 
-const PROTO_PATH = __dirname.includes('dist')
-  ? path.join(__dirname, '../../../proto/requestService.proto')
-  : path.join(__dirname, '../../proto/requestService.proto');
+const PROTO_PATH = `${findPath('proto')}/requestService.proto`;
 
 const packageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(
   PROTO_PATH,
