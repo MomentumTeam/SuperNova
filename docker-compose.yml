@@ -97,6 +97,18 @@ services:
     environment:
       - NS_MONGO_URL=mongodb://mongodb:27017/supernova
 
+  # approver-service:
+  #   image: approver-service
+  #   build: ./approver-service/
+  #   env_file:
+  #     - ./supernova.env
+  #   ports:
+  #     - '8085:8080'
+  #   depends_on:
+  #     - request-service
+  #   environment:
+  #     - RS_MONGO_URL=mongodb://mongodb:27017/supernova
+
   authentication-service:
     image: authentication-service
     build: ./authentication-service/

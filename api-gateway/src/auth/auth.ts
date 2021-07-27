@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import * as config from '../config';
+import { approverClient } from '../approver/approver.controller';
+import { GetUserTypeRes } from '../interfaces/protoc/proto/approverService';
 
 module.exports = (req: any, res: Response, next: NextFunction) => {
   try {
@@ -28,6 +30,8 @@ module.exports = (req: any, res: Response, next: NextFunction) => {
           } else {
             console.log('decoded', decoded);
             req.user = decoded;
+            const response = getUserType(req.user.id);
+            req.user['userType'] = response;
             next();
           }
         }
@@ -46,6 +50,8 @@ module.exports = (req: any, res: Response, next: NextFunction) => {
           } else {
             console.log('decoded', decoded);
             req.user = decoded;
+            const response = getUserType(req.user.id);
+            req.user['userType'] = response;
             next();
           }
         });
@@ -62,3 +68,19 @@ module.exports = (req: any, res: Response, next: NextFunction) => {
     });
   }
 };
+
+function getUserType(id: string) {
+  approverClient.GetUserType(
+    //get userType
+    { entityId: id },
+    (err: any, response: GetUserTypeRes) => {
+      if (err) {
+        return {
+          entityId: id,
+          type: 'SOLDIER', //default value incase of error
+        };
+      }
+      return response;
+    }
+  );
+}

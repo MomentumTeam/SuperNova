@@ -28,7 +28,7 @@ const packageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(
 const protoDescriptor: any =
   grpc.loadPackageDefinition(packageDefinition).ApproverService;
 
-const approverClient: any = new protoDescriptor.ApproverService(
+export const approverClient: any = new protoDescriptor.ApproverService(
   config.approverServiceUrl,
   grpc.credentials.createInsecure()
 );
@@ -83,7 +83,7 @@ export default class ApproverController {
     console.log('GetUserType');
 
     approverClient.GetUserType(
-      { entityId: req.user.id },
+      { entityId: req.query.id },
       (err: any, response: GetUserTypeRes) => {
         if (err) {
           res.send(err);
