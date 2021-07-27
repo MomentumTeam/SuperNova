@@ -16,7 +16,7 @@ import {
   DeleteOGRes,
   DeleteRoleRes,
   DisconectRoleFromEntityRes,
-  StageStatus
+  StageStatus,
 } from '../interfaces/protoc/proto/requestService';
 
 const PROTO_PATH = __dirname.includes('dist')
@@ -57,18 +57,26 @@ export default class RequestsController {
     );
   }
 
-  static async getAllRequests(req: Request, res: Response) {
+  static async getAllRequests(req: any, res: Response) {
+    //only SECURITY Approvers can see all requests.
     console.log('GetAllRequests');
 
-    requestsClient.GetAllRequests(
-      { from: req.query.from, to: req.query.to },
-      (err: any, response: RequestArray) => {
-        if (err) {
-          res.send(err);
+    if (
+      req.user.userType.type === 'SECURITY' ||
+      req.user.userType.type === 'SUPER_SECURITY'
+    ) {
+      requestsClient.GetAllRequests(
+        { from: req.query.from, to: req.query.to },
+        (err: any, response: RequestArray) => {
+          if (err) {
+            res.send(err);
+          }
+          res.send(response);
         }
-        res.send(response);
-      }
-    );
+      );
+    } else {
+      res.send('You dont have access to see all requests!');
+    }
   }
 
   static async getMyRequests(req: any, res: Response) {

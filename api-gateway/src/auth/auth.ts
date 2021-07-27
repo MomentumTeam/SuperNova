@@ -20,7 +20,7 @@ module.exports = (req: any, res: Response, next: NextFunction) => {
       jwt.verify(
         authorization as string,
         config.authentication.secret,
-        function (err, decoded) {
+        async function (err, decoded) {
           if (err) {
             // console.log('err', err.message)
             console.log('err');
@@ -30,8 +30,8 @@ module.exports = (req: any, res: Response, next: NextFunction) => {
           } else {
             console.log('decoded', decoded);
             req.user = decoded;
-            const response = getUserType(req.user.id);
-            req.user['userType'] = response;
+            const userType = await getUserType(req.user.id);
+            req.user['userType'] = userType;
             next();
           }
         }
@@ -40,7 +40,7 @@ module.exports = (req: any, res: Response, next: NextFunction) => {
       if (cookie) {
         console.log('cookie');
 
-        jwt.verify(cookie as string, 'superNova', function (err, decoded) {
+        jwt.verify(cookie as string, 'superNova', async function (err, decoded) {
           if (err) {
             // console.log('err', err.message)
             console.log('err');
@@ -50,8 +50,8 @@ module.exports = (req: any, res: Response, next: NextFunction) => {
           } else {
             console.log('decoded', decoded);
             req.user = decoded;
-            const response = getUserType(req.user.id);
-            req.user['userType'] = response;
+            const userType = await getUserType(req.user.id);
+            req.user['userType'] = userType;
             next();
           }
         });
@@ -69,18 +69,27 @@ module.exports = (req: any, res: Response, next: NextFunction) => {
   }
 };
 
+
 function getUserType(id: string) {
+  console.log('getUserType')
+
+  return new Promise((resolve, reject) => {
+
   approverClient.GetUserType(
     //get userType
     { entityId: id },
     (err: any, response: GetUserTypeRes) => {
       if (err) {
-        return {
+        console.log('err', err)
+        resolve({
           entityId: id,
           type: 'SOLDIER', //default value incase of error
-        };
+        }) ;
       }
-      return response;
+      console.log('response', response)
+      resolve(response);
     }
   );
+});
+
 }
