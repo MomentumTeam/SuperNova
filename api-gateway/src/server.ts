@@ -33,6 +33,9 @@ export class Server {
     );
 
     // this.app.use('/api', mainRouter); //For swagger usage
+    this.app.get('/isAlive', (req, res) => {
+      return res.send('alive');
+    });
     this.app.use('/api', auth, mainRouter);
     this.app.get('/api/auth/login', (req, res) => {
       res.redirect(`http://${config.authentication.authServiceUrl}/auth/login`);

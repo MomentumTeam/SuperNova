@@ -1,15 +1,14 @@
-import path from "path";
-import * as grpc from "@grpc/grpc-js";
-import * as protoLoader from "@grpc/proto-loader";
-import { getSpikeToken } from "./spike/spike.controller";
-import fs from "fs";
-import axios from "axios";
-import * as C from "./config";
-import { logger } from "./logger";
+import path from 'path';
+import * as grpc from '@grpc/grpc-js';
+import * as protoLoader from '@grpc/proto-loader';
+import { getSpikeToken } from './spike/spike.controller';
+import fs from 'fs';
+import axios from 'axios';
+import * as C from './config';
+import { logger } from './logger';
+import { findPath } from '../utils/path';
 
-const PROTO_PATH = __dirname.includes("dist")
-  ? path.join(__dirname, "../../proto/spikeService.proto")
-  : path.join(__dirname, "../proto/spikeService.proto");
+const PROTO_PATH = `${findPath('proto')}/spikeService.proto`;
 
 export class Server {
   private spikeKey: Buffer;

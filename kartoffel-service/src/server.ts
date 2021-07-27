@@ -26,11 +26,9 @@ import {
   getPictureByEntityId,
   getRoleByRoleId,
 } from './kartoffel/kartoffel.controller';
+import { findPath } from './utils/path';
 
-const PROTO_PATH = __dirname.includes('dist')
-  ? path.join(__dirname, '../../proto/kartoffelService.proto')
-  : path.join(__dirname, '../proto/kartoffelService.proto');
-
+const PROTO_PATH = `${findPath('proto')}/kartoffelService.proto`;
 export class Server {
   private server: grpc.Server;
   constructor() {

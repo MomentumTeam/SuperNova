@@ -16,10 +16,9 @@ import {
   updateCommanderDecision,
   updateSecurityDecision,
 } from './approver/approver.controller';
+import { findPath } from './utils/path';
 
-const PROTO_PATH = __dirname.includes('dist')
-  ? path.join(__dirname, '../../proto/approverService.proto')
-  : path.join(__dirname, '../proto/approverService.proto');
+const PROTO_PATH = `${findPath('proto')}/approverService.proto`;
 
 export class Server {
   private server: grpc.Server;
