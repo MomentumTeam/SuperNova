@@ -1,11 +1,10 @@
-import path from "path";
-import * as grpc from "@grpc/grpc-js";
-import * as protoLoader from "@grpc/proto-loader";
-import * as C from "../config";
+import path from 'path';
+import * as grpc from '@grpc/grpc-js';
+import * as protoLoader from '@grpc/proto-loader';
+import * as C from '../config';
+import { findPath } from '../utils/path';
 
-const PROTO_PATH = __dirname.includes("dist")
-  ? path.join(__dirname, "../../../proto/spikeService.proto")
-  : path.join(__dirname, "../../proto/spikeService.proto");
+const PROTO_PATH = `${findPath('proto')}/spikeService.proto`;
 
 const packageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(
   PROTO_PATH,

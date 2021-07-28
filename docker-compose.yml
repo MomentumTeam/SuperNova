@@ -41,7 +41,9 @@ services:
 
   spike-service:
     image: spike-service
-    build: ./spike-service/
+    build:
+      context: .
+      dockerfile: ./spike-service/Dockerfile
     env_file:
       - ./supernova.env
     ports:
@@ -55,7 +57,9 @@ services:
 
   request-service:
     image: request-service
-    build: ./request-service/
+    build:
+      context: .
+      dockerfile: ./request-service/Dockerfile
     env_file:
       - ./supernova.env
     ports:
@@ -67,7 +71,9 @@ services:
 
   kartoffel-service:
     image: kartoffel-service
-    build: ./kartoffel-service/
+    build:
+      context: .
+      dockerfile: ./kartoffel-service/Dockerfile
     env_file:
       - ./supernova.env
     ports:
@@ -79,17 +85,25 @@ services:
 
   producer-service:
     image: producer-service
-    build: ./producer-service/
+    build:
+      context: .
+      dockerfile: ./producer-service/Dockerfile
     env_file:
       - ./supernova.env
     ports:
       - '8083:8080'
     depends_on:
       - kartoffel-service
+    environment:
+      - PS_QUEUE_API_URL=https://www.google.com
+      - PS_RS_URL=request-service:8080
+      - PS_DEV_MODE=true
 
   notification-service:
     image: notification-service
-    build: ./notification-service/
+    build:
+      context: .
+      dockerfile: ./notification-service/Dockerfile
     env_file:
       - ./supernova.env
     ports:
@@ -97,21 +111,27 @@ services:
     environment:
       - NS_MONGO_URL=mongodb://mongodb:27017/supernova
 
-  # approver-service:
-  #   image: approver-service
-  #   build: ./approver-service/
-  #   env_file:
-  #     - ./supernova.env
-  #   ports:
-  #     - '8085:8080'
-  #   depends_on:
-  #     - request-service
-  #   environment:
-  #     - RS_MONGO_URL=mongodb://mongodb:27017/supernova
+  approver-service:
+    image: approver-service
+    build:
+      context: .
+      dockerfile: ./approver-service/Dockerfile
+    env_file:
+      - ./supernova.env
+    ports:
+      - '8085:8080'
+    depends_on:
+      - request-service
+    environment:
+      - APS_MONGO_URL=mongodb://mongodb:27017/supernova
+      - APS_KS_URL=kartoffel-service:8080
+      - APS_RS_URL=request-service:8080
 
   authentication-service:
     image: authentication-service
-    build: ./authentication-service/
+    build:
+      context: .
+      dockerfile: ./authentication-service/Dockerfile
     env_file:
       - ./supernova.env
     ports:
@@ -120,19 +140,21 @@ services:
       - AS_SHRAGA_URL=https://shraga-prod.northeurope.cloudapp.azure.com
       - AS_CLIENT_ENDPOINT=http://localhost:3000
 
-  # api-gateway:
-  #   image: api-gateway
-  #   build: ./api-gateway/
-  #   env_file:
-  #     - ./supernova.env
-  #   ports:
-  #     - '2000:8080'
-  #   depends_on:
-  #     - kartoffel-service
-  #     - producer-service
-  #     - request-service
-  #   environment:
-  #     - GATEWAY_KS_URL=kartoffel-service:8080
-  #     - GATEWAY_RS_URL=request-service:8080
-  #     - GATEWAY_PS_URL=producer-service:8080
-  #     - GATEWAY_AS_URL=http://localhost:9000
+  api-gateway:
+    image: api-gateway
+    build:
+      context: .
+      dockerfile: ./api-gateway/Dockerfile
+    env_file:
+      - ./supernova.env
+    ports:
+      - '2000:8080'
+    depends_on:
+      - kartoffel-service
+      - producer-service
+      - request-service
+    environment:
+      - GATEWAY_KS_URL=kartoffel-service:8080
+      - GATEWAY_RS_URL=request-service:8080
+      - GATEWAY_PS_URL=producer-service:8080
+      - GATEWAY_AS_URL=http://localhost:9000

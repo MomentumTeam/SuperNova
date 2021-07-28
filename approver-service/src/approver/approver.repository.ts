@@ -20,6 +20,7 @@ import RequestService from '../services/requestService';
 import {
   getApproverArrayByEntityArray,
   getMongoApproverArray,
+  hasCommanderRank,
   turnObjectIdsToStrings,
 } from '../utils/approver.utils';
 
@@ -86,7 +87,17 @@ export class ApproverRepository {
           type: documentObj.type,
         };
       } else {
-        return { entityId: getUserTypeReq.entityId, type: UserType.SOLDIER };
+        const entity = await KartoffelService.getEntityByMongoId({
+          id: getUserTypeReq.entityId,
+        });
+        if (hasCommanderRank(entity)) {
+          return {
+            entityId: getUserTypeReq.entityId,
+            type: UserType.COMMANDER,
+          };
+        } else {
+          return { entityId: getUserTypeReq.entityId, type: UserType.SOLDIER };
+        }
       }
     } catch (error) {
       throw error;

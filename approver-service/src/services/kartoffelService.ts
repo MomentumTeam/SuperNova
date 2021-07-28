@@ -7,11 +7,11 @@ import {
   Entity,
   SearchEntitiesByFullNameRequest,
   GetEntityByRoleIdRequest,
+  GetEntityByMongoIdRequest,
 } from '../interfaces/protoc/proto/kartoffelService';
+import { findPath } from '../utils/path';
 
-const PROTO_PATH = __dirname.includes('dist')
-  ? path.join(__dirname, '../../../proto/kartoffelService.proto')
-  : path.join(__dirname, '../../proto/kartoffelService.proto');
+const PROTO_PATH = `${findPath('proto')}/kartoffelService.proto`;
 
 const packageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(
   PROTO_PATH,
@@ -58,6 +58,24 @@ export default class KartoffelService {
     return new Promise((resolve, reject) => {
       kartoffelClient.GetEntityByRoleId(
         getEntityByRoleId,
+        (err: any, entity: Entity) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(entity);
+          }
+        }
+      );
+    });
+  }
+
+  static async getEntityByMongoId(
+    getEntityByMongoId: GetEntityByMongoIdRequest
+  ): Promise<Entity> {
+    console.log('getEntityByMongoId');
+    return new Promise((resolve, reject) => {
+      kartoffelClient.GetEntityByMongoId(
+        getEntityByMongoId,
         (err: any, entity: Entity) => {
           if (err) {
             reject(err);

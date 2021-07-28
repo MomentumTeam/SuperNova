@@ -2,6 +2,7 @@ import { PersonTypeInRequest } from '../enums/personTypeInRequest.enum';
 import {
   Decision,
   decisionFromJSON,
+  decisionToJSON,
   DeleteReq,
   GetAllRequestsReq,
   GetRequestByIdReq,
@@ -10,6 +11,7 @@ import {
   Request,
   RequestArray,
   RequestStatus,
+  requestStatusToJSON,
   RequestType,
   requestTypeToJSON,
   StageStatus,
@@ -17,7 +19,6 @@ import {
   SuccessMessage,
   UpdateADStatusReq,
   UpdateKartoffelStatusReq,
-  UpdateReq,
 } from '../interfaces/protoc/proto/requestService';
 import { RequestModel } from '../models/request.model';
 
@@ -135,18 +136,17 @@ export class RequestRepository {
 
       let commanderApproverIdInUpdate: any = undefined,
         securityApproverIdInUpdate: any = undefined,
-        commanderApproverDecisionInUpdate: Decision = Decision.DECISION_UNKNOWN,
-        securityApproverDecisionInUpdate: Decision = Decision.DECISION_UNKNOWN;
+        commanderApproverDecisionInUpdate: any = undefined,
+        securityApproverDecisionInUpdate: any = undefined,
+        kartoffelStageStatusInUpdate: any = undefined,
+        adStageStatusInUpdate: any = undefined;
+
       let commanderApproverDecisionInDocument: Decision =
           Decision.DECISION_UNKNOWN,
         securityApproverDecisionInDocument: Decision =
-          Decision.DECISION_UNKNOWN;
-
-      let kartoffelStageStatusInUpdate: any = undefined;
-      let adStageStatusInUpdate: any = undefined;
-      let kartoffelStageStatusInDocument: StageStatus =
-        StageStatus.STAGE_UNKNOWN;
-      let adStageStatusInDocument: StageStatus = StageStatus.STAGE_UNKNOWN;
+          Decision.DECISION_UNKNOWN,
+        kartoffelStageStatusInDocument: StageStatus = StageStatus.STAGE_UNKNOWN,
+        adStageStatusInDocument: StageStatus = StageStatus.STAGE_UNKNOWN;
 
       if (
         updateReq &&
@@ -178,7 +178,7 @@ export class RequestRepository {
         updateReq.requestProperties.commanderDecision &&
         updateReq.requestProperties.commanderDecision.approver
       ) {
-        // commander decision
+        // commander decision in update
         commanderApproverIdInUpdate =
           updateReq.requestProperties.commanderDecision.approver.id;
         commanderApproverDecisionInUpdate = decisionFromJSON(
@@ -192,7 +192,7 @@ export class RequestRepository {
         updateReq.requestProperties.securityDecision &&
         updateReq.requestProperties.securityDecision.approver
       ) {
-        // security decision
+        // security decision in update
         securityApproverIdInUpdate =
           updateReq.requestProperties.securityDecision.approver.id;
         securityApproverDecisionInUpdate = decisionFromJSON(
@@ -206,7 +206,7 @@ export class RequestRepository {
         kartoffelStageStatusInUpdate ||
         adStageStatusInUpdate
       ) {
-        //update includes decision update
+        //update includes decision/stage update
         const documentBefore = await RequestModel.findOne({
           _id: updateReq.id,
         });
@@ -215,49 +215,16 @@ export class RequestRepository {
           this.turnObjectIdsToStrings(documentBeforeObj);
 
           if (
-            documentBeforeObj.kartoffelStatus &&
-            documentBeforeObj.kartoffelStatus.status
-          ) {
-            // kartoffel status in document
-            kartoffelStageStatusInDocument = stageStatusFromJSON(
-              documentBeforeObj.kartoffelStatus.status
-            );
-          }
-
-          if (documentBeforeObj.adStatus && documentBeforeObj.adStatus.status) {
-            // ad status in document
-            adStageStatusInDocument = stageStatusFromJSON(
-              documentBeforeObj.adStatus.status
-            );
-          }
-
-          if (
-            (kartoffelStageStatusInDocument === StageStatus.STAGE_DONE ||
-              kartoffelStageStatusInUpdate === StageStatus.STAGE_DONE) &&
-            (adStageStatusInDocument === StageStatus.STAGE_DONE ||
-              adStageStatusInUpdate === StageStatus.STAGE_DONE)
-          ) {
-            requestUpdate.status = RequestStatus.DONE;
-          } else if (
-            kartoffelStageStatusInDocument === StageStatus.STAGE_FAILED ||
-            kartoffelStageStatusInUpdate === StageStatus.STAGE_FAILED ||
-            adStageStatusInDocument === StageStatus.STAGE_FAILED ||
-            adStageStatusInUpdate === StageStatus.STAGE_FAILED
-          ) {
-            requestUpdate.status = RequestStatus.FAILED;
-          }
-
-          if (
             (commanderApproverIdInUpdate &&
               (!documentBeforeObj.commanders ||
-                !documentBeforeObj.commanders.includes(
+                !documentBeforeObj.commanders.some(
                   (commander: any) =>
                     commander.id === commanderApproverIdInUpdate
                 ))) ||
             (securityApproverIdInUpdate &&
               (!documentBeforeObj.securityApprovers ||
                 (securityApproverIdInUpdate &&
-                  !documentBeforeObj.securityApprovers.includes(
+                  !documentBeforeObj.securityApprovers.some(
                     (securityApprover: any) =>
                       securityApprover.id === securityApproverIdInUpdate
                   ))))
@@ -289,17 +256,75 @@ export class RequestRepository {
           }
 
           if (
-            commanderApproverDecisionInUpdate === Decision.DENIED ||
-            securityApproverDecisionInUpdate === Decision.DENIED
+            commanderApproverDecisionInUpdate ||
+            securityApproverDecisionInUpdate
           ) {
-            requestUpdate.status = RequestStatus.DECLINED;
-          } else if (
-            (commanderApproverDecisionInUpdate === Decision.APPROVED ||
-              commanderApproverDecisionInDocument === Decision.APPROVED) &&
-            (securityApproverDecisionInUpdate === Decision.APPROVED ||
-              securityApproverDecisionInDocument === Decision.APPROVED)
+            if (
+              commanderApproverDecisionInUpdate === Decision.DENIED ||
+              (!commanderApproverDecisionInUpdate &&
+                commanderApproverDecisionInDocument === Decision.DENIED) ||
+              securityApproverDecisionInUpdate === Decision.DENIED ||
+              (!securityApproverDecisionInUpdate &&
+                securityApproverDecisionInDocument === Decision.DENIED)
+            ) {
+              // if one of the approvers denied the request
+              requestUpdate.status = requestStatusToJSON(
+                RequestStatus.DECLINED
+              );
+            } else if (
+              (commanderApproverDecisionInUpdate === Decision.APPROVED ||
+                (!commanderApproverDecisionInUpdate &&
+                  commanderApproverDecisionInDocument === Decision.APPROVED)) &&
+              (securityApproverDecisionInUpdate === Decision.APPROVED ||
+                (!securityApproverDecisionInUpdate &&
+                  securityApproverDecisionInDocument === Decision.APPROVED))
+            ) {
+              // if both approvers approved the request
+              requestUpdate.status = requestStatusToJSON(
+                RequestStatus.IN_PROGRESS
+              );
+            }
+          }
+
+          if (
+            documentBeforeObj.kartoffelStatus &&
+            documentBeforeObj.kartoffelStatus.status
           ) {
-            requestUpdate.status = RequestStatus.IN_PROGRESS;
+            // kartoffel status in document
+            kartoffelStageStatusInDocument = stageStatusFromJSON(
+              documentBeforeObj.kartoffelStatus.status
+            );
+          }
+
+          if (documentBeforeObj.adStatus && documentBeforeObj.adStatus.status) {
+            // ad status in document
+            adStageStatusInDocument = stageStatusFromJSON(
+              documentBeforeObj.adStatus.status
+            );
+          }
+
+          if (kartoffelStageStatusInUpdate || adStageStatusInUpdate) {
+            if (
+              ((!kartoffelStageStatusInUpdate &&
+                kartoffelStageStatusInDocument === StageStatus.STAGE_DONE) ||
+                kartoffelStageStatusInUpdate === StageStatus.STAGE_DONE) &&
+              ((!adStageStatusInUpdate &&
+                adStageStatusInDocument === StageStatus.STAGE_DONE) ||
+                adStageStatusInUpdate === StageStatus.STAGE_DONE)
+            ) {
+              // if both stages are done
+              requestUpdate.status = requestStatusToJSON(RequestStatus.DONE);
+            } else if (
+              (!kartoffelStageStatusInUpdate &&
+                kartoffelStageStatusInDocument === StageStatus.STAGE_FAILED) ||
+              kartoffelStageStatusInUpdate === StageStatus.STAGE_FAILED ||
+              (!adStageStatusInUpdate &&
+                adStageStatusInDocument === StageStatus.STAGE_FAILED) ||
+              adStageStatusInUpdate === StageStatus.STAGE_FAILED
+            ) {
+              // if both stages are failed
+              requestUpdate.status = requestStatusToJSON(RequestStatus.FAILED);
+            }
           }
         } else {
           throw new Error(
@@ -340,11 +365,6 @@ export class RequestRepository {
           },
         },
       };
-      if (updateKartoffelStatusReq.status === StageStatus.STAGE_DONE) {
-        requestUpdate.requestProperties.status = RequestStatus.DONE;
-      } else {
-        requestUpdate.requestProperties.status = RequestStatus.FAILED;
-      }
       return await this.updateRequest(requestUpdate);
     } catch (error) {
       throw error;
@@ -364,7 +384,9 @@ export class RequestRepository {
         },
       };
       if (updateADStatusReq.status === StageStatus.STAGE_FAILED) {
-        requestUpdate.requestProperties.status = RequestStatus.FAILED;
+        requestUpdate.requestProperties.status = requestStatusToJSON(
+          RequestStatus.FAILED
+        );
       }
       return await this.updateRequest(requestUpdate);
     } catch (error) {

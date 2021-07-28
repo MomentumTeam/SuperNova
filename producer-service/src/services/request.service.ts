@@ -8,10 +8,9 @@ import {
   RequestReq,
   RequestType,
 } from '../interfaces/protoc/proto/requestService';
+import { findPath } from '../utils/path';
 
-const PROTO_PATH = __dirname.includes('dist')
-  ? path.join(__dirname, '../../../proto/requestService.proto')
-  : path.join(__dirname, '../../proto/requestService.proto');
+const PROTO_PATH = `${findPath('proto')}/requestService.proto`;
 
 export class RequestService {
   client: any;

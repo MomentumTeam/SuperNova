@@ -7,12 +7,12 @@ RUN apk update
 WORKDIR /app
 
 # copy configs to /app folder
-COPY package*.json ./
-COPY tsconfig.json ./
+COPY ./spike-service/package*.json ./
+COPY ./spike-service/tsconfig.json ./
 # copy source code to /app/src folder
-COPY src /app/src
+COPY ./spike-service/src /app/src
+COPY ./spike-service/utils /app/utils
 COPY proto /app/proto
-COPY utils /app/utils
 
 # check files list
 RUN ls -a

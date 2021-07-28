@@ -7,10 +7,10 @@ RUN apk update
 WORKDIR /app
 
 # copy configs to /app folder
-COPY package*.json ./
-COPY tsconfig.json ./
+COPY ./notification-service/package*.json ./
+COPY ./notification-service/tsconfig.json ./
 # copy source code to /app/src folder
-COPY src /app/src
+COPY ./notification-service/src /app/src
 COPY proto /app/proto
 
 # check files list
