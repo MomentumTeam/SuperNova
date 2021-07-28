@@ -3,6 +3,7 @@ import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 import path from 'path';
 import * as config from '../config';
+import { UserType, userTypeFromJSON } from '../interfaces/protoc/proto/approverService';
 import {
   Request as RequestS,
   RequestArray,
@@ -16,7 +17,9 @@ import {
   DeleteOGRes,
   DeleteRoleRes,
   DisconectRoleFromEntityRes,
+  StageStatus,
 } from '../interfaces/protoc/proto/requestService';
+
 
 const PROTO_PATH = __dirname.includes('dist')
   ? path.join(__dirname, '../../../proto/requestService.proto')
@@ -41,13 +44,6 @@ const requestsClient: any = new protoDescriptor.RequestService(
   grpc.credentials.createInsecure()
 );
 
-enum StageStatus {
-  UNKNOWN = 'UNKNOWN',
-  IN_PROGRESS = 'IN_PROGRESS',
-  DONE = 'DONE',
-  FAILED = 'FAILED',
-}
-
 export default class RequestsController {
   static async getRequestById(req: Request, res: Response) {
     console.log('GetRequestById');
@@ -63,18 +59,26 @@ export default class RequestsController {
     );
   }
 
-  static async getAllRequests(req: Request, res: Response) {
+  static async getAllRequests(req: any, res: Response) {
+    //only SECURITY Approvers can see all requests.
     console.log('GetAllRequests');
 
-    requestsClient.GetAllRequests(
-      { from: req.query.from, to: req.query.to },
-      (err: any, response: RequestArray) => {
-        if (err) {
-          res.send(err);
+    if (
+      userTypeFromJSON(req.user.userType.type) === UserType.SECURITY ||
+      userTypeFromJSON(req.user.userType.type) === UserType.SUPER_SECURITY
+    ) {
+      requestsClient.GetAllRequests(
+        { from: req.query.from, to: req.query.to },
+        (err: any, response: RequestArray) => {
+          if (err) {
+            res.send(err);
+          }
+          res.send(response);
         }
-        res.send(response);
-      }
-    );
+      );
+    } else {
+      res.send('You dont have access to see all requests!');
+    }
   }
 
   static async getMyRequests(req: any, res: Response) {
@@ -139,12 +143,12 @@ export default class RequestsController {
     console.log('UpdateADStatus');
 
     const status: string = req.body.Status;
-    let stageStatus: StageStatus = StageStatus.IN_PROGRESS;
+    let stageStatus: StageStatus = StageStatus.STAGE_IN_PROGRESS;
 
     if (status === 'true') {
-      stageStatus = StageStatus.DONE;
+      stageStatus = StageStatus.STAGE_DONE;
     } else if (status === 'false') {
-      stageStatus = StageStatus.FAILED;
+      stageStatus = StageStatus.STAGE_FAILED;
     }
 
     requestsClient.UpdateADStatus(
