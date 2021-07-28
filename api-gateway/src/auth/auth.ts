@@ -40,21 +40,25 @@ module.exports = (req: any, res: Response, next: NextFunction) => {
       if (cookie) {
         console.log('cookie');
 
-        jwt.verify(cookie as string, 'superNova', async function (err, decoded) {
-          if (err) {
-            // console.log('err', err.message)
-            console.log('err');
-            res.redirect(
-              `http://${config.authentication.authServiceUrl}/auth/login`
-            );
-          } else {
-            console.log('decoded', decoded);
-            req.user = decoded;
-            const userType = await getUserType(req.user.id);
-            req.user['userType'] = userType;
-            next();
+        jwt.verify(
+          cookie as string,
+          'superNova',
+          async function (err, decoded) {
+            if (err) {
+              // console.log('err', err.message)
+              console.log('err');
+              res.redirect(
+                `http://${config.authentication.authServiceUrl}/auth/login`
+              );
+            } else {
+              console.log('decoded', decoded);
+              req.user = decoded;
+              const userType = await getUserType(req.user.id);
+              req.user['userType'] = userType;
+              next();
+            }
           }
-        });
+        );
       } else {
         res.redirect(
           `http://${config.authentication.authServiceUrl}/auth/login`
@@ -69,27 +73,22 @@ module.exports = (req: any, res: Response, next: NextFunction) => {
   }
 };
 
-
 function getUserType(id: string) {
-  console.log('getUserType')
+  console.log('getUserType');
 
   return new Promise((resolve, reject) => {
-
-  approverClient.GetUserType(
-    //get userType
-    { entityId: id },
-    (err: any, response: GetUserTypeRes) => {
-      if (err) {
-        console.log('err', err)
-        resolve({
-          entityId: id,
-          type: 'SOLDIER', //default value incase of error
-        }) ;
+    approverClient.GetUserType(
+      //get userType
+      { entityId: id },
+      (err: any, response: GetUserTypeRes) => {
+        if (err) {
+          resolve({
+            entityId: id,
+            type: 'SOLDIER', //default value incase of error
+          });
+        }
+        resolve(response);
       }
-      console.log('response', response)
-      resolve(response);
-    }
-  );
-});
-
+    );
+  });
 }

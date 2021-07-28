@@ -3,6 +3,7 @@ import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 import path from 'path';
 import * as config from '../config';
+import { UserType, userTypeFromJSON } from '../interfaces/protoc/proto/approverService';
 import {
   Request as RequestS,
   RequestArray,
@@ -18,6 +19,7 @@ import {
   DisconectRoleFromEntityRes,
   StageStatus,
 } from '../interfaces/protoc/proto/requestService';
+
 
 const PROTO_PATH = __dirname.includes('dist')
   ? path.join(__dirname, '../../../proto/requestService.proto')
@@ -62,8 +64,8 @@ export default class RequestsController {
     console.log('GetAllRequests');
 
     if (
-      req.user.userType.type === 'SECURITY' ||
-      req.user.userType.type === 'SUPER_SECURITY'
+      userTypeFromJSON(req.user.userType.type) === UserType.SECURITY ||
+      userTypeFromJSON(req.user.userType.type) === UserType.SUPER_SECURITY
     ) {
       requestsClient.GetAllRequests(
         { from: req.query.from, to: req.query.to },
