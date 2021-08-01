@@ -29,29 +29,33 @@ const producerClient: any = new protoDescriptor.Producer(
 );
 
 export default class ProducerController {
-  static async produceToKartoffelQueue(req: Request, res: Response) {
+  
+  static async produceToKartoffelQueue(requestId: string) {
     console.log('ProduceToKartoffelQueue');
 
-    producerClient.ProduceToKartoffelQueue(
-      { id: req.body.id },
-      (err: any, response: SuccessMessage) => {
-        if (err) {
-          res.send(null);
+    return new Promise((resolve, reject) => {
+      producerClient.ProduceToKartoffelQueue(
+        { id: requestId },
+        (err: any, response: SuccessMessage) => {
+          if (err) {
+            resolve(null);
+          }
+          resolve(response);
         }
-        res.send(response);
-      }
-    );
+      );
+    });
   }
 
   static async produceToADQueue(req: Request, res: Response) {
     console.log('ProduceToADQueue');
 
     producerClient.ProduceToADQueue(
-      { id: req.body.id },
+      { id: req.body.requestId },
       (err: any, response: SuccessMessage) => {
         if (err) {
           res.send(null);
         }
+        console.log('produceToADQueue response', response);
         res.send(response);
       }
     );

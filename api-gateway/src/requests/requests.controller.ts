@@ -3,7 +3,11 @@ import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 import path from 'path';
 import * as config from '../config';
-import { UserType, userTypeFromJSON } from '../interfaces/protoc/proto/approverService';
+import ProducerController from '../producer/producer.controller';
+import {
+  UserType,
+  userTypeFromJSON,
+} from '../interfaces/protoc/proto/approverService';
 import {
   Request as RequestS,
   RequestArray,
@@ -19,7 +23,6 @@ import {
   DisconectRoleFromEntityRes,
   StageStatus,
 } from '../interfaces/protoc/proto/requestService';
-
 
 const PROTO_PATH = __dirname.includes('dist')
   ? path.join(__dirname, '../../../proto/requestService.proto')
@@ -142,28 +145,61 @@ export default class RequestsController {
   static async updateADStatus(req: Request, res: Response) {
     console.log('UpdateADStatus');
 
-    const status: string = req.body.Status;
+    const retry: boolean = req.body.retry;
+    const status: boolean = req.body.success;
     let stageStatus: StageStatus = StageStatus.STAGE_IN_PROGRESS;
 
-    if (status === 'true') {
-      stageStatus = StageStatus.STAGE_DONE;
-    } else if (status === 'false') {
-      stageStatus = StageStatus.STAGE_FAILED;
-    }
+    if (retry === false) {
+      if (status === true) {
+        stageStatus = StageStatus.STAGE_DONE;
 
-    requestsClient.UpdateADStatus(
-      {
-        requestId: req.body.RequestID,
-        status: stageStatus,
-        message: req.body.ErrorID,
-      },
-      (err: any, response: RequestS) => {
-        if (err) {
-          res.status(500).end(err.message);
+        const produceRes = (await ProducerController.produceToKartoffelQueue(
+          req.body.requestId
+        )) as SuccessMessage;
+
+        if (produceRes.success === true) {
+          //if produce was successful update Kartoffel Status
+          await RequestsController.updateKartoffelStatus(req.body.requestId);
         }
-        res.status(200).send();
+      } else if (status === false) {
+        stageStatus = StageStatus.STAGE_FAILED;
       }
-    );
+
+      requestsClient.UpdateADStatus(
+        {
+          requestId: req.body.requestId,
+          status: stageStatus,
+          message: req.body.errorCode,
+        },
+        (err: any, response: RequestS) => {
+          if (err) {
+            res.status(500).end(err.message);
+          }
+          res.status(200).send();
+        }
+      );
+    } else {
+      await ProducerController.produceToADQueue(req, res);
+    }
+  }
+
+  static async updateKartoffelStatus(requestId: string) {
+    console.log('UpdateKartoffelStatus');
+
+    return new Promise((resolve, reject) => {
+      requestsClient.UpdateKartoffelStatus(
+        {
+          requestId: requestId,
+          status: StageStatus.STAGE_IN_PROGRESS,
+        },
+        (err: any, response: RequestS) => {
+          if (err) {
+            resolve(err);
+          }
+          resolve(response);
+        }
+      );
+    });
   }
 
   static async updateRequest(req: Request, res: Response) {

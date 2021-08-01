@@ -31,7 +31,7 @@ service RequestService {
 message UpdateKartoffelStatusReq{
     string requestId = 1;
     StageStatus status = 2;
-    string message = 3;
+    optional string message = 3;
     optional string createdId = 4;
 }
 
