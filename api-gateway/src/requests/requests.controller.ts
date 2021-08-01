@@ -22,6 +22,7 @@ import {
   DeleteRoleRes,
   DisconectRoleFromEntityRes,
   StageStatus,
+  EntityMin
 } from '../interfaces/protoc/proto/requestService';
 
 const PROTO_PATH = __dirname.includes('dist')
@@ -213,8 +214,14 @@ export default class RequestsController {
     });
   }
 
-  static async renameOGRequest(req: Request, res: Response) {
+  static async renameOGRequest(req: any, res: Response) {
     console.log('RenameOGRequest');
+
+    const submittedBy: EntityMin = {
+      id: req.user.id, displayName: req.user.displayName, identityCard: req.user.identityCard, personalNumber: req.user.personalNumber
+    };
+
+    req.body.submittedBy = submittedBy;
 
     requestsClient.RenameOGRequest(
       req.body,
@@ -227,8 +234,15 @@ export default class RequestsController {
     );
   }
 
-  static async renameRoleRequest(req: Request, res: Response) {
+  static async renameRoleRequest(req: any, res: Response) {
     console.log('RenameRoleRequest');
+
+    const submittedBy: EntityMin = {
+      id: req.user.id, displayName: req.user.displayName, identityCard: req.user.identityCard, personalNumber: req.user.personalNumber
+    };
+
+    req.body.submittedBy = submittedBy;
+    
 
     requestsClient.RenameRoleRequest(
       req.body,
@@ -241,8 +255,14 @@ export default class RequestsController {
     );
   }
 
-  static async createOGRequest(req: Request, res: Response) {
+  static async createOGRequest(req: any, res: Response) {
     console.log('createOGRequest');
+
+    const submittedBy: EntityMin = {
+      id: req.user.id, displayName: req.user.displayName, identityCard: req.user.identityCard, personalNumber: req.user.personalNumber
+    };
+
+    req.body.submittedBy = submittedBy;
 
     requestsClient.CreateOGRequest(
       req.body,
@@ -255,8 +275,15 @@ export default class RequestsController {
     );
   }
 
-  static async createRoleRequest(req: Request, res: Response) {
+  static async createRoleRequest(req: any, res: Response) {
     console.log('createRoleRequest');
+
+   const submittedBy: EntityMin = {
+      id: req.user.id, displayName: req.user.displayName, identityCard: req.user.identityCard, personalNumber: req.user.personalNumber
+    };
+    console.log('submittedBy', submittedBy)
+
+    req.body.submittedBy = submittedBy;
 
     requestsClient.CreateRoleRequest(
       req.body,
@@ -269,8 +296,14 @@ export default class RequestsController {
     );
   }
 
-  static async createEntityRequest(req: Request, res: Response) {
+  static async createEntityRequest(req: any, res: Response) {
     console.log('CreateEntityRequest');
+
+   const submittedBy: EntityMin = {
+      id: req.user.id, displayName: req.user.displayName, identityCard: req.user.identityCard, personalNumber: req.user.personalNumber
+    };
+    
+    req.body.submittedBy = submittedBy;
 
     requestsClient.CreateEntityRequest(
       req.body,
@@ -283,8 +316,14 @@ export default class RequestsController {
     );
   }
 
-  static async assignRoleToEntityRequest(req: Request, res: Response) {
+  static async assignRoleToEntityRequest(req: any, res: Response) {
     console.log('AssignRoleToEntityRequest');
+
+   const submittedBy: EntityMin = {
+      id: req.user.id, displayName: req.user.displayName, identityCard: req.user.identityCard, personalNumber: req.user.personalNumber
+    };
+    
+    req.body.submittedBy = submittedBy;
 
     requestsClient.AssignRoleToEntityRequest(
       req.body,
@@ -297,8 +336,14 @@ export default class RequestsController {
     );
   }
 
-  static async editEntityRequest(req: Request, res: Response) {
+  static async editEntityRequest(req: any, res: Response) {
     console.log('EditEntityRequest');
+
+   const submittedBy: EntityMin = {
+      id: req.user.id, displayName: req.user.displayName, identityCard: req.user.identityCard, personalNumber: req.user.personalNumber
+    };
+    
+    req.body.submittedBy = submittedBy;
 
     requestsClient.EditEntityRequest(
       req.body,
@@ -311,8 +356,14 @@ export default class RequestsController {
     );
   }
 
-  static async disconectRoleFromEntityRequest(req: Request, res: Response) {
+  static async disconectRoleFromEntityRequest(req: any, res: Response) {
     console.log('DisconectRoleFromEntityRequest');
+
+   const submittedBy: EntityMin = {
+      id: req.user.id, displayName: req.user.displayName, identityCard: req.user.identityCard, personalNumber: req.user.personalNumber
+    };
+    
+    req.body.submittedBy = submittedBy;
 
     requestsClient.DisconectRoleFromEntityRequest(
       req.body,
