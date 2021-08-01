@@ -2,13 +2,69 @@ import { RequestManager } from './request.manager';
 import * as grpc from '@grpc/grpc-js';
 import { PersonTypeInRequest } from '../enums/personTypeInRequest.enum';
 import {
+  GetRequestsByIdentifierReq,
   Request,
   RequestReq,
   RequestType,
+  SearchRequestsByDisplayNameReq,
   SuccessMessage,
 } from '../interfaces/protoc/proto/requestService';
 
 const requestManager: RequestManager = new RequestManager();
+
+export function searchRequestsByDisplayNameFuncByPersonType(
+  personType: PersonTypeInRequest
+) {
+  const func = async function searchRequestsByDisplayName(
+    call: any,
+    callback: any
+  ): Promise<void> {
+    try {
+      const response = await requestManager.searchRequestsByDisplayName(
+        call.request as SearchRequestsByDisplayNameReq,
+        personType
+      );
+      callback(null, response);
+    } catch (error) {
+      callback(
+        {
+          code: 400,
+          message: error.message,
+          status: grpc.status.CANCELLED,
+        },
+        null
+      );
+    }
+  };
+  return func;
+}
+
+export function getRequestsByIdentifierFuncByPersonType(
+  personType: PersonTypeInRequest
+) {
+  const func = async function getRequestsByIdentifier(
+    call: any,
+    callback: any
+  ): Promise<void> {
+    try {
+      const response = await requestManager.getRequestsByIdentifier(
+        call.request as GetRequestsByIdentifierReq,
+        personType
+      );
+      callback(null, response);
+    } catch (error) {
+      callback(
+        {
+          code: 400,
+          message: error.message,
+          status: grpc.status.CANCELLED,
+        },
+        null
+      );
+    }
+  };
+  return func;
+}
 
 export function createRequestFuncByType(type: RequestType) {
   const func = async function createRequest(
@@ -33,6 +89,48 @@ export function createRequestFuncByType(type: RequestType) {
     }
   };
   return func;
+}
+
+export async function canPushToADQueue(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    const requestsResponse = await requestManager.canPushToADQueue(
+      call.request
+    );
+    callback(null, requestsResponse);
+  } catch (error) {
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function canPushToKartoffelQueue(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    const requestsResponse = await requestManager.canPushToKartoffelQueue(
+      call.request
+    );
+    callback(null, requestsResponse);
+  } catch (error) {
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
 }
 
 export async function getRequestBySerialNumber(

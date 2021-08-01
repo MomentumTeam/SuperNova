@@ -1,7 +1,7 @@
 syntax = "proto3";
-// import "/home/barak/Desktop/SuperNova/proto/requestService.proto";//when loading with bloomRPC
+import "/home/barak/Desktop/SuperNova/proto/requestService.proto";//when loading with bloomRPC
 // import "proto/requestService.proto"; //when running in vscode
-import "/app/proto/requestService.proto"; //When using docker
+// import "/app/proto/requestService.proto"; //When using docker
 package ApproverService;
 
 service ApproverService {

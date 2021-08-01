@@ -12,9 +12,18 @@ import {
   createRequestFuncByType,
   updateKartoffelStatus,
   updateADStatus,
+  getRequestsByIdentifierFuncByPersonType,
+  canPushToKartoffelQueue,
+  canPushToADQueue,
+  getRequestBySerialNumber,
+  searchRequestsByDisplayNameFuncByPersonType,
 } from './requests/request.controller';
-import { RequestType } from './interfaces/protoc/proto/requestService';
+import {
+  GetRequestsByIdentifierReq,
+  RequestType,
+} from './interfaces/protoc/proto/requestService';
 import { findPath } from './utils/path';
+import { PersonTypeInRequest } from './enums/personTypeInRequest.enum';
 
 const PROTO_PATH = `${findPath('proto')}/requestService.proto`;
 
@@ -78,6 +87,39 @@ export class Server {
         UpdateADStatus: updateADStatus,
         DeleteRequest: deleteRequest,
         GetAllRequests: getAllRequests,
+        GetRequestBySerialNumber: getRequestBySerialNumber,
+        GetRequestsBySubmitterIdentifier:
+          getRequestsByIdentifierFuncByPersonType(
+            PersonTypeInRequest.SUBMITTED_BY
+          ),
+        GetRequestsByCommanderIdentifier:
+          getRequestsByIdentifierFuncByPersonType(
+            PersonTypeInRequest.COMMANDER
+          ),
+        GetRequestsBySecurityIdentifier:
+          getRequestsByIdentifierFuncByPersonType(
+            PersonTypeInRequest.SECURITY_APPROVER
+          ),
+        GetRequestsByApproverIdentifier:
+          getRequestsByIdentifierFuncByPersonType(PersonTypeInRequest.APPROVER),
+        SearchRequestsBySubmitterDisplayName:
+          searchRequestsByDisplayNameFuncByPersonType(
+            PersonTypeInRequest.SUBMITTED_BY
+          ),
+        SearchRequestsByCommanderDisplayName:
+          searchRequestsByDisplayNameFuncByPersonType(
+            PersonTypeInRequest.COMMANDER
+          ),
+        SearchRequestsBySecurityDisplayName:
+          searchRequestsByDisplayNameFuncByPersonType(
+            PersonTypeInRequest.SECURITY_APPROVER
+          ),
+        SearchRequestsByApproverDisplayName:
+          searchRequestsByDisplayNameFuncByPersonType(
+            PersonTypeInRequest.APPROVER
+          ),
+        CanPushToKartoffelQueue: canPushToKartoffelQueue,
+        CanPushToADQueue: canPushToADQueue,
       });
       logger.log({
         level: 'info',
