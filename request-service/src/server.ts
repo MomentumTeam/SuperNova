@@ -17,6 +17,9 @@ import {
   canPushToADQueue,
   getRequestBySerialNumber,
   searchRequestsByDisplayNameFuncByPersonType,
+  updateApproverDecisionFuncByPersonType,
+  incrementKartoffelRetries,
+  incrementADRetries,
 } from './requests/request.controller';
 import {
   GetRequestsByIdentifierReq,
@@ -90,7 +93,7 @@ export class Server {
         GetRequestBySerialNumber: getRequestBySerialNumber,
         GetRequestsBySubmitterIdentifier:
           getRequestsByIdentifierFuncByPersonType(
-            PersonTypeInRequest.SUBMITTED_BY
+            PersonTypeInRequest.SUBMITTER
           ),
         GetRequestsByCommanderIdentifier:
           getRequestsByIdentifierFuncByPersonType(
@@ -104,7 +107,7 @@ export class Server {
           getRequestsByIdentifierFuncByPersonType(PersonTypeInRequest.APPROVER),
         SearchRequestsBySubmitterDisplayName:
           searchRequestsByDisplayNameFuncByPersonType(
-            PersonTypeInRequest.SUBMITTED_BY
+            PersonTypeInRequest.SUBMITTER
           ),
         SearchRequestsByCommanderDisplayName:
           searchRequestsByDisplayNameFuncByPersonType(
@@ -120,6 +123,17 @@ export class Server {
           ),
         CanPushToKartoffelQueue: canPushToKartoffelQueue,
         CanPushToADQueue: canPushToADQueue,
+        IncrementKartoffelRetries: incrementKartoffelRetries,
+        IncrementADRetries: incrementADRetries,
+        UpdateCommanderDecision: updateApproverDecisionFuncByPersonType(
+          PersonTypeInRequest.COMMANDER
+        ),
+        UpdateSecurityDecision: updateApproverDecisionFuncByPersonType(
+          PersonTypeInRequest.SECURITY_APPROVER
+        ),
+        UpdateSuperSecurityDecision: updateApproverDecisionFuncByPersonType(
+          PersonTypeInRequest.SUPER_SECURITY_APPROVER
+        ),
       });
       logger.log({
         level: 'info',

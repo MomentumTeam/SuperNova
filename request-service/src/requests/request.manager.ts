@@ -8,6 +8,7 @@ import {
   GetRequestBySerialNumberReq,
   GetRequestsByIdentifierReq,
   GetRequestsByPersonIdReq,
+  IncrementRetriesReq,
   Request,
   RequestArray,
   RequestReq,
@@ -15,6 +16,7 @@ import {
   SearchRequestsByDisplayNameReq,
   SuccessMessage,
   UpdateADStatusReq,
+  UpdateDecisionReq,
   UpdateKartoffelStatusReq,
 } from '../interfaces/protoc/proto/requestService';
 import { RequestRepository } from './request.repository';
@@ -31,6 +33,44 @@ export class RequestManager {
       return (await this.requestRepository.canPushToKartoffelQueue(
         CanPushToQueueReq
       )) as CanPushToQueueRes;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async incrementKartoffelRetries(
+    incrementRetriesReq: IncrementRetriesReq
+  ): Promise<Request> {
+    try {
+      return (await this.requestRepository.incrementKartoffelRetries(
+        incrementRetriesReq
+      )) as Request;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async incrementADRetries(
+    incrementRetriesReq: IncrementRetriesReq
+  ): Promise<Request> {
+    try {
+      return (await this.requestRepository.incrementADRetries(
+        incrementRetriesReq
+      )) as Request;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateApproverDecision(
+    updateDecisionReq: UpdateDecisionReq,
+    personType: PersonTypeInRequest
+  ): Promise<Request> {
+    try {
+      return (await this.requestRepository.updateApproverDecision(
+        updateDecisionReq,
+        personType
+      )) as Request;
     } catch (error) {
       throw error;
     }

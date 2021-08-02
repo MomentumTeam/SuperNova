@@ -10,6 +10,7 @@ import {
   GetRequestBySerialNumberReq,
   GetRequestsByIdentifierReq,
   GetRequestsByPersonIdReq,
+  IncrementRetriesReq,
   Request,
   RequestArray,
   RequestStatus,
@@ -19,8 +20,10 @@ import {
   SearchRequestsByDisplayNameReq,
   StageStatus,
   stageStatusFromJSON,
+  stageStatusToJSON,
   SuccessMessage,
   UpdateADStatusReq,
+  UpdateDecisionReq,
   UpdateKartoffelStatusReq,
 } from '../interfaces/protoc/proto/requestService';
 import * as C from '../config';
@@ -179,6 +182,97 @@ export class RequestRepository {
     }
   }
 
+  async updateApproverDecision(
+    updateDecisionReq: UpdateDecisionReq,
+    personType: PersonTypeInRequest
+  ): Promise<Request> {
+    try {
+      let updateQuery: any = {
+        id: updateDecisionReq.id,
+        requestProperties: {},
+      };
+      let approverField;
+      if (personType === PersonTypeInRequest.COMMANDER) {
+        approverField = 'commanderDecision';
+      } else if (personType === PersonTypeInRequest.SECURITY_APPROVER) {
+        approverField = 'securityDecision';
+      } else {
+        approverField = 'superSecurityDecision';
+        // PersonTypeInRequest.SUPER_SECURITY_APPROVER
+      }
+      updateQuery.requestProperties[approverField] =
+        updateDecisionReq.approverDecision;
+      const updatedRequest = await this.updateRequest(updateQuery);
+      return updatedRequest;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async incrementKartoffelRetries(
+    incrementRetriesReq: IncrementRetriesReq
+  ): Promise<Request> {
+    try {
+      let request: Request = await this.getRequestById(
+        incrementRetriesReq as GetRequestByIdReq
+      );
+      let kartoffelStatus = request.kartoffelStatus;
+      if (kartoffelStatus) {
+        if (kartoffelStatus.failedRetries >= C.maxQueueRetries) {
+          throw new Error(
+            `request reached the highest allowed number of retries`
+          );
+        } else {
+          kartoffelStatus.failedRetries = kartoffelStatus.failedRetries + 1;
+          const updateQuery = {
+            id: incrementRetriesReq.id,
+            requestProperties: { kartoffelStatus: kartoffelStatus },
+          };
+          const updatedRequest = await this.updateRequest(updateQuery);
+          return updatedRequest;
+        }
+      } else {
+        throw new Error(
+          `kartoffel status is null for requestId ${incrementRetriesReq.id}`
+        );
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async incrementADRetries(
+    incrementRetriesReq: IncrementRetriesReq
+  ): Promise<Request> {
+    try {
+      let request: Request = await this.getRequestById(
+        incrementRetriesReq as GetRequestByIdReq
+      );
+      let adStatus = request.adStatus;
+      if (adStatus) {
+        if (adStatus.failedRetries >= C.maxQueueRetries) {
+          throw new Error(
+            `request reached the highest allowed number of retries`
+          );
+        } else {
+          adStatus.failedRetries = adStatus.failedRetries + 1;
+          const updateQuery = {
+            id: incrementRetriesReq.id,
+            requestProperties: { adStatus: adStatus },
+          };
+          const updatedRequest = await this.updateRequest(updateQuery);
+          return updatedRequest;
+        }
+      } else {
+        throw new Error(
+          `kartoffel status is null for requestId ${incrementRetriesReq.id}`
+        );
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async canPushToADQueue(
     canPushToQueueReq: CanPushToQueueReq
   ): Promise<CanPushToQueueRes> {
@@ -257,7 +351,7 @@ export class RequestRepository {
     try {
       let query: any = {};
       const displayName = searchRequestsByDisplayNameReq.displayName;
-      if (personType === PersonTypeInRequest.SUBMITTED_BY) {
+      if (personType === PersonTypeInRequest.SUBMITTER) {
         query = {
           $text: { $search: displayName },
         };
@@ -293,7 +387,7 @@ export class RequestRepository {
     try {
       let query: any = {};
       const identifier = getRequestsByIdentifierReq.identifier;
-      if (personType === PersonTypeInRequest.SUBMITTED_BY) {
+      if (personType === PersonTypeInRequest.SUBMITTER) {
         query = {
           $or: [
             { 'submittedBy.personalNumber': identifier },

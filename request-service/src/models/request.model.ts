@@ -24,6 +24,10 @@ const RequestSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    needSecurityDecision: {
+      type: Boolean,
+      default: true,
+    },
     comments: { type: String, default: '' },
     approversComments: { type: String, default: '' },
     submittedBy: {

@@ -8,9 +8,37 @@ import {
   RequestType,
   SearchRequestsByDisplayNameReq,
   SuccessMessage,
+  UpdateDecisionReq,
 } from '../interfaces/protoc/proto/requestService';
 
 const requestManager: RequestManager = new RequestManager();
+
+export function updateApproverDecisionFuncByPersonType(
+  personType: PersonTypeInRequest
+) {
+  const func = async function updateApproverDecision(
+    call: any,
+    callback: any
+  ): Promise<void> {
+    try {
+      const response = await requestManager.updateApproverDecision(
+        call.request as UpdateDecisionReq,
+        personType
+      );
+      callback(null, response);
+    } catch (error) {
+      callback(
+        {
+          code: 400,
+          message: error.message,
+          status: grpc.status.CANCELLED,
+        },
+        null
+      );
+    }
+  };
+  return func;
+}
 
 export function searchRequestsByDisplayNameFuncByPersonType(
   personType: PersonTypeInRequest
@@ -260,6 +288,46 @@ export async function getRequestById(call: any, callback: any): Promise<void> {
   }
 }
 
+export async function incrementKartoffelRetries(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    const request = await requestManager.incrementKartoffelRetries(
+      call.request
+    );
+    callback(null, request);
+  } catch (error) {
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function incrementADRetries(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    const request = await requestManager.incrementADRetries(call.request);
+    callback(null, request);
+  } catch (error) {
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
 export async function getRequestsByCommander(
   call: any,
   callback: any
@@ -289,7 +357,7 @@ export async function getRequestsSubmittedBy(
   try {
     const requests = await requestManager.getRequestsByPersonId(
       call.request,
-      PersonTypeInRequest.SUBMITTED_BY
+      PersonTypeInRequest.SUBMITTER
     );
     callback(null, requests);
   } catch (error) {

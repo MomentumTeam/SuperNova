@@ -40,6 +40,16 @@ service RequestService {
     rpc IncrementKartoffelRetries(IncrementRetriesReq) returns (Request){}
     rpc IncrementADRetries(IncrementRetriesReq) returns (Request){}
 
+    rpc UpdateCommanderDecision(UpdateDecisionReq) returns (Request) {}
+    rpc UpdateSecurityDecision(UpdateDecisionReq) returns (Request) {}
+    rpc UpdateSuperSecurityDecision(UpdateDecisionReq) returns (Request) {}
+
+}
+
+
+message UpdateDecisionReq{
+    string id = 1;
+    ApproverDecision approverDecision = 2;
 }
 
 message IncrementRetriesReq{
@@ -234,7 +244,8 @@ message CreateApproverRes{
     int64 updatedAt = 14;
     RequestType type = 15; 
     string serialNumber = 16;
-    bool needSuperSecurityDecision = 17;
+    bool needSecurityDecision = 17;
+    bool needSuperSecurityDecision = 18;
 }
 
 //CreateOG
@@ -272,7 +283,8 @@ message CreateOGRes{
     int64 updatedAt = 15;
     RequestType type = 16; 
     string serialNumber = 17;
-    bool needSuperSecurityDecision = 18;
+    bool needSecurityDecision = 18;
+    bool needSuperSecurityDecision = 19;
 }
 
 message CreateOGKartoffelParams{
@@ -326,7 +338,8 @@ message CreateRoleRes{
     int64 updatedAt = 17;
     RequestType type = 18; 
     string serialNumber = 19;
-    bool needSuperSecurityDecision = 20;
+    bool needSecurityDecision = 20;
+    bool needSuperSecurityDecision = 21;
 }
 message CreateRoleKartoffelParams{
     //for role
@@ -386,7 +399,8 @@ message CreateEntityRes{
     int64 updatedAt = 16;
     RequestType type = 17; 
     string serialNumber = 18;
-    bool needSuperSecurityDecision = 19;
+    bool needSecurityDecision = 19;
+    bool needSuperSecurityDecision = 20;
 }
 message CreateEntityKartoffelParams{
     string firstName = 1;
@@ -446,7 +460,8 @@ message AssignRoleToEntityRes{
     int64 updatedAt = 17;
     RequestType type = 18; 
     string serialNumber = 19;
-    bool needSuperSecurityDecision = 20;
+    bool needSecurityDecision = 20;
+    bool needSuperSecurityDecision = 21;
 }
 message AssignRoleToEntityKartoffelParams{
     string id = 1;
@@ -501,7 +516,8 @@ message RenameOGRes{
     int64 updatedAt = 16;
     RequestType type = 17; 
     string serialNumber = 18;
-    bool needSuperSecurityDecision = 19;
+    bool needSecurityDecision = 19;
+    bool needSuperSecurityDecision = 20;
 }
 message RenameOGKartoffelParams{
 //?
@@ -548,7 +564,8 @@ message RenameRoleRes{
     int64 updatedAt = 16;
     RequestType type = 17; 
     string serialNumber = 18;
-    bool needSuperSecurityDecision = 19;
+    bool needSecurityDecision = 19;
+    bool needSuperSecurityDecision = 20;
 }
 message RenameRoleKartoffelParams{
 //?
@@ -595,7 +612,8 @@ message EditEntityRes{
     int64 updatedAt = 16;
     RequestType type = 17; 
     string serialNumber = 18;
-    bool needSuperSecurityDecision = 19;
+    bool needSecurityDecision = 19;
+    bool needSuperSecurityDecision = 20;
 }
 message EditEntityKartoffelParams{
     string id = 1;
@@ -657,7 +675,8 @@ message DeleteOGRes{
     int64 updatedAt = 16;
     RequestType type = 17; 
     string serialNumber = 18;
-    bool needSuperSecurityDecision = 19;
+    bool needSecurityDecision = 19;
+    bool needSuperSecurityDecision = 20;
 }
 message DeleteOGKartoffelParams{
     string id = 1;
@@ -709,7 +728,8 @@ message DeleteRoleRes{
     int64 updatedAt = 16;
     RequestType type = 17; 
     string serialNumber = 18;
-    bool needSuperSecurityDecision = 19;
+    bool needSecurityDecision = 19;
+    bool needSuperSecurityDecision = 20;
 }
 message DeleteRoleKartoffelParams{
     string roleId = 1;
@@ -757,7 +777,8 @@ message DisconectRoleFromEntityRes{
     int64 updatedAt = 16;
     RequestType type = 17; 
     string serialNumber = 18;
-    bool needSuperSecurityDecision = 19;
+    bool needSecurityDecision = 19;
+    bool needSuperSecurityDecision = 20;
 }
 message DisconectRoleFromEntityKartoffelParams{
     string id = 1;
@@ -930,5 +951,6 @@ message Request{
     int64 updatedAt = 17; 
     RequestType type = 18;
     string serialNumber = 19;
-    bool needSuperSecurityDecision = 20;
+    bool needSecurityDecision = 20;
+    bool needSuperSecurityDecision = 21;
 }
