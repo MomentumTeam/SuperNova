@@ -1,25 +1,32 @@
 import { PersonTypeInRequest } from '../enums/personTypeInRequest.enum';
 import {
+  CanPushToQueueReq,
+  CanPushToQueueRes,
   Decision,
   decisionFromJSON,
-  decisionToJSON,
   DeleteReq,
   GetAllRequestsReq,
   GetRequestByIdReq,
   GetRequestBySerialNumberReq,
+  GetRequestsByIdentifierReq,
   GetRequestsByPersonIdReq,
+  IncrementRetriesReq,
   Request,
   RequestArray,
   RequestStatus,
   requestStatusToJSON,
   RequestType,
   requestTypeToJSON,
+  SearchRequestsByDisplayNameReq,
   StageStatus,
   stageStatusFromJSON,
+  stageStatusToJSON,
   SuccessMessage,
   UpdateADStatusReq,
+  UpdateDecisionReq,
   UpdateKartoffelStatusReq,
 } from '../interfaces/protoc/proto/requestService';
+import * as C from '../config';
 import { RequestModel } from '../models/request.model';
 
 export class RequestRepository {
@@ -37,7 +44,10 @@ export class RequestRepository {
     let keys: any = Object.keys(document);
 
     for (let key of keys) {
-      if (!document[key] || document[key] == null) {
+      if (
+        typeof document[key] !== typeof true &&
+        (!document[key] || document[key] == null)
+      ) {
         delete document[key];
       }
     }
@@ -93,6 +103,14 @@ export class RequestRepository {
       this.turnIdOfApproverToString(document.securityDecision.approver);
     }
 
+    //superSecurityDecision
+    if (
+      document.superSecurityDecision &&
+      document.superSecurityDecision.approver
+    ) {
+      this.turnIdOfApproverToString(document.superSecurityDecision.approver);
+    }
+
     //commanders
     if (document.commanders) {
       document.commanders.forEach((commander: any) => {
@@ -113,6 +131,305 @@ export class RequestRepository {
     }
     this.cleanUnderscoreFields(document);
     this.cleanNullFields(document);
+  }
+
+  async canPushToKartoffelQueue(
+    canPushToQueueReq: CanPushToQueueReq
+  ): Promise<CanPushToQueueRes> {
+    try {
+      const request = await RequestModel.findOne({
+        _id: canPushToQueueReq.id,
+      });
+      if (request) {
+        const document: any = request.toObject();
+        this.turnObjectIdsToStrings(document);
+        const commanderDecision: Decision = document.commanderDecision
+          ? decisionFromJSON(document.commanderDecision.decision)
+          : Decision.DECISION_UNKNOWN;
+        const securityDecision: Decision = document.securityDecision
+          ? decisionFromJSON(document.securityDecision.decision)
+          : Decision.DECISION_UNKNOWN;
+        const superSecurityDecision: Decision = document.superSecurityDecision
+          ? decisionFromJSON(document.superSecurityDecision.decision)
+          : Decision.DECISION_UNKNOWN;
+        const needSuperSecurityDecision = document.needSuperSecurityDecision;
+        const due: number = document.due;
+        const kartoffelFailedRetries = document.kartoffelStatus.failedRetries;
+        const now = new Date().getTime();
+        if (
+          commanderDecision === Decision.APPROVED &&
+          securityDecision === Decision.APPROVED &&
+          (!needSuperSecurityDecision ||
+            superSecurityDecision === Decision.APPROVED) &&
+          due <= now &&
+          kartoffelFailedRetries < C.maxQueueRetries
+        ) {
+          return {
+            canPushToQueue: true,
+          };
+        } else {
+          return {
+            canPushToQueue: false,
+          };
+        }
+      } else {
+        throw new Error(
+          `A request with {id: ${canPushToQueueReq.id}} was not found!`
+        );
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateApproverDecision(
+    updateDecisionReq: UpdateDecisionReq,
+    personType: PersonTypeInRequest
+  ): Promise<Request> {
+    try {
+      let updateQuery: any = {
+        id: updateDecisionReq.id,
+        requestProperties: {},
+      };
+      let approverField;
+      if (personType === PersonTypeInRequest.COMMANDER) {
+        approverField = 'commanderDecision';
+      } else if (personType === PersonTypeInRequest.SECURITY_APPROVER) {
+        approverField = 'securityDecision';
+      } else {
+        approverField = 'superSecurityDecision';
+        // PersonTypeInRequest.SUPER_SECURITY_APPROVER
+      }
+      updateQuery.requestProperties[approverField] =
+        updateDecisionReq.approverDecision;
+      const updatedRequest = await this.updateRequest(updateQuery);
+      return updatedRequest;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async incrementKartoffelRetries(
+    incrementRetriesReq: IncrementRetriesReq
+  ): Promise<Request> {
+    try {
+      let request: Request = await this.getRequestById(
+        incrementRetriesReq as GetRequestByIdReq
+      );
+      let kartoffelStatus = request.kartoffelStatus;
+      if (kartoffelStatus) {
+        if (kartoffelStatus.failedRetries >= C.maxQueueRetries) {
+          throw new Error(
+            `request reached the highest allowed number of retries`
+          );
+        } else {
+          kartoffelStatus.failedRetries = kartoffelStatus.failedRetries + 1;
+          const updateQuery = {
+            id: incrementRetriesReq.id,
+            requestProperties: { kartoffelStatus: kartoffelStatus },
+          };
+          const updatedRequest = await this.updateRequest(updateQuery);
+          return updatedRequest;
+        }
+      } else {
+        throw new Error(
+          `kartoffel status is null for requestId ${incrementRetriesReq.id}`
+        );
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async incrementADRetries(
+    incrementRetriesReq: IncrementRetriesReq
+  ): Promise<Request> {
+    try {
+      let request: Request = await this.getRequestById(
+        incrementRetriesReq as GetRequestByIdReq
+      );
+      let adStatus = request.adStatus;
+      if (adStatus) {
+        if (adStatus.failedRetries >= C.maxQueueRetries) {
+          throw new Error(
+            `request reached the highest allowed number of retries`
+          );
+        } else {
+          adStatus.failedRetries = adStatus.failedRetries + 1;
+          const updateQuery = {
+            id: incrementRetriesReq.id,
+            requestProperties: { adStatus: adStatus },
+          };
+          const updatedRequest = await this.updateRequest(updateQuery);
+          return updatedRequest;
+        }
+      } else {
+        throw new Error(
+          `kartoffel status is null for requestId ${incrementRetriesReq.id}`
+        );
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async canPushToADQueue(
+    canPushToQueueReq: CanPushToQueueReq
+  ): Promise<CanPushToQueueRes> {
+    try {
+      const request = await RequestModel.findOne({
+        _id: canPushToQueueReq.id,
+      });
+      if (request) {
+        const document: any = request.toObject();
+        this.turnObjectIdsToStrings(document);
+        const kartoffelStageStatus = stageStatusFromJSON(
+          document.kartoffelStatus.status
+        );
+        const adFailedRetries = document.adStatus.failedRetries;
+        if (
+          kartoffelStageStatus === StageStatus.STAGE_DONE &&
+          adFailedRetries < C.maxQueueRetries
+        ) {
+          return { canPushToQueue: true };
+        } else {
+          return { canPushToQueue: false };
+        }
+      } else {
+        throw new Error(
+          `A request with {id: ${canPushToQueueReq.id}} was not found!`
+        );
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getRequestsByQuery(
+    query: any,
+    from: number,
+    to: number
+  ): Promise<RequestArray> {
+    try {
+      const totalCount = await RequestModel.count(query);
+      const requests: any = await RequestModel.find(
+        query,
+        {},
+        {
+          skip: from - 1,
+          limit: to - from + 1,
+        }
+      ).sort([['updatedAt', -1]]);
+      if (requests) {
+        let documents: any = [];
+        for (let i = 0; i < requests.length; i++) {
+          const requestObj: any = requests[i].toObject();
+          this.turnObjectIdsToStrings(requestObj);
+          documents.push(requestObj);
+        }
+
+        return {
+          requests: documents,
+          totalCount: totalCount,
+        };
+      } else {
+        return {
+          requests: [],
+          totalCount: 0,
+        };
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async searchRequestsByDisplayName(
+    searchRequestsByDisplayNameReq: SearchRequestsByDisplayNameReq,
+    personType: PersonTypeInRequest
+  ): Promise<RequestArray> {
+    //TODO Check how to search on specific fields
+    try {
+      let query: any = {};
+      const displayName = searchRequestsByDisplayNameReq.displayName;
+      if (personType === PersonTypeInRequest.SUBMITTER) {
+        query = {
+          $text: { $search: displayName },
+        };
+      } else if (personType === PersonTypeInRequest.COMMANDER) {
+        query = {
+          $text: { $search: displayName },
+        };
+      } else if (personType === PersonTypeInRequest.SECURITY_APPROVER) {
+        query = {
+          $text: { $search: displayName },
+        };
+      } else {
+        //approver
+        query = {
+          $text: { $search: displayName },
+        };
+      }
+      const requestArray = await this.getRequestsByQuery(
+        query,
+        searchRequestsByDisplayNameReq.from,
+        searchRequestsByDisplayNameReq.to
+      );
+      return requestArray;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getRequestsByIdentifier(
+    getRequestsByIdentifierReq: GetRequestsByIdentifierReq,
+    personType: PersonTypeInRequest
+  ): Promise<RequestArray> {
+    try {
+      let query: any = {};
+      const identifier = getRequestsByIdentifierReq.identifier;
+      if (personType === PersonTypeInRequest.SUBMITTER) {
+        query = {
+          $or: [
+            { 'submittedBy.personalNumber': identifier },
+            { 'submittedBy.identityCard': identifier },
+          ],
+        };
+      } else if (personType === PersonTypeInRequest.COMMANDER) {
+        query = {
+          $or: [
+            { 'commanders.personalNumber': identifier },
+            { 'commanders.identityCard': identifier },
+          ],
+        };
+      } else if (personType === PersonTypeInRequest.SECURITY_APPROVER) {
+        query = {
+          $or: [
+            { 'securityApprovers.personalNumber': identifier },
+            { 'securityApprovers.identityCard': identifier },
+          ],
+        };
+      } else {
+        //approver
+        query = {
+          $or: [
+            { 'submittedBy.personalNumber': identifier },
+            { 'submittedBy.identityCard': identifier },
+            { 'commanders.personalNumber': identifier },
+            { 'commanders.identityCard': identifier },
+            { 'securityApprovers.personalNumber': identifier },
+            { 'securityApprovers.identityCard': identifier },
+          ],
+        };
+      }
+      const requestArray = await this.getRequestsByQuery(
+        query,
+        getRequestsByIdentifierReq.from,
+        getRequestsByIdentifierReq.to
+      );
+      return requestArray;
+    } catch (error) {
+      throw error;
+    }
   }
 
   async deleteRequest(deleteReq: DeleteReq): Promise<SuccessMessage> {
@@ -136,14 +453,18 @@ export class RequestRepository {
 
       let commanderApproverIdInUpdate: any = undefined,
         securityApproverIdInUpdate: any = undefined,
+        superSecurityApproverIdInUpdate: any = undefined,
         commanderApproverDecisionInUpdate: any = undefined,
         securityApproverDecisionInUpdate: any = undefined,
+        superSecurityApproverDecisionInUpdate: any = undefined,
         kartoffelStageStatusInUpdate: any = undefined,
         adStageStatusInUpdate: any = undefined;
 
       let commanderApproverDecisionInDocument: Decision =
           Decision.DECISION_UNKNOWN,
         securityApproverDecisionInDocument: Decision =
+          Decision.DECISION_UNKNOWN,
+        superSecurityApproverDecisionInDocument: Decision =
           Decision.DECISION_UNKNOWN,
         kartoffelStageStatusInDocument: StageStatus = StageStatus.STAGE_UNKNOWN,
         adStageStatusInDocument: StageStatus = StageStatus.STAGE_UNKNOWN;
@@ -189,6 +510,20 @@ export class RequestRepository {
       if (
         updateReq &&
         updateReq.requestProperties &&
+        updateReq.requestProperties.superSecurityDecision &&
+        updateReq.requestProperties.superSecurityDecision.approver
+      ) {
+        // commander decision in update
+        superSecurityApproverIdInUpdate =
+          updateReq.requestProperties.superSecurityDecision.approver.id;
+        superSecurityApproverDecisionInUpdate = decisionFromJSON(
+          updateReq.requestProperties.superSecurityDecision.decision
+        );
+      }
+
+      if (
+        updateReq &&
+        updateReq.requestProperties &&
         updateReq.requestProperties.securityDecision &&
         updateReq.requestProperties.securityDecision.approver
       ) {
@@ -213,27 +548,29 @@ export class RequestRepository {
         if (documentBefore) {
           const documentBeforeObj: any = documentBefore.toObject();
           this.turnObjectIdsToStrings(documentBeforeObj);
+          const needSuperSecurityDecision =
+            documentBeforeObj.needSuperSecurityDecision;
 
-          if (
-            (commanderApproverIdInUpdate &&
-              (!documentBeforeObj.commanders ||
-                !documentBeforeObj.commanders.some(
-                  (commander: any) =>
-                    commander.id === commanderApproverIdInUpdate
-                ))) ||
-            (securityApproverIdInUpdate &&
-              (!documentBeforeObj.securityApprovers ||
-                (securityApproverIdInUpdate &&
-                  !documentBeforeObj.securityApprovers.some(
-                    (securityApprover: any) =>
-                      securityApprover.id === securityApproverIdInUpdate
-                  ))))
-          ) {
-            //if one of the approvers does not exist in commanders or securityApprovers, so it is not allowed
-            throw new Error(
-              `Commander or security approver is not allowed to decide on this request!`
-            );
-          }
+          // if (
+          //   (commanderApproverIdInUpdate &&
+          //     (!documentBeforeObj.commanders ||
+          //       !documentBeforeObj.commanders.some(
+          //         (commander: any) =>
+          //           commander.id === commanderApproverIdInUpdate
+          //       ))) ||
+          //   (securityApproverIdInUpdate &&
+          //     (!documentBeforeObj.securityApprovers ||
+          //       (securityApproverIdInUpdate &&
+          //         !documentBeforeObj.securityApprovers.some(
+          //           (securityApprover: any) =>
+          //             securityApprover.id === securityApproverIdInUpdate
+          //         ))))
+          // ) {
+          //   //if one of the approvers does not exist in commanders or securityApprovers, so it is not allowed
+          //   throw new Error(
+          //     `Commander or security approver is not allowed to decide on this request!`
+          //   );
+          // }
 
           if (
             documentBeforeObj.commanderDecision &&
@@ -256,8 +593,19 @@ export class RequestRepository {
           }
 
           if (
+            documentBeforeObj.superSecurityDecision &&
+            documentBeforeObj.superSecurityDecision.decision
+          ) {
+            // commander decision in document
+            superSecurityApproverDecisionInDocument = decisionFromJSON(
+              documentBeforeObj.superSecurityDecision.decision
+            );
+          }
+
+          if (
             commanderApproverDecisionInUpdate ||
-            securityApproverDecisionInUpdate
+            securityApproverDecisionInUpdate ||
+            superSecurityApproverDecisionInUpdate
           ) {
             if (
               commanderApproverDecisionInUpdate === Decision.DENIED ||
@@ -265,7 +613,12 @@ export class RequestRepository {
                 commanderApproverDecisionInDocument === Decision.DENIED) ||
               securityApproverDecisionInUpdate === Decision.DENIED ||
               (!securityApproverDecisionInUpdate &&
-                securityApproverDecisionInDocument === Decision.DENIED)
+                securityApproverDecisionInDocument === Decision.DENIED) ||
+              (needSuperSecurityDecision &&
+                (superSecurityApproverDecisionInUpdate === Decision.DENIED ||
+                  (!superSecurityApproverDecisionInUpdate &&
+                    superSecurityApproverDecisionInDocument ===
+                      Decision.DENIED)))
             ) {
               // if one of the approvers denied the request
               requestUpdate.status = requestStatusToJSON(
@@ -402,6 +755,7 @@ export class RequestRepository {
       const request: any = new RequestModel(createRequestReq);
       request.type = requestTypeToJSON(type);
       request.createdAt = new Date().getTime();
+
       const createdCreateRequest = await request.save();
       const document = createdCreateRequest.toObject();
       this.turnObjectIdsToStrings(document);
@@ -415,33 +769,12 @@ export class RequestRepository {
     getAllRequestsReq: GetAllRequestsReq
   ): Promise<RequestArray> {
     try {
-      const totalCount = await RequestModel.count({});
-      const requests: any = await RequestModel.find(
+      const requestArray = await this.getRequestsByQuery(
         {},
-        {},
-        {
-          skip: getAllRequestsReq.from - 1,
-          limit: getAllRequestsReq.to - getAllRequestsReq.from + 1,
-        }
-      ).sort([['updatedAt', -1]]);
-      if (requests) {
-        let documents: any = [];
-        for (let i = 0; i < requests.length; i++) {
-          const requestObj: any = requests[i].toObject();
-          this.turnObjectIdsToStrings(requestObj);
-          documents.push(requestObj);
-        }
-
-        return {
-          requests: documents,
-          totalCount: totalCount,
-        };
-      } else {
-        return {
-          requests: [],
-          totalCount: 0,
-        };
-      }
+        getAllRequestsReq.from,
+        getAllRequestsReq.to
+      );
+      return requestArray;
     } catch (error) {
       throw error;
     }
@@ -492,8 +825,8 @@ export class RequestRepository {
     try {
       const field =
         personTypeInRequest === PersonTypeInRequest.COMMANDER
-          ? 'commanders'
-          : 'submittedBy';
+          ? 'commanders.id'
+          : 'submittedBy.id';
       const totalCount = await RequestModel.count({
         [field]: getRequestsByPersonIdReq.id,
       });
@@ -526,7 +859,4 @@ export class RequestRepository {
       throw error;
     }
   }
-}
-function decisionFromJson(decision: any) {
-  throw new Error('Function not implemented.');
 }

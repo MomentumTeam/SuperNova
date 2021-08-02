@@ -1,16 +1,22 @@
 import { PersonTypeInRequest } from '../enums/personTypeInRequest.enum';
 import {
+  CanPushToQueueReq,
+  CanPushToQueueRes,
   DeleteReq,
   GetAllRequestsReq,
   GetRequestByIdReq,
   GetRequestBySerialNumberReq,
+  GetRequestsByIdentifierReq,
   GetRequestsByPersonIdReq,
+  IncrementRetriesReq,
   Request,
   RequestArray,
   RequestReq,
   RequestType,
+  SearchRequestsByDisplayNameReq,
   SuccessMessage,
   UpdateADStatusReq,
+  UpdateDecisionReq,
   UpdateKartoffelStatusReq,
 } from '../interfaces/protoc/proto/requestService';
 import { RequestRepository } from './request.repository';
@@ -18,6 +24,68 @@ export class RequestManager {
   private requestRepository: RequestRepository;
   constructor() {
     this.requestRepository = new RequestRepository();
+  }
+
+  async canPushToKartoffelQueue(
+    CanPushToQueueReq: CanPushToQueueReq
+  ): Promise<CanPushToQueueRes> {
+    try {
+      return (await this.requestRepository.canPushToKartoffelQueue(
+        CanPushToQueueReq
+      )) as CanPushToQueueRes;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async incrementKartoffelRetries(
+    incrementRetriesReq: IncrementRetriesReq
+  ): Promise<Request> {
+    try {
+      return (await this.requestRepository.incrementKartoffelRetries(
+        incrementRetriesReq
+      )) as Request;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async incrementADRetries(
+    incrementRetriesReq: IncrementRetriesReq
+  ): Promise<Request> {
+    try {
+      return (await this.requestRepository.incrementADRetries(
+        incrementRetriesReq
+      )) as Request;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateApproverDecision(
+    updateDecisionReq: UpdateDecisionReq,
+    personType: PersonTypeInRequest
+  ): Promise<Request> {
+    try {
+      return (await this.requestRepository.updateApproverDecision(
+        updateDecisionReq,
+        personType
+      )) as Request;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async canPushToADQueue(
+    CanPushToQueueReq: CanPushToQueueReq
+  ): Promise<CanPushToQueueRes> {
+    try {
+      return (await this.requestRepository.canPushToADQueue(
+        CanPushToQueueReq
+      )) as CanPushToQueueRes;
+    } catch (error) {
+      throw error;
+    }
   }
 
   async updateRequest(updateRequestReq: any): Promise<Request> {
@@ -47,6 +115,34 @@ export class RequestManager {
       return (await this.requestRepository.updateADStatus(
         updateADStatusReq
       )) as Request;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async searchRequestsByDisplayName(
+    searchRequestsByDisplayName: SearchRequestsByDisplayNameReq,
+    personType: PersonTypeInRequest
+  ): Promise<RequestArray> {
+    try {
+      return (await this.requestRepository.searchRequestsByDisplayName(
+        searchRequestsByDisplayName,
+        personType
+      )) as RequestArray;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getRequestsByIdentifier(
+    getRequestsByIdentifier: GetRequestsByIdentifierReq,
+    personType: PersonTypeInRequest
+  ): Promise<RequestArray> {
+    try {
+      return (await this.requestRepository.getRequestsByIdentifier(
+        getRequestsByIdentifier,
+        personType
+      )) as RequestArray;
     } catch (error) {
       throw error;
     }

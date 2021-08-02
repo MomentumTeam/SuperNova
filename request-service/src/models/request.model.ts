@@ -13,11 +13,20 @@ autoIncrement.initialize(connection);
 
 const RequestSchema = new Schema(
   {
-    createdAt: { type: Number, default: new Date().getTime() },
-    updatedAt: { type: Number, default: new Date().getTime() },
+    createdAt: { type: Number, default: () => new Date().getTime() },
+    due: { type: Number, default: () => new Date().getTime() },
+    updatedAt: { type: Number, default: () => new Date().getTime() },
     type: {
       type: String,
       enum: RequestType,
+    },
+    needSuperSecurityDecision: {
+      type: Boolean,
+      default: false,
+    },
+    needSecurityDecision: {
+      type: Boolean,
+      default: true,
     },
     comments: { type: String, default: '' },
     approversComments: { type: String, default: '' },
@@ -119,6 +128,10 @@ const RequestSchema = new Schema(
         type: String,
         default: null,
       },
+      failedRetries: {
+        type: Number,
+        default: 0,
+      },
     },
     adStatus: {
       status: {
@@ -129,6 +142,10 @@ const RequestSchema = new Schema(
       message: {
         type: String,
         default: null,
+      },
+      failedRetries: {
+        type: Number,
+        default: 0,
       },
     },
     kartoffelParams: {
@@ -199,6 +216,12 @@ RequestSchema.pre<any>('findOneAndUpdate', function (next) {
   };
   func(this._update.$set);
   return next();
+});
+
+RequestSchema.index({
+  'submittedBy.displayName': 'text',
+  'commanders.displayName': 'text',
+  'securityApprovers.displayName': 'text',
 });
 
 export const RequestModel = connection.model(
