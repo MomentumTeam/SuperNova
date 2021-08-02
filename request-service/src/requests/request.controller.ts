@@ -309,6 +309,48 @@ export async function incrementKartoffelRetries(
   }
 }
 
+export async function getRequestsInProgressByDue(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    const requests = await requestManager.getRequestsInProgressByDue(
+      call.request
+    );
+    callback(null, requests);
+  } catch (error) {
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function getRequestIdsInProgressByDue(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    const requestIds = await requestManager.getRequestIdsInProgressByDue(
+      call.request
+    );
+    callback(null, requestIds);
+  } catch (error) {
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
 export async function incrementADRetries(
   call: any,
   callback: any

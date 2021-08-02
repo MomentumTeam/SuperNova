@@ -7,13 +7,15 @@ import {
   GetUserTypeRes,
   SearchByDisplayNameReq,
   SearchByDomainUserReq,
-  SuccessMessage,
-  UpdateDecisionReq,
   UserType,
   userTypeFromJSON,
   userTypeToJSON,
 } from '../interfaces/protoc/proto/approverService';
 import { Entity } from '../interfaces/protoc/proto/kartoffelService';
+import {
+  Request,
+  UpdateDecisionReq,
+} from '../interfaces/protoc/proto/requestService';
 import { ApproverModel } from '../models/approver.model';
 import KartoffelService from '../services/kartoffelService';
 import RequestService from '../services/requestService';
@@ -227,15 +229,12 @@ export class ApproverRepository {
 
   async updateCommanderDecision(
     updateDecisionReq: UpdateDecisionReq
-  ): Promise<SuccessMessage> {
+  ): Promise<Request> {
     try {
-      await RequestService.updateRequest({
-        id: updateDecisionReq.requestId,
-        requestProperties: {
-          commanderDecision: updateDecisionReq.approverDecision,
-        },
-      });
-      return { success: true };
+      const updatedRequest = await RequestService.updateCommanderDecision(
+        updateDecisionReq
+      );
+      return updatedRequest;
     } catch (error) {
       throw error;
     }
@@ -243,15 +242,25 @@ export class ApproverRepository {
 
   async updateSecurityDecision(
     updateDecisionReq: UpdateDecisionReq
-  ): Promise<SuccessMessage> {
+  ): Promise<Request> {
     try {
-      await RequestService.updateRequest({
-        id: updateDecisionReq.requestId,
-        requestProperties: {
-          securityDecision: updateDecisionReq.approverDecision,
-        },
-      });
-      return { success: true };
+      const updatedRequest = await RequestService.updateSecurityDecision(
+        updateDecisionReq
+      );
+      return updatedRequest;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateSuperSecurityDecision(
+    updateDecisionReq: UpdateDecisionReq
+  ): Promise<Request> {
+    try {
+      const updatedRequest = await RequestService.updateSuperSecurityDecision(
+        updateDecisionReq
+      );
+      return updatedRequest;
     } catch (error) {
       throw error;
     }

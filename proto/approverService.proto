@@ -1,6 +1,6 @@
 syntax = "proto3";
-// import "/home/barak/Desktop/SuperNova/proto/requestService.proto";//when loading with bloomRPC
-import "proto/requestService.proto"; //when running in vscode
+import "/home/barak/Desktop/SuperNova/proto/requestService.proto";//when loading with bloomRPC
+// import "proto/requestService.proto"; //when running in vscode
 // import "/app/proto/requestService.proto"; //When using docker
 package ApproverService;
 
@@ -14,17 +14,14 @@ service ApproverService {
     rpc GetAllSecurityApprovers(GetAllApproversReq) returns (ApproverArray) {}
     rpc GetAllSuperSecurityApprovers(GetAllApproversReq) returns (ApproverArray) {}
     rpc GetAllCommanderApprovers(GetAllApproversReq) returns (ApproverArray) {}
-    rpc UpdateCommanderDecision(UpdateDecisionReq) returns (SuccessMessage) {}
-    rpc UpdateSecurityDecision(UpdateDecisionReq) returns (SuccessMessage) {}
+    
+    rpc UpdateCommanderDecision(RequestService.UpdateDecisionReq) returns (RequestService.Request) {}
+    rpc UpdateSecurityDecision(RequestService.UpdateDecisionReq) returns (RequestService.Request) {}
+    rpc UpdateSuperSecurityDecision(RequestService.UpdateDecisionReq) returns (RequestService.Request) {}
 }
 
 message GetAllApproversReq{
     
-}
-
-message UpdateDecisionReq{
-    string requestId = 1;
-    RequestService.ApproverDecision approverDecision = 2;
 }
 
 message SuccessMessage{
