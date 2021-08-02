@@ -64,10 +64,11 @@ export class Server {
           SearchApproverByDomainUser: searchApproverByDomainUser,
           GetAllSecurityApprovers: getAllSecurityApprovers,
           GetAllCommanderApprovers: getAllCommanderApprovers,
-          UpdateCommanderDecision: updateCommanderDecision,
-          UpdateSecurityDecision: updateSecurityDecision,
           GetAllSuperSecurityApprovers: getAllSuperSecurityApprovers,
           AddSuperSecurityApprover: addSuperSecurityApprover,
+          UpdateCommanderDecision: updateCommanderDecision,
+          UpdateSecurityDecision: updateSecurityDecision,
+          UpdateSuperSecurityDecision: updateSuperSecurityDecision,
         }
       );
       logger.log({

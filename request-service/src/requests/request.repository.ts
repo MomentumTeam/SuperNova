@@ -10,9 +10,11 @@ import {
   GetRequestBySerialNumberReq,
   GetRequestsByIdentifierReq,
   GetRequestsByPersonIdReq,
+  GetRequestsInProgressByDueReq,
   IncrementRetriesReq,
   Request,
   RequestArray,
+  RequestIdArray,
   RequestStatus,
   requestStatusToJSON,
   RequestType,
@@ -28,6 +30,7 @@ import {
 } from '../interfaces/protoc/proto/requestService';
 import * as C from '../config';
 import { RequestModel } from '../models/request.model';
+import { requestStatusFromJSON } from '../interfaces/protoc/proto/approverService';
 
 export class RequestRepository {
   private cleanUnderscoreFields(document: any): void {
@@ -307,19 +310,33 @@ export class RequestRepository {
 
   async getRequestsByQuery(
     query: any,
-    from: number,
-    to: number
-  ): Promise<RequestArray> {
+    expanded: boolean,
+    from?: number,
+    to?: number
+  ): Promise<any> {
     try {
+      const pagination =
+        from && to
+          ? {
+              skip: from - 1,
+              limit: to - from + 1,
+            }
+          : {};
+
       const totalCount = await RequestModel.count(query);
-      const requests: any = await RequestModel.find(
-        query,
-        {},
-        {
-          skip: from - 1,
-          limit: to - from + 1,
-        }
-      ).sort([['updatedAt', -1]]);
+      let requests: any;
+      if (!expanded) {
+        requests = await RequestModel.find(query, {}, pagination)
+          .sort([['updatedAt', -1]])
+          .distinct('_id');
+        requests = requests.map((requestId: any) => requestId.toString());
+        return { requestIds: requests, count: totalCount };
+      } else {
+        requests = await RequestModel.find(query, {}, pagination).sort([
+          ['updatedAt', -1],
+        ]);
+      }
+
       if (requests) {
         let documents: any = [];
         for (let i = 0; i < requests.length; i++) {
@@ -338,6 +355,42 @@ export class RequestRepository {
           totalCount: 0,
         };
       }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getRequestsInProgressByDue(
+    getRequestsInProgressByDueReq: GetRequestsInProgressByDueReq
+  ): Promise<RequestArray> {
+    try {
+      const due: number = getRequestsInProgressByDueReq.due;
+      const requestArray = await this.getRequestsByQuery(
+        {
+          due: { $lte: due },
+          status: requestStatusToJSON(RequestStatus.IN_PROGRESS),
+        },
+        true
+      );
+      return requestArray as RequestArray;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getRequestIdsInProgressByDue(
+    getRequestsInProgressByDueReq: GetRequestsInProgressByDueReq
+  ): Promise<RequestIdArray> {
+    try {
+      const due: number = getRequestsInProgressByDueReq.due;
+      let requestIdArray = await this.getRequestsByQuery(
+        {
+          due: { $lte: due },
+          status: requestStatusToJSON(RequestStatus.IN_PROGRESS),
+        },
+        false
+      );
+      return requestIdArray as RequestIdArray;
     } catch (error) {
       throw error;
     }
@@ -371,6 +424,7 @@ export class RequestRepository {
       }
       const requestArray = await this.getRequestsByQuery(
         query,
+        true,
         searchRequestsByDisplayNameReq.from,
         searchRequestsByDisplayNameReq.to
       );
@@ -423,6 +477,7 @@ export class RequestRepository {
       }
       const requestArray = await this.getRequestsByQuery(
         query,
+        true,
         getRequestsByIdentifierReq.from,
         getRequestsByIdentifierReq.to
       );
@@ -771,6 +826,7 @@ export class RequestRepository {
     try {
       const requestArray = await this.getRequestsByQuery(
         {},
+        true,
         getAllRequestsReq.from,
         getAllRequestsReq.to
       );

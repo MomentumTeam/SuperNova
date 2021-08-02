@@ -8,9 +8,11 @@ import {
   GetRequestBySerialNumberReq,
   GetRequestsByIdentifierReq,
   GetRequestsByPersonIdReq,
+  GetRequestsInProgressByDueReq,
   IncrementRetriesReq,
   Request,
   RequestArray,
+  RequestIdArray,
   RequestReq,
   RequestType,
   SearchRequestsByDisplayNameReq,
@@ -45,6 +47,30 @@ export class RequestManager {
       return (await this.requestRepository.incrementKartoffelRetries(
         incrementRetriesReq
       )) as Request;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getRequestsInProgressByDue(
+    getRequestsInProgressByDueReq: GetRequestsInProgressByDueReq
+  ): Promise<RequestArray> {
+    try {
+      return (await this.requestRepository.getRequestsInProgressByDue(
+        getRequestsInProgressByDueReq
+      )) as RequestArray;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getRequestIdsInProgressByDue(
+    getRequestsInProgressByDueReq: GetRequestsInProgressByDueReq
+  ): Promise<RequestIdArray> {
+    try {
+      return (await this.requestRepository.getRequestIdsInProgressByDue(
+        getRequestsInProgressByDueReq
+      )) as RequestIdArray;
     } catch (error) {
       throw error;
     }

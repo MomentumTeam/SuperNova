@@ -7,9 +7,11 @@ import {
   GetUserTypeRes,
   SearchByDisplayNameReq,
   SearchByDomainUserReq,
-  SuccessMessage,
-  UpdateDecisionReq,
 } from '../interfaces/protoc/proto/approverService';
+import {
+  Request,
+  UpdateDecisionReq,
+} from '../interfaces/protoc/proto/requestService';
 import { ApproverRepository } from './approver.repository';
 
 export class ApproverManager {
@@ -126,7 +128,7 @@ export class ApproverManager {
 
   async updateCommanderDecision(
     updateDecisionReq: UpdateDecisionReq
-  ): Promise<SuccessMessage> {
+  ): Promise<Request> {
     try {
       return await this.approverRepository.updateCommanderDecision(
         updateDecisionReq
@@ -138,9 +140,21 @@ export class ApproverManager {
 
   async updateSecurityDecision(
     updateDecisionReq: UpdateDecisionReq
-  ): Promise<SuccessMessage> {
+  ): Promise<Request> {
     try {
       return await this.approverRepository.updateSecurityDecision(
+        updateDecisionReq
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateSuperSecurityDecision(
+    updateDecisionReq: UpdateDecisionReq
+  ): Promise<Request> {
+    try {
+      return await this.approverRepository.updateSuperSecurityDecision(
         updateDecisionReq
       );
     } catch (error) {

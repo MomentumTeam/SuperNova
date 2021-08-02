@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { ApproverDecision } from "../proto/requestService";
+import { Request, UpdateDecisionReq } from "../proto/requestService";
 
 export const protobufPackage = "ApproverService";
 
@@ -101,11 +101,6 @@ export function userTypeToJSON(object: UserType): string {
 
 export interface GetAllApproversReq {}
 
-export interface UpdateDecisionReq {
-  requestId: string;
-  approverDecision: ApproverDecision | undefined;
-}
-
 export interface SuccessMessage {
   success: boolean;
 }
@@ -189,100 +184,6 @@ export const GetAllApproversReq = {
 
   fromPartial(_: DeepPartial<GetAllApproversReq>): GetAllApproversReq {
     const message = { ...baseGetAllApproversReq } as GetAllApproversReq;
-    return message;
-  },
-};
-
-const baseUpdateDecisionReq: object = { requestId: "" };
-
-export const UpdateDecisionReq = {
-  encode(
-    message: UpdateDecisionReq,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.requestId !== "") {
-      writer.uint32(10).string(message.requestId);
-    }
-    if (message.approverDecision !== undefined) {
-      ApproverDecision.encode(
-        message.approverDecision,
-        writer.uint32(18).fork()
-      ).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): UpdateDecisionReq {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseUpdateDecisionReq } as UpdateDecisionReq;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.requestId = reader.string();
-          break;
-        case 2:
-          message.approverDecision = ApproverDecision.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): UpdateDecisionReq {
-    const message = { ...baseUpdateDecisionReq } as UpdateDecisionReq;
-    if (object.requestId !== undefined && object.requestId !== null) {
-      message.requestId = String(object.requestId);
-    } else {
-      message.requestId = "";
-    }
-    if (
-      object.approverDecision !== undefined &&
-      object.approverDecision !== null
-    ) {
-      message.approverDecision = ApproverDecision.fromJSON(
-        object.approverDecision
-      );
-    } else {
-      message.approverDecision = undefined;
-    }
-    return message;
-  },
-
-  toJSON(message: UpdateDecisionReq): unknown {
-    const obj: any = {};
-    message.requestId !== undefined && (obj.requestId = message.requestId);
-    message.approverDecision !== undefined &&
-      (obj.approverDecision = message.approverDecision
-        ? ApproverDecision.toJSON(message.approverDecision)
-        : undefined);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<UpdateDecisionReq>): UpdateDecisionReq {
-    const message = { ...baseUpdateDecisionReq } as UpdateDecisionReq;
-    if (object.requestId !== undefined && object.requestId !== null) {
-      message.requestId = object.requestId;
-    } else {
-      message.requestId = "";
-    }
-    if (
-      object.approverDecision !== undefined &&
-      object.approverDecision !== null
-    ) {
-      message.approverDecision = ApproverDecision.fromPartial(
-        object.approverDecision
-      );
-    } else {
-      message.approverDecision = undefined;
-    }
     return message;
   },
 };
@@ -1041,8 +942,9 @@ export interface ApproverService {
     request: GetAllApproversReq
   ): Promise<ApproverArray>;
   GetAllCommanderApprovers(request: GetAllApproversReq): Promise<ApproverArray>;
-  UpdateCommanderDecision(request: UpdateDecisionReq): Promise<SuccessMessage>;
-  UpdateSecurityDecision(request: UpdateDecisionReq): Promise<SuccessMessage>;
+  UpdateCommanderDecision(request: UpdateDecisionReq): Promise<Request>;
+  UpdateSecurityDecision(request: UpdateDecisionReq): Promise<Request>;
+  UpdateSuperSecurityDecision(request: UpdateDecisionReq): Promise<Request>;
 }
 
 export class ApproverServiceClientImpl implements ApproverService {
@@ -1063,6 +965,8 @@ export class ApproverServiceClientImpl implements ApproverService {
     this.GetAllCommanderApprovers = this.GetAllCommanderApprovers.bind(this);
     this.UpdateCommanderDecision = this.UpdateCommanderDecision.bind(this);
     this.UpdateSecurityDecision = this.UpdateSecurityDecision.bind(this);
+    this.UpdateSuperSecurityDecision =
+      this.UpdateSuperSecurityDecision.bind(this);
   }
   AddCommanderApprover(request: AddApproverReq): Promise<Approver> {
     const data = AddApproverReq.encode(request).finish();
@@ -1162,24 +1066,34 @@ export class ApproverServiceClientImpl implements ApproverService {
     return promise.then((data) => ApproverArray.decode(new _m0.Reader(data)));
   }
 
-  UpdateCommanderDecision(request: UpdateDecisionReq): Promise<SuccessMessage> {
+  UpdateCommanderDecision(request: UpdateDecisionReq): Promise<Request> {
     const data = UpdateDecisionReq.encode(request).finish();
     const promise = this.rpc.request(
       "ApproverService.ApproverService",
       "UpdateCommanderDecision",
       data
     );
-    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
+    return promise.then((data) => Request.decode(new _m0.Reader(data)));
   }
 
-  UpdateSecurityDecision(request: UpdateDecisionReq): Promise<SuccessMessage> {
+  UpdateSecurityDecision(request: UpdateDecisionReq): Promise<Request> {
     const data = UpdateDecisionReq.encode(request).finish();
     const promise = this.rpc.request(
       "ApproverService.ApproverService",
       "UpdateSecurityDecision",
       data
     );
-    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
+    return promise.then((data) => Request.decode(new _m0.Reader(data)));
+  }
+
+  UpdateSuperSecurityDecision(request: UpdateDecisionReq): Promise<Request> {
+    const data = UpdateDecisionReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "ApproverService.ApproverService",
+      "UpdateSuperSecurityDecision",
+      data
+    );
+    return promise.then((data) => Request.decode(new _m0.Reader(data)));
   }
 }
 

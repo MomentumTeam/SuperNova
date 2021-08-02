@@ -5,6 +5,7 @@ import {
   GetUserTypeRes,
   SuccessMessage,
 } from '../interfaces/protoc/proto/approverService';
+import { Request } from '../interfaces/protoc/proto/requestService';
 import { ApproverManager } from './approver.manager';
 
 const approverManager: ApproverManager = new ApproverManager();
@@ -195,9 +196,10 @@ export async function updateCommanderDecision(
   callback: any
 ): Promise<void> {
   try {
-    const successMessage: SuccessMessage =
-      await approverManager.updateCommanderDecision(call.request);
-    callback(null, successMessage);
+    const request: Request = await approverManager.updateCommanderDecision(
+      call.request
+    );
+    callback(null, request);
   } catch (error) {
     callback(
       {
@@ -215,9 +217,31 @@ export async function updateSecurityDecision(
   callback: any
 ): Promise<void> {
   try {
-    const successMessage: SuccessMessage =
-      await approverManager.updateSecurityDecision(call.request);
-    callback(null, successMessage);
+    const request: Request = await approverManager.updateSecurityDecision(
+      call.request
+    );
+    callback(null, request);
+  } catch (error) {
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function updateSuperSecurityDecision(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    const request: Request = await approverManager.updateSuperSecurityDecision(
+      call.request
+    );
+    callback(null, request);
   } catch (error) {
     callback(
       {

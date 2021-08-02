@@ -20,9 +20,12 @@ import {
   updateApproverDecisionFuncByPersonType,
   incrementKartoffelRetries,
   incrementADRetries,
+  getRequestsInProgressByDue,
+  getRequestIdsInProgressByDue,
 } from './requests/request.controller';
 import {
   GetRequestsByIdentifierReq,
+  GetRequestsInProgressByDueReq,
   RequestType,
 } from './interfaces/protoc/proto/requestService';
 import { findPath } from './utils/path';
@@ -134,6 +137,8 @@ export class Server {
         UpdateSuperSecurityDecision: updateApproverDecisionFuncByPersonType(
           PersonTypeInRequest.SUPER_SECURITY_APPROVER
         ),
+        GetRequestsInProgressByDue: getRequestsInProgressByDue,
+        GetRequestIdsInProgressByDue: getRequestIdsInProgressByDue,
       });
       logger.log({
         level: 'info',

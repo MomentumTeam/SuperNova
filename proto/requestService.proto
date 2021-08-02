@@ -44,6 +44,18 @@ service RequestService {
     rpc UpdateSecurityDecision(UpdateDecisionReq) returns (Request) {}
     rpc UpdateSuperSecurityDecision(UpdateDecisionReq) returns (Request) {}
 
+    rpc GetRequestsInProgressByDue(GetRequestsInProgressByDueReq) returns (RequestArray){}
+    rpc GetRequestIdsInProgressByDue(GetRequestsInProgressByDueReq) returns (RequestIdArray){}
+
+}
+
+message GetRequestsInProgressByDueReq{
+    int64 due = 1;
+}
+
+message RequestIdArray{
+    repeated string requestIds = 1;
+    int32 count = 2;
 }
 
 

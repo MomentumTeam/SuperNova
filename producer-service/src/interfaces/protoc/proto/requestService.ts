@@ -254,6 +254,15 @@ export function decisionToJSON(object: Decision): string {
   }
 }
 
+export interface GetRequestsInProgressByDueReq {
+  due: number;
+}
+
+export interface RequestIdArray {
+  requestIds: string[];
+  count: number;
+}
+
 export interface UpdateDecisionReq {
   id: string;
   approverDecision: ApproverDecision | undefined;
@@ -1069,6 +1078,157 @@ export interface Request {
   needSecurityDecision: boolean;
   needSuperSecurityDecision: boolean;
 }
+
+const baseGetRequestsInProgressByDueReq: object = { due: 0 };
+
+export const GetRequestsInProgressByDueReq = {
+  encode(
+    message: GetRequestsInProgressByDueReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.due !== 0) {
+      writer.uint32(8).int64(message.due);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GetRequestsInProgressByDueReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseGetRequestsInProgressByDueReq,
+    } as GetRequestsInProgressByDueReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.due = longToNumber(reader.int64() as Long);
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetRequestsInProgressByDueReq {
+    const message = {
+      ...baseGetRequestsInProgressByDueReq,
+    } as GetRequestsInProgressByDueReq;
+    if (object.due !== undefined && object.due !== null) {
+      message.due = Number(object.due);
+    } else {
+      message.due = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: GetRequestsInProgressByDueReq): unknown {
+    const obj: any = {};
+    message.due !== undefined && (obj.due = message.due);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<GetRequestsInProgressByDueReq>
+  ): GetRequestsInProgressByDueReq {
+    const message = {
+      ...baseGetRequestsInProgressByDueReq,
+    } as GetRequestsInProgressByDueReq;
+    if (object.due !== undefined && object.due !== null) {
+      message.due = object.due;
+    } else {
+      message.due = 0;
+    }
+    return message;
+  },
+};
+
+const baseRequestIdArray: object = { requestIds: "", count: 0 };
+
+export const RequestIdArray = {
+  encode(
+    message: RequestIdArray,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.requestIds) {
+      writer.uint32(10).string(v!);
+    }
+    if (message.count !== 0) {
+      writer.uint32(16).int32(message.count);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): RequestIdArray {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseRequestIdArray } as RequestIdArray;
+    message.requestIds = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.requestIds.push(reader.string());
+          break;
+        case 2:
+          message.count = reader.int32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RequestIdArray {
+    const message = { ...baseRequestIdArray } as RequestIdArray;
+    message.requestIds = [];
+    if (object.requestIds !== undefined && object.requestIds !== null) {
+      for (const e of object.requestIds) {
+        message.requestIds.push(String(e));
+      }
+    }
+    if (object.count !== undefined && object.count !== null) {
+      message.count = Number(object.count);
+    } else {
+      message.count = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: RequestIdArray): unknown {
+    const obj: any = {};
+    if (message.requestIds) {
+      obj.requestIds = message.requestIds.map((e) => e);
+    } else {
+      obj.requestIds = [];
+    }
+    message.count !== undefined && (obj.count = message.count);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<RequestIdArray>): RequestIdArray {
+    const message = { ...baseRequestIdArray } as RequestIdArray;
+    message.requestIds = [];
+    if (object.requestIds !== undefined && object.requestIds !== null) {
+      for (const e of object.requestIds) {
+        message.requestIds.push(e);
+      }
+    }
+    if (object.count !== undefined && object.count !== null) {
+      message.count = object.count;
+    } else {
+      message.count = 0;
+    }
+    return message;
+  },
+};
 
 const baseUpdateDecisionReq: object = { id: "" };
 
@@ -17445,6 +17605,12 @@ export interface RequestService {
   UpdateCommanderDecision(request: UpdateDecisionReq): Promise<Request>;
   UpdateSecurityDecision(request: UpdateDecisionReq): Promise<Request>;
   UpdateSuperSecurityDecision(request: UpdateDecisionReq): Promise<Request>;
+  GetRequestsInProgressByDue(
+    request: GetRequestsInProgressByDueReq
+  ): Promise<RequestArray>;
+  GetRequestIdsInProgressByDue(
+    request: GetRequestsInProgressByDueReq
+  ): Promise<RequestIdArray>;
 }
 
 export class RequestServiceClientImpl implements RequestService {
@@ -17496,6 +17662,10 @@ export class RequestServiceClientImpl implements RequestService {
     this.UpdateSecurityDecision = this.UpdateSecurityDecision.bind(this);
     this.UpdateSuperSecurityDecision =
       this.UpdateSuperSecurityDecision.bind(this);
+    this.GetRequestsInProgressByDue =
+      this.GetRequestsInProgressByDue.bind(this);
+    this.GetRequestIdsInProgressByDue =
+      this.GetRequestIdsInProgressByDue.bind(this);
   }
   CreateRoleRequest(request: CreateRoleReq): Promise<CreateRoleRes> {
     const data = CreateRoleReq.encode(request).finish();
@@ -17885,6 +18055,30 @@ export class RequestServiceClientImpl implements RequestService {
       data
     );
     return promise.then((data) => Request.decode(new _m0.Reader(data)));
+  }
+
+  GetRequestsInProgressByDue(
+    request: GetRequestsInProgressByDueReq
+  ): Promise<RequestArray> {
+    const data = GetRequestsInProgressByDueReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "GetRequestsInProgressByDue",
+      data
+    );
+    return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
+  }
+
+  GetRequestIdsInProgressByDue(
+    request: GetRequestsInProgressByDueReq
+  ): Promise<RequestIdArray> {
+    const data = GetRequestsInProgressByDueReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "GetRequestIdsInProgressByDue",
+      data
+    );
+    return promise.then((data) => RequestIdArray.decode(new _m0.Reader(data)));
   }
 }
 
