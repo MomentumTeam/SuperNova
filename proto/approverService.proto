@@ -18,6 +18,23 @@ service ApproverService {
     rpc UpdateCommanderDecision(RequestService.UpdateDecisionReq) returns (RequestService.Request) {}
     rpc UpdateSecurityDecision(RequestService.UpdateDecisionReq) returns (RequestService.Request) {}
     rpc UpdateSuperSecurityDecision(RequestService.UpdateDecisionReq) returns (RequestService.Request) {}
+
+    rpc GetAllApprovers(GetAllApproversReq) returns (ApproverArray) {}
+    rpc GetAllApproverIds(GetAllApproversReq) returns (ApproverIdArray) {}
+    rpc SyncApprover(SyncApproverReq) returns (Approver){}
+    rpc DeleteApprover(DeleteApproverReq) returns (SuccessMessage){}
+}
+
+message SyncApproverReq{
+    string approverId = 1;
+}
+
+message DeleteApproverReq{
+    string approverId = 1;
+}
+
+message ApproverIdArray{
+    repeated string approverIds = 1;
 }
 
 message GetAllApproversReq{
@@ -67,7 +84,6 @@ message Approver{
     UserType type = 4;
     string akaUnit = 5;
     string id = 6;
-
 }
 
 enum RequestStatus{

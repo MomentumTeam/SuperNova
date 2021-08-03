@@ -7,14 +7,19 @@ import {
   addCommanderApprover,
   addSecurityApprover,
   addSuperSecurityApprover,
+  deleteApprover,
+  getAllApproverIds,
+  getAllApprovers,
   getAllCommanderApprovers,
   getAllSecurityApprovers,
   getAllSuperSecurityApprovers,
   getUserType,
   searchApproverByDisplayName,
   searchApproverByDomainUser,
+  syncApprover,
   updateCommanderDecision,
   updateSecurityDecision,
+  updateSuperSecurityDecision,
 } from './approver/approver.controller';
 import { findPath } from './utils/path';
 
@@ -69,6 +74,10 @@ export class Server {
           UpdateCommanderDecision: updateCommanderDecision,
           UpdateSecurityDecision: updateSecurityDecision,
           UpdateSuperSecurityDecision: updateSuperSecurityDecision,
+          GetAllApprovers: getAllApprovers,
+          GetAllApproverIds: getAllApproverIds,
+          SyncApprover: syncApprover,
+          DeleteApprover: deleteApprover,
         }
       );
       logger.log({

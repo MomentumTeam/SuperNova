@@ -2,6 +2,7 @@ import * as grpc from '@grpc/grpc-js';
 import {
   Approver,
   ApproverArray,
+  ApproverIdArray,
   GetUserTypeRes,
   SuccessMessage,
 } from '../interfaces/protoc/proto/approverService';
@@ -221,6 +222,78 @@ export async function updateSecurityDecision(
       call.request
     );
     callback(null, request);
+  } catch (error) {
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function getAllApprovers(call: any, callback: any): Promise<void> {
+  try {
+    const approvers: ApproverArray = await approverManager.getAllApprovers(
+      call.request
+    );
+    callback(null, approvers);
+  } catch (error) {
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function deleteApprover(call: any, callback: any): Promise<void> {
+  try {
+    const successMessage: SuccessMessage = await approverManager.deleteApprover(
+      call.request
+    );
+    callback(null, successMessage);
+  } catch (error) {
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function getAllApproverIds(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    const approverIdArray: ApproverIdArray =
+      await approverManager.getAllApproverIds(call.request);
+    callback(null, approverIdArray);
+  } catch (error) {
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function syncApprover(call: any, callback: any): Promise<void> {
+  try {
+    const approver: Approver = await approverManager.syncApprover(call.request);
+    callback(null, approver);
   } catch (error) {
     callback(
       {
