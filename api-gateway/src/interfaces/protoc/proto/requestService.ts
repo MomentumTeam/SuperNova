@@ -342,7 +342,7 @@ export interface UpdateReqProperties {
 }
 
 /** ApproverRequest */
-export interface CreateApproverReq {
+export interface CreateNewApproverReq {
   submittedBy: EntityMin | undefined;
   status: RequestStatus;
   commanderDecision: ApproverDecision | undefined;
@@ -355,7 +355,7 @@ export interface CreateApproverReq {
   approversComments: string;
 }
 
-export interface CreateApproverRes {
+export interface CreateNewApproverRes {
   submittedBy: EntityMin | undefined;
   status: RequestStatus;
   commanderDecision: ApproverDecision | undefined;
@@ -2413,15 +2413,15 @@ export const UpdateReqProperties = {
   },
 };
 
-const baseCreateApproverReq: object = {
+const baseCreateNewApproverReq: object = {
   status: 0,
   comments: "",
   approversComments: "",
 };
 
-export const CreateApproverReq = {
+export const CreateNewApproverReq = {
   encode(
-    message: CreateApproverReq,
+    message: CreateNewApproverReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.submittedBy !== undefined) {
@@ -2469,10 +2469,10 @@ export const CreateApproverReq = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): CreateApproverReq {
+  decode(input: _m0.Reader | Uint8Array, length?: number): CreateNewApproverReq {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseCreateApproverReq } as CreateApproverReq;
+    const message = { ...baseCreateNewApproverReq } as CreateNewApproverReq;
     message.commanders = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
@@ -2527,8 +2527,8 @@ export const CreateApproverReq = {
     return message;
   },
 
-  fromJSON(object: any): CreateApproverReq {
-    const message = { ...baseCreateApproverReq } as CreateApproverReq;
+  fromJSON(object: any): CreateNewApproverReq {
+    const message = { ...baseCreateNewApproverReq } as CreateNewApproverReq;
     message.commanders = [];
     if (object.submittedBy !== undefined && object.submittedBy !== null) {
       message.submittedBy = EntityMin.fromJSON(object.submittedBy);
@@ -2606,7 +2606,7 @@ export const CreateApproverReq = {
     return message;
   },
 
-  toJSON(message: CreateApproverReq): unknown {
+  toJSON(message: CreateNewApproverReq): unknown {
     const obj: any = {};
     message.submittedBy !== undefined &&
       (obj.submittedBy = message.submittedBy
@@ -2647,8 +2647,8 @@ export const CreateApproverReq = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<CreateApproverReq>): CreateApproverReq {
-    const message = { ...baseCreateApproverReq } as CreateApproverReq;
+  fromPartial(object: DeepPartial<CreateNewApproverReq>): CreateNewApproverReq {
+    const message = { ...baseCreateNewApproverReq } as CreateNewApproverReq;
     message.commanders = [];
     if (object.submittedBy !== undefined && object.submittedBy !== null) {
       message.submittedBy = EntityMin.fromPartial(object.submittedBy);
@@ -2727,7 +2727,7 @@ export const CreateApproverReq = {
   },
 };
 
-const baseCreateApproverRes: object = {
+const baseCreateNewApproverRes: object = {
   status: 0,
   comments: "",
   approversComments: "",
@@ -2738,9 +2738,9 @@ const baseCreateApproverRes: object = {
   serialNumber: "",
 };
 
-export const CreateApproverRes = {
+export const CreateNewApproverRes = {
   encode(
-    message: CreateApproverRes,
+    message: CreateNewApproverRes,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.submittedBy !== undefined) {
@@ -2803,10 +2803,10 @@ export const CreateApproverRes = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): CreateApproverRes {
+  decode(input: _m0.Reader | Uint8Array, length?: number): CreateNewApproverRes {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseCreateApproverRes } as CreateApproverRes;
+    const message = { ...baseCreateNewApproverRes } as CreateNewApproverRes;
     message.commanders = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
@@ -2876,8 +2876,8 @@ export const CreateApproverRes = {
     return message;
   },
 
-  fromJSON(object: any): CreateApproverRes {
-    const message = { ...baseCreateApproverRes } as CreateApproverRes;
+  fromJSON(object: any): CreateNewApproverRes {
+    const message = { ...baseCreateNewApproverRes } as CreateNewApproverRes;
     message.commanders = [];
     if (object.submittedBy !== undefined && object.submittedBy !== null) {
       message.submittedBy = EntityMin.fromJSON(object.submittedBy);
@@ -2980,7 +2980,7 @@ export const CreateApproverRes = {
     return message;
   },
 
-  toJSON(message: CreateApproverRes): unknown {
+  toJSON(message: CreateNewApproverRes): unknown {
     const obj: any = {};
     message.submittedBy !== undefined &&
       (obj.submittedBy = message.submittedBy
@@ -3027,8 +3027,8 @@ export const CreateApproverRes = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<CreateApproverRes>): CreateApproverRes {
-    const message = { ...baseCreateApproverRes } as CreateApproverRes;
+  fromPartial(object: DeepPartial<CreateNewApproverRes>): CreateNewApproverRes {
+    const message = { ...baseCreateNewApproverRes } as CreateNewApproverRes;
     message.commanders = [];
     if (object.submittedBy !== undefined && object.submittedBy !== null) {
       message.submittedBy = EntityMin.fromPartial(object.submittedBy);
@@ -15463,7 +15463,7 @@ export interface RequestService {
     request: AssignRoleToEntityReq
   ): Promise<AssignRoleToEntityRes>;
   CreateOGRequest(request: CreateOGReq): Promise<CreateOGRes>;
-  CreateApproverRequest(request: CreateApproverReq): Promise<CreateApproverRes>;
+  CreateNewApproverRequest(request: CreateNewApproverReq): Promise<CreateNewApproverRes>;
   CreateEntityRequest(request: CreateEntityReq): Promise<CreateEntityRes>;
   RenameOGRequest(request: RenameOGReq): Promise<RenameOGRes>;
   RenameRoleRequest(request: RenameRoleReq): Promise<EditEntityRes>;
@@ -15497,7 +15497,7 @@ export class RequestServiceClientImpl implements RequestService {
     this.CreateRoleRequest = this.CreateRoleRequest.bind(this);
     this.AssignRoleToEntityRequest = this.AssignRoleToEntityRequest.bind(this);
     this.CreateOGRequest = this.CreateOGRequest.bind(this);
-    this.CreateApproverRequest = this.CreateApproverRequest.bind(this);
+    this.CreateNewApproverRequest = this.CreateNewApproverRequest.bind(this);
     this.CreateEntityRequest = this.CreateEntityRequest.bind(this);
     this.RenameOGRequest = this.RenameOGRequest.bind(this);
     this.RenameRoleRequest = this.RenameRoleRequest.bind(this);
@@ -15550,17 +15550,17 @@ export class RequestServiceClientImpl implements RequestService {
     return promise.then((data) => CreateOGRes.decode(new _m0.Reader(data)));
   }
 
-  CreateApproverRequest(
-    request: CreateApproverReq
-  ): Promise<CreateApproverRes> {
-    const data = CreateApproverReq.encode(request).finish();
+  CreateNewApproverRequest(
+    request: CreateNewApproverReq
+  ): Promise<CreateNewApproverRes> {
+    const data = CreateNewApproverReq.encode(request).finish();
     const promise = this.rpc.request(
       "RequestService.RequestService",
-      "CreateApproverRequest",
+      "CreateNewApproverRequest",
       data
     );
     return promise.then((data) =>
-      CreateApproverRes.decode(new _m0.Reader(data))
+      CreateNewApproverRes.decode(new _m0.Reader(data))
     );
   }
 
