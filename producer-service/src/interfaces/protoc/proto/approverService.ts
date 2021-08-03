@@ -99,6 +99,18 @@ export function userTypeToJSON(object: UserType): string {
   }
 }
 
+export interface SyncApproverReq {
+  approverId: string;
+}
+
+export interface DeleteApproverReq {
+  approverId: string;
+}
+
+export interface ApproverIdArray {
+  approverIds: string[];
+}
+
 export interface GetAllApproversReq {}
 
 export interface SuccessMessage {
@@ -146,6 +158,187 @@ export interface Approver {
   akaUnit: string;
   id: string;
 }
+
+const baseSyncApproverReq: object = { approverId: "" };
+
+export const SyncApproverReq = {
+  encode(
+    message: SyncApproverReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.approverId !== "") {
+      writer.uint32(10).string(message.approverId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SyncApproverReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseSyncApproverReq } as SyncApproverReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.approverId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SyncApproverReq {
+    const message = { ...baseSyncApproverReq } as SyncApproverReq;
+    if (object.approverId !== undefined && object.approverId !== null) {
+      message.approverId = String(object.approverId);
+    } else {
+      message.approverId = "";
+    }
+    return message;
+  },
+
+  toJSON(message: SyncApproverReq): unknown {
+    const obj: any = {};
+    message.approverId !== undefined && (obj.approverId = message.approverId);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<SyncApproverReq>): SyncApproverReq {
+    const message = { ...baseSyncApproverReq } as SyncApproverReq;
+    if (object.approverId !== undefined && object.approverId !== null) {
+      message.approverId = object.approverId;
+    } else {
+      message.approverId = "";
+    }
+    return message;
+  },
+};
+
+const baseDeleteApproverReq: object = { approverId: "" };
+
+export const DeleteApproverReq = {
+  encode(
+    message: DeleteApproverReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.approverId !== "") {
+      writer.uint32(10).string(message.approverId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DeleteApproverReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseDeleteApproverReq } as DeleteApproverReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.approverId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DeleteApproverReq {
+    const message = { ...baseDeleteApproverReq } as DeleteApproverReq;
+    if (object.approverId !== undefined && object.approverId !== null) {
+      message.approverId = String(object.approverId);
+    } else {
+      message.approverId = "";
+    }
+    return message;
+  },
+
+  toJSON(message: DeleteApproverReq): unknown {
+    const obj: any = {};
+    message.approverId !== undefined && (obj.approverId = message.approverId);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<DeleteApproverReq>): DeleteApproverReq {
+    const message = { ...baseDeleteApproverReq } as DeleteApproverReq;
+    if (object.approverId !== undefined && object.approverId !== null) {
+      message.approverId = object.approverId;
+    } else {
+      message.approverId = "";
+    }
+    return message;
+  },
+};
+
+const baseApproverIdArray: object = { approverIds: "" };
+
+export const ApproverIdArray = {
+  encode(
+    message: ApproverIdArray,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.approverIds) {
+      writer.uint32(10).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ApproverIdArray {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseApproverIdArray } as ApproverIdArray;
+    message.approverIds = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.approverIds.push(reader.string());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ApproverIdArray {
+    const message = { ...baseApproverIdArray } as ApproverIdArray;
+    message.approverIds = [];
+    if (object.approverIds !== undefined && object.approverIds !== null) {
+      for (const e of object.approverIds) {
+        message.approverIds.push(String(e));
+      }
+    }
+    return message;
+  },
+
+  toJSON(message: ApproverIdArray): unknown {
+    const obj: any = {};
+    if (message.approverIds) {
+      obj.approverIds = message.approverIds.map((e) => e);
+    } else {
+      obj.approverIds = [];
+    }
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<ApproverIdArray>): ApproverIdArray {
+    const message = { ...baseApproverIdArray } as ApproverIdArray;
+    message.approverIds = [];
+    if (object.approverIds !== undefined && object.approverIds !== null) {
+      for (const e of object.approverIds) {
+        message.approverIds.push(e);
+      }
+    }
+    return message;
+  },
+};
 
 const baseGetAllApproversReq: object = {};
 
@@ -945,6 +1138,10 @@ export interface ApproverService {
   UpdateCommanderDecision(request: UpdateDecisionReq): Promise<Request>;
   UpdateSecurityDecision(request: UpdateDecisionReq): Promise<Request>;
   UpdateSuperSecurityDecision(request: UpdateDecisionReq): Promise<Request>;
+  GetAllApprovers(request: GetAllApproversReq): Promise<ApproverArray>;
+  GetAllApproverIds(request: GetAllApproversReq): Promise<ApproverIdArray>;
+  SyncApprover(request: SyncApproverReq): Promise<Approver>;
+  DeleteApprover(request: DeleteApproverReq): Promise<SuccessMessage>;
 }
 
 export class ApproverServiceClientImpl implements ApproverService {
@@ -967,6 +1164,10 @@ export class ApproverServiceClientImpl implements ApproverService {
     this.UpdateSecurityDecision = this.UpdateSecurityDecision.bind(this);
     this.UpdateSuperSecurityDecision =
       this.UpdateSuperSecurityDecision.bind(this);
+    this.GetAllApprovers = this.GetAllApprovers.bind(this);
+    this.GetAllApproverIds = this.GetAllApproverIds.bind(this);
+    this.SyncApprover = this.SyncApprover.bind(this);
+    this.DeleteApprover = this.DeleteApprover.bind(this);
   }
   AddCommanderApprover(request: AddApproverReq): Promise<Approver> {
     const data = AddApproverReq.encode(request).finish();
@@ -1094,6 +1295,46 @@ export class ApproverServiceClientImpl implements ApproverService {
       data
     );
     return promise.then((data) => Request.decode(new _m0.Reader(data)));
+  }
+
+  GetAllApprovers(request: GetAllApproversReq): Promise<ApproverArray> {
+    const data = GetAllApproversReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "ApproverService.ApproverService",
+      "GetAllApprovers",
+      data
+    );
+    return promise.then((data) => ApproverArray.decode(new _m0.Reader(data)));
+  }
+
+  GetAllApproverIds(request: GetAllApproversReq): Promise<ApproverIdArray> {
+    const data = GetAllApproversReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "ApproverService.ApproverService",
+      "GetAllApproverIds",
+      data
+    );
+    return promise.then((data) => ApproverIdArray.decode(new _m0.Reader(data)));
+  }
+
+  SyncApprover(request: SyncApproverReq): Promise<Approver> {
+    const data = SyncApproverReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "ApproverService.ApproverService",
+      "SyncApprover",
+      data
+    );
+    return promise.then((data) => Approver.decode(new _m0.Reader(data)));
+  }
+
+  DeleteApprover(request: DeleteApproverReq): Promise<SuccessMessage> {
+    const data = DeleteApproverReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "ApproverService.ApproverService",
+      "DeleteApprover",
+      data
+    );
+    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 }
 

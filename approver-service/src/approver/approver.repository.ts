@@ -2,16 +2,23 @@ import {
   AddApproverReq,
   Approver,
   ApproverArray,
+  ApproverIdArray,
+  DeleteApproverReq,
   GetAllApproversReq,
   GetUserTypeReq,
   GetUserTypeRes,
   SearchByDisplayNameReq,
   SearchByDomainUserReq,
+  SuccessMessage,
+  SyncApproverReq,
   UserType,
   userTypeFromJSON,
   userTypeToJSON,
 } from '../interfaces/protoc/proto/approverService';
-import { Entity } from '../interfaces/protoc/proto/kartoffelService';
+import {
+  DigitalIdentity,
+  Entity,
+} from '../interfaces/protoc/proto/kartoffelService';
 import {
   Request,
   UpdateDecisionReq,
@@ -71,6 +78,68 @@ export class ApproverRepository {
   ): Promise<Approver> {
     try {
       return await this.addApprover(addSecurityApproverReq, UserType.SECURITY);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteApprover(
+    deleteApproverReq: DeleteApproverReq
+  ): Promise<SuccessMessage> {
+    try {
+      await ApproverModel.deleteMany({
+        entityId: deleteApproverReq.approverId,
+      });
+      return { success: true };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getAllApprovers(
+    getAllApproversReq: GetAllApproversReq
+  ): Promise<ApproverArray> {
+    try {
+      const mongoApprovers: any = await ApproverModel.find({});
+      return { approvers: getMongoApproverArray(mongoApprovers) };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getAllApproverIds(
+    getAllApproverIdsReq: GetAllApproversReq
+  ): Promise<ApproverIdArray> {
+    try {
+      let approverIds: any = await ApproverModel.find({}).distinct('entityId');
+      approverIds = approverIds.map((approverId: any) => approverId.toString());
+      return { approverIds: approverIds };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async syncApprover(syncApproverReq: SyncApproverReq): Promise<Approver> {
+    try {
+      const entity: Entity = await KartoffelService.getEntityByMongoId({
+        id: syncApproverReq.approverId,
+      });
+      const domainUsers = entity.digitalIdentities
+        ? entity.digitalIdentities.map((di: DigitalIdentity) => di.mail)
+        : [];
+      const updateParams: any = {
+        displayName: entity.displayName,
+        domainUsers: domainUsers,
+        akaUnit: entity.akaUnit,
+      };
+      const documentAfter: any = await ApproverModel.findOneAndUpdate(
+        { entityId: syncApproverReq.approverId },
+        { $set: updateParams },
+        { new: true }
+      );
+      const document = documentAfter.toObject();
+      turnObjectIdsToStrings(document);
+      return document as Approver;
     } catch (error) {
       throw error;
     }
