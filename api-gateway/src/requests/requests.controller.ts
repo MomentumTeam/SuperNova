@@ -3,7 +3,11 @@ import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 import path from 'path';
 import * as config from '../config';
-import { UserType, userTypeFromJSON } from '../interfaces/protoc/proto/approverService';
+import ProducerController from '../producer/producer.controller';
+import {
+  UserType,
+  userTypeFromJSON,
+} from '../interfaces/protoc/proto/approverService';
 import {
   Request as RequestS,
   RequestArray,
@@ -18,8 +22,8 @@ import {
   DeleteRoleRes,
   DisconectRoleFromEntityRes,
   StageStatus,
+  EntityMin
 } from '../interfaces/protoc/proto/requestService';
-
 
 const PROTO_PATH = __dirname.includes('dist')
   ? path.join(__dirname, '../../../proto/requestService.proto')
@@ -142,28 +146,61 @@ export default class RequestsController {
   static async updateADStatus(req: Request, res: Response) {
     console.log('UpdateADStatus');
 
-    const status: string = req.body.Status;
+    const retry: boolean = req.body.retry;
+    const status: boolean = req.body.success;
     let stageStatus: StageStatus = StageStatus.STAGE_IN_PROGRESS;
 
-    if (status === 'true') {
-      stageStatus = StageStatus.STAGE_DONE;
-    } else if (status === 'false') {
-      stageStatus = StageStatus.STAGE_FAILED;
-    }
+    if (retry === false) {
+      if (status === true) {
+        stageStatus = StageStatus.STAGE_DONE;
 
-    requestsClient.UpdateADStatus(
-      {
-        requestId: req.body.RequestID,
-        status: stageStatus,
-        message: req.body.ErrorID,
-      },
-      (err: any, response: RequestS) => {
-        if (err) {
-          res.status(500).end(err.message);
+        const produceRes = (await ProducerController.produceToKartoffelQueue(
+          req.body.requestId
+        )) as SuccessMessage;
+
+        if (produceRes.success === true) {
+          //if produce was successful update Kartoffel Status
+          await RequestsController.updateKartoffelStatus(req.body.requestId);
         }
-        res.status(200).send();
+      } else if (status === false) {
+        stageStatus = StageStatus.STAGE_FAILED;
       }
-    );
+
+      requestsClient.UpdateADStatus(
+        {
+          requestId: req.body.requestId,
+          status: stageStatus,
+          message: req.body.errorCode,
+        },
+        (err: any, response: RequestS) => {
+          if (err) {
+            res.status(500).end(err.message);
+          }
+          res.status(200).send();
+        }
+      );
+    } else {
+      await ProducerController.produceToADQueue(req, res);
+    }
+  }
+
+  static async updateKartoffelStatus(requestId: string) {
+    console.log('UpdateKartoffelStatus');
+
+    return new Promise((resolve, reject) => {
+      requestsClient.UpdateKartoffelStatus(
+        {
+          requestId: requestId,
+          status: StageStatus.STAGE_IN_PROGRESS,
+        },
+        (err: any, response: RequestS) => {
+          if (err) {
+            resolve(err);
+          }
+          resolve(response);
+        }
+      );
+    });
   }
 
   static async updateRequest(req: Request, res: Response) {
@@ -177,8 +214,14 @@ export default class RequestsController {
     });
   }
 
-  static async renameOGRequest(req: Request, res: Response) {
+  static async renameOGRequest(req: any, res: Response) {
     console.log('RenameOGRequest');
+
+    const submittedBy: EntityMin = {
+      id: req.user.id, displayName: req.user.displayName, identityCard: req.user.identityCard, personalNumber: req.user.personalNumber
+    };
+
+    req.body.submittedBy = submittedBy;
 
     requestsClient.RenameOGRequest(
       req.body,
@@ -191,8 +234,15 @@ export default class RequestsController {
     );
   }
 
-  static async renameRoleRequest(req: Request, res: Response) {
+  static async renameRoleRequest(req: any, res: Response) {
     console.log('RenameRoleRequest');
+
+    const submittedBy: EntityMin = {
+      id: req.user.id, displayName: req.user.displayName, identityCard: req.user.identityCard, personalNumber: req.user.personalNumber
+    };
+
+    req.body.submittedBy = submittedBy;
+    
 
     requestsClient.RenameRoleRequest(
       req.body,
@@ -205,8 +255,14 @@ export default class RequestsController {
     );
   }
 
-  static async createOGRequest(req: Request, res: Response) {
+  static async createOGRequest(req: any, res: Response) {
     console.log('createOGRequest');
+
+    const submittedBy: EntityMin = {
+      id: req.user.id, displayName: req.user.displayName, identityCard: req.user.identityCard, personalNumber: req.user.personalNumber
+    };
+
+    req.body.submittedBy = submittedBy;
 
     requestsClient.CreateOGRequest(
       req.body,
@@ -219,8 +275,15 @@ export default class RequestsController {
     );
   }
 
-  static async createRoleRequest(req: Request, res: Response) {
+  static async createRoleRequest(req: any, res: Response) {
     console.log('createRoleRequest');
+
+   const submittedBy: EntityMin = {
+      id: req.user.id, displayName: req.user.displayName, identityCard: req.user.identityCard, personalNumber: req.user.personalNumber
+    };
+    console.log('submittedBy', submittedBy)
+
+    req.body.submittedBy = submittedBy;
 
     requestsClient.CreateRoleRequest(
       req.body,
@@ -233,8 +296,14 @@ export default class RequestsController {
     );
   }
 
-  static async createEntityRequest(req: Request, res: Response) {
+  static async createEntityRequest(req: any, res: Response) {
     console.log('CreateEntityRequest');
+
+   const submittedBy: EntityMin = {
+      id: req.user.id, displayName: req.user.displayName, identityCard: req.user.identityCard, personalNumber: req.user.personalNumber
+    };
+    
+    req.body.submittedBy = submittedBy;
 
     requestsClient.CreateEntityRequest(
       req.body,
@@ -247,8 +316,14 @@ export default class RequestsController {
     );
   }
 
-  static async assignRoleToEntityRequest(req: Request, res: Response) {
+  static async assignRoleToEntityRequest(req: any, res: Response) {
     console.log('AssignRoleToEntityRequest');
+
+   const submittedBy: EntityMin = {
+      id: req.user.id, displayName: req.user.displayName, identityCard: req.user.identityCard, personalNumber: req.user.personalNumber
+    };
+    
+    req.body.submittedBy = submittedBy;
 
     requestsClient.AssignRoleToEntityRequest(
       req.body,
@@ -261,8 +336,14 @@ export default class RequestsController {
     );
   }
 
-  static async editEntityRequest(req: Request, res: Response) {
+  static async editEntityRequest(req: any, res: Response) {
     console.log('EditEntityRequest');
+
+   const submittedBy: EntityMin = {
+      id: req.user.id, displayName: req.user.displayName, identityCard: req.user.identityCard, personalNumber: req.user.personalNumber
+    };
+    
+    req.body.submittedBy = submittedBy;
 
     requestsClient.EditEntityRequest(
       req.body,
@@ -275,8 +356,14 @@ export default class RequestsController {
     );
   }
 
-  static async disconectRoleFromEntityRequest(req: Request, res: Response) {
+  static async disconectRoleFromEntityRequest(req: any, res: Response) {
     console.log('DisconectRoleFromEntityRequest');
+
+   const submittedBy: EntityMin = {
+      id: req.user.id, displayName: req.user.displayName, identityCard: req.user.identityCard, personalNumber: req.user.personalNumber
+    };
+    
+    req.body.submittedBy = submittedBy;
 
     requestsClient.DisconectRoleFromEntityRequest(
       req.body,

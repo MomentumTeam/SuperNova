@@ -1,9 +1,9 @@
-import { Router } from 'express';
-import ProducerController from './producer.controller';
+// import { Router } from 'express';
+// import ProducerController from './producer.controller';
 
-const ProducerRouter: Router = Router();
+// const ProducerRouter: Router = Router();
 
-ProducerRouter.post('/produceToKartoffelQueue', ProducerController.produceToKartoffelQueue);
-ProducerRouter.post('/produceToADQueue', ProducerController.produceToADQueue);
+// ProducerRouter.post('/produceToKartoffelQueue', ProducerController.produceToKartoffelQueue);
+// ProducerRouter.post('/produceToADQueue', ProducerController.produceToADQueue);
 
-export default ProducerRouter;
+// export default ProducerRouter;

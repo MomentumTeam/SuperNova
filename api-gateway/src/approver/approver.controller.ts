@@ -83,7 +83,7 @@ export default class ApproverController {
     console.log('GetUserType');
 
     approverClient.GetUserType(
-      { entityId: req.query.id },
+      { entityId: req.params.id },
       (err: any, response: GetUserTypeRes) => {
         if (err) {
           res.send(err);

@@ -73,7 +73,7 @@ export class Server {
         AssignRoleToEntityRequest: createRequestFuncByType(
           RequestType.ASSIGN_ROLE_TO_ENTITY
         ),
-        CreateApproverRequest: createRequestFuncByType(
+        CreateNewApproverRequest: createRequestFuncByType(
           RequestType.ADD_APPROVER
         ),
         CreateEntityRequest: createRequestFuncByType(RequestType.CREATE_ENTITY),

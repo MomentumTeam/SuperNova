@@ -7,7 +7,7 @@ service RequestService {
     rpc CreateRoleRequest(CreateRoleReq) returns (CreateRoleRes) {} //יצירת תפקיד
     rpc AssignRoleToEntityRequest(AssignRoleToEntityReq) returns (AssignRoleToEntityRes) {} //הוספת משתמש
     rpc CreateOGRequest(CreateOGReq) returns (CreateOGRes) {} //יצירת היררכיה
-    rpc CreateApproverRequest(CreateApproverReq) returns (CreateApproverRes) {} //גורם מאשר
+    rpc CreateNewApproverRequest(CreateNewApproverReq) returns (CreateNewApproverRes) {} //גורם מאשר
     rpc CreateEntityRequest(CreateEntityReq) returns (CreateEntityRes){} //יצירת יישות
     rpc RenameOGRequest(RenameOGReq) returns (RenameOGRes) {}
     rpc RenameRoleRequest(RenameRoleReq) returns (EditEntityRes) {}
@@ -159,8 +159,8 @@ message UpdateReqProperties{
 
 //Request messages
 
-//ApproverRequest
-message CreateApproverReq{
+//NewApproverRequest
+message CreateNewApproverReq{
     EntityMin submittedBy = 1;
     RequestStatus status = 2;
     ApproverDecision commanderDecision = 3;
@@ -173,7 +173,7 @@ message CreateApproverReq{
     string approversComments = 10;
 }
 
-message CreateApproverRes{
+message CreateNewApproverRes{
     EntityMin submittedBy = 1;
     RequestStatus status = 2;
     ApproverDecision commanderDecision = 3;
