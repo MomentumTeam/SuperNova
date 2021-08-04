@@ -36,6 +36,7 @@ import {
   SearchOGRequest,
   SuccessMessage,
 } from '../interfaces/protoc/proto/kartoffelService';
+import { logger } from '../logger';
 
 export class KartoffelRepository {
   private spikeService: SpikeService;
@@ -52,6 +53,94 @@ export class KartoffelRepository {
     this.axiosKartoffel.interceptors.request.use(async (config) => {
       config.headers.Authorization = await this.spikeService.getSpikeToken();
       return config;
+    });
+  }
+
+  async kartoffelGet(url: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.axiosKartoffel
+        .get(url)
+        .then((res) => {
+          logger.info(`Kartoffel GET Request OK`, {
+            url: url,
+            response: res,
+          });
+          resolve(res);
+        })
+        .catch((error) => {
+          logger.info(`Kartoffel GET Request ERROR`, {
+            url: url,
+            error: error,
+          });
+          reject(error);
+        });
+    });
+  }
+
+  async kartoffelDelete(url: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.axiosKartoffel
+        .delete(url)
+        .then((res) => {
+          logger.info(`Kartoffel DELETE Request OK`, {
+            url: url,
+            response: res,
+          });
+          resolve(res);
+        })
+        .catch((error) => {
+          logger.info(`Kartoffel DELETE Request ERROR`, {
+            url: url,
+            error: error,
+          });
+          reject(error);
+        });
+    });
+  }
+
+  async kartoffelPost(url: string, body: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.axiosKartoffel
+        .post(url, body)
+        .then((res) => {
+          logger.info(`Kartoffel POST Request OK`, {
+            url: url,
+            requestBoody: body,
+            response: res,
+          });
+          resolve(res);
+        })
+        .catch((error) => {
+          logger.info(`Kartoffel POST Request ERROR`, {
+            url: url,
+            requestBoody: body,
+            error: error,
+          });
+          reject(error);
+        });
+    });
+  }
+
+  async kartoffelPatch(url: string, body: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.axiosKartoffel
+        .patch(url, body)
+        .then((res) => {
+          logger.info(`Kartoffel PATCH Request OK`, {
+            url: url,
+            requestBoody: body,
+            response: res,
+          });
+          resolve(res);
+        })
+        .catch((error) => {
+          logger.info(`Kartoffel PATCH Request ERROR`, {
+            url: url,
+            requestBoody: body,
+            error: error,
+          });
+          reject(error);
+        });
     });
   }
 
@@ -90,7 +179,7 @@ export class KartoffelRepository {
       if (C.useFaker) {
         return this.kartoffelFaker.randomOGArray();
       } else {
-        const res = await this.axiosKartoffel.get(
+        const res = await this.kartoffelGet(
           `${C.kartoffelUrl}/organizationGroup/search?hierarchyAndName=${searchOGRequest.hierarchyAndName}`
         );
         return { groups: res.data };
@@ -104,7 +193,7 @@ export class KartoffelRepository {
       if (C.useFaker) {
         return this.kartoffelFaker.randomOG();
       } else {
-        const res = await this.axiosKartoffel.post(
+        const res = await this.kartoffelPost(
           `${C.kartoffelUrl}/organizationGroup`,
           createOGRequest
         );
@@ -120,7 +209,7 @@ export class KartoffelRepository {
       if (C.useFaker) {
         return this.kartoffelFaker.randomDI();
       } else {
-        const res = await this.axiosKartoffel.post(
+        const res = await this.kartoffelPost(
           `${C.kartoffelUrl}/digitalIdentities`,
           createDIRequest
         );
@@ -136,7 +225,7 @@ export class KartoffelRepository {
       if (C.useFaker) {
         return this.kartoffelFaker.randomRole();
       } else {
-        const res = await this.axiosKartoffel.post(
+        const res = await this.kartoffelPost(
           `${C.kartoffelUrl}/roles`,
           createRoleRequest
         );
@@ -154,7 +243,7 @@ export class KartoffelRepository {
       if (C.useFaker) {
         return { success: true };
       } else {
-        await this.axiosKartoffel.patch(
+        await this.kartoffelPatch(
           `${C.kartoffelUrl}/roles/${connectRoleAndDIRequest.id}/connectDigitalIdentity`,
           {
             digitalIdentityUniqueId: connectRoleAndDIRequest.uniqueId,
@@ -176,7 +265,7 @@ export class KartoffelRepository {
           await this.kartoffelFaker.randomEntityArray(false);
         return entityArray;
       } else {
-        const res = await this.axiosKartoffel.get(
+        const res = await this.kartoffelGet(
           `${C.kartoffelUrl}/entities/search?fullName=${searchEntitiesByFullNameRequest.fullName}`
         );
         return { entities: res.data as Entity[] };
@@ -194,7 +283,7 @@ export class KartoffelRepository {
         const entity: Entity = await this.kartoffelFaker.randomEntity(true);
         return entity;
       } else {
-        const res = await this.axiosKartoffel.get(
+        const res = await this.kartoffelGet(
           `${C.kartoffelUrl}/entities/identifier/${getEntityByIdNumberRequest.idNumber}`
         );
         return res.data as Entity;
@@ -211,7 +300,7 @@ export class KartoffelRepository {
       if (C.useFaker) {
         return this.kartoffelFaker.randomRole();
       } else {
-        const res = await this.axiosKartoffel.get(
+        const res = await this.kartoffelGet(
           `${C.kartoffelUrl}/roles/search?roleId=${getRoleByRoleIdRequest.roleId}`
         );
         return res.data as Role;
@@ -228,7 +317,7 @@ export class KartoffelRepository {
       if (C.useFaker) {
         return this.kartoffelFaker.randomRoleArray();
       } else {
-        const res = await this.axiosKartoffel.get(
+        const res = await this.kartoffelGet(
           `${C.kartoffelUrl}/roles/hierarchy/${getRolesUnderOGRequest.id}?direct=${getRolesUnderOGRequest.direct}`
         );
         return { roles: res.data as Role[] };
@@ -245,7 +334,7 @@ export class KartoffelRepository {
       if (C.useFaker) {
         return { success: true };
       } else {
-        const res = await this.axiosKartoffel.patch(
+        const res = await this.kartoffelPatch(
           `${C.kartoffelUrl}/entities/${connectEntityAndDIRequest.id}/connectDigitalIdentity`,
           {
             digitalIdentityUniqueId: connectEntityAndDIRequest.uniqueId,
@@ -266,7 +355,7 @@ export class KartoffelRepository {
         const entity: Entity = await this.kartoffelFaker.randomEntity(false);
         return entity;
       } else {
-        const res = await this.axiosKartoffel.post(
+        const res = await this.kartoffelPost(
           `${C.kartoffelUrl}/entities`,
           createEntityRequest
         );
@@ -285,7 +374,7 @@ export class KartoffelRepository {
         const entity: Entity = await this.kartoffelFaker.randomEntity(true);
         return entity;
       } else {
-        const res = await this.axiosKartoffel.get(
+        const res = await this.kartoffelGet(
           `${C.kartoffelUrl}/entities/role/${getEntityByRoleIdRequest.roleId}`
         );
         return res.data as Entity;
@@ -302,7 +391,7 @@ export class KartoffelRepository {
       if (C.useFaker) {
         return { success: true };
       } else {
-        await this.axiosKartoffel.patch(
+        await this.kartoffelPatch(
           `${C.kartoffelUrl}/entities/${disconnectDIFromEntityRequest.id}/disconnectDIgitalIdentity`,
           {
             digitalIdentityUniqueId: disconnectDIFromEntityRequest.uniqueId,
@@ -323,7 +412,7 @@ export class KartoffelRepository {
         const entity: Entity = await this.kartoffelFaker.randomEntity(true);
         return entity;
       } else {
-        const res = await this.axiosKartoffel.get(
+        const res = await this.kartoffelGet(
           `${C.kartoffelUrl}/entities/${getEntityByMongoIdRequest.id}`
         );
         return res.data as Entity;
@@ -338,7 +427,7 @@ export class KartoffelRepository {
       if (C.useFaker) {
         return { success: true };
       } else {
-        await this.axiosKartoffel.delete(
+        await this.kartoffelDelete(
           `${C.kartoffelUrl}/groups/${deleteOGRequest.id}`
         );
         return { success: true };
@@ -355,7 +444,7 @@ export class KartoffelRepository {
       if (C.useFaker) {
         return this.kartoffelFaker.randomOGArray();
       } else {
-        const res = await this.axiosKartoffel.get(
+        const res = await this.kartoffelGet(
           `${C.kartoffelUrl}/groups/${getChildrenOfOGRequest.id}/children?expanded=true`
         );
         return { groups: res.data as OrganizationGroup[] };
@@ -372,7 +461,7 @@ export class KartoffelRepository {
       if (C.useFaker) {
         return { success: true };
       } else {
-        await this.axiosKartoffel.delete(
+        await this.kartoffelDelete(
           `${C.kartoffelUrl}/roles/${deleteRoleRequest.roleId}`
         );
         return { success: true };
@@ -387,7 +476,7 @@ export class KartoffelRepository {
       if (C.useFaker) {
         return { success: true };
       } else {
-        await this.axiosKartoffel.delete(
+        await this.kartoffelDelete(
           `${C.kartoffelUrl}/digitalIdentities/${deleteDIRequest.uniqueId}`
         );
         return { success: true };
@@ -406,7 +495,7 @@ export class KartoffelRepository {
           await this.kartoffelFaker.randomEntityArray(false);
         return entityArray;
       } else {
-        const res = await this.axiosKartoffel.get(
+        const res = await this.kartoffelGet(
           `${C.kartoffelUrl}/entities/group/${getEntitiesUnderOGRequest.id}?direct=${getEntitiesUnderOGRequest.direct}`
         );
         return { entities: res.data as Entity[] };
