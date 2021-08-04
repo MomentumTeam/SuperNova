@@ -12,9 +12,24 @@ import {
   createRequestFuncByType,
   updateKartoffelStatus,
   updateADStatus,
+  getRequestsByIdentifierFuncByPersonType,
+  canPushToKartoffelQueue,
+  canPushToADQueue,
+  getRequestBySerialNumber,
+  searchRequestsByDisplayNameFuncByPersonType,
+  updateApproverDecisionFuncByPersonType,
+  incrementKartoffelRetries,
+  incrementADRetries,
+  getRequestsInProgressByDue,
+  getRequestIdsInProgressByDue,
 } from './requests/request.controller';
-import { RequestType } from './interfaces/protoc/proto/requestService';
+import {
+  GetRequestsByIdentifierReq,
+  GetRequestsInProgressByDueReq,
+  RequestType,
+} from './interfaces/protoc/proto/requestService';
 import { findPath } from './utils/path';
+import { PersonTypeInRequest } from './enums/personTypeInRequest.enum';
 
 const PROTO_PATH = `${findPath('proto')}/requestService.proto`;
 
@@ -78,6 +93,52 @@ export class Server {
         UpdateADStatus: updateADStatus,
         DeleteRequest: deleteRequest,
         GetAllRequests: getAllRequests,
+        GetRequestBySerialNumber: getRequestBySerialNumber,
+        GetRequestsBySubmitterIdentifier:
+          getRequestsByIdentifierFuncByPersonType(
+            PersonTypeInRequest.SUBMITTER
+          ),
+        GetRequestsByCommanderIdentifier:
+          getRequestsByIdentifierFuncByPersonType(
+            PersonTypeInRequest.COMMANDER
+          ),
+        GetRequestsBySecurityIdentifier:
+          getRequestsByIdentifierFuncByPersonType(
+            PersonTypeInRequest.SECURITY_APPROVER
+          ),
+        GetRequestsByApproverIdentifier:
+          getRequestsByIdentifierFuncByPersonType(PersonTypeInRequest.APPROVER),
+        SearchRequestsBySubmitterDisplayName:
+          searchRequestsByDisplayNameFuncByPersonType(
+            PersonTypeInRequest.SUBMITTER
+          ),
+        SearchRequestsByCommanderDisplayName:
+          searchRequestsByDisplayNameFuncByPersonType(
+            PersonTypeInRequest.COMMANDER
+          ),
+        SearchRequestsBySecurityDisplayName:
+          searchRequestsByDisplayNameFuncByPersonType(
+            PersonTypeInRequest.SECURITY_APPROVER
+          ),
+        SearchRequestsByApproverDisplayName:
+          searchRequestsByDisplayNameFuncByPersonType(
+            PersonTypeInRequest.APPROVER
+          ),
+        CanPushToKartoffelQueue: canPushToKartoffelQueue,
+        CanPushToADQueue: canPushToADQueue,
+        IncrementKartoffelRetries: incrementKartoffelRetries,
+        IncrementADRetries: incrementADRetries,
+        UpdateCommanderDecision: updateApproverDecisionFuncByPersonType(
+          PersonTypeInRequest.COMMANDER
+        ),
+        UpdateSecurityDecision: updateApproverDecisionFuncByPersonType(
+          PersonTypeInRequest.SECURITY_APPROVER
+        ),
+        UpdateSuperSecurityDecision: updateApproverDecisionFuncByPersonType(
+          PersonTypeInRequest.SUPER_SECURITY_APPROVER
+        ),
+        GetRequestsInProgressByDue: getRequestsInProgressByDue,
+        GetRequestIdsInProgressByDue: getRequestIdsInProgressByDue,
       });
       logger.log({
         level: 'info',

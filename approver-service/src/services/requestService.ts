@@ -1,7 +1,11 @@
 import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 import * as config from '../config';
-import { Request, UpdateReq } from '../interfaces/protoc/proto/requestService';
+import {
+  Request,
+  UpdateDecisionReq,
+  UpdateReq,
+} from '../interfaces/protoc/proto/requestService';
 import { findPath } from '../utils/path';
 
 const PROTO_PATH = `${findPath('proto')}/requestService.proto`;
@@ -36,6 +40,60 @@ export default class RequestService {
           resolve(request);
         }
       });
+    });
+  }
+
+  static async updateCommanderDecision(
+    updateDecisionReq: UpdateDecisionReq
+  ): Promise<Request> {
+    console.log('updateCommanderDecision');
+    return new Promise((resolve, reject) => {
+      requestClient.UpdateCommanderDecision(
+        updateDecisionReq,
+        (err: any, request: Request) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(request);
+          }
+        }
+      );
+    });
+  }
+
+  static async updateSecurityDecision(
+    updateDecisionReq: UpdateDecisionReq
+  ): Promise<Request> {
+    console.log('updateSecurityDecision');
+    return new Promise((resolve, reject) => {
+      requestClient.updateSecurityDecision(
+        updateDecisionReq,
+        (err: any, request: Request) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(request);
+          }
+        }
+      );
+    });
+  }
+
+  static async updateSuperSecurityDecision(
+    updateDecisionReq: UpdateDecisionReq
+  ): Promise<Request> {
+    console.log('updateSuperSecurityDecision');
+    return new Promise((resolve, reject) => {
+      requestClient.updateSuperSecurityDecision(
+        updateDecisionReq,
+        (err: any, request: Request) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(request);
+          }
+        }
+      );
     });
   }
 }

@@ -254,6 +254,44 @@ export function decisionToJSON(object: Decision): string {
   }
 }
 
+export interface GetRequestsInProgressByDueReq {
+  due: number;
+}
+
+export interface RequestIdArray {
+  requestIds: string[];
+  count: number;
+}
+
+export interface UpdateDecisionReq {
+  id: string;
+  approverDecision: ApproverDecision | undefined;
+}
+
+export interface IncrementRetriesReq {
+  id: string;
+}
+
+export interface CanPushToQueueReq {
+  id: string;
+}
+
+export interface CanPushToQueueRes {
+  canPushToQueue: boolean;
+}
+
+export interface GetRequestsByIdentifierReq {
+  identifier: string;
+  from: number;
+  to: number;
+}
+
+export interface SearchRequestsByDisplayNameReq {
+  displayName: string;
+  from: number;
+  to: number;
+}
+
 export interface UpdateKartoffelStatusReq {
   requestId: string;
   status: StageStatus;
@@ -290,11 +328,13 @@ export interface KartoffelStatus {
   status: StageStatus;
   message: string;
   createdId?: string | undefined;
+  failedRetries: number;
 }
 
 export interface ADStatus {
   status: StageStatus;
   message: string;
+  failedRetries: number;
 }
 
 export interface RequestArray {
@@ -331,14 +371,16 @@ export interface UpdateReqProperties {
   status?: RequestStatus | undefined;
   commanderDecision?: ApproverDecision | undefined;
   securityDecision?: ApproverDecision | undefined;
+  superSecurityDecision?: ApproverDecision | undefined;
   kartoffelStatus?: KartoffelStatus | undefined;
   adStatus?: ADStatus | undefined;
   kartoffelParams?: KartoffelParams | undefined;
-  /**
-   * repeated EntityMin commanders = 9;
-   * repeated EntityMin securityApprovers = 10;
-   */
   adParams?: ADParams | undefined;
+  /**
+   * repeated EntityMin commanders = 11;
+   * repeated EntityMin securityApprovers = 12;
+   */
+  due?: number | undefined;
 }
 
 /** ApproverRequest */
@@ -353,6 +395,7 @@ export interface CreateNewApproverReq {
   additionalParams: AdditionalParams | undefined;
   comments: string;
   approversComments: string;
+  due?: number | undefined;
 }
 
 export interface CreateNewApproverRes {
@@ -366,11 +409,14 @@ export interface CreateNewApproverRes {
   additionalParams: AdditionalParams | undefined;
   comments: string;
   approversComments: string;
+  due: number;
   id: string;
   createdAt: number;
   updatedAt: number;
   type: RequestType;
   serialNumber: string;
+  needSecurityDecision: boolean;
+  needSuperSecurityDecision: boolean;
 }
 
 /** CreateOG */
@@ -386,6 +432,7 @@ export interface CreateOGReq {
   adParams: CreateOGADParams | undefined;
   comments: string;
   approversComments: string;
+  due?: number | undefined;
 }
 
 export interface CreateOGRes {
@@ -400,11 +447,14 @@ export interface CreateOGRes {
   adParams: CreateOGADParams | undefined;
   comments: string;
   approversComments: string;
+  due: number;
   id: string;
   createdAt: number;
   updatedAt: number;
   type: RequestType;
   serialNumber: string;
+  needSecurityDecision: boolean;
+  needSuperSecurityDecision: boolean;
 }
 
 export interface CreateOGKartoffelParams {
@@ -425,6 +475,7 @@ export interface CreateRoleReq {
   status: RequestStatus;
   commanderDecision: ApproverDecision | undefined;
   securityDecision: ApproverDecision | undefined;
+  superSecurityDecision: ApproverDecision | undefined;
   commanders: EntityMin[];
   securityApprovers: EntityMin[];
   kartoffelStatus: KartoffelStatus | undefined;
@@ -433,6 +484,7 @@ export interface CreateRoleReq {
   adParams: CreateRoleADParams | undefined;
   comments: string;
   approversComments: string;
+  due?: number | undefined;
 }
 
 export interface CreateRoleRes {
@@ -440,6 +492,7 @@ export interface CreateRoleRes {
   status: RequestStatus;
   commanderDecision: ApproverDecision | undefined;
   securityDecision: ApproverDecision | undefined;
+  superSecurityDecision: ApproverDecision | undefined;
   commanders: EntityMin[];
   securityApprovers: EntityMin[];
   kartoffelStatus: KartoffelStatus | undefined;
@@ -448,11 +501,14 @@ export interface CreateRoleRes {
   adParams: CreateRoleADParams | undefined;
   comments: string;
   approversComments: string;
+  due: number;
   id: string;
   createdAt: number;
   updatedAt: number;
   type: RequestType;
   serialNumber: string;
+  needSecurityDecision: boolean;
+  needSuperSecurityDecision: boolean;
 }
 
 export interface CreateRoleKartoffelParams {
@@ -499,6 +555,7 @@ export interface CreateEntityReq {
   adParams: CreateEntityADParams | undefined;
   comments: string;
   approversComments: string;
+  due?: number | undefined;
 }
 
 export interface CreateEntityRes {
@@ -514,11 +571,14 @@ export interface CreateEntityRes {
   adParams: CreateEntityADParams | undefined;
   comments: string;
   approversComments: string;
+  due: number;
   id: string;
   createdAt: number;
   updatedAt: number;
   type: RequestType;
   serialNumber: string;
+  needSecurityDecision: boolean;
+  needSuperSecurityDecision: boolean;
 }
 
 export interface CreateEntityKartoffelParams {
@@ -544,6 +604,7 @@ export interface AssignRoleToEntityReq {
   status: RequestStatus;
   commanderDecision: ApproverDecision | undefined;
   securityDecision: ApproverDecision | undefined;
+  superSecurityDecision: ApproverDecision | undefined;
   commanders: EntityMin[];
   securityApprovers: EntityMin[];
   kartoffelStatus: KartoffelStatus | undefined;
@@ -552,6 +613,7 @@ export interface AssignRoleToEntityReq {
   adParams: AssignRoleToEntityADParams | undefined;
   comments: string;
   approversComments: string;
+  due?: number | undefined;
 }
 
 export interface AssignRoleToEntityRes {
@@ -559,6 +621,7 @@ export interface AssignRoleToEntityRes {
   status: RequestStatus;
   commanderDecision: ApproverDecision | undefined;
   securityDecision: ApproverDecision | undefined;
+  superSecurityDecision: ApproverDecision | undefined;
   commanders: EntityMin[];
   securityApprovers: EntityMin[];
   kartoffelStatus: KartoffelStatus | undefined;
@@ -567,11 +630,14 @@ export interface AssignRoleToEntityRes {
   adParams: AssignRoleToEntityADParams | undefined;
   comments: string;
   approversComments: string;
+  due: number;
   id: string;
   createdAt: number;
   updatedAt: number;
   type: RequestType;
   serialNumber: string;
+  needSecurityDecision: boolean;
+  needSuperSecurityDecision: boolean;
 }
 
 export interface AssignRoleToEntityKartoffelParams {
@@ -604,6 +670,7 @@ export interface RenameOGReq {
   adParams: RenameOGADParams | undefined;
   comments: string;
   approversComments: string;
+  due?: number | undefined;
 }
 
 export interface RenameOGRes {
@@ -619,11 +686,14 @@ export interface RenameOGRes {
   adParams: RenameOGADParams | undefined;
   comments: string;
   approversComments: string;
+  due: number;
   id: string;
   createdAt: number;
   updatedAt: number;
   type: RequestType;
   serialNumber: string;
+  needSecurityDecision: boolean;
+  needSuperSecurityDecision: boolean;
 }
 
 /** ? */
@@ -646,6 +716,7 @@ export interface RenameRoleReq {
   adParams: RenameRoleADParams | undefined;
   comments: string;
   approversComments: string;
+  due?: number | undefined;
 }
 
 export interface RenameRoleRes {
@@ -661,11 +732,14 @@ export interface RenameRoleRes {
   adParams: RenameRoleADParams | undefined;
   comments: string;
   approversComments: string;
+  due: number;
   id: string;
   createdAt: number;
   updatedAt: number;
   type: RequestType;
   serialNumber: string;
+  needSecurityDecision: boolean;
+  needSuperSecurityDecision: boolean;
 }
 
 /** ? */
@@ -688,6 +762,7 @@ export interface EditEntityReq {
   adParams: EditEntityADParams | undefined;
   comments: string;
   approversComments: string;
+  due?: number | undefined;
 }
 
 export interface EditEntityRes {
@@ -703,11 +778,14 @@ export interface EditEntityRes {
   adParams: EditEntityADParams | undefined;
   comments: string;
   approversComments: string;
+  due: number;
   id: string;
   createdAt: number;
   updatedAt: number;
   type: RequestType;
   serialNumber: string;
+  needSecurityDecision: boolean;
+  needSuperSecurityDecision: boolean;
 }
 
 export interface EditEntityKartoffelParams {
@@ -747,6 +825,7 @@ export interface DeleteOGReq {
   adParams: DeleteOGADParams | undefined;
   comments: string;
   approversComments: string;
+  due?: number | undefined;
 }
 
 export interface DeleteOGRes {
@@ -762,11 +841,14 @@ export interface DeleteOGRes {
   adParams: DeleteOGADParams | undefined;
   comments: string;
   approversComments: string;
+  due: number;
   id: string;
   createdAt: number;
   updatedAt: number;
   type: RequestType;
   serialNumber: string;
+  needSecurityDecision: boolean;
+  needSuperSecurityDecision: boolean;
 }
 
 export interface DeleteOGKartoffelParams {
@@ -794,6 +876,7 @@ export interface DeleteRoleReq {
   adParams: DeleteRoleADParams | undefined;
   comments: string;
   approversComments: string;
+  due?: number | undefined;
 }
 
 export interface DeleteRoleRes {
@@ -809,11 +892,14 @@ export interface DeleteRoleRes {
   adParams: DeleteRoleADParams | undefined;
   comments: string;
   approversComments: string;
+  due: number;
   id: string;
   createdAt: number;
   updatedAt: number;
   type: RequestType;
   serialNumber: string;
+  needSecurityDecision: boolean;
+  needSuperSecurityDecision: boolean;
 }
 
 export interface DeleteRoleKartoffelParams {
@@ -839,6 +925,7 @@ export interface DisconectRoleFromEntityReq {
   adParams: DisconectRoleFromEntityADParams | undefined;
   comments: string;
   approversComments: string;
+  due?: number | undefined;
 }
 
 export interface DisconectRoleFromEntityRes {
@@ -854,11 +941,14 @@ export interface DisconectRoleFromEntityRes {
   adParams: DisconectRoleFromEntityADParams | undefined;
   comments: string;
   approversComments: string;
+  due: number;
   id: string;
   createdAt: number;
   updatedAt: number;
   type: RequestType;
   serialNumber: string;
+  needSecurityDecision: boolean;
+  needSuperSecurityDecision: boolean;
 }
 
 export interface DisconectRoleFromEntityKartoffelParams {
@@ -953,6 +1043,7 @@ export interface RequestReq {
   status: RequestStatus;
   commanderDecision: ApproverDecision | undefined;
   securityDecision: ApproverDecision | undefined;
+  superSecurityDecision: ApproverDecision | undefined;
   commanders: EntityMin[];
   securityApprovers: EntityMin[];
   kartoffelStatus: KartoffelStatus | undefined;
@@ -961,6 +1052,7 @@ export interface RequestReq {
   adParams: ADParams | undefined;
   comments: string;
   approversComments: string;
+  due?: number | undefined;
 }
 
 export interface Request {
@@ -968,6 +1060,7 @@ export interface Request {
   status: RequestStatus;
   commanderDecision: ApproverDecision | undefined;
   securityDecision: ApproverDecision | undefined;
+  superSecurityDecision: ApproverDecision | undefined;
   commanders: EntityMin[];
   securityApprovers: EntityMin[];
   kartoffelStatus: KartoffelStatus | undefined;
@@ -976,12 +1069,650 @@ export interface Request {
   adParams: ADParams | undefined;
   comments: string;
   approversComments: string;
+  due: number;
   id: string;
   createdAt: number;
   updatedAt: number;
   type: RequestType;
   serialNumber: string;
+  needSecurityDecision: boolean;
+  needSuperSecurityDecision: boolean;
 }
+
+const baseGetRequestsInProgressByDueReq: object = { due: 0 };
+
+export const GetRequestsInProgressByDueReq = {
+  encode(
+    message: GetRequestsInProgressByDueReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.due !== 0) {
+      writer.uint32(8).int64(message.due);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GetRequestsInProgressByDueReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseGetRequestsInProgressByDueReq,
+    } as GetRequestsInProgressByDueReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.due = longToNumber(reader.int64() as Long);
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetRequestsInProgressByDueReq {
+    const message = {
+      ...baseGetRequestsInProgressByDueReq,
+    } as GetRequestsInProgressByDueReq;
+    if (object.due !== undefined && object.due !== null) {
+      message.due = Number(object.due);
+    } else {
+      message.due = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: GetRequestsInProgressByDueReq): unknown {
+    const obj: any = {};
+    message.due !== undefined && (obj.due = message.due);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<GetRequestsInProgressByDueReq>
+  ): GetRequestsInProgressByDueReq {
+    const message = {
+      ...baseGetRequestsInProgressByDueReq,
+    } as GetRequestsInProgressByDueReq;
+    if (object.due !== undefined && object.due !== null) {
+      message.due = object.due;
+    } else {
+      message.due = 0;
+    }
+    return message;
+  },
+};
+
+const baseRequestIdArray: object = { requestIds: "", count: 0 };
+
+export const RequestIdArray = {
+  encode(
+    message: RequestIdArray,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.requestIds) {
+      writer.uint32(10).string(v!);
+    }
+    if (message.count !== 0) {
+      writer.uint32(16).int32(message.count);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): RequestIdArray {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseRequestIdArray } as RequestIdArray;
+    message.requestIds = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.requestIds.push(reader.string());
+          break;
+        case 2:
+          message.count = reader.int32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RequestIdArray {
+    const message = { ...baseRequestIdArray } as RequestIdArray;
+    message.requestIds = [];
+    if (object.requestIds !== undefined && object.requestIds !== null) {
+      for (const e of object.requestIds) {
+        message.requestIds.push(String(e));
+      }
+    }
+    if (object.count !== undefined && object.count !== null) {
+      message.count = Number(object.count);
+    } else {
+      message.count = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: RequestIdArray): unknown {
+    const obj: any = {};
+    if (message.requestIds) {
+      obj.requestIds = message.requestIds.map((e) => e);
+    } else {
+      obj.requestIds = [];
+    }
+    message.count !== undefined && (obj.count = message.count);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<RequestIdArray>): RequestIdArray {
+    const message = { ...baseRequestIdArray } as RequestIdArray;
+    message.requestIds = [];
+    if (object.requestIds !== undefined && object.requestIds !== null) {
+      for (const e of object.requestIds) {
+        message.requestIds.push(e);
+      }
+    }
+    if (object.count !== undefined && object.count !== null) {
+      message.count = object.count;
+    } else {
+      message.count = 0;
+    }
+    return message;
+  },
+};
+
+const baseUpdateDecisionReq: object = { id: "" };
+
+export const UpdateDecisionReq = {
+  encode(
+    message: UpdateDecisionReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.approverDecision !== undefined) {
+      ApproverDecision.encode(
+        message.approverDecision,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UpdateDecisionReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseUpdateDecisionReq } as UpdateDecisionReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        case 2:
+          message.approverDecision = ApproverDecision.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UpdateDecisionReq {
+    const message = { ...baseUpdateDecisionReq } as UpdateDecisionReq;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    if (
+      object.approverDecision !== undefined &&
+      object.approverDecision !== null
+    ) {
+      message.approverDecision = ApproverDecision.fromJSON(
+        object.approverDecision
+      );
+    } else {
+      message.approverDecision = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: UpdateDecisionReq): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    message.approverDecision !== undefined &&
+      (obj.approverDecision = message.approverDecision
+        ? ApproverDecision.toJSON(message.approverDecision)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<UpdateDecisionReq>): UpdateDecisionReq {
+    const message = { ...baseUpdateDecisionReq } as UpdateDecisionReq;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    if (
+      object.approverDecision !== undefined &&
+      object.approverDecision !== null
+    ) {
+      message.approverDecision = ApproverDecision.fromPartial(
+        object.approverDecision
+      );
+    } else {
+      message.approverDecision = undefined;
+    }
+    return message;
+  },
+};
+
+const baseIncrementRetriesReq: object = { id: "" };
+
+export const IncrementRetriesReq = {
+  encode(
+    message: IncrementRetriesReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): IncrementRetriesReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseIncrementRetriesReq } as IncrementRetriesReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): IncrementRetriesReq {
+    const message = { ...baseIncrementRetriesReq } as IncrementRetriesReq;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+
+  toJSON(message: IncrementRetriesReq): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<IncrementRetriesReq>): IncrementRetriesReq {
+    const message = { ...baseIncrementRetriesReq } as IncrementRetriesReq;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+};
+
+const baseCanPushToQueueReq: object = { id: "" };
+
+export const CanPushToQueueReq = {
+  encode(
+    message: CanPushToQueueReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): CanPushToQueueReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseCanPushToQueueReq } as CanPushToQueueReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CanPushToQueueReq {
+    const message = { ...baseCanPushToQueueReq } as CanPushToQueueReq;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+
+  toJSON(message: CanPushToQueueReq): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<CanPushToQueueReq>): CanPushToQueueReq {
+    const message = { ...baseCanPushToQueueReq } as CanPushToQueueReq;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+};
+
+const baseCanPushToQueueRes: object = { canPushToQueue: false };
+
+export const CanPushToQueueRes = {
+  encode(
+    message: CanPushToQueueRes,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.canPushToQueue === true) {
+      writer.uint32(8).bool(message.canPushToQueue);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): CanPushToQueueRes {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseCanPushToQueueRes } as CanPushToQueueRes;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.canPushToQueue = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CanPushToQueueRes {
+    const message = { ...baseCanPushToQueueRes } as CanPushToQueueRes;
+    if (object.canPushToQueue !== undefined && object.canPushToQueue !== null) {
+      message.canPushToQueue = Boolean(object.canPushToQueue);
+    } else {
+      message.canPushToQueue = false;
+    }
+    return message;
+  },
+
+  toJSON(message: CanPushToQueueRes): unknown {
+    const obj: any = {};
+    message.canPushToQueue !== undefined &&
+      (obj.canPushToQueue = message.canPushToQueue);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<CanPushToQueueRes>): CanPushToQueueRes {
+    const message = { ...baseCanPushToQueueRes } as CanPushToQueueRes;
+    if (object.canPushToQueue !== undefined && object.canPushToQueue !== null) {
+      message.canPushToQueue = object.canPushToQueue;
+    } else {
+      message.canPushToQueue = false;
+    }
+    return message;
+  },
+};
+
+const baseGetRequestsByIdentifierReq: object = {
+  identifier: "",
+  from: 0,
+  to: 0,
+};
+
+export const GetRequestsByIdentifierReq = {
+  encode(
+    message: GetRequestsByIdentifierReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.identifier !== "") {
+      writer.uint32(10).string(message.identifier);
+    }
+    if (message.from !== 0) {
+      writer.uint32(16).int32(message.from);
+    }
+    if (message.to !== 0) {
+      writer.uint32(24).int32(message.to);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GetRequestsByIdentifierReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseGetRequestsByIdentifierReq,
+    } as GetRequestsByIdentifierReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.identifier = reader.string();
+          break;
+        case 2:
+          message.from = reader.int32();
+          break;
+        case 3:
+          message.to = reader.int32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetRequestsByIdentifierReq {
+    const message = {
+      ...baseGetRequestsByIdentifierReq,
+    } as GetRequestsByIdentifierReq;
+    if (object.identifier !== undefined && object.identifier !== null) {
+      message.identifier = String(object.identifier);
+    } else {
+      message.identifier = "";
+    }
+    if (object.from !== undefined && object.from !== null) {
+      message.from = Number(object.from);
+    } else {
+      message.from = 0;
+    }
+    if (object.to !== undefined && object.to !== null) {
+      message.to = Number(object.to);
+    } else {
+      message.to = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: GetRequestsByIdentifierReq): unknown {
+    const obj: any = {};
+    message.identifier !== undefined && (obj.identifier = message.identifier);
+    message.from !== undefined && (obj.from = message.from);
+    message.to !== undefined && (obj.to = message.to);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<GetRequestsByIdentifierReq>
+  ): GetRequestsByIdentifierReq {
+    const message = {
+      ...baseGetRequestsByIdentifierReq,
+    } as GetRequestsByIdentifierReq;
+    if (object.identifier !== undefined && object.identifier !== null) {
+      message.identifier = object.identifier;
+    } else {
+      message.identifier = "";
+    }
+    if (object.from !== undefined && object.from !== null) {
+      message.from = object.from;
+    } else {
+      message.from = 0;
+    }
+    if (object.to !== undefined && object.to !== null) {
+      message.to = object.to;
+    } else {
+      message.to = 0;
+    }
+    return message;
+  },
+};
+
+const baseSearchRequestsByDisplayNameReq: object = {
+  displayName: "",
+  from: 0,
+  to: 0,
+};
+
+export const SearchRequestsByDisplayNameReq = {
+  encode(
+    message: SearchRequestsByDisplayNameReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.displayName !== "") {
+      writer.uint32(10).string(message.displayName);
+    }
+    if (message.from !== 0) {
+      writer.uint32(16).int32(message.from);
+    }
+    if (message.to !== 0) {
+      writer.uint32(24).int32(message.to);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): SearchRequestsByDisplayNameReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseSearchRequestsByDisplayNameReq,
+    } as SearchRequestsByDisplayNameReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.displayName = reader.string();
+          break;
+        case 2:
+          message.from = reader.int32();
+          break;
+        case 3:
+          message.to = reader.int32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SearchRequestsByDisplayNameReq {
+    const message = {
+      ...baseSearchRequestsByDisplayNameReq,
+    } as SearchRequestsByDisplayNameReq;
+    if (object.displayName !== undefined && object.displayName !== null) {
+      message.displayName = String(object.displayName);
+    } else {
+      message.displayName = "";
+    }
+    if (object.from !== undefined && object.from !== null) {
+      message.from = Number(object.from);
+    } else {
+      message.from = 0;
+    }
+    if (object.to !== undefined && object.to !== null) {
+      message.to = Number(object.to);
+    } else {
+      message.to = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: SearchRequestsByDisplayNameReq): unknown {
+    const obj: any = {};
+    message.displayName !== undefined &&
+      (obj.displayName = message.displayName);
+    message.from !== undefined && (obj.from = message.from);
+    message.to !== undefined && (obj.to = message.to);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<SearchRequestsByDisplayNameReq>
+  ): SearchRequestsByDisplayNameReq {
+    const message = {
+      ...baseSearchRequestsByDisplayNameReq,
+    } as SearchRequestsByDisplayNameReq;
+    if (object.displayName !== undefined && object.displayName !== null) {
+      message.displayName = object.displayName;
+    } else {
+      message.displayName = "";
+    }
+    if (object.from !== undefined && object.from !== null) {
+      message.from = object.from;
+    } else {
+      message.from = 0;
+    }
+    if (object.to !== undefined && object.to !== null) {
+      message.to = object.to;
+    } else {
+      message.to = 0;
+    }
+    return message;
+  },
+};
 
 const baseUpdateKartoffelStatusReq: object = {
   requestId: "",
@@ -1506,7 +2237,11 @@ export const ApproverDecision = {
   },
 };
 
-const baseKartoffelStatus: object = { status: 0, message: "" };
+const baseKartoffelStatus: object = {
+  status: 0,
+  message: "",
+  failedRetries: 0,
+};
 
 export const KartoffelStatus = {
   encode(
@@ -1521,6 +2256,9 @@ export const KartoffelStatus = {
     }
     if (message.createdId !== undefined) {
       writer.uint32(26).string(message.createdId);
+    }
+    if (message.failedRetries !== 0) {
+      writer.uint32(32).int32(message.failedRetries);
     }
     return writer;
   },
@@ -1540,6 +2278,9 @@ export const KartoffelStatus = {
           break;
         case 3:
           message.createdId = reader.string();
+          break;
+        case 4:
+          message.failedRetries = reader.int32();
           break;
         default:
           reader.skipType(tag & 7);
@@ -1566,6 +2307,11 @@ export const KartoffelStatus = {
     } else {
       message.createdId = undefined;
     }
+    if (object.failedRetries !== undefined && object.failedRetries !== null) {
+      message.failedRetries = Number(object.failedRetries);
+    } else {
+      message.failedRetries = 0;
+    }
     return message;
   },
 
@@ -1575,6 +2321,8 @@ export const KartoffelStatus = {
       (obj.status = stageStatusToJSON(message.status));
     message.message !== undefined && (obj.message = message.message);
     message.createdId !== undefined && (obj.createdId = message.createdId);
+    message.failedRetries !== undefined &&
+      (obj.failedRetries = message.failedRetries);
     return obj;
   },
 
@@ -1595,11 +2343,16 @@ export const KartoffelStatus = {
     } else {
       message.createdId = undefined;
     }
+    if (object.failedRetries !== undefined && object.failedRetries !== null) {
+      message.failedRetries = object.failedRetries;
+    } else {
+      message.failedRetries = 0;
+    }
     return message;
   },
 };
 
-const baseADStatus: object = { status: 0, message: "" };
+const baseADStatus: object = { status: 0, message: "", failedRetries: 0 };
 
 export const ADStatus = {
   encode(
@@ -1611,6 +2364,9 @@ export const ADStatus = {
     }
     if (message.message !== "") {
       writer.uint32(18).string(message.message);
+    }
+    if (message.failedRetries !== 0) {
+      writer.uint32(24).int32(message.failedRetries);
     }
     return writer;
   },
@@ -1627,6 +2383,9 @@ export const ADStatus = {
           break;
         case 2:
           message.message = reader.string();
+          break;
+        case 3:
+          message.failedRetries = reader.int32();
           break;
         default:
           reader.skipType(tag & 7);
@@ -1648,6 +2407,11 @@ export const ADStatus = {
     } else {
       message.message = "";
     }
+    if (object.failedRetries !== undefined && object.failedRetries !== null) {
+      message.failedRetries = Number(object.failedRetries);
+    } else {
+      message.failedRetries = 0;
+    }
     return message;
   },
 
@@ -1656,6 +2420,8 @@ export const ADStatus = {
     message.status !== undefined &&
       (obj.status = stageStatusToJSON(message.status));
     message.message !== undefined && (obj.message = message.message);
+    message.failedRetries !== undefined &&
+      (obj.failedRetries = message.failedRetries);
     return obj;
   },
 
@@ -1670,6 +2436,11 @@ export const ADStatus = {
       message.message = object.message;
     } else {
       message.message = "";
+    }
+    if (object.failedRetries !== undefined && object.failedRetries !== null) {
+      message.failedRetries = object.failedRetries;
+    } else {
+      message.failedRetries = 0;
     }
     return message;
   },
@@ -2172,23 +2943,32 @@ export const UpdateReqProperties = {
         writer.uint32(34).fork()
       ).ldelim();
     }
-    if (message.kartoffelStatus !== undefined) {
-      KartoffelStatus.encode(
-        message.kartoffelStatus,
+    if (message.superSecurityDecision !== undefined) {
+      ApproverDecision.encode(
+        message.superSecurityDecision,
         writer.uint32(42).fork()
       ).ldelim();
     }
+    if (message.kartoffelStatus !== undefined) {
+      KartoffelStatus.encode(
+        message.kartoffelStatus,
+        writer.uint32(50).fork()
+      ).ldelim();
+    }
     if (message.adStatus !== undefined) {
-      ADStatus.encode(message.adStatus, writer.uint32(50).fork()).ldelim();
+      ADStatus.encode(message.adStatus, writer.uint32(58).fork()).ldelim();
     }
     if (message.kartoffelParams !== undefined) {
       KartoffelParams.encode(
         message.kartoffelParams,
-        writer.uint32(58).fork()
+        writer.uint32(66).fork()
       ).ldelim();
     }
     if (message.adParams !== undefined) {
-      ADParams.encode(message.adParams, writer.uint32(66).fork()).ldelim();
+      ADParams.encode(message.adParams, writer.uint32(74).fork()).ldelim();
+    }
+    if (message.due !== undefined) {
+      writer.uint32(80).int64(message.due);
     }
     return writer;
   },
@@ -2219,22 +2999,31 @@ export const UpdateReqProperties = {
           );
           break;
         case 5:
-          message.kartoffelStatus = KartoffelStatus.decode(
+          message.superSecurityDecision = ApproverDecision.decode(
             reader,
             reader.uint32()
           );
           break;
         case 6:
-          message.adStatus = ADStatus.decode(reader, reader.uint32());
+          message.kartoffelStatus = KartoffelStatus.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 7:
+          message.adStatus = ADStatus.decode(reader, reader.uint32());
+          break;
+        case 8:
           message.kartoffelParams = KartoffelParams.decode(
             reader,
             reader.uint32()
           );
           break;
-        case 8:
+        case 9:
           message.adParams = ADParams.decode(reader, reader.uint32());
+          break;
+        case 10:
+          message.due = longToNumber(reader.int64() as Long);
           break;
         default:
           reader.skipType(tag & 7);
@@ -2277,6 +3066,16 @@ export const UpdateReqProperties = {
       message.securityDecision = undefined;
     }
     if (
+      object.superSecurityDecision !== undefined &&
+      object.superSecurityDecision !== null
+    ) {
+      message.superSecurityDecision = ApproverDecision.fromJSON(
+        object.superSecurityDecision
+      );
+    } else {
+      message.superSecurityDecision = undefined;
+    }
+    if (
       object.kartoffelStatus !== undefined &&
       object.kartoffelStatus !== null
     ) {
@@ -2306,6 +3105,11 @@ export const UpdateReqProperties = {
     } else {
       message.adParams = undefined;
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = Number(object.due);
+    } else {
+      message.due = undefined;
+    }
     return message;
   },
 
@@ -2328,6 +3132,10 @@ export const UpdateReqProperties = {
       (obj.securityDecision = message.securityDecision
         ? ApproverDecision.toJSON(message.securityDecision)
         : undefined);
+    message.superSecurityDecision !== undefined &&
+      (obj.superSecurityDecision = message.superSecurityDecision
+        ? ApproverDecision.toJSON(message.superSecurityDecision)
+        : undefined);
     message.kartoffelStatus !== undefined &&
       (obj.kartoffelStatus = message.kartoffelStatus
         ? KartoffelStatus.toJSON(message.kartoffelStatus)
@@ -2344,6 +3152,7 @@ export const UpdateReqProperties = {
       (obj.adParams = message.adParams
         ? ADParams.toJSON(message.adParams)
         : undefined);
+    message.due !== undefined && (obj.due = message.due);
     return obj;
   },
 
@@ -2380,6 +3189,16 @@ export const UpdateReqProperties = {
       message.securityDecision = undefined;
     }
     if (
+      object.superSecurityDecision !== undefined &&
+      object.superSecurityDecision !== null
+    ) {
+      message.superSecurityDecision = ApproverDecision.fromPartial(
+        object.superSecurityDecision
+      );
+    } else {
+      message.superSecurityDecision = undefined;
+    }
+    if (
       object.kartoffelStatus !== undefined &&
       object.kartoffelStatus !== null
     ) {
@@ -2408,6 +3227,11 @@ export const UpdateReqProperties = {
       message.adParams = ADParams.fromPartial(object.adParams);
     } else {
       message.adParams = undefined;
+    }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = object.due;
+    } else {
+      message.due = undefined;
     }
     return message;
   },
@@ -2466,6 +3290,9 @@ export const CreateNewApproverReq = {
     if (message.approversComments !== "") {
       writer.uint32(82).string(message.approversComments);
     }
+    if (message.due !== undefined) {
+      writer.uint32(88).int64(message.due);
+    }
     return writer;
   },
 
@@ -2518,6 +3345,9 @@ export const CreateNewApproverReq = {
           break;
         case 10:
           message.approversComments = reader.string();
+          break;
+        case 11:
+          message.due = longToNumber(reader.int64() as Long);
           break;
         default:
           reader.skipType(tag & 7);
@@ -2603,6 +3433,11 @@ export const CreateNewApproverReq = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = Number(object.due);
+    } else {
+      message.due = undefined;
+    }
     return message;
   },
 
@@ -2644,6 +3479,7 @@ export const CreateNewApproverReq = {
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
       (obj.approversComments = message.approversComments);
+    message.due !== undefined && (obj.due = message.due);
     return obj;
   },
 
@@ -2723,6 +3559,11 @@ export const CreateNewApproverReq = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = object.due;
+    } else {
+      message.due = undefined;
+    }
     return message;
   },
 };
@@ -2731,11 +3572,14 @@ const baseCreateNewApproverRes: object = {
   status: 0,
   comments: "",
   approversComments: "",
+  due: 0,
   id: "",
   createdAt: 0,
   updatedAt: 0,
   type: 0,
   serialNumber: "",
+  needSecurityDecision: false,
+  needSuperSecurityDecision: false,
 };
 
 export const CreateNewApproverRes = {
@@ -2785,20 +3629,29 @@ export const CreateNewApproverRes = {
     if (message.approversComments !== "") {
       writer.uint32(82).string(message.approversComments);
     }
+    if (message.due !== 0) {
+      writer.uint32(88).int64(message.due);
+    }
     if (message.id !== "") {
-      writer.uint32(90).string(message.id);
+      writer.uint32(98).string(message.id);
     }
     if (message.createdAt !== 0) {
-      writer.uint32(96).int64(message.createdAt);
+      writer.uint32(104).int64(message.createdAt);
     }
     if (message.updatedAt !== 0) {
-      writer.uint32(104).int64(message.updatedAt);
+      writer.uint32(112).int64(message.updatedAt);
     }
     if (message.type !== 0) {
-      writer.uint32(112).int32(message.type);
+      writer.uint32(120).int32(message.type);
     }
     if (message.serialNumber !== "") {
-      writer.uint32(122).string(message.serialNumber);
+      writer.uint32(130).string(message.serialNumber);
+    }
+    if (message.needSecurityDecision === true) {
+      writer.uint32(136).bool(message.needSecurityDecision);
+    }
+    if (message.needSuperSecurityDecision === true) {
+      writer.uint32(144).bool(message.needSuperSecurityDecision);
     }
     return writer;
   },
@@ -2854,19 +3707,28 @@ export const CreateNewApproverRes = {
           message.approversComments = reader.string();
           break;
         case 11:
-          message.id = reader.string();
+          message.due = longToNumber(reader.int64() as Long);
           break;
         case 12:
-          message.createdAt = longToNumber(reader.int64() as Long);
+          message.id = reader.string();
           break;
         case 13:
-          message.updatedAt = longToNumber(reader.int64() as Long);
+          message.createdAt = longToNumber(reader.int64() as Long);
           break;
         case 14:
-          message.type = reader.int32() as any;
+          message.updatedAt = longToNumber(reader.int64() as Long);
           break;
         case 15:
+          message.type = reader.int32() as any;
+          break;
+        case 16:
           message.serialNumber = reader.string();
+          break;
+        case 17:
+          message.needSecurityDecision = reader.bool();
+          break;
+        case 18:
+          message.needSuperSecurityDecision = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -2952,6 +3814,11 @@ export const CreateNewApproverRes = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = Number(object.due);
+    } else {
+      message.due = 0;
+    }
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
@@ -2976,6 +3843,24 @@ export const CreateNewApproverRes = {
       message.serialNumber = String(object.serialNumber);
     } else {
       message.serialNumber = "";
+    }
+    if (
+      object.needSecurityDecision !== undefined &&
+      object.needSecurityDecision !== null
+    ) {
+      message.needSecurityDecision = Boolean(object.needSecurityDecision);
+    } else {
+      message.needSecurityDecision = false;
+    }
+    if (
+      object.needSuperSecurityDecision !== undefined &&
+      object.needSuperSecurityDecision !== null
+    ) {
+      message.needSuperSecurityDecision = Boolean(
+        object.needSuperSecurityDecision
+      );
+    } else {
+      message.needSuperSecurityDecision = false;
     }
     return message;
   },
@@ -3018,12 +3903,17 @@ export const CreateNewApproverRes = {
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
       (obj.approversComments = message.approversComments);
+    message.due !== undefined && (obj.due = message.due);
     message.id !== undefined && (obj.id = message.id);
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
     message.updatedAt !== undefined && (obj.updatedAt = message.updatedAt);
     message.type !== undefined && (obj.type = requestTypeToJSON(message.type));
     message.serialNumber !== undefined &&
       (obj.serialNumber = message.serialNumber);
+    message.needSecurityDecision !== undefined &&
+      (obj.needSecurityDecision = message.needSecurityDecision);
+    message.needSuperSecurityDecision !== undefined &&
+      (obj.needSuperSecurityDecision = message.needSuperSecurityDecision);
     return obj;
   },
 
@@ -3103,6 +3993,11 @@ export const CreateNewApproverRes = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = object.due;
+    } else {
+      message.due = 0;
+    }
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
@@ -3127,6 +4022,22 @@ export const CreateNewApproverRes = {
       message.serialNumber = object.serialNumber;
     } else {
       message.serialNumber = "";
+    }
+    if (
+      object.needSecurityDecision !== undefined &&
+      object.needSecurityDecision !== null
+    ) {
+      message.needSecurityDecision = object.needSecurityDecision;
+    } else {
+      message.needSecurityDecision = false;
+    }
+    if (
+      object.needSuperSecurityDecision !== undefined &&
+      object.needSuperSecurityDecision !== null
+    ) {
+      message.needSuperSecurityDecision = object.needSuperSecurityDecision;
+    } else {
+      message.needSuperSecurityDecision = false;
     }
     return message;
   },
@@ -3191,6 +4102,9 @@ export const CreateOGReq = {
     if (message.approversComments !== "") {
       writer.uint32(90).string(message.approversComments);
     }
+    if (message.due !== undefined) {
+      writer.uint32(96).int64(message.due);
+    }
     return writer;
   },
 
@@ -3246,6 +4160,9 @@ export const CreateOGReq = {
           break;
         case 11:
           message.approversComments = reader.string();
+          break;
+        case 12:
+          message.due = longToNumber(reader.int64() as Long);
           break;
         default:
           reader.skipType(tag & 7);
@@ -3336,6 +4253,11 @@ export const CreateOGReq = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = Number(object.due);
+    } else {
+      message.due = undefined;
+    }
     return message;
   },
 
@@ -3381,6 +4303,7 @@ export const CreateOGReq = {
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
       (obj.approversComments = message.approversComments);
+    message.due !== undefined && (obj.due = message.due);
     return obj;
   },
 
@@ -3465,6 +4388,11 @@ export const CreateOGReq = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = object.due;
+    } else {
+      message.due = undefined;
+    }
     return message;
   },
 };
@@ -3473,11 +4401,14 @@ const baseCreateOGRes: object = {
   status: 0,
   comments: "",
   approversComments: "",
+  due: 0,
   id: "",
   createdAt: 0,
   updatedAt: 0,
   type: 0,
   serialNumber: "",
+  needSecurityDecision: false,
+  needSuperSecurityDecision: false,
 };
 
 export const CreateOGRes = {
@@ -3533,20 +4464,29 @@ export const CreateOGRes = {
     if (message.approversComments !== "") {
       writer.uint32(90).string(message.approversComments);
     }
+    if (message.due !== 0) {
+      writer.uint32(96).int64(message.due);
+    }
     if (message.id !== "") {
-      writer.uint32(98).string(message.id);
+      writer.uint32(106).string(message.id);
     }
     if (message.createdAt !== 0) {
-      writer.uint32(104).int64(message.createdAt);
+      writer.uint32(112).int64(message.createdAt);
     }
     if (message.updatedAt !== 0) {
-      writer.uint32(112).int64(message.updatedAt);
+      writer.uint32(120).int64(message.updatedAt);
     }
     if (message.type !== 0) {
-      writer.uint32(120).int32(message.type);
+      writer.uint32(128).int32(message.type);
     }
     if (message.serialNumber !== "") {
-      writer.uint32(130).string(message.serialNumber);
+      writer.uint32(138).string(message.serialNumber);
+    }
+    if (message.needSecurityDecision === true) {
+      writer.uint32(144).bool(message.needSecurityDecision);
+    }
+    if (message.needSuperSecurityDecision === true) {
+      writer.uint32(152).bool(message.needSuperSecurityDecision);
     }
     return writer;
   },
@@ -3605,19 +4545,28 @@ export const CreateOGRes = {
           message.approversComments = reader.string();
           break;
         case 12:
-          message.id = reader.string();
+          message.due = longToNumber(reader.int64() as Long);
           break;
         case 13:
-          message.createdAt = longToNumber(reader.int64() as Long);
+          message.id = reader.string();
           break;
         case 14:
-          message.updatedAt = longToNumber(reader.int64() as Long);
+          message.createdAt = longToNumber(reader.int64() as Long);
           break;
         case 15:
-          message.type = reader.int32() as any;
+          message.updatedAt = longToNumber(reader.int64() as Long);
           break;
         case 16:
+          message.type = reader.int32() as any;
+          break;
+        case 17:
           message.serialNumber = reader.string();
+          break;
+        case 18:
+          message.needSecurityDecision = reader.bool();
+          break;
+        case 19:
+          message.needSuperSecurityDecision = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -3708,6 +4657,11 @@ export const CreateOGRes = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = Number(object.due);
+    } else {
+      message.due = 0;
+    }
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
@@ -3732,6 +4686,24 @@ export const CreateOGRes = {
       message.serialNumber = String(object.serialNumber);
     } else {
       message.serialNumber = "";
+    }
+    if (
+      object.needSecurityDecision !== undefined &&
+      object.needSecurityDecision !== null
+    ) {
+      message.needSecurityDecision = Boolean(object.needSecurityDecision);
+    } else {
+      message.needSecurityDecision = false;
+    }
+    if (
+      object.needSuperSecurityDecision !== undefined &&
+      object.needSuperSecurityDecision !== null
+    ) {
+      message.needSuperSecurityDecision = Boolean(
+        object.needSuperSecurityDecision
+      );
+    } else {
+      message.needSuperSecurityDecision = false;
     }
     return message;
   },
@@ -3778,12 +4750,17 @@ export const CreateOGRes = {
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
       (obj.approversComments = message.approversComments);
+    message.due !== undefined && (obj.due = message.due);
     message.id !== undefined && (obj.id = message.id);
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
     message.updatedAt !== undefined && (obj.updatedAt = message.updatedAt);
     message.type !== undefined && (obj.type = requestTypeToJSON(message.type));
     message.serialNumber !== undefined &&
       (obj.serialNumber = message.serialNumber);
+    message.needSecurityDecision !== undefined &&
+      (obj.needSecurityDecision = message.needSecurityDecision);
+    message.needSuperSecurityDecision !== undefined &&
+      (obj.needSuperSecurityDecision = message.needSuperSecurityDecision);
     return obj;
   },
 
@@ -3868,6 +4845,11 @@ export const CreateOGRes = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = object.due;
+    } else {
+      message.due = 0;
+    }
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
@@ -3892,6 +4874,22 @@ export const CreateOGRes = {
       message.serialNumber = object.serialNumber;
     } else {
       message.serialNumber = "";
+    }
+    if (
+      object.needSecurityDecision !== undefined &&
+      object.needSecurityDecision !== null
+    ) {
+      message.needSecurityDecision = object.needSecurityDecision;
+    } else {
+      message.needSecurityDecision = false;
+    }
+    if (
+      object.needSuperSecurityDecision !== undefined &&
+      object.needSuperSecurityDecision !== null
+    ) {
+      message.needSuperSecurityDecision = object.needSuperSecurityDecision;
+    } else {
+      message.needSuperSecurityDecision = false;
     }
     return message;
   },
@@ -4130,38 +5128,47 @@ export const CreateRoleReq = {
         writer.uint32(34).fork()
       ).ldelim();
     }
+    if (message.superSecurityDecision !== undefined) {
+      ApproverDecision.encode(
+        message.superSecurityDecision,
+        writer.uint32(42).fork()
+      ).ldelim();
+    }
     for (const v of message.commanders) {
-      EntityMin.encode(v!, writer.uint32(42).fork()).ldelim();
+      EntityMin.encode(v!, writer.uint32(50).fork()).ldelim();
     }
     for (const v of message.securityApprovers) {
-      EntityMin.encode(v!, writer.uint32(50).fork()).ldelim();
+      EntityMin.encode(v!, writer.uint32(58).fork()).ldelim();
     }
     if (message.kartoffelStatus !== undefined) {
       KartoffelStatus.encode(
         message.kartoffelStatus,
-        writer.uint32(58).fork()
+        writer.uint32(66).fork()
       ).ldelim();
     }
     if (message.adStatus !== undefined) {
-      ADStatus.encode(message.adStatus, writer.uint32(66).fork()).ldelim();
+      ADStatus.encode(message.adStatus, writer.uint32(74).fork()).ldelim();
     }
     if (message.kartoffelParams !== undefined) {
       CreateRoleKartoffelParams.encode(
         message.kartoffelParams,
-        writer.uint32(74).fork()
+        writer.uint32(82).fork()
       ).ldelim();
     }
     if (message.adParams !== undefined) {
       CreateRoleADParams.encode(
         message.adParams,
-        writer.uint32(82).fork()
+        writer.uint32(90).fork()
       ).ldelim();
     }
     if (message.comments !== "") {
-      writer.uint32(90).string(message.comments);
+      writer.uint32(98).string(message.comments);
     }
     if (message.approversComments !== "") {
-      writer.uint32(98).string(message.approversComments);
+      writer.uint32(106).string(message.approversComments);
+    }
+    if (message.due !== undefined) {
+      writer.uint32(112).int64(message.due);
     }
     return writer;
   },
@@ -4194,36 +5201,45 @@ export const CreateRoleReq = {
           );
           break;
         case 5:
-          message.commanders.push(EntityMin.decode(reader, reader.uint32()));
+          message.superSecurityDecision = ApproverDecision.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 6:
+          message.commanders.push(EntityMin.decode(reader, reader.uint32()));
+          break;
+        case 7:
           message.securityApprovers.push(
             EntityMin.decode(reader, reader.uint32())
           );
           break;
-        case 7:
+        case 8:
           message.kartoffelStatus = KartoffelStatus.decode(
             reader,
             reader.uint32()
           );
           break;
-        case 8:
+        case 9:
           message.adStatus = ADStatus.decode(reader, reader.uint32());
           break;
-        case 9:
+        case 10:
           message.kartoffelParams = CreateRoleKartoffelParams.decode(
             reader,
             reader.uint32()
           );
           break;
-        case 10:
+        case 11:
           message.adParams = CreateRoleADParams.decode(reader, reader.uint32());
           break;
-        case 11:
+        case 12:
           message.comments = reader.string();
           break;
-        case 12:
+        case 13:
           message.approversComments = reader.string();
+          break;
+        case 14:
+          message.due = longToNumber(reader.int64() as Long);
           break;
         default:
           reader.skipType(tag & 7);
@@ -4267,6 +5283,16 @@ export const CreateRoleReq = {
     } else {
       message.securityDecision = undefined;
     }
+    if (
+      object.superSecurityDecision !== undefined &&
+      object.superSecurityDecision !== null
+    ) {
+      message.superSecurityDecision = ApproverDecision.fromJSON(
+        object.superSecurityDecision
+      );
+    } else {
+      message.superSecurityDecision = undefined;
+    }
     if (object.commanders !== undefined && object.commanders !== null) {
       for (const e of object.commanders) {
         message.commanders.push(EntityMin.fromJSON(e));
@@ -4323,6 +5349,11 @@ export const CreateRoleReq = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = Number(object.due);
+    } else {
+      message.due = undefined;
+    }
     return message;
   },
 
@@ -4341,6 +5372,10 @@ export const CreateRoleReq = {
     message.securityDecision !== undefined &&
       (obj.securityDecision = message.securityDecision
         ? ApproverDecision.toJSON(message.securityDecision)
+        : undefined);
+    message.superSecurityDecision !== undefined &&
+      (obj.superSecurityDecision = message.superSecurityDecision
+        ? ApproverDecision.toJSON(message.superSecurityDecision)
         : undefined);
     if (message.commanders) {
       obj.commanders = message.commanders.map((e) =>
@@ -4375,6 +5410,7 @@ export const CreateRoleReq = {
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
       (obj.approversComments = message.approversComments);
+    message.due !== undefined && (obj.due = message.due);
     return obj;
   },
 
@@ -4411,6 +5447,16 @@ export const CreateRoleReq = {
       );
     } else {
       message.securityDecision = undefined;
+    }
+    if (
+      object.superSecurityDecision !== undefined &&
+      object.superSecurityDecision !== null
+    ) {
+      message.superSecurityDecision = ApproverDecision.fromPartial(
+        object.superSecurityDecision
+      );
+    } else {
+      message.superSecurityDecision = undefined;
     }
     if (object.commanders !== undefined && object.commanders !== null) {
       for (const e of object.commanders) {
@@ -4468,6 +5514,11 @@ export const CreateRoleReq = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = object.due;
+    } else {
+      message.due = undefined;
+    }
     return message;
   },
 };
@@ -4476,11 +5527,14 @@ const baseCreateRoleRes: object = {
   status: 0,
   comments: "",
   approversComments: "",
+  due: 0,
   id: "",
   createdAt: 0,
   updatedAt: 0,
   type: 0,
   serialNumber: "",
+  needSecurityDecision: false,
+  needSuperSecurityDecision: false,
 };
 
 export const CreateRoleRes = {
@@ -4506,53 +5560,68 @@ export const CreateRoleRes = {
         writer.uint32(34).fork()
       ).ldelim();
     }
+    if (message.superSecurityDecision !== undefined) {
+      ApproverDecision.encode(
+        message.superSecurityDecision,
+        writer.uint32(42).fork()
+      ).ldelim();
+    }
     for (const v of message.commanders) {
-      EntityMin.encode(v!, writer.uint32(42).fork()).ldelim();
+      EntityMin.encode(v!, writer.uint32(50).fork()).ldelim();
     }
     for (const v of message.securityApprovers) {
-      EntityMin.encode(v!, writer.uint32(50).fork()).ldelim();
+      EntityMin.encode(v!, writer.uint32(58).fork()).ldelim();
     }
     if (message.kartoffelStatus !== undefined) {
       KartoffelStatus.encode(
         message.kartoffelStatus,
-        writer.uint32(58).fork()
+        writer.uint32(66).fork()
       ).ldelim();
     }
     if (message.adStatus !== undefined) {
-      ADStatus.encode(message.adStatus, writer.uint32(66).fork()).ldelim();
+      ADStatus.encode(message.adStatus, writer.uint32(74).fork()).ldelim();
     }
     if (message.kartoffelParams !== undefined) {
       CreateRoleKartoffelParams.encode(
         message.kartoffelParams,
-        writer.uint32(74).fork()
+        writer.uint32(82).fork()
       ).ldelim();
     }
     if (message.adParams !== undefined) {
       CreateRoleADParams.encode(
         message.adParams,
-        writer.uint32(82).fork()
+        writer.uint32(90).fork()
       ).ldelim();
     }
     if (message.comments !== "") {
-      writer.uint32(90).string(message.comments);
+      writer.uint32(98).string(message.comments);
     }
     if (message.approversComments !== "") {
-      writer.uint32(98).string(message.approversComments);
+      writer.uint32(106).string(message.approversComments);
+    }
+    if (message.due !== 0) {
+      writer.uint32(112).int64(message.due);
     }
     if (message.id !== "") {
-      writer.uint32(106).string(message.id);
+      writer.uint32(122).string(message.id);
     }
     if (message.createdAt !== 0) {
-      writer.uint32(112).int64(message.createdAt);
+      writer.uint32(128).int64(message.createdAt);
     }
     if (message.updatedAt !== 0) {
-      writer.uint32(120).int64(message.updatedAt);
+      writer.uint32(136).int64(message.updatedAt);
     }
     if (message.type !== 0) {
-      writer.uint32(128).int32(message.type);
+      writer.uint32(144).int32(message.type);
     }
     if (message.serialNumber !== "") {
-      writer.uint32(138).string(message.serialNumber);
+      writer.uint32(154).string(message.serialNumber);
+    }
+    if (message.needSecurityDecision === true) {
+      writer.uint32(160).bool(message.needSecurityDecision);
+    }
+    if (message.needSuperSecurityDecision === true) {
+      writer.uint32(168).bool(message.needSuperSecurityDecision);
     }
     return writer;
   },
@@ -4585,51 +5654,66 @@ export const CreateRoleRes = {
           );
           break;
         case 5:
-          message.commanders.push(EntityMin.decode(reader, reader.uint32()));
+          message.superSecurityDecision = ApproverDecision.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 6:
+          message.commanders.push(EntityMin.decode(reader, reader.uint32()));
+          break;
+        case 7:
           message.securityApprovers.push(
             EntityMin.decode(reader, reader.uint32())
           );
           break;
-        case 7:
+        case 8:
           message.kartoffelStatus = KartoffelStatus.decode(
             reader,
             reader.uint32()
           );
           break;
-        case 8:
+        case 9:
           message.adStatus = ADStatus.decode(reader, reader.uint32());
           break;
-        case 9:
+        case 10:
           message.kartoffelParams = CreateRoleKartoffelParams.decode(
             reader,
             reader.uint32()
           );
           break;
-        case 10:
+        case 11:
           message.adParams = CreateRoleADParams.decode(reader, reader.uint32());
           break;
-        case 11:
+        case 12:
           message.comments = reader.string();
           break;
-        case 12:
+        case 13:
           message.approversComments = reader.string();
           break;
-        case 13:
-          message.id = reader.string();
-          break;
         case 14:
-          message.createdAt = longToNumber(reader.int64() as Long);
+          message.due = longToNumber(reader.int64() as Long);
           break;
         case 15:
-          message.updatedAt = longToNumber(reader.int64() as Long);
+          message.id = reader.string();
           break;
         case 16:
-          message.type = reader.int32() as any;
+          message.createdAt = longToNumber(reader.int64() as Long);
           break;
         case 17:
+          message.updatedAt = longToNumber(reader.int64() as Long);
+          break;
+        case 18:
+          message.type = reader.int32() as any;
+          break;
+        case 19:
           message.serialNumber = reader.string();
+          break;
+        case 20:
+          message.needSecurityDecision = reader.bool();
+          break;
+        case 21:
+          message.needSuperSecurityDecision = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -4673,6 +5757,16 @@ export const CreateRoleRes = {
     } else {
       message.securityDecision = undefined;
     }
+    if (
+      object.superSecurityDecision !== undefined &&
+      object.superSecurityDecision !== null
+    ) {
+      message.superSecurityDecision = ApproverDecision.fromJSON(
+        object.superSecurityDecision
+      );
+    } else {
+      message.superSecurityDecision = undefined;
+    }
     if (object.commanders !== undefined && object.commanders !== null) {
       for (const e of object.commanders) {
         message.commanders.push(EntityMin.fromJSON(e));
@@ -4729,6 +5823,11 @@ export const CreateRoleRes = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = Number(object.due);
+    } else {
+      message.due = 0;
+    }
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
@@ -4754,6 +5853,24 @@ export const CreateRoleRes = {
     } else {
       message.serialNumber = "";
     }
+    if (
+      object.needSecurityDecision !== undefined &&
+      object.needSecurityDecision !== null
+    ) {
+      message.needSecurityDecision = Boolean(object.needSecurityDecision);
+    } else {
+      message.needSecurityDecision = false;
+    }
+    if (
+      object.needSuperSecurityDecision !== undefined &&
+      object.needSuperSecurityDecision !== null
+    ) {
+      message.needSuperSecurityDecision = Boolean(
+        object.needSuperSecurityDecision
+      );
+    } else {
+      message.needSuperSecurityDecision = false;
+    }
     return message;
   },
 
@@ -4772,6 +5889,10 @@ export const CreateRoleRes = {
     message.securityDecision !== undefined &&
       (obj.securityDecision = message.securityDecision
         ? ApproverDecision.toJSON(message.securityDecision)
+        : undefined);
+    message.superSecurityDecision !== undefined &&
+      (obj.superSecurityDecision = message.superSecurityDecision
+        ? ApproverDecision.toJSON(message.superSecurityDecision)
         : undefined);
     if (message.commanders) {
       obj.commanders = message.commanders.map((e) =>
@@ -4806,12 +5927,17 @@ export const CreateRoleRes = {
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
       (obj.approversComments = message.approversComments);
+    message.due !== undefined && (obj.due = message.due);
     message.id !== undefined && (obj.id = message.id);
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
     message.updatedAt !== undefined && (obj.updatedAt = message.updatedAt);
     message.type !== undefined && (obj.type = requestTypeToJSON(message.type));
     message.serialNumber !== undefined &&
       (obj.serialNumber = message.serialNumber);
+    message.needSecurityDecision !== undefined &&
+      (obj.needSecurityDecision = message.needSecurityDecision);
+    message.needSuperSecurityDecision !== undefined &&
+      (obj.needSuperSecurityDecision = message.needSuperSecurityDecision);
     return obj;
   },
 
@@ -4848,6 +5974,16 @@ export const CreateRoleRes = {
       );
     } else {
       message.securityDecision = undefined;
+    }
+    if (
+      object.superSecurityDecision !== undefined &&
+      object.superSecurityDecision !== null
+    ) {
+      message.superSecurityDecision = ApproverDecision.fromPartial(
+        object.superSecurityDecision
+      );
+    } else {
+      message.superSecurityDecision = undefined;
     }
     if (object.commanders !== undefined && object.commanders !== null) {
       for (const e of object.commanders) {
@@ -4905,6 +6041,11 @@ export const CreateRoleRes = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = object.due;
+    } else {
+      message.due = 0;
+    }
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
@@ -4929,6 +6070,22 @@ export const CreateRoleRes = {
       message.serialNumber = object.serialNumber;
     } else {
       message.serialNumber = "";
+    }
+    if (
+      object.needSecurityDecision !== undefined &&
+      object.needSecurityDecision !== null
+    ) {
+      message.needSecurityDecision = object.needSecurityDecision;
+    } else {
+      message.needSecurityDecision = false;
+    }
+    if (
+      object.needSuperSecurityDecision !== undefined &&
+      object.needSuperSecurityDecision !== null
+    ) {
+      message.needSuperSecurityDecision = object.needSuperSecurityDecision;
+    } else {
+      message.needSuperSecurityDecision = false;
     }
     return message;
   },
@@ -5317,6 +6474,9 @@ export const CreateEntityReq = {
     if (message.approversComments !== "") {
       writer.uint32(98).string(message.approversComments);
     }
+    if (message.due !== undefined) {
+      writer.uint32(104).int64(message.due);
+    }
     return writer;
   },
 
@@ -5381,6 +6541,9 @@ export const CreateEntityReq = {
           break;
         case 12:
           message.approversComments = reader.string();
+          break;
+        case 13:
+          message.due = longToNumber(reader.int64() as Long);
           break;
         default:
           reader.skipType(tag & 7);
@@ -5480,6 +6643,11 @@ export const CreateEntityReq = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = Number(object.due);
+    } else {
+      message.due = undefined;
+    }
     return message;
   },
 
@@ -5532,6 +6700,7 @@ export const CreateEntityReq = {
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
       (obj.approversComments = message.approversComments);
+    message.due !== undefined && (obj.due = message.due);
     return obj;
   },
 
@@ -5625,6 +6794,11 @@ export const CreateEntityReq = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = object.due;
+    } else {
+      message.due = undefined;
+    }
     return message;
   },
 };
@@ -5633,11 +6807,14 @@ const baseCreateEntityRes: object = {
   status: 0,
   comments: "",
   approversComments: "",
+  due: 0,
   id: "",
   createdAt: 0,
   updatedAt: 0,
   type: 0,
   serialNumber: "",
+  needSecurityDecision: false,
+  needSuperSecurityDecision: false,
 };
 
 export const CreateEntityRes = {
@@ -5696,20 +6873,29 @@ export const CreateEntityRes = {
     if (message.approversComments !== "") {
       writer.uint32(98).string(message.approversComments);
     }
+    if (message.due !== 0) {
+      writer.uint32(104).int64(message.due);
+    }
     if (message.id !== "") {
-      writer.uint32(106).string(message.id);
+      writer.uint32(114).string(message.id);
     }
     if (message.createdAt !== 0) {
-      writer.uint32(112).int64(message.createdAt);
+      writer.uint32(120).int64(message.createdAt);
     }
     if (message.updatedAt !== 0) {
-      writer.uint32(120).int64(message.updatedAt);
+      writer.uint32(128).int64(message.updatedAt);
     }
     if (message.type !== 0) {
-      writer.uint32(128).int32(message.type);
+      writer.uint32(136).int32(message.type);
     }
     if (message.serialNumber !== "") {
-      writer.uint32(138).string(message.serialNumber);
+      writer.uint32(146).string(message.serialNumber);
+    }
+    if (message.needSecurityDecision === true) {
+      writer.uint32(152).bool(message.needSecurityDecision);
+    }
+    if (message.needSuperSecurityDecision === true) {
+      writer.uint32(160).bool(message.needSuperSecurityDecision);
     }
     return writer;
   },
@@ -5777,19 +6963,28 @@ export const CreateEntityRes = {
           message.approversComments = reader.string();
           break;
         case 13:
-          message.id = reader.string();
+          message.due = longToNumber(reader.int64() as Long);
           break;
         case 14:
-          message.createdAt = longToNumber(reader.int64() as Long);
+          message.id = reader.string();
           break;
         case 15:
-          message.updatedAt = longToNumber(reader.int64() as Long);
+          message.createdAt = longToNumber(reader.int64() as Long);
           break;
         case 16:
-          message.type = reader.int32() as any;
+          message.updatedAt = longToNumber(reader.int64() as Long);
           break;
         case 17:
+          message.type = reader.int32() as any;
+          break;
+        case 18:
           message.serialNumber = reader.string();
+          break;
+        case 19:
+          message.needSecurityDecision = reader.bool();
+          break;
+        case 20:
+          message.needSuperSecurityDecision = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -5889,6 +7084,11 @@ export const CreateEntityRes = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = Number(object.due);
+    } else {
+      message.due = 0;
+    }
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
@@ -5913,6 +7113,24 @@ export const CreateEntityRes = {
       message.serialNumber = String(object.serialNumber);
     } else {
       message.serialNumber = "";
+    }
+    if (
+      object.needSecurityDecision !== undefined &&
+      object.needSecurityDecision !== null
+    ) {
+      message.needSecurityDecision = Boolean(object.needSecurityDecision);
+    } else {
+      message.needSecurityDecision = false;
+    }
+    if (
+      object.needSuperSecurityDecision !== undefined &&
+      object.needSuperSecurityDecision !== null
+    ) {
+      message.needSuperSecurityDecision = Boolean(
+        object.needSuperSecurityDecision
+      );
+    } else {
+      message.needSuperSecurityDecision = false;
     }
     return message;
   },
@@ -5966,12 +7184,17 @@ export const CreateEntityRes = {
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
       (obj.approversComments = message.approversComments);
+    message.due !== undefined && (obj.due = message.due);
     message.id !== undefined && (obj.id = message.id);
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
     message.updatedAt !== undefined && (obj.updatedAt = message.updatedAt);
     message.type !== undefined && (obj.type = requestTypeToJSON(message.type));
     message.serialNumber !== undefined &&
       (obj.serialNumber = message.serialNumber);
+    message.needSecurityDecision !== undefined &&
+      (obj.needSecurityDecision = message.needSecurityDecision);
+    message.needSuperSecurityDecision !== undefined &&
+      (obj.needSuperSecurityDecision = message.needSuperSecurityDecision);
     return obj;
   },
 
@@ -6065,6 +7288,11 @@ export const CreateEntityRes = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = object.due;
+    } else {
+      message.due = 0;
+    }
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
@@ -6089,6 +7317,22 @@ export const CreateEntityRes = {
       message.serialNumber = object.serialNumber;
     } else {
       message.serialNumber = "";
+    }
+    if (
+      object.needSecurityDecision !== undefined &&
+      object.needSecurityDecision !== null
+    ) {
+      message.needSecurityDecision = object.needSecurityDecision;
+    } else {
+      message.needSecurityDecision = false;
+    }
+    if (
+      object.needSuperSecurityDecision !== undefined &&
+      object.needSuperSecurityDecision !== null
+    ) {
+      message.needSuperSecurityDecision = object.needSuperSecurityDecision;
+    } else {
+      message.needSuperSecurityDecision = false;
     }
     return message;
   },
@@ -6453,38 +7697,47 @@ export const AssignRoleToEntityReq = {
         writer.uint32(34).fork()
       ).ldelim();
     }
+    if (message.superSecurityDecision !== undefined) {
+      ApproverDecision.encode(
+        message.superSecurityDecision,
+        writer.uint32(42).fork()
+      ).ldelim();
+    }
     for (const v of message.commanders) {
-      EntityMin.encode(v!, writer.uint32(42).fork()).ldelim();
+      EntityMin.encode(v!, writer.uint32(50).fork()).ldelim();
     }
     for (const v of message.securityApprovers) {
-      EntityMin.encode(v!, writer.uint32(50).fork()).ldelim();
+      EntityMin.encode(v!, writer.uint32(58).fork()).ldelim();
     }
     if (message.kartoffelStatus !== undefined) {
       KartoffelStatus.encode(
         message.kartoffelStatus,
-        writer.uint32(58).fork()
+        writer.uint32(66).fork()
       ).ldelim();
     }
     if (message.adStatus !== undefined) {
-      ADStatus.encode(message.adStatus, writer.uint32(66).fork()).ldelim();
+      ADStatus.encode(message.adStatus, writer.uint32(74).fork()).ldelim();
     }
     if (message.kartoffelParams !== undefined) {
       AssignRoleToEntityKartoffelParams.encode(
         message.kartoffelParams,
-        writer.uint32(74).fork()
+        writer.uint32(82).fork()
       ).ldelim();
     }
     if (message.adParams !== undefined) {
       AssignRoleToEntityADParams.encode(
         message.adParams,
-        writer.uint32(82).fork()
+        writer.uint32(90).fork()
       ).ldelim();
     }
     if (message.comments !== "") {
-      writer.uint32(90).string(message.comments);
+      writer.uint32(98).string(message.comments);
     }
     if (message.approversComments !== "") {
-      writer.uint32(98).string(message.approversComments);
+      writer.uint32(106).string(message.approversComments);
+    }
+    if (message.due !== undefined) {
+      writer.uint32(112).int64(message.due);
     }
     return writer;
   },
@@ -6520,39 +7773,48 @@ export const AssignRoleToEntityReq = {
           );
           break;
         case 5:
-          message.commanders.push(EntityMin.decode(reader, reader.uint32()));
+          message.superSecurityDecision = ApproverDecision.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 6:
+          message.commanders.push(EntityMin.decode(reader, reader.uint32()));
+          break;
+        case 7:
           message.securityApprovers.push(
             EntityMin.decode(reader, reader.uint32())
           );
           break;
-        case 7:
+        case 8:
           message.kartoffelStatus = KartoffelStatus.decode(
             reader,
             reader.uint32()
           );
           break;
-        case 8:
+        case 9:
           message.adStatus = ADStatus.decode(reader, reader.uint32());
           break;
-        case 9:
+        case 10:
           message.kartoffelParams = AssignRoleToEntityKartoffelParams.decode(
             reader,
             reader.uint32()
           );
           break;
-        case 10:
+        case 11:
           message.adParams = AssignRoleToEntityADParams.decode(
             reader,
             reader.uint32()
           );
           break;
-        case 11:
+        case 12:
           message.comments = reader.string();
           break;
-        case 12:
+        case 13:
           message.approversComments = reader.string();
+          break;
+        case 14:
+          message.due = longToNumber(reader.int64() as Long);
           break;
         default:
           reader.skipType(tag & 7);
@@ -6596,6 +7858,16 @@ export const AssignRoleToEntityReq = {
     } else {
       message.securityDecision = undefined;
     }
+    if (
+      object.superSecurityDecision !== undefined &&
+      object.superSecurityDecision !== null
+    ) {
+      message.superSecurityDecision = ApproverDecision.fromJSON(
+        object.superSecurityDecision
+      );
+    } else {
+      message.superSecurityDecision = undefined;
+    }
     if (object.commanders !== undefined && object.commanders !== null) {
       for (const e of object.commanders) {
         message.commanders.push(EntityMin.fromJSON(e));
@@ -6652,6 +7924,11 @@ export const AssignRoleToEntityReq = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = Number(object.due);
+    } else {
+      message.due = undefined;
+    }
     return message;
   },
 
@@ -6670,6 +7947,10 @@ export const AssignRoleToEntityReq = {
     message.securityDecision !== undefined &&
       (obj.securityDecision = message.securityDecision
         ? ApproverDecision.toJSON(message.securityDecision)
+        : undefined);
+    message.superSecurityDecision !== undefined &&
+      (obj.superSecurityDecision = message.superSecurityDecision
+        ? ApproverDecision.toJSON(message.superSecurityDecision)
         : undefined);
     if (message.commanders) {
       obj.commanders = message.commanders.map((e) =>
@@ -6704,6 +7985,7 @@ export const AssignRoleToEntityReq = {
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
       (obj.approversComments = message.approversComments);
+    message.due !== undefined && (obj.due = message.due);
     return obj;
   },
 
@@ -6742,6 +8024,16 @@ export const AssignRoleToEntityReq = {
       );
     } else {
       message.securityDecision = undefined;
+    }
+    if (
+      object.superSecurityDecision !== undefined &&
+      object.superSecurityDecision !== null
+    ) {
+      message.superSecurityDecision = ApproverDecision.fromPartial(
+        object.superSecurityDecision
+      );
+    } else {
+      message.superSecurityDecision = undefined;
     }
     if (object.commanders !== undefined && object.commanders !== null) {
       for (const e of object.commanders) {
@@ -6801,6 +8093,11 @@ export const AssignRoleToEntityReq = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = object.due;
+    } else {
+      message.due = undefined;
+    }
     return message;
   },
 };
@@ -6809,11 +8106,14 @@ const baseAssignRoleToEntityRes: object = {
   status: 0,
   comments: "",
   approversComments: "",
+  due: 0,
   id: "",
   createdAt: 0,
   updatedAt: 0,
   type: 0,
   serialNumber: "",
+  needSecurityDecision: false,
+  needSuperSecurityDecision: false,
 };
 
 export const AssignRoleToEntityRes = {
@@ -6839,53 +8139,68 @@ export const AssignRoleToEntityRes = {
         writer.uint32(34).fork()
       ).ldelim();
     }
+    if (message.superSecurityDecision !== undefined) {
+      ApproverDecision.encode(
+        message.superSecurityDecision,
+        writer.uint32(42).fork()
+      ).ldelim();
+    }
     for (const v of message.commanders) {
-      EntityMin.encode(v!, writer.uint32(42).fork()).ldelim();
+      EntityMin.encode(v!, writer.uint32(50).fork()).ldelim();
     }
     for (const v of message.securityApprovers) {
-      EntityMin.encode(v!, writer.uint32(50).fork()).ldelim();
+      EntityMin.encode(v!, writer.uint32(58).fork()).ldelim();
     }
     if (message.kartoffelStatus !== undefined) {
       KartoffelStatus.encode(
         message.kartoffelStatus,
-        writer.uint32(58).fork()
+        writer.uint32(66).fork()
       ).ldelim();
     }
     if (message.adStatus !== undefined) {
-      ADStatus.encode(message.adStatus, writer.uint32(66).fork()).ldelim();
+      ADStatus.encode(message.adStatus, writer.uint32(74).fork()).ldelim();
     }
     if (message.kartoffelParams !== undefined) {
       AssignRoleToEntityKartoffelParams.encode(
         message.kartoffelParams,
-        writer.uint32(74).fork()
+        writer.uint32(82).fork()
       ).ldelim();
     }
     if (message.adParams !== undefined) {
       AssignRoleToEntityADParams.encode(
         message.adParams,
-        writer.uint32(82).fork()
+        writer.uint32(90).fork()
       ).ldelim();
     }
     if (message.comments !== "") {
-      writer.uint32(90).string(message.comments);
+      writer.uint32(98).string(message.comments);
     }
     if (message.approversComments !== "") {
-      writer.uint32(98).string(message.approversComments);
+      writer.uint32(106).string(message.approversComments);
+    }
+    if (message.due !== 0) {
+      writer.uint32(112).int64(message.due);
     }
     if (message.id !== "") {
-      writer.uint32(106).string(message.id);
+      writer.uint32(122).string(message.id);
     }
     if (message.createdAt !== 0) {
-      writer.uint32(112).int64(message.createdAt);
+      writer.uint32(128).int64(message.createdAt);
     }
     if (message.updatedAt !== 0) {
-      writer.uint32(120).int64(message.updatedAt);
+      writer.uint32(136).int64(message.updatedAt);
     }
     if (message.type !== 0) {
-      writer.uint32(128).int32(message.type);
+      writer.uint32(144).int32(message.type);
     }
     if (message.serialNumber !== "") {
-      writer.uint32(138).string(message.serialNumber);
+      writer.uint32(154).string(message.serialNumber);
+    }
+    if (message.needSecurityDecision === true) {
+      writer.uint32(160).bool(message.needSecurityDecision);
+    }
+    if (message.needSuperSecurityDecision === true) {
+      writer.uint32(168).bool(message.needSuperSecurityDecision);
     }
     return writer;
   },
@@ -6921,54 +8236,69 @@ export const AssignRoleToEntityRes = {
           );
           break;
         case 5:
-          message.commanders.push(EntityMin.decode(reader, reader.uint32()));
+          message.superSecurityDecision = ApproverDecision.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 6:
+          message.commanders.push(EntityMin.decode(reader, reader.uint32()));
+          break;
+        case 7:
           message.securityApprovers.push(
             EntityMin.decode(reader, reader.uint32())
           );
           break;
-        case 7:
+        case 8:
           message.kartoffelStatus = KartoffelStatus.decode(
             reader,
             reader.uint32()
           );
           break;
-        case 8:
+        case 9:
           message.adStatus = ADStatus.decode(reader, reader.uint32());
           break;
-        case 9:
+        case 10:
           message.kartoffelParams = AssignRoleToEntityKartoffelParams.decode(
             reader,
             reader.uint32()
           );
           break;
-        case 10:
+        case 11:
           message.adParams = AssignRoleToEntityADParams.decode(
             reader,
             reader.uint32()
           );
           break;
-        case 11:
+        case 12:
           message.comments = reader.string();
           break;
-        case 12:
+        case 13:
           message.approversComments = reader.string();
           break;
-        case 13:
-          message.id = reader.string();
-          break;
         case 14:
-          message.createdAt = longToNumber(reader.int64() as Long);
+          message.due = longToNumber(reader.int64() as Long);
           break;
         case 15:
-          message.updatedAt = longToNumber(reader.int64() as Long);
+          message.id = reader.string();
           break;
         case 16:
-          message.type = reader.int32() as any;
+          message.createdAt = longToNumber(reader.int64() as Long);
           break;
         case 17:
+          message.updatedAt = longToNumber(reader.int64() as Long);
+          break;
+        case 18:
+          message.type = reader.int32() as any;
+          break;
+        case 19:
           message.serialNumber = reader.string();
+          break;
+        case 20:
+          message.needSecurityDecision = reader.bool();
+          break;
+        case 21:
+          message.needSuperSecurityDecision = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -7012,6 +8342,16 @@ export const AssignRoleToEntityRes = {
     } else {
       message.securityDecision = undefined;
     }
+    if (
+      object.superSecurityDecision !== undefined &&
+      object.superSecurityDecision !== null
+    ) {
+      message.superSecurityDecision = ApproverDecision.fromJSON(
+        object.superSecurityDecision
+      );
+    } else {
+      message.superSecurityDecision = undefined;
+    }
     if (object.commanders !== undefined && object.commanders !== null) {
       for (const e of object.commanders) {
         message.commanders.push(EntityMin.fromJSON(e));
@@ -7068,6 +8408,11 @@ export const AssignRoleToEntityRes = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = Number(object.due);
+    } else {
+      message.due = 0;
+    }
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
@@ -7093,6 +8438,24 @@ export const AssignRoleToEntityRes = {
     } else {
       message.serialNumber = "";
     }
+    if (
+      object.needSecurityDecision !== undefined &&
+      object.needSecurityDecision !== null
+    ) {
+      message.needSecurityDecision = Boolean(object.needSecurityDecision);
+    } else {
+      message.needSecurityDecision = false;
+    }
+    if (
+      object.needSuperSecurityDecision !== undefined &&
+      object.needSuperSecurityDecision !== null
+    ) {
+      message.needSuperSecurityDecision = Boolean(
+        object.needSuperSecurityDecision
+      );
+    } else {
+      message.needSuperSecurityDecision = false;
+    }
     return message;
   },
 
@@ -7111,6 +8474,10 @@ export const AssignRoleToEntityRes = {
     message.securityDecision !== undefined &&
       (obj.securityDecision = message.securityDecision
         ? ApproverDecision.toJSON(message.securityDecision)
+        : undefined);
+    message.superSecurityDecision !== undefined &&
+      (obj.superSecurityDecision = message.superSecurityDecision
+        ? ApproverDecision.toJSON(message.superSecurityDecision)
         : undefined);
     if (message.commanders) {
       obj.commanders = message.commanders.map((e) =>
@@ -7145,12 +8512,17 @@ export const AssignRoleToEntityRes = {
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
       (obj.approversComments = message.approversComments);
+    message.due !== undefined && (obj.due = message.due);
     message.id !== undefined && (obj.id = message.id);
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
     message.updatedAt !== undefined && (obj.updatedAt = message.updatedAt);
     message.type !== undefined && (obj.type = requestTypeToJSON(message.type));
     message.serialNumber !== undefined &&
       (obj.serialNumber = message.serialNumber);
+    message.needSecurityDecision !== undefined &&
+      (obj.needSecurityDecision = message.needSecurityDecision);
+    message.needSuperSecurityDecision !== undefined &&
+      (obj.needSuperSecurityDecision = message.needSuperSecurityDecision);
     return obj;
   },
 
@@ -7189,6 +8561,16 @@ export const AssignRoleToEntityRes = {
       );
     } else {
       message.securityDecision = undefined;
+    }
+    if (
+      object.superSecurityDecision !== undefined &&
+      object.superSecurityDecision !== null
+    ) {
+      message.superSecurityDecision = ApproverDecision.fromPartial(
+        object.superSecurityDecision
+      );
+    } else {
+      message.superSecurityDecision = undefined;
     }
     if (object.commanders !== undefined && object.commanders !== null) {
       for (const e of object.commanders) {
@@ -7248,6 +8630,11 @@ export const AssignRoleToEntityRes = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = object.due;
+    } else {
+      message.due = 0;
+    }
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
@@ -7272,6 +8659,22 @@ export const AssignRoleToEntityRes = {
       message.serialNumber = object.serialNumber;
     } else {
       message.serialNumber = "";
+    }
+    if (
+      object.needSecurityDecision !== undefined &&
+      object.needSecurityDecision !== null
+    ) {
+      message.needSecurityDecision = object.needSecurityDecision;
+    } else {
+      message.needSecurityDecision = false;
+    }
+    if (
+      object.needSuperSecurityDecision !== undefined &&
+      object.needSuperSecurityDecision !== null
+    ) {
+      message.needSuperSecurityDecision = object.needSuperSecurityDecision;
+    } else {
+      message.needSuperSecurityDecision = false;
     }
     return message;
   },
@@ -7637,6 +9040,9 @@ export const RenameOGReq = {
     if (message.approversComments !== "") {
       writer.uint32(98).string(message.approversComments);
     }
+    if (message.due !== undefined) {
+      writer.uint32(104).int64(message.due);
+    }
     return writer;
   },
 
@@ -7698,6 +9104,9 @@ export const RenameOGReq = {
           break;
         case 12:
           message.approversComments = reader.string();
+          break;
+        case 13:
+          message.due = longToNumber(reader.int64() as Long);
           break;
         default:
           reader.skipType(tag & 7);
@@ -7797,6 +9206,11 @@ export const RenameOGReq = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = Number(object.due);
+    } else {
+      message.due = undefined;
+    }
     return message;
   },
 
@@ -7849,6 +9263,7 @@ export const RenameOGReq = {
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
       (obj.approversComments = message.approversComments);
+    message.due !== undefined && (obj.due = message.due);
     return obj;
   },
 
@@ -7942,6 +9357,11 @@ export const RenameOGReq = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = object.due;
+    } else {
+      message.due = undefined;
+    }
     return message;
   },
 };
@@ -7950,11 +9370,14 @@ const baseRenameOGRes: object = {
   status: 0,
   comments: "",
   approversComments: "",
+  due: 0,
   id: "",
   createdAt: 0,
   updatedAt: 0,
   type: 0,
   serialNumber: "",
+  needSecurityDecision: false,
+  needSuperSecurityDecision: false,
 };
 
 export const RenameOGRes = {
@@ -8013,20 +9436,29 @@ export const RenameOGRes = {
     if (message.approversComments !== "") {
       writer.uint32(98).string(message.approversComments);
     }
+    if (message.due !== 0) {
+      writer.uint32(104).int64(message.due);
+    }
     if (message.id !== "") {
-      writer.uint32(106).string(message.id);
+      writer.uint32(114).string(message.id);
     }
     if (message.createdAt !== 0) {
-      writer.uint32(112).int64(message.createdAt);
+      writer.uint32(120).int64(message.createdAt);
     }
     if (message.updatedAt !== 0) {
-      writer.uint32(120).int64(message.updatedAt);
+      writer.uint32(128).int64(message.updatedAt);
     }
     if (message.type !== 0) {
-      writer.uint32(128).int32(message.type);
+      writer.uint32(136).int32(message.type);
     }
     if (message.serialNumber !== "") {
-      writer.uint32(138).string(message.serialNumber);
+      writer.uint32(146).string(message.serialNumber);
+    }
+    if (message.needSecurityDecision === true) {
+      writer.uint32(152).bool(message.needSecurityDecision);
+    }
+    if (message.needSuperSecurityDecision === true) {
+      writer.uint32(160).bool(message.needSuperSecurityDecision);
     }
     return writer;
   },
@@ -8091,19 +9523,28 @@ export const RenameOGRes = {
           message.approversComments = reader.string();
           break;
         case 13:
-          message.id = reader.string();
+          message.due = longToNumber(reader.int64() as Long);
           break;
         case 14:
-          message.createdAt = longToNumber(reader.int64() as Long);
+          message.id = reader.string();
           break;
         case 15:
-          message.updatedAt = longToNumber(reader.int64() as Long);
+          message.createdAt = longToNumber(reader.int64() as Long);
           break;
         case 16:
-          message.type = reader.int32() as any;
+          message.updatedAt = longToNumber(reader.int64() as Long);
           break;
         case 17:
+          message.type = reader.int32() as any;
+          break;
+        case 18:
           message.serialNumber = reader.string();
+          break;
+        case 19:
+          message.needSecurityDecision = reader.bool();
+          break;
+        case 20:
+          message.needSuperSecurityDecision = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -8203,6 +9644,11 @@ export const RenameOGRes = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = Number(object.due);
+    } else {
+      message.due = 0;
+    }
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
@@ -8227,6 +9673,24 @@ export const RenameOGRes = {
       message.serialNumber = String(object.serialNumber);
     } else {
       message.serialNumber = "";
+    }
+    if (
+      object.needSecurityDecision !== undefined &&
+      object.needSecurityDecision !== null
+    ) {
+      message.needSecurityDecision = Boolean(object.needSecurityDecision);
+    } else {
+      message.needSecurityDecision = false;
+    }
+    if (
+      object.needSuperSecurityDecision !== undefined &&
+      object.needSuperSecurityDecision !== null
+    ) {
+      message.needSuperSecurityDecision = Boolean(
+        object.needSuperSecurityDecision
+      );
+    } else {
+      message.needSuperSecurityDecision = false;
     }
     return message;
   },
@@ -8280,12 +9744,17 @@ export const RenameOGRes = {
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
       (obj.approversComments = message.approversComments);
+    message.due !== undefined && (obj.due = message.due);
     message.id !== undefined && (obj.id = message.id);
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
     message.updatedAt !== undefined && (obj.updatedAt = message.updatedAt);
     message.type !== undefined && (obj.type = requestTypeToJSON(message.type));
     message.serialNumber !== undefined &&
       (obj.serialNumber = message.serialNumber);
+    message.needSecurityDecision !== undefined &&
+      (obj.needSecurityDecision = message.needSecurityDecision);
+    message.needSuperSecurityDecision !== undefined &&
+      (obj.needSuperSecurityDecision = message.needSuperSecurityDecision);
     return obj;
   },
 
@@ -8379,6 +9848,11 @@ export const RenameOGRes = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = object.due;
+    } else {
+      message.due = 0;
+    }
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
@@ -8403,6 +9877,22 @@ export const RenameOGRes = {
       message.serialNumber = object.serialNumber;
     } else {
       message.serialNumber = "";
+    }
+    if (
+      object.needSecurityDecision !== undefined &&
+      object.needSecurityDecision !== null
+    ) {
+      message.needSecurityDecision = object.needSecurityDecision;
+    } else {
+      message.needSecurityDecision = false;
+    }
+    if (
+      object.needSuperSecurityDecision !== undefined &&
+      object.needSuperSecurityDecision !== null
+    ) {
+      message.needSuperSecurityDecision = object.needSuperSecurityDecision;
+    } else {
+      message.needSuperSecurityDecision = false;
     }
     return message;
   },
@@ -8563,6 +10053,9 @@ export const RenameRoleReq = {
     if (message.approversComments !== "") {
       writer.uint32(98).string(message.approversComments);
     }
+    if (message.due !== undefined) {
+      writer.uint32(104).int64(message.due);
+    }
     return writer;
   },
 
@@ -8624,6 +10117,9 @@ export const RenameRoleReq = {
           break;
         case 12:
           message.approversComments = reader.string();
+          break;
+        case 13:
+          message.due = longToNumber(reader.int64() as Long);
           break;
         default:
           reader.skipType(tag & 7);
@@ -8723,6 +10219,11 @@ export const RenameRoleReq = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = Number(object.due);
+    } else {
+      message.due = undefined;
+    }
     return message;
   },
 
@@ -8775,6 +10276,7 @@ export const RenameRoleReq = {
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
       (obj.approversComments = message.approversComments);
+    message.due !== undefined && (obj.due = message.due);
     return obj;
   },
 
@@ -8868,6 +10370,11 @@ export const RenameRoleReq = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = object.due;
+    } else {
+      message.due = undefined;
+    }
     return message;
   },
 };
@@ -8876,11 +10383,14 @@ const baseRenameRoleRes: object = {
   status: 0,
   comments: "",
   approversComments: "",
+  due: 0,
   id: "",
   createdAt: 0,
   updatedAt: 0,
   type: 0,
   serialNumber: "",
+  needSecurityDecision: false,
+  needSuperSecurityDecision: false,
 };
 
 export const RenameRoleRes = {
@@ -8939,20 +10449,29 @@ export const RenameRoleRes = {
     if (message.approversComments !== "") {
       writer.uint32(98).string(message.approversComments);
     }
+    if (message.due !== 0) {
+      writer.uint32(104).int64(message.due);
+    }
     if (message.id !== "") {
-      writer.uint32(106).string(message.id);
+      writer.uint32(114).string(message.id);
     }
     if (message.createdAt !== 0) {
-      writer.uint32(112).int64(message.createdAt);
+      writer.uint32(120).int64(message.createdAt);
     }
     if (message.updatedAt !== 0) {
-      writer.uint32(120).int64(message.updatedAt);
+      writer.uint32(128).int64(message.updatedAt);
     }
     if (message.type !== 0) {
-      writer.uint32(128).int32(message.type);
+      writer.uint32(136).int32(message.type);
     }
     if (message.serialNumber !== "") {
-      writer.uint32(138).string(message.serialNumber);
+      writer.uint32(146).string(message.serialNumber);
+    }
+    if (message.needSecurityDecision === true) {
+      writer.uint32(152).bool(message.needSecurityDecision);
+    }
+    if (message.needSuperSecurityDecision === true) {
+      writer.uint32(160).bool(message.needSuperSecurityDecision);
     }
     return writer;
   },
@@ -9017,19 +10536,28 @@ export const RenameRoleRes = {
           message.approversComments = reader.string();
           break;
         case 13:
-          message.id = reader.string();
+          message.due = longToNumber(reader.int64() as Long);
           break;
         case 14:
-          message.createdAt = longToNumber(reader.int64() as Long);
+          message.id = reader.string();
           break;
         case 15:
-          message.updatedAt = longToNumber(reader.int64() as Long);
+          message.createdAt = longToNumber(reader.int64() as Long);
           break;
         case 16:
-          message.type = reader.int32() as any;
+          message.updatedAt = longToNumber(reader.int64() as Long);
           break;
         case 17:
+          message.type = reader.int32() as any;
+          break;
+        case 18:
           message.serialNumber = reader.string();
+          break;
+        case 19:
+          message.needSecurityDecision = reader.bool();
+          break;
+        case 20:
+          message.needSuperSecurityDecision = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -9129,6 +10657,11 @@ export const RenameRoleRes = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = Number(object.due);
+    } else {
+      message.due = 0;
+    }
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
@@ -9153,6 +10686,24 @@ export const RenameRoleRes = {
       message.serialNumber = String(object.serialNumber);
     } else {
       message.serialNumber = "";
+    }
+    if (
+      object.needSecurityDecision !== undefined &&
+      object.needSecurityDecision !== null
+    ) {
+      message.needSecurityDecision = Boolean(object.needSecurityDecision);
+    } else {
+      message.needSecurityDecision = false;
+    }
+    if (
+      object.needSuperSecurityDecision !== undefined &&
+      object.needSuperSecurityDecision !== null
+    ) {
+      message.needSuperSecurityDecision = Boolean(
+        object.needSuperSecurityDecision
+      );
+    } else {
+      message.needSuperSecurityDecision = false;
     }
     return message;
   },
@@ -9206,12 +10757,17 @@ export const RenameRoleRes = {
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
       (obj.approversComments = message.approversComments);
+    message.due !== undefined && (obj.due = message.due);
     message.id !== undefined && (obj.id = message.id);
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
     message.updatedAt !== undefined && (obj.updatedAt = message.updatedAt);
     message.type !== undefined && (obj.type = requestTypeToJSON(message.type));
     message.serialNumber !== undefined &&
       (obj.serialNumber = message.serialNumber);
+    message.needSecurityDecision !== undefined &&
+      (obj.needSecurityDecision = message.needSecurityDecision);
+    message.needSuperSecurityDecision !== undefined &&
+      (obj.needSuperSecurityDecision = message.needSuperSecurityDecision);
     return obj;
   },
 
@@ -9305,6 +10861,11 @@ export const RenameRoleRes = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = object.due;
+    } else {
+      message.due = 0;
+    }
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
@@ -9329,6 +10890,22 @@ export const RenameRoleRes = {
       message.serialNumber = object.serialNumber;
     } else {
       message.serialNumber = "";
+    }
+    if (
+      object.needSecurityDecision !== undefined &&
+      object.needSecurityDecision !== null
+    ) {
+      message.needSecurityDecision = object.needSecurityDecision;
+    } else {
+      message.needSecurityDecision = false;
+    }
+    if (
+      object.needSuperSecurityDecision !== undefined &&
+      object.needSuperSecurityDecision !== null
+    ) {
+      message.needSuperSecurityDecision = object.needSuperSecurityDecision;
+    } else {
+      message.needSuperSecurityDecision = false;
     }
     return message;
   },
@@ -9489,6 +11066,9 @@ export const EditEntityReq = {
     if (message.approversComments !== "") {
       writer.uint32(98).string(message.approversComments);
     }
+    if (message.due !== undefined) {
+      writer.uint32(104).int64(message.due);
+    }
     return writer;
   },
 
@@ -9550,6 +11130,9 @@ export const EditEntityReq = {
           break;
         case 12:
           message.approversComments = reader.string();
+          break;
+        case 13:
+          message.due = longToNumber(reader.int64() as Long);
           break;
         default:
           reader.skipType(tag & 7);
@@ -9649,6 +11232,11 @@ export const EditEntityReq = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = Number(object.due);
+    } else {
+      message.due = undefined;
+    }
     return message;
   },
 
@@ -9701,6 +11289,7 @@ export const EditEntityReq = {
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
       (obj.approversComments = message.approversComments);
+    message.due !== undefined && (obj.due = message.due);
     return obj;
   },
 
@@ -9794,6 +11383,11 @@ export const EditEntityReq = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = object.due;
+    } else {
+      message.due = undefined;
+    }
     return message;
   },
 };
@@ -9802,11 +11396,14 @@ const baseEditEntityRes: object = {
   status: 0,
   comments: "",
   approversComments: "",
+  due: 0,
   id: "",
   createdAt: 0,
   updatedAt: 0,
   type: 0,
   serialNumber: "",
+  needSecurityDecision: false,
+  needSuperSecurityDecision: false,
 };
 
 export const EditEntityRes = {
@@ -9865,20 +11462,29 @@ export const EditEntityRes = {
     if (message.approversComments !== "") {
       writer.uint32(98).string(message.approversComments);
     }
+    if (message.due !== 0) {
+      writer.uint32(104).int64(message.due);
+    }
     if (message.id !== "") {
-      writer.uint32(106).string(message.id);
+      writer.uint32(114).string(message.id);
     }
     if (message.createdAt !== 0) {
-      writer.uint32(112).int64(message.createdAt);
+      writer.uint32(120).int64(message.createdAt);
     }
     if (message.updatedAt !== 0) {
-      writer.uint32(120).int64(message.updatedAt);
+      writer.uint32(128).int64(message.updatedAt);
     }
     if (message.type !== 0) {
-      writer.uint32(128).int32(message.type);
+      writer.uint32(136).int32(message.type);
     }
     if (message.serialNumber !== "") {
-      writer.uint32(138).string(message.serialNumber);
+      writer.uint32(146).string(message.serialNumber);
+    }
+    if (message.needSecurityDecision === true) {
+      writer.uint32(152).bool(message.needSecurityDecision);
+    }
+    if (message.needSuperSecurityDecision === true) {
+      writer.uint32(160).bool(message.needSuperSecurityDecision);
     }
     return writer;
   },
@@ -9943,19 +11549,28 @@ export const EditEntityRes = {
           message.approversComments = reader.string();
           break;
         case 13:
-          message.id = reader.string();
+          message.due = longToNumber(reader.int64() as Long);
           break;
         case 14:
-          message.createdAt = longToNumber(reader.int64() as Long);
+          message.id = reader.string();
           break;
         case 15:
-          message.updatedAt = longToNumber(reader.int64() as Long);
+          message.createdAt = longToNumber(reader.int64() as Long);
           break;
         case 16:
-          message.type = reader.int32() as any;
+          message.updatedAt = longToNumber(reader.int64() as Long);
           break;
         case 17:
+          message.type = reader.int32() as any;
+          break;
+        case 18:
           message.serialNumber = reader.string();
+          break;
+        case 19:
+          message.needSecurityDecision = reader.bool();
+          break;
+        case 20:
+          message.needSuperSecurityDecision = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -10055,6 +11670,11 @@ export const EditEntityRes = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = Number(object.due);
+    } else {
+      message.due = 0;
+    }
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
@@ -10079,6 +11699,24 @@ export const EditEntityRes = {
       message.serialNumber = String(object.serialNumber);
     } else {
       message.serialNumber = "";
+    }
+    if (
+      object.needSecurityDecision !== undefined &&
+      object.needSecurityDecision !== null
+    ) {
+      message.needSecurityDecision = Boolean(object.needSecurityDecision);
+    } else {
+      message.needSecurityDecision = false;
+    }
+    if (
+      object.needSuperSecurityDecision !== undefined &&
+      object.needSuperSecurityDecision !== null
+    ) {
+      message.needSuperSecurityDecision = Boolean(
+        object.needSuperSecurityDecision
+      );
+    } else {
+      message.needSuperSecurityDecision = false;
     }
     return message;
   },
@@ -10132,12 +11770,17 @@ export const EditEntityRes = {
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
       (obj.approversComments = message.approversComments);
+    message.due !== undefined && (obj.due = message.due);
     message.id !== undefined && (obj.id = message.id);
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
     message.updatedAt !== undefined && (obj.updatedAt = message.updatedAt);
     message.type !== undefined && (obj.type = requestTypeToJSON(message.type));
     message.serialNumber !== undefined &&
       (obj.serialNumber = message.serialNumber);
+    message.needSecurityDecision !== undefined &&
+      (obj.needSecurityDecision = message.needSecurityDecision);
+    message.needSuperSecurityDecision !== undefined &&
+      (obj.needSuperSecurityDecision = message.needSuperSecurityDecision);
     return obj;
   },
 
@@ -10231,6 +11874,11 @@ export const EditEntityRes = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = object.due;
+    } else {
+      message.due = 0;
+    }
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
@@ -10255,6 +11903,22 @@ export const EditEntityRes = {
       message.serialNumber = object.serialNumber;
     } else {
       message.serialNumber = "";
+    }
+    if (
+      object.needSecurityDecision !== undefined &&
+      object.needSecurityDecision !== null
+    ) {
+      message.needSecurityDecision = object.needSecurityDecision;
+    } else {
+      message.needSecurityDecision = false;
+    }
+    if (
+      object.needSuperSecurityDecision !== undefined &&
+      object.needSuperSecurityDecision !== null
+    ) {
+      message.needSuperSecurityDecision = object.needSuperSecurityDecision;
+    } else {
+      message.needSuperSecurityDecision = false;
     }
     return message;
   },
@@ -10741,6 +12405,9 @@ export const DeleteOGReq = {
     if (message.approversComments !== "") {
       writer.uint32(98).string(message.approversComments);
     }
+    if (message.due !== undefined) {
+      writer.uint32(104).int64(message.due);
+    }
     return writer;
   },
 
@@ -10802,6 +12469,9 @@ export const DeleteOGReq = {
           break;
         case 12:
           message.approversComments = reader.string();
+          break;
+        case 13:
+          message.due = longToNumber(reader.int64() as Long);
           break;
         default:
           reader.skipType(tag & 7);
@@ -10901,6 +12571,11 @@ export const DeleteOGReq = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = Number(object.due);
+    } else {
+      message.due = undefined;
+    }
     return message;
   },
 
@@ -10953,6 +12628,7 @@ export const DeleteOGReq = {
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
       (obj.approversComments = message.approversComments);
+    message.due !== undefined && (obj.due = message.due);
     return obj;
   },
 
@@ -11046,6 +12722,11 @@ export const DeleteOGReq = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = object.due;
+    } else {
+      message.due = undefined;
+    }
     return message;
   },
 };
@@ -11054,11 +12735,14 @@ const baseDeleteOGRes: object = {
   status: 0,
   comments: "",
   approversComments: "",
+  due: 0,
   id: "",
   createdAt: 0,
   updatedAt: 0,
   type: 0,
   serialNumber: "",
+  needSecurityDecision: false,
+  needSuperSecurityDecision: false,
 };
 
 export const DeleteOGRes = {
@@ -11117,20 +12801,29 @@ export const DeleteOGRes = {
     if (message.approversComments !== "") {
       writer.uint32(98).string(message.approversComments);
     }
+    if (message.due !== 0) {
+      writer.uint32(104).int64(message.due);
+    }
     if (message.id !== "") {
-      writer.uint32(106).string(message.id);
+      writer.uint32(114).string(message.id);
     }
     if (message.createdAt !== 0) {
-      writer.uint32(112).int64(message.createdAt);
+      writer.uint32(120).int64(message.createdAt);
     }
     if (message.updatedAt !== 0) {
-      writer.uint32(120).int64(message.updatedAt);
+      writer.uint32(128).int64(message.updatedAt);
     }
     if (message.type !== 0) {
-      writer.uint32(128).int32(message.type);
+      writer.uint32(136).int32(message.type);
     }
     if (message.serialNumber !== "") {
-      writer.uint32(138).string(message.serialNumber);
+      writer.uint32(146).string(message.serialNumber);
+    }
+    if (message.needSecurityDecision === true) {
+      writer.uint32(152).bool(message.needSecurityDecision);
+    }
+    if (message.needSuperSecurityDecision === true) {
+      writer.uint32(160).bool(message.needSuperSecurityDecision);
     }
     return writer;
   },
@@ -11195,19 +12888,28 @@ export const DeleteOGRes = {
           message.approversComments = reader.string();
           break;
         case 13:
-          message.id = reader.string();
+          message.due = longToNumber(reader.int64() as Long);
           break;
         case 14:
-          message.createdAt = longToNumber(reader.int64() as Long);
+          message.id = reader.string();
           break;
         case 15:
-          message.updatedAt = longToNumber(reader.int64() as Long);
+          message.createdAt = longToNumber(reader.int64() as Long);
           break;
         case 16:
-          message.type = reader.int32() as any;
+          message.updatedAt = longToNumber(reader.int64() as Long);
           break;
         case 17:
+          message.type = reader.int32() as any;
+          break;
+        case 18:
           message.serialNumber = reader.string();
+          break;
+        case 19:
+          message.needSecurityDecision = reader.bool();
+          break;
+        case 20:
+          message.needSuperSecurityDecision = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -11307,6 +13009,11 @@ export const DeleteOGRes = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = Number(object.due);
+    } else {
+      message.due = 0;
+    }
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
@@ -11331,6 +13038,24 @@ export const DeleteOGRes = {
       message.serialNumber = String(object.serialNumber);
     } else {
       message.serialNumber = "";
+    }
+    if (
+      object.needSecurityDecision !== undefined &&
+      object.needSecurityDecision !== null
+    ) {
+      message.needSecurityDecision = Boolean(object.needSecurityDecision);
+    } else {
+      message.needSecurityDecision = false;
+    }
+    if (
+      object.needSuperSecurityDecision !== undefined &&
+      object.needSuperSecurityDecision !== null
+    ) {
+      message.needSuperSecurityDecision = Boolean(
+        object.needSuperSecurityDecision
+      );
+    } else {
+      message.needSuperSecurityDecision = false;
     }
     return message;
   },
@@ -11384,12 +13109,17 @@ export const DeleteOGRes = {
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
       (obj.approversComments = message.approversComments);
+    message.due !== undefined && (obj.due = message.due);
     message.id !== undefined && (obj.id = message.id);
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
     message.updatedAt !== undefined && (obj.updatedAt = message.updatedAt);
     message.type !== undefined && (obj.type = requestTypeToJSON(message.type));
     message.serialNumber !== undefined &&
       (obj.serialNumber = message.serialNumber);
+    message.needSecurityDecision !== undefined &&
+      (obj.needSecurityDecision = message.needSecurityDecision);
+    message.needSuperSecurityDecision !== undefined &&
+      (obj.needSuperSecurityDecision = message.needSuperSecurityDecision);
     return obj;
   },
 
@@ -11483,6 +13213,11 @@ export const DeleteOGRes = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = object.due;
+    } else {
+      message.due = 0;
+    }
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
@@ -11507,6 +13242,22 @@ export const DeleteOGRes = {
       message.serialNumber = object.serialNumber;
     } else {
       message.serialNumber = "";
+    }
+    if (
+      object.needSecurityDecision !== undefined &&
+      object.needSecurityDecision !== null
+    ) {
+      message.needSecurityDecision = object.needSecurityDecision;
+    } else {
+      message.needSecurityDecision = false;
+    }
+    if (
+      object.needSuperSecurityDecision !== undefined &&
+      object.needSuperSecurityDecision !== null
+    ) {
+      message.needSuperSecurityDecision = object.needSuperSecurityDecision;
+    } else {
+      message.needSuperSecurityDecision = false;
     }
     return message;
   },
@@ -11754,6 +13505,9 @@ export const DeleteRoleReq = {
     if (message.approversComments !== "") {
       writer.uint32(98).string(message.approversComments);
     }
+    if (message.due !== undefined) {
+      writer.uint32(104).int64(message.due);
+    }
     return writer;
   },
 
@@ -11815,6 +13569,9 @@ export const DeleteRoleReq = {
           break;
         case 12:
           message.approversComments = reader.string();
+          break;
+        case 13:
+          message.due = longToNumber(reader.int64() as Long);
           break;
         default:
           reader.skipType(tag & 7);
@@ -11914,6 +13671,11 @@ export const DeleteRoleReq = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = Number(object.due);
+    } else {
+      message.due = undefined;
+    }
     return message;
   },
 
@@ -11966,6 +13728,7 @@ export const DeleteRoleReq = {
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
       (obj.approversComments = message.approversComments);
+    message.due !== undefined && (obj.due = message.due);
     return obj;
   },
 
@@ -12059,6 +13822,11 @@ export const DeleteRoleReq = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = object.due;
+    } else {
+      message.due = undefined;
+    }
     return message;
   },
 };
@@ -12067,11 +13835,14 @@ const baseDeleteRoleRes: object = {
   status: 0,
   comments: "",
   approversComments: "",
+  due: 0,
   id: "",
   createdAt: 0,
   updatedAt: 0,
   type: 0,
   serialNumber: "",
+  needSecurityDecision: false,
+  needSuperSecurityDecision: false,
 };
 
 export const DeleteRoleRes = {
@@ -12130,20 +13901,29 @@ export const DeleteRoleRes = {
     if (message.approversComments !== "") {
       writer.uint32(98).string(message.approversComments);
     }
+    if (message.due !== 0) {
+      writer.uint32(104).int64(message.due);
+    }
     if (message.id !== "") {
-      writer.uint32(106).string(message.id);
+      writer.uint32(114).string(message.id);
     }
     if (message.createdAt !== 0) {
-      writer.uint32(112).int64(message.createdAt);
+      writer.uint32(120).int64(message.createdAt);
     }
     if (message.updatedAt !== 0) {
-      writer.uint32(120).int64(message.updatedAt);
+      writer.uint32(128).int64(message.updatedAt);
     }
     if (message.type !== 0) {
-      writer.uint32(128).int32(message.type);
+      writer.uint32(136).int32(message.type);
     }
     if (message.serialNumber !== "") {
-      writer.uint32(138).string(message.serialNumber);
+      writer.uint32(146).string(message.serialNumber);
+    }
+    if (message.needSecurityDecision === true) {
+      writer.uint32(152).bool(message.needSecurityDecision);
+    }
+    if (message.needSuperSecurityDecision === true) {
+      writer.uint32(160).bool(message.needSuperSecurityDecision);
     }
     return writer;
   },
@@ -12208,19 +13988,28 @@ export const DeleteRoleRes = {
           message.approversComments = reader.string();
           break;
         case 13:
-          message.id = reader.string();
+          message.due = longToNumber(reader.int64() as Long);
           break;
         case 14:
-          message.createdAt = longToNumber(reader.int64() as Long);
+          message.id = reader.string();
           break;
         case 15:
-          message.updatedAt = longToNumber(reader.int64() as Long);
+          message.createdAt = longToNumber(reader.int64() as Long);
           break;
         case 16:
-          message.type = reader.int32() as any;
+          message.updatedAt = longToNumber(reader.int64() as Long);
           break;
         case 17:
+          message.type = reader.int32() as any;
+          break;
+        case 18:
           message.serialNumber = reader.string();
+          break;
+        case 19:
+          message.needSecurityDecision = reader.bool();
+          break;
+        case 20:
+          message.needSuperSecurityDecision = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -12320,6 +14109,11 @@ export const DeleteRoleRes = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = Number(object.due);
+    } else {
+      message.due = 0;
+    }
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
@@ -12344,6 +14138,24 @@ export const DeleteRoleRes = {
       message.serialNumber = String(object.serialNumber);
     } else {
       message.serialNumber = "";
+    }
+    if (
+      object.needSecurityDecision !== undefined &&
+      object.needSecurityDecision !== null
+    ) {
+      message.needSecurityDecision = Boolean(object.needSecurityDecision);
+    } else {
+      message.needSecurityDecision = false;
+    }
+    if (
+      object.needSuperSecurityDecision !== undefined &&
+      object.needSuperSecurityDecision !== null
+    ) {
+      message.needSuperSecurityDecision = Boolean(
+        object.needSuperSecurityDecision
+      );
+    } else {
+      message.needSuperSecurityDecision = false;
     }
     return message;
   },
@@ -12397,12 +14209,17 @@ export const DeleteRoleRes = {
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
       (obj.approversComments = message.approversComments);
+    message.due !== undefined && (obj.due = message.due);
     message.id !== undefined && (obj.id = message.id);
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
     message.updatedAt !== undefined && (obj.updatedAt = message.updatedAt);
     message.type !== undefined && (obj.type = requestTypeToJSON(message.type));
     message.serialNumber !== undefined &&
       (obj.serialNumber = message.serialNumber);
+    message.needSecurityDecision !== undefined &&
+      (obj.needSecurityDecision = message.needSecurityDecision);
+    message.needSuperSecurityDecision !== undefined &&
+      (obj.needSuperSecurityDecision = message.needSuperSecurityDecision);
     return obj;
   },
 
@@ -12496,6 +14313,11 @@ export const DeleteRoleRes = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = object.due;
+    } else {
+      message.due = 0;
+    }
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
@@ -12520,6 +14342,22 @@ export const DeleteRoleRes = {
       message.serialNumber = object.serialNumber;
     } else {
       message.serialNumber = "";
+    }
+    if (
+      object.needSecurityDecision !== undefined &&
+      object.needSecurityDecision !== null
+    ) {
+      message.needSecurityDecision = object.needSecurityDecision;
+    } else {
+      message.needSecurityDecision = false;
+    }
+    if (
+      object.needSuperSecurityDecision !== undefined &&
+      object.needSuperSecurityDecision !== null
+    ) {
+      message.needSuperSecurityDecision = object.needSuperSecurityDecision;
+    } else {
+      message.needSuperSecurityDecision = false;
     }
     return message;
   },
@@ -12732,6 +14570,9 @@ export const DisconectRoleFromEntityReq = {
     if (message.approversComments !== "") {
       writer.uint32(98).string(message.approversComments);
     }
+    if (message.due !== undefined) {
+      writer.uint32(104).int64(message.due);
+    }
     return writer;
   },
 
@@ -12802,6 +14643,9 @@ export const DisconectRoleFromEntityReq = {
           break;
         case 12:
           message.approversComments = reader.string();
+          break;
+        case 13:
+          message.due = longToNumber(reader.int64() as Long);
           break;
         default:
           reader.skipType(tag & 7);
@@ -12905,6 +14749,11 @@ export const DisconectRoleFromEntityReq = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = Number(object.due);
+    } else {
+      message.due = undefined;
+    }
     return message;
   },
 
@@ -12957,6 +14806,7 @@ export const DisconectRoleFromEntityReq = {
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
       (obj.approversComments = message.approversComments);
+    message.due !== undefined && (obj.due = message.due);
     return obj;
   },
 
@@ -13057,6 +14907,11 @@ export const DisconectRoleFromEntityReq = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = object.due;
+    } else {
+      message.due = undefined;
+    }
     return message;
   },
 };
@@ -13065,11 +14920,14 @@ const baseDisconectRoleFromEntityRes: object = {
   status: 0,
   comments: "",
   approversComments: "",
+  due: 0,
   id: "",
   createdAt: 0,
   updatedAt: 0,
   type: 0,
   serialNumber: "",
+  needSecurityDecision: false,
+  needSuperSecurityDecision: false,
 };
 
 export const DisconectRoleFromEntityRes = {
@@ -13128,20 +14986,29 @@ export const DisconectRoleFromEntityRes = {
     if (message.approversComments !== "") {
       writer.uint32(98).string(message.approversComments);
     }
+    if (message.due !== 0) {
+      writer.uint32(104).int64(message.due);
+    }
     if (message.id !== "") {
-      writer.uint32(106).string(message.id);
+      writer.uint32(114).string(message.id);
     }
     if (message.createdAt !== 0) {
-      writer.uint32(112).int64(message.createdAt);
+      writer.uint32(120).int64(message.createdAt);
     }
     if (message.updatedAt !== 0) {
-      writer.uint32(120).int64(message.updatedAt);
+      writer.uint32(128).int64(message.updatedAt);
     }
     if (message.type !== 0) {
-      writer.uint32(128).int32(message.type);
+      writer.uint32(136).int32(message.type);
     }
     if (message.serialNumber !== "") {
-      writer.uint32(138).string(message.serialNumber);
+      writer.uint32(146).string(message.serialNumber);
+    }
+    if (message.needSecurityDecision === true) {
+      writer.uint32(152).bool(message.needSecurityDecision);
+    }
+    if (message.needSuperSecurityDecision === true) {
+      writer.uint32(160).bool(message.needSuperSecurityDecision);
     }
     return writer;
   },
@@ -13215,19 +15082,28 @@ export const DisconectRoleFromEntityRes = {
           message.approversComments = reader.string();
           break;
         case 13:
-          message.id = reader.string();
+          message.due = longToNumber(reader.int64() as Long);
           break;
         case 14:
-          message.createdAt = longToNumber(reader.int64() as Long);
+          message.id = reader.string();
           break;
         case 15:
-          message.updatedAt = longToNumber(reader.int64() as Long);
+          message.createdAt = longToNumber(reader.int64() as Long);
           break;
         case 16:
-          message.type = reader.int32() as any;
+          message.updatedAt = longToNumber(reader.int64() as Long);
           break;
         case 17:
+          message.type = reader.int32() as any;
+          break;
+        case 18:
           message.serialNumber = reader.string();
+          break;
+        case 19:
+          message.needSecurityDecision = reader.bool();
+          break;
+        case 20:
+          message.needSuperSecurityDecision = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -13331,6 +15207,11 @@ export const DisconectRoleFromEntityRes = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = Number(object.due);
+    } else {
+      message.due = 0;
+    }
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
@@ -13355,6 +15236,24 @@ export const DisconectRoleFromEntityRes = {
       message.serialNumber = String(object.serialNumber);
     } else {
       message.serialNumber = "";
+    }
+    if (
+      object.needSecurityDecision !== undefined &&
+      object.needSecurityDecision !== null
+    ) {
+      message.needSecurityDecision = Boolean(object.needSecurityDecision);
+    } else {
+      message.needSecurityDecision = false;
+    }
+    if (
+      object.needSuperSecurityDecision !== undefined &&
+      object.needSuperSecurityDecision !== null
+    ) {
+      message.needSuperSecurityDecision = Boolean(
+        object.needSuperSecurityDecision
+      );
+    } else {
+      message.needSuperSecurityDecision = false;
     }
     return message;
   },
@@ -13408,12 +15307,17 @@ export const DisconectRoleFromEntityRes = {
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
       (obj.approversComments = message.approversComments);
+    message.due !== undefined && (obj.due = message.due);
     message.id !== undefined && (obj.id = message.id);
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
     message.updatedAt !== undefined && (obj.updatedAt = message.updatedAt);
     message.type !== undefined && (obj.type = requestTypeToJSON(message.type));
     message.serialNumber !== undefined &&
       (obj.serialNumber = message.serialNumber);
+    message.needSecurityDecision !== undefined &&
+      (obj.needSecurityDecision = message.needSecurityDecision);
+    message.needSuperSecurityDecision !== undefined &&
+      (obj.needSuperSecurityDecision = message.needSuperSecurityDecision);
     return obj;
   },
 
@@ -13514,6 +15418,11 @@ export const DisconectRoleFromEntityRes = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = object.due;
+    } else {
+      message.due = 0;
+    }
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
@@ -13538,6 +15447,22 @@ export const DisconectRoleFromEntityRes = {
       message.serialNumber = object.serialNumber;
     } else {
       message.serialNumber = "";
+    }
+    if (
+      object.needSecurityDecision !== undefined &&
+      object.needSecurityDecision !== null
+    ) {
+      message.needSecurityDecision = object.needSecurityDecision;
+    } else {
+      message.needSecurityDecision = false;
+    }
+    if (
+      object.needSuperSecurityDecision !== undefined &&
+      object.needSuperSecurityDecision !== null
+    ) {
+      message.needSuperSecurityDecision = object.needSuperSecurityDecision;
+    } else {
+      message.needSuperSecurityDecision = false;
     }
     return message;
   },
@@ -14659,35 +16584,44 @@ export const RequestReq = {
         writer.uint32(34).fork()
       ).ldelim();
     }
+    if (message.superSecurityDecision !== undefined) {
+      ApproverDecision.encode(
+        message.superSecurityDecision,
+        writer.uint32(42).fork()
+      ).ldelim();
+    }
     for (const v of message.commanders) {
-      EntityMin.encode(v!, writer.uint32(42).fork()).ldelim();
+      EntityMin.encode(v!, writer.uint32(50).fork()).ldelim();
     }
     for (const v of message.securityApprovers) {
-      EntityMin.encode(v!, writer.uint32(50).fork()).ldelim();
+      EntityMin.encode(v!, writer.uint32(58).fork()).ldelim();
     }
     if (message.kartoffelStatus !== undefined) {
       KartoffelStatus.encode(
         message.kartoffelStatus,
-        writer.uint32(58).fork()
+        writer.uint32(66).fork()
       ).ldelim();
     }
     if (message.adStatus !== undefined) {
-      ADStatus.encode(message.adStatus, writer.uint32(66).fork()).ldelim();
+      ADStatus.encode(message.adStatus, writer.uint32(74).fork()).ldelim();
     }
     if (message.kartoffelParams !== undefined) {
       KartoffelParams.encode(
         message.kartoffelParams,
-        writer.uint32(74).fork()
+        writer.uint32(82).fork()
       ).ldelim();
     }
     if (message.adParams !== undefined) {
-      ADParams.encode(message.adParams, writer.uint32(82).fork()).ldelim();
+      ADParams.encode(message.adParams, writer.uint32(90).fork()).ldelim();
     }
     if (message.comments !== "") {
-      writer.uint32(90).string(message.comments);
+      writer.uint32(98).string(message.comments);
     }
     if (message.approversComments !== "") {
-      writer.uint32(98).string(message.approversComments);
+      writer.uint32(106).string(message.approversComments);
+    }
+    if (message.due !== undefined) {
+      writer.uint32(112).int64(message.due);
     }
     return writer;
   },
@@ -14720,36 +16654,45 @@ export const RequestReq = {
           );
           break;
         case 5:
-          message.commanders.push(EntityMin.decode(reader, reader.uint32()));
+          message.superSecurityDecision = ApproverDecision.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 6:
+          message.commanders.push(EntityMin.decode(reader, reader.uint32()));
+          break;
+        case 7:
           message.securityApprovers.push(
             EntityMin.decode(reader, reader.uint32())
           );
           break;
-        case 7:
+        case 8:
           message.kartoffelStatus = KartoffelStatus.decode(
             reader,
             reader.uint32()
           );
           break;
-        case 8:
+        case 9:
           message.adStatus = ADStatus.decode(reader, reader.uint32());
           break;
-        case 9:
+        case 10:
           message.kartoffelParams = KartoffelParams.decode(
             reader,
             reader.uint32()
           );
           break;
-        case 10:
+        case 11:
           message.adParams = ADParams.decode(reader, reader.uint32());
           break;
-        case 11:
+        case 12:
           message.comments = reader.string();
           break;
-        case 12:
+        case 13:
           message.approversComments = reader.string();
+          break;
+        case 14:
+          message.due = longToNumber(reader.int64() as Long);
           break;
         default:
           reader.skipType(tag & 7);
@@ -14793,6 +16736,16 @@ export const RequestReq = {
     } else {
       message.securityDecision = undefined;
     }
+    if (
+      object.superSecurityDecision !== undefined &&
+      object.superSecurityDecision !== null
+    ) {
+      message.superSecurityDecision = ApproverDecision.fromJSON(
+        object.superSecurityDecision
+      );
+    } else {
+      message.superSecurityDecision = undefined;
+    }
     if (object.commanders !== undefined && object.commanders !== null) {
       for (const e of object.commanders) {
         message.commanders.push(EntityMin.fromJSON(e));
@@ -14849,6 +16802,11 @@ export const RequestReq = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = Number(object.due);
+    } else {
+      message.due = undefined;
+    }
     return message;
   },
 
@@ -14867,6 +16825,10 @@ export const RequestReq = {
     message.securityDecision !== undefined &&
       (obj.securityDecision = message.securityDecision
         ? ApproverDecision.toJSON(message.securityDecision)
+        : undefined);
+    message.superSecurityDecision !== undefined &&
+      (obj.superSecurityDecision = message.superSecurityDecision
+        ? ApproverDecision.toJSON(message.superSecurityDecision)
         : undefined);
     if (message.commanders) {
       obj.commanders = message.commanders.map((e) =>
@@ -14901,6 +16863,7 @@ export const RequestReq = {
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
       (obj.approversComments = message.approversComments);
+    message.due !== undefined && (obj.due = message.due);
     return obj;
   },
 
@@ -14937,6 +16900,16 @@ export const RequestReq = {
       );
     } else {
       message.securityDecision = undefined;
+    }
+    if (
+      object.superSecurityDecision !== undefined &&
+      object.superSecurityDecision !== null
+    ) {
+      message.superSecurityDecision = ApproverDecision.fromPartial(
+        object.superSecurityDecision
+      );
+    } else {
+      message.superSecurityDecision = undefined;
     }
     if (object.commanders !== undefined && object.commanders !== null) {
       for (const e of object.commanders) {
@@ -14994,6 +16967,11 @@ export const RequestReq = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = object.due;
+    } else {
+      message.due = undefined;
+    }
     return message;
   },
 };
@@ -15002,11 +16980,14 @@ const baseRequest: object = {
   status: 0,
   comments: "",
   approversComments: "",
+  due: 0,
   id: "",
   createdAt: 0,
   updatedAt: 0,
   type: 0,
   serialNumber: "",
+  needSecurityDecision: false,
+  needSuperSecurityDecision: false,
 };
 
 export const Request = {
@@ -15032,50 +17013,65 @@ export const Request = {
         writer.uint32(34).fork()
       ).ldelim();
     }
+    if (message.superSecurityDecision !== undefined) {
+      ApproverDecision.encode(
+        message.superSecurityDecision,
+        writer.uint32(42).fork()
+      ).ldelim();
+    }
     for (const v of message.commanders) {
-      EntityMin.encode(v!, writer.uint32(42).fork()).ldelim();
+      EntityMin.encode(v!, writer.uint32(50).fork()).ldelim();
     }
     for (const v of message.securityApprovers) {
-      EntityMin.encode(v!, writer.uint32(50).fork()).ldelim();
+      EntityMin.encode(v!, writer.uint32(58).fork()).ldelim();
     }
     if (message.kartoffelStatus !== undefined) {
       KartoffelStatus.encode(
         message.kartoffelStatus,
-        writer.uint32(58).fork()
+        writer.uint32(66).fork()
       ).ldelim();
     }
     if (message.adStatus !== undefined) {
-      ADStatus.encode(message.adStatus, writer.uint32(66).fork()).ldelim();
+      ADStatus.encode(message.adStatus, writer.uint32(74).fork()).ldelim();
     }
     if (message.kartoffelParams !== undefined) {
       KartoffelParams.encode(
         message.kartoffelParams,
-        writer.uint32(74).fork()
+        writer.uint32(82).fork()
       ).ldelim();
     }
     if (message.adParams !== undefined) {
-      ADParams.encode(message.adParams, writer.uint32(82).fork()).ldelim();
+      ADParams.encode(message.adParams, writer.uint32(90).fork()).ldelim();
     }
     if (message.comments !== "") {
-      writer.uint32(90).string(message.comments);
+      writer.uint32(98).string(message.comments);
     }
     if (message.approversComments !== "") {
-      writer.uint32(98).string(message.approversComments);
+      writer.uint32(106).string(message.approversComments);
+    }
+    if (message.due !== 0) {
+      writer.uint32(112).int64(message.due);
     }
     if (message.id !== "") {
-      writer.uint32(106).string(message.id);
+      writer.uint32(122).string(message.id);
     }
     if (message.createdAt !== 0) {
-      writer.uint32(112).int64(message.createdAt);
+      writer.uint32(128).int64(message.createdAt);
     }
     if (message.updatedAt !== 0) {
-      writer.uint32(120).int64(message.updatedAt);
+      writer.uint32(136).int64(message.updatedAt);
     }
     if (message.type !== 0) {
-      writer.uint32(128).int32(message.type);
+      writer.uint32(144).int32(message.type);
     }
     if (message.serialNumber !== "") {
-      writer.uint32(138).string(message.serialNumber);
+      writer.uint32(154).string(message.serialNumber);
+    }
+    if (message.needSecurityDecision === true) {
+      writer.uint32(160).bool(message.needSecurityDecision);
+    }
+    if (message.needSuperSecurityDecision === true) {
+      writer.uint32(168).bool(message.needSuperSecurityDecision);
     }
     return writer;
   },
@@ -15108,51 +17104,66 @@ export const Request = {
           );
           break;
         case 5:
-          message.commanders.push(EntityMin.decode(reader, reader.uint32()));
+          message.superSecurityDecision = ApproverDecision.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 6:
+          message.commanders.push(EntityMin.decode(reader, reader.uint32()));
+          break;
+        case 7:
           message.securityApprovers.push(
             EntityMin.decode(reader, reader.uint32())
           );
           break;
-        case 7:
+        case 8:
           message.kartoffelStatus = KartoffelStatus.decode(
             reader,
             reader.uint32()
           );
           break;
-        case 8:
+        case 9:
           message.adStatus = ADStatus.decode(reader, reader.uint32());
           break;
-        case 9:
+        case 10:
           message.kartoffelParams = KartoffelParams.decode(
             reader,
             reader.uint32()
           );
           break;
-        case 10:
+        case 11:
           message.adParams = ADParams.decode(reader, reader.uint32());
           break;
-        case 11:
+        case 12:
           message.comments = reader.string();
           break;
-        case 12:
+        case 13:
           message.approversComments = reader.string();
           break;
-        case 13:
-          message.id = reader.string();
-          break;
         case 14:
-          message.createdAt = longToNumber(reader.int64() as Long);
+          message.due = longToNumber(reader.int64() as Long);
           break;
         case 15:
-          message.updatedAt = longToNumber(reader.int64() as Long);
+          message.id = reader.string();
           break;
         case 16:
-          message.type = reader.int32() as any;
+          message.createdAt = longToNumber(reader.int64() as Long);
           break;
         case 17:
+          message.updatedAt = longToNumber(reader.int64() as Long);
+          break;
+        case 18:
+          message.type = reader.int32() as any;
+          break;
+        case 19:
           message.serialNumber = reader.string();
+          break;
+        case 20:
+          message.needSecurityDecision = reader.bool();
+          break;
+        case 21:
+          message.needSuperSecurityDecision = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -15196,6 +17207,16 @@ export const Request = {
     } else {
       message.securityDecision = undefined;
     }
+    if (
+      object.superSecurityDecision !== undefined &&
+      object.superSecurityDecision !== null
+    ) {
+      message.superSecurityDecision = ApproverDecision.fromJSON(
+        object.superSecurityDecision
+      );
+    } else {
+      message.superSecurityDecision = undefined;
+    }
     if (object.commanders !== undefined && object.commanders !== null) {
       for (const e of object.commanders) {
         message.commanders.push(EntityMin.fromJSON(e));
@@ -15252,6 +17273,11 @@ export const Request = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = Number(object.due);
+    } else {
+      message.due = 0;
+    }
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
@@ -15277,6 +17303,24 @@ export const Request = {
     } else {
       message.serialNumber = "";
     }
+    if (
+      object.needSecurityDecision !== undefined &&
+      object.needSecurityDecision !== null
+    ) {
+      message.needSecurityDecision = Boolean(object.needSecurityDecision);
+    } else {
+      message.needSecurityDecision = false;
+    }
+    if (
+      object.needSuperSecurityDecision !== undefined &&
+      object.needSuperSecurityDecision !== null
+    ) {
+      message.needSuperSecurityDecision = Boolean(
+        object.needSuperSecurityDecision
+      );
+    } else {
+      message.needSuperSecurityDecision = false;
+    }
     return message;
   },
 
@@ -15295,6 +17339,10 @@ export const Request = {
     message.securityDecision !== undefined &&
       (obj.securityDecision = message.securityDecision
         ? ApproverDecision.toJSON(message.securityDecision)
+        : undefined);
+    message.superSecurityDecision !== undefined &&
+      (obj.superSecurityDecision = message.superSecurityDecision
+        ? ApproverDecision.toJSON(message.superSecurityDecision)
         : undefined);
     if (message.commanders) {
       obj.commanders = message.commanders.map((e) =>
@@ -15329,12 +17377,17 @@ export const Request = {
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
       (obj.approversComments = message.approversComments);
+    message.due !== undefined && (obj.due = message.due);
     message.id !== undefined && (obj.id = message.id);
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
     message.updatedAt !== undefined && (obj.updatedAt = message.updatedAt);
     message.type !== undefined && (obj.type = requestTypeToJSON(message.type));
     message.serialNumber !== undefined &&
       (obj.serialNumber = message.serialNumber);
+    message.needSecurityDecision !== undefined &&
+      (obj.needSecurityDecision = message.needSecurityDecision);
+    message.needSuperSecurityDecision !== undefined &&
+      (obj.needSuperSecurityDecision = message.needSuperSecurityDecision);
     return obj;
   },
 
@@ -15371,6 +17424,16 @@ export const Request = {
       );
     } else {
       message.securityDecision = undefined;
+    }
+    if (
+      object.superSecurityDecision !== undefined &&
+      object.superSecurityDecision !== null
+    ) {
+      message.superSecurityDecision = ApproverDecision.fromPartial(
+        object.superSecurityDecision
+      );
+    } else {
+      message.superSecurityDecision = undefined;
     }
     if (object.commanders !== undefined && object.commanders !== null) {
       for (const e of object.commanders) {
@@ -15428,6 +17491,11 @@ export const Request = {
     } else {
       message.approversComments = "";
     }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = object.due;
+    } else {
+      message.due = 0;
+    }
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
@@ -15452,6 +17520,22 @@ export const Request = {
       message.serialNumber = object.serialNumber;
     } else {
       message.serialNumber = "";
+    }
+    if (
+      object.needSecurityDecision !== undefined &&
+      object.needSecurityDecision !== null
+    ) {
+      message.needSecurityDecision = object.needSecurityDecision;
+    } else {
+      message.needSecurityDecision = false;
+    }
+    if (
+      object.needSuperSecurityDecision !== undefined &&
+      object.needSuperSecurityDecision !== null
+    ) {
+      message.needSuperSecurityDecision = object.needSuperSecurityDecision;
+    } else {
+      message.needSuperSecurityDecision = false;
     }
     return message;
   },
@@ -15488,6 +17572,45 @@ export interface RequestService {
   ): Promise<Request>;
   GetAllRequests(request: GetAllRequestsReq): Promise<RequestArray>;
   GetRequestById(request: GetRequestByIdReq): Promise<Request>;
+  GetRequestsBySubmitterIdentifier(
+    request: GetRequestsByIdentifierReq
+  ): Promise<RequestArray>;
+  GetRequestsByCommanderIdentifier(
+    request: GetRequestsByIdentifierReq
+  ): Promise<RequestArray>;
+  GetRequestsBySecurityIdentifier(
+    request: GetRequestsByIdentifierReq
+  ): Promise<RequestArray>;
+  GetRequestsByApproverIdentifier(
+    request: GetRequestsByIdentifierReq
+  ): Promise<RequestArray>;
+  SearchRequestsBySubmitterDisplayName(
+    request: SearchRequestsByDisplayNameReq
+  ): Promise<RequestArray>;
+  SearchRequestsByCommanderDisplayName(
+    request: SearchRequestsByDisplayNameReq
+  ): Promise<RequestArray>;
+  SearchRequestsBySecurityDisplayName(
+    request: SearchRequestsByDisplayNameReq
+  ): Promise<RequestArray>;
+  SearchRequestsByApproverDisplayName(
+    request: SearchRequestsByDisplayNameReq
+  ): Promise<RequestArray>;
+  CanPushToKartoffelQueue(
+    request: CanPushToQueueReq
+  ): Promise<CanPushToQueueRes>;
+  CanPushToADQueue(request: CanPushToQueueReq): Promise<CanPushToQueueRes>;
+  IncrementKartoffelRetries(request: IncrementRetriesReq): Promise<Request>;
+  IncrementADRetries(request: IncrementRetriesReq): Promise<Request>;
+  UpdateCommanderDecision(request: UpdateDecisionReq): Promise<Request>;
+  UpdateSecurityDecision(request: UpdateDecisionReq): Promise<Request>;
+  UpdateSuperSecurityDecision(request: UpdateDecisionReq): Promise<Request>;
+  GetRequestsInProgressByDue(
+    request: GetRequestsInProgressByDueReq
+  ): Promise<RequestArray>;
+  GetRequestIdsInProgressByDue(
+    request: GetRequestsInProgressByDueReq
+  ): Promise<RequestIdArray>;
 }
 
 export class RequestServiceClientImpl implements RequestService {
@@ -15515,6 +17638,34 @@ export class RequestServiceClientImpl implements RequestService {
     this.GetRequestBySerialNumber = this.GetRequestBySerialNumber.bind(this);
     this.GetAllRequests = this.GetAllRequests.bind(this);
     this.GetRequestById = this.GetRequestById.bind(this);
+    this.GetRequestsBySubmitterIdentifier =
+      this.GetRequestsBySubmitterIdentifier.bind(this);
+    this.GetRequestsByCommanderIdentifier =
+      this.GetRequestsByCommanderIdentifier.bind(this);
+    this.GetRequestsBySecurityIdentifier =
+      this.GetRequestsBySecurityIdentifier.bind(this);
+    this.GetRequestsByApproverIdentifier =
+      this.GetRequestsByApproverIdentifier.bind(this);
+    this.SearchRequestsBySubmitterDisplayName =
+      this.SearchRequestsBySubmitterDisplayName.bind(this);
+    this.SearchRequestsByCommanderDisplayName =
+      this.SearchRequestsByCommanderDisplayName.bind(this);
+    this.SearchRequestsBySecurityDisplayName =
+      this.SearchRequestsBySecurityDisplayName.bind(this);
+    this.SearchRequestsByApproverDisplayName =
+      this.SearchRequestsByApproverDisplayName.bind(this);
+    this.CanPushToKartoffelQueue = this.CanPushToKartoffelQueue.bind(this);
+    this.CanPushToADQueue = this.CanPushToADQueue.bind(this);
+    this.IncrementKartoffelRetries = this.IncrementKartoffelRetries.bind(this);
+    this.IncrementADRetries = this.IncrementADRetries.bind(this);
+    this.UpdateCommanderDecision = this.UpdateCommanderDecision.bind(this);
+    this.UpdateSecurityDecision = this.UpdateSecurityDecision.bind(this);
+    this.UpdateSuperSecurityDecision =
+      this.UpdateSuperSecurityDecision.bind(this);
+    this.GetRequestsInProgressByDue =
+      this.GetRequestsInProgressByDue.bind(this);
+    this.GetRequestIdsInProgressByDue =
+      this.GetRequestIdsInProgressByDue.bind(this);
   }
   CreateRoleRequest(request: CreateRoleReq): Promise<CreateRoleRes> {
     const data = CreateRoleReq.encode(request).finish();
@@ -15732,6 +17883,202 @@ export class RequestServiceClientImpl implements RequestService {
       data
     );
     return promise.then((data) => Request.decode(new _m0.Reader(data)));
+  }
+
+  GetRequestsBySubmitterIdentifier(
+    request: GetRequestsByIdentifierReq
+  ): Promise<RequestArray> {
+    const data = GetRequestsByIdentifierReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "GetRequestsBySubmitterIdentifier",
+      data
+    );
+    return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
+  }
+
+  GetRequestsByCommanderIdentifier(
+    request: GetRequestsByIdentifierReq
+  ): Promise<RequestArray> {
+    const data = GetRequestsByIdentifierReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "GetRequestsByCommanderIdentifier",
+      data
+    );
+    return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
+  }
+
+  GetRequestsBySecurityIdentifier(
+    request: GetRequestsByIdentifierReq
+  ): Promise<RequestArray> {
+    const data = GetRequestsByIdentifierReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "GetRequestsBySecurityIdentifier",
+      data
+    );
+    return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
+  }
+
+  GetRequestsByApproverIdentifier(
+    request: GetRequestsByIdentifierReq
+  ): Promise<RequestArray> {
+    const data = GetRequestsByIdentifierReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "GetRequestsByApproverIdentifier",
+      data
+    );
+    return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
+  }
+
+  SearchRequestsBySubmitterDisplayName(
+    request: SearchRequestsByDisplayNameReq
+  ): Promise<RequestArray> {
+    const data = SearchRequestsByDisplayNameReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "SearchRequestsBySubmitterDisplayName",
+      data
+    );
+    return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
+  }
+
+  SearchRequestsByCommanderDisplayName(
+    request: SearchRequestsByDisplayNameReq
+  ): Promise<RequestArray> {
+    const data = SearchRequestsByDisplayNameReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "SearchRequestsByCommanderDisplayName",
+      data
+    );
+    return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
+  }
+
+  SearchRequestsBySecurityDisplayName(
+    request: SearchRequestsByDisplayNameReq
+  ): Promise<RequestArray> {
+    const data = SearchRequestsByDisplayNameReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "SearchRequestsBySecurityDisplayName",
+      data
+    );
+    return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
+  }
+
+  SearchRequestsByApproverDisplayName(
+    request: SearchRequestsByDisplayNameReq
+  ): Promise<RequestArray> {
+    const data = SearchRequestsByDisplayNameReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "SearchRequestsByApproverDisplayName",
+      data
+    );
+    return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
+  }
+
+  CanPushToKartoffelQueue(
+    request: CanPushToQueueReq
+  ): Promise<CanPushToQueueRes> {
+    const data = CanPushToQueueReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "CanPushToKartoffelQueue",
+      data
+    );
+    return promise.then((data) =>
+      CanPushToQueueRes.decode(new _m0.Reader(data))
+    );
+  }
+
+  CanPushToADQueue(request: CanPushToQueueReq): Promise<CanPushToQueueRes> {
+    const data = CanPushToQueueReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "CanPushToADQueue",
+      data
+    );
+    return promise.then((data) =>
+      CanPushToQueueRes.decode(new _m0.Reader(data))
+    );
+  }
+
+  IncrementKartoffelRetries(request: IncrementRetriesReq): Promise<Request> {
+    const data = IncrementRetriesReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "IncrementKartoffelRetries",
+      data
+    );
+    return promise.then((data) => Request.decode(new _m0.Reader(data)));
+  }
+
+  IncrementADRetries(request: IncrementRetriesReq): Promise<Request> {
+    const data = IncrementRetriesReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "IncrementADRetries",
+      data
+    );
+    return promise.then((data) => Request.decode(new _m0.Reader(data)));
+  }
+
+  UpdateCommanderDecision(request: UpdateDecisionReq): Promise<Request> {
+    const data = UpdateDecisionReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "UpdateCommanderDecision",
+      data
+    );
+    return promise.then((data) => Request.decode(new _m0.Reader(data)));
+  }
+
+  UpdateSecurityDecision(request: UpdateDecisionReq): Promise<Request> {
+    const data = UpdateDecisionReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "UpdateSecurityDecision",
+      data
+    );
+    return promise.then((data) => Request.decode(new _m0.Reader(data)));
+  }
+
+  UpdateSuperSecurityDecision(request: UpdateDecisionReq): Promise<Request> {
+    const data = UpdateDecisionReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "UpdateSuperSecurityDecision",
+      data
+    );
+    return promise.then((data) => Request.decode(new _m0.Reader(data)));
+  }
+
+  GetRequestsInProgressByDue(
+    request: GetRequestsInProgressByDueReq
+  ): Promise<RequestArray> {
+    const data = GetRequestsInProgressByDueReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "GetRequestsInProgressByDue",
+      data
+    );
+    return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
+  }
+
+  GetRequestIdsInProgressByDue(
+    request: GetRequestsInProgressByDueReq
+  ): Promise<RequestIdArray> {
+    const data = GetRequestsInProgressByDueReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "GetRequestIdsInProgressByDue",
+      data
+    );
+    return promise.then((data) => RequestIdArray.decode(new _m0.Reader(data)));
   }
 }
 

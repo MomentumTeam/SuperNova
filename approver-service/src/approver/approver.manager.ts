@@ -2,14 +2,20 @@ import {
   AddApproverReq,
   Approver,
   ApproverArray,
+  ApproverIdArray,
+  DeleteApproverReq,
   GetAllApproversReq,
   GetUserTypeReq,
   GetUserTypeRes,
   SearchByDisplayNameReq,
   SearchByDomainUserReq,
   SuccessMessage,
-  UpdateDecisionReq,
+  SyncApproverReq,
 } from '../interfaces/protoc/proto/approverService';
+import {
+  Request,
+  UpdateDecisionReq,
+} from '../interfaces/protoc/proto/requestService';
 import { ApproverRepository } from './approver.repository';
 
 export class ApproverManager {
@@ -126,7 +132,7 @@ export class ApproverManager {
 
   async updateCommanderDecision(
     updateDecisionReq: UpdateDecisionReq
-  ): Promise<SuccessMessage> {
+  ): Promise<Request> {
     try {
       return await this.approverRepository.updateCommanderDecision(
         updateDecisionReq
@@ -138,11 +144,63 @@ export class ApproverManager {
 
   async updateSecurityDecision(
     updateDecisionReq: UpdateDecisionReq
-  ): Promise<SuccessMessage> {
+  ): Promise<Request> {
     try {
       return await this.approverRepository.updateSecurityDecision(
         updateDecisionReq
       );
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateSuperSecurityDecision(
+    updateDecisionReq: UpdateDecisionReq
+  ): Promise<Request> {
+    try {
+      return await this.approverRepository.updateSuperSecurityDecision(
+        updateDecisionReq
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getAllApprovers(
+    getAllApproversReq: GetAllApproversReq
+  ): Promise<ApproverArray> {
+    try {
+      return await this.approverRepository.getAllApprovers(getAllApproversReq);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteApprover(
+    deleteApproverReq: DeleteApproverReq
+  ): Promise<SuccessMessage> {
+    try {
+      return await this.approverRepository.deleteApprover(deleteApproverReq);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getAllApproverIds(
+    getAllApproverIdsReq: GetAllApproversReq
+  ): Promise<ApproverIdArray> {
+    try {
+      return await this.approverRepository.getAllApproverIds(
+        getAllApproverIdsReq
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async syncApprover(syncApproverReq: SyncApproverReq): Promise<Approver> {
+    try {
+      return await this.approverRepository.syncApprover(syncApproverReq);
     } catch (error) {
       throw error;
     }

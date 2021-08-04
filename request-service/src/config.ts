@@ -6,3 +6,6 @@ export const port =
 
 export const mongoUrl =
   process.env.RS_MONGO_URL || 'mongodb://127.0.0.1:27017/supernova';
+export const maxQueueRetries = process.env.RS_MAX_QUEUE_RETRIES
+  ? parseInt(process.env.RS_MAX_QUEUE_RETRIES)
+  : 5;
