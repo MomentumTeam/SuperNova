@@ -30,7 +30,7 @@ import {
 } from '../interfaces/protoc/proto/requestService';
 import * as C from '../config';
 import { RequestModel } from '../models/request.model';
-import { requestStatusFromJSON } from '../interfaces/protoc/proto/approverService';
+import { logger } from '../logger';
 
 export class RequestRepository {
   private cleanUnderscoreFields(document: any): void {
@@ -59,8 +59,9 @@ export class RequestRepository {
 
       for (let key of keys) {
         if (
-          !document.kartoffelParams[key] ||
-          document.kartoffelParams[key] == null
+          typeof document.kartoffelParams[key] !== typeof true &&
+          (!document.kartoffelParams[key] ||
+            document.kartoffelParams[key] == null)
         ) {
           delete document.kartoffelParams[key];
         }
@@ -70,7 +71,10 @@ export class RequestRepository {
       keys = Object.keys(document.adParams);
 
       for (let key of keys) {
-        if (!document.adParams[key] || document.adParams[key] == null) {
+        if (
+          typeof document.adParams[key] !== typeof true &&
+          (!document.adParams[key] || document.adParams[key] == null)
+        ) {
           delete document.adParams[key];
         }
       }
@@ -159,6 +163,7 @@ export class RequestRepository {
         const due: number = document.due;
         const kartoffelFailedRetries = document.kartoffelStatus.failedRetries;
         const now = new Date().getTime();
+        let canPushToQueue: boolean = false;
         if (
           commanderDecision === Decision.APPROVED &&
           securityDecision === Decision.APPROVED &&
@@ -167,20 +172,84 @@ export class RequestRepository {
           due <= now &&
           kartoffelFailedRetries < C.maxQueueRetries
         ) {
-          return {
-            canPushToQueue: true,
-          };
+          canPushToQueue = true;
         } else {
-          return {
-            canPushToQueue: false,
-          };
+          canPushToQueue = false;
         }
+        logger.info(`canPushToKartoffelQueue for id=${canPushToQueueReq.id}`, {
+          canPushToQueueReq,
+          commanderDecision,
+          securityDecision,
+          superSecurityDecision,
+          needSuperSecurityDecision,
+          due,
+          kartoffelFailedRetries,
+          now,
+          canPushToQueue,
+        });
+        return {
+          canPushToQueue: canPushToQueue,
+        };
       } else {
+        logger.error(`canPushToKartoffelQueue ERROR`, {
+          error: `A request with {id: ${canPushToQueueReq.id}} was not found!`,
+        });
         throw new Error(
           `A request with {id: ${canPushToQueueReq.id}} was not found!`
         );
       }
     } catch (error) {
+      logger.error(`canPushToKartoffelQueue ERROR`, {
+        error,
+      });
+      throw error;
+    }
+  }
+
+  async canPushToADQueue(
+    canPushToQueueReq: CanPushToQueueReq
+  ): Promise<CanPushToQueueRes> {
+    try {
+      const request = await RequestModel.findOne({
+        _id: canPushToQueueReq.id,
+      });
+      if (request) {
+        const document: any = request.toObject();
+        this.turnObjectIdsToStrings(document);
+        const kartoffelStageStatus = stageStatusFromJSON(
+          document.kartoffelStatus.status
+        );
+        const adFailedRetries = document.adStatus.failedRetries;
+        let canPushToQueue: boolean = false;
+        if (
+          kartoffelStageStatus === StageStatus.STAGE_DONE &&
+          adFailedRetries < C.maxQueueRetries
+        ) {
+          canPushToQueue = true;
+        } else {
+          canPushToQueue = false;
+        }
+        logger.info(`canPushToADQueue for id=${canPushToQueueReq.id}`, {
+          canPushToQueueReq,
+          adFailedRetries,
+          kartoffelStageStatus,
+          canPushToQueue,
+        });
+        return {
+          canPushToQueue: canPushToQueue,
+        };
+      } else {
+        logger.error(`canPushToADQueue ERROR`, {
+          error: `A request with {id: ${canPushToQueueReq.id}} was not found!`,
+        });
+        throw new Error(
+          `A request with {id: ${canPushToQueueReq.id}} was not found!`
+        );
+      }
+    } catch (error) {
+      logger.error(`canPushToADQueue ERROR`, {
+        error,
+      });
       throw error;
     }
   }
@@ -206,8 +275,16 @@ export class RequestRepository {
       updateQuery.requestProperties[approverField] =
         updateDecisionReq.approverDecision;
       const updatedRequest = await this.updateRequest(updateQuery);
+      logger.info(`updateApproverDecision`, {
+        updateDecisionReq,
+        personType,
+        updateQuery,
+      });
       return updatedRequest;
     } catch (error) {
+      logger.error(`updateApproverDecision ERROR`, {
+        error,
+      });
       throw error;
     }
   }
@@ -232,14 +309,25 @@ export class RequestRepository {
             requestProperties: { kartoffelStatus: kartoffelStatus },
           };
           const updatedRequest = await this.updateRequest(updateQuery);
+          logger.info(`incrementKartoffelRetries`, {
+            incrementRetriesReq,
+            updateQuery,
+          });
           return updatedRequest;
         }
       } else {
+        logger.error(`incrementKartoffelRetries ERROR`, {
+          request,
+          error: `kartoffel status is null for requestId ${incrementRetriesReq.id}`,
+        });
         throw new Error(
           `kartoffel status is null for requestId ${incrementRetriesReq.id}`
         );
       }
     } catch (error) {
+      logger.error(`incrementKartoffelRetries ERROR`, {
+        error,
+      });
       throw error;
     }
   }
@@ -264,46 +352,25 @@ export class RequestRepository {
             requestProperties: { adStatus: adStatus },
           };
           const updatedRequest = await this.updateRequest(updateQuery);
+          logger.info(`incrementADRetries`, {
+            incrementRetriesReq,
+            updateQuery,
+          });
           return updatedRequest;
         }
       } else {
+        logger.error(`incrementADRetries ERROR`, {
+          error: `AD status is null for requestId ${incrementRetriesReq.id}`,
+          request,
+        });
         throw new Error(
-          `kartoffel status is null for requestId ${incrementRetriesReq.id}`
+          `AD status is null for requestId ${incrementRetriesReq.id}`
         );
       }
     } catch (error) {
-      throw error;
-    }
-  }
-
-  async canPushToADQueue(
-    canPushToQueueReq: CanPushToQueueReq
-  ): Promise<CanPushToQueueRes> {
-    try {
-      const request = await RequestModel.findOne({
-        _id: canPushToQueueReq.id,
+      logger.error(`incrementADRetries ERROR`, {
+        error,
       });
-      if (request) {
-        const document: any = request.toObject();
-        this.turnObjectIdsToStrings(document);
-        const kartoffelStageStatus = stageStatusFromJSON(
-          document.kartoffelStatus.status
-        );
-        const adFailedRetries = document.adStatus.failedRetries;
-        if (
-          kartoffelStageStatus === StageStatus.STAGE_DONE &&
-          adFailedRetries < C.maxQueueRetries
-        ) {
-          return { canPushToQueue: true };
-        } else {
-          return { canPushToQueue: false };
-        }
-      } else {
-        throw new Error(
-          `A request with {id: ${canPushToQueueReq.id}} was not found!`
-        );
-      }
-    } catch (error) {
       throw error;
     }
   }
