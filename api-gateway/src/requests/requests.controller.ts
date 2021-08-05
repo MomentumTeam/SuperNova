@@ -22,7 +22,8 @@ import {
   DeleteRoleRes,
   DisconectRoleFromEntityRes,
   StageStatus,
-  EntityMin
+  EntityMin,
+  canPushToQueueRes,
 } from '../interfaces/protoc/proto/requestService';
 
 const PROTO_PATH = __dirname.includes('dist')
@@ -218,7 +219,10 @@ export default class RequestsController {
     console.log('RenameOGRequest');
 
     const submittedBy: EntityMin = {
-      id: req.user.id, displayName: req.user.displayName, identityCard: req.user.identityCard, personalNumber: req.user.personalNumber
+      id: req.user.id,
+      displayName: req.user.displayName,
+      identityCard: req.user.identityCard,
+      personalNumber: req.user.personalNumber,
     };
 
     req.body.submittedBy = submittedBy;
@@ -238,11 +242,13 @@ export default class RequestsController {
     console.log('RenameRoleRequest');
 
     const submittedBy: EntityMin = {
-      id: req.user.id, displayName: req.user.displayName, identityCard: req.user.identityCard, personalNumber: req.user.personalNumber
+      id: req.user.id,
+      displayName: req.user.displayName,
+      identityCard: req.user.identityCard,
+      personalNumber: req.user.personalNumber,
     };
 
     req.body.submittedBy = submittedBy;
-    
 
     requestsClient.RenameRoleRequest(
       req.body,
@@ -259,7 +265,10 @@ export default class RequestsController {
     console.log('createOGRequest');
 
     const submittedBy: EntityMin = {
-      id: req.user.id, displayName: req.user.displayName, identityCard: req.user.identityCard, personalNumber: req.user.personalNumber
+      id: req.user.id,
+      displayName: req.user.displayName,
+      identityCard: req.user.identityCard,
+      personalNumber: req.user.personalNumber,
     };
 
     req.body.submittedBy = submittedBy;
@@ -278,10 +287,13 @@ export default class RequestsController {
   static async createRoleRequest(req: any, res: Response) {
     console.log('createRoleRequest');
 
-   const submittedBy: EntityMin = {
-      id: req.user.id, displayName: req.user.displayName, identityCard: req.user.identityCard, personalNumber: req.user.personalNumber
+    const submittedBy: EntityMin = {
+      id: req.user.id,
+      displayName: req.user.displayName,
+      identityCard: req.user.identityCard,
+      personalNumber: req.user.personalNumber,
     };
-    console.log('submittedBy', submittedBy)
+    console.log('submittedBy', submittedBy);
 
     req.body.submittedBy = submittedBy;
 
@@ -299,10 +311,13 @@ export default class RequestsController {
   static async createEntityRequest(req: any, res: Response) {
     console.log('CreateEntityRequest');
 
-   const submittedBy: EntityMin = {
-      id: req.user.id, displayName: req.user.displayName, identityCard: req.user.identityCard, personalNumber: req.user.personalNumber
+    const submittedBy: EntityMin = {
+      id: req.user.id,
+      displayName: req.user.displayName,
+      identityCard: req.user.identityCard,
+      personalNumber: req.user.personalNumber,
     };
-    
+
     req.body.submittedBy = submittedBy;
 
     requestsClient.CreateEntityRequest(
@@ -319,10 +334,13 @@ export default class RequestsController {
   static async assignRoleToEntityRequest(req: any, res: Response) {
     console.log('AssignRoleToEntityRequest');
 
-   const submittedBy: EntityMin = {
-      id: req.user.id, displayName: req.user.displayName, identityCard: req.user.identityCard, personalNumber: req.user.personalNumber
+    const submittedBy: EntityMin = {
+      id: req.user.id,
+      displayName: req.user.displayName,
+      identityCard: req.user.identityCard,
+      personalNumber: req.user.personalNumber,
     };
-    
+
     req.body.submittedBy = submittedBy;
 
     requestsClient.AssignRoleToEntityRequest(
@@ -339,10 +357,13 @@ export default class RequestsController {
   static async editEntityRequest(req: any, res: Response) {
     console.log('EditEntityRequest');
 
-   const submittedBy: EntityMin = {
-      id: req.user.id, displayName: req.user.displayName, identityCard: req.user.identityCard, personalNumber: req.user.personalNumber
+    const submittedBy: EntityMin = {
+      id: req.user.id,
+      displayName: req.user.displayName,
+      identityCard: req.user.identityCard,
+      personalNumber: req.user.personalNumber,
     };
-    
+
     req.body.submittedBy = submittedBy;
 
     requestsClient.EditEntityRequest(
@@ -359,10 +380,13 @@ export default class RequestsController {
   static async disconectRoleFromEntityRequest(req: any, res: Response) {
     console.log('DisconectRoleFromEntityRequest');
 
-   const submittedBy: EntityMin = {
-      id: req.user.id, displayName: req.user.displayName, identityCard: req.user.identityCard, personalNumber: req.user.personalNumber
+    const submittedBy: EntityMin = {
+      id: req.user.id,
+      displayName: req.user.displayName,
+      identityCard: req.user.identityCard,
+      personalNumber: req.user.personalNumber,
     };
-    
+
     req.body.submittedBy = submittedBy;
 
     requestsClient.DisconectRoleFromEntityRequest(
@@ -416,5 +440,79 @@ export default class RequestsController {
         res.send(response);
       }
     );
+  }
+
+  static async updateApproverDecision(req: any, res: Response) {
+    console.log('updateApproverDecision');
+
+    //TODO(barak)- in requestService make one generic function for updateDecision.
+
+    let response;
+
+    switch (req.userType) {
+      case UserType.COMMANDER: {
+        requestsClient.UpdateCommanderDecision(
+          {
+            id: req.params.id,
+            //TODO- ApproverDecision
+          },
+          (err: any, response: Request) => {
+            if (err) {
+              res.send(err);
+            }
+            res.send(response);
+          }
+        );
+        break;
+      }
+      case UserType.SECURITY: {
+        response = requestsClient.UpdateCommanderDecision(
+          {
+            id: req.params.id,
+            //TODO- ApproverDecision
+          },
+          (err: any, response: Request) => {
+            if (err) {
+              res.send(err);
+            }
+            return response;
+          }
+        );
+        break;
+      }
+      case UserType.SUPER_SECURITY: {
+        response = requestsClient.updateSecurityDecision(
+          {
+            id: req.params.id,
+            //TODO- ApproverDecision
+          },
+          (err: any, response: Request) => {
+            if (err) {
+              res.send(err);
+            }
+            return response;
+          }
+        );
+        break;
+      }
+    }
+
+    const canPushToQueueRes = requestsClient.CanPushToADQueue(
+      {
+        id: req.params.id,
+      },
+      (err: any, response: canPushToQueueRes) => {
+        if (err) {
+          res.send(err);
+        }
+        return response;
+      }
+    );
+
+    if (canPushToQueueRes.canPushToQueue === true) {
+      await ProducerController.produceToADQueue(req, res);
+    } else {
+      res.send(response);
+    }
   }
 }
