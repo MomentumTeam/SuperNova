@@ -1,6 +1,6 @@
 import { logger } from './logger';
-import { getAllApproverIds, sync } from './service';
-import { ApproverIdArray } from './interfaces/protoc/proto/approverService';
+import { getRequestIdsInProgress, executeRequest } from './service';
+import { RequestIdArray } from './interfaces/protoc/proto/approverService';
 import { findPath } from './utils/path';
 
 const schedule = require('node-schedule');
@@ -18,10 +18,10 @@ async function main() {
   try {
     schedule.scheduleJob('0 0 * * *', async function () {
       //run script at midnight - 00:00
-      const approversArray = (await getAllApproverIds()) as ApproverIdArray;
-      console.log('approversArray', approversArray);
-      approversArray.forEach(async (approverId: string) => {
-        await sync(approverId);
+      const requestsArray = (await getRequestIdsInProgress()) as RequestIdArray;
+      console.log('requestsArray', requestsArray);
+      requestsArray.forEach(async (requestId: string) => {
+        await executeRequest(requestId);
       });
     });
   } catch (error) {
