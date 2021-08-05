@@ -9,6 +9,7 @@ import {
   RequestType,
 } from '../interfaces/protoc/proto/requestService';
 import { findPath } from '../utils/path';
+import { logger } from '../logger';
 
 const PROTO_PATH = `${findPath('proto')}/requestService.proto`;
 
@@ -18,132 +19,15 @@ export class RequestService {
     this.client = this.initClient();
   }
 
-  async createOGRequest(req: RequestReq): Promise<Request> {
-    return new Promise((resolve, reject) => {
-      this.client.CreateOGRequest(req, (err: any, res: any) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(res as Request);
-        }
-      });
-    });
-  }
-
-  async createRoleRequest(req: RequestReq): Promise<Request> {
-    return new Promise((resolve, reject) => {
-      this.client.CreateRoleRequest(req, (err: any, res: any) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(res as Request);
-        }
-      });
-    });
-  }
-
-  async assignRoleToEntityRequest(req: RequestReq): Promise<Request> {
-    return new Promise((resolve, reject) => {
-      this.client.AssignRoleToEntityRequest(req, (err: any, res: any) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(res as Request);
-        }
-      });
-    });
-  }
-
-  async createEntityRequest(req: RequestReq): Promise<Request> {
-    return new Promise((resolve, reject) => {
-      this.client.CreateEntityRequest(req, (err: any, res: any) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(res as Request);
-        }
-      });
-    });
-  }
-
-  async renameOGRequest(req: RequestReq): Promise<Request> {
-    return new Promise((resolve, reject) => {
-      this.client.RenameOGRequest(req, (err: any, res: any) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(res as Request);
-        }
-      });
-    });
-  }
-
-  async renameRoleRequest(req: RequestReq): Promise<Request> {
-    return new Promise((resolve, reject) => {
-      this.client.RenameRoleRequest(req, (err: any, res: any) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(res as Request);
-        }
-      });
-    });
-  }
-
-  async editEntityRequest(req: RequestReq): Promise<Request> {
-    return new Promise((resolve, reject) => {
-      this.client.EditEntityRequest(req, (err: any, res: any) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(res as Request);
-        }
-      });
-    });
-  }
-
-  async deleteOGRequest(req: RequestReq): Promise<Request> {
-    return new Promise((resolve, reject) => {
-      this.client.DeleteOGRequest(req, (err: any, res: any) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(res as Request);
-        }
-      });
-    });
-  }
-
-  async deleteRoleRequest(req: RequestReq): Promise<Request> {
-    return new Promise((resolve, reject) => {
-      this.client.DeleteRoleRequest(req, (err: any, res: any) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(res as Request);
-        }
-      });
-    });
-  }
-
-  async disconectRoleFromEntityRequest(req: RequestReq): Promise<Request> {
-    return new Promise((resolve, reject) => {
-      this.client.DisconectRoleFromEntityRequest(req, (err: any, res: any) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(res as Request);
-        }
-      });
-    });
-  }
-
   async getRequestById(req: GetRequestByIdReq): Promise<Request> {
+    logger.info('getRequestById in RequestService', { req });
     return new Promise((resolve, reject) => {
       this.client.GetRequestById(req, (err: any, res: any) => {
         if (err) {
+          logger.error('getRequestById in RequestService ERROR', { err });
           reject(err);
         } else {
+          logger.error('getRequestById in RequestService OK', { res });
           res.type = RequestType[res.type];
           resolve(res as Request);
         }
@@ -168,8 +52,10 @@ export class RequestService {
         C.requestServiceUrl,
         grpc.credentials.createInsecure()
       );
+      logger.info('Client initialized successfully in RequestService');
       return client;
     } catch (error) {
+      logger.info('Error while initializing RequestService client', { error });
       throw error;
     }
   }

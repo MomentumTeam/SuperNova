@@ -59,11 +59,7 @@ export class Server {
   initServer() {
     try {
       const requestServiceDescriptor: any = this.getProtoDescriptor();
-      logger.log({
-        level: 'info',
-        message: `Proto was loaded successfully from file: ${PROTO_PATH}`,
-        label: 'initServer',
-      });
+      logger.info(`Proto was loaded successfully from file: ${PROTO_PATH}`);
       this.server.addService(requestServiceDescriptor.RequestService.service, {
         CreateOGRequest: createRequestFuncByType(RequestType.CREATE_OG),
         CreateRoleRequest: createRequestFuncByType(RequestType.CREATE_ROLE),
@@ -140,6 +136,7 @@ export class Server {
       logger.info(`Grpc services were successfully added to the server`);
     } catch (error) {
       logger.error(`Error while initializing the server`, { error: error });
+      throw error;
     }
   }
 

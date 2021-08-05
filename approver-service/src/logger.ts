@@ -1,15 +1,20 @@
-import winston from "winston";
-const { combine, timestamp, colorize, printf } = winston.format;
+const ecsFormat = require('@elastic/ecs-winston-format');
+const DailyRotateFile = require('winston-daily-rotate-file');
+import winston from 'winston';
 
-const myFormat = printf(({ level, message, label, timestamp }: any) => {
-  return `${timestamp} [${label}] ${level}: ${message}`;
-});
-
-const logger: winston.Logger = winston.createLogger({
-  handleExceptions: true,
-  format: combine(timestamp(), colorize(), myFormat),
-  transports: [new winston.transports.Console()],
-  exitOnError: false,
+const logger = winston.createLogger({
+  level: 'info',
+  format: ecsFormat(),
+  transports: [
+    new winston.transports.Console(),
+    new DailyRotateFile({
+      dirname: './logs',
+      filename: 'winston-%DATE%.log',
+      datePattern: 'YYYY-MM-DD-HH',
+      maxSize: '100m',
+      maxFiles: '14d',
+    }),
+  ],
 });
 
 export { logger };

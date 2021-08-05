@@ -45,8 +45,10 @@ export class Server {
       const protoDescriptor: grpc.GrpcObject =
         grpc.loadPackageDefinition(packageDefinition);
       const approverServiceDescriptor: any = protoDescriptor.ApproverService;
+      logger.info(`Proto file ${PROTO_PATH} was loaded successfully`);
       return approverServiceDescriptor;
     } catch (error) {
+      logger.error(`Error while loading the proto file`, { error: error });
       throw error;
     }
   }
@@ -54,11 +56,7 @@ export class Server {
   initServer() {
     try {
       const approverServiceDescriptor: any = this.getProtoDescriptor();
-      logger.log({
-        level: 'info',
-        message: `Proto was loaded successfully from file: ${PROTO_PATH}`,
-        label: 'initServer',
-      });
+      logger.info(`Proto was loaded successfully from file: ${PROTO_PATH}`);
       this.server.addService(
         approverServiceDescriptor.ApproverService.service,
         {
@@ -80,17 +78,10 @@ export class Server {
           DeleteApprover: deleteApprover,
         }
       );
-      logger.log({
-        level: 'info',
-        message: `Grpc services were successfully added to the server`,
-        label: 'initServer',
-      });
+      logger.info(`Grpc services were successfully added to the server`);
     } catch (error) {
-      logger.log({
-        level: 'error',
-        message: `Error while initializing the server: ${error.message}`,
-        label: 'initServer',
-      });
+      logger.error(`Error while initializing the server`, { error: error });
+      throw error;
     }
   }
 
@@ -101,10 +92,14 @@ export class Server {
         grpc.ServerCredentials.createInsecure(),
         (bindError) => {
           if (bindError) {
+            logger.error(`Error while binding to ${C.host}:${C.port}`, {
+              error: bindError,
+            });
             reject(bindError);
           } else {
             try {
               this.server.start();
+              logger.info(`Server was started successfully`);
               resolve();
             } catch (startError) {
               reject(startError);

@@ -9,6 +9,7 @@ import {
   GetEntityByRoleIdRequest,
   GetEntityByMongoIdRequest,
 } from '../interfaces/protoc/proto/kartoffelService';
+import { logger } from '../logger';
 import { findPath } from '../utils/path';
 
 const PROTO_PATH = `${findPath('proto')}/kartoffelService.proto`;
@@ -36,14 +37,21 @@ export default class KartoffelService {
   static async searchEntitiesByFullName(
     searchEntitiesByFullName: SearchEntitiesByFullNameRequest
   ): Promise<EntityArray> {
-    console.log('SearchEntitiesByFullName');
     return new Promise((resolve, reject) => {
       kartoffelClient.SearchEntitiesByFullName(
         searchEntitiesByFullName,
         (err: any, entityArray: EntityArray) => {
           if (err) {
+            logger.error('searchEntitiesByFullName in KartoffelService ERROR', {
+              searchEntitiesByFullName,
+              err,
+            });
             throw reject(err);
           } else {
+            logger.info('searchEntitiesByFullName in KartoffelService', {
+              searchEntitiesByFullName,
+              entityArray,
+            });
             return resolve(entityArray);
           }
         }
@@ -54,14 +62,21 @@ export default class KartoffelService {
   static async getEntityByRoleId(
     getEntityByRoleId: GetEntityByRoleIdRequest
   ): Promise<Entity> {
-    console.log('getEntityByRoleId');
     return new Promise((resolve, reject) => {
       kartoffelClient.GetEntityByRoleId(
         getEntityByRoleId,
         (err: any, entity: Entity) => {
           if (err) {
+            logger.error('getEntityByRoleId in KartoffelService ERROR', {
+              getEntityByRoleId,
+              err,
+            });
             reject(err);
           } else {
+            logger.info('getEntityByRoleId in KartoffelService', {
+              getEntityByRoleId,
+              entity,
+            });
             resolve(entity);
           }
         }
@@ -78,8 +93,16 @@ export default class KartoffelService {
         getEntityByMongoId,
         (err: any, entity: Entity) => {
           if (err) {
+            logger.error('getEntityByMongoId in KartoffelService ERROR', {
+              getEntityByMongoId,
+              err,
+            });
             reject(err);
           } else {
+            logger.info('getEntityByMongoId in KartoffelService', {
+              getEntityByMongoId,
+              entity,
+            });
             resolve(entity);
           }
         }

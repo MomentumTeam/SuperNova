@@ -68,7 +68,7 @@ export class KartoffelRepository {
           resolve(res);
         })
         .catch((error) => {
-          logger.info(`Kartoffel GET Request ERROR`, {
+          logger.error(`Kartoffel GET Request ERROR`, {
             url: url,
             error: error,
           });
@@ -89,7 +89,7 @@ export class KartoffelRepository {
           resolve(res);
         })
         .catch((error) => {
-          logger.info(`Kartoffel DELETE Request ERROR`, {
+          logger.error(`Kartoffel DELETE Request ERROR`, {
             url: url,
             error: error,
           });
@@ -111,7 +111,7 @@ export class KartoffelRepository {
           resolve(res);
         })
         .catch((error) => {
-          logger.info(`Kartoffel POST Request ERROR`, {
+          logger.error(`Kartoffel POST Request ERROR`, {
             url: url,
             requestBoody: body,
             error: error,
@@ -134,7 +134,7 @@ export class KartoffelRepository {
           resolve(res);
         })
         .catch((error) => {
-          logger.info(`Kartoffel PATCH Request ERROR`, {
+          logger.error(`Kartoffel PATCH Request ERROR`, {
             url: url,
             requestBoody: body,
             error: error,
