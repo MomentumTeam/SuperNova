@@ -20,7 +20,7 @@ async function main() {
       //run script at midnight - 00:00
       const approversArray = (await getAllApproverIds()) as ApproverIdArray;
       console.log('approversArray', approversArray);
-      approversArray.forEach(async (approverId: string) => {
+      approversArray.approverIds.forEach(async (approverId: string) => {
         await sync(approverId);
       });
     });
