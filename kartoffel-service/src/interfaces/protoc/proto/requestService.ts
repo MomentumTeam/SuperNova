@@ -295,7 +295,7 @@ export interface SearchRequestsByDisplayNameReq {
 export interface UpdateKartoffelStatusReq {
   requestId: string;
   status: StageStatus;
-  message: string;
+  message?: string | undefined;
   createdId?: string | undefined;
 }
 
@@ -383,7 +383,7 @@ export interface UpdateReqProperties {
   due?: number | undefined;
 }
 
-/** ApproverRequest */
+/** NewApproverRequest */
 export interface CreateNewApproverReq {
   submittedBy: EntityMin | undefined;
   status: RequestStatus;
@@ -1714,11 +1714,7 @@ export const SearchRequestsByDisplayNameReq = {
   },
 };
 
-const baseUpdateKartoffelStatusReq: object = {
-  requestId: "",
-  status: 0,
-  message: "",
-};
+const baseUpdateKartoffelStatusReq: object = { requestId: "", status: 0 };
 
 export const UpdateKartoffelStatusReq = {
   encode(
@@ -1731,7 +1727,7 @@ export const UpdateKartoffelStatusReq = {
     if (message.status !== 0) {
       writer.uint32(16).int32(message.status);
     }
-    if (message.message !== "") {
+    if (message.message !== undefined) {
       writer.uint32(26).string(message.message);
     }
     if (message.createdId !== undefined) {
@@ -1789,7 +1785,7 @@ export const UpdateKartoffelStatusReq = {
     if (object.message !== undefined && object.message !== null) {
       message.message = String(object.message);
     } else {
-      message.message = "";
+      message.message = undefined;
     }
     if (object.createdId !== undefined && object.createdId !== null) {
       message.createdId = String(object.createdId);
@@ -1828,7 +1824,7 @@ export const UpdateKartoffelStatusReq = {
     if (object.message !== undefined && object.message !== null) {
       message.message = object.message;
     } else {
-      message.message = "";
+      message.message = undefined;
     }
     if (object.createdId !== undefined && object.createdId !== null) {
       message.createdId = object.createdId;
@@ -3296,7 +3292,10 @@ export const CreateNewApproverReq = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): CreateNewApproverReq {
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): CreateNewApproverReq {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseCreateNewApproverReq } as CreateNewApproverReq;
@@ -3656,7 +3655,10 @@ export const CreateNewApproverRes = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): CreateNewApproverRes {
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): CreateNewApproverRes {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseCreateNewApproverRes } as CreateNewApproverRes;
@@ -17547,7 +17549,9 @@ export interface RequestService {
     request: AssignRoleToEntityReq
   ): Promise<AssignRoleToEntityRes>;
   CreateOGRequest(request: CreateOGReq): Promise<CreateOGRes>;
-  CreateNewApproverRequest(request: CreateNewApproverReq): Promise<CreateNewApproverRes>;
+  CreateNewApproverRequest(
+    request: CreateNewApproverReq
+  ): Promise<CreateNewApproverRes>;
   CreateEntityRequest(request: CreateEntityReq): Promise<CreateEntityRes>;
   RenameOGRequest(request: RenameOGReq): Promise<RenameOGRes>;
   RenameRoleRequest(request: RenameRoleReq): Promise<EditEntityRes>;

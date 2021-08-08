@@ -1,0 +1,80 @@
+syntax = "proto3";
+// import "/home/barak/Desktop/SuperNova/proto/kartoffelService.proto";//when loading with bloomRPC
+import "proto/kartoffelService.proto"; //when running in vscode
+// import "/app/proto/kartoffelService.proto"; //When using docker
+
+package Tea;
+
+service Tea {
+    rpc RetrieveTeaAndUPNByEntity(RetrieveTeaAndUPNByEntityReq) returns (TeaAndUPN) {}
+    rpc RetrieveTeaAndUPNByEntityId(RetrieveTeaAndUPNByEntityIdReq) returns (TeaAndUPN) {}
+    rpc ReportTeaSuccess(ReportTeaReq) returns (SuccessMessage) {}
+    rpc ReportTeaFail(ReportTeaReq) returns (SuccessMessage) {}
+    rpc GetUnit(GetUnitReq) returns (Unit){}
+    rpc AddUnit(Unit) returns (Unit){}
+    rpc UpdateUnit(UpdateUnitReq) returns (Unit){}
+    rpc DeleteUnit(DeleteUnitReq) returns (SuccessMessage){}
+}
+
+message UpdateUnitReq{
+    string unitId = 1;
+    UnitProperties unitProperties = 2;
+}
+
+message DeleteUnitReq{
+    string unitId = 1;
+}
+
+
+message GetUnitReq{
+    string unitId = 1;
+}
+
+message Unit{
+    string unitId = 1;
+    string name = 2;
+    string prefix = 3;
+    string currentCounter = 4;
+    repeated string teaInProgress = 5;
+    repeated string failedTea = 6;
+}
+
+message UnitProperties{
+    optional string unitId = 1;
+    optional string name = 2;
+    optional string prefix = 3;
+    optional string currentCounter = 4;
+    repeated string teaInProgress = 5;
+    repeated string failedTea = 6;
+}
+
+message ReportTeaReq{
+    string tea = 1;
+}
+
+enum Network{
+    SECURITY = 0;
+    COMMANDER = 1;
+}
+
+message SuccessMessage{
+    bool success = 1;
+}
+
+message RetrieveTeaAndUPNByEntityReq{
+    string unitId = 1;
+    Network network = 2;
+    Kartoffel.Entity entity = 3;
+}
+
+message RetrieveTeaAndUPNByEntityIdReq{
+    string unitId = 1;
+    Network network = 2;
+    string entityId = 3;
+}
+
+message TeaAndUPN{
+    string tea = 1;
+    string upn = 2;
+}
+
