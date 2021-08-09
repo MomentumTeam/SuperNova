@@ -254,6 +254,11 @@ export function decisionToJSON(object: Decision): string {
   }
 }
 
+export interface UpdateApproversReq {
+  id: string;
+  approvers: EntityMin[];
+}
+
 export interface GetRequestsInProgressByDueReq {
   due: number;
 }
@@ -1078,6 +1083,90 @@ export interface Request {
   needSecurityDecision: boolean;
   needSuperSecurityDecision: boolean;
 }
+
+const baseUpdateApproversReq: object = { id: "" };
+
+export const UpdateApproversReq = {
+  encode(
+    message: UpdateApproversReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    for (const v of message.approvers) {
+      EntityMin.encode(v!, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UpdateApproversReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseUpdateApproversReq } as UpdateApproversReq;
+    message.approvers = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        case 2:
+          message.approvers.push(EntityMin.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UpdateApproversReq {
+    const message = { ...baseUpdateApproversReq } as UpdateApproversReq;
+    message.approvers = [];
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    if (object.approvers !== undefined && object.approvers !== null) {
+      for (const e of object.approvers) {
+        message.approvers.push(EntityMin.fromJSON(e));
+      }
+    }
+    return message;
+  },
+
+  toJSON(message: UpdateApproversReq): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    if (message.approvers) {
+      obj.approvers = message.approvers.map((e) =>
+        e ? EntityMin.toJSON(e) : undefined
+      );
+    } else {
+      obj.approvers = [];
+    }
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<UpdateApproversReq>): UpdateApproversReq {
+    const message = { ...baseUpdateApproversReq } as UpdateApproversReq;
+    message.approvers = [];
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    if (object.approvers !== undefined && object.approvers !== null) {
+      for (const e of object.approvers) {
+        message.approvers.push(EntityMin.fromPartial(e));
+      }
+    }
+    return message;
+  },
+};
 
 const baseGetRequestsInProgressByDueReq: object = { due: 0 };
 
@@ -17615,6 +17704,8 @@ export interface RequestService {
   GetRequestIdsInProgressByDue(
     request: GetRequestsInProgressByDueReq
   ): Promise<RequestIdArray>;
+  UpdateCommanders(request: UpdateApproversReq): Promise<Request>;
+  UpdateSecurityApprovers(request: UpdateApproversReq): Promise<Request>;
 }
 
 export class RequestServiceClientImpl implements RequestService {
@@ -17670,6 +17761,8 @@ export class RequestServiceClientImpl implements RequestService {
       this.GetRequestsInProgressByDue.bind(this);
     this.GetRequestIdsInProgressByDue =
       this.GetRequestIdsInProgressByDue.bind(this);
+    this.UpdateCommanders = this.UpdateCommanders.bind(this);
+    this.UpdateSecurityApprovers = this.UpdateSecurityApprovers.bind(this);
   }
   CreateRoleRequest(request: CreateRoleReq): Promise<CreateRoleRes> {
     const data = CreateRoleReq.encode(request).finish();
@@ -18083,6 +18176,26 @@ export class RequestServiceClientImpl implements RequestService {
       data
     );
     return promise.then((data) => RequestIdArray.decode(new _m0.Reader(data)));
+  }
+
+  UpdateCommanders(request: UpdateApproversReq): Promise<Request> {
+    const data = UpdateApproversReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "UpdateCommanders",
+      data
+    );
+    return promise.then((data) => Request.decode(new _m0.Reader(data)));
+  }
+
+  UpdateSecurityApprovers(request: UpdateApproversReq): Promise<Request> {
+    const data = UpdateApproversReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "UpdateSecurityApprovers",
+      data
+    );
+    return promise.then((data) => Request.decode(new _m0.Reader(data)));
   }
 }
 

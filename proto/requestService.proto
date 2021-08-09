@@ -47,6 +47,13 @@ service RequestService {
     rpc GetRequestsInProgressByDue(GetRequestsInProgressByDueReq) returns (RequestArray){}
     rpc GetRequestIdsInProgressByDue(GetRequestsInProgressByDueReq) returns (RequestIdArray){}
 
+    rpc UpdateCommanders(UpdateApproversReq) returns (Request){}
+    rpc UpdateSecurityApprovers(UpdateApproversReq) returns (Request){}
+}
+
+message UpdateApproversReq{
+    string id = 1;
+    repeated EntityMin approvers = 2;
 }
 
 message GetRequestsInProgressByDueReq{

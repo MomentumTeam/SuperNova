@@ -49,7 +49,7 @@ export class RequestFaker {
       kartoffelParams: {},
       adParams: {},
       comments: faker.lorem.paragraph(),
-      approverComments: faker.lorem.paragraph(),
+      approversComments: faker.lorem.paragraph(),
       due: faker.datatype.datetime().getTime(),
     };
   }

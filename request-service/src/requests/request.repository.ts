@@ -22,120 +22,25 @@ import {
   SearchRequestsByDisplayNameReq,
   StageStatus,
   stageStatusFromJSON,
-  stageStatusToJSON,
   SuccessMessage,
   UpdateADStatusReq,
+  UpdateApproversReq,
   UpdateDecisionReq,
   UpdateKartoffelStatusReq,
 } from '../interfaces/protoc/proto/requestService';
 import * as C from '../config';
 import { RequestModel } from '../models/request.model';
-import { requestStatusFromJSON } from '../interfaces/protoc/proto/approverService';
+import {
+  cleanUnderscoreFields,
+  turnObjectIdsToStrings,
+} from '../services/requestHelper';
+import NotificationService from '../services/notificationService';
+import {
+  CreateNotificationReq,
+  NotificationType,
+} from '../interfaces/protoc/proto/notificationService';
 
 export class RequestRepository {
-  private cleanUnderscoreFields(document: any): void {
-    let keys: any = Object.keys(document);
-
-    for (let key of keys) {
-      if (key.startsWith('_') && key !== '_id') {
-        delete document[key];
-      }
-    }
-  }
-
-  private cleanNullFields(document: any): void {
-    let keys: any = Object.keys(document);
-
-    for (let key of keys) {
-      if (
-        typeof document[key] !== typeof true &&
-        (!document[key] || document[key] == null)
-      ) {
-        delete document[key];
-      }
-    }
-    if (document.kartoffelParams) {
-      keys = Object.keys(document.kartoffelParams);
-
-      for (let key of keys) {
-        if (
-          !document.kartoffelParams[key] ||
-          document.kartoffelParams[key] == null
-        ) {
-          delete document.kartoffelParams[key];
-        }
-      }
-    }
-    if (document.adParams) {
-      keys = Object.keys(document.adParams);
-
-      for (let key of keys) {
-        if (!document.adParams[key] || document.adParams[key] == null) {
-          delete document.adParams[key];
-        }
-      }
-    }
-  }
-
-  private turnIdOfApproverToString(approver: any) {
-    if (approver.id) {
-      approver.id = approver.id.toString();
-    }
-    return approver;
-  }
-
-  private turnObjectIdsToStrings(document: any): void {
-    //_id
-    if (document._id) {
-      document._id = document._id.toString();
-      document.id = document._id;
-    }
-
-    //submittedBy
-    if (document.submittedBy) {
-      this.turnIdOfApproverToString(document.submittedBy);
-    }
-
-    //commanderDecision
-    if (document.commanderDecision && document.commanderDecision.approver) {
-      this.turnIdOfApproverToString(document.commanderDecision.approver);
-    }
-
-    //securityDecision
-    if (document.securityDecision && document.securityDecision.approver) {
-      this.turnIdOfApproverToString(document.securityDecision.approver);
-    }
-
-    //superSecurityDecision
-    if (
-      document.superSecurityDecision &&
-      document.superSecurityDecision.approver
-    ) {
-      this.turnIdOfApproverToString(document.superSecurityDecision.approver);
-    }
-
-    //commanders
-    if (document.commanders) {
-      document.commanders.forEach((commander: any) => {
-        this.turnIdOfApproverToString(commander);
-      });
-    }
-
-    //securityApprovers
-    if (document.securityApprovers) {
-      document.securityApprovers.forEach((securityApprover: any) => {
-        this.turnIdOfApproverToString(securityApprover);
-      });
-    }
-
-    if (document.kartoffelProperties && document.kartoffelProperties.id) {
-      document.kartoffelProperties.id =
-        document.kartoffelProperties.id.toString();
-    }
-    this.cleanUnderscoreFields(document);
-    this.cleanNullFields(document);
-  }
-
   async canPushToKartoffelQueue(
     canPushToQueueReq: CanPushToQueueReq
   ): Promise<CanPushToQueueRes> {
@@ -145,7 +50,7 @@ export class RequestRepository {
       });
       if (request) {
         const document: any = request.toObject();
-        this.turnObjectIdsToStrings(document);
+        turnObjectIdsToStrings(document);
         const commanderDecision: Decision = document.commanderDecision
           ? decisionFromJSON(document.commanderDecision.decision)
           : Decision.DECISION_UNKNOWN;
@@ -285,7 +190,7 @@ export class RequestRepository {
       });
       if (request) {
         const document: any = request.toObject();
-        this.turnObjectIdsToStrings(document);
+        turnObjectIdsToStrings(document);
         const kartoffelStageStatus = stageStatusFromJSON(
           document.kartoffelStatus.status
         );
@@ -341,7 +246,7 @@ export class RequestRepository {
         let documents: any = [];
         for (let i = 0; i < requests.length; i++) {
           const requestObj: any = requests[i].toObject();
-          this.turnObjectIdsToStrings(requestObj);
+          turnObjectIdsToStrings(requestObj);
           documents.push(requestObj);
         }
 
@@ -504,7 +409,7 @@ export class RequestRepository {
     //TODO CHECK MORE
     try {
       let requestUpdate: any = { ...updateReq.requestProperties };
-      this.cleanUnderscoreFields(requestUpdate);
+      cleanUnderscoreFields(requestUpdate);
 
       let commanderApproverIdInUpdate: any = undefined,
         securityApproverIdInUpdate: any = undefined,
@@ -602,7 +507,7 @@ export class RequestRepository {
         });
         if (documentBefore) {
           const documentBeforeObj: any = documentBefore.toObject();
-          this.turnObjectIdsToStrings(documentBeforeObj);
+          turnObjectIdsToStrings(documentBeforeObj);
           const needSuperSecurityDecision =
             documentBeforeObj.needSuperSecurityDecision;
 
@@ -748,7 +653,7 @@ export class RequestRepository {
       );
       if (documentAfter) {
         const documentObj = documentAfter.toObject();
-        this.turnObjectIdsToStrings(documentObj);
+        turnObjectIdsToStrings(documentObj);
         return documentObj as Request;
       } else {
         throw new Error(`A request with {_id: ${updateReq.id}} was not found!`);
@@ -761,8 +666,9 @@ export class RequestRepository {
   async updateKartoffelStatus(
     updateKartoffelStatusReq: UpdateKartoffelStatusReq
   ): Promise<Request> {
+    let updatedRequest;
     try {
-      this.cleanUnderscoreFields(updateKartoffelStatusReq);
+      cleanUnderscoreFields(updateKartoffelStatusReq);
       let requestUpdate: any = {
         id: updateKartoffelStatusReq.requestId,
         requestProperties: {
@@ -773,15 +679,21 @@ export class RequestRepository {
           },
         },
       };
-      return await this.updateRequest(requestUpdate);
+      updatedRequest = await this.updateRequest(requestUpdate);
     } catch (error) {
       throw error;
     }
+    // let createNotificationReq: CreateNotificationReq = {type: NotificationType.};
+    // if (updateKartoffelStatusReq.status === StageStatus.STAGE_DONE) {
+    //   await NotificationService.createNotification();
+    // } else if (updateKartoffelStatusReq.status === StageStatus.STAGE_FAILED) {
+    // }
+    return updatedRequest;
   }
 
   async updateADStatus(updateADStatusReq: UpdateADStatusReq): Promise<Request> {
     try {
-      this.cleanUnderscoreFields(updateADStatusReq);
+      cleanUnderscoreFields(updateADStatusReq);
       let requestUpdate: any = {
         id: updateADStatusReq.requestId,
         requestProperties: {
@@ -813,7 +725,7 @@ export class RequestRepository {
 
       const createdCreateRequest = await request.save();
       const document = createdCreateRequest.toObject();
-      this.turnObjectIdsToStrings(document);
+      turnObjectIdsToStrings(document);
       return document as Request;
     } catch (error) {
       throw error;
@@ -845,7 +757,7 @@ export class RequestRepository {
       });
       if (request) {
         const document = request.toObject();
-        this.turnObjectIdsToStrings(document);
+        turnObjectIdsToStrings(document);
         return document as Request;
       } else {
         throw new Error(
@@ -862,13 +774,41 @@ export class RequestRepository {
       const request = await RequestModel.findOne({ _id: getRequestByIdReq.id });
       if (request) {
         const document = request.toObject();
-        this.turnObjectIdsToStrings(document);
+        turnObjectIdsToStrings(document);
         return document as Request;
       } else {
         throw new Error(
           `A request with {_id: ${getRequestByIdReq.id}} was not found!`
         );
       }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateCommanders(
+    updateApproversReq: UpdateApproversReq
+  ): Promise<Request> {
+    try {
+      const request: Request = await this.updateRequest({
+        id: updateApproversReq.id,
+        requestProperties: { commanders: updateApproversReq.approvers },
+      });
+      return request;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateSecurityApprovers(
+    updateApproversReq: UpdateApproversReq
+  ): Promise<Request> {
+    try {
+      const request: Request = await this.updateRequest({
+        id: updateApproversReq.id,
+        requestProperties: { securityApprovers: updateApproversReq.approvers },
+      });
+      return request;
     } catch (error) {
       throw error;
     }
@@ -901,7 +841,7 @@ export class RequestRepository {
         let documents: any = [];
         for (let i = 0; i < requests.length; i++) {
           const requestObj: any = requests[i].toObject();
-          this.turnObjectIdsToStrings(requestObj);
+          turnObjectIdsToStrings(requestObj);
           documents.push(requestObj);
         }
         return {

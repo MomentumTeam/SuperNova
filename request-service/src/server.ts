@@ -22,6 +22,8 @@ import {
   incrementADRetries,
   getRequestsInProgressByDue,
   getRequestIdsInProgressByDue,
+  updateCommanders,
+  updateSecurityApprovers,
 } from './requests/request.controller';
 import {
   GetRequestsByIdentifierReq,
@@ -139,6 +141,8 @@ export class Server {
         ),
         GetRequestsInProgressByDue: getRequestsInProgressByDue,
         GetRequestIdsInProgressByDue: getRequestIdsInProgressByDue,
+        UpdateCommanders: updateCommanders,
+        UpdateSecurityApprovers: updateSecurityApprovers,
       });
       logger.log({
         level: 'info',

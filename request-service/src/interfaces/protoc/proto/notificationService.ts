@@ -10,8 +10,16 @@ export enum NotificationType {
   REQUEST_DECLINED_1 = 2,
   REQUEST_APPROVED_2 = 3,
   REQUEST_DECLINED_2 = 4,
-  REQUEST_DONE = 5,
-  REQUEST_FAILED = 6,
+  REQUEST_APPROVED_3 = 5,
+  REQUEST_DECLINED_3 = 6,
+  REQUEST_IN_PROGRESS = 7,
+  REQUEST_DECLINED = 8,
+  KARTOFFEL_STAGE_DONE = 9,
+  KARTOFFEL_STAGE_FAILED = 10,
+  AD_STAGE_DONE = 11,
+  AD_STAGE_FAILED = 12,
+  REQUEST_DONE = 13,
+  REQUEST_FAILED = 14,
   UNRECOGNIZED = -1,
 }
 
@@ -33,9 +41,33 @@ export function notificationTypeFromJSON(object: any): NotificationType {
     case "REQUEST_DECLINED_2":
       return NotificationType.REQUEST_DECLINED_2;
     case 5:
+    case "REQUEST_APPROVED_3":
+      return NotificationType.REQUEST_APPROVED_3;
+    case 6:
+    case "REQUEST_DECLINED_3":
+      return NotificationType.REQUEST_DECLINED_3;
+    case 7:
+    case "REQUEST_IN_PROGRESS":
+      return NotificationType.REQUEST_IN_PROGRESS;
+    case 8:
+    case "REQUEST_DECLINED":
+      return NotificationType.REQUEST_DECLINED;
+    case 9:
+    case "KARTOFFEL_STAGE_DONE":
+      return NotificationType.KARTOFFEL_STAGE_DONE;
+    case 10:
+    case "KARTOFFEL_STAGE_FAILED":
+      return NotificationType.KARTOFFEL_STAGE_FAILED;
+    case 11:
+    case "AD_STAGE_DONE":
+      return NotificationType.AD_STAGE_DONE;
+    case 12:
+    case "AD_STAGE_FAILED":
+      return NotificationType.AD_STAGE_FAILED;
+    case 13:
     case "REQUEST_DONE":
       return NotificationType.REQUEST_DONE;
-    case 6:
+    case 14:
     case "REQUEST_FAILED":
       return NotificationType.REQUEST_FAILED;
     case -1:
@@ -57,6 +89,22 @@ export function notificationTypeToJSON(object: NotificationType): string {
       return "REQUEST_APPROVED_2";
     case NotificationType.REQUEST_DECLINED_2:
       return "REQUEST_DECLINED_2";
+    case NotificationType.REQUEST_APPROVED_3:
+      return "REQUEST_APPROVED_3";
+    case NotificationType.REQUEST_DECLINED_3:
+      return "REQUEST_DECLINED_3";
+    case NotificationType.REQUEST_IN_PROGRESS:
+      return "REQUEST_IN_PROGRESS";
+    case NotificationType.REQUEST_DECLINED:
+      return "REQUEST_DECLINED";
+    case NotificationType.KARTOFFEL_STAGE_DONE:
+      return "KARTOFFEL_STAGE_DONE";
+    case NotificationType.KARTOFFEL_STAGE_FAILED:
+      return "KARTOFFEL_STAGE_FAILED";
+    case NotificationType.AD_STAGE_DONE:
+      return "AD_STAGE_DONE";
+    case NotificationType.AD_STAGE_FAILED:
+      return "AD_STAGE_FAILED";
     case NotificationType.REQUEST_DONE:
       return "REQUEST_DONE";
     case NotificationType.REQUEST_FAILED:
