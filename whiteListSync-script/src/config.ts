@@ -1,10 +1,8 @@
-export const kartoffelUrl = process.env.GATEWAY_KS_URL || '0.0.0.0:8082';
-export const requestServiceUrl = process.env.GATEWAY_RS_URL || '0.0.0.0:8081';
-export const producerUrl = process.env.GATEWAY_PS_URL || '0.0.0.0:8083';
-export const notificationsUrl = process.env.GATEWAY_NS_URL || '0.0.0.0:8084';
-export const approverServiceUrl = process.env.GATEWAY_APS_URL || '0.0.0.0:8085';
+export const approverServiceUrl = process.env.WLS_APS_URL || '0.0.0.0:8085';
 export const authentication = {
-  token: process.env.GATEWAY_TOKEN || 'sp-token',
-  secret: process.env.GATEWAY_SECRET_KEY || 'superNova',
-  authServiceUrl: process.env.GATEWAY_AS_URL || '0.0.0.0:9000',
+  token: process.env.WLS_TOKEN || 'sp-token',
+  secret: process.env.WLS_SECRET_KEY || 'superNova',
+  authServiceUrl: process.env.WLS_AS_URL || '0.0.0.0:9000',
 };
+export const hour=process.env.WLS_HOUR || `0`;    //   0-23
+export const minute=process.env.WLS_MINUTE || `0`;  //  0-59

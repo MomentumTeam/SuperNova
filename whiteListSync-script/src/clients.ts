@@ -1,15 +1,11 @@
 import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
-import path from 'path';
 import * as config from './config';
-
-
+import { findPath } from './utils/path';
 
 //approverClient
 
-const APS_PROTO_PATH = __dirname.includes('dist')
-  ? path.join(__dirname, '../../../proto/approverService.proto')
-  : path.join(__dirname, '../../proto/approverService.proto');
+const APS_PROTO_PATH = `${findPath('proto')}/approverService.proto`;
 
 const apsPackageDefinition: protoLoader.PackageDefinition =
   protoLoader.loadSync(APS_PROTO_PATH, {
