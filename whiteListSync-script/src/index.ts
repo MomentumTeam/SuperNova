@@ -2,21 +2,20 @@ import { logger } from './logger';
 import { getAllApproverIds, sync } from './service';
 import { ApproverIdArray } from './interfaces/protoc/proto/approverService';
 import { findPath } from './utils/path';
-import { config } from 'dotenv';
-import * as Config from './config';
+import * as config from './config';
 
 const schedule = require('node-schedule');
 
 if (process.env.NODE_ENV !== 'production') {
   const ENV_PATH = `${findPath('supernova.env')}`;
-  config({
+  require('dotenv').config({
     path: ENV_PATH,
   });
 }
 
 async function main() {
   try {
-    schedule.scheduleJob(`${Config.minute} ${Config.hour} * * *`, async function () {
+    schedule.scheduleJob(`${config.minute} ${config.hour} * * *`, async function () {
       //run script at midnight - 00:00
       logger.info(`WhiteList-Script started successfully!`);
 

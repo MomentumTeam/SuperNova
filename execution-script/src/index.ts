@@ -1,14 +1,14 @@
 import { logger } from './logger';
-import { getRequestIdsInProgress, executeRequest } from './service';
-import { RequestIdArray } from './interfaces/protoc/proto/approverService';
+import RequestService from './services/requestService';
+import ProducerService from './services/producerService';
 import { findPath } from './utils/path';
+import * as config from './config';
 
 const schedule = require('node-schedule');
 
-console.log('process.env.NODE_ENV', process.env.NODE_ENV);
 if (process.env.NODE_ENV !== 'production') {
   const ENV_PATH = `${findPath('supernova.env')}`;
-  console.log(ENV_PATH);
+
   require('dotenv').config({
     path: ENV_PATH,
   });
@@ -16,21 +16,20 @@ if (process.env.NODE_ENV !== 'production') {
 
 async function main() {
   try {
-    schedule.scheduleJob('0 0 * * *', async function () {
-      //run script at midnight - 00:00
-      const requestsArray = (await getRequestIdsInProgress()) as RequestIdArray;
-      console.log('requestsArray', requestsArray);
-      requestsArray.forEach(async (requestId: string) => {
-        await executeRequest(requestId);
+    schedule.scheduleJob(`* */${config.everyHour} * * *`, async function () {
+      //run script every x hour
+      logger.info(`Execution-Script started successfully!`);
+
+      const requestsArray = await RequestService.getRequestIdsInProgress();
+
+      requestsArray.requestIds.forEach(async (requestId: string) => {
+        await ProducerService.executeRequest(requestId);
       });
     });
   } catch (error) {
-    console.log('error', error);
-    logger.log({
-      level: 'error',
-      label: 'main',
-      message: `Error: ${error.message}`,
-    });
+    logger.error(
+      `Error while trying to start Execution-Script: ${error.message}`
+    );
   }
 }
 
