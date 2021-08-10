@@ -21,7 +21,7 @@ RequestsRouter.get(
 );
 
 RequestsRouter.put('/updateADStatus', RequestsController.updateADStatus);
-RequestsRouter.put('/updateRequest', RequestsController.updateRequest);
+RequestsRouter.put('/updateRequest/:id', RequestsController.updateRequest);
 RequestsRouter.put('/renameOGRequest', RequestsController.renameOGRequest);
 RequestsRouter.put('/renameRoleRequest', RequestsController.renameRoleRequest);
 
@@ -46,6 +46,6 @@ RequestsRouter.delete(
   RequestsController.deleteRoleRequest
 );
 RequestsRouter.delete('/deleteOGRequest', RequestsController.deleteOGRequest);
-RequestsRouter.delete('/deleteRequest', RequestsController.deleteRequest);
+// RequestsRouter.delete('/deleteRequest', RequestsController.deleteRequest);
 
 export default RequestsRouter;
