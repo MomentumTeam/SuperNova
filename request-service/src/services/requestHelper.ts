@@ -1,3 +1,5 @@
+import { requestTypeFromJSON } from '../interfaces/protoc/proto/requestService';
+
 export function cleanUnderscoreFields(document: any): void {
   let keys: any = Object.keys(document);
 
@@ -50,6 +52,9 @@ export function turnIdOfApproverToString(approver: any) {
 }
 
 export function turnObjectIdsToStrings(document: any): void {
+  //   if (document.type) {
+  //     document.type = requestTypeFromJSON(document.type);
+  //   }
   //_id
   if (document._id) {
     document._id = document._id.toString();

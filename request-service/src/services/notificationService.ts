@@ -2,8 +2,10 @@ import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 import * as config from '../config';
 import {
-  CreateNotificationReq,
+  CreateCustomNotificationReq,
+  CreateNotificationsReq,
   Notification,
+  NotificationArray,
 } from '../interfaces/protoc/proto/notificationService';
 import { findPath } from '../utils/path';
 
@@ -29,18 +31,37 @@ const notificationClient: any = new protoDescriptor.NotificationService(
 );
 
 export default class NotificationService {
-  static async createNotification(
-    createNotificationReq: CreateNotificationReq
+  static async createCustomNotification(
+    createCustomNotificationReq: CreateCustomNotificationReq
   ): Promise<Notification> {
-    console.log('createNotification');
+    console.log('createCustomNotification');
     return new Promise((resolve, reject) => {
-      notificationClient.CreateNotification(
-        createNotificationReq,
+      notificationClient.CreateCustomNotification(
+        createCustomNotificationReq,
         (err: any, notification: Notification) => {
           if (err) {
             reject(err);
           } else {
             resolve(notification);
+          }
+        }
+      );
+    });
+  }
+
+  static async createNotifications(
+    createNotificationsReq: CreateNotificationsReq
+  ): Promise<NotificationArray> {
+    console.log('createNotifications');
+    return new Promise((resolve, reject) => {
+      notificationClient.CreateNotifications(
+        createNotificationsReq,
+        (err: any, notificationArray: NotificationArray) => {
+          if (err) {
+            resolve({ notifications: [], totalCount: 0 });
+            // reject(err);
+          } else {
+            resolve(notificationArray);
           }
         }
       );

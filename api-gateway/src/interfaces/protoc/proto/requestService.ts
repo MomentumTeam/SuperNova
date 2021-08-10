@@ -125,9 +125,11 @@ export function requestTypeToJSON(object: RequestType): string {
 export enum RequestStatus {
   SUBMITTED = 0,
   DECLINED = 1,
-  IN_PROGRESS = 2,
-  DONE = 3,
-  FAILED = 4,
+  APPROVED_BY_COMMANDER = 2,
+  APPROVED_BY_SECURITY = 3,
+  IN_PROGRESS = 4,
+  DONE = 5,
+  FAILED = 6,
   UNRECOGNIZED = -1,
 }
 
@@ -140,12 +142,18 @@ export function requestStatusFromJSON(object: any): RequestStatus {
     case "DECLINED":
       return RequestStatus.DECLINED;
     case 2:
+    case "APPROVED_BY_COMMANDER":
+      return RequestStatus.APPROVED_BY_COMMANDER;
+    case 3:
+    case "APPROVED_BY_SECURITY":
+      return RequestStatus.APPROVED_BY_SECURITY;
+    case 4:
     case "IN_PROGRESS":
       return RequestStatus.IN_PROGRESS;
-    case 3:
+    case 5:
     case "DONE":
       return RequestStatus.DONE;
-    case 4:
+    case 6:
     case "FAILED":
       return RequestStatus.FAILED;
     case -1:
@@ -161,6 +169,10 @@ export function requestStatusToJSON(object: RequestStatus): string {
       return "SUBMITTED";
     case RequestStatus.DECLINED:
       return "DECLINED";
+    case RequestStatus.APPROVED_BY_COMMANDER:
+      return "APPROVED_BY_COMMANDER";
+    case RequestStatus.APPROVED_BY_SECURITY:
+      return "APPROVED_BY_SECURITY";
     case RequestStatus.IN_PROGRESS:
       return "IN_PROGRESS";
     case RequestStatus.DONE:

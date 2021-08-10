@@ -1,6 +1,8 @@
 import {
-  CreateNotificationReq,
+  CreateCustomNotificationReq,
+  CreateNotificationsReq,
   GetNotificationsByOwnerIdReq,
+  MarkAllAsReadReq,
   Notification,
   NotificationArray,
   NotificationIdArray,
@@ -13,11 +15,11 @@ export class NotificationManager {
     this.notificationRepository = new NotificationRepository();
   }
 
-  async createNotification(
-    createNotificationReq: CreateNotificationReq
+  async createCustomNotification(
+    createNotificationReq: CreateCustomNotificationReq
   ): Promise<Notification> {
     try {
-      return await this.notificationRepository.createNotification(
+      return await this.notificationRepository.createCustomNotification(
         createNotificationReq
       );
     } catch (error) {
@@ -42,6 +44,27 @@ export class NotificationManager {
       return await this.notificationRepository.getNotificationsByOwnerId(
         getNotificationsByOwnerIdReq
       );
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async createNotifications(
+    createNotificationsReq: CreateNotificationsReq
+  ): Promise<NotificationArray> {
+    try {
+      return await this.notificationRepository.createNotifications(
+        createNotificationsReq
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+  async markAllAsRead(
+    markAllAsReadReq: MarkAllAsReadReq
+  ): Promise<SuccessMessage> {
+    try {
+      return await this.notificationRepository.markAllAsRead(markAllAsReadReq);
     } catch (error) {
       throw error;
     }

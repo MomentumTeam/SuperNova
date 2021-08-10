@@ -66,7 +66,7 @@ export default class RequestService {
   ): Promise<Request> {
     console.log('updateSecurityDecision');
     return new Promise((resolve, reject) => {
-      requestClient.updateSecurityDecision(
+      requestClient.UpdateSecurityDecision(
         updateDecisionReq,
         (err: any, request: Request) => {
           if (err) {
@@ -84,7 +84,7 @@ export default class RequestService {
   ): Promise<Request> {
     console.log('updateSuperSecurityDecision');
     return new Promise((resolve, reject) => {
-      requestClient.updateSuperSecurityDecision(
+      requestClient.UpdateSuperSecurityDecision(
         updateDecisionReq,
         (err: any, request: Request) => {
           if (err) {

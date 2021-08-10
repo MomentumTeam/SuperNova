@@ -1,6 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { Request } from "../proto/requestService";
 
 export const protobufPackage = "NotificationService";
 
@@ -114,6 +115,59 @@ export function notificationTypeToJSON(object: NotificationType): string {
   }
 }
 
+export enum OwnerType {
+  SUBMITTER = 0,
+  COMMANDER = 1,
+  SECURITY_APPROVER = 2,
+  SUPER_SECURITY_APPROVER = 3,
+  UNRECOGNIZED = -1,
+}
+
+export function ownerTypeFromJSON(object: any): OwnerType {
+  switch (object) {
+    case 0:
+    case "SUBMITTER":
+      return OwnerType.SUBMITTER;
+    case 1:
+    case "COMMANDER":
+      return OwnerType.COMMANDER;
+    case 2:
+    case "SECURITY_APPROVER":
+      return OwnerType.SECURITY_APPROVER;
+    case 3:
+    case "SUPER_SECURITY_APPROVER":
+      return OwnerType.SUPER_SECURITY_APPROVER;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return OwnerType.UNRECOGNIZED;
+  }
+}
+
+export function ownerTypeToJSON(object: OwnerType): string {
+  switch (object) {
+    case OwnerType.SUBMITTER:
+      return "SUBMITTER";
+    case OwnerType.COMMANDER:
+      return "COMMANDER";
+    case OwnerType.SECURITY_APPROVER:
+      return "SECURITY_APPROVER";
+    case OwnerType.SUPER_SECURITY_APPROVER:
+      return "SUPER_SECURITY_APPROVER";
+    default:
+      return "UNKNOWN";
+  }
+}
+
+export interface MarkAllAsReadReq {
+  ownerId: string;
+}
+
+export interface CreateNotificationsReq {
+  type: NotificationType;
+  request: Request | undefined;
+}
+
 export interface SuccessMessage {
   success: boolean;
 }
@@ -122,21 +176,25 @@ export interface NotificationIdArray {
   notificationIds: string[];
 }
 
-export interface CreateNotificationReq {
+export interface CreateCustomNotificationReq {
   type: NotificationType;
   ownerId: string;
+  ownerType: OwnerType;
   requestId: string;
   message: string;
+  reason: string;
 }
 
 export interface Notification {
   id: string;
   type: NotificationType;
   ownerId: string;
+  ownerType: OwnerType;
   requestId: string;
   message: string;
   createdAt: number;
   read: boolean;
+  reason: string;
 }
 
 export interface GetNotificationsByOwnerIdReq {
@@ -150,6 +208,148 @@ export interface NotificationArray {
   notifications: Notification[];
   totalCount: number;
 }
+
+const baseMarkAllAsReadReq: object = { ownerId: "" };
+
+export const MarkAllAsReadReq = {
+  encode(
+    message: MarkAllAsReadReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.ownerId !== "") {
+      writer.uint32(10).string(message.ownerId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MarkAllAsReadReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMarkAllAsReadReq } as MarkAllAsReadReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.ownerId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MarkAllAsReadReq {
+    const message = { ...baseMarkAllAsReadReq } as MarkAllAsReadReq;
+    if (object.ownerId !== undefined && object.ownerId !== null) {
+      message.ownerId = String(object.ownerId);
+    } else {
+      message.ownerId = "";
+    }
+    return message;
+  },
+
+  toJSON(message: MarkAllAsReadReq): unknown {
+    const obj: any = {};
+    message.ownerId !== undefined && (obj.ownerId = message.ownerId);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MarkAllAsReadReq>): MarkAllAsReadReq {
+    const message = { ...baseMarkAllAsReadReq } as MarkAllAsReadReq;
+    if (object.ownerId !== undefined && object.ownerId !== null) {
+      message.ownerId = object.ownerId;
+    } else {
+      message.ownerId = "";
+    }
+    return message;
+  },
+};
+
+const baseCreateNotificationsReq: object = { type: 0 };
+
+export const CreateNotificationsReq = {
+  encode(
+    message: CreateNotificationsReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.type !== 0) {
+      writer.uint32(8).int32(message.type);
+    }
+    if (message.request !== undefined) {
+      Request.encode(message.request, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): CreateNotificationsReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseCreateNotificationsReq } as CreateNotificationsReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.type = reader.int32() as any;
+          break;
+        case 2:
+          message.request = Request.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CreateNotificationsReq {
+    const message = { ...baseCreateNotificationsReq } as CreateNotificationsReq;
+    if (object.type !== undefined && object.type !== null) {
+      message.type = notificationTypeFromJSON(object.type);
+    } else {
+      message.type = 0;
+    }
+    if (object.request !== undefined && object.request !== null) {
+      message.request = Request.fromJSON(object.request);
+    } else {
+      message.request = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: CreateNotificationsReq): unknown {
+    const obj: any = {};
+    message.type !== undefined &&
+      (obj.type = notificationTypeToJSON(message.type));
+    message.request !== undefined &&
+      (obj.request = message.request
+        ? Request.toJSON(message.request)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<CreateNotificationsReq>
+  ): CreateNotificationsReq {
+    const message = { ...baseCreateNotificationsReq } as CreateNotificationsReq;
+    if (object.type !== undefined && object.type !== null) {
+      message.type = object.type;
+    } else {
+      message.type = 0;
+    }
+    if (object.request !== undefined && object.request !== null) {
+      message.request = Request.fromPartial(object.request);
+    } else {
+      message.request = undefined;
+    }
+    return message;
+  },
+};
 
 const baseSuccessMessage: object = { success: false };
 
@@ -280,16 +480,18 @@ export const NotificationIdArray = {
   },
 };
 
-const baseCreateNotificationReq: object = {
+const baseCreateCustomNotificationReq: object = {
   type: 0,
   ownerId: "",
+  ownerType: 0,
   requestId: "",
   message: "",
+  reason: "",
 };
 
-export const CreateNotificationReq = {
+export const CreateCustomNotificationReq = {
   encode(
-    message: CreateNotificationReq,
+    message: CreateCustomNotificationReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.type !== 0) {
@@ -298,11 +500,17 @@ export const CreateNotificationReq = {
     if (message.ownerId !== "") {
       writer.uint32(18).string(message.ownerId);
     }
+    if (message.ownerType !== 0) {
+      writer.uint32(24).int32(message.ownerType);
+    }
     if (message.requestId !== "") {
-      writer.uint32(26).string(message.requestId);
+      writer.uint32(34).string(message.requestId);
     }
     if (message.message !== "") {
-      writer.uint32(34).string(message.message);
+      writer.uint32(42).string(message.message);
+    }
+    if (message.reason !== "") {
+      writer.uint32(50).string(message.reason);
     }
     return writer;
   },
@@ -310,10 +518,12 @@ export const CreateNotificationReq = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): CreateNotificationReq {
+  ): CreateCustomNotificationReq {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseCreateNotificationReq } as CreateNotificationReq;
+    const message = {
+      ...baseCreateCustomNotificationReq,
+    } as CreateCustomNotificationReq;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -324,10 +534,16 @@ export const CreateNotificationReq = {
           message.ownerId = reader.string();
           break;
         case 3:
-          message.requestId = reader.string();
+          message.ownerType = reader.int32() as any;
           break;
         case 4:
+          message.requestId = reader.string();
+          break;
+        case 5:
           message.message = reader.string();
+          break;
+        case 6:
+          message.reason = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -337,8 +553,10 @@ export const CreateNotificationReq = {
     return message;
   },
 
-  fromJSON(object: any): CreateNotificationReq {
-    const message = { ...baseCreateNotificationReq } as CreateNotificationReq;
+  fromJSON(object: any): CreateCustomNotificationReq {
+    const message = {
+      ...baseCreateCustomNotificationReq,
+    } as CreateCustomNotificationReq;
     if (object.type !== undefined && object.type !== null) {
       message.type = notificationTypeFromJSON(object.type);
     } else {
@@ -348,6 +566,11 @@ export const CreateNotificationReq = {
       message.ownerId = String(object.ownerId);
     } else {
       message.ownerId = "";
+    }
+    if (object.ownerType !== undefined && object.ownerType !== null) {
+      message.ownerType = ownerTypeFromJSON(object.ownerType);
+    } else {
+      message.ownerType = 0;
     }
     if (object.requestId !== undefined && object.requestId !== null) {
       message.requestId = String(object.requestId);
@@ -359,23 +582,33 @@ export const CreateNotificationReq = {
     } else {
       message.message = "";
     }
+    if (object.reason !== undefined && object.reason !== null) {
+      message.reason = String(object.reason);
+    } else {
+      message.reason = "";
+    }
     return message;
   },
 
-  toJSON(message: CreateNotificationReq): unknown {
+  toJSON(message: CreateCustomNotificationReq): unknown {
     const obj: any = {};
     message.type !== undefined &&
       (obj.type = notificationTypeToJSON(message.type));
     message.ownerId !== undefined && (obj.ownerId = message.ownerId);
+    message.ownerType !== undefined &&
+      (obj.ownerType = ownerTypeToJSON(message.ownerType));
     message.requestId !== undefined && (obj.requestId = message.requestId);
     message.message !== undefined && (obj.message = message.message);
+    message.reason !== undefined && (obj.reason = message.reason);
     return obj;
   },
 
   fromPartial(
-    object: DeepPartial<CreateNotificationReq>
-  ): CreateNotificationReq {
-    const message = { ...baseCreateNotificationReq } as CreateNotificationReq;
+    object: DeepPartial<CreateCustomNotificationReq>
+  ): CreateCustomNotificationReq {
+    const message = {
+      ...baseCreateCustomNotificationReq,
+    } as CreateCustomNotificationReq;
     if (object.type !== undefined && object.type !== null) {
       message.type = object.type;
     } else {
@@ -385,6 +618,11 @@ export const CreateNotificationReq = {
       message.ownerId = object.ownerId;
     } else {
       message.ownerId = "";
+    }
+    if (object.ownerType !== undefined && object.ownerType !== null) {
+      message.ownerType = object.ownerType;
+    } else {
+      message.ownerType = 0;
     }
     if (object.requestId !== undefined && object.requestId !== null) {
       message.requestId = object.requestId;
@@ -396,6 +634,11 @@ export const CreateNotificationReq = {
     } else {
       message.message = "";
     }
+    if (object.reason !== undefined && object.reason !== null) {
+      message.reason = object.reason;
+    } else {
+      message.reason = "";
+    }
     return message;
   },
 };
@@ -404,10 +647,12 @@ const baseNotification: object = {
   id: "",
   type: 0,
   ownerId: "",
+  ownerType: 0,
   requestId: "",
   message: "",
   createdAt: 0,
   read: false,
+  reason: "",
 };
 
 export const Notification = {
@@ -424,17 +669,23 @@ export const Notification = {
     if (message.ownerId !== "") {
       writer.uint32(26).string(message.ownerId);
     }
+    if (message.ownerType !== 0) {
+      writer.uint32(32).int32(message.ownerType);
+    }
     if (message.requestId !== "") {
-      writer.uint32(34).string(message.requestId);
+      writer.uint32(42).string(message.requestId);
     }
     if (message.message !== "") {
-      writer.uint32(42).string(message.message);
+      writer.uint32(50).string(message.message);
     }
     if (message.createdAt !== 0) {
-      writer.uint32(48).int64(message.createdAt);
+      writer.uint32(56).int64(message.createdAt);
     }
     if (message.read === true) {
-      writer.uint32(56).bool(message.read);
+      writer.uint32(64).bool(message.read);
+    }
+    if (message.reason !== "") {
+      writer.uint32(74).string(message.reason);
     }
     return writer;
   },
@@ -456,16 +707,22 @@ export const Notification = {
           message.ownerId = reader.string();
           break;
         case 4:
-          message.requestId = reader.string();
+          message.ownerType = reader.int32() as any;
           break;
         case 5:
-          message.message = reader.string();
+          message.requestId = reader.string();
           break;
         case 6:
-          message.createdAt = longToNumber(reader.int64() as Long);
+          message.message = reader.string();
           break;
         case 7:
+          message.createdAt = longToNumber(reader.int64() as Long);
+          break;
+        case 8:
           message.read = reader.bool();
+          break;
+        case 9:
+          message.reason = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -492,6 +749,11 @@ export const Notification = {
     } else {
       message.ownerId = "";
     }
+    if (object.ownerType !== undefined && object.ownerType !== null) {
+      message.ownerType = ownerTypeFromJSON(object.ownerType);
+    } else {
+      message.ownerType = 0;
+    }
     if (object.requestId !== undefined && object.requestId !== null) {
       message.requestId = String(object.requestId);
     } else {
@@ -512,6 +774,11 @@ export const Notification = {
     } else {
       message.read = false;
     }
+    if (object.reason !== undefined && object.reason !== null) {
+      message.reason = String(object.reason);
+    } else {
+      message.reason = "";
+    }
     return message;
   },
 
@@ -521,10 +788,13 @@ export const Notification = {
     message.type !== undefined &&
       (obj.type = notificationTypeToJSON(message.type));
     message.ownerId !== undefined && (obj.ownerId = message.ownerId);
+    message.ownerType !== undefined &&
+      (obj.ownerType = ownerTypeToJSON(message.ownerType));
     message.requestId !== undefined && (obj.requestId = message.requestId);
     message.message !== undefined && (obj.message = message.message);
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
     message.read !== undefined && (obj.read = message.read);
+    message.reason !== undefined && (obj.reason = message.reason);
     return obj;
   },
 
@@ -545,6 +815,11 @@ export const Notification = {
     } else {
       message.ownerId = "";
     }
+    if (object.ownerType !== undefined && object.ownerType !== null) {
+      message.ownerType = object.ownerType;
+    } else {
+      message.ownerType = 0;
+    }
     if (object.requestId !== undefined && object.requestId !== null) {
       message.requestId = object.requestId;
     } else {
@@ -564,6 +839,11 @@ export const Notification = {
       message.read = object.read;
     } else {
       message.read = false;
+    }
+    if (object.reason !== undefined && object.reason !== null) {
+      message.reason = object.reason;
+    } else {
+      message.reason = "";
     }
     return message;
   },
@@ -781,26 +1061,36 @@ export const NotificationArray = {
 };
 
 export interface NotificationService {
-  CreateNotification(request: CreateNotificationReq): Promise<Notification>;
+  CreateCustomNotification(
+    request: CreateCustomNotificationReq
+  ): Promise<Notification>;
   GetNotificationsByOwnerId(
     request: GetNotificationsByOwnerIdReq
   ): Promise<NotificationArray>;
   MarkAsRead(request: NotificationIdArray): Promise<SuccessMessage>;
+  MarkAllAsRead(request: MarkAllAsReadReq): Promise<SuccessMessage>;
+  CreateNotifications(
+    request: CreateNotificationsReq
+  ): Promise<NotificationArray>;
 }
 
 export class NotificationServiceClientImpl implements NotificationService {
   private readonly rpc: Rpc;
   constructor(rpc: Rpc) {
     this.rpc = rpc;
-    this.CreateNotification = this.CreateNotification.bind(this);
+    this.CreateCustomNotification = this.CreateCustomNotification.bind(this);
     this.GetNotificationsByOwnerId = this.GetNotificationsByOwnerId.bind(this);
     this.MarkAsRead = this.MarkAsRead.bind(this);
+    this.MarkAllAsRead = this.MarkAllAsRead.bind(this);
+    this.CreateNotifications = this.CreateNotifications.bind(this);
   }
-  CreateNotification(request: CreateNotificationReq): Promise<Notification> {
-    const data = CreateNotificationReq.encode(request).finish();
+  CreateCustomNotification(
+    request: CreateCustomNotificationReq
+  ): Promise<Notification> {
+    const data = CreateCustomNotificationReq.encode(request).finish();
     const promise = this.rpc.request(
       "NotificationService.NotificationService",
-      "CreateNotification",
+      "CreateCustomNotification",
       data
     );
     return promise.then((data) => Notification.decode(new _m0.Reader(data)));
@@ -828,6 +1118,30 @@ export class NotificationServiceClientImpl implements NotificationService {
       data
     );
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
+  }
+
+  MarkAllAsRead(request: MarkAllAsReadReq): Promise<SuccessMessage> {
+    const data = MarkAllAsReadReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "NotificationService.NotificationService",
+      "MarkAllAsRead",
+      data
+    );
+    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
+  }
+
+  CreateNotifications(
+    request: CreateNotificationsReq
+  ): Promise<NotificationArray> {
+    const data = CreateNotificationsReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "NotificationService.NotificationService",
+      "CreateNotifications",
+      data
+    );
+    return promise.then((data) =>
+      NotificationArray.decode(new _m0.Reader(data))
+    );
   }
 }
 

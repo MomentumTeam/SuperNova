@@ -101,17 +101,17 @@ services:
       - PS_RS_URL=request-service:8080
       - PS_DEV_MODE=true
 
-  notification-service:
-    image: notification-service
-    build:
-      context: .
-      dockerfile: ./notification-service/Dockerfile
-    env_file:
-      - ./supernova.env
-    ports:
-      - '8084:8080'
-    environment:
-      - NS_MONGO_URL=mongodb://mongodb:27017/supernova
+  # notification-service:
+  #   image: notification-service
+  #   build:
+  #     context: .
+  #     dockerfile: ./notification-service/Dockerfile
+  #   env_file:
+  #     - ./supernova.env
+  #   ports:
+  #     - '8084:8080'
+  #   environment:
+  #     - NS_MONGO_URL=mongodb://mongodb:27017/supernova
 
   approver-service:
     image: approver-service

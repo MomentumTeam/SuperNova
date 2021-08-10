@@ -23,30 +23,23 @@ service RequestService {
     rpc GetRequestBySerialNumber(GetRequestBySerialNumberReq) returns (Request){}
     rpc GetAllRequests(GetAllRequestsReq) returns (RequestArray){}
     rpc GetRequestById(GetRequestByIdReq) returns (Request) {}
-
     rpc GetRequestsBySubmitterIdentifier(GetRequestsByIdentifierReq) returns (RequestArray) {}
     rpc GetRequestsByCommanderIdentifier(GetRequestsByIdentifierReq) returns (RequestArray) {}
     rpc GetRequestsBySecurityIdentifier(GetRequestsByIdentifierReq) returns (RequestArray) {}
     rpc GetRequestsByApproverIdentifier(GetRequestsByIdentifierReq) returns (RequestArray) {}
-
     rpc SearchRequestsBySubmitterDisplayName(SearchRequestsByDisplayNameReq) returns (RequestArray) {}
     rpc SearchRequestsByCommanderDisplayName(SearchRequestsByDisplayNameReq) returns (RequestArray) {}
     rpc SearchRequestsBySecurityDisplayName(SearchRequestsByDisplayNameReq) returns (RequestArray) {}
     rpc SearchRequestsByApproverDisplayName(SearchRequestsByDisplayNameReq) returns (RequestArray) {}
-
     rpc CanPushToKartoffelQueue(CanPushToQueueReq) returns (CanPushToQueueRes){}
     rpc CanPushToADQueue(CanPushToQueueReq) returns (CanPushToQueueRes){}
-
     rpc IncrementKartoffelRetries(IncrementRetriesReq) returns (Request){}
     rpc IncrementADRetries(IncrementRetriesReq) returns (Request){}
-
     rpc UpdateCommanderDecision(UpdateDecisionReq) returns (Request) {}
     rpc UpdateSecurityDecision(UpdateDecisionReq) returns (Request) {}
     rpc UpdateSuperSecurityDecision(UpdateDecisionReq) returns (Request) {}
-
     rpc GetRequestsInProgressByDue(GetRequestsInProgressByDueReq) returns (RequestArray){}
     rpc GetRequestIdsInProgressByDue(GetRequestsInProgressByDueReq) returns (RequestIdArray){}
-
     rpc UpdateCommanders(UpdateApproversReq) returns (Request){}
     rpc UpdateSecurityApprovers(UpdateApproversReq) returns (Request){}
 }
@@ -140,9 +133,11 @@ enum RequestType {
 enum RequestStatus{
     SUBMITTED = 0;
     DECLINED = 1;
-    IN_PROGRESS = 2;
-    DONE = 3;
-    FAILED = 4;
+    APPROVED_BY_COMMANDER = 2;
+    APPROVED_BY_SECURITY = 3;
+    IN_PROGRESS = 4;
+    DONE = 5;
+    FAILED = 6;
 }
 
 enum StageStatus{

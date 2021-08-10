@@ -4,6 +4,7 @@ import {
   CanPushToQueueRes,
   Decision,
   decisionFromJSON,
+  decisionToJSON,
   DeleteReq,
   GetAllRequestsReq,
   GetRequestByIdReq,
@@ -22,22 +23,23 @@ import {
   SearchRequestsByDisplayNameReq,
   StageStatus,
   stageStatusFromJSON,
+  stageStatusToJSON,
   SuccessMessage,
   UpdateADStatusReq,
   UpdateApproversReq,
   UpdateDecisionReq,
   UpdateKartoffelStatusReq,
 } from '../interfaces/protoc/proto/requestService';
+import { createNotifications } from '../services/notificationHelper';
 import * as C from '../config';
 import { RequestModel } from '../models/request.model';
 import {
   cleanUnderscoreFields,
   turnObjectIdsToStrings,
 } from '../services/requestHelper';
-import NotificationService from '../services/notificationService';
 import {
-  CreateNotificationReq,
   NotificationType,
+  OwnerType,
 } from '../interfaces/protoc/proto/notificationService';
 
 export class RequestRepository {
@@ -111,6 +113,39 @@ export class RequestRepository {
       updateQuery.requestProperties[approverField] =
         updateDecisionReq.approverDecision;
       const updatedRequest = await this.updateRequest(updateQuery);
+      let approvingNotificationType: any = undefined,
+        notificationType: any = undefined;
+      if (
+        updateDecisionReq.approverDecision?.decision.toString() ===
+        decisionToJSON(Decision.APPROVED)
+      ) {
+        if (personType === PersonTypeInRequest.COMMANDER) {
+          approvingNotificationType = NotificationType.REQUEST_APPROVED_1;
+        } else if (personType === PersonTypeInRequest.SECURITY_APPROVER) {
+          approvingNotificationType = NotificationType.REQUEST_APPROVED_2;
+        } else {
+          approvingNotificationType = NotificationType.REQUEST_APPROVED_3;
+          notificationType = NotificationType.REQUEST_IN_PROGRESS;
+        }
+      } else if (
+        updateDecisionReq.approverDecision?.decision.toString() ===
+        decisionToJSON(Decision.DENIED)
+      ) {
+        notificationType = NotificationType.REQUEST_DECLINED;
+        if (personType === PersonTypeInRequest.COMMANDER) {
+          approvingNotificationType = NotificationType.REQUEST_DECLINED_1;
+        } else if (personType === PersonTypeInRequest.SECURITY_APPROVER) {
+          approvingNotificationType = NotificationType.REQUEST_DECLINED_2;
+        } else {
+          approvingNotificationType = NotificationType.REQUEST_DECLINED_3;
+        }
+      }
+      if (approvingNotificationType) {
+        await createNotifications(approvingNotificationType, updatedRequest);
+        if (notificationType) {
+          await createNotifications(notificationType, updatedRequest);
+        }
+      }
       return updatedRequest;
     } catch (error) {
       throw error;
@@ -680,15 +715,28 @@ export class RequestRepository {
         },
       };
       updatedRequest = await this.updateRequest(requestUpdate);
+      if (
+        (updateKartoffelStatusReq.status.toString() ===
+          stageStatusToJSON(StageStatus.STAGE_DONE) ||
+          updateKartoffelStatusReq.status.toString() ===
+            stageStatusToJSON(StageStatus.STAGE_FAILED)) &&
+        updatedRequest.submittedBy
+      ) {
+        const stageNotificationType: NotificationType =
+          updateKartoffelStatusReq.status === StageStatus.STAGE_DONE
+            ? NotificationType.KARTOFFEL_STAGE_DONE
+            : NotificationType.KARTOFFEL_STAGE_FAILED;
+        await createNotifications(stageNotificationType, updatedRequest);
+        const notificationType: NotificationType =
+          updateKartoffelStatusReq.status === StageStatus.STAGE_DONE
+            ? NotificationType.REQUEST_DONE
+            : NotificationType.REQUEST_FAILED;
+        await createNotifications(notificationType, updatedRequest);
+      }
+      return updatedRequest;
     } catch (error) {
       throw error;
     }
-    // let createNotificationReq: CreateNotificationReq = {type: NotificationType.};
-    // if (updateKartoffelStatusReq.status === StageStatus.STAGE_DONE) {
-    //   await NotificationService.createNotification();
-    // } else if (updateKartoffelStatusReq.status === StageStatus.STAGE_FAILED) {
-    // }
-    return updatedRequest;
   }
 
   async updateADStatus(updateADStatusReq: UpdateADStatusReq): Promise<Request> {
@@ -703,12 +751,34 @@ export class RequestRepository {
           },
         },
       };
-      if (updateADStatusReq.status === StageStatus.STAGE_FAILED) {
+      if (
+        updateADStatusReq.status.toString() ===
+        stageStatusToJSON(StageStatus.STAGE_FAILED)
+      ) {
         requestUpdate.requestProperties.status = requestStatusToJSON(
           RequestStatus.FAILED
         );
       }
-      return await this.updateRequest(requestUpdate);
+      const updatedRequest = await this.updateRequest(requestUpdate);
+      if (
+        (updateADStatusReq.status.toString() ===
+          stageStatusToJSON(StageStatus.STAGE_DONE) ||
+          updateADStatusReq.status.toString() ===
+            stageStatusToJSON(StageStatus.STAGE_FAILED)) &&
+        updatedRequest.submittedBy
+      ) {
+        const stageNotificationType: NotificationType =
+          updateADStatusReq.status === StageStatus.STAGE_DONE
+            ? NotificationType.AD_STAGE_DONE
+            : NotificationType.AD_STAGE_FAILED;
+        await createNotifications(stageNotificationType, updatedRequest);
+        const notificationType: NotificationType =
+          updateADStatusReq.status === StageStatus.STAGE_DONE
+            ? NotificationType.REQUEST_DONE
+            : NotificationType.REQUEST_FAILED;
+        await createNotifications(notificationType, updatedRequest);
+      }
+      return updatedRequest;
     } catch (error) {
       throw error;
     }
@@ -722,10 +792,10 @@ export class RequestRepository {
       const request: any = new RequestModel(createRequestReq);
       request.type = requestTypeToJSON(type);
       request.createdAt = new Date().getTime();
-
       const createdCreateRequest = await request.save();
       const document = createdCreateRequest.toObject();
       turnObjectIdsToStrings(document);
+      await createNotifications(NotificationType.REQUEST_SUBMITTED, document);
       return document as Request;
     } catch (error) {
       throw error;
