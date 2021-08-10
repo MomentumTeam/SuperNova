@@ -1,25 +1,26 @@
 import { Server } from './server';
+import { logger } from './logger';
 
 process.on('uncaughtException', (err) => {
-    console.error('Unhandled Exception', err.stack);
-    process.exit(1);
+  logger.error('Unhandled Exception in Auth-service', err.stack);
+  process.exit(1);
 });
 
 process.on('unhandledRejection', (err) => {
-    console.error('Unhandled Rejection', err);
-    process.exit(1);
+  logger.error('Unhandled Rejection in Auth-service', err);
+  process.exit(1);
 });
 
 process.on('SIGINT', async () => {
-    console.log('User Termination');
-    process.exit(0);
+  logger.info('User Termination in Auth-service');
+  process.exit(0);
 });
 
 (async () => {
-    console.log('Starting server');
-    const server: Server = Server.bootstrap();
+  logger.info(`Starting Auth-service server`);
+  const server: Server = Server.bootstrap();
 
-    server.app.on('close', () => {
-        console.log('Server closed');
-    });
+  server.app.on('close', () => {
+    logger.info('Auth-service Server closed');
+  });
 })();

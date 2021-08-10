@@ -44,7 +44,7 @@ export class Server {
 
   listen() {
     this.server.listen(config.port, () => {
-      logger.error(`Api-Gateway Server running on port ${config.port}`);
+      logger.info(`Api-Gateway Server running on port ${config.port}`);
     });
   }
 }
