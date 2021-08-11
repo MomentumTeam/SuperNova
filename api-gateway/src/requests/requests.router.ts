@@ -52,15 +52,7 @@ RequestsRouter.delete('/deleteOGRequest', RequestsController.deleteOGRequest);
 
 //TODO(barak)- in requestService make one generic function for updateApproverDecision.
 RequestsRouter.put(
-  '/updateCommanderDecision/:id',
-  RequestsController.updateApproverDecision
-);
-RequestsRouter.put(
-  '/updateSecurityDecision/:id',
-  RequestsController.updateApproverDecision
-);
-RequestsRouter.put(
-  '/updateSuperSecurityDecision/:id',
+  '/updateApproverDecision/:id',
   RequestsController.updateApproverDecision
 );
 
