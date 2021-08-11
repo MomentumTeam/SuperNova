@@ -30,52 +30,54 @@ const producerClient: any = new protoDescriptor.Producer(
 );
 
 export default class ProducerController {
-  static async produceToKartoffelQueue(req: Request, res: Response) {
+  static async produceToKartoffelQueue(requestId: string) {
     logger.info(`Call to produceToKartoffelQueue in GTW`, {
-      callRequest: { id: req.body.id },
+      callRequest: { id: requestId },
     });
 
-    producerClient.ProduceToKartoffelQueue(
-      { id: req.body.id },
-      (err: any, response: SuccessMessage) => {
-        if (err) {
-          logger.error(`produceToKartoffelQueue ERROR in GTW`, {
-            err,
-            callRequest: { id: req.body.id },
-          });
-          res.send(null);
-        }
+    return new Promise((resolve, reject) => {
+      producerClient.ProduceToKartoffelQueue(
+        { id: requestId },
+        (err: any, response: SuccessMessage) => {
+          if (err) {
+            logger.error(`produceToKartoffelQueue ERROR in GTW`, {
+              err,
+              callRequest: { id: requestId },
+            });
+            resolve(null);
+          }
 
-        logger.info(`produceToKartoffelQueue OK in GTW`, {
-          response: response,
-          callRequest: { id: req.body.id },
-        });
-        res.send(response);
-      }
-    );
+          logger.info(`produceToKartoffelQueue OK in GTW`, {
+            response: response,
+            callRequest: { id: requestId },
+          });
+          resolve(response);
+        }
+      );
+    });
   }
 
-  static async produceToADQueue(req: Request, res: Response) {
+  static async produceToADQueue(requestId: string) {
     logger.info(`Call to produceToADQueue in GTW`, {
-      callRequest: { id: req.body.id },
+      callRequest: { id: requestId },
     });
 
     producerClient.ProduceToADQueue(
-      { id: req.body.id },
+      { id: requestId },
       (err: any, response: SuccessMessage) => {
         if (err) {
           logger.error(`produceToADQueue ERROR in GTW`, {
             err,
-            callRequest: { id: req.body.id },
+            callRequest: { id: requestId },
           });
-          res.send(null);
+          // return null;
         }
-        
+
         logger.info(`produceToADQueue OK in GTW`, {
           response: response,
-          callRequest: { id: req.body.id },
+          callRequest: { id: requestId },
         });
-        res.send(response);
+        // return response;
       }
     );
   }

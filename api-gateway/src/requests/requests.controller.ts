@@ -4,14 +4,15 @@ import * as protoLoader from '@grpc/proto-loader';
 import path from 'path';
 import * as config from '../config';
 import { logger } from '../logger';
+import ProducerController from '../producer/producer.controller';
 import {
   UserType,
   userTypeFromJSON,
 } from '../interfaces/protoc/proto/approverService';
+import { SuccessMessage } from '../interfaces/protoc/proto/producerService';
 import {
   Request as RequestS,
   RequestArray,
-  SuccessMessage,
   CreateOGRes,
   CreateRoleRes,
   CreateEntityRes,
@@ -22,6 +23,8 @@ import {
   DeleteRoleRes,
   DisconectRoleFromEntityRes,
   StageStatus,
+  EntityMin,
+  CanPushToQueueRes,
 } from '../interfaces/protoc/proto/requestService';
 
 const PROTO_PATH = __dirname.includes('dist')
@@ -217,39 +220,88 @@ export default class RequestsController {
   }
 
   static async updateADStatus(req: Request, res: Response) {
-    const status: string = req.body.Status;
+    const retry: boolean = req.body.Retry;
+    const status: boolean = req.body.Status;
     let stageStatus: StageStatus = StageStatus.STAGE_IN_PROGRESS;
 
-    if (status === 'true') {
-      stageStatus = StageStatus.STAGE_DONE;
-    } else if (status === 'false') {
-      stageStatus = StageStatus.STAGE_FAILED;
-    }
+    if (retry === false) {
+      if (status === true) {
+        stageStatus = StageStatus.STAGE_DONE;
 
+        const produceRes = (await ProducerController.produceToKartoffelQueue(
+          req.body.RequestID
+        )) as SuccessMessage;
+
+        if (produceRes.success === true) {
+          //if produce was successful update Kartoffel Status
+          await RequestsController.updateKartoffelStatus(req.body.RequestID);
+        }
+      } else if (status === false) {
+        stageStatus = StageStatus.STAGE_FAILED;
+      }
+
+      const data = {
+        requestId: req.body.RequestID,
+        status: stageStatus,
+        message: req.body.ErrorID,
+      };
+
+      logger.info(`Call to updateADStatus in GTW`, {
+        callRequest: data,
+      });
+
+      requestsClient.UpdateADStatus(data, (err: any, response: RequestS) => {
+        if (err) {
+          logger.error(`updateADStatus ERROR in GTW`, {
+            err,
+            callRequest: data,
+          });
+          res.status(500).end(err.message);
+        }
+
+        logger.info(`updateADStatus OK in GTW`, {
+          response: response,
+          callRequest: data,
+        });
+        res.status(200).send();
+      });
+    } else {
+      await ProducerController.produceToADQueue(req.body.RequestID);
+    }
+  }
+
+  static async updateKartoffelStatus(requestId: string) {
     const data = {
-      requestId: req.body.RequestID,
-      status: stageStatus,
-      message: req.body.ErrorID,
+      requestId: requestId,
+      status: StageStatus.STAGE_IN_PROGRESS,
     };
 
-    logger.info(`Call to updateADStatus in GTW`, {
+    logger.info(`Call to updateKartoffelStatus in GTW`, {
       callRequest: data,
     });
 
-    requestsClient.UpdateADStatus(data, (err: any, response: RequestS) => {
-      if (err) {
-        logger.error(`updateADStatus ERROR in GTW`, {
-          err,
-          callRequest: data,
-        });
-        res.status(500).end(err.message);
-      }
+    return new Promise((resolve, reject) => {
+      requestsClient.UpdateKartoffelStatus(
+        {
+          requestId: requestId,
+          status: StageStatus.STAGE_IN_PROGRESS,
+        },
+        (err: any, response: RequestS) => {
+          if (err) {
+            logger.error(`updateKartoffelStatus ERROR in GTW`, {
+              err,
+              callRequest: data,
+            });
+            resolve(err);
+          }
 
-      logger.info(`updateADStatus OK in GTW`, {
-        response: response,
-        callRequest: data,
-      });
-      res.status(200).send();
+          logger.info(`updateKartoffelStatus OK in GTW`, {
+            response: response,
+            callRequest: data,
+          });
+          resolve(response);
+        }
+      );
     });
   }
 
@@ -279,10 +331,129 @@ export default class RequestsController {
     );
   }
 
+  static async updateApproverDecision(req: any, res: Response) {
+    logger.info(`Call to updateApproverDecision in GTW`, {
+      callRequest: { id: req.params.id },
+    });
+    //TODO(barak)- in requestService make one generic function for updateDecision.
+
+    let response;
+
+    switch (userTypeFromJSON(req.userType)) {
+      case UserType.COMMANDER: {
+        response = requestsClient.UpdateCommanderDecision(
+          {
+            id: req.params.id,
+            //TODO- ApproverDecision
+          },
+          (err: any, response: Request) => {
+            if (err) {
+              logger.error(`updateRequest ERROR in GTW`, {
+                err,
+                callRequest: { id: req.params.id },
+              });
+              res.send(err);
+            }
+            return response;
+          }
+        );
+        break;
+      }
+      case UserType.SECURITY: {
+        response = requestsClient.UpdateSecurityDecision(
+          {
+            id: req.params.id,
+            //TODO- ApproverDecision
+          },
+          (err: any, response: Request) => {
+            if (err) {
+              logger.error(`updateRequest ERROR in GTW`, {
+                err,
+                callRequest: { id: req.params.id },
+              });
+              res.send(err);
+            }
+            return response;
+          }
+        );
+        break;
+      }
+      case UserType.SUPER_SECURITY: {
+        response = requestsClient.UpdateSuperSecurityDecision(
+          {
+            id: req.params.id,
+            //TODO- ApproverDecision
+          },
+          (err: any, response: Request) => {
+            if (err) {
+              logger.error(`updateRequest ERROR in GTW`, {
+                err,
+                callRequest: { id: req.params.id },
+              });
+              res.send(err);
+            }
+            return response;
+          }
+        );
+        break;
+      }
+    }
+
+    const canPushToQueueRes = (await RequestsController.canPushToADQueue(
+      req.params.id
+    )) as CanPushToQueueRes;
+
+    if (canPushToQueueRes.canPushToQueue === true) {
+      await ProducerController.produceToADQueue(req.params.id);
+    }
+
+    res.send(response);
+  }
+
+  static async canPushToADQueue(requestId: string) {
+    logger.info(`Call to CanPushToADQueue in GTW`, {
+      callRequest: { id: requestId },
+    });
+
+    return new Promise((resolve, reject) => {
+      requestsClient.CanPushToADQueue(
+        {
+          id: requestId,
+        },
+        (err: any, response: CanPushToQueueRes) => {
+          if (err) {
+            logger.error(`CanPushToADQueue ERROR in GTW`, {
+              err,
+              callRequest: { id: requestId },
+            });
+            resolve({
+              canPushToQueue: false, //defalut in case of an error
+            });
+          }
+
+          logger.info(`CanPushToADQueue OK in GTW`, {
+            response: response,
+            callRequest: { id: requestId },
+          });
+          resolve(response);
+        }
+      );
+    });
+  }
+
   static async renameOGRequest(req: any, res: Response) {
     logger.info(`Call to renameOGRequest in GTW`, {
       callRequest: { submittedBy: req.user.id },
     });
+
+    const submittedBy: EntityMin = {
+      id: req.user.id,
+      displayName: req.user.displayName,
+      identityCard: req.user.identityCard,
+      personalNumber: req.user.personalNumber,
+    };
+
+    req.body.submittedBy = submittedBy;
 
     requestsClient.RenameOGRequest(
       req.body,
@@ -309,6 +480,15 @@ export default class RequestsController {
       callRequest: { submittedBy: req.user.id },
     });
 
+    const submittedBy: EntityMin = {
+      id: req.user.id,
+      displayName: req.user.displayName,
+      identityCard: req.user.identityCard,
+      personalNumber: req.user.personalNumber,
+    };
+
+    req.body.submittedBy = submittedBy;
+
     requestsClient.RenameRoleRequest(
       req.body,
       (err: any, response: EditEntityRes) => {
@@ -333,6 +513,15 @@ export default class RequestsController {
     logger.info(`Call to createOGRequest in GTW`, {
       callRequest: { submittedBy: req.user.id },
     });
+
+    const submittedBy: EntityMin = {
+      id: req.user.id,
+      displayName: req.user.displayName,
+      identityCard: req.user.identityCard,
+      personalNumber: req.user.personalNumber,
+    };
+
+    req.body.submittedBy = submittedBy;
 
     requestsClient.CreateOGRequest(
       req.body,
@@ -359,6 +548,16 @@ export default class RequestsController {
       callRequest: { submittedBy: req.user.id },
     });
 
+    const submittedBy: EntityMin = {
+      id: req.user.id,
+      displayName: req.user.displayName,
+      identityCard: req.user.identityCard,
+      personalNumber: req.user.personalNumber,
+    };
+    console.log('submittedBy', submittedBy);
+
+    req.body.submittedBy = submittedBy;
+
     requestsClient.CreateRoleRequest(
       req.body,
       (err: any, response: CreateRoleRes) => {
@@ -383,6 +582,15 @@ export default class RequestsController {
     logger.info(`Call to createEntityRequest in GTW`, {
       callRequest: { submittedBy: req.user.id },
     });
+
+    const submittedBy: EntityMin = {
+      id: req.user.id,
+      displayName: req.user.displayName,
+      identityCard: req.user.identityCard,
+      personalNumber: req.user.personalNumber,
+    };
+
+    req.body.submittedBy = submittedBy;
 
     requestsClient.CreateEntityRequest(
       req.body,
@@ -409,6 +617,15 @@ export default class RequestsController {
       callRequest: { submittedBy: req.user.id },
     });
 
+    const submittedBy: EntityMin = {
+      id: req.user.id,
+      displayName: req.user.displayName,
+      identityCard: req.user.identityCard,
+      personalNumber: req.user.personalNumber,
+    };
+
+    req.body.submittedBy = submittedBy;
+
     requestsClient.AssignRoleToEntityRequest(
       req.body,
       (err: any, response: AssignRoleToEntityRes) => {
@@ -434,6 +651,15 @@ export default class RequestsController {
       callRequest: { submittedBy: req.user.id },
     });
 
+    const submittedBy: EntityMin = {
+      id: req.user.id,
+      displayName: req.user.displayName,
+      identityCard: req.user.identityCard,
+      personalNumber: req.user.personalNumber,
+    };
+
+    req.body.submittedBy = submittedBy;
+
     requestsClient.EditEntityRequest(
       req.body,
       (err: any, response: EditEntityRes) => {
@@ -458,6 +684,15 @@ export default class RequestsController {
     logger.info(`Call to disconectRoleFromEntityRequest in GTW`, {
       callRequest: { submittedBy: req.user.id },
     });
+
+    const submittedBy: EntityMin = {
+      id: req.user.id,
+      displayName: req.user.displayName,
+      identityCard: req.user.identityCard,
+      personalNumber: req.user.personalNumber,
+    };
+
+    req.body.submittedBy = submittedBy;
 
     requestsClient.DisconectRoleFromEntityRequest(
       req.body,

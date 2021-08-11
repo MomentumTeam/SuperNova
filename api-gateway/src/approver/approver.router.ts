@@ -9,7 +9,7 @@ ApproverRouter.post('/addSecurityApprover', ApproverController.AddSecurityApprov
 
 ApproverRouter.post('/addSuperSecurityApprover', ApproverController.AddSuperSecurityApprover);
 
-ApproverRouter.get('/getUserType', ApproverController.GetUserType);
+ApproverRouter.get('/getUserType/:id', ApproverController.GetUserType);
 
 ApproverRouter.get('/searchApproverByDisplayName', ApproverController.SearchApproverByDisplayName);
 

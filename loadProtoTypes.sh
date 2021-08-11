@@ -9,3 +9,7 @@ protoc --plugin=./producer-service/node_modules/.bin/protoc-gen-ts_proto --ts_pr
 protoc --plugin=./request-service/node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./request-service/src/interfaces/protoc ./proto/*.proto --experimental_allow_proto3_optional --ts_proto_opt=esModuleInterop=true
 
 protoc --plugin=./api-gateway/node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./api-gateway/src/interfaces/protoc ./proto/*.proto --experimental_allow_proto3_optional --ts_proto_opt=esModuleInterop=true
+
+protoc --plugin=./whiteListSync-script/node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./whiteListSync-script/src/interfaces/protoc ./proto/*.proto --experimental_allow_proto3_optional --ts_proto_opt=esModuleInterop=true
+
+protoc --plugin=./execution-script/node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./execution-script/src/interfaces/protoc ./proto/*.proto --experimental_allow_proto3_optional --ts_proto_opt=esModuleInterop=true

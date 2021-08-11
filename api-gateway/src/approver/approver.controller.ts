@@ -116,7 +116,7 @@ export default class ApproverController {
     });
 
     approverClient.GetUserType(
-      { entityId: req.query.id },
+      { entityId: req.params.id },
       (err: any, response: GetUserTypeRes) => {
         if (err) {
           logger.error(`GetUserType ERROR in GTW`, {

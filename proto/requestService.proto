@@ -6,7 +6,7 @@ service RequestService {
     rpc CreateRoleRequest(CreateRoleReq) returns (CreateRoleRes) {} //יצירת תפקיד
     rpc AssignRoleToEntityRequest(AssignRoleToEntityReq) returns (AssignRoleToEntityRes) {} //הוספת משתמש
     rpc CreateOGRequest(CreateOGReq) returns (CreateOGRes) {} //יצירת היררכיה
-    rpc CreateApproverRequest(CreateApproverReq) returns (CreateApproverRes) {} //גורם מאשר
+    rpc CreateNewApproverRequest(CreateNewApproverReq) returns (CreateNewApproverRes) {} //גורם מאשר
     rpc CreateEntityRequest(CreateEntityReq) returns (CreateEntityRes){} //יצירת יישות
     rpc RenameOGRequest(RenameOGReq) returns (RenameOGRes) {}
     rpc RenameRoleRequest(RenameRoleReq) returns (EditEntityRes) {}
@@ -91,7 +91,7 @@ message SearchRequestsByDisplayNameReq{
 message UpdateKartoffelStatusReq{
     string requestId = 1;
     StageStatus status = 2;
-    string message = 3;
+    optional string message = 3;
     optional string createdId = 4;
 }
 
@@ -223,8 +223,8 @@ message UpdateReqProperties{
 
 //Request messages
 
-//ApproverRequest
-message CreateApproverReq{
+//NewApproverRequest
+message CreateNewApproverReq{
     EntityMin submittedBy = 1;
     RequestStatus status = 2;
     ApproverDecision commanderDecision = 3;
@@ -238,7 +238,7 @@ message CreateApproverReq{
     optional int64 due = 11;
 }
 
-message CreateApproverRes{
+message CreateNewApproverRes{
     EntityMin submittedBy = 1;
     RequestStatus status = 2;
     ApproverDecision commanderDecision = 3;
