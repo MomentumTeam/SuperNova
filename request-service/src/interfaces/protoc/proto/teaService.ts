@@ -38,29 +38,30 @@ export function networkToJSON(object: Network): string {
 }
 
 export interface UpdateUnitReq {
-  unitId: string;
+  kartoffelId: string;
   unitProperties: UnitProperties | undefined;
 }
 
 export interface DeleteUnitReq {
-  unitId: string;
+  kartoffelId: string;
 }
 
 export interface GetUnitReq {
-  unitId: string;
+  kartoffelId: string;
 }
 
 export interface Unit {
-  unitId: string;
+  kartoffelId: string;
   name: string;
   prefix: string;
-  currentCounter: string;
+  currentCounter: number;
   teaInProgress: string[];
   failedTea: string[];
+  createdAt: number;
 }
 
 export interface UnitProperties {
-  unitId?: string | undefined;
+  kartoffelId?: string | undefined;
   name?: string | undefined;
   prefix?: string | undefined;
   currentCounter?: string | undefined;
@@ -77,13 +78,13 @@ export interface SuccessMessage {
 }
 
 export interface RetrieveTeaAndUPNByEntityReq {
-  unitId: string;
+  kartoffelId: string;
   network: Network;
   entity: Entity | undefined;
 }
 
 export interface RetrieveTeaAndUPNByEntityIdReq {
-  unitId: string;
+  kartoffelId: string;
   network: Network;
   entityId: string;
 }
@@ -93,15 +94,15 @@ export interface TeaAndUPN {
   upn: string;
 }
 
-const baseUpdateUnitReq: object = { unitId: "" };
+const baseUpdateUnitReq: object = { kartoffelId: "" };
 
 export const UpdateUnitReq = {
   encode(
     message: UpdateUnitReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.unitId !== "") {
-      writer.uint32(10).string(message.unitId);
+    if (message.kartoffelId !== "") {
+      writer.uint32(10).string(message.kartoffelId);
     }
     if (message.unitProperties !== undefined) {
       UnitProperties.encode(
@@ -120,7 +121,7 @@ export const UpdateUnitReq = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.unitId = reader.string();
+          message.kartoffelId = reader.string();
           break;
         case 2:
           message.unitProperties = UnitProperties.decode(
@@ -138,10 +139,10 @@ export const UpdateUnitReq = {
 
   fromJSON(object: any): UpdateUnitReq {
     const message = { ...baseUpdateUnitReq } as UpdateUnitReq;
-    if (object.unitId !== undefined && object.unitId !== null) {
-      message.unitId = String(object.unitId);
+    if (object.kartoffelId !== undefined && object.kartoffelId !== null) {
+      message.kartoffelId = String(object.kartoffelId);
     } else {
-      message.unitId = "";
+      message.kartoffelId = "";
     }
     if (object.unitProperties !== undefined && object.unitProperties !== null) {
       message.unitProperties = UnitProperties.fromJSON(object.unitProperties);
@@ -153,7 +154,8 @@ export const UpdateUnitReq = {
 
   toJSON(message: UpdateUnitReq): unknown {
     const obj: any = {};
-    message.unitId !== undefined && (obj.unitId = message.unitId);
+    message.kartoffelId !== undefined &&
+      (obj.kartoffelId = message.kartoffelId);
     message.unitProperties !== undefined &&
       (obj.unitProperties = message.unitProperties
         ? UnitProperties.toJSON(message.unitProperties)
@@ -163,10 +165,10 @@ export const UpdateUnitReq = {
 
   fromPartial(object: DeepPartial<UpdateUnitReq>): UpdateUnitReq {
     const message = { ...baseUpdateUnitReq } as UpdateUnitReq;
-    if (object.unitId !== undefined && object.unitId !== null) {
-      message.unitId = object.unitId;
+    if (object.kartoffelId !== undefined && object.kartoffelId !== null) {
+      message.kartoffelId = object.kartoffelId;
     } else {
-      message.unitId = "";
+      message.kartoffelId = "";
     }
     if (object.unitProperties !== undefined && object.unitProperties !== null) {
       message.unitProperties = UnitProperties.fromPartial(
@@ -179,15 +181,15 @@ export const UpdateUnitReq = {
   },
 };
 
-const baseDeleteUnitReq: object = { unitId: "" };
+const baseDeleteUnitReq: object = { kartoffelId: "" };
 
 export const DeleteUnitReq = {
   encode(
     message: DeleteUnitReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.unitId !== "") {
-      writer.uint32(10).string(message.unitId);
+    if (message.kartoffelId !== "") {
+      writer.uint32(10).string(message.kartoffelId);
     }
     return writer;
   },
@@ -200,7 +202,7 @@ export const DeleteUnitReq = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.unitId = reader.string();
+          message.kartoffelId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -212,40 +214,41 @@ export const DeleteUnitReq = {
 
   fromJSON(object: any): DeleteUnitReq {
     const message = { ...baseDeleteUnitReq } as DeleteUnitReq;
-    if (object.unitId !== undefined && object.unitId !== null) {
-      message.unitId = String(object.unitId);
+    if (object.kartoffelId !== undefined && object.kartoffelId !== null) {
+      message.kartoffelId = String(object.kartoffelId);
     } else {
-      message.unitId = "";
+      message.kartoffelId = "";
     }
     return message;
   },
 
   toJSON(message: DeleteUnitReq): unknown {
     const obj: any = {};
-    message.unitId !== undefined && (obj.unitId = message.unitId);
+    message.kartoffelId !== undefined &&
+      (obj.kartoffelId = message.kartoffelId);
     return obj;
   },
 
   fromPartial(object: DeepPartial<DeleteUnitReq>): DeleteUnitReq {
     const message = { ...baseDeleteUnitReq } as DeleteUnitReq;
-    if (object.unitId !== undefined && object.unitId !== null) {
-      message.unitId = object.unitId;
+    if (object.kartoffelId !== undefined && object.kartoffelId !== null) {
+      message.kartoffelId = object.kartoffelId;
     } else {
-      message.unitId = "";
+      message.kartoffelId = "";
     }
     return message;
   },
 };
 
-const baseGetUnitReq: object = { unitId: "" };
+const baseGetUnitReq: object = { kartoffelId: "" };
 
 export const GetUnitReq = {
   encode(
     message: GetUnitReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.unitId !== "") {
-      writer.uint32(10).string(message.unitId);
+    if (message.kartoffelId !== "") {
+      writer.uint32(10).string(message.kartoffelId);
     }
     return writer;
   },
@@ -258,7 +261,7 @@ export const GetUnitReq = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.unitId = reader.string();
+          message.kartoffelId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -270,44 +273,46 @@ export const GetUnitReq = {
 
   fromJSON(object: any): GetUnitReq {
     const message = { ...baseGetUnitReq } as GetUnitReq;
-    if (object.unitId !== undefined && object.unitId !== null) {
-      message.unitId = String(object.unitId);
+    if (object.kartoffelId !== undefined && object.kartoffelId !== null) {
+      message.kartoffelId = String(object.kartoffelId);
     } else {
-      message.unitId = "";
+      message.kartoffelId = "";
     }
     return message;
   },
 
   toJSON(message: GetUnitReq): unknown {
     const obj: any = {};
-    message.unitId !== undefined && (obj.unitId = message.unitId);
+    message.kartoffelId !== undefined &&
+      (obj.kartoffelId = message.kartoffelId);
     return obj;
   },
 
   fromPartial(object: DeepPartial<GetUnitReq>): GetUnitReq {
     const message = { ...baseGetUnitReq } as GetUnitReq;
-    if (object.unitId !== undefined && object.unitId !== null) {
-      message.unitId = object.unitId;
+    if (object.kartoffelId !== undefined && object.kartoffelId !== null) {
+      message.kartoffelId = object.kartoffelId;
     } else {
-      message.unitId = "";
+      message.kartoffelId = "";
     }
     return message;
   },
 };
 
 const baseUnit: object = {
-  unitId: "",
+  kartoffelId: "",
   name: "",
   prefix: "",
-  currentCounter: "",
+  currentCounter: 0,
   teaInProgress: "",
   failedTea: "",
+  createdAt: 0,
 };
 
 export const Unit = {
   encode(message: Unit, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.unitId !== "") {
-      writer.uint32(10).string(message.unitId);
+    if (message.kartoffelId !== "") {
+      writer.uint32(10).string(message.kartoffelId);
     }
     if (message.name !== "") {
       writer.uint32(18).string(message.name);
@@ -315,14 +320,17 @@ export const Unit = {
     if (message.prefix !== "") {
       writer.uint32(26).string(message.prefix);
     }
-    if (message.currentCounter !== "") {
-      writer.uint32(34).string(message.currentCounter);
+    if (message.currentCounter !== 0) {
+      writer.uint32(32).int32(message.currentCounter);
     }
     for (const v of message.teaInProgress) {
       writer.uint32(42).string(v!);
     }
     for (const v of message.failedTea) {
       writer.uint32(50).string(v!);
+    }
+    if (message.createdAt !== 0) {
+      writer.uint32(56).int64(message.createdAt);
     }
     return writer;
   },
@@ -337,7 +345,7 @@ export const Unit = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.unitId = reader.string();
+          message.kartoffelId = reader.string();
           break;
         case 2:
           message.name = reader.string();
@@ -346,13 +354,16 @@ export const Unit = {
           message.prefix = reader.string();
           break;
         case 4:
-          message.currentCounter = reader.string();
+          message.currentCounter = reader.int32();
           break;
         case 5:
           message.teaInProgress.push(reader.string());
           break;
         case 6:
           message.failedTea.push(reader.string());
+          break;
+        case 7:
+          message.createdAt = longToNumber(reader.int64() as Long);
           break;
         default:
           reader.skipType(tag & 7);
@@ -366,10 +377,10 @@ export const Unit = {
     const message = { ...baseUnit } as Unit;
     message.teaInProgress = [];
     message.failedTea = [];
-    if (object.unitId !== undefined && object.unitId !== null) {
-      message.unitId = String(object.unitId);
+    if (object.kartoffelId !== undefined && object.kartoffelId !== null) {
+      message.kartoffelId = String(object.kartoffelId);
     } else {
-      message.unitId = "";
+      message.kartoffelId = "";
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = String(object.name);
@@ -382,9 +393,9 @@ export const Unit = {
       message.prefix = "";
     }
     if (object.currentCounter !== undefined && object.currentCounter !== null) {
-      message.currentCounter = String(object.currentCounter);
+      message.currentCounter = Number(object.currentCounter);
     } else {
-      message.currentCounter = "";
+      message.currentCounter = 0;
     }
     if (object.teaInProgress !== undefined && object.teaInProgress !== null) {
       for (const e of object.teaInProgress) {
@@ -396,12 +407,18 @@ export const Unit = {
         message.failedTea.push(String(e));
       }
     }
+    if (object.createdAt !== undefined && object.createdAt !== null) {
+      message.createdAt = Number(object.createdAt);
+    } else {
+      message.createdAt = 0;
+    }
     return message;
   },
 
   toJSON(message: Unit): unknown {
     const obj: any = {};
-    message.unitId !== undefined && (obj.unitId = message.unitId);
+    message.kartoffelId !== undefined &&
+      (obj.kartoffelId = message.kartoffelId);
     message.name !== undefined && (obj.name = message.name);
     message.prefix !== undefined && (obj.prefix = message.prefix);
     message.currentCounter !== undefined &&
@@ -416,6 +433,7 @@ export const Unit = {
     } else {
       obj.failedTea = [];
     }
+    message.createdAt !== undefined && (obj.createdAt = message.createdAt);
     return obj;
   },
 
@@ -423,10 +441,10 @@ export const Unit = {
     const message = { ...baseUnit } as Unit;
     message.teaInProgress = [];
     message.failedTea = [];
-    if (object.unitId !== undefined && object.unitId !== null) {
-      message.unitId = object.unitId;
+    if (object.kartoffelId !== undefined && object.kartoffelId !== null) {
+      message.kartoffelId = object.kartoffelId;
     } else {
-      message.unitId = "";
+      message.kartoffelId = "";
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = object.name;
@@ -441,7 +459,7 @@ export const Unit = {
     if (object.currentCounter !== undefined && object.currentCounter !== null) {
       message.currentCounter = object.currentCounter;
     } else {
-      message.currentCounter = "";
+      message.currentCounter = 0;
     }
     if (object.teaInProgress !== undefined && object.teaInProgress !== null) {
       for (const e of object.teaInProgress) {
@@ -452,6 +470,11 @@ export const Unit = {
       for (const e of object.failedTea) {
         message.failedTea.push(e);
       }
+    }
+    if (object.createdAt !== undefined && object.createdAt !== null) {
+      message.createdAt = object.createdAt;
+    } else {
+      message.createdAt = 0;
     }
     return message;
   },
@@ -464,8 +487,8 @@ export const UnitProperties = {
     message: UnitProperties,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.unitId !== undefined) {
-      writer.uint32(10).string(message.unitId);
+    if (message.kartoffelId !== undefined) {
+      writer.uint32(10).string(message.kartoffelId);
     }
     if (message.name !== undefined) {
       writer.uint32(18).string(message.name);
@@ -495,7 +518,7 @@ export const UnitProperties = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.unitId = reader.string();
+          message.kartoffelId = reader.string();
           break;
         case 2:
           message.name = reader.string();
@@ -524,10 +547,10 @@ export const UnitProperties = {
     const message = { ...baseUnitProperties } as UnitProperties;
     message.teaInProgress = [];
     message.failedTea = [];
-    if (object.unitId !== undefined && object.unitId !== null) {
-      message.unitId = String(object.unitId);
+    if (object.kartoffelId !== undefined && object.kartoffelId !== null) {
+      message.kartoffelId = String(object.kartoffelId);
     } else {
-      message.unitId = undefined;
+      message.kartoffelId = undefined;
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = String(object.name);
@@ -559,7 +582,8 @@ export const UnitProperties = {
 
   toJSON(message: UnitProperties): unknown {
     const obj: any = {};
-    message.unitId !== undefined && (obj.unitId = message.unitId);
+    message.kartoffelId !== undefined &&
+      (obj.kartoffelId = message.kartoffelId);
     message.name !== undefined && (obj.name = message.name);
     message.prefix !== undefined && (obj.prefix = message.prefix);
     message.currentCounter !== undefined &&
@@ -581,10 +605,10 @@ export const UnitProperties = {
     const message = { ...baseUnitProperties } as UnitProperties;
     message.teaInProgress = [];
     message.failedTea = [];
-    if (object.unitId !== undefined && object.unitId !== null) {
-      message.unitId = object.unitId;
+    if (object.kartoffelId !== undefined && object.kartoffelId !== null) {
+      message.kartoffelId = object.kartoffelId;
     } else {
-      message.unitId = undefined;
+      message.kartoffelId = undefined;
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = object.name;
@@ -731,15 +755,18 @@ export const SuccessMessage = {
   },
 };
 
-const baseRetrieveTeaAndUPNByEntityReq: object = { unitId: "", network: 0 };
+const baseRetrieveTeaAndUPNByEntityReq: object = {
+  kartoffelId: "",
+  network: 0,
+};
 
 export const RetrieveTeaAndUPNByEntityReq = {
   encode(
     message: RetrieveTeaAndUPNByEntityReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.unitId !== "") {
-      writer.uint32(10).string(message.unitId);
+    if (message.kartoffelId !== "") {
+      writer.uint32(10).string(message.kartoffelId);
     }
     if (message.network !== 0) {
       writer.uint32(16).int32(message.network);
@@ -763,7 +790,7 @@ export const RetrieveTeaAndUPNByEntityReq = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.unitId = reader.string();
+          message.kartoffelId = reader.string();
           break;
         case 2:
           message.network = reader.int32() as any;
@@ -783,10 +810,10 @@ export const RetrieveTeaAndUPNByEntityReq = {
     const message = {
       ...baseRetrieveTeaAndUPNByEntityReq,
     } as RetrieveTeaAndUPNByEntityReq;
-    if (object.unitId !== undefined && object.unitId !== null) {
-      message.unitId = String(object.unitId);
+    if (object.kartoffelId !== undefined && object.kartoffelId !== null) {
+      message.kartoffelId = String(object.kartoffelId);
     } else {
-      message.unitId = "";
+      message.kartoffelId = "";
     }
     if (object.network !== undefined && object.network !== null) {
       message.network = networkFromJSON(object.network);
@@ -803,7 +830,8 @@ export const RetrieveTeaAndUPNByEntityReq = {
 
   toJSON(message: RetrieveTeaAndUPNByEntityReq): unknown {
     const obj: any = {};
-    message.unitId !== undefined && (obj.unitId = message.unitId);
+    message.kartoffelId !== undefined &&
+      (obj.kartoffelId = message.kartoffelId);
     message.network !== undefined &&
       (obj.network = networkToJSON(message.network));
     message.entity !== undefined &&
@@ -817,10 +845,10 @@ export const RetrieveTeaAndUPNByEntityReq = {
     const message = {
       ...baseRetrieveTeaAndUPNByEntityReq,
     } as RetrieveTeaAndUPNByEntityReq;
-    if (object.unitId !== undefined && object.unitId !== null) {
-      message.unitId = object.unitId;
+    if (object.kartoffelId !== undefined && object.kartoffelId !== null) {
+      message.kartoffelId = object.kartoffelId;
     } else {
-      message.unitId = "";
+      message.kartoffelId = "";
     }
     if (object.network !== undefined && object.network !== null) {
       message.network = object.network;
@@ -837,7 +865,7 @@ export const RetrieveTeaAndUPNByEntityReq = {
 };
 
 const baseRetrieveTeaAndUPNByEntityIdReq: object = {
-  unitId: "",
+  kartoffelId: "",
   network: 0,
   entityId: "",
 };
@@ -847,8 +875,8 @@ export const RetrieveTeaAndUPNByEntityIdReq = {
     message: RetrieveTeaAndUPNByEntityIdReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.unitId !== "") {
-      writer.uint32(10).string(message.unitId);
+    if (message.kartoffelId !== "") {
+      writer.uint32(10).string(message.kartoffelId);
     }
     if (message.network !== 0) {
       writer.uint32(16).int32(message.network);
@@ -872,7 +900,7 @@ export const RetrieveTeaAndUPNByEntityIdReq = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.unitId = reader.string();
+          message.kartoffelId = reader.string();
           break;
         case 2:
           message.network = reader.int32() as any;
@@ -892,10 +920,10 @@ export const RetrieveTeaAndUPNByEntityIdReq = {
     const message = {
       ...baseRetrieveTeaAndUPNByEntityIdReq,
     } as RetrieveTeaAndUPNByEntityIdReq;
-    if (object.unitId !== undefined && object.unitId !== null) {
-      message.unitId = String(object.unitId);
+    if (object.kartoffelId !== undefined && object.kartoffelId !== null) {
+      message.kartoffelId = String(object.kartoffelId);
     } else {
-      message.unitId = "";
+      message.kartoffelId = "";
     }
     if (object.network !== undefined && object.network !== null) {
       message.network = networkFromJSON(object.network);
@@ -912,7 +940,8 @@ export const RetrieveTeaAndUPNByEntityIdReq = {
 
   toJSON(message: RetrieveTeaAndUPNByEntityIdReq): unknown {
     const obj: any = {};
-    message.unitId !== undefined && (obj.unitId = message.unitId);
+    message.kartoffelId !== undefined &&
+      (obj.kartoffelId = message.kartoffelId);
     message.network !== undefined &&
       (obj.network = networkToJSON(message.network));
     message.entityId !== undefined && (obj.entityId = message.entityId);
@@ -925,10 +954,10 @@ export const RetrieveTeaAndUPNByEntityIdReq = {
     const message = {
       ...baseRetrieveTeaAndUPNByEntityIdReq,
     } as RetrieveTeaAndUPNByEntityIdReq;
-    if (object.unitId !== undefined && object.unitId !== null) {
-      message.unitId = object.unitId;
+    if (object.kartoffelId !== undefined && object.kartoffelId !== null) {
+      message.kartoffelId = object.kartoffelId;
     } else {
-      message.unitId = "";
+      message.kartoffelId = "";
     }
     if (object.network !== undefined && object.network !== null) {
       message.network = object.network;
@@ -1117,6 +1146,16 @@ interface Rpc {
   ): Promise<Uint8Array>;
 }
 
+declare var self: any | undefined;
+declare var window: any | undefined;
+var globalThis: any = (() => {
+  if (typeof globalThis !== "undefined") return globalThis;
+  if (typeof self !== "undefined") return self;
+  if (typeof window !== "undefined") return window;
+  if (typeof global !== "undefined") return global;
+  throw "Unable to locate global object";
+})();
+
 type Builtin =
   | Date
   | Function
@@ -1134,6 +1173,13 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+function longToNumber(long: Long): number {
+  if (long.gt(Number.MAX_SAFE_INTEGER)) {
+    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
+  }
+  return long.toNumber();
+}
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
