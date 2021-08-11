@@ -6,6 +6,7 @@ import {
   Request,
   RequestType,
 } from '../interfaces/protoc/proto/requestService';
+import { logger } from '../logger';
 import { RequestService } from '../services/request.service';
 import { ProducerRepository } from './producer.repository';
 
@@ -212,13 +213,35 @@ export class RequestManager {
         id: produceRequest.id,
       });
       const message = this.generateKartoffelQueueMessage(request);
+      logger.info(
+        'produceToKartoffelQueue received request successfully and generated queue message',
+        {
+          produceRequest,
+          request,
+          message,
+        }
+      );
       await this.producerRepository.pushIntoKartoffelQueue(message);
-
-      return {
+      const response = {
         success: true,
         message: 'Message pushed to Kartoffel queue successfully',
       };
+      logger.info(
+        'produceToKartoffelQueue pushed to Kartoffel queue successfully',
+        {
+          produceRequest,
+          request,
+          message,
+          response,
+        }
+      );
+
+      return response;
     } catch (error) {
+      logger.error('produceToKartoffelQueue ERROR', {
+        produceRequest,
+        error,
+      });
       throw error;
     }
   }
@@ -231,12 +254,27 @@ export class RequestManager {
         id: produceRequest.id,
       });
       const message = this.generateADQueueMessage(request);
+      logger.info(
+        'produceToADQueue received request successfully and generated queue message',
+        {
+          produceRequest,
+          request,
+          message,
+        }
+      );
       await this.producerRepository.pushIntoADQueue(message);
-
-      return {
+      const response = {
         success: true,
         message: 'Message pushed to AD queue successfully',
       };
+      logger.info('produceToADQueue pushed to AD queue successfully', {
+        produceRequest,
+        request,
+        message,
+        response,
+      });
+
+      return response;
     } catch (error) {
       throw error;
     }

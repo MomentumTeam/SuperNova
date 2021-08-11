@@ -3,6 +3,7 @@ import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 import path from 'path';
 import * as config from '../config';
+import { logger } from '../logger';
 import { SuccessMessage } from '../interfaces/protoc/proto/producerService';
 
 const PROTO_PATH = __dirname.includes('dist')
@@ -29,34 +30,54 @@ const producerClient: any = new protoDescriptor.Producer(
 );
 
 export default class ProducerController {
-  
   static async produceToKartoffelQueue(requestId: string) {
-    console.log('ProduceToKartoffelQueue');
+    logger.info(`Call to produceToKartoffelQueue in GTW`, {
+      callRequest: { id: requestId },
+    });
 
     return new Promise((resolve, reject) => {
       producerClient.ProduceToKartoffelQueue(
         { id: requestId },
         (err: any, response: SuccessMessage) => {
           if (err) {
+            logger.error(`produceToKartoffelQueue ERROR in GTW`, {
+              err,
+              callRequest: { id: requestId },
+            });
             resolve(null);
           }
+
+          logger.info(`produceToKartoffelQueue OK in GTW`, {
+            response: response,
+            callRequest: { id: requestId },
+          });
           resolve(response);
         }
       );
     });
   }
 
-  static async produceToADQueue(req: Request, res: Response) {
-    console.log('ProduceToADQueue');
+  static async produceToADQueue(requestId: string) {
+    logger.info(`Call to produceToADQueue in GTW`, {
+      callRequest: { id: requestId },
+    });
 
     producerClient.ProduceToADQueue(
-      { id: req.body.requestId },
+      { id: requestId },
       (err: any, response: SuccessMessage) => {
         if (err) {
-          res.send(null);
+          logger.error(`produceToADQueue ERROR in GTW`, {
+            err,
+            callRequest: { id: requestId },
+          });
+          // return null;
         }
-        console.log('produceToADQueue response', response);
-        res.send(response);
+
+        logger.info(`produceToADQueue OK in GTW`, {
+          response: response,
+          callRequest: { id: requestId },
+        });
+        // return response;
       }
     );
   }

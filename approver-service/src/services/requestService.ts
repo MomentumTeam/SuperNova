@@ -6,6 +6,7 @@ import {
   UpdateDecisionReq,
   UpdateReq,
 } from '../interfaces/protoc/proto/requestService';
+import { logger } from '../logger';
 import { findPath } from '../utils/path';
 
 const PROTO_PATH = `${findPath('proto')}/requestService.proto`;
@@ -31,12 +32,19 @@ const requestClient: any = new protoDescriptor.RequestService(
 
 export default class RequestService {
   static async updateRequest(updateReq: UpdateReq): Promise<Request> {
-    console.log('updateRequest');
     return new Promise((resolve, reject) => {
       requestClient.UpdateRequest(updateReq, (err: any, request: Request) => {
         if (err) {
+          logger.error('updateRequest in RequestService ERROR', {
+            updateReq,
+            err,
+          });
           reject(err);
         } else {
+          logger.info('updateRequest in RequestService', {
+            updateReq,
+            request,
+          });
           resolve(request);
         }
       });
@@ -52,8 +60,16 @@ export default class RequestService {
         updateDecisionReq,
         (err: any, request: Request) => {
           if (err) {
+            logger.error('updateCommanderDecision in RequestService ERROR', {
+              updateDecisionReq,
+              err,
+            });
             reject(err);
           } else {
+            logger.info('updateCommanderDecision in RequestService', {
+              updateDecisionReq,
+              request,
+            });
             resolve(request);
           }
         }
@@ -64,14 +80,21 @@ export default class RequestService {
   static async updateSecurityDecision(
     updateDecisionReq: UpdateDecisionReq
   ): Promise<Request> {
-    console.log('updateSecurityDecision');
     return new Promise((resolve, reject) => {
       requestClient.updateSecurityDecision(
         updateDecisionReq,
         (err: any, request: Request) => {
           if (err) {
+            logger.error('updateSecurityDecision in RequestService ERROR', {
+              updateDecisionReq,
+              err,
+            });
             reject(err);
           } else {
+            logger.info('updateSecurityDecision in RequestService', {
+              updateDecisionReq,
+              request,
+            });
             resolve(request);
           }
         }
@@ -82,14 +105,24 @@ export default class RequestService {
   static async updateSuperSecurityDecision(
     updateDecisionReq: UpdateDecisionReq
   ): Promise<Request> {
-    console.log('updateSuperSecurityDecision');
     return new Promise((resolve, reject) => {
       requestClient.updateSuperSecurityDecision(
         updateDecisionReq,
         (err: any, request: Request) => {
           if (err) {
+            logger.error(
+              'updateSuperSecurityDecision in RequestService ERROR',
+              {
+                updateDecisionReq,
+                err,
+              }
+            );
             reject(err);
           } else {
+            logger.info('updateSuperSecurityDecision in RequestService', {
+              updateDecisionReq,
+              request,
+            });
             resolve(request);
           }
         }

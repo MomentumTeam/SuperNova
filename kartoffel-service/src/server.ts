@@ -33,7 +33,13 @@ export class Server {
   private server: grpc.Server;
   constructor() {
     this.server = new grpc.Server();
-    this.initServer();
+    logger.info(`gRPC server created`);
+    try {
+      this.initServer();
+      logger.info(`gRPC server has been initialized successfully`);
+    } catch (error) {
+      logger.error(`Error while creating gRPC server`, { error: error });
+    }
   }
 
   private getProtoDescriptor() {
@@ -49,6 +55,7 @@ export class Server {
       const protoDescriptor: grpc.GrpcObject =
         grpc.loadPackageDefinition(packageDefinition);
       const kartoffelServiceDescriptor: any = protoDescriptor.Kartoffel;
+      logger.info(`Proto file ${PROTO_PATH} was loaded successfully`);
       return kartoffelServiceDescriptor;
     } catch (error) {
       throw error;
@@ -58,11 +65,6 @@ export class Server {
   initServer() {
     try {
       const kartoffelServiceDescriptor: any = this.getProtoDescriptor();
-      logger.log({
-        level: 'info',
-        message: `Proto was loaded successfully from file: ${PROTO_PATH}`,
-        label: 'initServer',
-      });
       this.server.addService(kartoffelServiceDescriptor.Kartoffel.service, {
         SearchOG: searchOG,
         CreateOG: createOG,
@@ -86,17 +88,10 @@ export class Server {
         GetOGTree: getOGTree,
         GetPictureByEntityId: getPictureByEntityId,
       });
-      logger.log({
-        level: 'info',
-        message: `Grpc services were successfully added to the server`,
-        label: 'initServer',
-      });
+      logger.info(`Grpc services were successfully added to the server`);
     } catch (error) {
-      logger.log({
-        level: 'error',
-        message: `Error while initializing the server: ${error.message}`,
-        label: 'initServer',
-      });
+      logger.error(`Error while initializing the server`, { error: error });
+      throw error;
     }
   }
 
@@ -107,10 +102,14 @@ export class Server {
         grpc.ServerCredentials.createInsecure(),
         (bindError) => {
           if (bindError) {
+            logger.error(`Error while binding to ${C.host}:${C.port}`, {
+              error: bindError,
+            });
             reject(bindError);
           } else {
             try {
               this.server.start();
+              logger.info(`Server was started successfully`);
               resolve();
             } catch (startError) {
               reject(startError);

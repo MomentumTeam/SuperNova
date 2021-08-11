@@ -13,13 +13,11 @@ async function main() {
   try {
     const server: Server = new Server();
     await server.startServer();
-    logger.log({ level: 'info', message: 'Server started successfully' });
+    logger.info(`kartoffel-service started successfully`);
   } catch (error) {
-    logger.log({
-      level: 'error',
-      label: 'main',
-      message: `Error while trying to start the server: ${error.message}`,
-    });
+    logger.error(
+      `Error while trying to start kartoffel-service: ${error.message}`
+    );
   }
 }
 
