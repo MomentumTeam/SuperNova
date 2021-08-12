@@ -13,3 +13,7 @@ protoc --plugin=./api-gateway/node_modules/.bin/protoc-gen-ts_proto --ts_proto_o
 protoc --plugin=./tea-service/node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./tea-service/src/interfaces/protoc ./proto/*.proto --experimental_allow_proto3_optional --ts_proto_opt=esModuleInterop=true
 
 protoc --plugin=./population-script/node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./population-script/src/interfaces/protoc ./proto/*.proto --experimental_allow_proto3_optional --ts_proto_opt=esModuleInterop=true
+
+protoc --plugin=./whiteListSync-script/node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./whiteListSync-script/src/interfaces/protoc ./proto/*.proto --experimental_allow_proto3_optional --ts_proto_opt=esModuleInterop=true
+
+protoc --plugin=./execution-script/node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./execution-script/src/interfaces/protoc ./proto/*.proto --experimental_allow_proto3_optional --ts_proto_opt=esModuleInterop=true

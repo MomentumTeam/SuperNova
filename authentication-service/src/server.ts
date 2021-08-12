@@ -7,6 +7,7 @@ import * as morgan from 'morgan';
 import * as session from 'express-session';
 import * as cookieParser from 'cookie-parser';
 import { config } from './config';
+import { logger } from './logger';
 import { userErrorHandler, serverErrorHandler, unknownErrorHandler } from './utils/errors/errorHandler';
 import { ShragaAuthenticationHandler } from './authentication/authentication.handler';
 import { ShragaAuthenticationRouter } from './authentication/routers/shraga.authentication.router';
@@ -28,7 +29,7 @@ export class Server {
         this.initializeStaticFolder();
         this.server = http.createServer(this.app);
         this.server.listen(config.server.port, () => {
-            console.log(`Server running in ${process.env.NODE_ENV || 'development'} environment on port ${config.server.port}`);
+            logger.info(`Auth-service Server running in ${process.env.NODE_ENV || 'development'} environment on port ${config.server.port}`);
         });
     }
 

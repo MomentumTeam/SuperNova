@@ -23,6 +23,7 @@ import {
   Request,
   UpdateDecisionReq,
 } from '../interfaces/protoc/proto/requestService';
+import { logger } from '../logger';
 import { ApproverModel } from '../models/approver.model';
 import KartoffelService from '../services/kartoffelService';
 import RequestService from '../services/requestService';
@@ -41,8 +42,10 @@ export class ApproverRepository {
       const createdApprover = await approver.save();
       const document = createdApprover.toObject();
       turnObjectIdsToStrings(document);
+      logger.info('addApprover', { document, addCommanderApproverReq, type });
       return document as Approver;
     } catch (error) {
+      logger.error('addApprover ERROR', { error, addCommanderApproverReq });
       throw error;
     }
   }
@@ -56,6 +59,10 @@ export class ApproverRepository {
         UserType.COMMANDER
       );
     } catch (error) {
+      logger.error('addCommanderApprover ERROR', {
+        error,
+        addCommanderApproverReq,
+      });
       throw error;
     }
   }
@@ -69,6 +76,10 @@ export class ApproverRepository {
         UserType.SUPER_SECURITY
       );
     } catch (error) {
+      logger.error('addSuperSecurityApprover ERROR', {
+        error,
+        addSecurityApproverReq,
+      });
       throw error;
     }
   }
@@ -79,6 +90,10 @@ export class ApproverRepository {
     try {
       return await this.addApprover(addSecurityApproverReq, UserType.SECURITY);
     } catch (error) {
+      logger.error('addSecurityApprover ERROR', {
+        error,
+        addSecurityApproverReq,
+      });
       throw error;
     }
   }
@@ -90,8 +105,10 @@ export class ApproverRepository {
       await ApproverModel.deleteMany({
         entityId: deleteApproverReq.approverId,
       });
+      logger.info('deleteApprover', { deleteApproverReq });
       return { success: true };
     } catch (error) {
+      logger.error('deleteApprover ERROR', { deleteApproverReq, error });
       throw error;
     }
   }
@@ -101,8 +118,10 @@ export class ApproverRepository {
   ): Promise<ApproverArray> {
     try {
       const mongoApprovers: any = await ApproverModel.find({});
+      logger.info('getAllApprovers', { getAllApproversReq });
       return { approvers: getMongoApproverArray(mongoApprovers) };
     } catch (error) {
+      logger.error('getAllApprovers ERROR', { error, getAllApproversReq });
       throw error;
     }
   }
@@ -113,8 +132,10 @@ export class ApproverRepository {
     try {
       let approverIds: any = await ApproverModel.find({}).distinct('entityId');
       approverIds = approverIds.map((approverId: any) => approverId.toString());
+      logger.info('getAllApproverIds', { approverIds, getAllApproverIdsReq });
       return { approverIds: approverIds };
     } catch (error) {
+      logger.error('getAllApproverIds ERROR', { error, getAllApproverIdsReq });
       throw error;
     }
   }
@@ -127,6 +148,11 @@ export class ApproverRepository {
       const domainUsers = entity.digitalIdentities
         ? entity.digitalIdentities.map((di: DigitalIdentity) => di.mail)
         : [];
+      logger.info('syncApprover got entity successfully from Kartoffel', {
+        entity,
+        syncApproverReq,
+        domainUsers,
+      });
       const updateParams: any = {
         displayName: entity.displayName,
         domainUsers: domainUsers,
@@ -139,8 +165,19 @@ export class ApproverRepository {
       );
       const document = documentAfter.toObject();
       turnObjectIdsToStrings(document);
+      logger.info('syncApprover updated Approver successfully', {
+        syncApproverReq,
+        displayName: entity.displayName,
+        domainUsers: domainUsers,
+        akaUnit: entity.akaUnit,
+        document,
+      });
       return document as Approver;
     } catch (error) {
+      logger.error('syncApprover ERROR', {
+        syncApproverReq,
+        error,
+      });
       throw error;
     }
   }
@@ -150,10 +187,11 @@ export class ApproverRepository {
       const approver = await ApproverModel.findOne({
         entityId: getUserTypeReq.entityId,
       });
+      let response: GetUserTypeRes;
       if (approver) {
         const documentObj: any = approver.toObject();
         turnObjectIdsToStrings(documentObj);
-        return {
+        response = {
           entityId: getUserTypeReq.entityId,
           type: documentObj.type,
         };
@@ -162,15 +200,21 @@ export class ApproverRepository {
           id: getUserTypeReq.entityId,
         });
         if (hasCommanderRank(entity)) {
-          return {
+          response = {
             entityId: getUserTypeReq.entityId,
             type: UserType.COMMANDER,
           };
         } else {
-          return { entityId: getUserTypeReq.entityId, type: UserType.SOLDIER };
+          response = {
+            entityId: getUserTypeReq.entityId,
+            type: UserType.SOLDIER,
+          };
         }
       }
+      logger.info('getUserType', { getUserTypeReq, response });
+      return response;
     } catch (error) {
+      logger.error('getUserType ERROR', { getUserTypeReq, error });
       throw error;
     }
   }
@@ -193,6 +237,10 @@ export class ApproverRepository {
         }
       );
       let approversResult: Approver[] = getMongoApproverArray(mongoApprovers);
+      logger.info('searchApproverByDisplayName MongoResults', {
+        searchByDisplayNameReq,
+        approversResult,
+      });
 
       if (userTypeFromJSON(searchByDisplayNameReq.type) !== UserType.SECURITY) {
         const kartoffelEntities =
@@ -201,6 +249,10 @@ export class ApproverRepository {
             from: searchByDisplayNameReq.from,
             to: searchByDisplayNameReq.to,
           });
+        logger.info('searchApproverByDisplayName kartoffelResults', {
+          kartoffelEntities,
+          searchByDisplayNameReq,
+        });
 
         approversResult.push(
           ...getApproverArrayByEntityArray(
@@ -215,9 +267,16 @@ export class ApproverRepository {
           approversResult.map((item: Approver) => [item.entityId, item])
         ).values(),
       ];
-
+      logger.info('searchApproverByDisplayName Results', {
+        uniqueApproversResult,
+        searchByDisplayNameReq,
+      });
       return { approvers: uniqueApproversResult };
     } catch (error) {
+      logger.error('searchApproverByDisplayName ERROR', {
+        error,
+        searchByDisplayNameReq,
+      });
       throw error;
     }
   }
@@ -237,22 +296,32 @@ export class ApproverRepository {
           limit: 20,
         }
       );
+      let response: ApproverArray;
       if (mongoApprover) {
-        return {
+        response = {
           approvers: getMongoApproverArray([mongoApprover]),
-        } as ApproverArray;
+        };
       } else {
         const entity: Entity = await KartoffelService.getEntityByRoleId({
           roleId: searchByDomainUserReq.domainUser,
         });
-        return {
+        response = {
           approvers: getApproverArrayByEntityArray(
             { entities: [entity] },
             searchByDomainUserReq.type
           ),
-        } as ApproverArray;
+        };
       }
+      logger.info('searchApproverByDomainUser', {
+        searchByDomainUserReq,
+        response,
+      });
+      return response;
     } catch (error) {
+      logger.error('searchApproverByDomainUser ERROR', {
+        searchByDomainUserReq,
+        error,
+      });
       throw error;
     }
   }
@@ -264,34 +333,61 @@ export class ApproverRepository {
       const mongoApprovers: any = await ApproverModel.find({
         type: userTypeToJSON(UserType.SECURITY),
       });
-      return { approvers: getMongoApproverArray(mongoApprovers) };
+      const response = { approvers: getMongoApproverArray(mongoApprovers) };
+      logger.info('getAllSecurityApprovers', {
+        response,
+        getAllSecurityApproversReq,
+      });
+      return response;
     } catch (error) {
+      logger.error('getAllSecurityApprovers ERROR', {
+        error,
+        getAllSecurityApproversReq,
+      });
       throw error;
     }
   }
 
   async getAllSuperSecurityApprovers(
-    getAllSecurityApproversReq: GetAllApproversReq
+    getAllSuperSecurityApproversReq: GetAllApproversReq
   ): Promise<ApproverArray> {
     try {
       const mongoApprovers: any = await ApproverModel.find({
         type: userTypeToJSON(UserType.SUPER_SECURITY),
       });
-      return { approvers: getMongoApproverArray(mongoApprovers) };
+      const response = { approvers: getMongoApproverArray(mongoApprovers) };
+      logger.info('getAllSuperSecurityApprovers', {
+        response,
+        getAllSuperSecurityApproversReq,
+      });
+      return response;
     } catch (error) {
+      logger.error('getAllSuperSecurityApprovers ERROR', {
+        getAllSuperSecurityApproversReq,
+        error,
+      });
       throw error;
     }
   }
 
   async getAllCommanderApprovers(
-    getAllSecurityApproversReq: GetAllApproversReq
+    getAllCommanderApproversReq: GetAllApproversReq
   ): Promise<ApproverArray> {
     try {
       const mongoApprovers: any = await ApproverModel.find({
         type: userTypeToJSON(UserType.COMMANDER),
       });
-      return { approvers: getMongoApproverArray(mongoApprovers) };
+      const response = { approvers: getMongoApproverArray(mongoApprovers) };
+      logger.info('getAllCommanderApprovers', {
+        response,
+        getAllCommanderApproversReq,
+      });
+      return response;
     } catch (error) {
+      logger.error('getAllCommanderApprovers ERROR', {
+        error,
+        getAllCommanderApproversReq,
+      });
       throw error;
     }
   }
@@ -303,8 +399,16 @@ export class ApproverRepository {
       const updatedRequest = await RequestService.updateCommanderDecision(
         updateDecisionReq
       );
+      logger.info('updateCommanderDecision', {
+        updatedRequest,
+        updateDecisionReq,
+      });
       return updatedRequest;
     } catch (error) {
+      logger.error('updateCommanderDecision ERROR', {
+        updateDecisionReq,
+        error,
+      });
       throw error;
     }
   }
@@ -316,8 +420,16 @@ export class ApproverRepository {
       const updatedRequest = await RequestService.updateSecurityDecision(
         updateDecisionReq
       );
+      logger.info('updateSecurityDecision', {
+        updatedRequest,
+        updateDecisionReq,
+      });
       return updatedRequest;
     } catch (error) {
+      logger.error('updateSecurityDecision ERROR', {
+        updateDecisionReq,
+        error,
+      });
       throw error;
     }
   }
@@ -329,8 +441,16 @@ export class ApproverRepository {
       const updatedRequest = await RequestService.updateSuperSecurityDecision(
         updateDecisionReq
       );
+      logger.info('updateSuperSecurityDecision', {
+        updatedRequest,
+        updateDecisionReq,
+      });
       return updatedRequest;
     } catch (error) {
+      logger.error('updateSuperSecurityDecision ERROR', {
+        error,
+        updateDecisionReq,
+      });
       throw error;
     }
   }

@@ -3,6 +3,7 @@ import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 import path from 'path';
 import * as config from '../config';
+import { logger } from '../logger';
 import { SuccessMessage } from '../interfaces/protoc/proto/producerService';
 import { NotificationArray } from '../interfaces/protoc/proto/notificationService';
 
@@ -37,12 +38,33 @@ export default class NotificationController {
     const startTime: string = req.query.startTime
       ? req.query.startTime.toString()
       : weekAgo.toString();
+
+    const data = {
+      ownerId: req.user.id,
+      startTime: startTime,
+      from: from,
+      to: to,
+    };
+
+    logger.info(`Call to getMyNotifications in GTW`, {
+      callRequest: data,
+    });
+
     notificationsClient.GetNotificationsByOwnerId(
       { ownerId: req.user.id, startTime: startTime, from: from, to: to },
       (err: any, response: NotificationArray) => {
         if (err) {
+          logger.error(`getMyNotifications ERROR in GTW`, {
+            err,
+            callRequest: data,
+          });
           res.send(null);
         }
+
+        logger.info(`getMyNotifications OK in GTW`, {
+          response: response,
+          callRequest: data,
+        });
         res.send(response);
       }
     );
@@ -52,12 +74,26 @@ export default class NotificationController {
     const notificationIds = req.body.notificationIds
       ? req.body.notificationIds
       : [];
-    notificationsClient.GetNotificationsByOwnerId(
+
+    logger.info(`Call to markAsRead in GTW`, {
+      callRequest: { notificationIds: notificationIds },
+    });
+
+    notificationsClient.MarkAsRead(
       { notificationIds: notificationIds },
-      (err: any, response: NotificationArray) => {
+      (err: any, response: SuccessMessage) => {
         if (err) {
+          logger.error(`markAsRead ERROR in GTW`, {
+            err,
+            callRequest: { notificationIds: notificationIds },
+          });
           res.send(null);
         }
+
+        logger.info(`markAsRead OK in GTW`, {
+          response: response,
+          callRequest: { notificationIds: notificationIds },
+        });
         res.send(response);
       }
     );

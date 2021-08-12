@@ -25,11 +25,7 @@ import {
   updateCommanders,
   updateSecurityApprovers,
 } from './requests/request.controller';
-import {
-  GetRequestsByIdentifierReq,
-  GetRequestsInProgressByDueReq,
-  RequestType,
-} from './interfaces/protoc/proto/requestService';
+import { RequestType } from './interfaces/protoc/proto/requestService';
 import { findPath } from './utils/path';
 import { PersonTypeInRequest } from './enums/personTypeInRequest.enum';
 
@@ -55,6 +51,7 @@ export class Server {
       const protoDescriptor: grpc.GrpcObject =
         grpc.loadPackageDefinition(packageDefinition);
       const requestServiceDescriptor: any = protoDescriptor.RequestService;
+      logger.info(`Proto file ${PROTO_PATH} was loaded successfully`);
       return requestServiceDescriptor;
     } catch (error) {
       throw error;
@@ -64,11 +61,7 @@ export class Server {
   initServer() {
     try {
       const requestServiceDescriptor: any = this.getProtoDescriptor();
-      logger.log({
-        level: 'info',
-        message: `Proto was loaded successfully from file: ${PROTO_PATH}`,
-        label: 'initServer',
-      });
+      logger.info(`Proto was loaded successfully from file: ${PROTO_PATH}`);
       this.server.addService(requestServiceDescriptor.RequestService.service, {
         CreateOGRequest: createRequestFuncByType(RequestType.CREATE_OG),
         CreateRoleRequest: createRequestFuncByType(RequestType.CREATE_ROLE),
@@ -144,17 +137,10 @@ export class Server {
         UpdateCommanders: updateCommanders,
         UpdateSecurityApprovers: updateSecurityApprovers,
       });
-      logger.log({
-        level: 'info',
-        message: `Grpc services were successfully added to the server`,
-        label: 'initServer',
-      });
+      logger.info(`Grpc services were successfully added to the server`);
     } catch (error) {
-      logger.log({
-        level: 'error',
-        message: `Error while initializing the server: ${error.message}`,
-        label: 'initServer',
-      });
+      logger.error(`Error while initializing the server`, { error: error });
+      throw error;
     }
   }
 
@@ -165,10 +151,14 @@ export class Server {
         grpc.ServerCredentials.createInsecure(),
         (bindError) => {
           if (bindError) {
+            logger.error(`Error while binding to ${C.host}:${C.port}`, {
+              error: bindError,
+            });
             reject(bindError);
           } else {
             try {
               this.server.start();
+              logger.info(`Server was started successfully`);
               resolve();
             } catch (startError) {
               reject(startError);

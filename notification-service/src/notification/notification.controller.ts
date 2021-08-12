@@ -1,4 +1,5 @@
 import * as grpc from '@grpc/grpc-js';
+import { logger } from '../logger';
 import { NotificationManager } from './notification.manager';
 
 const notificationManager: NotificationManager = new NotificationManager();
@@ -62,12 +63,20 @@ export async function createCustomNotification(
     );
   }
 }
-
 export async function markAsRead(call: any, callback: any): Promise<void> {
   try {
-    const successMessage = await notificationManager.markAsRead(call.request);
-    callback(null, successMessage);
+    logger.info('Call to markAsRead', { callRequest: call.request });
+    const notifications = await notificationManager.markAsRead(call.request);
+    logger.info('markAsRead OK', {
+      callRequest: call.request,
+      notifications,
+    });
+    callback(null, notifications);
   } catch (error) {
+    logger.error('markAsRead ERROR', {
+      callRequest: call.request,
+      error,
+    });
     callback(
       {
         code: 400,
@@ -84,11 +93,22 @@ export async function getNotificationsByOwnerId(
   callback: any
 ): Promise<void> {
   try {
+    logger.info('Call to getNotificationsByOwnerId', {
+      callRequest: call.request,
+    });
     const notifications = await notificationManager.getNotificationsByOwnerId(
       call.request
     );
+    logger.info('getNotificationsByOwnerId OK', {
+      callRequest: call.request,
+      notifications,
+    });
     callback(null, notifications);
   } catch (error) {
+    logger.error('getNotificationsByOwnerId ERROR', {
+      callRequest: call.request,
+      error,
+    });
     callback(
       {
         code: 400,

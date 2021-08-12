@@ -34,10 +34,11 @@ export class Server {
         grpc.loadPackageDefinition(packageDefinition);
       const notificationServiceDescriptor: any =
         protoDescriptor.NotificationService;
+      logger.info(`Proto file ${PROTO_PATH} was loaded successfully`);
       return notificationServiceDescriptor;
-    } catch (err) {
-      logger.error(`Error while loading the proto file`, { err: err });
-      throw err;
+    } catch (error) {
+      logger.error(`Error while loading the proto file`, { error: error });
+      throw error;
     }
   }
 
@@ -68,10 +69,14 @@ export class Server {
         grpc.ServerCredentials.createInsecure(),
         (bindError) => {
           if (bindError) {
+            logger.error(`Error while binding to ${C.host}:${C.port}`, {
+              error: bindError,
+            });
             reject(bindError);
           } else {
             try {
               this.server.start();
+              logger.info(`Server was started successfully`);
               resolve();
             } catch (startError) {
               reject(startError);
