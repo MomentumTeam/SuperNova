@@ -55,21 +55,21 @@ services:
       - SS_REDIS_PORT=6379
       - SS_REDIS_PASSWORD=mozart
 
-  # request-service:
-  #   image: request-service
-  #   build:
-  #     context: .
-  #     dockerfile: ./request-service/Dockerfile
-  #   env_file:
-  #     - ./supernova.env
-  #   ports:
-  #     - '8081:8080'
-  #   depends_on:
-  #     - mongodb
-  #     - notification-service
-  #   environment:
-  #     - RS_MONGO_URL=mongodb://mongodb:27017/supernova
-  #     - RS_NS_URL=notification-service:8080
+  request-service:
+    image: request-service
+    build:
+      context: .
+      dockerfile: ./request-service/Dockerfile
+    env_file:
+      - ./supernova.env
+    ports:
+      - '8081:8080'
+    depends_on:
+      - mongodb
+      - notification-service
+    environment:
+      - RS_MONGO_URL=mongodb://mongodb:27017/supernova
+      - RS_NS_URL=notification-service:8080
 
   kartoffel-service:
     image: kartoffel-service
@@ -101,17 +101,17 @@ services:
       - PS_RS_URL=request-service:8080
       - PS_DEV_MODE=true
 
-  # notification-service:
-  #   image: notification-service
-  #   build:
-  #     context: .
-  #     dockerfile: ./notification-service/Dockerfile
-  #   env_file:
-  #     - ./supernova.env
-  #   ports:
-  #     - '8084:8080'
-  #   environment:
-  #     - NS_MONGO_URL=mongodb://mongodb:27017/supernova
+  notification-service:
+    image: notification-service
+    build:
+      context: .
+      dockerfile: ./notification-service/Dockerfile
+    env_file:
+      - ./supernova.env
+    ports:
+      - '8084:8080'
+    environment:
+      - NS_MONGO_URL=mongodb://mongodb:27017/supernova
 
   approver-service:
     image: approver-service
@@ -122,12 +122,27 @@ services:
       - ./supernova.env
     ports:
       - '8085:8080'
-    # depends_on:
-    # - request-service
+    depends_on:
+      - request-service
     environment:
       - APS_MONGO_URL=mongodb://mongodb:27017/supernova
       - APS_KS_URL=kartoffel-service:8080
       - APS_RS_URL=request-service:8080
+
+  tea-service:
+    image: tea-service
+    build:
+      context: .
+      dockerfile: ./tea-service/Dockerfile
+    env_file:
+      - ./supernova.env
+    ports:
+      - '8086:8080'
+    depends_on:
+      - request-service
+    environment:
+      - TS_MONGO_URL=mongodb://mongodb:27017/supernova
+      - TS_KS_URL=kartoffel-service:8080
 
   authentication-service:
     image: authentication-service
@@ -154,7 +169,7 @@ services:
     depends_on:
       - kartoffel-service
       - producer-service
-      # - request-service
+      - request-service
     environment:
       - GATEWAY_KS_URL=kartoffel-service:8080
       - GATEWAY_RS_URL=request-service:8080

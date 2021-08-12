@@ -2,6 +2,16 @@ import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 import * as C from './config';
 import { logger } from './logger';
+import {
+  addUnit,
+  deleteUnit,
+  getUnit,
+  reportTeaFail,
+  reportTeaSuccess,
+  retrieveTeaAndUPNByEntity,
+  retrieveTeaAndUPNByEntityId,
+  updateUnit,
+} from './tea/tea.controller';
 import { findPath } from './utils/path';
 
 const PROTO_PATH = `${findPath('proto')}/teaService.proto`;
@@ -37,7 +47,16 @@ export class Server {
     try {
       const teaServiceDescriptor: any = this.getProtoDescriptor();
       logger.info(`Proto was loaded successfully from file: ${PROTO_PATH}`);
-      this.server.addService(teaServiceDescriptor.Producer.service, {});
+      this.server.addService(teaServiceDescriptor.Tea.service, {
+        RetrieveTeaAndUPNByEntity: retrieveTeaAndUPNByEntity,
+        RetrieveTeaAndUPNByEntityId: retrieveTeaAndUPNByEntityId,
+        ReportTeaSuccess: reportTeaSuccess,
+        ReportTeaFail: reportTeaFail,
+        GetUnit: getUnit,
+        AddUnit: addUnit,
+        UpdateUnit: updateUnit,
+        DeleteUnit: deleteUnit,
+      });
       logger.info(`Grpc services were successfully added to the server`);
     } catch (error) {
       logger.error(`Error while initializing the server: ${error.message}`);

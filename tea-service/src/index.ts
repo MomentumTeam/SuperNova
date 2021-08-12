@@ -1,6 +1,8 @@
 import { Server } from './server';
 import { logger } from './logger';
 import { findPath } from './utils/path';
+import * as C from './config';
+import { initUnits } from './utils/initUnits';
 if (process.env.NODE_ENV !== 'production') {
   const ENV_PATH = `${findPath('supernova.env')}`;
   require('dotenv').config({
@@ -8,14 +10,18 @@ if (process.env.NODE_ENV !== 'production') {
   });
 }
 
-async function main() {
+async function main(): Promise<void> {
   try {
+    if (C.needInit) {
+      await initUnits();
+    }
     const server: Server = new Server();
     await server.startServer();
+
     logger.info('Server started successfully');
   } catch (error) {
     logger.error(`Error while trying to start the server: ${error.message}`);
   }
 }
 
-main();
+main().then().catch();

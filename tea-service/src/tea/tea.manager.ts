@@ -1,4 +1,5 @@
 import {
+  AddUnitReq,
   DeleteUnitReq,
   GetUnitReq,
   SuccessMessage,
@@ -67,9 +68,9 @@ export class TeaManager {
     }
   }
 
-  async addUnit(unit: Unit): Promise<Unit> {
+  async addUnit(addUnitReq: AddUnitReq): Promise<Unit> {
     try {
-      return await this.teaRepository.addUnit(unit);
+      return await this.teaRepository.addUnit(addUnitReq);
     } catch (error) {
       throw error;
     }

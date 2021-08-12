@@ -8,37 +8,99 @@ import {
   SuccessMessage,
   UpdateUnitReq,
   DeleteUnitReq,
+  Domain,
+  AddUnitReq,
+  domainToJSON,
+  domainFromJSON,
 } from '../interfaces/protoc/proto/teaService';
 import { UnitModel } from '../models/unit.model';
+import { getUnitKartoffelIdOfEntity } from '../utils/unit';
 import { getUPN } from '../utils/upn';
+import * as C from '../config';
+import { Entity } from '../interfaces/protoc/proto/kartoffelService';
+import KartoffelService from '../services/kartoffelService';
 
 export class TeaRepository {
+  zeroPad(num: any, places: any) {
+    return String(num).padStart(places, '0');
+  }
+
   async retrieveTeaAndUPNByEntity(
     retrieveTeaAndUPNByEntityReq: RetrieveTeaAndUPNByEntityReq
   ): Promise<TeaAndUPN> {
+    const domain =
+      typeof retrieveTeaAndUPNByEntityReq.domain == typeof ''
+        ? domainFromJSON(retrieveTeaAndUPNByEntityReq.domain.toString())
+        : retrieveTeaAndUPNByEntityReq.domain;
+    if (!retrieveTeaAndUPNByEntityReq.entity) {
+      throw new Error('Entity must be included in the request!');
+    }
+    let tea: string, upn: string, unit: Unit, kartoffelId: string;
     try {
-      if (!retrieveTeaAndUPNByEntityReq.entity) {
-        throw new Error('Entity not included in the request!');
-      }
-      const unit: Unit = await this.getUnit({
-        kartoffelId: retrieveTeaAndUPNByEntityReq.kartoffelId,
-      });
-      const upn = getUPN(retrieveTeaAndUPNByEntityReq.entity);
-      let tea = 0;
-      if (unit.failedTea && unit.failedTea.length > 0) {
-      }
-
-      //TODO
+      upn = getUPN(retrieveTeaAndUPNByEntityReq.entity);
     } catch (error) {
       throw error;
     }
+    try {
+      kartoffelId = getUnitKartoffelIdOfEntity(
+        retrieveTeaAndUPNByEntityReq.entity
+      );
+      unit = await this.getUnit({
+        kartoffelId: kartoffelId,
+      });
+    } catch (error) {
+      try {
+        kartoffelId = C.generalUnitId;
+        unit = await this.getUnit({
+          kartoffelId: kartoffelId,
+        });
+      } catch (error) {
+        throw error;
+      }
+    }
+    if (domain === Domain.OLD) {
+      //oldDomain
+      try {
+        if (unit.failedTea && unit.failedTea.length > 0) {
+          tea = unit.failedTea[0];
+          await UnitModel.updateOne(
+            { kartoffelId: kartoffelId },
+            { $pull: { failedTea: tea }, $addToSet: { teaInProgress: tea } }
+          );
+        } else {
+          tea = `T${unit.prefix}${this.zeroPad(unit.currentCounter, 4)}@${
+            unit.oldDomainSuffix
+          }`;
+          await UnitModel.updateOne(
+            { kartoffelId: kartoffelId },
+            { $inc: { currentCounter: 1 }, $addToSet: { teaInProgress: tea } }
+          );
+        }
+      } catch (error) {
+        throw error;
+      }
+    } else {
+      //newDomain
+      try {
+        tea = `${retrieveTeaAndUPNByEntityReq.entity.lastName}${retrieveTeaAndUPNByEntityReq.entity.firstName}@${unit.newDomainSuffix}`;
+      } catch (error) {
+        throw error;
+      }
+    }
+    return { tea: tea, upn: upn };
   }
 
   async retrieveTeaAndUPNByEntityId(
     retrieveTeaAndUPNByEntityIdReq: RetrieveTeaAndUPNByEntityIdReq
   ): Promise<TeaAndUPN> {
     try {
-      //TODO
+      const entity: Entity = await KartoffelService.getEntityByMongoId({
+        id: retrieveTeaAndUPNByEntityIdReq.entityId,
+      });
+      return await this.retrieveTeaAndUPNByEntity({
+        domain: retrieveTeaAndUPNByEntityIdReq.domain,
+        entity: entity,
+      });
     } catch (error) {
       throw error;
     }
@@ -97,7 +159,7 @@ export class TeaRepository {
       });
       if (!document) {
         throw new Error(
-          `Unit with kartoffelId=${getUnitReq.kartoffelId} does not exist!`
+          `A Unit with kartoffelId=${getUnitReq.kartoffelId} does not exist!`
         );
       } else {
         return document.toObject() as Unit;
@@ -107,10 +169,11 @@ export class TeaRepository {
     }
   }
 
-  async addUnit(unit: Unit): Promise<Unit> {
+  async addUnit(addUnitReq: AddUnitReq): Promise<Unit> {
     try {
-      const unitModel: any = new UnitModel(unit);
+      const unitModel: any = new UnitModel(addUnitReq);
       unitModel.createdAt = new Date().getTime();
+      await unitModel.save();
       const document = unitModel.toObject();
       return document as Unit;
     } catch (error) {

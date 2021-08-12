@@ -1,7 +1,7 @@
 syntax = "proto3";
 // import "/home/barak/Desktop/SuperNova/proto/kartoffelService.proto";//when loading with bloomRPC
-import "proto/kartoffelService.proto"; //when running in vscode
-// import "/app/proto/kartoffelService.proto"; //When using docker
+// import "proto/kartoffelService.proto"; //when running in vscode
+import "/app/proto/kartoffelService.proto"; //When using docker
 
 package Tea;
 
@@ -11,7 +11,7 @@ service Tea {
     rpc ReportTeaSuccess(ReportTeaReq) returns (SuccessMessage) {}
     rpc ReportTeaFail(ReportTeaReq) returns (SuccessMessage) {}
     rpc GetUnit(GetUnitReq) returns (Unit){}
-    rpc AddUnit(Unit) returns (Unit){}
+    rpc AddUnit(AddUnitReq) returns (Unit){}
     rpc UpdateUnit(UpdateUnitReq) returns (Unit){}
     rpc DeleteUnit(DeleteUnitReq) returns (SuccessMessage){}
 }
@@ -25,37 +25,49 @@ message DeleteUnitReq{
     string kartoffelId = 1;
 }
 
-
 message GetUnitReq{
     string kartoffelId = 1;
+}
+
+message AddUnitReq{
+    string kartoffelId = 1;
+    string name = 2;
+    string prefix = 3;
+    string oldDomainSuffix = 4; //gmail.com, after @
+    string newDomainSuffix = 5; //gmail.com, after @
+    int32 currentCounter = 6;
 }
 
 message Unit{
     string kartoffelId = 1;
     string name = 2;
-    string prefix = 3;
-    int32 currentCounter = 4;
-    repeated string teaInProgress = 5;
-    repeated string failedTea = 6;
-    int64 createdAt = 7;
+    string prefix = 3; //1234
+    string oldDomainSuffix = 4; //gmail.com, after @
+    string newDomainSuffix = 5; //gmail.com, after @
+    int32 currentCounter = 6;
+    repeated string teaInProgress = 7;
+    repeated string failedTea = 8;
+    int64 createdAt = 9;
 }
 
 message UnitProperties{
     optional string kartoffelId = 1;
     optional string name = 2;
     optional string prefix = 3;
-    optional string currentCounter = 4;
-    repeated string teaInProgress = 5;
-    repeated string failedTea = 6;
+    string oldDomainSuffix = 4; //gmail.com, after @
+    string newDomainSuffix = 5; //gmail.com, after @
+    optional string currentCounter = 6;
+    repeated string teaInProgress = 7;
+    repeated string failedTea = 8;
 }
 
 message ReportTeaReq{
     string tea = 1;
 }
 
-enum Network{
-    SECURITY = 0;
-    COMMANDER = 1;
+enum Domain{
+    OLD = 0;
+    NEW = 1;
 }
 
 message SuccessMessage{
@@ -63,15 +75,13 @@ message SuccessMessage{
 }
 
 message RetrieveTeaAndUPNByEntityReq{
-    string kartoffelId = 1;
-    Network network = 2;
-    Kartoffel.Entity entity = 3;
+    Domain domain = 1;
+    Kartoffel.Entity entity = 2;
 }
 
 message RetrieveTeaAndUPNByEntityIdReq{
-    string kartoffelId = 1;
-    Network network = 2;
-    string entityId = 3;
+    Domain domain = 1;
+    string entityId = 2;
 }
 
 message TeaAndUPN{

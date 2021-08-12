@@ -14,7 +14,15 @@ export const UnitSchema = new Schema(
     },
     prefix: {
       type: String,
-      default: '000',
+      default: '100',
+    },
+    oldDomainSuffix: {
+      type: String,
+      default: '',
+    },
+    newDomainSuffix: {
+      type: String,
+      default: '',
     },
     currentCounter: {
       type: Number,
