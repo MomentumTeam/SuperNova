@@ -4,25 +4,13 @@ import { NotificationManager } from './notification.manager';
 
 const notificationManager: NotificationManager = new NotificationManager();
 
-export async function createNotification(
-  call: any,
-  callback: any
-): Promise<void> {
+export async function markAllAsRead(call: any, callback: any): Promise<void> {
   try {
-    logger.info('Call to createNotification', { callRequest: call.request });
-    const notification = await notificationManager.createNotification(
+    const successMessage = await notificationManager.markAllAsRead(
       call.request
     );
-    logger.info('createNotification OK', {
-      callRequest: call.request,
-      notification,
-    });
-    callback(null, notification);
+    callback(null, successMessage);
   } catch (error) {
-    logger.error('createNotification ERROR', {
-      callRequest: call.request,
-      error,
-    });
     callback(
       {
         code: 400,
@@ -34,6 +22,47 @@ export async function createNotification(
   }
 }
 
+export async function createNotifications(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    const notifications = await notificationManager.createNotifications(
+      call.request
+    );
+    callback(null, notifications);
+  } catch (error) {
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function createCustomNotification(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    const notification = await notificationManager.createCustomNotification(
+      call.request
+    );
+    callback(null, notification);
+  } catch (error) {
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
 export async function markAsRead(call: any, callback: any): Promise<void> {
   try {
     logger.info('Call to markAsRead', { callRequest: call.request });

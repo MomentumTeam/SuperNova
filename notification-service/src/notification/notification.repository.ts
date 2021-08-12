@@ -1,34 +1,22 @@
 import {
-  CreateNotificationReq,
+  CreateCustomNotificationReq,
+  CreateNotificationsReq,
   GetNotificationsByOwnerIdReq,
+  MarkAllAsReadReq,
   Notification,
   NotificationArray,
   NotificationIdArray,
+  NotificationType,
   SuccessMessage,
 } from '../interfaces/protoc/proto/notificationService';
 import { NotificationModel } from '../models/notification.model';
+import {
+  generateNotifications,
+  turnObjectIdsToStrings,
+} from '../utils/notificationHelper';
+import { createNotifications } from './notification.controller';
 
 export class NotificationRepository {
-  private cleanUnderscoreFields(document: any): void {
-    let keys: any = Object.keys(document);
-
-    for (let key of keys) {
-      if (key.startsWith('_') && key !== '_id') {
-        delete document[key];
-      }
-    }
-  }
-
-  async turnObjectIdsToStrings(document: any) {
-    if (document._id) {
-      document.id = document._id.toString();
-    }
-    if (document.requestId) {
-      document.requestId = document.requestId.toString();
-    }
-    this.cleanUnderscoreFields(document);
-  }
-
   async markAsRead(
     notificationIdArray: NotificationIdArray
   ): Promise<SuccessMessage> {
@@ -45,15 +33,59 @@ export class NotificationRepository {
     }
   }
 
-  async createNotification(
-    createNotificationReq: CreateNotificationReq
+  async markAllAsRead(
+    markAllAsReadReq: MarkAllAsReadReq
+  ): Promise<SuccessMessage> {
+    try {
+      await NotificationModel.updateMany(
+        {
+          ownerId: markAllAsReadReq.ownerId,
+        },
+        { $set: { read: true } }
+      );
+      return { success: true };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async createNotifications(
+    createNotificationsReq: CreateNotificationsReq
+  ): Promise<NotificationArray> {
+    try {
+      let createdNotifications: Notification[] = [];
+      if (createNotificationsReq.request) {
+        const createNotificationRequests: CreateCustomNotificationReq[] =
+          generateNotifications(
+            createNotificationsReq.type,
+            createNotificationsReq.request
+          );
+        for (let createNotificationReq of createNotificationRequests) {
+          let createdNotification: Notification =
+            await this.createCustomNotification(createNotificationReq);
+          createdNotifications.push(createdNotification);
+        }
+      }
+      return {
+        notifications: createdNotifications,
+        totalCount: createdNotifications.length,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async createCustomNotification(
+    createCustomNotificationReq: CreateCustomNotificationReq
   ): Promise<Notification> {
     try {
-      const notification: any = new NotificationModel(createNotificationReq);
+      const notification: any = new NotificationModel(
+        createCustomNotificationReq
+      );
       notification.createdAt = new Date().getTime();
       const createdNotification = await notification.save();
       const document = createdNotification.toObject();
-      this.turnObjectIdsToStrings(document);
+      turnObjectIdsToStrings(document);
       return document as Notification;
     } catch (error) {
       throw error;
@@ -85,7 +117,7 @@ export class NotificationRepository {
         let documents: any = [];
         for (let i = 0; i < notifications.length; i++) {
           const notificationObj: any = notifications[i].toObject();
-          this.turnObjectIdsToStrings(notificationObj);
+          turnObjectIdsToStrings(notificationObj);
           documents.push(notificationObj);
         }
         return {

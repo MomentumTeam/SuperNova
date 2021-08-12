@@ -18,6 +18,7 @@ import {
   SearchRequestsByDisplayNameReq,
   SuccessMessage,
   UpdateADStatusReq,
+  UpdateApproversReq,
   UpdateDecisionReq,
   UpdateKartoffelStatusReq,
 } from '../interfaces/protoc/proto/requestService';
@@ -211,6 +212,30 @@ export class RequestManager {
   async getRequestById(getRequestByIdReq: GetRequestByIdReq): Promise<Request> {
     try {
       return await this.requestRepository.getRequestById(getRequestByIdReq);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateCommanders(
+    updateApproversReq: UpdateApproversReq
+  ): Promise<Request> {
+    try {
+      return (await this.requestRepository.updateCommanders(
+        updateApproversReq
+      )) as Request;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateSecurityApprovers(
+    updateApproversReq: UpdateApproversReq
+  ): Promise<Request> {
+    try {
+      return (await this.requestRepository.updateSecurityApprovers(
+        updateApproversReq
+      )) as Request;
     } catch (error) {
       throw error;
     }

@@ -9,3 +9,4 @@ export const mongoUrl =
 export const maxQueueRetries = process.env.RS_MAX_QUEUE_RETRIES
   ? parseInt(process.env.RS_MAX_QUEUE_RETRIES)
   : 5;
+export const notificationServiceUrl = process.env.RS_NS_URL || '0.0.0.0:8084';

@@ -1,11 +1,24 @@
 syntax = "proto3";
-
+// import "/home/barak/Desktop/SuperNova/proto/requestService.proto";//when loading with bloomRPC
+// import "proto/requestService.proto"; //when running in vscode
+import "/app/proto/requestService.proto"; //When using docker
 package NotificationService;
 
 service NotificationService {
-    rpc CreateNotification(CreateNotificationReq) returns (Notification) {}
+    rpc CreateCustomNotification(CreateCustomNotificationReq) returns (Notification) {}
     rpc GetNotificationsByOwnerId(GetNotificationsByOwnerIdReq) returns (NotificationArray) {}
     rpc MarkAsRead(NotificationIdArray) returns (SuccessMessage){}
+    rpc MarkAllAsRead(MarkAllAsReadReq) returns (SuccessMessage){}
+    rpc CreateNotifications(CreateNotificationsReq) returns (NotificationArray){}
+}
+
+message MarkAllAsReadReq{
+    string ownerId = 1;
+}
+
+message CreateNotificationsReq{
+    NotificationType type = 1;
+    RequestService.Request request = 2;
 }
 
 message SuccessMessage{
@@ -22,26 +35,45 @@ enum NotificationType{
     REQUEST_DECLINED_1 = 2;
     REQUEST_APPROVED_2 = 3;
     REQUEST_DECLINED_2 = 4;
-    REQUEST_DONE = 5;
-    REQUEST_FAILED = 6;
+    REQUEST_APPROVED_3 = 5;
+    REQUEST_DECLINED_3 = 6;
+    REQUEST_IN_PROGRESS = 7;
+    REQUEST_DECLINED = 8;
+    KARTOFFEL_STAGE_DONE = 9;
+    KARTOFFEL_STAGE_FAILED = 10;
+    AD_STAGE_DONE = 11;
+    AD_STAGE_FAILED = 12;
+    REQUEST_DONE = 13;
+    REQUEST_FAILED = 14;
 
 }
 
-message CreateNotificationReq{
+enum OwnerType{
+    SUBMITTER = 0;
+    COMMANDER = 1;
+    SECURITY_APPROVER = 2;
+    SUPER_SECURITY_APPROVER = 3;
+}
+
+message CreateCustomNotificationReq{
     NotificationType type = 1;
     string ownerId = 2;
-    string requestId = 3;
-    string message = 4;
+    OwnerType ownerType = 3;
+    string requestId = 4;
+    string message = 5;
+    string reason = 6;
 }
 
 message Notification{
     string id = 1;
     NotificationType type = 2;
     string ownerId = 3;
-    string requestId = 4;
-    string message = 5;
-    int64 createdAt = 6;
-    bool read = 7;
+    OwnerType ownerType = 4;
+    string requestId = 5;
+    string message = 6;
+    int64 createdAt = 7;
+    bool read = 8;
+    string reason = 9;
 }
 
 message GetNotificationsByOwnerIdReq{

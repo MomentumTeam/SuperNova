@@ -125,9 +125,11 @@ export function requestTypeToJSON(object: RequestType): string {
 export enum RequestStatus {
   SUBMITTED = 0,
   DECLINED = 1,
-  IN_PROGRESS = 2,
-  DONE = 3,
-  FAILED = 4,
+  APPROVED_BY_COMMANDER = 2,
+  APPROVED_BY_SECURITY = 3,
+  IN_PROGRESS = 4,
+  DONE = 5,
+  FAILED = 6,
   UNRECOGNIZED = -1,
 }
 
@@ -140,12 +142,18 @@ export function requestStatusFromJSON(object: any): RequestStatus {
     case "DECLINED":
       return RequestStatus.DECLINED;
     case 2:
+    case "APPROVED_BY_COMMANDER":
+      return RequestStatus.APPROVED_BY_COMMANDER;
+    case 3:
+    case "APPROVED_BY_SECURITY":
+      return RequestStatus.APPROVED_BY_SECURITY;
+    case 4:
     case "IN_PROGRESS":
       return RequestStatus.IN_PROGRESS;
-    case 3:
+    case 5:
     case "DONE":
       return RequestStatus.DONE;
-    case 4:
+    case 6:
     case "FAILED":
       return RequestStatus.FAILED;
     case -1:
@@ -161,6 +169,10 @@ export function requestStatusToJSON(object: RequestStatus): string {
       return "SUBMITTED";
     case RequestStatus.DECLINED:
       return "DECLINED";
+    case RequestStatus.APPROVED_BY_COMMANDER:
+      return "APPROVED_BY_COMMANDER";
+    case RequestStatus.APPROVED_BY_SECURITY:
+      return "APPROVED_BY_SECURITY";
     case RequestStatus.IN_PROGRESS:
       return "IN_PROGRESS";
     case RequestStatus.DONE:
@@ -254,6 +266,11 @@ export function decisionToJSON(object: Decision): string {
   }
 }
 
+export interface UpdateApproversReq {
+  id: string;
+  approvers: EntityMin[];
+}
+
 export interface GetRequestsInProgressByDueReq {
   due: number;
 }
@@ -295,7 +312,7 @@ export interface SearchRequestsByDisplayNameReq {
 export interface UpdateKartoffelStatusReq {
   requestId: string;
   status: StageStatus;
-  message: string;
+  message?: string | undefined;
   createdId?: string | undefined;
 }
 
@@ -383,7 +400,7 @@ export interface UpdateReqProperties {
   due?: number | undefined;
 }
 
-/** ApproverRequest */
+/** NewApproverRequest */
 export interface CreateNewApproverReq {
   submittedBy: EntityMin | undefined;
   status: RequestStatus;
@@ -1079,6 +1096,90 @@ export interface Request {
   needSuperSecurityDecision: boolean;
 }
 
+const baseUpdateApproversReq: object = { id: "" };
+
+export const UpdateApproversReq = {
+  encode(
+    message: UpdateApproversReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    for (const v of message.approvers) {
+      EntityMin.encode(v!, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UpdateApproversReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseUpdateApproversReq } as UpdateApproversReq;
+    message.approvers = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        case 2:
+          message.approvers.push(EntityMin.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UpdateApproversReq {
+    const message = { ...baseUpdateApproversReq } as UpdateApproversReq;
+    message.approvers = [];
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    if (object.approvers !== undefined && object.approvers !== null) {
+      for (const e of object.approvers) {
+        message.approvers.push(EntityMin.fromJSON(e));
+      }
+    }
+    return message;
+  },
+
+  toJSON(message: UpdateApproversReq): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    if (message.approvers) {
+      obj.approvers = message.approvers.map((e) =>
+        e ? EntityMin.toJSON(e) : undefined
+      );
+    } else {
+      obj.approvers = [];
+    }
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<UpdateApproversReq>): UpdateApproversReq {
+    const message = { ...baseUpdateApproversReq } as UpdateApproversReq;
+    message.approvers = [];
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    if (object.approvers !== undefined && object.approvers !== null) {
+      for (const e of object.approvers) {
+        message.approvers.push(EntityMin.fromPartial(e));
+      }
+    }
+    return message;
+  },
+};
+
 const baseGetRequestsInProgressByDueReq: object = { due: 0 };
 
 export const GetRequestsInProgressByDueReq = {
@@ -1714,11 +1815,7 @@ export const SearchRequestsByDisplayNameReq = {
   },
 };
 
-const baseUpdateKartoffelStatusReq: object = {
-  requestId: "",
-  status: 0,
-  message: "",
-};
+const baseUpdateKartoffelStatusReq: object = { requestId: "", status: 0 };
 
 export const UpdateKartoffelStatusReq = {
   encode(
@@ -1731,7 +1828,7 @@ export const UpdateKartoffelStatusReq = {
     if (message.status !== 0) {
       writer.uint32(16).int32(message.status);
     }
-    if (message.message !== "") {
+    if (message.message !== undefined) {
       writer.uint32(26).string(message.message);
     }
     if (message.createdId !== undefined) {
@@ -1789,7 +1886,7 @@ export const UpdateKartoffelStatusReq = {
     if (object.message !== undefined && object.message !== null) {
       message.message = String(object.message);
     } else {
-      message.message = "";
+      message.message = undefined;
     }
     if (object.createdId !== undefined && object.createdId !== null) {
       message.createdId = String(object.createdId);
@@ -1828,7 +1925,7 @@ export const UpdateKartoffelStatusReq = {
     if (object.message !== undefined && object.message !== null) {
       message.message = object.message;
     } else {
-      message.message = "";
+      message.message = undefined;
     }
     if (object.createdId !== undefined && object.createdId !== null) {
       message.createdId = object.createdId;
@@ -3296,7 +3393,10 @@ export const CreateNewApproverReq = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): CreateNewApproverReq {
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): CreateNewApproverReq {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseCreateNewApproverReq } as CreateNewApproverReq;
@@ -3656,7 +3756,10 @@ export const CreateNewApproverRes = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): CreateNewApproverRes {
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): CreateNewApproverRes {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseCreateNewApproverRes } as CreateNewApproverRes;
@@ -17547,7 +17650,9 @@ export interface RequestService {
     request: AssignRoleToEntityReq
   ): Promise<AssignRoleToEntityRes>;
   CreateOGRequest(request: CreateOGReq): Promise<CreateOGRes>;
-  CreateNewApproverRequest(request: CreateNewApproverReq): Promise<CreateNewApproverRes>;
+  CreateNewApproverRequest(
+    request: CreateNewApproverReq
+  ): Promise<CreateNewApproverRes>;
   CreateEntityRequest(request: CreateEntityReq): Promise<CreateEntityRes>;
   RenameOGRequest(request: RenameOGReq): Promise<RenameOGRes>;
   RenameRoleRequest(request: RenameRoleReq): Promise<EditEntityRes>;
@@ -17611,6 +17716,8 @@ export interface RequestService {
   GetRequestIdsInProgressByDue(
     request: GetRequestsInProgressByDueReq
   ): Promise<RequestIdArray>;
+  UpdateCommanders(request: UpdateApproversReq): Promise<Request>;
+  UpdateSecurityApprovers(request: UpdateApproversReq): Promise<Request>;
 }
 
 export class RequestServiceClientImpl implements RequestService {
@@ -17666,6 +17773,8 @@ export class RequestServiceClientImpl implements RequestService {
       this.GetRequestsInProgressByDue.bind(this);
     this.GetRequestIdsInProgressByDue =
       this.GetRequestIdsInProgressByDue.bind(this);
+    this.UpdateCommanders = this.UpdateCommanders.bind(this);
+    this.UpdateSecurityApprovers = this.UpdateSecurityApprovers.bind(this);
   }
   CreateRoleRequest(request: CreateRoleReq): Promise<CreateRoleRes> {
     const data = CreateRoleReq.encode(request).finish();
@@ -18079,6 +18188,26 @@ export class RequestServiceClientImpl implements RequestService {
       data
     );
     return promise.then((data) => RequestIdArray.decode(new _m0.Reader(data)));
+  }
+
+  UpdateCommanders(request: UpdateApproversReq): Promise<Request> {
+    const data = UpdateApproversReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "UpdateCommanders",
+      data
+    );
+    return promise.then((data) => Request.decode(new _m0.Reader(data)));
+  }
+
+  UpdateSecurityApprovers(request: UpdateApproversReq): Promise<Request> {
+    const data = UpdateApproversReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "UpdateSecurityApprovers",
+      data
+    );
+    return promise.then((data) => Request.decode(new _m0.Reader(data)));
   }
 }
 

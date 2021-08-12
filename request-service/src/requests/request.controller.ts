@@ -476,6 +476,44 @@ export async function incrementKartoffelRetries(
   }
 }
 
+export async function updateCommanders(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    const request = await requestManager.updateCommanders(call.request);
+    callback(null, request);
+  } catch (error) {
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function updateSecurityApprovers(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    const request = await requestManager.updateSecurityApprovers(call.request);
+    callback(null, request);
+  } catch (error) {
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
 export async function getRequestsInProgressByDue(
   call: any,
   callback: any

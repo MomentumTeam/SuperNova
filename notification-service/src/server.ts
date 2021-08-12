@@ -3,8 +3,10 @@ import * as protoLoader from '@grpc/proto-loader';
 import * as C from './config';
 import { logger } from './logger';
 import {
-  createNotification,
+  createCustomNotification,
+  createNotifications,
   getNotificationsByOwnerId,
+  markAllAsRead,
   markAsRead,
 } from './notification/notification.controller';
 import { findPath } from './utils/path';
@@ -47,9 +49,11 @@ export class Server {
       this.server.addService(
         spikeServiceDescriptor.NotificationService.service,
         {
-          CreateNotification: createNotification,
+          CreateCustomNotification: createCustomNotification,
           GetNotificationsByOwnerId: getNotificationsByOwnerId,
           MarkAsRead: markAsRead,
+          CreateNotifications: createNotifications,
+          MarkAllAsRead: markAllAsRead,
         }
       );
       logger.info(`Grpc services were successfully added to the server`);

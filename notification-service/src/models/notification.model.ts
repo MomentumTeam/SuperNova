@@ -1,5 +1,8 @@
 import mongoose from 'mongoose';
-import { NotificationType } from '../interfaces/protoc/proto/notificationService';
+import {
+  NotificationType,
+  OwnerType,
+} from '../interfaces/protoc/proto/notificationService';
 import { connection } from '../mongoose';
 const { Schema } = mongoose;
 
@@ -13,13 +16,21 @@ export const NotificationSchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       default: null,
     },
+    ownerType: {
+      type: String,
+      enum: OwnerType,
+    },
     requestId: {
       type: mongoose.Schema.Types.ObjectId,
       default: null,
     },
     message: {
       type: String,
-      default: null,
+      default: '',
+    },
+    reason: {
+      type: String,
+      default: '',
     },
     read: {
       type: Boolean,

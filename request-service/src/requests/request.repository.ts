@@ -4,6 +4,7 @@ import {
   CanPushToQueueRes,
   Decision,
   decisionFromJSON,
+  decisionToJSON,
   DeleteReq,
   GetAllRequestsReq,
   GetRequestByIdReq,
@@ -25,121 +26,23 @@ import {
   stageStatusToJSON,
   SuccessMessage,
   UpdateADStatusReq,
+  UpdateApproversReq,
   UpdateDecisionReq,
   UpdateKartoffelStatusReq,
 } from '../interfaces/protoc/proto/requestService';
+import { createNotifications } from '../services/notificationHelper';
 import * as C from '../config';
 import { RequestModel } from '../models/request.model';
-import { logger } from '../logger';
+import {
+  cleanUnderscoreFields,
+  turnObjectIdsToStrings,
+} from '../services/requestHelper';
+import {
+  NotificationType,
+  OwnerType,
+} from '../interfaces/protoc/proto/notificationService';
 
 export class RequestRepository {
-  private cleanUnderscoreFields(document: any): void {
-    let keys: any = Object.keys(document);
-
-    for (let key of keys) {
-      if (key.startsWith('_') && key !== '_id') {
-        delete document[key];
-      }
-    }
-  }
-
-  private cleanNullFields(document: any): void {
-    let keys: any = Object.keys(document);
-
-    for (let key of keys) {
-      if (
-        typeof document[key] !== typeof true &&
-        (!document[key] || document[key] == null)
-      ) {
-        delete document[key];
-      }
-    }
-    if (document.kartoffelParams) {
-      keys = Object.keys(document.kartoffelParams);
-
-      for (let key of keys) {
-        if (
-          typeof document.kartoffelParams[key] !== typeof true &&
-          (!document.kartoffelParams[key] ||
-            document.kartoffelParams[key] == null)
-        ) {
-          delete document.kartoffelParams[key];
-        }
-      }
-    }
-    if (document.adParams) {
-      keys = Object.keys(document.adParams);
-
-      for (let key of keys) {
-        if (
-          typeof document.adParams[key] !== typeof true &&
-          (!document.adParams[key] || document.adParams[key] == null)
-        ) {
-          delete document.adParams[key];
-        }
-      }
-    }
-  }
-
-  private turnIdOfApproverToString(approver: any) {
-    if (approver.id) {
-      approver.id = approver.id.toString();
-    }
-    return approver;
-  }
-
-  private turnObjectIdsToStrings(document: any): void {
-    //_id
-    if (document._id) {
-      document._id = document._id.toString();
-      document.id = document._id;
-    }
-
-    //submittedBy
-    if (document.submittedBy) {
-      this.turnIdOfApproverToString(document.submittedBy);
-    }
-
-    //commanderDecision
-    if (document.commanderDecision && document.commanderDecision.approver) {
-      this.turnIdOfApproverToString(document.commanderDecision.approver);
-    }
-
-    //securityDecision
-    if (document.securityDecision && document.securityDecision.approver) {
-      this.turnIdOfApproverToString(document.securityDecision.approver);
-    }
-
-    //superSecurityDecision
-    if (
-      document.superSecurityDecision &&
-      document.superSecurityDecision.approver
-    ) {
-      this.turnIdOfApproverToString(document.superSecurityDecision.approver);
-    }
-
-    //commanders
-    if (document.commanders) {
-      document.commanders.forEach((commander: any) => {
-        this.turnIdOfApproverToString(commander);
-      });
-    }
-
-    //securityApprovers
-    if (document.securityApprovers) {
-      document.securityApprovers.forEach((securityApprover: any) => {
-        this.turnIdOfApproverToString(securityApprover);
-      });
-    }
-
-    if (document.kartoffelProperties && document.kartoffelProperties.id) {
-      document.kartoffelProperties.id =
-        document.kartoffelProperties.id.toString();
-    }
-    this.cleanUnderscoreFields(document);
-    this.cleanNullFields(document);
-  }
-
   async canPushToKartoffelQueue(
     canPushToQueueReq: CanPushToQueueReq
   ): Promise<CanPushToQueueRes> {
@@ -149,7 +52,7 @@ export class RequestRepository {
       });
       if (request) {
         const document: any = request.toObject();
-        this.turnObjectIdsToStrings(document);
+        turnObjectIdsToStrings(document);
         const commanderDecision: Decision = document.commanderDecision
           ? decisionFromJSON(document.commanderDecision.decision)
           : Decision.DECISION_UNKNOWN;
@@ -163,7 +66,6 @@ export class RequestRepository {
         const due: number = document.due;
         const kartoffelFailedRetries = document.kartoffelStatus.failedRetries;
         const now = new Date().getTime();
-        let canPushToQueue: boolean = false;
         if (
           commanderDecision === Decision.APPROVED &&
           securityDecision === Decision.APPROVED &&
@@ -172,87 +74,20 @@ export class RequestRepository {
           due <= now &&
           kartoffelFailedRetries < C.maxQueueRetries
         ) {
-          canPushToQueue = true;
+          return {
+            canPushToQueue: true,
+          };
         } else {
-          canPushToQueue = false;
+          return {
+            canPushToQueue: false,
+          };
         }
-        logger.info(`canPushToKartoffelQueue for id=${canPushToQueueReq.id}`, {
-          canPushToQueueReq,
-          commanderDecision,
-          securityDecision,
-          superSecurityDecision,
-          needSuperSecurityDecision,
-          due,
-          kartoffelFailedRetries,
-          now,
-          canPushToQueue,
-        });
-        return {
-          canPushToQueue: canPushToQueue,
-        };
       } else {
-        logger.error(`canPushToKartoffelQueue ERROR`, {
-          error: `A request with {id: ${canPushToQueueReq.id}} was not found!`,
-        });
         throw new Error(
           `A request with {id: ${canPushToQueueReq.id}} was not found!`
         );
       }
     } catch (error) {
-      logger.error(`canPushToKartoffelQueue ERROR`, {
-        error,
-        canPushToQueueReq,
-      });
-      throw error;
-    }
-  }
-
-  async canPushToADQueue(
-    canPushToQueueReq: CanPushToQueueReq
-  ): Promise<CanPushToQueueRes> {
-    try {
-      const request = await RequestModel.findOne({
-        _id: canPushToQueueReq.id,
-      });
-      if (request) {
-        const document: any = request.toObject();
-        this.turnObjectIdsToStrings(document);
-        const kartoffelStageStatus = stageStatusFromJSON(
-          document.kartoffelStatus.status
-        );
-        const adFailedRetries = document.adStatus.failedRetries;
-        let canPushToQueue: boolean = false;
-        if (
-          kartoffelStageStatus === StageStatus.STAGE_DONE &&
-          adFailedRetries < C.maxQueueRetries
-        ) {
-          canPushToQueue = true;
-        } else {
-          canPushToQueue = false;
-        }
-        logger.info(`canPushToADQueue for id=${canPushToQueueReq.id}`, {
-          canPushToQueueReq,
-          adFailedRetries,
-          kartoffelStageStatus,
-          canPushToQueue,
-        });
-        return {
-          canPushToQueue: canPushToQueue,
-        };
-      } else {
-        logger.error(`canPushToADQueue ERROR`, {
-          error: `A request with {id: ${canPushToQueueReq.id}} was not found!`,
-          canPushToQueueReq,
-        });
-        throw new Error(
-          `A request with {id: ${canPushToQueueReq.id}} was not found!`
-        );
-      }
-    } catch (error) {
-      logger.error(`canPushToADQueue ERROR`, {
-        error,
-        canPushToQueueReq,
-      });
       throw error;
     }
   }
@@ -278,17 +113,41 @@ export class RequestRepository {
       updateQuery.requestProperties[approverField] =
         updateDecisionReq.approverDecision;
       const updatedRequest = await this.updateRequest(updateQuery);
-      logger.info(`updateApproverDecision`, {
-        updateDecisionReq,
-        personType,
-        updateQuery,
-      });
+      let approvingNotificationType: any = undefined,
+        notificationType: any = undefined;
+      if (
+        updateDecisionReq.approverDecision?.decision.toString() ===
+        decisionToJSON(Decision.APPROVED)
+      ) {
+        if (personType === PersonTypeInRequest.COMMANDER) {
+          approvingNotificationType = NotificationType.REQUEST_APPROVED_1;
+        } else if (personType === PersonTypeInRequest.SECURITY_APPROVER) {
+          approvingNotificationType = NotificationType.REQUEST_APPROVED_2;
+        } else {
+          approvingNotificationType = NotificationType.REQUEST_APPROVED_3;
+          notificationType = NotificationType.REQUEST_IN_PROGRESS;
+        }
+      } else if (
+        updateDecisionReq.approverDecision?.decision.toString() ===
+        decisionToJSON(Decision.DENIED)
+      ) {
+        notificationType = NotificationType.REQUEST_DECLINED;
+        if (personType === PersonTypeInRequest.COMMANDER) {
+          approvingNotificationType = NotificationType.REQUEST_DECLINED_1;
+        } else if (personType === PersonTypeInRequest.SECURITY_APPROVER) {
+          approvingNotificationType = NotificationType.REQUEST_DECLINED_2;
+        } else {
+          approvingNotificationType = NotificationType.REQUEST_DECLINED_3;
+        }
+      }
+      if (approvingNotificationType) {
+        await createNotifications(approvingNotificationType, updatedRequest);
+        if (notificationType) {
+          await createNotifications(notificationType, updatedRequest);
+        }
+      }
       return updatedRequest;
     } catch (error) {
-      logger.error(`updateApproverDecision ERROR`, {
-        updateDecisionReq,
-        error,
-      });
       throw error;
     }
   }
@@ -313,27 +172,14 @@ export class RequestRepository {
             requestProperties: { kartoffelStatus: kartoffelStatus },
           };
           const updatedRequest = await this.updateRequest(updateQuery);
-          logger.info(`incrementKartoffelRetries`, {
-            incrementRetriesReq,
-            updateQuery,
-          });
           return updatedRequest;
         }
       } else {
-        logger.error(`incrementKartoffelRetries ERROR`, {
-          request,
-          error: `kartoffel status is null for requestId ${incrementRetriesReq.id}`,
-          incrementRetriesReq,
-        });
         throw new Error(
           `kartoffel status is null for requestId ${incrementRetriesReq.id}`
         );
       }
     } catch (error) {
-      logger.error(`incrementKartoffelRetries ERROR`, {
-        incrementRetriesReq,
-        error,
-      });
       throw error;
     }
   }
@@ -358,27 +204,46 @@ export class RequestRepository {
             requestProperties: { adStatus: adStatus },
           };
           const updatedRequest = await this.updateRequest(updateQuery);
-          logger.info(`incrementADRetries`, {
-            incrementRetriesReq,
-            updateQuery,
-          });
           return updatedRequest;
         }
       } else {
-        logger.error(`incrementADRetries ERROR`, {
-          error: `AD status is null for requestId ${incrementRetriesReq.id}`,
-          incrementRetriesReq,
-          request,
-        });
         throw new Error(
-          `AD status is null for requestId ${incrementRetriesReq.id}`
+          `kartoffel status is null for requestId ${incrementRetriesReq.id}`
         );
       }
     } catch (error) {
-      logger.error(`incrementADRetries ERROR`, {
-        incrementRetriesReq,
-        error,
+      throw error;
+    }
+  }
+
+  async canPushToADQueue(
+    canPushToQueueReq: CanPushToQueueReq
+  ): Promise<CanPushToQueueRes> {
+    try {
+      const request = await RequestModel.findOne({
+        _id: canPushToQueueReq.id,
       });
+      if (request) {
+        const document: any = request.toObject();
+        turnObjectIdsToStrings(document);
+        const kartoffelStageStatus = stageStatusFromJSON(
+          document.kartoffelStatus.status
+        );
+        const adFailedRetries = document.adStatus.failedRetries;
+        if (
+          kartoffelStageStatus === StageStatus.STAGE_DONE &&
+          adFailedRetries < C.maxQueueRetries
+        ) {
+          return { canPushToQueue: true };
+        } else {
+          return { canPushToQueue: false };
+        }
+      } else {
+        throw new Error(
+          `A request with {id: ${canPushToQueueReq.id}} was not found!`
+        );
+      }
+    } catch (error) {
       throw error;
     }
   }
@@ -416,9 +281,10 @@ export class RequestRepository {
         let documents: any = [];
         for (let i = 0; i < requests.length; i++) {
           const requestObj: any = requests[i].toObject();
-          this.turnObjectIdsToStrings(requestObj);
+          turnObjectIdsToStrings(requestObj);
           documents.push(requestObj);
         }
+
         return {
           requests: documents,
           totalCount: totalCount,
@@ -430,10 +296,6 @@ export class RequestRepository {
         };
       }
     } catch (error) {
-      logger.error(`getRequestsByQuery ERROR`, {
-        query,
-        error,
-      });
       throw error;
     }
   }
@@ -443,22 +305,15 @@ export class RequestRepository {
   ): Promise<RequestArray> {
     try {
       const due: number = getRequestsInProgressByDueReq.due;
-      const query = {
-        due: { $lte: due },
-        status: requestStatusToJSON(RequestStatus.IN_PROGRESS),
-      };
-      const requestArray = await this.getRequestsByQuery(query, true);
-      logger.info(`getRequestsInProgressByDue`, {
-        query,
-        getRequestsInProgressByDueReq,
-      });
-
+      const requestArray = await this.getRequestsByQuery(
+        {
+          due: { $lte: due },
+          status: requestStatusToJSON(RequestStatus.IN_PROGRESS),
+        },
+        true
+      );
       return requestArray as RequestArray;
     } catch (error) {
-      logger.error(`getRequestsInProgressByDue ERROR`, {
-        error,
-        getRequestsInProgressByDueReq,
-      });
       throw error;
     }
   }
@@ -468,21 +323,15 @@ export class RequestRepository {
   ): Promise<RequestIdArray> {
     try {
       const due: number = getRequestsInProgressByDueReq.due;
-      const query = {
-        due: { $lte: due },
-        status: requestStatusToJSON(RequestStatus.IN_PROGRESS),
-      };
-      let requestIdArray = await this.getRequestsByQuery(query, false);
-      logger.info(`getRequestIdsInProgressByDue`, {
-        query,
-        getRequestsInProgressByDueReq,
-      });
+      let requestIdArray = await this.getRequestsByQuery(
+        {
+          due: { $lte: due },
+          status: requestStatusToJSON(RequestStatus.IN_PROGRESS),
+        },
+        false
+      );
       return requestIdArray as RequestIdArray;
     } catch (error) {
-      logger.error(`getRequestIdsInProgressByDue ERROR`, {
-        error,
-        getRequestsInProgressByDueReq,
-      });
       throw error;
     }
   }
@@ -519,16 +368,8 @@ export class RequestRepository {
         searchRequestsByDisplayNameReq.from,
         searchRequestsByDisplayNameReq.to
       );
-      logger.info(`searchRequestsByDisplayName`, {
-        query,
-        searchRequestsByDisplayNameReq,
-      });
       return requestArray;
     } catch (error) {
-      logger.error(`searchRequestsByDisplayName ERROR`, {
-        error,
-        searchRequestsByDisplayNameReq,
-      });
       throw error;
     }
   }
@@ -580,18 +421,8 @@ export class RequestRepository {
         getRequestsByIdentifierReq.from,
         getRequestsByIdentifierReq.to
       );
-      logger.info(`getRequestsByIdentifier`, {
-        query,
-        getRequestsByIdentifierReq,
-        personType,
-      });
       return requestArray;
     } catch (error) {
-      logger.error(`getRequestsByIdentifier ERROR`, {
-        getRequestsByIdentifierReq,
-        personType,
-        error,
-      });
       throw error;
     }
   }
@@ -603,16 +434,8 @@ export class RequestRepository {
         success: true,
         message: `Request ${deleteReq.id} was deleted successfully`,
       };
-      logger.info(`deleteRequest`, {
-        res,
-        deleteReq,
-      });
       return res;
     } catch (error) {
-      logger.error(`deleteRequest ERROR`, {
-        deleteReq,
-        error,
-      });
       throw error;
     }
   }
@@ -621,7 +444,7 @@ export class RequestRepository {
     //TODO CHECK MORE
     try {
       let requestUpdate: any = { ...updateReq.requestProperties };
-      this.cleanUnderscoreFields(requestUpdate);
+      cleanUnderscoreFields(requestUpdate);
 
       let commanderApproverIdInUpdate: any = undefined,
         securityApproverIdInUpdate: any = undefined,
@@ -719,7 +542,7 @@ export class RequestRepository {
         });
         if (documentBefore) {
           const documentBeforeObj: any = documentBefore.toObject();
-          this.turnObjectIdsToStrings(documentBeforeObj);
+          turnObjectIdsToStrings(documentBeforeObj);
           const needSuperSecurityDecision =
             documentBeforeObj.needSuperSecurityDecision;
 
@@ -865,13 +688,12 @@ export class RequestRepository {
       );
       if (documentAfter) {
         const documentObj = documentAfter.toObject();
-        this.turnObjectIdsToStrings(documentObj);
+        turnObjectIdsToStrings(documentObj);
         return documentObj as Request;
       } else {
         throw new Error(`A request with {_id: ${updateReq.id}} was not found!`);
       }
     } catch (error) {
-      logger.error('updateRequest ERROR', { error, updateReq });
       throw error;
     }
   }
@@ -879,8 +701,9 @@ export class RequestRepository {
   async updateKartoffelStatus(
     updateKartoffelStatusReq: UpdateKartoffelStatusReq
   ): Promise<Request> {
+    let updatedRequest;
     try {
-      this.cleanUnderscoreFields(updateKartoffelStatusReq);
+      cleanUnderscoreFields(updateKartoffelStatusReq);
       let requestUpdate: any = {
         id: updateKartoffelStatusReq.requestId,
         requestProperties: {
@@ -891,23 +714,34 @@ export class RequestRepository {
           },
         },
       };
-      logger.info('updateKartoffelStatus', {
-        updateKartoffelStatusReq,
-        requestUpdate,
-      });
-      return await this.updateRequest(requestUpdate);
+      updatedRequest = await this.updateRequest(requestUpdate);
+      if (
+        (updateKartoffelStatusReq.status.toString() ===
+          stageStatusToJSON(StageStatus.STAGE_DONE) ||
+          updateKartoffelStatusReq.status.toString() ===
+            stageStatusToJSON(StageStatus.STAGE_FAILED)) &&
+        updatedRequest.submittedBy
+      ) {
+        const stageNotificationType: NotificationType =
+          updateKartoffelStatusReq.status === StageStatus.STAGE_DONE
+            ? NotificationType.KARTOFFEL_STAGE_DONE
+            : NotificationType.KARTOFFEL_STAGE_FAILED;
+        await createNotifications(stageNotificationType, updatedRequest);
+        const notificationType: NotificationType =
+          updateKartoffelStatusReq.status === StageStatus.STAGE_DONE
+            ? NotificationType.REQUEST_DONE
+            : NotificationType.REQUEST_FAILED;
+        await createNotifications(notificationType, updatedRequest);
+      }
+      return updatedRequest;
     } catch (error) {
-      logger.error('updateKartoffelStatus ERROR', {
-        updateKartoffelStatusReq,
-        error,
-      });
       throw error;
     }
   }
 
   async updateADStatus(updateADStatusReq: UpdateADStatusReq): Promise<Request> {
     try {
-      this.cleanUnderscoreFields(updateADStatusReq);
+      cleanUnderscoreFields(updateADStatusReq);
       let requestUpdate: any = {
         id: updateADStatusReq.requestId,
         requestProperties: {
@@ -917,21 +751,35 @@ export class RequestRepository {
           },
         },
       };
-      if (updateADStatusReq.status === StageStatus.STAGE_FAILED) {
+      if (
+        updateADStatusReq.status.toString() ===
+        stageStatusToJSON(StageStatus.STAGE_FAILED)
+      ) {
         requestUpdate.requestProperties.status = requestStatusToJSON(
           RequestStatus.FAILED
         );
       }
-      logger.info('updateADStatus', {
-        updateADStatusReq,
-        requestUpdate,
-      });
-      return await this.updateRequest(requestUpdate);
+      const updatedRequest = await this.updateRequest(requestUpdate);
+      if (
+        (updateADStatusReq.status.toString() ===
+          stageStatusToJSON(StageStatus.STAGE_DONE) ||
+          updateADStatusReq.status.toString() ===
+            stageStatusToJSON(StageStatus.STAGE_FAILED)) &&
+        updatedRequest.submittedBy
+      ) {
+        const stageNotificationType: NotificationType =
+          updateADStatusReq.status === StageStatus.STAGE_DONE
+            ? NotificationType.AD_STAGE_DONE
+            : NotificationType.AD_STAGE_FAILED;
+        await createNotifications(stageNotificationType, updatedRequest);
+        const notificationType: NotificationType =
+          updateADStatusReq.status === StageStatus.STAGE_DONE
+            ? NotificationType.REQUEST_DONE
+            : NotificationType.REQUEST_FAILED;
+        await createNotifications(notificationType, updatedRequest);
+      }
+      return updatedRequest;
     } catch (error) {
-      logger.error('updateADStatus ERROR', {
-        updateADStatusReq,
-        error,
-      });
       throw error;
     }
   }
@@ -944,20 +792,12 @@ export class RequestRepository {
       const request: any = new RequestModel(createRequestReq);
       request.type = requestTypeToJSON(type);
       request.createdAt = new Date().getTime();
-
       const createdCreateRequest = await request.save();
       const document = createdCreateRequest.toObject();
-      this.turnObjectIdsToStrings(document);
-      logger.info('createRequest', {
-        createRequestReq,
-        type,
-      });
+      turnObjectIdsToStrings(document);
+      await createNotifications(NotificationType.REQUEST_SUBMITTED, document);
       return document as Request;
     } catch (error) {
-      logger.error('createRequest ERROR', {
-        createRequestReq,
-        error,
-      });
       throw error;
     }
   }
@@ -972,15 +812,8 @@ export class RequestRepository {
         getAllRequestsReq.from,
         getAllRequestsReq.to
       );
-      logger.info('getAllRequests', {
-        getAllRequestsReq,
-      });
       return requestArray;
     } catch (error) {
-      logger.error('getAllRequests ERROR', {
-        getAllRequestsReq,
-        error,
-      });
       throw error;
     }
   }
@@ -994,10 +827,7 @@ export class RequestRepository {
       });
       if (request) {
         const document = request.toObject();
-        this.turnObjectIdsToStrings(document);
-        logger.info('getRequestBySerialNumber', {
-          getRequestBySerialNumberReq,
-        });
+        turnObjectIdsToStrings(document);
         return document as Request;
       } else {
         throw new Error(
@@ -1005,10 +835,6 @@ export class RequestRepository {
         );
       }
     } catch (error) {
-      logger.error('getRequestBySerialNumber ERROR', {
-        error,
-        getRequestBySerialNumberReq,
-      });
       throw error;
     }
   }
@@ -1018,10 +844,7 @@ export class RequestRepository {
       const request = await RequestModel.findOne({ _id: getRequestByIdReq.id });
       if (request) {
         const document = request.toObject();
-        this.turnObjectIdsToStrings(document);
-        logger.info('getRequestById', {
-          getRequestByIdReq,
-        });
+        turnObjectIdsToStrings(document);
         return document as Request;
       } else {
         throw new Error(
@@ -1029,10 +852,34 @@ export class RequestRepository {
         );
       }
     } catch (error) {
-      logger.error('getRequestById ERROR', {
-        error,
-        getRequestByIdReq,
+      throw error;
+    }
+  }
+
+  async updateCommanders(
+    updateApproversReq: UpdateApproversReq
+  ): Promise<Request> {
+    try {
+      const request: Request = await this.updateRequest({
+        id: updateApproversReq.id,
+        requestProperties: { commanders: updateApproversReq.approvers },
       });
+      return request;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateSecurityApprovers(
+    updateApproversReq: UpdateApproversReq
+  ): Promise<Request> {
+    try {
+      const request: Request = await this.updateRequest({
+        id: updateApproversReq.id,
+        requestProperties: { securityApprovers: updateApproversReq.approvers },
+      });
+      return request;
+    } catch (error) {
       throw error;
     }
   }
@@ -1064,13 +911,9 @@ export class RequestRepository {
         let documents: any = [];
         for (let i = 0; i < requests.length; i++) {
           const requestObj: any = requests[i].toObject();
-          this.turnObjectIdsToStrings(requestObj);
+          turnObjectIdsToStrings(requestObj);
           documents.push(requestObj);
         }
-        logger.info('getRequestsByPersonId', {
-          getRequestsByPersonIdReq,
-          personTypeInRequest,
-        });
         return {
           requests: documents,
           totalCount: totalCount,
@@ -1079,11 +922,6 @@ export class RequestRepository {
         return null;
       }
     } catch (error) {
-      logger.error('getRequestsByPersonId ERROR', {
-        getRequestsByPersonIdReq,
-        personTypeInRequest,
-        error,
-      });
       throw error;
     }
   }

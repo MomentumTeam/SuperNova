@@ -22,6 +22,8 @@ import {
   incrementADRetries,
   getRequestsInProgressByDue,
   getRequestIdsInProgressByDue,
+  updateCommanders,
+  updateSecurityApprovers,
 } from './requests/request.controller';
 import { RequestType } from './interfaces/protoc/proto/requestService';
 import { findPath } from './utils/path';
@@ -132,6 +134,8 @@ export class Server {
         ),
         GetRequestsInProgressByDue: getRequestsInProgressByDue,
         GetRequestIdsInProgressByDue: getRequestIdsInProgressByDue,
+        UpdateCommanders: updateCommanders,
+        UpdateSecurityApprovers: updateSecurityApprovers,
       });
       logger.info(`Grpc services were successfully added to the server`);
     } catch (error) {
