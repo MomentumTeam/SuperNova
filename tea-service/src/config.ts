@@ -32,10 +32,10 @@ export const prefixesInitArray = process.env.TS_INIT_PREFIXES
 export const countersInitArray = process.env.TS_INIT_COUNTERS
   ? process.env.TS_INIT_COUNTERS.split(',').map((counter) => parseInt(counter))
   : [1, 1];
-export const suffixesInOldDomain = process.env.SUFFIXES_OLD_DOMAIN
-  ? process.env.SUFFIXES_OLD_DOMAIN.split(',')
+export const suffixesInOldDomain = process.env.TS_SUFFIXES_OLD_DOMAIN
+  ? process.env.TS_SUFFIXES_OLD_DOMAIN.split(',')
   : ['gmail.com', 'amazon.com'];
-export const suffixesInNewDomain = process.env.SUFFIXES_OLD_DOMAIN
-  ? process.env.SUFFIXES_OLD_DOMAIN.split(',')
+export const suffixesInNewDomain = process.env.TS_SUFFIXES_OLD_DOMAIN
+  ? process.env.TS_SUFFIXES_OLD_DOMAIN.split(',')
   : ['newDomain.com', 'newDomain.com'];
 // export const oldDomainSuffixesArray

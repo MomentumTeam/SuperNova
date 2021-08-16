@@ -1,7 +1,7 @@
 syntax = "proto3";
-// import "/home/barak/Desktop/SuperNova/proto/kartoffelService.proto";//when loading with bloomRPC
+import "/home/barak/Desktop/SuperNova/proto/kartoffelService.proto";//when loading with bloomRPC
 // import "proto/kartoffelService.proto"; //when running in vscode
-import "/app/proto/kartoffelService.proto"; //When using docker
+// import "/app/proto/kartoffelService.proto"; //When using docker
 
 package Tea;
 

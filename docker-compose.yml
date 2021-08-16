@@ -129,20 +129,20 @@ services:
       - APS_KS_URL=kartoffel-service:8080
       - APS_RS_URL=request-service:8080
 
-  tea-service:
-    image: tea-service
-    build:
-      context: .
-      dockerfile: ./tea-service/Dockerfile
-    env_file:
-      - ./supernova.env
-    ports:
-      - '8086:8080'
-    depends_on:
-      - request-service
-    environment:
-      - TS_MONGO_URL=mongodb://mongodb:27017/supernova
-      - TS_KS_URL=kartoffel-service:8080
+  # tea-service:
+  #   image: tea-service
+  #   build:
+  #     context: .
+  #     dockerfile: ./tea-service/Dockerfile
+  #   env_file:
+  #     - ./supernova.env
+  #   ports:
+  #     - '8086:8080'
+  #   depends_on:
+  #     - request-service
+  #   environment:
+  #     - TS_MONGO_URL=mongodb://mongodb:27017/supernova
+  #     - TS_KS_URL=kartoffel-service:8080
 
   authentication-service:
     image: authentication-service
