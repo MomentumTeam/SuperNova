@@ -30,7 +30,7 @@ import { findPath } from './utils/path';
 import { PersonTypeInRequest } from './enums/personTypeInRequest.enum';
 
 const PROTO_PATH = `${findPath('proto')}/requestService.proto`;
-
+console.log(PROTO_PATH);
 export class Server {
   private server: grpc.Server;
   constructor() {
