@@ -5,4 +5,4 @@ export const entityIds = process.env.POS_ENTITY_IDS
   : FakerHelper.randomObjectIdArray();
 export const generateCount = process.env.POS_GENERATE_COUNT
   ? parseInt(process.env.POS_GENERATE_COUNT)
-  : 50;
+  : 10;

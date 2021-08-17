@@ -112,8 +112,9 @@ message EntityMin{
 //Enums
 
 enum ApproverType{
-    SECURITY = 0;
-    COMMANDER = 1;
+    COMMANDER = 0;
+    SECURITY = 1;
+    SUPER_SECURITY = 2;
 }
 
 enum RequestType {
