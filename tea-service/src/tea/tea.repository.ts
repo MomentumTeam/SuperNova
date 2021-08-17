@@ -35,7 +35,7 @@ export class TeaRepository {
     if (!retrieveTeaAndUPNByEntityReq.entity) {
       throw new Error('Entity must be included in the request!');
     }
-    let tea: string, upn: string, unit: Unit, kartoffelId: string;
+    let tea: string, upn: string, unitExists: boolean, kartoffelId: string;
     try {
       upn = getUPN(retrieveTeaAndUPNByEntityReq.entity);
     } catch (error) {
@@ -45,43 +45,56 @@ export class TeaRepository {
       kartoffelId = getUnitKartoffelIdOfEntity(
         retrieveTeaAndUPNByEntityReq.entity
       );
-      unit = await this.getUnit({
+      unitExists = await UnitModel.exists({
         kartoffelId: kartoffelId,
       });
-    } catch (error) {
-      try {
+      if (!unitExists) {
         kartoffelId = C.generalUnitId;
-        unit = await this.getUnit({
-          kartoffelId: kartoffelId,
-        });
-      } catch (error) {
-        throw error;
       }
+    } catch (error) {
+      throw error;
     }
     if (domain === Domain.OLD) {
       //oldDomain
       try {
-        if (unit.failedTea && unit.failedTea.length > 0) {
-          tea = unit.failedTea[0];
-          await UnitModel.updateOne(
-            { kartoffelId: kartoffelId },
-            { $pull: { failedTea: tea }, $addToSet: { teaInProgress: tea } }
-          );
-        } else {
-          tea = `T${unit.prefix}${this.zeroPad(unit.currentCounter, 4)}@${
-            unit.oldDomainSuffix
-          }`;
-          await UnitModel.updateOne(
-            { kartoffelId: kartoffelId },
-            { $inc: { currentCounter: 1 }, $addToSet: { teaInProgress: tea } }
-          );
+        const documentBeforePop = await UnitModel.findOneAndUpdate(
+          { kartoffelId: kartoffelId },
+          { $pop: { failedTea: -1 } }
+        );
+        if (!documentBeforePop) {
+          throw new Error(`Failed to get Unit with kartoffelId=${kartoffelId}`);
         }
+        const unitBeforePop: any = documentBeforePop.toObject();
+
+        if (unitBeforePop.failedTea && unitBeforePop.failedTea.length > 0) {
+          tea = unitBeforePop.failedTea[0];
+        } else {
+          const documentAfterInc = await UnitModel.findOneAndUpdate(
+            { kartoffelId: kartoffelId },
+            { $inc: { currentCounter: 1 } }
+          );
+          if (!documentAfterInc) {
+            throw new Error(
+              `Failed to get Unit with kartoffelId=${kartoffelId}`
+            );
+          }
+          const unitAfterInc: any = documentAfterInc.toObject();
+          tea = `T${unitBeforePop.prefix}${this.zeroPad(
+            unitAfterInc.currentCounter,
+            4
+          )}@${unitAfterInc.oldDomainSuffix}`;
+        }
+        await UnitModel.updateOne(
+          { kartoffelId: kartoffelId },
+          { $addToSet: { teaInProgress: tea } }
+        );
       } catch (error) {
         throw error;
       }
     } else {
       //newDomain
       try {
+        const unit = await this.getUnit({ kartoffelId: kartoffelId });
         tea = `${retrieveTeaAndUPNByEntityReq.entity.lastName}${retrieveTeaAndUPNByEntityReq.entity.firstName}@${unit.newDomainSuffix}`;
       } catch (error) {
         throw error;

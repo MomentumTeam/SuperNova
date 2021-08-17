@@ -1,24 +1,37 @@
-FROM node:10-alpine
+FROM node:14.17.5-alpine3.14 as builder
 
-# update packages
-RUN apk update
-
-# create root application folder
 WORKDIR /app
 
 # copy configs to /app folder
-COPY ./authentication-service/package*.json ./
-COPY ./authentication-service/tsconfig.json ./
+COPY --chown=node:node ./package*.json ./
+COPY --chown=node:node ./tsconfig.json ./
+
 # copy source code to /app/src folder
-COPY ./authentication-service/src /app/src
-COPY ./authentication-service/401 /app/401
+COPY . .
+COPY ./401 /app/401
 
-# check files list
-RUN ls -a
-
-RUN npm install && npm install tsc -g
+RUN npm i && npm cache clean --force
 RUN npm run build
+
+FROM node:14.17.5-alpine3.14
+
+RUN mkdir -p /usr/src/app && chown -R node:node /usr/src/app
+WORKDIR /usr/src/app
+
+COPY --chown=node:node ./package*.json ./
+
+RUN npm ci --production && npm cache clean --force
+
+COPY --from=builder --chown=node:node /app/dist .
+
+COPY --from=builder --chown=node:node /app/proto proto
+
+COPY --chown=node:node ./401 401
+
+USER node
 
 EXPOSE 8080
 
-CMD npm run dev
+ENV NODE_ENV=production
+
+CMD ["node", "index.js"]

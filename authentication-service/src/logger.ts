@@ -1,12 +1,11 @@
-import winston from 'winston';
+import { transports, createLogger } from 'winston';
 const ecsFormat = require('@elastic/ecs-winston-format');
 const DailyRotateFile = require('winston-daily-rotate-file');
 
-const logger = winston.createLogger({
+const logger = createLogger({
   level: 'info',
   format: ecsFormat(),
   transports: [
-    new winston.transports.Console(),
     new DailyRotateFile({
       dirname: './logs',
       filename: 'winston-%DATE%.log',
@@ -16,5 +15,7 @@ const logger = winston.createLogger({
     }),
   ],
 });
+
+logger.add(new transports.Console());
 
 export { logger };
