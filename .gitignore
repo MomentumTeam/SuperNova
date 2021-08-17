@@ -104,7 +104,7 @@ dist
 .tern-port
 
 
-*.env
+# *.env
 *dist/
 *node_modules/
 .vscode/
@@ -112,3 +112,5 @@ dist
 *.pem
 
 data
+
+SuperNovaProto
