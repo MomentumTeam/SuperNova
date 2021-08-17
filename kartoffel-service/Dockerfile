@@ -2,12 +2,18 @@ FROM node:14.17.5-alpine3.14 as builder
 
 WORKDIR /app
 
+RUN apk update 
+RUN apk add --no-cache git ca-certificates 
+
 # copy configs to /app folder
 COPY --chown=node:node ./package*.json ./
 COPY --chown=node:node ./tsconfig.json ./
 
+
+
 # copy source code to /app/src folder
 COPY . .
+RUN git clone https://github.com/MomentumTeam/SuperNovaProto.git /app/proto
 
 RUN npm i && npm cache clean --force
 RUN npm run build
