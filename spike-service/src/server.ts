@@ -1,5 +1,4 @@
-import path from 'path';
-import * as grpc from '@grpc/grpc-js';
+import * as grpc from 'grpc';
 import * as protoLoader from '@grpc/proto-loader';
 import { getSpikeToken } from './spike/spike.controller';
 import fs from 'fs';
@@ -7,6 +6,7 @@ import axios from 'axios';
 import * as C from './config';
 import { logger } from './logger';
 import { findPath } from './utils/path';
+import { addHealthService } from './health';
 
 const PROTO_PATH = `${findPath('proto')}/spikeService.proto`;
 
@@ -17,6 +17,7 @@ export class Server {
     this.spikeKey = Buffer.alloc(0);
     this.getSpikePubKey();
     this.server = new grpc.Server();
+    addHealthService(this.server);
     this.initServer();
   }
 

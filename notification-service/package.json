@@ -20,6 +20,7 @@
     "axios": "^0.21.1",
     "dotenv": "^10.0.0",
     "fs": "0.0.1-security",
+    "grpc-ts-health-check": "^1.0.14",
     "mongoose": "^5.13.2",
     "nodemon": "^2.0.12",
     "path": "^0.12.7",
