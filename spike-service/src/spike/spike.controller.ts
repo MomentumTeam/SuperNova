@@ -1,5 +1,5 @@
 import { SpikeManager } from "./spike.manager";
-import * as grpc from "@grpc/grpc-js";
+import * as grpc from "grpc";
 const spikeManager: SpikeManager = new SpikeManager();
 
 export async function getSpikeToken(call: any, callback: any) {

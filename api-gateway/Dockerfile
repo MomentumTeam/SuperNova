@@ -9,11 +9,9 @@ RUN apk add --no-cache git ca-certificates
 COPY --chown=node:node ./package*.json ./
 COPY --chown=node:node ./tsconfig.json ./
 
-
-
 # copy source code to /app/src folder
 COPY . .
-RUN git clone https://github.com/MomentumTeam/SuperNovaProto.git /app/proto
+RUN rm -rf /app/proto && git clone https://github.com/MomentumTeam/SuperNovaProto.git /app/proto
 
 RUN npm i && npm cache clean --force
 RUN npm run build

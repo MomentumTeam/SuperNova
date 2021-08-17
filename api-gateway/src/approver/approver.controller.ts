@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import * as grpc from '@grpc/grpc-js';
+import * as grpc from 'grpc';
 import * as protoLoader from '@grpc/proto-loader';
 import path from 'path';
 import { logger } from '../logger';
