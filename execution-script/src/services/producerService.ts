@@ -4,6 +4,7 @@ import { findPath } from '../utils/path';
 import * as config from '../config';
 import { logger } from '../logger';
 import RequestService from './requestService';
+import { SuccessMessage } from '../interfaces/protoc/proto/producerService';
 
 //producerClient
 
@@ -28,38 +29,89 @@ const producerClient: any = new psProtoDescriptor.Producer(
   grpc.credentials.createInsecure()
 );
 
-
-
-
 export default class ProducerService {
   static async executeRequest(requestId: string) {
-
     const canPushToKartoffel = await RequestService.canPushToKartoffelQueue(
       requestId
     );
-
     const canPushToADQ = await RequestService.canPushToADQueue(requestId);
 
     if (canPushToKartoffel.canPushToQueue === true) {
       try {
         logger.info(`Call to ProduceToKartoffelQueue in EXS`);
-        await producerClient.ProduceToKartoffelQueue({ id: requestId });
+        await ProducerService.produceToKartoffelQueue(requestId);
       } catch (error) {
         logger.error(`ProduceToKartoffelQueue ERROR in EXS`, {
           error,
           callRequest: { id: requestId },
         });
+        throw error;
       }
     } else if (canPushToADQ.canPushToQueue === true) {
       try {
         logger.info(`Call to ProduceToADQueue in EXS`);
-        await producerClient.ProduceToADQueue({ id: requestId });
+        await ProducerService.produceToADQueue(requestId);
       } catch (error) {
         logger.error(`ProduceToADQueue ERROR in EXS`, {
           error,
           callRequest: { id: requestId },
         });
+        throw error;
       }
     }
+  }
+
+  static async produceToKartoffelQueue(requestId: string) {
+    return new Promise((resolve, reject) => {
+      logger.info(`Call to produceToKartoffelQueue in EXS`, {
+        callRequest: { id: requestId },
+      });
+
+      producerClient.ProduceToKartoffelQueue(
+        { id: requestId },
+        (err: any, response: SuccessMessage) => {
+          if (err) {
+            logger.error(`produceToKartoffelQueue ERROR in EXS`, {
+              err,
+              callRequest: { id: requestId },
+            });
+            reject(err);
+          }
+
+          logger.info(`produceToKartoffelQueue OK in EXS`, {
+            response: response,
+            callRequest: { id: requestId },
+          });
+          resolve(true);
+        }
+      );
+    });
+  }
+
+  static async produceToADQueue(requestId: string) {
+    return new Promise((resolve, reject) => {
+      logger.info(`Call to produceToADQueue in EXS`, {
+        callRequest: { id: requestId },
+      });
+
+      producerClient.ProduceToADQueue(
+        { id: requestId },
+        (err: any, response: SuccessMessage) => {
+          if (err) {
+            logger.error(`produceToADQueue ERROR in EXS`, {
+              err,
+              callRequest: { id: requestId },
+            });
+            reject(err);
+          }
+
+          logger.info(`produceToADQueue OK in EXS`, {
+            response: response,
+            callRequest: { id: requestId },
+          });
+          resolve(true);
+        }
+      );
+    });
   }
 }

@@ -16,16 +16,34 @@ if (process.env.NODE_ENV !== 'production') {
 
 async function main() {
   try {
-    schedule.scheduleJob(`* */${config.everyHour} * * *`, async function () {
-      //run script every x hour
-      logger.info(`Execution-Script started successfully!`);
+    // schedule.scheduleJob(`* */${config.everyHour} * * *`, async function () {
+    //run script every x hour
 
-      const requestsArray = await RequestService.getRequestIdsInProgress();
+    logger.info(`Execution-Script started successfully!`);
 
-      requestsArray.requestIds.forEach(async (requestId: string) => {
-        await ProducerService.executeRequest(requestId);
+    const requestsArray = await RequestService.getRequestIdsInProgress();
+
+    const promises = requestsArray.requestIds.map(async (requestId: string) => {
+      return new Promise((resolve, reject) => {
+        ProducerService.executeRequest(requestId)
+          .then(() => {
+            resolve(true);
+          })
+          .catch((error) => {
+            reject(error);
+          });
       });
     });
+
+    Promise.all(promises)
+      .then((values) => {
+        logger.info(`Promises were finished successfully`);
+      })
+      .catch((error) => {
+        logger.error(`Promises exection failed`, { error: error });
+      });
+
+    // });
   } catch (error) {
     logger.error(
       `Error while trying to start Execution-Script: ${error.message}`

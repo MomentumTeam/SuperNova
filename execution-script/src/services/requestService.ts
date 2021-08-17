@@ -31,15 +31,13 @@ const requestClient: any = new rsProtoDescriptor.RequestService(
   grpc.credentials.createInsecure()
 );
 
-
-
-
 export default class RequestService {
   static async getRequestIdsInProgress(): Promise<RequestIdArray> {
     logger.info(`Call to getRequestIdsInProgress in EXS`);
 
     return new Promise((resolve, reject) => {
       requestClient.GetRequestIdsInProgressByDue(
+        { due: Date.now() },
         (err: any, response: RequestIdArray) => {
           if (err) {
             logger.error(`getRequestIdsInProgress ERROR in EXS`, { err });
@@ -62,6 +60,7 @@ export default class RequestService {
 
     return new Promise((resolve, reject) => {
       requestClient.CanPushToKartoffelQueue(
+        { id: requestId },
         (err: any, response: CanPushToQueueRes) => {
           if (err) {
             logger.error(`CanPushToKartoffelQueue ERROR in EXS`, {
@@ -86,7 +85,6 @@ export default class RequestService {
     return new Promise((resolve, reject) => {
       requestClient.CanPushToADQueue(
         { id: requestId },
-
         (err: any, response: CanPushToQueueRes) => {
           if (err) {
             logger.error(`CanPushToADQueue ERROR in EXS`, {
