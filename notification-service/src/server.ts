@@ -1,4 +1,4 @@
-import * as grpc from '@grpc/grpc-js';
+import * as grpc from 'grpc';
 import * as protoLoader from '@grpc/proto-loader';
 import * as C from './config';
 import { logger } from './logger';
@@ -10,6 +10,7 @@ import {
   markAsRead,
 } from './notification/notification.controller';
 import { findPath } from './utils/path';
+import { addHealthService } from './health';
 
 const PROTO_PATH = `${findPath('proto')}/notificationService.proto`;
 
@@ -17,6 +18,7 @@ export class Server {
   private server: grpc.Server;
   constructor() {
     this.server = new grpc.Server();
+    addHealthService(this.server);
     this.initServer();
   }
 
