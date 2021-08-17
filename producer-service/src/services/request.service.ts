@@ -27,7 +27,7 @@ export class RequestService {
           logger.error('getRequestById in RequestService ERROR', { err });
           reject(err);
         } else {
-          logger.error('getRequestById in RequestService OK', { res });
+          logger.info('getRequestById in RequestService OK', { res });
           res.type = RequestType[res.type];
           resolve(res as Request);
         }

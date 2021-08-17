@@ -6,7 +6,7 @@ import fs from 'fs';
 import axios from 'axios';
 import * as C from './config';
 import { logger } from './logger';
-import { findPath } from '../utils/path';
+import { findPath } from './utils/path';
 
 const PROTO_PATH = `${findPath('proto')}/spikeService.proto`;
 

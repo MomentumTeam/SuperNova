@@ -240,7 +240,7 @@ export class RequestManager {
     } catch (error) {
       logger.error('produceToKartoffelQueue ERROR', {
         produceRequest,
-        error,
+        error: error.message,
       });
       throw error;
     }

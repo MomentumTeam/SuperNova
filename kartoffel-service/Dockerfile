@@ -1,24 +1,34 @@
-FROM node:10-alpine
+FROM node:14.17.5-alpine3.14 as builder
 
-# update packages
-RUN apk update
-
-# create root application folder
 WORKDIR /app
 
 # copy configs to /app folder
-COPY ./kartoffel-service/package*.json ./
-COPY ./kartoffel-service/tsconfig.json ./
+COPY --chown=node:node ./package*.json ./
+COPY --chown=node:node ./tsconfig.json ./
+
 # copy source code to /app/src folder
-COPY ./kartoffel-service/src /app/src
-COPY proto /app/proto
+COPY . .
 
-# check files list
-RUN ls -a
-
-RUN npm install && npm install tsc -g
+RUN npm i && npm cache clean --force
 RUN npm run build
+
+FROM node:14.17.5-alpine3.14
+
+RUN mkdir -p /usr/src/app && chown -R node:node /usr/src/app
+WORKDIR /usr/src/app
+
+COPY --chown=node:node ./package*.json ./
+
+RUN npm ci --production && npm cache clean --force
+
+COPY --from=builder --chown=node:node /app/dist .
+
+COPY --from=builder --chown=node:node /app/proto proto
+
+USER node
 
 EXPOSE 8080
 
-CMD npm run prod
+ENV NODE_ENV=production
+
+CMD ["node", "src/index.js"]

@@ -33,7 +33,7 @@ export async function getPictureByEntityId(
   } catch (error) {
     logger.error(`getPictureByEntityId ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: error.message,
     });
     callback(
       {
@@ -58,7 +58,7 @@ export async function searchOG(call: any, callback: any): Promise<void> {
   } catch (error) {
     logger.error(`searchOG ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: error.message,
     });
     callback(
       {
@@ -83,7 +83,7 @@ export async function getOGTree(call: any, callback: any): Promise<void> {
   } catch (error) {
     logger.error(`getOGTree ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: error.message,
     });
     callback(
       {
@@ -109,7 +109,7 @@ export async function createOG(call: any, callback: any): Promise<void> {
   } catch (error) {
     logger.error(`createOG ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: error.message,
     });
     callback(
       {
@@ -161,7 +161,7 @@ export async function createRole(call: any, callback: any): Promise<void> {
   } catch (error) {
     logger.error(`createRole OK`, {
       callRequest: call.request,
-      error: error,
+      error: error.message,
     });
     callback(
       {
@@ -190,7 +190,7 @@ export async function connectRoleAndDI(
   } catch (error) {
     logger.error(`connectRoleAndDI ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: error.message,
     });
     callback(
       {
@@ -221,7 +221,7 @@ export async function searchEntitiesByFullName(
   } catch (error) {
     logger.error(`searchEntitiesByFullName ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: error.message,
     });
     callback(
       {
@@ -251,7 +251,7 @@ export async function getEntityByIdNumber(
   } catch (error) {
     logger.error(`getEntityByIdNumber ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: error.message,
     });
     callback(
       {
@@ -276,7 +276,7 @@ export async function getRoleByRoleId(call: any, callback: any): Promise<void> {
   } catch (error) {
     logger.error(`getRoleByRoleId ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: error.message,
     });
     callback(
       {
@@ -303,7 +303,7 @@ export async function getRolesUnderOG(call: any, callback: any): Promise<void> {
   } catch (error) {
     logger.error(`getRolesUnderOG ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: error.message,
     });
     callback(
       {
@@ -332,7 +332,7 @@ export async function connectEntityAndDI(
   } catch (error) {
     logger.error(`connectEntityAndDI ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: error.message,
     });
     callback(
       {
@@ -357,7 +357,7 @@ export async function createEntity(call: any, callback: any): Promise<void> {
   } catch (error) {
     logger.error(`createEntity ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: error.message,
     });
     callback(
       {
@@ -387,7 +387,7 @@ export async function getEntityByRoleId(
   } catch (error) {
     logger.error(`getEntityByRoleId ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: error.message,
     });
     callback(
       {
@@ -418,7 +418,7 @@ export async function disconnectDIFromEntity(
   } catch (error) {
     logger.error(`disconnectDIFromEntity OK`, {
       callRequest: call.request,
-      error: error,
+      error: error.message,
     });
     callback(
       {
@@ -448,7 +448,7 @@ export async function getEntityByMongoId(
   } catch (error) {
     logger.error(`getEntityByMongoId ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: error.message,
     });
     callback(
       {
@@ -475,7 +475,7 @@ export async function deleteOG(call: any, callback: any): Promise<void> {
   } catch (error) {
     logger.error(`getOGTree ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: error.message,
     });
     callback(
       {
@@ -502,7 +502,7 @@ export async function getChildrenOfOG(call: any, callback: any): Promise<void> {
   } catch (error) {
     logger.error(`getChildrenOfOG ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: error.message,
     });
     callback(
       {
@@ -529,7 +529,7 @@ export async function deleteRole(call: any, callback: any): Promise<void> {
   } catch (error) {
     logger.error(`deleteRole ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: error.message,
     });
     callback(
       {
@@ -586,7 +586,7 @@ export async function getEntitiesUnderOG(
   } catch (error) {
     logger.error(`getEntitiesUnderOG ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: error.message,
     });
     callback(
       {
