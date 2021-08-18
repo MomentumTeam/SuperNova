@@ -4,7 +4,7 @@ import {
   Unit,
 } from '../interfaces/protoc/proto/teaService';
 import { TeaManager } from './tea.manager';
-import * as grpc from '@grpc/grpc-js';
+import * as grpc from 'grpc';
 
 const teaManager: TeaManager = new TeaManager();
 

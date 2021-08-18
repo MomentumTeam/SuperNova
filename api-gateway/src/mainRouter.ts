@@ -12,5 +12,12 @@ mainRouter.use('/requests', RequestsRouter);
 // mainRouter.use('/producer', ProducerRouter);
 mainRouter.use('/notifications', NotificationRouter);
 mainRouter.use('/approver', ApproverRouter);
+mainRouter.all('/health/live', (_, res) => {
+  res.status(200).send('OK');
+});
+
+mainRouter.all('/health/ready', (_, res) => {
+  res.status(200).send('OK');
+});
 
 export default mainRouter;

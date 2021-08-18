@@ -1,5 +1,5 @@
 import path from 'path';
-import * as grpc from '@grpc/grpc-js';
+import * as grpc from 'grpc';
 import * as protoLoader from '@grpc/proto-loader';
 import * as C from '../config';
 import { findPath } from '../utils/path';

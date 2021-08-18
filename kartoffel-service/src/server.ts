@@ -1,5 +1,4 @@
-import path from 'path';
-import * as grpc from '@grpc/grpc-js';
+import * as grpc from 'grpc';
 import * as protoLoader from '@grpc/proto-loader';
 import * as C from './config';
 import { logger } from './logger';
@@ -27,12 +26,14 @@ import {
   getRoleByRoleId,
 } from './kartoffel/kartoffel.controller';
 import { findPath } from './utils/path';
+import { addHealthService } from './health';
 
 const PROTO_PATH = `${findPath('proto')}/kartoffelService.proto`;
 export class Server {
   private server: grpc.Server;
   constructor() {
     this.server = new grpc.Server();
+    addHealthService(this.server);
     logger.info(`gRPC server created`);
     try {
       this.initServer();

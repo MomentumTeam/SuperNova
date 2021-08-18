@@ -1,5 +1,5 @@
 import { RequestManager } from './request.manager';
-import * as grpc from '@grpc/grpc-js';
+import * as grpc from 'grpc';
 import { PersonTypeInRequest } from '../enums/personTypeInRequest.enum';
 import {
   GetRequestsByIdentifierReq,
