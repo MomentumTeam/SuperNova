@@ -11,3 +11,4 @@ cp -r ./protocOutput/proto ../population-script/src/interfaces/protoc/
 cp -r ./protocOutput/proto ../producer-service/src/interfaces/protoc/
 cp -r ./protocOutput/proto ../request-service/src/interfaces/protoc/
 cp -r ./protocOutput/proto ../tea-service/src/interfaces/protoc/
+cp -r ./protocOutput/proto ../spike-service/src/interfaces/protoc/

@@ -21,7 +21,10 @@ export const localSpikePublicKeyFullPath =
   process.env.SS_SPIKE_PUBLIC_KEY_FULL_PATH ||
   '/home/barak/Desktop/SuperNova/spike-service/src/spikeUtils/publickey.pem';
 
-export const selfAudience = process.env.SS_AUDIENCE || 'kartoffel';
+export const kartoffelAudience =
+  process.env.SS_KARTOFFEL_AUDIENCE || 'kartoffel';
+
+export const shmuelAudience = process.env.SS_SHMUEL_AUDIENCE || 'shmuel';
 
 export const grantTypeDef = process.env.SS_GRANT_TYPE || 'client_credentials';
 
@@ -35,14 +38,26 @@ export const useRedis = process.env.USE_REDIS
   ? process.env.USE_REDIS === 'true'
   : true;
 
-export const spikeOptions = {
+export const kartoffelSpikeOptions = {
   redisHost: redisFullUrl,
   ClientId: clientId,
   ClientSecret: clientSecret,
   spikeURL: spikeURL,
   tokenGrantType: grantTypeDef,
-  tokenAudience: selfAudience,
+  tokenAudience: kartoffelAudience,
   spikePublicKeyFullPath: localSpikePublicKeyFullPath,
   useRedis: useRedis,
-  tokenRedisKeyName: 'spikeToken',
+  tokenRedisKeyName: 'kartoffelSpikeToken',
+};
+
+export const shmuelSpikeOptions = {
+  redisHost: redisFullUrl,
+  ClientId: clientId,
+  ClientSecret: clientSecret,
+  spikeURL: spikeURL,
+  tokenGrantType: grantTypeDef,
+  tokenAudience: shmuelAudience,
+  spikePublicKeyFullPath: localSpikePublicKeyFullPath,
+  useRedis: useRedis,
+  tokenRedisKeyName: 'shmuelSpikeToken',
 };
