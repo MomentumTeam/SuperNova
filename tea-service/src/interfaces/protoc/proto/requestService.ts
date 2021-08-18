@@ -5,19 +5,23 @@ import _m0 from "protobufjs/minimal";
 export const protobufPackage = "RequestService";
 
 export enum ApproverType {
-  SECURITY = 0,
-  COMMANDER = 1,
+  COMMANDER = 0,
+  SECURITY = 1,
+  SUPER_SECURITY = 2,
   UNRECOGNIZED = -1,
 }
 
 export function approverTypeFromJSON(object: any): ApproverType {
   switch (object) {
     case 0:
-    case "SECURITY":
-      return ApproverType.SECURITY;
-    case 1:
     case "COMMANDER":
       return ApproverType.COMMANDER;
+    case 1:
+    case "SECURITY":
+      return ApproverType.SECURITY;
+    case 2:
+    case "SUPER_SECURITY":
+      return ApproverType.SUPER_SECURITY;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -27,10 +31,12 @@ export function approverTypeFromJSON(object: any): ApproverType {
 
 export function approverTypeToJSON(object: ApproverType): string {
   switch (object) {
-    case ApproverType.SECURITY:
-      return "SECURITY";
     case ApproverType.COMMANDER:
       return "COMMANDER";
+    case ApproverType.SECURITY:
+      return "SECURITY";
+    case ApproverType.SUPER_SECURITY:
+      return "SUPER_SECURITY";
     default:
       return "UNKNOWN";
   }
