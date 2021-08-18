@@ -1,5 +1,8 @@
 import { PersonTypeInRequest } from '../enums/personTypeInRequest.enum';
 import {
+  ApproverType,
+  approverTypeFromJSON,
+  approverTypeToJSON,
   CanPushToQueueReq,
   CanPushToQueueRes,
   Decision,
@@ -19,6 +22,7 @@ import {
   RequestStatus,
   requestStatusToJSON,
   RequestType,
+  requestTypeFromJSON,
   requestTypeToJSON,
   SearchRequestsByDisplayNameReq,
   StageStatus,
@@ -784,12 +788,88 @@ export class RequestRepository {
     }
   }
 
+  setNeedApproversDecisionsValues(request: any): void {
+    const type: RequestType = requestTypeFromJSON(request.type);
+    switch (type) {
+      case RequestType.CREATE_OG:
+        request.needSecurityDecision = false;
+        request.needSuperSecurityDecision = false;
+        break;
+
+      case RequestType.CREATE_ROLE:
+        request.needSecurityDecision = true;
+        request.needSuperSecurityDecision = true;
+        break;
+
+      case RequestType.ASSIGN_ROLE_TO_ENTITY:
+        request.needSecurityDecision = true;
+        request.needSuperSecurityDecision = false;
+        break;
+
+      case RequestType.CREATE_ENTITY:
+        request.needSecurityDecision = false;
+        request.needSuperSecurityDecision = false;
+        break;
+
+      case RequestType.RENAME_OG:
+        request.needSecurityDecision = false;
+        request.needSuperSecurityDecision = true;
+        break;
+
+      case RequestType.RENAME_ROLE:
+        request.needSecurityDecision = false;
+        request.needSuperSecurityDecision = false;
+        break;
+
+      case RequestType.EDIT_ENTITY:
+        request.needSecurityDecision = false;
+        request.needSuperSecurityDecision = false;
+        break;
+
+      case RequestType.DELETE_OG:
+        request.needSecurityDecision = false;
+        request.needSuperSecurityDecision = false;
+        break;
+
+      case RequestType.DELETE_ROLE:
+        request.needSecurityDecision = false;
+        request.needSuperSecurityDecision = false;
+        break;
+
+      case RequestType.DISCONNECT_ROLE:
+        request.needSecurityDecision = false;
+        request.needSuperSecurityDecision = false;
+        break;
+
+      case RequestType.ADD_APPROVER:
+        const approverType: ApproverType = approverTypeFromJSON(
+          request.submittedBy.additionalParams.type
+        );
+
+        switch (approverType) {
+          case ApproverType.COMMANDER:
+            request.needSecurityDecision = true;
+            request.needSuperSecurityDecision = false;
+            break;
+          case ApproverType.SECURITY:
+            request.needSecurityDecision = true;
+            request.needSuperSecurityDecision = false;
+            break;
+          case ApproverType.SUPER_SECURITY:
+            request.needSecurityDecision = false;
+            request.needSuperSecurityDecision = true;
+            break;
+        }
+    }
+  }
+
   async createRequest(
     createRequestReq: any,
     type: RequestType
   ): Promise<Request> {
     try {
       const request: any = new RequestModel(createRequestReq);
+      this.setNeedApproversDecisionsValues(request);
       request.type = requestTypeToJSON(type);
       request.createdAt = new Date().getTime();
       const createdCreateRequest = await request.save();

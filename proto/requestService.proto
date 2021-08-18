@@ -3,17 +3,18 @@ syntax = "proto3";
 package RequestService;
 
 service RequestService {
-    rpc CreateRoleRequest(CreateRoleReq) returns (CreateRoleRes) {} //יצירת תפקיד
-    rpc AssignRoleToEntityRequest(AssignRoleToEntityReq) returns (AssignRoleToEntityRes) {} //הוספת משתמש
-    rpc CreateOGRequest(CreateOGReq) returns (CreateOGRes) {} //יצירת היררכיה
-    rpc CreateNewApproverRequest(CreateNewApproverReq) returns (CreateNewApproverRes) {} //גורם מאשר
-    rpc CreateEntityRequest(CreateEntityReq) returns (CreateEntityRes){} //יצירת יישות
-    rpc RenameOGRequest(RenameOGReq) returns (RenameOGRes) {}
-    rpc RenameRoleRequest(RenameRoleReq) returns (EditEntityRes) {}
-    rpc EditEntityRequest(EditEntityReq) returns (EditEntityRes){}
-    rpc DeleteOGRequest(DeleteOGReq) returns (DeleteOGRes){}
-    rpc DeleteRoleRequest(DeleteRoleReq) returns (DeleteRoleRes){}
-    rpc DisconectRoleFromEntityRequest(DisconectRoleFromEntityReq) returns (DisconectRoleFromEntityRes){}
+    rpc CreateRoleRequest(CreateRoleReq) returns (CreateRoleRes) {}    // בקשה יצירת תפקיד
+    rpc AssignRoleToEntityRequest(AssignRoleToEntityReq) returns (AssignRoleToEntityRes) {}   //בקשה הוספת משתמש   
+    rpc CreateOGRequest(CreateOGReq) returns (CreateOGRes) {}    //בקשה יצירת היררכיה
+    rpc CreateNewApproverRequest(CreateNewApproverReq) returns (CreateNewApproverRes) {}   //בקשה גורם מאשר
+    rpc CreateEntityRequest(CreateEntityReq) returns (CreateEntityRes){}   //בקשה יצירת יישות
+    rpc RenameOGRequest(RenameOGReq) returns (RenameOGRes) {}      //בקשה לעריכת היררכיה
+    rpc RenameRoleRequest(RenameRoleReq) returns (EditEntityRes) {}   //בקשה לעריכת תפקיד
+    rpc EditEntityRequest(EditEntityReq) returns (EditEntityRes){}  //בקשה לעריכת משתמש
+    rpc DeleteOGRequest(DeleteOGReq) returns (DeleteOGRes){}  //בקשה למחיקת להיררכיה
+    rpc DeleteRoleRequest(DeleteRoleReq) returns (DeleteRoleRes){}  //בקשה למחיקת תפקיד
+    rpc DisconectRoleFromEntityRequest(DisconectRoleFromEntityReq) returns (DisconectRoleFromEntityRes){}  //נבקשה לניתוק תפקיד ממשתמש
+
     rpc UpdateRequest(UpdateReq) returns (Request){}
     rpc UpdateKartoffelStatus(UpdateKartoffelStatusReq) returns (Request){}
     rpc UpdateADStatus(UpdateADStatusReq) returns (Request){}
@@ -112,8 +113,9 @@ message EntityMin{
 //Enums
 
 enum ApproverType{
-    SECURITY = 0;
-    COMMANDER = 1;
+    COMMANDER = 0;
+    SECURITY = 1;
+    SUPER_SECURITY = 2;
 }
 
 enum RequestType {
@@ -434,7 +436,7 @@ message CreateEntityKartoffelParams{
 }
 
 message CreateEntityADParams{
-
+//TODO-??
 }
 
 //AssignRoleToEntity
@@ -535,12 +537,16 @@ message RenameOGRes{
     bool needSecurityDecision = 19;
     bool needSuperSecurityDecision = 20;
 }
+
 message RenameOGKartoffelParams{
-//?
+    string roleId = 0;
+    string userId = 1;
 }
 
 message RenameOGADParams{
-//?
+    string ouDisplayName = 1;
+    string oldOuName = 2;
+    string newOuName = 3;
 }
 
 //RenameRole
@@ -584,11 +590,13 @@ message RenameRoleRes{
     bool needSuperSecurityDecision = 20;
 }
 message RenameRoleKartoffelParams{
-//?
+    string jobTitle = 0;
+    string roleId = 1;
 }
 
 message RenameRoleADParams{
-//?
+    string samAccountName = 0;
+    string jobTitle = 1;
 }
 
 //EditEntity
@@ -635,7 +643,7 @@ message EditEntityKartoffelParams{
     string id = 1;
     string firstName = 2;
     string lastName = 3;
-    string identityCard = 4;
+    optional string identityCard = 4;
     string personalNumber = 5;
     string serviceType = 6;
     repeated string phone = 7;
@@ -650,7 +658,7 @@ message EditEntityKartoffelParams{
 message EditEntityADParams{
     string samAccountName = 1;
     string firstName = 2;
-    string lastName = 3;
+    string lastName = 3;   //middle and last name
     string fullName = 4;
 }
 
@@ -699,7 +707,7 @@ message DeleteOGKartoffelParams{
 }
 
 message DeleteOGADParams{
-    //?
+    //TODO-?
 }
 
 message GetRequestBySerialNumberReq{
