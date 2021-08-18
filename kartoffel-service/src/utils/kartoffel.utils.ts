@@ -84,6 +84,29 @@ export class KartoffelUtils {
     });
   }
 
+  async kartoffelPut(url: string, body: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.axiosKartoffel
+        .put(url, body)
+        .then((res) => {
+          logger.info(`Kartoffel PUT Request OK`, {
+            url: url,
+            requestBoody: body,
+            response: res,
+          });
+          resolve(res);
+        })
+        .catch((error) => {
+          logger.error(`Kartoffel PUT Request ERROR`, {
+            url: url,
+            requestBoody: body,
+            error: error.message,
+          });
+          reject(error);
+        });
+    });
+  }
+
   async kartoffelPost(url: string, body: any): Promise<any> {
     return new Promise((resolve, reject) => {
       this.axiosKartoffel

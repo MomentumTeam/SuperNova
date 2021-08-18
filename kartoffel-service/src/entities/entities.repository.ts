@@ -9,9 +9,18 @@ import {
   GetEntitiesUnderOGRequest,
   EntityArray,
   SearchEntitiesByFullNameRequest,
-  GetEntityByMongoIdRequest,
-  GetEntityByIdNumberRequest,
+  GetEntityByRoleIdRequest,
+  ConnectEntityAndDIRequest,
+  SuccessMessage,
+  GetEntityByDIRequest,
+  GetEntitiesByHierarchyRequest,
+  GetEntityByIdRequest,
+  DeleteEntityRequest,
+  UpdateEntityRequest,
+  DisconnectDIFromEntityRequest,
+  GetEntityByIdentifierRequest,
 } from '../interfaces/protoc/proto/kartoffelService';
+import { cleanUnderscoreFields } from '../utils/json.utils';
 
 export class EntitiesRepository {
   private kartoffelFaker: KartoffelFaker;
@@ -32,6 +41,42 @@ export class EntitiesRepository {
         const res = await this.kartoffelUtils.kartoffelPost(
           `${C.kartoffelUrl}/entities`,
           createEntityRequest
+        );
+        return res.data as Entity;
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getEntityByDI(
+    getEntityByDIRequest: GetEntityByDIRequest
+  ): Promise<Entity> {
+    try {
+      if (C.useFaker) {
+        const entity: Entity = await this.kartoffelFaker.randomEntity(true);
+        return entity;
+      } else {
+        const res = await this.kartoffelUtils.kartoffelGet(
+          `${C.kartoffelUrl}/entities/digitalIdentity/${getEntityByDIRequest.uniqueId}?expanded=true`
+        );
+        return res.data as Entity;
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getEntityByRoleId(
+    getEntityByRoleIdRequest: GetEntityByRoleIdRequest
+  ): Promise<Entity> {
+    try {
+      if (C.useFaker) {
+        const entity: Entity = await this.kartoffelFaker.randomEntity(true);
+        return entity;
+      } else {
+        const res = await this.kartoffelUtils.kartoffelGet(
+          `${C.kartoffelUrl}/entities/role/${getEntityByRoleIdRequest.roleId}`
         );
         return res.data as Entity;
       }
@@ -69,9 +114,46 @@ export class EntitiesRepository {
         return entityArray;
       } else {
         const res = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/entities/group/${getEntitiesUnderOGRequest.id}?direct=${getEntitiesUnderOGRequest.direct}`
+          `${C.kartoffelUrl}/entities/group/${getEntitiesUnderOGRequest.id}?expanded=true&direct=${getEntitiesUnderOGRequest.direct}&page=${getEntitiesUnderOGRequest.page}&pageSize=${getEntitiesUnderOGRequest.pageSize}`
         );
         return { entities: res.data as Entity[] };
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getEntitiesByHierarchy(
+    getEntitiesByHierarchyRequest: GetEntitiesByHierarchyRequest
+  ): Promise<EntityArray> {
+    try {
+      if (C.useFaker) {
+        const entityArray: EntityArray =
+          await this.kartoffelFaker.randomEntityArray(false);
+        return entityArray;
+      } else {
+        const res = await this.kartoffelUtils.kartoffelGet(
+          `${C.kartoffelUrl}/entities/hierarchy/${getEntitiesByHierarchyRequest.hierarchy}?expanded=true&direct=${getEntitiesByHierarchyRequest.direct}&page=${getEntitiesByHierarchyRequest.page}&pageSize=${getEntitiesByHierarchyRequest.pageSize}`
+        );
+        return { entities: res.data as Entity[] };
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getEntityByIdentifier(
+    getEntityByIndetifierRequest: GetEntityByIdentifierRequest
+  ): Promise<Entity> {
+    try {
+      if (C.useFaker) {
+        const entity: Entity = await this.kartoffelFaker.randomEntity(true);
+        return entity;
+      } else {
+        const res = await this.kartoffelUtils.kartoffelGet(
+          `${C.kartoffelUrl}/entities/identifier/${getEntityByIndetifierRequest.identifier}?expanded=true`
+        );
+        return res.data as Entity;
       }
     } catch (error) {
       throw error;
@@ -87,9 +169,28 @@ export class EntitiesRepository {
           await this.kartoffelFaker.randomEntityArray(false);
         return entityArray;
       } else {
-        const res = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/entities/search?fullName=${searchEntitiesByFullNameRequest.fullName}`
-        );
+        let url = `${C.kartoffelUrl}/entities/search?fullName=${searchEntitiesByFullNameRequest.fullName}`;
+        if (searchEntitiesByFullNameRequest.rank) {
+          url = url + `&rank=${searchEntitiesByFullNameRequest.rank}`;
+        }
+        if (searchEntitiesByFullNameRequest.entityType) {
+          url =
+            url + `&entityType=${searchEntitiesByFullNameRequest.entityType}`;
+        }
+        if (searchEntitiesByFullNameRequest.underGroupId) {
+          url =
+            url +
+            `&underGroupId=${searchEntitiesByFullNameRequest.underGroupId}`;
+        }
+        if (searchEntitiesByFullNameRequest.status) {
+          url = url + `&status=${searchEntitiesByFullNameRequest.status}`;
+        }
+        if (searchEntitiesByFullNameRequest.source) {
+          url = url + `&source=${searchEntitiesByFullNameRequest.source}`;
+        } else {
+          url = url + `&source=oneTree`;
+        }
+        const res = await this.kartoffelUtils.kartoffelGet(url);
         return { entities: res.data as Entity[] };
       }
     } catch (error) {
@@ -97,8 +198,8 @@ export class EntitiesRepository {
     }
   }
 
-  async getEntityByMongoId(
-    getEntityByMongoIdRequest: GetEntityByMongoIdRequest
+  async getEntityById(
+    getEntityByIdRequest: GetEntityByIdRequest
   ): Promise<Entity> {
     try {
       if (C.useFaker) {
@@ -106,7 +207,7 @@ export class EntitiesRepository {
         return entity;
       } else {
         const res = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/entities/${getEntityByMongoIdRequest.id}`
+          `${C.kartoffelUrl}/entities/${getEntityByIdRequest.id}?expanded=true`
         );
         return res.data as Entity;
       }
@@ -115,18 +216,76 @@ export class EntitiesRepository {
     }
   }
 
-  async getEntityByIdNumber(
-    getEntityByIdNumberRequest: GetEntityByIdNumberRequest
+  async deleteEntity(
+    deleteEntityRequest: DeleteEntityRequest
+  ): Promise<SuccessMessage> {
+    try {
+      if (C.useFaker) {
+        return { success: true };
+      } else {
+        const res = await this.kartoffelUtils.kartoffelDelete(
+          `${C.kartoffelUrl}/entities/${deleteEntityRequest.id}`
+        );
+        return { success: true };
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateEntity(
+    updateEntityRequest: UpdateEntityRequest
   ): Promise<Entity> {
     try {
       if (C.useFaker) {
         const entity: Entity = await this.kartoffelFaker.randomEntity(true);
         return entity;
       } else {
-        const res = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/entities/identifier/${getEntityByIdNumberRequest.idNumber}`
+        let updateReq = updateEntityRequest.properties;
+        cleanUnderscoreFields(updateReq);
+        //TODO update date fields
+        const res = await this.kartoffelUtils.kartoffelPost(
+          `${C.kartoffelUrl}/entities/${updateEntityRequest.id}`,
+          { ...updateReq }
         );
         return res.data as Entity;
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async disconnectDIFromEntity(
+    disconnectDIFromEntityRequest: DisconnectDIFromEntityRequest
+  ): Promise<SuccessMessage> {
+    try {
+      if (C.useFaker) {
+        return { success: true };
+      } else {
+        await this.kartoffelUtils.kartoffelDelete(
+          `${C.kartoffelUrl}/entities/${disconnectDIFromEntityRequest.id}/digitalIdentity/${disconnectDIFromEntityRequest.uniqueId}`
+        );
+        return { success: true };
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async connectEntityAndDI(
+    connectEntityAndDIRequest: ConnectEntityAndDIRequest
+  ): Promise<SuccessMessage> {
+    try {
+      if (C.useFaker) {
+        return { success: true };
+      } else {
+        const res = await this.kartoffelUtils.kartoffelPut(
+          `${C.kartoffelUrl}/entities/${connectEntityAndDIRequest.id}/sigitalIdentity/${connectEntityAndDIRequest.uniqueId}`,
+          {
+            digitalIdentityUniqueId: connectEntityAndDIRequest.uniqueId,
+          }
+        );
+        return { success: true };
       }
     } catch (error) {
       throw error;

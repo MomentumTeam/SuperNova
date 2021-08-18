@@ -3,30 +3,36 @@ import * as protoLoader from '@grpc/proto-loader';
 import * as C from './config';
 import { logger } from './logger';
 import {
-  connectEntityAndDI,
   connectRoleAndDI,
   createDI,
-  createEntity,
   createOG,
   createRole,
   deleteDI,
   deleteOG,
   deleteRole,
-  disconnectDIFromEntity,
   getChildrenOfOG,
-  getEntitiesUnderOG,
-  getEntityByIdNumber,
-  getEntityByMongoId,
-  getEntityByRoleId,
   getRolesUnderOG,
-  searchEntitiesByFullName,
   searchOG,
   getOGTree,
-  getPictureByEntityId,
   getRoleByRoleId,
 } from './kartoffel/kartoffel.controller';
 import { findPath } from './utils/path';
 import { addHealthService } from './health';
+import {
+  connectEntityAndDI,
+  createEntity,
+  deleteEntity,
+  disconnectDIFromEntity,
+  getEntitiesByHierarchy,
+  getEntitiesUnderOG,
+  getEntityByDI,
+  getEntityById,
+  getEntityByIdentifier,
+  getEntityByRoleId,
+  getPictureByEntityId,
+  searchEntitiesByFullName,
+  updateEntity,
+} from './entities/entities.controller';
 
 const PROTO_PATH = `${findPath('proto')}/kartoffelService.proto`;
 
@@ -68,27 +74,32 @@ export class Server {
     try {
       const kartoffelServiceDescriptor: any = this.getProtoDescriptor();
       this.server.addService(kartoffelServiceDescriptor.Kartoffel.service, {
+        CreateEntity: createEntity,
+        GetEntityByDI: getEntityByDI,
+        GetEntityByRoleId: getEntityByRoleId,
+        GetEntitiesUnderOG: getEntitiesUnderOG,
+        GetEntitiesByHierarchy: getEntitiesByHierarchy,
+        GetEntityByIdentifier: getEntityByIdentifier,
+        SearchEntitiesByFullName: searchEntitiesByFullName,
+        GetEntityById: getEntityById,
+        DeleteEntity: deleteEntity,
+        DisconnectDIFromEntity: disconnectDIFromEntity,
+        GetPictureByEntityId: getPictureByEntityId,
+        ConnectEntityAndDI: connectEntityAndDI,
+        UpdateEntity: updateEntity,
+
         SearchOG: searchOG,
         CreateOG: createOG,
         CreateDI: createDI,
         CreateRole: createRole,
         ConnectRoleAndDI: connectRoleAndDI,
-        SearchEntitiesByFullName: searchEntitiesByFullName,
-        GetEntityByIdNumber: getEntityByIdNumber,
         GetRoleByRoleId: getRoleByRoleId,
         GetRolesUnderOG: getRolesUnderOG,
-        ConnectEntityAndDI: connectEntityAndDI,
-        CreateEntity: createEntity,
-        GetEntityByRoleId: getEntityByRoleId,
-        DisconnectDIFromEntity: disconnectDIFromEntity,
-        GetEntityByMongoId: getEntityByMongoId,
         DeleteOG: deleteOG,
         GetChildrenOfOG: getChildrenOfOG,
         DeleteRole: deleteRole,
         DeleteDI: deleteDI,
-        GetEntitiesUnderOG: getEntitiesUnderOG,
         GetOGTree: getOGTree,
-        GetPictureByEntityId: getPictureByEntityId,
       });
       logger.info(`Grpc services were successfully added to the server`);
     } catch (error) {
