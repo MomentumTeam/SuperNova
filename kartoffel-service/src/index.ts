@@ -1,6 +1,4 @@
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-import { Server } from './server';
-import { logger } from './logger';
 import { findPath } from './utils/path';
 if (process.env.NODE_ENV !== 'production') {
   const ENV_PATH = findPath('supernova.env');
@@ -8,6 +6,9 @@ if (process.env.NODE_ENV !== 'production') {
     path: ENV_PATH,
   });
 }
+
+import { Server } from './server';
+import { logger } from './logger';
 
 async function main() {
   try {

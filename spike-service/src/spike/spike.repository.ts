@@ -17,7 +17,7 @@ export class SpikeRepository {
       } else if (audience === C.shmuelAudience) {
         token = await shmuelGetToken();
       } else {
-        throw new Error(`Audience '${audience}' illegal!`);
+        throw new Error(`AudienceId '${audience}' is illegal!`);
       }
 
       logger.info(`Token successfully retrieved from Spike`, {

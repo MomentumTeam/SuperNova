@@ -28,6 +28,24 @@ service Kartoffel {
     rpc GetPictureByEntityId(GetPictureByEntityIdRequest) returns (Image){}
 
 
+    rpc RenameRole(RenameRoleRequest) returns (SuccessMessage){}
+    rpc RenameOG(RenameOGRequest) returns (SuccessMessage){}
+    rpc UpdateEntity(UpdateEntityRequest) returns (Entity){}
+
+}
+
+message UpdateEntityRequest{
+
+}
+
+message RenameOGRequest{
+    string id = 1;
+    string name = 2;
+}
+
+message RenameRoleRequest{
+    string uniqueId = 1;
+    string jobTitle = 2;
 }
 
 message GetPictureByEntityIdRequest{

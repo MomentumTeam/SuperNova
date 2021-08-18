@@ -29,6 +29,7 @@ import { findPath } from './utils/path';
 import { addHealthService } from './health';
 
 const PROTO_PATH = `${findPath('proto')}/kartoffelService.proto`;
+
 export class Server {
   private server: grpc.Server;
   constructor() {
