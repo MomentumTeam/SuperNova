@@ -7,7 +7,6 @@ service Spike {
 }
 
 message GetSpikeTokenRequest{
-    // string audienceId = 1;
 }
 
 message SpikeToken {
