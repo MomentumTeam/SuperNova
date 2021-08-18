@@ -619,6 +619,7 @@ export interface CreateEntityKartoffelParams {
   entityType: string;
 }
 
+/** TODO-?? */
 export interface CreateEntityADParams {}
 
 /** AssignRoleToEntity */
@@ -719,11 +720,16 @@ export interface RenameOGRes {
   needSuperSecurityDecision: boolean;
 }
 
-/** ? */
-export interface RenameOGKartoffelParams {}
+export interface RenameOGKartoffelParams {
+  roleId: string;
+  userId: string;
+}
 
-/** ? */
-export interface RenameOGADParams {}
+export interface RenameOGADParams {
+  ouDisplayName: string;
+  oldOuName: string;
+  newOuName: string;
+}
 
 /** RenameRole */
 export interface RenameRoleReq {
@@ -765,11 +771,15 @@ export interface RenameRoleRes {
   needSuperSecurityDecision: boolean;
 }
 
-/** ? */
-export interface RenameRoleKartoffelParams {}
+export interface RenameRoleKartoffelParams {
+  jobTitle: string;
+  roleId: string;
+}
 
-/** ? */
-export interface RenameRoleADParams {}
+export interface RenameRoleADParams {
+  samAccountName: string;
+  jobTitle: string;
+}
 
 /** EditEntity */
 export interface EditEntityReq {
@@ -815,7 +825,7 @@ export interface EditEntityKartoffelParams {
   id: string;
   firstName: string;
   lastName: string;
-  identityCard: string;
+  identityCard?: string | undefined;
   personalNumber: string;
   serviceType: string;
   phone: string[];
@@ -830,6 +840,7 @@ export interface EditEntityKartoffelParams {
 export interface EditEntityADParams {
   samAccountName: string;
   firstName: string;
+  /** middle and last name */
   lastName: string;
   fullName: string;
 }
@@ -878,7 +889,7 @@ export interface DeleteOGKartoffelParams {
   id: string;
 }
 
-/** ? */
+/** TODO-? */
 export interface DeleteOGADParams {}
 
 export interface GetRequestBySerialNumberReq {
@@ -10007,13 +10018,19 @@ export const RenameOGRes = {
   },
 };
 
-const baseRenameOGKartoffelParams: object = {};
+const baseRenameOGKartoffelParams: object = { roleId: "", userId: "" };
 
 export const RenameOGKartoffelParams = {
   encode(
-    _: RenameOGKartoffelParams,
+    message: RenameOGKartoffelParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
+    if (message.roleId !== "") {
+      writer.uint32(10).string(message.roleId);
+    }
+    if (message.userId !== "") {
+      writer.uint32(18).string(message.userId);
+    }
     return writer;
   },
 
@@ -10029,6 +10046,12 @@ export const RenameOGKartoffelParams = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.roleId = reader.string();
+          break;
+        case 2:
+          message.userId = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -10037,35 +10060,70 @@ export const RenameOGKartoffelParams = {
     return message;
   },
 
-  fromJSON(_: any): RenameOGKartoffelParams {
+  fromJSON(object: any): RenameOGKartoffelParams {
     const message = {
       ...baseRenameOGKartoffelParams,
     } as RenameOGKartoffelParams;
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = String(object.roleId);
+    } else {
+      message.roleId = "";
+    }
+    if (object.userId !== undefined && object.userId !== null) {
+      message.userId = String(object.userId);
+    } else {
+      message.userId = "";
+    }
     return message;
   },
 
-  toJSON(_: RenameOGKartoffelParams): unknown {
+  toJSON(message: RenameOGKartoffelParams): unknown {
     const obj: any = {};
+    message.roleId !== undefined && (obj.roleId = message.roleId);
+    message.userId !== undefined && (obj.userId = message.userId);
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<RenameOGKartoffelParams>
+    object: DeepPartial<RenameOGKartoffelParams>
   ): RenameOGKartoffelParams {
     const message = {
       ...baseRenameOGKartoffelParams,
     } as RenameOGKartoffelParams;
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = object.roleId;
+    } else {
+      message.roleId = "";
+    }
+    if (object.userId !== undefined && object.userId !== null) {
+      message.userId = object.userId;
+    } else {
+      message.userId = "";
+    }
     return message;
   },
 };
 
-const baseRenameOGADParams: object = {};
+const baseRenameOGADParams: object = {
+  ouDisplayName: "",
+  oldOuName: "",
+  newOuName: "",
+};
 
 export const RenameOGADParams = {
   encode(
-    _: RenameOGADParams,
+    message: RenameOGADParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
+    if (message.ouDisplayName !== "") {
+      writer.uint32(10).string(message.ouDisplayName);
+    }
+    if (message.oldOuName !== "") {
+      writer.uint32(18).string(message.oldOuName);
+    }
+    if (message.newOuName !== "") {
+      writer.uint32(26).string(message.newOuName);
+    }
     return writer;
   },
 
@@ -10076,6 +10134,15 @@ export const RenameOGADParams = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.ouDisplayName = reader.string();
+          break;
+        case 2:
+          message.oldOuName = reader.string();
+          break;
+        case 3:
+          message.newOuName = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -10084,18 +10151,52 @@ export const RenameOGADParams = {
     return message;
   },
 
-  fromJSON(_: any): RenameOGADParams {
+  fromJSON(object: any): RenameOGADParams {
     const message = { ...baseRenameOGADParams } as RenameOGADParams;
+    if (object.ouDisplayName !== undefined && object.ouDisplayName !== null) {
+      message.ouDisplayName = String(object.ouDisplayName);
+    } else {
+      message.ouDisplayName = "";
+    }
+    if (object.oldOuName !== undefined && object.oldOuName !== null) {
+      message.oldOuName = String(object.oldOuName);
+    } else {
+      message.oldOuName = "";
+    }
+    if (object.newOuName !== undefined && object.newOuName !== null) {
+      message.newOuName = String(object.newOuName);
+    } else {
+      message.newOuName = "";
+    }
     return message;
   },
 
-  toJSON(_: RenameOGADParams): unknown {
+  toJSON(message: RenameOGADParams): unknown {
     const obj: any = {};
+    message.ouDisplayName !== undefined &&
+      (obj.ouDisplayName = message.ouDisplayName);
+    message.oldOuName !== undefined && (obj.oldOuName = message.oldOuName);
+    message.newOuName !== undefined && (obj.newOuName = message.newOuName);
     return obj;
   },
 
-  fromPartial(_: DeepPartial<RenameOGADParams>): RenameOGADParams {
+  fromPartial(object: DeepPartial<RenameOGADParams>): RenameOGADParams {
     const message = { ...baseRenameOGADParams } as RenameOGADParams;
+    if (object.ouDisplayName !== undefined && object.ouDisplayName !== null) {
+      message.ouDisplayName = object.ouDisplayName;
+    } else {
+      message.ouDisplayName = "";
+    }
+    if (object.oldOuName !== undefined && object.oldOuName !== null) {
+      message.oldOuName = object.oldOuName;
+    } else {
+      message.oldOuName = "";
+    }
+    if (object.newOuName !== undefined && object.newOuName !== null) {
+      message.newOuName = object.newOuName;
+    } else {
+      message.newOuName = "";
+    }
     return message;
   },
 };
@@ -11020,13 +11121,19 @@ export const RenameRoleRes = {
   },
 };
 
-const baseRenameRoleKartoffelParams: object = {};
+const baseRenameRoleKartoffelParams: object = { jobTitle: "", roleId: "" };
 
 export const RenameRoleKartoffelParams = {
   encode(
-    _: RenameRoleKartoffelParams,
+    message: RenameRoleKartoffelParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
+    if (message.jobTitle !== "") {
+      writer.uint32(10).string(message.jobTitle);
+    }
+    if (message.roleId !== "") {
+      writer.uint32(18).string(message.roleId);
+    }
     return writer;
   },
 
@@ -11042,6 +11149,12 @@ export const RenameRoleKartoffelParams = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.jobTitle = reader.string();
+          break;
+        case 2:
+          message.roleId = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -11050,35 +11163,63 @@ export const RenameRoleKartoffelParams = {
     return message;
   },
 
-  fromJSON(_: any): RenameRoleKartoffelParams {
+  fromJSON(object: any): RenameRoleKartoffelParams {
     const message = {
       ...baseRenameRoleKartoffelParams,
     } as RenameRoleKartoffelParams;
+    if (object.jobTitle !== undefined && object.jobTitle !== null) {
+      message.jobTitle = String(object.jobTitle);
+    } else {
+      message.jobTitle = "";
+    }
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = String(object.roleId);
+    } else {
+      message.roleId = "";
+    }
     return message;
   },
 
-  toJSON(_: RenameRoleKartoffelParams): unknown {
+  toJSON(message: RenameRoleKartoffelParams): unknown {
     const obj: any = {};
+    message.jobTitle !== undefined && (obj.jobTitle = message.jobTitle);
+    message.roleId !== undefined && (obj.roleId = message.roleId);
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<RenameRoleKartoffelParams>
+    object: DeepPartial<RenameRoleKartoffelParams>
   ): RenameRoleKartoffelParams {
     const message = {
       ...baseRenameRoleKartoffelParams,
     } as RenameRoleKartoffelParams;
+    if (object.jobTitle !== undefined && object.jobTitle !== null) {
+      message.jobTitle = object.jobTitle;
+    } else {
+      message.jobTitle = "";
+    }
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = object.roleId;
+    } else {
+      message.roleId = "";
+    }
     return message;
   },
 };
 
-const baseRenameRoleADParams: object = {};
+const baseRenameRoleADParams: object = { samAccountName: "", jobTitle: "" };
 
 export const RenameRoleADParams = {
   encode(
-    _: RenameRoleADParams,
+    message: RenameRoleADParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
+    if (message.samAccountName !== "") {
+      writer.uint32(10).string(message.samAccountName);
+    }
+    if (message.jobTitle !== "") {
+      writer.uint32(18).string(message.jobTitle);
+    }
     return writer;
   },
 
@@ -11089,6 +11230,12 @@ export const RenameRoleADParams = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.samAccountName = reader.string();
+          break;
+        case 2:
+          message.jobTitle = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -11097,18 +11244,41 @@ export const RenameRoleADParams = {
     return message;
   },
 
-  fromJSON(_: any): RenameRoleADParams {
+  fromJSON(object: any): RenameRoleADParams {
     const message = { ...baseRenameRoleADParams } as RenameRoleADParams;
+    if (object.samAccountName !== undefined && object.samAccountName !== null) {
+      message.samAccountName = String(object.samAccountName);
+    } else {
+      message.samAccountName = "";
+    }
+    if (object.jobTitle !== undefined && object.jobTitle !== null) {
+      message.jobTitle = String(object.jobTitle);
+    } else {
+      message.jobTitle = "";
+    }
     return message;
   },
 
-  toJSON(_: RenameRoleADParams): unknown {
+  toJSON(message: RenameRoleADParams): unknown {
     const obj: any = {};
+    message.samAccountName !== undefined &&
+      (obj.samAccountName = message.samAccountName);
+    message.jobTitle !== undefined && (obj.jobTitle = message.jobTitle);
     return obj;
   },
 
-  fromPartial(_: DeepPartial<RenameRoleADParams>): RenameRoleADParams {
+  fromPartial(object: DeepPartial<RenameRoleADParams>): RenameRoleADParams {
     const message = { ...baseRenameRoleADParams } as RenameRoleADParams;
+    if (object.samAccountName !== undefined && object.samAccountName !== null) {
+      message.samAccountName = object.samAccountName;
+    } else {
+      message.samAccountName = "";
+    }
+    if (object.jobTitle !== undefined && object.jobTitle !== null) {
+      message.jobTitle = object.jobTitle;
+    } else {
+      message.jobTitle = "";
+    }
     return message;
   },
 };
@@ -12037,7 +12207,6 @@ const baseEditEntityKartoffelParams: object = {
   id: "",
   firstName: "",
   lastName: "",
-  identityCard: "",
   personalNumber: "",
   serviceType: "",
   phone: "",
@@ -12063,7 +12232,7 @@ export const EditEntityKartoffelParams = {
     if (message.lastName !== "") {
       writer.uint32(26).string(message.lastName);
     }
-    if (message.identityCard !== "") {
+    if (message.identityCard !== undefined) {
       writer.uint32(34).string(message.identityCard);
     }
     if (message.personalNumber !== "") {
@@ -12181,7 +12350,7 @@ export const EditEntityKartoffelParams = {
     if (object.identityCard !== undefined && object.identityCard !== null) {
       message.identityCard = String(object.identityCard);
     } else {
-      message.identityCard = "";
+      message.identityCard = undefined;
     }
     if (object.personalNumber !== undefined && object.personalNumber !== null) {
       message.personalNumber = String(object.personalNumber);
@@ -12286,7 +12455,7 @@ export const EditEntityKartoffelParams = {
     if (object.identityCard !== undefined && object.identityCard !== null) {
       message.identityCard = object.identityCard;
     } else {
-      message.identityCard = "";
+      message.identityCard = undefined;
     }
     if (object.personalNumber !== undefined && object.personalNumber !== null) {
       message.personalNumber = object.personalNumber;
