@@ -35,7 +35,7 @@ export class Server {
             { pubKey: response.data }
           );
         } else {
-          logger.info(
+          logger.error(
             `Error while downloading Spike public key, statusCode: ${response.status}`
           );
         }

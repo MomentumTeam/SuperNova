@@ -8,16 +8,24 @@ export const redisPassword = process.env.SS_REDIS_PASSWORD;
 export const redisFullUrl = redisPassword
   ? `redis://:${process.env.SS_REDIS_PASSWORD}@${process.env.SS_REDIS_HOST}:${process.env.SS_REDIS_PORT}`
   : `redis://${redisHost}:${redisPort}`;
+
 export const spikeURL =
   process.env.SS_SPIKE_TOKEN_URL ||
   'https://ospike.northeurope.cloudapp.azure.com/oauth2/token';
+
 export const spikePubKeyPath =
   process.env.SS_SPIKE_PUBKEY_PATH ||
   'https://ospike.northeurope.cloudapp.azure.com/.well-known/publickey.pem';
+
 export const localSpikePublicKeyFullPath =
   process.env.SS_SPIKE_PUBLIC_KEY_FULL_PATH ||
   '/home/barak/Desktop/SuperNova/spike-service/src/spikeUtils/publickey.pem';
-export const selfAudience = process.env.SS_AUDIENCE || 'kartoffel';
+
+export const kartoffelAudience =
+  process.env.SS_KARTOFFEL_AUDIENCE || 'kartoffel';
+
+export const shmuelAudience = process.env.SS_SHMUEL_AUDIENCE || 'shmuel';
+
 export const grantTypeDef = process.env.SS_GRANT_TYPE || 'client_credentials';
 
 export const host = process.env.SS_HOST || '0.0.0.0';
@@ -26,14 +34,30 @@ export const port =
     ? '8080'
     : process.env.SS_PORT || '8080';
 
-export const spikeOptions = {
+export const useRedis = process.env.USE_REDIS
+  ? process.env.USE_REDIS === 'true'
+  : true;
+
+export const kartoffelSpikeOptions = {
   redisHost: redisFullUrl,
   ClientId: clientId,
   ClientSecret: clientSecret,
   spikeURL: spikeURL,
   tokenGrantType: grantTypeDef,
-  tokenAudience: selfAudience,
+  tokenAudience: kartoffelAudience,
   spikePublicKeyFullPath: localSpikePublicKeyFullPath,
-  useRedis: process.env.USE_REDIS === 'true',
-  tokenRedisKeyName: 'spikeToken',
+  useRedis: useRedis,
+  tokenRedisKeyName: 'kartoffelSpikeToken',
+};
+
+export const shmuelSpikeOptions = {
+  redisHost: redisFullUrl,
+  ClientId: clientId,
+  ClientSecret: clientSecret,
+  spikeURL: spikeURL,
+  tokenGrantType: grantTypeDef,
+  tokenAudience: shmuelAudience,
+  spikePublicKeyFullPath: localSpikePublicKeyFullPath,
+  useRedis: useRedis,
+  tokenRedisKeyName: 'shmuelSpikeToken',
 };

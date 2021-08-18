@@ -4,20 +4,24 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "Spike";
 
-/** string audienceId = 1; */
-export interface GetSpikeTokenRequest {}
+export interface GetSpikeTokenRequest {
+  audience: string;
+}
 
 export interface SpikeToken {
   token: string;
 }
 
-const baseGetSpikeTokenRequest: object = {};
+const baseGetSpikeTokenRequest: object = { audience: "" };
 
 export const GetSpikeTokenRequest = {
   encode(
-    _: GetSpikeTokenRequest,
+    message: GetSpikeTokenRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
+    if (message.audience !== "") {
+      writer.uint32(10).string(message.audience);
+    }
     return writer;
   },
 
@@ -31,6 +35,9 @@ export const GetSpikeTokenRequest = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.audience = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -39,18 +46,29 @@ export const GetSpikeTokenRequest = {
     return message;
   },
 
-  fromJSON(_: any): GetSpikeTokenRequest {
+  fromJSON(object: any): GetSpikeTokenRequest {
     const message = { ...baseGetSpikeTokenRequest } as GetSpikeTokenRequest;
+    if (object.audience !== undefined && object.audience !== null) {
+      message.audience = String(object.audience);
+    } else {
+      message.audience = "";
+    }
     return message;
   },
 
-  toJSON(_: GetSpikeTokenRequest): unknown {
+  toJSON(message: GetSpikeTokenRequest): unknown {
     const obj: any = {};
+    message.audience !== undefined && (obj.audience = message.audience);
     return obj;
   },
 
-  fromPartial(_: DeepPartial<GetSpikeTokenRequest>): GetSpikeTokenRequest {
+  fromPartial(object: DeepPartial<GetSpikeTokenRequest>): GetSpikeTokenRequest {
     const message = { ...baseGetSpikeTokenRequest } as GetSpikeTokenRequest;
+    if (object.audience !== undefined && object.audience !== null) {
+      message.audience = object.audience;
+    } else {
+      message.audience = "";
+    }
     return message;
   },
 };
