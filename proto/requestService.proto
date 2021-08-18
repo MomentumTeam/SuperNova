@@ -539,8 +539,8 @@ message RenameOGRes{
 }
 
 message RenameOGKartoffelParams{
-    string roleId = 0;
-    string userId = 1;
+    string roleId = 1;
+    string userId = 2;
 }
 
 message RenameOGADParams{
@@ -590,13 +590,13 @@ message RenameRoleRes{
     bool needSuperSecurityDecision = 20;
 }
 message RenameRoleKartoffelParams{
-    string jobTitle = 0;
-    string roleId = 1;
+    string jobTitle = 1;
+    string roleId = 2;
 }
 
 message RenameRoleADParams{
-    string samAccountName = 0;
-    string jobTitle = 1;
+    string samAccountName = 1;
+    string jobTitle = 2;
 }
 
 //EditEntity

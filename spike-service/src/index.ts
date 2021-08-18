@@ -5,7 +5,6 @@ import { findPath } from './utils/path';
 
 if (process.env.NODE_ENV !== 'production') {
   const ENV_PATH = findPath('supernova.env');
-  console.log(ENV_PATH);
   require('dotenv').config({
     path: ENV_PATH,
   });

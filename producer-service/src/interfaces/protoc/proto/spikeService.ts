@@ -4,6 +4,7 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "Spike";
 
+/** string audienceId = 1; */
 export interface GetSpikeTokenRequest {}
 
 export interface SpikeToken {
