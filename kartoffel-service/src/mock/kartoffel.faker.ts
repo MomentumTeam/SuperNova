@@ -25,8 +25,8 @@ export class KartoffelFaker {
       hierarchy: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
       status: 'active',
       isLeaf: true,
-      createdAt: faker.datatype.datetime().getTime(),
-      updatedAt: faker.datatype.datetime().getTime(),
+      createdAt: faker.datatype.datetime().toString(),
+      updatedAt: faker.datatype.datetime().toString(),
       directEntities: [],
       directRoles: [],
     };
@@ -40,8 +40,8 @@ export class KartoffelFaker {
       mail: faker.internet.email(),
       uniqueId: faker.internet.email(),
       entityId: mongoose.Types.ObjectId().toString(),
-      createdAt: faker.datatype.datetime().getTime(),
-      updatedAt: faker.datatype.datetime().getTime(),
+      createdAt: faker.datatype.datetime().toString(),
+      updatedAt: faker.datatype.datetime().toString(),
       isRoleAttachable: true,
       role: undefined,
     };
@@ -75,8 +75,9 @@ export class KartoffelFaker {
       hierarchy: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
       hierarchyIds: [],
       source: 'oneTree',
-      createdAt: faker.datatype.datetime().getTime(),
-      updatedAt: faker.datatype.datetime().getTime(),
+      createdAt: faker.datatype.datetime().toString(),
+      updatedAt: faker.datatype.datetime().toString(),
+      clearance: '1',
     };
     return role;
   }
@@ -100,8 +101,9 @@ export class KartoffelFaker {
         serviceType: 'מילואים',
         firstName: faker.name.firstName(),
         lastName: faker.name.lastName(),
+        fullName: `${faker.name.firstName()} ${faker.name.lastName()}`,
         akaUnit: faker.company.companyName(),
-        dischargeDay: faker.datatype.datetime().getTime(),
+        dischargeDay: faker.datatype.datetime().toString(),
         rank: 'אזרח',
         mail: faker.internet.email(),
         jobTitle: faker.name.jobTitle(),
@@ -110,11 +112,12 @@ export class KartoffelFaker {
         address: `${faker.address.streetAddress()}, ${faker.address.country()}`,
         clearance: '2',
         sex: 'זכר',
-        birthdate: faker.datatype.datetime().getTime(),
-        createdAt: faker.datatype.datetime().getTime(),
-        updatedAt: faker.datatype.datetime().getTime(),
+        birthDate: faker.datatype.datetime().toString(),
+        createdAt: faker.datatype.datetime().toString(),
+        updatedAt: faker.datatype.datetime().toString(),
         digitalIdentities: [],
         picture: picture.image,
+        goalUserID: mongoose.Types.ObjectId().toString(),
       };
       return entity;
     } catch (err) {

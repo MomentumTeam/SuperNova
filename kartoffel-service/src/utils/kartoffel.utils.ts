@@ -3,7 +3,6 @@ import * as C from '../config';
 import { logger } from '../logger';
 import { SpikeService } from '../spike/spikeService';
 import https from 'https';
-import { Entity } from '../interfaces/protoc/proto/kartoffelService';
 export class KartoffelUtils {
   private axiosKartoffel: AxiosInstance;
   private spikeToken: string | null;
@@ -17,14 +16,14 @@ export class KartoffelUtils {
       rejectUnauthorized: false,
     });
     this.spikeToken = null;
-    this.spikeService
-      .getSpikeToken()
-      .then((token) => {
-        this.spikeToken = token;
-      })
-      .catch((error) => {
-        throw error;
-      });
+    // this.spikeService
+    //   .getSpikeToken()
+    //   .then((token) => {
+    //     this.spikeToken = token;
+    //   })
+    //   .catch((error) => {
+    //     throw error;
+    //   });
     // this.axiosKartoffel.interceptors.request.use(async (config) => {
     //   const now = new Date().getTime();
     //   const hoursDiff = Math.floor(

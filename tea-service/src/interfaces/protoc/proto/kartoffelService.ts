@@ -37,7 +37,7 @@ export interface UpdateEntityProperties {
   firstName?: string | undefined;
   lastName?: string | undefined;
   akaUnit?: string | undefined;
-  dischargeDay?: number | undefined;
+  dischargeDay?: string | undefined;
   rank?: string | undefined;
   mail?: string | undefined;
   jobTitle?: string | undefined;
@@ -46,7 +46,7 @@ export interface UpdateEntityProperties {
   address?: string | undefined;
   clearance?: string | undefined;
   sex?: string | undefined;
-  birthDate?: number | undefined;
+  birthDate?: string | undefined;
 }
 
 export interface RenameOGRequest {
@@ -168,7 +168,7 @@ export interface CreateEntityRequest {
   address: string;
   clearance: string;
   sex: string;
-  birthDate: number;
+  birthDate: string;
   entityType: string;
 }
 
@@ -291,8 +291,8 @@ export interface DigitalIdentity {
   mail: string;
   uniqueId: string;
   entityId: string;
-  createdAt: number;
-  updatedAt: number;
+  createdAt: string;
+  updatedAt: string;
   isRoleAttachable: boolean;
   role: Role | undefined;
 }
@@ -728,7 +728,7 @@ export const UpdateEntityProperties = {
       writer.uint32(90).string(message.akaUnit);
     }
     if (message.dischargeDay !== undefined) {
-      writer.uint32(96).int64(message.dischargeDay);
+      writer.uint32(98).string(message.dischargeDay);
     }
     if (message.rank !== undefined) {
       writer.uint32(106).string(message.rank);
@@ -755,7 +755,7 @@ export const UpdateEntityProperties = {
       writer.uint32(162).string(message.sex);
     }
     if (message.birthDate !== undefined) {
-      writer.uint32(168).int64(message.birthDate);
+      writer.uint32(170).string(message.birthDate);
     }
     return writer;
   },
@@ -797,7 +797,7 @@ export const UpdateEntityProperties = {
           message.akaUnit = reader.string();
           break;
         case 12:
-          message.dischargeDay = longToNumber(reader.int64() as Long);
+          message.dischargeDay = reader.string();
           break;
         case 13:
           message.rank = reader.string();
@@ -824,7 +824,7 @@ export const UpdateEntityProperties = {
           message.sex = reader.string();
           break;
         case 21:
-          message.birthDate = longToNumber(reader.int64() as Long);
+          message.birthDate = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -879,7 +879,7 @@ export const UpdateEntityProperties = {
       message.akaUnit = undefined;
     }
     if (object.dischargeDay !== undefined && object.dischargeDay !== null) {
-      message.dischargeDay = Number(object.dischargeDay);
+      message.dischargeDay = String(object.dischargeDay);
     } else {
       message.dischargeDay = undefined;
     }
@@ -924,7 +924,7 @@ export const UpdateEntityProperties = {
       message.sex = undefined;
     }
     if (object.birthDate !== undefined && object.birthDate !== null) {
-      message.birthDate = Number(object.birthDate);
+      message.birthDate = String(object.birthDate);
     } else {
       message.birthDate = undefined;
     }
@@ -2593,7 +2593,7 @@ const baseCreateEntityRequest: object = {
   address: "",
   clearance: "",
   sex: "",
-  birthDate: 0,
+  birthDate: "",
   entityType: "",
 };
 
@@ -2632,8 +2632,8 @@ export const CreateEntityRequest = {
     if (message.sex !== "") {
       writer.uint32(82).string(message.sex);
     }
-    if (message.birthDate !== 0) {
-      writer.uint32(88).int64(message.birthDate);
+    if (message.birthDate !== "") {
+      writer.uint32(90).string(message.birthDate);
     }
     if (message.entityType !== "") {
       writer.uint32(98).string(message.entityType);
@@ -2681,7 +2681,7 @@ export const CreateEntityRequest = {
           message.sex = reader.string();
           break;
         case 11:
-          message.birthDate = longToNumber(reader.int64() as Long);
+          message.birthDate = reader.string();
           break;
         case 12:
           message.entityType = reader.string();
@@ -2749,9 +2749,9 @@ export const CreateEntityRequest = {
       message.sex = "";
     }
     if (object.birthDate !== undefined && object.birthDate !== null) {
-      message.birthDate = Number(object.birthDate);
+      message.birthDate = String(object.birthDate);
     } else {
-      message.birthDate = 0;
+      message.birthDate = "";
     }
     if (object.entityType !== undefined && object.entityType !== null) {
       message.entityType = String(object.entityType);
@@ -2846,7 +2846,7 @@ export const CreateEntityRequest = {
     if (object.birthDate !== undefined && object.birthDate !== null) {
       message.birthDate = object.birthDate;
     } else {
-      message.birthDate = 0;
+      message.birthDate = "";
     }
     if (object.entityType !== undefined && object.entityType !== null) {
       message.entityType = object.entityType;
@@ -4560,8 +4560,8 @@ const baseDigitalIdentity: object = {
   mail: "",
   uniqueId: "",
   entityId: "",
-  createdAt: 0,
-  updatedAt: 0,
+  createdAt: "",
+  updatedAt: "",
   isRoleAttachable: false,
 };
 
@@ -4585,11 +4585,11 @@ export const DigitalIdentity = {
     if (message.entityId !== "") {
       writer.uint32(42).string(message.entityId);
     }
-    if (message.createdAt !== 0) {
-      writer.uint32(48).int64(message.createdAt);
+    if (message.createdAt !== "") {
+      writer.uint32(50).string(message.createdAt);
     }
-    if (message.updatedAt !== 0) {
-      writer.uint32(56).int64(message.updatedAt);
+    if (message.updatedAt !== "") {
+      writer.uint32(58).string(message.updatedAt);
     }
     if (message.isRoleAttachable === true) {
       writer.uint32(64).bool(message.isRoleAttachable);
@@ -4623,10 +4623,10 @@ export const DigitalIdentity = {
           message.entityId = reader.string();
           break;
         case 6:
-          message.createdAt = longToNumber(reader.int64() as Long);
+          message.createdAt = reader.string();
           break;
         case 7:
-          message.updatedAt = longToNumber(reader.int64() as Long);
+          message.updatedAt = reader.string();
           break;
         case 8:
           message.isRoleAttachable = reader.bool();
@@ -4670,14 +4670,14 @@ export const DigitalIdentity = {
       message.entityId = "";
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
-      message.createdAt = Number(object.createdAt);
+      message.createdAt = String(object.createdAt);
     } else {
-      message.createdAt = 0;
+      message.createdAt = "";
     }
     if (object.updatedAt !== undefined && object.updatedAt !== null) {
-      message.updatedAt = Number(object.updatedAt);
+      message.updatedAt = String(object.updatedAt);
     } else {
-      message.updatedAt = 0;
+      message.updatedAt = "";
     }
     if (
       object.isRoleAttachable !== undefined &&
@@ -4741,12 +4741,12 @@ export const DigitalIdentity = {
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = object.createdAt;
     } else {
-      message.createdAt = 0;
+      message.createdAt = "";
     }
     if (object.updatedAt !== undefined && object.updatedAt !== null) {
       message.updatedAt = object.updatedAt;
     } else {
-      message.updatedAt = 0;
+      message.updatedAt = "";
     }
     if (
       object.isRoleAttachable !== undefined &&
@@ -5087,16 +5087,6 @@ interface Rpc {
   ): Promise<Uint8Array>;
 }
 
-declare var self: any | undefined;
-declare var window: any | undefined;
-var globalThis: any = (() => {
-  if (typeof globalThis !== "undefined") return globalThis;
-  if (typeof self !== "undefined") return self;
-  if (typeof window !== "undefined") return window;
-  if (typeof global !== "undefined") return global;
-  throw "Unable to locate global object";
-})();
-
 type Builtin =
   | Date
   | Function
@@ -5114,13 +5104,6 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
-
-function longToNumber(long: Long): number {
-  if (long.gt(Number.MAX_SAFE_INTEGER)) {
-    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
-  }
-  return long.toNumber();
-}
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

@@ -32,8 +32,8 @@ service Kartoffel {
     rpc DeleteRole(DeleteRoleRequest) returns (SuccessMessage){}
     rpc DeleteDI(DeleteDIRequest) returns (SuccessMessage){}
     rpc GetOGTree(GetOGTreeRequest) returns (OGTree){}
-    rpc RenameRole(RenameRoleRequest) returns (SuccessMessage){}
-    rpc RenameOG(RenameOGRequest) returns (SuccessMessage){}
+    // rpc RenameRole(RenameRoleRequest) returns (SuccessMessage){}
+    // rpc RenameOG(RenameOGRequest) returns (SuccessMessage){}
 }
 
 message DeleteEntityRequest{
@@ -70,7 +70,7 @@ message UpdateEntityProperties{
     optional string firstName = 9;
     optional string lastName = 10;
     optional string akaUnit = 11;
-    optional int64 dischargeDay = 12;
+    optional string dischargeDay = 12;
     optional string rank = 13;
     optional string mail = 14;
     optional string jobTitle = 15;
@@ -79,7 +79,7 @@ message UpdateEntityProperties{
     optional string address = 18;
     optional string clearance = 19;
     optional string sex = 20;
-    optional int64 birthDate = 21;
+    optional string birthDate = 21;
 }
 
 message RenameOGRequest{
@@ -196,7 +196,7 @@ message CreateEntityRequest{
     string address = 8;
     string clearance = 9;
     string sex = 10;
-    int64 birthDate = 11;
+    string birthDate = 11;
     string entityType = 12;
 }
 
@@ -315,8 +315,8 @@ message DigitalIdentity{
     string mail = 3;
     string uniqueId = 4;
     string entityId = 5;
-    int64 createdAt = 6;
-    int64 updatedAt = 7;
+    string createdAt = 6;
+    string updatedAt = 7;
     bool isRoleAttachable = 8;
     Role role = 9;
 }
