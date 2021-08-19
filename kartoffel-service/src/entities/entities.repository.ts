@@ -38,11 +38,11 @@ export class EntitiesRepository {
         const entity: Entity = await this.kartoffelFaker.randomEntity(false);
         return entity;
       } else {
-        const res = await this.kartoffelUtils.kartoffelPost(
-          `${C.kartoffelUrl}/entities`,
+        const data = await this.kartoffelUtils.kartoffelPost(
+          `${C.kartoffelUrl}/api/entities`,
           createEntityRequest
         );
-        return res.data as Entity;
+        return data as Entity;
       }
     } catch (error) {
       throw error;
@@ -57,10 +57,11 @@ export class EntitiesRepository {
         const entity: Entity = await this.kartoffelFaker.randomEntity(true);
         return entity;
       } else {
-        const res = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/entities/digitalIdentity/${getEntityByDIRequest.uniqueId}?expanded=true`
+        const url = `${C.kartoffelUrl}/api/entities/digitalIdentity/${getEntityByDIRequest.uniqueId}?expanded=true`;
+        const data = await this.kartoffelUtils.kartoffelGet(
+          `${C.kartoffelUrl}/api/entities/digitalIdentity/${getEntityByDIRequest.uniqueId}?expanded=true`
         );
-        return res.data as Entity;
+        return data as Entity;
       }
     } catch (error) {
       throw error;
@@ -75,10 +76,10 @@ export class EntitiesRepository {
         const entity: Entity = await this.kartoffelFaker.randomEntity(true);
         return entity;
       } else {
-        const res = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/entities/role/${getEntityByRoleIdRequest.roleId}`
+        const data = await this.kartoffelUtils.kartoffelGet(
+          `${C.kartoffelUrl}/api/entities/role/${getEntityByRoleIdRequest.roleId}`
         );
-        return res.data as Entity;
+        return data as Entity;
       }
     } catch (error) {
       throw error;
@@ -95,7 +96,7 @@ export class EntitiesRepository {
       } else {
         const image: string =
           await this.kartoffelUtils.kartoffelGetBufferStream(
-            `${C.kartoffelUrl}/entities/${getPictureByEntityIdRequest.id}/pictures/profile`
+            `${C.kartoffelUrl}/api/entities/${getPictureByEntityIdRequest.id}/pictures/profile`
           );
         return { image: image };
       }
@@ -113,10 +114,10 @@ export class EntitiesRepository {
           await this.kartoffelFaker.randomEntityArray(false);
         return entityArray;
       } else {
-        const res = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/entities/group/${getEntitiesUnderOGRequest.id}?expanded=true&direct=${getEntitiesUnderOGRequest.direct}&page=${getEntitiesUnderOGRequest.page}&pageSize=${getEntitiesUnderOGRequest.pageSize}`
+        const data = await this.kartoffelUtils.kartoffelGet(
+          `${C.kartoffelUrl}/api/entities/group/${getEntitiesUnderOGRequest.id}?expanded=true&direct=${getEntitiesUnderOGRequest.direct}&page=${getEntitiesUnderOGRequest.page}&pageSize=${getEntitiesUnderOGRequest.pageSize}`
         );
-        return { entities: res.data as Entity[] };
+        return { entities: data as Entity[] };
       }
     } catch (error) {
       throw error;
@@ -132,10 +133,10 @@ export class EntitiesRepository {
           await this.kartoffelFaker.randomEntityArray(false);
         return entityArray;
       } else {
-        const res = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/entities/hierarchy/${getEntitiesByHierarchyRequest.hierarchy}?expanded=true&direct=${getEntitiesByHierarchyRequest.direct}&page=${getEntitiesByHierarchyRequest.page}&pageSize=${getEntitiesByHierarchyRequest.pageSize}`
+        const data = await this.kartoffelUtils.kartoffelGet(
+          `${C.kartoffelUrl}/api/entities/hierarchy/${getEntitiesByHierarchyRequest.hierarchy}?expanded=true&direct=${getEntitiesByHierarchyRequest.direct}&page=${getEntitiesByHierarchyRequest.page}&pageSize=${getEntitiesByHierarchyRequest.pageSize}`
         );
-        return { entities: res.data as Entity[] };
+        return { entities: data as Entity[] };
       }
     } catch (error) {
       throw error;
@@ -150,10 +151,10 @@ export class EntitiesRepository {
         const entity: Entity = await this.kartoffelFaker.randomEntity(true);
         return entity;
       } else {
-        const res = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/entities/identifier/${getEntityByIndetifierRequest.identifier}?expanded=true`
+        const data = await this.kartoffelUtils.kartoffelGet(
+          `${C.kartoffelUrl}/api/entities/identifier/${getEntityByIndetifierRequest.identifier}?expanded=true`
         );
-        return res.data as Entity;
+        return data as Entity;
       }
     } catch (error) {
       throw error;
@@ -169,7 +170,7 @@ export class EntitiesRepository {
           await this.kartoffelFaker.randomEntityArray(false);
         return entityArray;
       } else {
-        let url = `${C.kartoffelUrl}/entities/search?fullName=${searchEntitiesByFullNameRequest.fullName}`;
+        let url = `${C.kartoffelUrl}/api/entities/search?fullName=${searchEntitiesByFullNameRequest.fullName}`;
         if (searchEntitiesByFullNameRequest.rank) {
           url = url + `&rank=${searchEntitiesByFullNameRequest.rank}`;
         }
@@ -190,8 +191,8 @@ export class EntitiesRepository {
         } else {
           url = url + `&source=oneTree`;
         }
-        const res = await this.kartoffelUtils.kartoffelGet(url);
-        return { entities: res.data as Entity[] };
+        const data = await this.kartoffelUtils.kartoffelGet(url);
+        return { entities: data as Entity[] };
       }
     } catch (error) {
       throw error;
@@ -206,10 +207,11 @@ export class EntitiesRepository {
         const entity: Entity = await this.kartoffelFaker.randomEntity(true);
         return entity;
       } else {
-        const res = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/entities/${getEntityByIdRequest.id}?expanded=true`
+        const data = await this.kartoffelUtils.kartoffelGet(
+          `${C.kartoffelUrl}/api/entities/${getEntityByIdRequest.id}?expanded=true`
         );
-        return res.data as Entity;
+        delete data.picture;
+        return data as Entity;
       }
     } catch (error) {
       throw error;
@@ -223,8 +225,8 @@ export class EntitiesRepository {
       if (C.useFaker) {
         return { success: true };
       } else {
-        const res = await this.kartoffelUtils.kartoffelDelete(
-          `${C.kartoffelUrl}/entities/${deleteEntityRequest.id}`
+        const data = await this.kartoffelUtils.kartoffelDelete(
+          `${C.kartoffelUrl}/api/entities/${deleteEntityRequest.id}`
         );
         return { success: true };
       }
@@ -244,11 +246,11 @@ export class EntitiesRepository {
         let updateReq = updateEntityRequest.properties;
         cleanUnderscoreFields(updateReq);
         //TODO update date fields
-        const res = await this.kartoffelUtils.kartoffelPost(
-          `${C.kartoffelUrl}/entities/${updateEntityRequest.id}`,
+        const data = await this.kartoffelUtils.kartoffelPost(
+          `${C.kartoffelUrl}/api/entities/${updateEntityRequest.id}`,
           { ...updateReq }
         );
-        return res.data as Entity;
+        return data as Entity;
       }
     } catch (error) {
       throw error;
@@ -263,7 +265,7 @@ export class EntitiesRepository {
         return { success: true };
       } else {
         await this.kartoffelUtils.kartoffelDelete(
-          `${C.kartoffelUrl}/entities/${disconnectDIFromEntityRequest.id}/digitalIdentity/${disconnectDIFromEntityRequest.uniqueId}`
+          `${C.kartoffelUrl}/api/entities/${disconnectDIFromEntityRequest.id}/digitalIdentity/${disconnectDIFromEntityRequest.uniqueId}`
         );
         return { success: true };
       }
@@ -279,8 +281,8 @@ export class EntitiesRepository {
       if (C.useFaker) {
         return { success: true };
       } else {
-        const res = await this.kartoffelUtils.kartoffelPut(
-          `${C.kartoffelUrl}/entities/${connectEntityAndDIRequest.id}/sigitalIdentity/${connectEntityAndDIRequest.uniqueId}`,
+        const data = await this.kartoffelUtils.kartoffelPut(
+          `${C.kartoffelUrl}/api/entities/${connectEntityAndDIRequest.id}/sigitalIdentity/${connectEntityAndDIRequest.uniqueId}`,
           {
             digitalIdentityUniqueId: connectEntityAndDIRequest.uniqueId,
           }

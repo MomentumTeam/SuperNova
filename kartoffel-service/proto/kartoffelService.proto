@@ -79,7 +79,7 @@ message UpdateEntityProperties{
     optional string address = 18;
     optional string clearance = 19;
     optional string sex = 20;
-    optional int64 birthdate = 21;
+    optional int64 birthDate = 21;
 }
 
 message RenameOGRequest{
@@ -196,7 +196,7 @@ message CreateEntityRequest{
     string address = 8;
     string clearance = 9;
     string sex = 10;
-    int64 birthdate = 11;
+    int64 birthDate = 11;
     string entityType = 12;
 }
 
@@ -249,44 +249,6 @@ message SuccessMessage{
     bool success = 1;
 }
 
-// Kartoffel enums
-// enum Source{
-//     SOURCE_1 = 0;
-//     SOURCE_2 = 1;
-// }
-
-// enum OGStatus{
-//     ACTIVE = 0;
-//     IN_ACTIVE = 1;
-// }
-
-// enum Sex{
-//     MALE = 0;
-//     FEMALE = 1;
-// }
-
-// enum ServiceType{
-//     SOLDIER = 0;
-//     RESERVED = 1;
-//     CIVILIAN = 2;
-// }
-
-// enum EntityType{
-//     SOLDIER = 0;
-//     RESERVED = 1;
-//     CIVILIAN = 2;
-// }
-
-// enum Clearance{
-//     LEVEL_1 = 0;
-//     LEVEL_2 = 1;
-//     LEVEL_3 = 2;
-//     LEVEL_4 = 3;
-//     LEVEL_5 = 4;
-//     YELLOW = 5;
-// }
-
-
 // Kartoffel messages
 
 message OrganizationGroup{
@@ -297,8 +259,8 @@ message OrganizationGroup{
     string hierarchy = 5;
     string status = 6;
     bool isLeaf = 7;
-    int64 createdAt = 8;
-    int64 updatedAt = 9;
+    string createdAt = 8;
+    string updatedAt = 9;
     repeated Entity directEntities = 10;
     repeated Role directRoles = 11;
 }
@@ -310,9 +272,10 @@ message Role{
     string directGroup = 4;
     string hierarchy = 5;
     repeated string hierarchyIds = 6;
-    string source = 7;
-    int64 createdAt = 8;
-    int64 updatedAt = 9;
+    string clearance = 7;
+    string source = 8;
+    string createdAt = 9;
+    string updatedAt = 10;
 }
 
 
@@ -327,22 +290,23 @@ message Entity{
     string serviceType = 8;
     string firstName = 9;
     string lastName = 10;
-    string akaUnit = 11;
-    int64 dischargeDay = 12;
-    string rank = 13;
-    string mail = 14;
-    string jobTitle = 15;
-    repeated string phone = 16;
-    repeated string mobilePhone = 17;
-    string address = 18;
-    string clearance = 19;
-    string sex = 20;
-    int64 birthdate = 21;
-    int64 createdAt = 22;
-    int64 updatedAt = 23;
-    repeated DigitalIdentity digitalIdentities = 24;
-    string picture = 25;
-
+    string fullName = 11;
+    string akaUnit = 12;
+    string dischargeDay = 13;
+    string rank = 14;
+    string mail = 15;
+    string jobTitle = 16;
+    repeated string phone = 17;
+    repeated string mobilePhone = 18;
+    string address = 19;
+    string clearance = 20;
+    string sex = 21;
+    string birthDate = 22;
+    string createdAt = 23;
+    string updatedAt = 24;
+    repeated DigitalIdentity digitalIdentities = 25;
+    string picture = 26;
+    string goalUserID = 27;
 }
 
 message DigitalIdentity{

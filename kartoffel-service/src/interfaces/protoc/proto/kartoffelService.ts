@@ -46,7 +46,7 @@ export interface UpdateEntityProperties {
   address?: string | undefined;
   clearance?: string | undefined;
   sex?: string | undefined;
-  birthdate?: number | undefined;
+  birthDate?: number | undefined;
 }
 
 export interface RenameOGRequest {
@@ -168,7 +168,7 @@ export interface CreateEntityRequest {
   address: string;
   clearance: string;
   sex: string;
-  birthdate: number;
+  birthDate: number;
   entityType: string;
 }
 
@@ -236,8 +236,8 @@ export interface OrganizationGroup {
   hierarchy: string;
   status: string;
   isLeaf: boolean;
-  createdAt: number;
-  updatedAt: number;
+  createdAt: string;
+  updatedAt: string;
   directEntities: Entity[];
   directRoles: Role[];
 }
@@ -249,9 +249,10 @@ export interface Role {
   directGroup: string;
   hierarchy: string;
   hierarchyIds: string[];
+  clearance: string;
   source: string;
-  createdAt: number;
-  updatedAt: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Entity {
@@ -265,8 +266,9 @@ export interface Entity {
   serviceType: string;
   firstName: string;
   lastName: string;
+  fullName: string;
   akaUnit: string;
-  dischargeDay: number;
+  dischargeDay: string;
   rank: string;
   mail: string;
   jobTitle: string;
@@ -275,11 +277,12 @@ export interface Entity {
   address: string;
   clearance: string;
   sex: string;
-  birthdate: number;
-  createdAt: number;
-  updatedAt: number;
+  birthDate: string;
+  createdAt: string;
+  updatedAt: string;
   digitalIdentities: DigitalIdentity[];
   picture: string;
+  goalUserID: string;
 }
 
 export interface DigitalIdentity {
@@ -751,8 +754,8 @@ export const UpdateEntityProperties = {
     if (message.sex !== undefined) {
       writer.uint32(162).string(message.sex);
     }
-    if (message.birthdate !== undefined) {
-      writer.uint32(168).int64(message.birthdate);
+    if (message.birthDate !== undefined) {
+      writer.uint32(168).int64(message.birthDate);
     }
     return writer;
   },
@@ -821,7 +824,7 @@ export const UpdateEntityProperties = {
           message.sex = reader.string();
           break;
         case 21:
-          message.birthdate = longToNumber(reader.int64() as Long);
+          message.birthDate = longToNumber(reader.int64() as Long);
           break;
         default:
           reader.skipType(tag & 7);
@@ -920,10 +923,10 @@ export const UpdateEntityProperties = {
     } else {
       message.sex = undefined;
     }
-    if (object.birthdate !== undefined && object.birthdate !== null) {
-      message.birthdate = Number(object.birthdate);
+    if (object.birthDate !== undefined && object.birthDate !== null) {
+      message.birthDate = Number(object.birthDate);
     } else {
-      message.birthdate = undefined;
+      message.birthDate = undefined;
     }
     return message;
   },
@@ -960,7 +963,7 @@ export const UpdateEntityProperties = {
     message.address !== undefined && (obj.address = message.address);
     message.clearance !== undefined && (obj.clearance = message.clearance);
     message.sex !== undefined && (obj.sex = message.sex);
-    message.birthdate !== undefined && (obj.birthdate = message.birthdate);
+    message.birthDate !== undefined && (obj.birthDate = message.birthDate);
     return obj;
   },
 
@@ -1055,10 +1058,10 @@ export const UpdateEntityProperties = {
     } else {
       message.sex = undefined;
     }
-    if (object.birthdate !== undefined && object.birthdate !== null) {
-      message.birthdate = object.birthdate;
+    if (object.birthDate !== undefined && object.birthDate !== null) {
+      message.birthDate = object.birthDate;
     } else {
-      message.birthdate = undefined;
+      message.birthDate = undefined;
     }
     return message;
   },
@@ -2590,7 +2593,7 @@ const baseCreateEntityRequest: object = {
   address: "",
   clearance: "",
   sex: "",
-  birthdate: 0,
+  birthDate: 0,
   entityType: "",
 };
 
@@ -2629,8 +2632,8 @@ export const CreateEntityRequest = {
     if (message.sex !== "") {
       writer.uint32(82).string(message.sex);
     }
-    if (message.birthdate !== 0) {
-      writer.uint32(88).int64(message.birthdate);
+    if (message.birthDate !== 0) {
+      writer.uint32(88).int64(message.birthDate);
     }
     if (message.entityType !== "") {
       writer.uint32(98).string(message.entityType);
@@ -2678,7 +2681,7 @@ export const CreateEntityRequest = {
           message.sex = reader.string();
           break;
         case 11:
-          message.birthdate = longToNumber(reader.int64() as Long);
+          message.birthDate = longToNumber(reader.int64() as Long);
           break;
         case 12:
           message.entityType = reader.string();
@@ -2745,10 +2748,10 @@ export const CreateEntityRequest = {
     } else {
       message.sex = "";
     }
-    if (object.birthdate !== undefined && object.birthdate !== null) {
-      message.birthdate = Number(object.birthdate);
+    if (object.birthDate !== undefined && object.birthDate !== null) {
+      message.birthDate = Number(object.birthDate);
     } else {
-      message.birthdate = 0;
+      message.birthDate = 0;
     }
     if (object.entityType !== undefined && object.entityType !== null) {
       message.entityType = String(object.entityType);
@@ -2781,7 +2784,7 @@ export const CreateEntityRequest = {
     message.address !== undefined && (obj.address = message.address);
     message.clearance !== undefined && (obj.clearance = message.clearance);
     message.sex !== undefined && (obj.sex = message.sex);
-    message.birthdate !== undefined && (obj.birthdate = message.birthdate);
+    message.birthDate !== undefined && (obj.birthDate = message.birthDate);
     message.entityType !== undefined && (obj.entityType = message.entityType);
     return obj;
   },
@@ -2840,10 +2843,10 @@ export const CreateEntityRequest = {
     } else {
       message.sex = "";
     }
-    if (object.birthdate !== undefined && object.birthdate !== null) {
-      message.birthdate = object.birthdate;
+    if (object.birthDate !== undefined && object.birthDate !== null) {
+      message.birthDate = object.birthDate;
     } else {
-      message.birthdate = 0;
+      message.birthDate = 0;
     }
     if (object.entityType !== undefined && object.entityType !== null) {
       message.entityType = object.entityType;
@@ -3498,8 +3501,8 @@ const baseOrganizationGroup: object = {
   hierarchy: "",
   status: "",
   isLeaf: false,
-  createdAt: 0,
-  updatedAt: 0,
+  createdAt: "",
+  updatedAt: "",
 };
 
 export const OrganizationGroup = {
@@ -3528,11 +3531,11 @@ export const OrganizationGroup = {
     if (message.isLeaf === true) {
       writer.uint32(56).bool(message.isLeaf);
     }
-    if (message.createdAt !== 0) {
-      writer.uint32(64).int64(message.createdAt);
+    if (message.createdAt !== "") {
+      writer.uint32(66).string(message.createdAt);
     }
-    if (message.updatedAt !== 0) {
-      writer.uint32(72).int64(message.updatedAt);
+    if (message.updatedAt !== "") {
+      writer.uint32(74).string(message.updatedAt);
     }
     for (const v of message.directEntities) {
       Entity.encode(v!, writer.uint32(82).fork()).ldelim();
@@ -3575,10 +3578,10 @@ export const OrganizationGroup = {
           message.isLeaf = reader.bool();
           break;
         case 8:
-          message.createdAt = longToNumber(reader.int64() as Long);
+          message.createdAt = reader.string();
           break;
         case 9:
-          message.updatedAt = longToNumber(reader.int64() as Long);
+          message.updatedAt = reader.string();
           break;
         case 10:
           message.directEntities.push(Entity.decode(reader, reader.uint32()));
@@ -3635,14 +3638,14 @@ export const OrganizationGroup = {
       message.isLeaf = false;
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
-      message.createdAt = Number(object.createdAt);
+      message.createdAt = String(object.createdAt);
     } else {
-      message.createdAt = 0;
+      message.createdAt = "";
     }
     if (object.updatedAt !== undefined && object.updatedAt !== null) {
-      message.updatedAt = Number(object.updatedAt);
+      message.updatedAt = String(object.updatedAt);
     } else {
-      message.updatedAt = 0;
+      message.updatedAt = "";
     }
     if (object.directEntities !== undefined && object.directEntities !== null) {
       for (const e of object.directEntities) {
@@ -3732,12 +3735,12 @@ export const OrganizationGroup = {
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = object.createdAt;
     } else {
-      message.createdAt = 0;
+      message.createdAt = "";
     }
     if (object.updatedAt !== undefined && object.updatedAt !== null) {
       message.updatedAt = object.updatedAt;
     } else {
-      message.updatedAt = 0;
+      message.updatedAt = "";
     }
     if (object.directEntities !== undefined && object.directEntities !== null) {
       for (const e of object.directEntities) {
@@ -3760,9 +3763,10 @@ const baseRole: object = {
   directGroup: "",
   hierarchy: "",
   hierarchyIds: "",
+  clearance: "",
   source: "",
-  createdAt: 0,
-  updatedAt: 0,
+  createdAt: "",
+  updatedAt: "",
 };
 
 export const Role = {
@@ -3785,14 +3789,17 @@ export const Role = {
     for (const v of message.hierarchyIds) {
       writer.uint32(50).string(v!);
     }
+    if (message.clearance !== "") {
+      writer.uint32(58).string(message.clearance);
+    }
     if (message.source !== "") {
-      writer.uint32(58).string(message.source);
+      writer.uint32(66).string(message.source);
     }
-    if (message.createdAt !== 0) {
-      writer.uint32(64).int64(message.createdAt);
+    if (message.createdAt !== "") {
+      writer.uint32(74).string(message.createdAt);
     }
-    if (message.updatedAt !== 0) {
-      writer.uint32(72).int64(message.updatedAt);
+    if (message.updatedAt !== "") {
+      writer.uint32(82).string(message.updatedAt);
     }
     return writer;
   },
@@ -3824,13 +3831,16 @@ export const Role = {
           message.hierarchyIds.push(reader.string());
           break;
         case 7:
-          message.source = reader.string();
+          message.clearance = reader.string();
           break;
         case 8:
-          message.createdAt = longToNumber(reader.int64() as Long);
+          message.source = reader.string();
           break;
         case 9:
-          message.updatedAt = longToNumber(reader.int64() as Long);
+          message.createdAt = reader.string();
+          break;
+        case 10:
+          message.updatedAt = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -3876,20 +3886,25 @@ export const Role = {
         message.hierarchyIds.push(String(e));
       }
     }
+    if (object.clearance !== undefined && object.clearance !== null) {
+      message.clearance = String(object.clearance);
+    } else {
+      message.clearance = "";
+    }
     if (object.source !== undefined && object.source !== null) {
       message.source = String(object.source);
     } else {
       message.source = "";
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
-      message.createdAt = Number(object.createdAt);
+      message.createdAt = String(object.createdAt);
     } else {
-      message.createdAt = 0;
+      message.createdAt = "";
     }
     if (object.updatedAt !== undefined && object.updatedAt !== null) {
-      message.updatedAt = Number(object.updatedAt);
+      message.updatedAt = String(object.updatedAt);
     } else {
-      message.updatedAt = 0;
+      message.updatedAt = "";
     }
     return message;
   },
@@ -3908,6 +3923,7 @@ export const Role = {
     } else {
       obj.hierarchyIds = [];
     }
+    message.clearance !== undefined && (obj.clearance = message.clearance);
     message.source !== undefined && (obj.source = message.source);
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
     message.updatedAt !== undefined && (obj.updatedAt = message.updatedAt);
@@ -3950,6 +3966,11 @@ export const Role = {
         message.hierarchyIds.push(e);
       }
     }
+    if (object.clearance !== undefined && object.clearance !== null) {
+      message.clearance = object.clearance;
+    } else {
+      message.clearance = "";
+    }
     if (object.source !== undefined && object.source !== null) {
       message.source = object.source;
     } else {
@@ -3958,12 +3979,12 @@ export const Role = {
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = object.createdAt;
     } else {
-      message.createdAt = 0;
+      message.createdAt = "";
     }
     if (object.updatedAt !== undefined && object.updatedAt !== null) {
       message.updatedAt = object.updatedAt;
     } else {
-      message.updatedAt = 0;
+      message.updatedAt = "";
     }
     return message;
   },
@@ -3980,8 +4001,9 @@ const baseEntity: object = {
   serviceType: "",
   firstName: "",
   lastName: "",
+  fullName: "",
   akaUnit: "",
-  dischargeDay: 0,
+  dischargeDay: "",
   rank: "",
   mail: "",
   jobTitle: "",
@@ -3990,10 +4012,11 @@ const baseEntity: object = {
   address: "",
   clearance: "",
   sex: "",
-  birthdate: 0,
-  createdAt: 0,
-  updatedAt: 0,
+  birthDate: "",
+  createdAt: "",
+  updatedAt: "",
   picture: "",
+  goalUserID: "",
 };
 
 export const Entity = {
@@ -4031,50 +4054,56 @@ export const Entity = {
     if (message.lastName !== "") {
       writer.uint32(82).string(message.lastName);
     }
-    if (message.akaUnit !== "") {
-      writer.uint32(90).string(message.akaUnit);
+    if (message.fullName !== "") {
+      writer.uint32(90).string(message.fullName);
     }
-    if (message.dischargeDay !== 0) {
-      writer.uint32(96).int64(message.dischargeDay);
+    if (message.akaUnit !== "") {
+      writer.uint32(98).string(message.akaUnit);
+    }
+    if (message.dischargeDay !== "") {
+      writer.uint32(106).string(message.dischargeDay);
     }
     if (message.rank !== "") {
-      writer.uint32(106).string(message.rank);
+      writer.uint32(114).string(message.rank);
     }
     if (message.mail !== "") {
-      writer.uint32(114).string(message.mail);
+      writer.uint32(122).string(message.mail);
     }
     if (message.jobTitle !== "") {
-      writer.uint32(122).string(message.jobTitle);
+      writer.uint32(130).string(message.jobTitle);
     }
     for (const v of message.phone) {
-      writer.uint32(130).string(v!);
-    }
-    for (const v of message.mobilePhone) {
       writer.uint32(138).string(v!);
     }
+    for (const v of message.mobilePhone) {
+      writer.uint32(146).string(v!);
+    }
     if (message.address !== "") {
-      writer.uint32(146).string(message.address);
+      writer.uint32(154).string(message.address);
     }
     if (message.clearance !== "") {
-      writer.uint32(154).string(message.clearance);
+      writer.uint32(162).string(message.clearance);
     }
     if (message.sex !== "") {
-      writer.uint32(162).string(message.sex);
+      writer.uint32(170).string(message.sex);
     }
-    if (message.birthdate !== 0) {
-      writer.uint32(168).int64(message.birthdate);
+    if (message.birthDate !== "") {
+      writer.uint32(178).string(message.birthDate);
     }
-    if (message.createdAt !== 0) {
-      writer.uint32(176).int64(message.createdAt);
+    if (message.createdAt !== "") {
+      writer.uint32(186).string(message.createdAt);
     }
-    if (message.updatedAt !== 0) {
-      writer.uint32(184).int64(message.updatedAt);
+    if (message.updatedAt !== "") {
+      writer.uint32(194).string(message.updatedAt);
     }
     for (const v of message.digitalIdentities) {
-      DigitalIdentity.encode(v!, writer.uint32(194).fork()).ldelim();
+      DigitalIdentity.encode(v!, writer.uint32(202).fork()).ldelim();
     }
     if (message.picture !== "") {
-      writer.uint32(202).string(message.picture);
+      writer.uint32(210).string(message.picture);
+    }
+    if (message.goalUserID !== "") {
+      writer.uint32(218).string(message.goalUserID);
     }
     return writer;
   },
@@ -4120,51 +4149,57 @@ export const Entity = {
           message.lastName = reader.string();
           break;
         case 11:
-          message.akaUnit = reader.string();
+          message.fullName = reader.string();
           break;
         case 12:
-          message.dischargeDay = longToNumber(reader.int64() as Long);
+          message.akaUnit = reader.string();
           break;
         case 13:
-          message.rank = reader.string();
+          message.dischargeDay = reader.string();
           break;
         case 14:
-          message.mail = reader.string();
+          message.rank = reader.string();
           break;
         case 15:
-          message.jobTitle = reader.string();
+          message.mail = reader.string();
           break;
         case 16:
-          message.phone.push(reader.string());
+          message.jobTitle = reader.string();
           break;
         case 17:
-          message.mobilePhone.push(reader.string());
+          message.phone.push(reader.string());
           break;
         case 18:
-          message.address = reader.string();
+          message.mobilePhone.push(reader.string());
           break;
         case 19:
-          message.clearance = reader.string();
+          message.address = reader.string();
           break;
         case 20:
-          message.sex = reader.string();
+          message.clearance = reader.string();
           break;
         case 21:
-          message.birthdate = longToNumber(reader.int64() as Long);
+          message.sex = reader.string();
           break;
         case 22:
-          message.createdAt = longToNumber(reader.int64() as Long);
+          message.birthDate = reader.string();
           break;
         case 23:
-          message.updatedAt = longToNumber(reader.int64() as Long);
+          message.createdAt = reader.string();
           break;
         case 24:
+          message.updatedAt = reader.string();
+          break;
+        case 25:
           message.digitalIdentities.push(
             DigitalIdentity.decode(reader, reader.uint32())
           );
           break;
-        case 25:
+        case 26:
           message.picture = reader.string();
+          break;
+        case 27:
+          message.goalUserID = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -4229,15 +4264,20 @@ export const Entity = {
     } else {
       message.lastName = "";
     }
+    if (object.fullName !== undefined && object.fullName !== null) {
+      message.fullName = String(object.fullName);
+    } else {
+      message.fullName = "";
+    }
     if (object.akaUnit !== undefined && object.akaUnit !== null) {
       message.akaUnit = String(object.akaUnit);
     } else {
       message.akaUnit = "";
     }
     if (object.dischargeDay !== undefined && object.dischargeDay !== null) {
-      message.dischargeDay = Number(object.dischargeDay);
+      message.dischargeDay = String(object.dischargeDay);
     } else {
-      message.dischargeDay = 0;
+      message.dischargeDay = "";
     }
     if (object.rank !== undefined && object.rank !== null) {
       message.rank = String(object.rank);
@@ -4279,20 +4319,20 @@ export const Entity = {
     } else {
       message.sex = "";
     }
-    if (object.birthdate !== undefined && object.birthdate !== null) {
-      message.birthdate = Number(object.birthdate);
+    if (object.birthDate !== undefined && object.birthDate !== null) {
+      message.birthDate = String(object.birthDate);
     } else {
-      message.birthdate = 0;
+      message.birthDate = "";
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
-      message.createdAt = Number(object.createdAt);
+      message.createdAt = String(object.createdAt);
     } else {
-      message.createdAt = 0;
+      message.createdAt = "";
     }
     if (object.updatedAt !== undefined && object.updatedAt !== null) {
-      message.updatedAt = Number(object.updatedAt);
+      message.updatedAt = String(object.updatedAt);
     } else {
-      message.updatedAt = 0;
+      message.updatedAt = "";
     }
     if (
       object.digitalIdentities !== undefined &&
@@ -4306,6 +4346,11 @@ export const Entity = {
       message.picture = String(object.picture);
     } else {
       message.picture = "";
+    }
+    if (object.goalUserID !== undefined && object.goalUserID !== null) {
+      message.goalUserID = String(object.goalUserID);
+    } else {
+      message.goalUserID = "";
     }
     return message;
   },
@@ -4327,6 +4372,7 @@ export const Entity = {
       (obj.serviceType = message.serviceType);
     message.firstName !== undefined && (obj.firstName = message.firstName);
     message.lastName !== undefined && (obj.lastName = message.lastName);
+    message.fullName !== undefined && (obj.fullName = message.fullName);
     message.akaUnit !== undefined && (obj.akaUnit = message.akaUnit);
     message.dischargeDay !== undefined &&
       (obj.dischargeDay = message.dischargeDay);
@@ -4346,7 +4392,7 @@ export const Entity = {
     message.address !== undefined && (obj.address = message.address);
     message.clearance !== undefined && (obj.clearance = message.clearance);
     message.sex !== undefined && (obj.sex = message.sex);
-    message.birthdate !== undefined && (obj.birthdate = message.birthdate);
+    message.birthDate !== undefined && (obj.birthDate = message.birthDate);
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
     message.updatedAt !== undefined && (obj.updatedAt = message.updatedAt);
     if (message.digitalIdentities) {
@@ -4357,6 +4403,7 @@ export const Entity = {
       obj.digitalIdentities = [];
     }
     message.picture !== undefined && (obj.picture = message.picture);
+    message.goalUserID !== undefined && (obj.goalUserID = message.goalUserID);
     return obj;
   },
 
@@ -4415,6 +4462,11 @@ export const Entity = {
     } else {
       message.lastName = "";
     }
+    if (object.fullName !== undefined && object.fullName !== null) {
+      message.fullName = object.fullName;
+    } else {
+      message.fullName = "";
+    }
     if (object.akaUnit !== undefined && object.akaUnit !== null) {
       message.akaUnit = object.akaUnit;
     } else {
@@ -4423,7 +4475,7 @@ export const Entity = {
     if (object.dischargeDay !== undefined && object.dischargeDay !== null) {
       message.dischargeDay = object.dischargeDay;
     } else {
-      message.dischargeDay = 0;
+      message.dischargeDay = "";
     }
     if (object.rank !== undefined && object.rank !== null) {
       message.rank = object.rank;
@@ -4465,20 +4517,20 @@ export const Entity = {
     } else {
       message.sex = "";
     }
-    if (object.birthdate !== undefined && object.birthdate !== null) {
-      message.birthdate = object.birthdate;
+    if (object.birthDate !== undefined && object.birthDate !== null) {
+      message.birthDate = object.birthDate;
     } else {
-      message.birthdate = 0;
+      message.birthDate = "";
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = object.createdAt;
     } else {
-      message.createdAt = 0;
+      message.createdAt = "";
     }
     if (object.updatedAt !== undefined && object.updatedAt !== null) {
       message.updatedAt = object.updatedAt;
     } else {
-      message.updatedAt = 0;
+      message.updatedAt = "";
     }
     if (
       object.digitalIdentities !== undefined &&
@@ -4492,6 +4544,11 @@ export const Entity = {
       message.picture = object.picture;
     } else {
       message.picture = "";
+    }
+    if (object.goalUserID !== undefined && object.goalUserID !== null) {
+      message.goalUserID = object.goalUserID;
+    } else {
+      message.goalUserID = "";
     }
     return message;
   },

@@ -3,6 +3,7 @@ import * as C from '../config';
 import { logger } from '../logger';
 import { SpikeService } from '../spike/spikeService';
 import https from 'https';
+import { Entity } from '../interfaces/protoc/proto/kartoffelService';
 export class KartoffelUtils {
   private axiosKartoffel: AxiosInstance;
   private spikeToken: string | null;
@@ -24,22 +25,22 @@ export class KartoffelUtils {
       .catch((error) => {
         throw error;
       });
-    this.axiosKartoffel.interceptors.request.use(async (config) => {
-      const now = new Date().getTime();
-      const hoursDiff = Math.floor(
-        (now - this.lastSpikeTokenRecieved) / 1000 / 60 / 60
-      );
-      if (!this.spikeToken || hoursDiff >= C.spikeTokenRefreshInHours) {
-        try {
-          this.spikeToken = await this.spikeService.getSpikeToken();
-          this.lastSpikeTokenRecieved = new Date().getTime();
-        } catch (error) {
-          throw error;
-        }
-      }
-      config.headers.Authorization = this.spikeToken;
-      return config;
-    });
+    // this.axiosKartoffel.interceptors.request.use(async (config) => {
+    //   const now = new Date().getTime();
+    //   const hoursDiff = Math.floor(
+    //     (now - this.lastSpikeTokenRecieved) / 1000 / 60 / 60
+    //   );
+    //   if (!this.spikeToken || hoursDiff >= C.spikeTokenRefreshInHours) {
+    //     try {
+    //       this.spikeToken = await this.spikeService.getSpikeToken();
+    //       this.lastSpikeTokenRecieved = new Date().getTime();
+    //     } catch (error) {
+    //       throw error;
+    //     }
+    //   }
+    //   config.headers.Authorization = this.spikeToken;
+    //   return config;
+    // });
   }
 
   async kartoffelGet(url: string): Promise<any> {
@@ -49,9 +50,9 @@ export class KartoffelUtils {
         .then((res) => {
           logger.info(`Kartoffel GET Request OK`, {
             url: url,
-            response: res,
+            response: res.data,
           });
-          resolve(res);
+          resolve(res.data);
         })
         .catch((error) => {
           logger.error(`Kartoffel GET Request ERROR`, {
@@ -70,9 +71,9 @@ export class KartoffelUtils {
         .then((res) => {
           logger.info(`Kartoffel DELETE Request OK`, {
             url: url,
-            response: res,
+            response: res.data,
           });
-          resolve(res);
+          resolve(res.data);
         })
         .catch((error) => {
           logger.error(`Kartoffel DELETE Request ERROR`, {
@@ -92,9 +93,9 @@ export class KartoffelUtils {
           logger.info(`Kartoffel PUT Request OK`, {
             url: url,
             requestBoody: body,
-            response: res,
+            response: res.data,
           });
-          resolve(res);
+          resolve(res.data);
         })
         .catch((error) => {
           logger.error(`Kartoffel PUT Request ERROR`, {
@@ -115,9 +116,9 @@ export class KartoffelUtils {
           logger.info(`Kartoffel POST Request OK`, {
             url: url,
             requestBoody: body,
-            response: res,
+            response: res.data,
           });
-          resolve(res);
+          resolve(res.data);
         })
         .catch((error) => {
           logger.error(`Kartoffel POST Request ERROR`, {
@@ -138,9 +139,9 @@ export class KartoffelUtils {
           logger.info(`Kartoffel PATCH Request OK`, {
             url: url,
             requestBoody: body,
-            response: res,
+            response: res.data,
           });
-          resolve(res);
+          resolve(res.data);
         })
         .catch((error) => {
           logger.error(`Kartoffel PATCH Request ERROR`, {
