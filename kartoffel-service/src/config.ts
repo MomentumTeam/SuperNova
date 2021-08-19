@@ -14,8 +14,8 @@ export const devMode = process.env.NODE_ENV
 export const kartoffelUrl = process.env.KS_KARTOFFEL_URL || '0.0.0.0:1000';
 
 export const useFaker = process.env.KS_USE_FAKER
-  ? process.env.KS_USE_FAKER === 'true'
-  : true;
+  ? process.env.KS_USE_FAKER === 'false'
+  : false;
 
 export const kartoffelAudience =
   process.env.KS_KARTOFFEL_AUDIENCE || 'kartoffel';

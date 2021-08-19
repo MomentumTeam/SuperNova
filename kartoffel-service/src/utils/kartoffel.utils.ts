@@ -42,10 +42,10 @@ export class KartoffelUtils {
     // });
   }
 
-  async kartoffelGet(url: string): Promise<any> {
+  async kartoffelGet(url: string, params: any={}): Promise<any> {
     return new Promise((resolve, reject) => {
       this.axiosKartoffel
-        .get(url)
+        .get(url, params)
         .then((res) => {
           logger.info(`Kartoffel GET Request OK`, {
             url: url,
@@ -84,7 +84,7 @@ export class KartoffelUtils {
     });
   }
 
-  async kartoffelPut(url: string, body: any): Promise<any> {
+  async kartoffelPut(url: string, body: any={}): Promise<any> {
     return new Promise((resolve, reject) => {
       this.axiosKartoffel
         .put(url, body)

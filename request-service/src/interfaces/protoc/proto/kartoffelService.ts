@@ -4,6 +4,20 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "Kartoffel";
 
+export interface UpdateOGParentRequest {
+  id: string;
+  parentId: string;
+  parent: string;
+}
+
+export interface GetOGByIdRequest {
+  id: string;
+}
+
+export interface GetOGByHierarchyNameRequest {
+  hierarchy: string;
+}
+
 export interface DeleteEntityRequest {
   id: string;
 }
@@ -296,6 +310,230 @@ export interface DigitalIdentity {
   isRoleAttachable: boolean;
   role: Role | undefined;
 }
+
+const baseUpdateOGParentRequest: object = { id: "", parentId: "", parent: "" };
+
+export const UpdateOGParentRequest = {
+  encode(
+    message: UpdateOGParentRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.parentId !== "") {
+      writer.uint32(18).string(message.parentId);
+    }
+    if (message.parent !== "") {
+      writer.uint32(26).string(message.parent);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): UpdateOGParentRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseUpdateOGParentRequest } as UpdateOGParentRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        case 2:
+          message.parentId = reader.string();
+          break;
+        case 3:
+          message.parent = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UpdateOGParentRequest {
+    const message = { ...baseUpdateOGParentRequest } as UpdateOGParentRequest;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    if (object.parentId !== undefined && object.parentId !== null) {
+      message.parentId = String(object.parentId);
+    } else {
+      message.parentId = "";
+    }
+    if (object.parent !== undefined && object.parent !== null) {
+      message.parent = String(object.parent);
+    } else {
+      message.parent = "";
+    }
+    return message;
+  },
+
+  toJSON(message: UpdateOGParentRequest): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    message.parentId !== undefined && (obj.parentId = message.parentId);
+    message.parent !== undefined && (obj.parent = message.parent);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<UpdateOGParentRequest>
+  ): UpdateOGParentRequest {
+    const message = { ...baseUpdateOGParentRequest } as UpdateOGParentRequest;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    if (object.parentId !== undefined && object.parentId !== null) {
+      message.parentId = object.parentId;
+    } else {
+      message.parentId = "";
+    }
+    if (object.parent !== undefined && object.parent !== null) {
+      message.parent = object.parent;
+    } else {
+      message.parent = "";
+    }
+    return message;
+  },
+};
+
+const baseGetOGByIdRequest: object = { id: "" };
+
+export const GetOGByIdRequest = {
+  encode(
+    message: GetOGByIdRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): GetOGByIdRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseGetOGByIdRequest } as GetOGByIdRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetOGByIdRequest {
+    const message = { ...baseGetOGByIdRequest } as GetOGByIdRequest;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+
+  toJSON(message: GetOGByIdRequest): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<GetOGByIdRequest>): GetOGByIdRequest {
+    const message = { ...baseGetOGByIdRequest } as GetOGByIdRequest;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+};
+
+const baseGetOGByHierarchyNameRequest: object = { hierarchy: "" };
+
+export const GetOGByHierarchyNameRequest = {
+  encode(
+    message: GetOGByHierarchyNameRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.hierarchy !== "") {
+      writer.uint32(10).string(message.hierarchy);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GetOGByHierarchyNameRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseGetOGByHierarchyNameRequest,
+    } as GetOGByHierarchyNameRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.hierarchy = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetOGByHierarchyNameRequest {
+    const message = {
+      ...baseGetOGByHierarchyNameRequest,
+    } as GetOGByHierarchyNameRequest;
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = String(object.hierarchy);
+    } else {
+      message.hierarchy = "";
+    }
+    return message;
+  },
+
+  toJSON(message: GetOGByHierarchyNameRequest): unknown {
+    const obj: any = {};
+    message.hierarchy !== undefined && (obj.hierarchy = message.hierarchy);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<GetOGByHierarchyNameRequest>
+  ): GetOGByHierarchyNameRequest {
+    const message = {
+      ...baseGetOGByHierarchyNameRequest,
+    } as GetOGByHierarchyNameRequest;
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = object.hierarchy;
+    } else {
+      message.hierarchy = "";
+    }
+    return message;
+  },
+};
 
 const baseDeleteEntityRequest: object = { id: "" };
 
@@ -4788,20 +5026,24 @@ export interface Kartoffel {
     request: DisconnectDIFromEntityRequest
   ): Promise<SuccessMessage>;
   GetPictureByEntityId(request: GetPictureByEntityIdRequest): Promise<Image>;
+  /** Groups */
   SearchOG(request: SearchOGRequest): Promise<OGArray>;
   CreateOG(request: CreateOGRequest): Promise<OrganizationGroup>;
+  DeleteOG(request: DeleteOGRequest): Promise<SuccessMessage>;
+  GetOGByHierarchyName(
+    request: GetOGByHierarchyNameRequest
+  ): Promise<OrganizationGroup>;
+  GetOGById(request: GetOGByIdRequest): Promise<OrganizationGroup>;
+  GetChildrenOfOG(request: GetChildrenOfOGRequest): Promise<OGArray>;
+  UpdateOGParent(request: UpdateOGParentRequest): Promise<SuccessMessage>;
   CreateDI(request: CreateDIRequest): Promise<DigitalIdentity>;
   CreateRole(request: CreateRoleRequest): Promise<Role>;
   ConnectRoleAndDI(request: ConnectRoleAndDIRequest): Promise<SuccessMessage>;
   GetRoleByRoleId(request: GetRoleByRoleIdRequest): Promise<Role>;
   GetRolesUnderOG(request: GetRolesUnderOGRequest): Promise<RoleArray>;
-  DeleteOG(request: DeleteOGRequest): Promise<SuccessMessage>;
-  GetChildrenOfOG(request: GetChildrenOfOGRequest): Promise<OGArray>;
   DeleteRole(request: DeleteRoleRequest): Promise<SuccessMessage>;
   DeleteDI(request: DeleteDIRequest): Promise<SuccessMessage>;
   GetOGTree(request: GetOGTreeRequest): Promise<OGTree>;
-  RenameRole(request: RenameRoleRequest): Promise<SuccessMessage>;
-  RenameOG(request: RenameOGRequest): Promise<SuccessMessage>;
 }
 
 export class KartoffelClientImpl implements Kartoffel {
@@ -4823,18 +5065,19 @@ export class KartoffelClientImpl implements Kartoffel {
     this.GetPictureByEntityId = this.GetPictureByEntityId.bind(this);
     this.SearchOG = this.SearchOG.bind(this);
     this.CreateOG = this.CreateOG.bind(this);
+    this.DeleteOG = this.DeleteOG.bind(this);
+    this.GetOGByHierarchyName = this.GetOGByHierarchyName.bind(this);
+    this.GetOGById = this.GetOGById.bind(this);
+    this.GetChildrenOfOG = this.GetChildrenOfOG.bind(this);
+    this.UpdateOGParent = this.UpdateOGParent.bind(this);
     this.CreateDI = this.CreateDI.bind(this);
     this.CreateRole = this.CreateRole.bind(this);
     this.ConnectRoleAndDI = this.ConnectRoleAndDI.bind(this);
     this.GetRoleByRoleId = this.GetRoleByRoleId.bind(this);
     this.GetRolesUnderOG = this.GetRolesUnderOG.bind(this);
-    this.DeleteOG = this.DeleteOG.bind(this);
-    this.GetChildrenOfOG = this.GetChildrenOfOG.bind(this);
     this.DeleteRole = this.DeleteRole.bind(this);
     this.DeleteDI = this.DeleteDI.bind(this);
     this.GetOGTree = this.GetOGTree.bind(this);
-    this.RenameRole = this.RenameRole.bind(this);
-    this.RenameOG = this.RenameOG.bind(this);
   }
   CreateEntity(request: CreateEntityRequest): Promise<Entity> {
     const data = CreateEntityRequest.encode(request).finish();
@@ -4990,6 +5233,54 @@ export class KartoffelClientImpl implements Kartoffel {
     );
   }
 
+  DeleteOG(request: DeleteOGRequest): Promise<SuccessMessage> {
+    const data = DeleteOGRequest.encode(request).finish();
+    const promise = this.rpc.request("Kartoffel.Kartoffel", "DeleteOG", data);
+    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
+  }
+
+  GetOGByHierarchyName(
+    request: GetOGByHierarchyNameRequest
+  ): Promise<OrganizationGroup> {
+    const data = GetOGByHierarchyNameRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "GetOGByHierarchyName",
+      data
+    );
+    return promise.then((data) =>
+      OrganizationGroup.decode(new _m0.Reader(data))
+    );
+  }
+
+  GetOGById(request: GetOGByIdRequest): Promise<OrganizationGroup> {
+    const data = GetOGByIdRequest.encode(request).finish();
+    const promise = this.rpc.request("Kartoffel.Kartoffel", "GetOGById", data);
+    return promise.then((data) =>
+      OrganizationGroup.decode(new _m0.Reader(data))
+    );
+  }
+
+  GetChildrenOfOG(request: GetChildrenOfOGRequest): Promise<OGArray> {
+    const data = GetChildrenOfOGRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "GetChildrenOfOG",
+      data
+    );
+    return promise.then((data) => OGArray.decode(new _m0.Reader(data)));
+  }
+
+  UpdateOGParent(request: UpdateOGParentRequest): Promise<SuccessMessage> {
+    const data = UpdateOGParentRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "UpdateOGParent",
+      data
+    );
+    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
+  }
+
   CreateDI(request: CreateDIRequest): Promise<DigitalIdentity> {
     const data = CreateDIRequest.encode(request).finish();
     const promise = this.rpc.request("Kartoffel.Kartoffel", "CreateDI", data);
@@ -5032,22 +5323,6 @@ export class KartoffelClientImpl implements Kartoffel {
     return promise.then((data) => RoleArray.decode(new _m0.Reader(data)));
   }
 
-  DeleteOG(request: DeleteOGRequest): Promise<SuccessMessage> {
-    const data = DeleteOGRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "DeleteOG", data);
-    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
-  }
-
-  GetChildrenOfOG(request: GetChildrenOfOGRequest): Promise<OGArray> {
-    const data = GetChildrenOfOGRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "GetChildrenOfOG",
-      data
-    );
-    return promise.then((data) => OGArray.decode(new _m0.Reader(data)));
-  }
-
   DeleteRole(request: DeleteRoleRequest): Promise<SuccessMessage> {
     const data = DeleteRoleRequest.encode(request).finish();
     const promise = this.rpc.request("Kartoffel.Kartoffel", "DeleteRole", data);
@@ -5064,18 +5339,6 @@ export class KartoffelClientImpl implements Kartoffel {
     const data = GetOGTreeRequest.encode(request).finish();
     const promise = this.rpc.request("Kartoffel.Kartoffel", "GetOGTree", data);
     return promise.then((data) => OGTree.decode(new _m0.Reader(data)));
-  }
-
-  RenameRole(request: RenameRoleRequest): Promise<SuccessMessage> {
-    const data = RenameRoleRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "RenameRole", data);
-    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
-  }
-
-  RenameOG(request: RenameOGRequest): Promise<SuccessMessage> {
-    const data = RenameOGRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "RenameOG", data);
-    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 }
 
