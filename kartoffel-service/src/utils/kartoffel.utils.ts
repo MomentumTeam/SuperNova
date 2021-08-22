@@ -42,14 +42,15 @@ export class KartoffelUtils {
     // });
   }
 
-  async kartoffelGet(url: string, params: any={}): Promise<any> {
+  async kartoffelGet(url: string, params: any = {}): Promise<any> {
     return new Promise((resolve, reject) => {
       this.axiosKartoffel
-        .get(url, params)
+        .get(url, { params })
         .then((res) => {
           logger.info(`Kartoffel GET Request OK`, {
             url: url,
             response: res.data,
+            queryParams: params,
           });
           resolve(res.data);
         })
@@ -57,20 +58,22 @@ export class KartoffelUtils {
           logger.error(`Kartoffel GET Request ERROR`, {
             url: url,
             error: error.message,
+            queryParams: params,
           });
           reject(error);
         });
     });
   }
 
-  async kartoffelDelete(url: string): Promise<any> {
+  async kartoffelDelete(url: string, params: any = {}): Promise<any> {
     return new Promise((resolve, reject) => {
       this.axiosKartoffel
-        .delete(url)
+        .delete(url, { params })
         .then((res) => {
           logger.info(`Kartoffel DELETE Request OK`, {
             url: url,
             response: res.data,
+            queryParams: params,
           });
           resolve(res.data);
         })
@@ -78,21 +81,27 @@ export class KartoffelUtils {
           logger.error(`Kartoffel DELETE Request ERROR`, {
             url: url,
             error: error.message,
+            queryParams: params,
           });
           reject(error);
         });
     });
   }
 
-  async kartoffelPut(url: string, body: any={}): Promise<any> {
+  async kartoffelPut(
+    url: string,
+    body: any = {},
+    params: any = {}
+  ): Promise<any> {
     return new Promise((resolve, reject) => {
       this.axiosKartoffel
-        .put(url, body)
+        .put(url, body, { params })
         .then((res) => {
           logger.info(`Kartoffel PUT Request OK`, {
             url: url,
             requestBoody: body,
             response: res.data,
+            queryParams: params,
           });
           resolve(res.data);
         })
@@ -100,6 +109,7 @@ export class KartoffelUtils {
           logger.error(`Kartoffel PUT Request ERROR`, {
             url: url,
             requestBoody: body,
+            queryParams: params,
             error: error.message,
           });
           reject(error);
@@ -107,15 +117,16 @@ export class KartoffelUtils {
     });
   }
 
-  async kartoffelPost(url: string, body: any): Promise<any> {
+  async kartoffelPost(url: string, body: any, params: any = {}): Promise<any> {
     return new Promise((resolve, reject) => {
       this.axiosKartoffel
-        .post(url, body)
+        .post(url, body, { params })
         .then((res) => {
           logger.info(`Kartoffel POST Request OK`, {
             url: url,
             requestBoody: body,
             response: res.data,
+            queryParams: params,
           });
           resolve(res.data);
         })
@@ -124,20 +135,22 @@ export class KartoffelUtils {
             url: url,
             requestBoody: body,
             error: error.message,
+            queryParams: params,
           });
           reject(error);
         });
     });
   }
 
-  async kartoffelPatch(url: string, body: any): Promise<any> {
+  async kartoffelPatch(url: string, body: any, params: any = {}): Promise<any> {
     return new Promise((resolve, reject) => {
       this.axiosKartoffel
-        .patch(url, body)
+        .patch(url, body, { params })
         .then((res) => {
           logger.info(`Kartoffel PATCH Request OK`, {
             url: url,
             requestBoody: body,
+            queryParams: params,
             response: res.data,
           });
           resolve(res.data);
@@ -147,6 +160,7 @@ export class KartoffelUtils {
             url: url,
             requestBoody: body,
             error: error.message,
+            queryParams: params,
           });
           reject(error);
         });
