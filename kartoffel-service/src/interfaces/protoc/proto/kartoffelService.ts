@@ -1,8 +1,8 @@
 /* eslint-disable */
-import Long from "long";
-import _m0 from "protobufjs/minimal";
+import Long from 'long';
+import _m0 from 'protobufjs/minimal';
 
-export const protobufPackage = "Kartoffel";
+export const protobufPackage = 'Kartoffel';
 
 export interface DeleteEntityRequest {
   id: string;
@@ -118,6 +118,17 @@ export interface CreateRoleRequest {
   directGroup: string;
   source: string;
   roleId: string;
+}
+
+/** UpdateRole */
+export interface UpdateRoleRequest {
+  roleId: string;
+}
+
+/** DisconnectRoleAndDI */
+export interface DisconnectRoleAndDIRequest {
+  roleId: string;
+  uniqueId: string;
 }
 
 /** ConnectRoleAndDI */
@@ -297,14 +308,14 @@ export interface DigitalIdentity {
   role: Role | undefined;
 }
 
-const baseDeleteEntityRequest: object = { id: "" };
+const baseDeleteEntityRequest: object = { id: '' };
 
 export const DeleteEntityRequest = {
   encode(
     message: DeleteEntityRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
     return writer;
@@ -333,7 +344,7 @@ export const DeleteEntityRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     return message;
   },
@@ -349,20 +360,20 @@ export const DeleteEntityRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     return message;
   },
 };
 
-const baseGetEntityByIdentifierRequest: object = { identifier: "" };
+const baseGetEntityByIdentifierRequest: object = { identifier: '' };
 
 export const GetEntityByIdentifierRequest = {
   encode(
     message: GetEntityByIdentifierRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.identifier !== "") {
+    if (message.identifier !== '') {
       writer.uint32(10).string(message.identifier);
     }
     return writer;
@@ -398,7 +409,7 @@ export const GetEntityByIdentifierRequest = {
     if (object.identifier !== undefined && object.identifier !== null) {
       message.identifier = String(object.identifier);
     } else {
-      message.identifier = "";
+      message.identifier = '';
     }
     return message;
   },
@@ -418,14 +429,14 @@ export const GetEntityByIdentifierRequest = {
     if (object.identifier !== undefined && object.identifier !== null) {
       message.identifier = object.identifier;
     } else {
-      message.identifier = "";
+      message.identifier = '';
     }
     return message;
   },
 };
 
 const baseGetEntitiesByHierarchyRequest: object = {
-  hierarchy: "",
+  hierarchy: '',
   direct: false,
   page: 0,
   pageSize: 0,
@@ -436,7 +447,7 @@ export const GetEntitiesByHierarchyRequest = {
     message: GetEntitiesByHierarchyRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.hierarchy !== "") {
+    if (message.hierarchy !== '') {
       writer.uint32(10).string(message.hierarchy);
     }
     if (message.direct === true) {
@@ -490,7 +501,7 @@ export const GetEntitiesByHierarchyRequest = {
     if (object.hierarchy !== undefined && object.hierarchy !== null) {
       message.hierarchy = String(object.hierarchy);
     } else {
-      message.hierarchy = "";
+      message.hierarchy = '';
     }
     if (object.direct !== undefined && object.direct !== null) {
       message.direct = Boolean(object.direct);
@@ -528,7 +539,7 @@ export const GetEntitiesByHierarchyRequest = {
     if (object.hierarchy !== undefined && object.hierarchy !== null) {
       message.hierarchy = object.hierarchy;
     } else {
-      message.hierarchy = "";
+      message.hierarchy = '';
     }
     if (object.direct !== undefined && object.direct !== null) {
       message.direct = object.direct;
@@ -549,14 +560,14 @@ export const GetEntitiesByHierarchyRequest = {
   },
 };
 
-const baseGetEntityByDIRequest: object = { uniqueId: "" };
+const baseGetEntityByDIRequest: object = { uniqueId: '' };
 
 export const GetEntityByDIRequest = {
   encode(
     message: GetEntityByDIRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.uniqueId !== "") {
+    if (message.uniqueId !== '') {
       writer.uint32(10).string(message.uniqueId);
     }
     return writer;
@@ -588,7 +599,7 @@ export const GetEntityByDIRequest = {
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = String(object.uniqueId);
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     return message;
   },
@@ -604,20 +615,20 @@ export const GetEntityByDIRequest = {
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = object.uniqueId;
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     return message;
   },
 };
 
-const baseUpdateEntityRequest: object = { id: "" };
+const baseUpdateEntityRequest: object = { id: '' };
 
 export const UpdateEntityRequest = {
   encode(
     message: UpdateEntityRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
     if (message.properties !== undefined) {
@@ -658,7 +669,7 @@ export const UpdateEntityRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.properties !== undefined && object.properties !== null) {
       message.properties = UpdateEntityProperties.fromJSON(object.properties);
@@ -683,7 +694,7 @@ export const UpdateEntityRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.properties !== undefined && object.properties !== null) {
       message.properties = UpdateEntityProperties.fromPartial(
@@ -696,7 +707,7 @@ export const UpdateEntityRequest = {
   },
 };
 
-const baseUpdateEntityProperties: object = { phone: "", mobilePhone: "" };
+const baseUpdateEntityProperties: object = { phone: '', mobilePhone: '' };
 
 export const UpdateEntityProperties = {
   encode(
@@ -1067,17 +1078,17 @@ export const UpdateEntityProperties = {
   },
 };
 
-const baseRenameOGRequest: object = { id: "", name: "" };
+const baseRenameOGRequest: object = { id: '', name: '' };
 
 export const RenameOGRequest = {
   encode(
     message: RenameOGRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
-    if (message.name !== "") {
+    if (message.name !== '') {
       writer.uint32(18).string(message.name);
     }
     return writer;
@@ -1109,12 +1120,12 @@ export const RenameOGRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = String(object.name);
     } else {
-      message.name = "";
+      message.name = '';
     }
     return message;
   },
@@ -1131,28 +1142,28 @@ export const RenameOGRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = object.name;
     } else {
-      message.name = "";
+      message.name = '';
     }
     return message;
   },
 };
 
-const baseRenameRoleRequest: object = { uniqueId: "", jobTitle: "" };
+const baseRenameRoleRequest: object = { uniqueId: '', jobTitle: '' };
 
 export const RenameRoleRequest = {
   encode(
     message: RenameRoleRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.uniqueId !== "") {
+    if (message.uniqueId !== '') {
       writer.uint32(10).string(message.uniqueId);
     }
-    if (message.jobTitle !== "") {
+    if (message.jobTitle !== '') {
       writer.uint32(18).string(message.jobTitle);
     }
     return writer;
@@ -1184,12 +1195,12 @@ export const RenameRoleRequest = {
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = String(object.uniqueId);
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     if (object.jobTitle !== undefined && object.jobTitle !== null) {
       message.jobTitle = String(object.jobTitle);
     } else {
-      message.jobTitle = "";
+      message.jobTitle = '';
     }
     return message;
   },
@@ -1206,25 +1217,25 @@ export const RenameRoleRequest = {
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = object.uniqueId;
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     if (object.jobTitle !== undefined && object.jobTitle !== null) {
       message.jobTitle = object.jobTitle;
     } else {
-      message.jobTitle = "";
+      message.jobTitle = '';
     }
     return message;
   },
 };
 
-const baseGetPictureByEntityIdRequest: object = { id: "" };
+const baseGetPictureByEntityIdRequest: object = { id: '' };
 
 export const GetPictureByEntityIdRequest = {
   encode(
     message: GetPictureByEntityIdRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
     return writer;
@@ -1260,7 +1271,7 @@ export const GetPictureByEntityIdRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     return message;
   },
@@ -1280,17 +1291,17 @@ export const GetPictureByEntityIdRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     return message;
   },
 };
 
-const baseImage: object = { image: "" };
+const baseImage: object = { image: '' };
 
 export const Image = {
   encode(message: Image, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.image !== "") {
+    if (message.image !== '') {
       writer.uint32(10).string(message.image);
     }
     return writer;
@@ -1319,7 +1330,7 @@ export const Image = {
     if (object.image !== undefined && object.image !== null) {
       message.image = String(object.image);
     } else {
-      message.image = "";
+      message.image = '';
     }
     return message;
   },
@@ -1335,20 +1346,20 @@ export const Image = {
     if (object.image !== undefined && object.image !== null) {
       message.image = object.image;
     } else {
-      message.image = "";
+      message.image = '';
     }
     return message;
   },
 };
 
-const baseSearchEntitiesByFullNameRequest: object = { fullName: "" };
+const baseSearchEntitiesByFullNameRequest: object = { fullName: '' };
 
 export const SearchEntitiesByFullNameRequest = {
   encode(
     message: SearchEntitiesByFullNameRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.fullName !== "") {
+    if (message.fullName !== '') {
       writer.uint32(10).string(message.fullName);
     }
     if (message.rank !== undefined) {
@@ -1414,7 +1425,7 @@ export const SearchEntitiesByFullNameRequest = {
     if (object.fullName !== undefined && object.fullName !== null) {
       message.fullName = String(object.fullName);
     } else {
-      message.fullName = "";
+      message.fullName = '';
     }
     if (object.rank !== undefined && object.rank !== null) {
       message.rank = String(object.rank);
@@ -1465,7 +1476,7 @@ export const SearchEntitiesByFullNameRequest = {
     if (object.fullName !== undefined && object.fullName !== null) {
       message.fullName = object.fullName;
     } else {
-      message.fullName = "";
+      message.fullName = '';
     }
     if (object.rank !== undefined && object.rank !== null) {
       message.rank = object.rank;
@@ -1496,14 +1507,14 @@ export const SearchEntitiesByFullNameRequest = {
   },
 };
 
-const baseGetOGTreeRequest: object = { rootId: "" };
+const baseGetOGTreeRequest: object = { rootId: '' };
 
 export const GetOGTreeRequest = {
   encode(
     message: GetOGTreeRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.rootId !== "") {
+    if (message.rootId !== '') {
       writer.uint32(10).string(message.rootId);
     }
     return writer;
@@ -1532,7 +1543,7 @@ export const GetOGTreeRequest = {
     if (object.rootId !== undefined && object.rootId !== null) {
       message.rootId = String(object.rootId);
     } else {
-      message.rootId = "";
+      message.rootId = '';
     }
     return message;
   },
@@ -1548,23 +1559,23 @@ export const GetOGTreeRequest = {
     if (object.rootId !== undefined && object.rootId !== null) {
       message.rootId = object.rootId;
     } else {
-      message.rootId = "";
+      message.rootId = '';
     }
     return message;
   },
 };
 
-const baseOGTree: object = { id: "", name: "" };
+const baseOGTree: object = { id: '', name: '' };
 
 export const OGTree = {
   encode(
     message: OGTree,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
-    if (message.name !== "") {
+    if (message.name !== '') {
       writer.uint32(18).string(message.name);
     }
     for (const v of message.children) {
@@ -1604,12 +1615,12 @@ export const OGTree = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = String(object.name);
     } else {
-      message.name = "";
+      message.name = '';
     }
     if (object.children !== undefined && object.children !== null) {
       for (const e of object.children) {
@@ -1639,12 +1650,12 @@ export const OGTree = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = object.name;
     } else {
-      message.name = "";
+      message.name = '';
     }
     if (object.children !== undefined && object.children !== null) {
       for (const e of object.children) {
@@ -1655,14 +1666,14 @@ export const OGTree = {
   },
 };
 
-const baseSearchOGRequest: object = { hierarchyAndName: "" };
+const baseSearchOGRequest: object = { hierarchyAndName: '' };
 
 export const SearchOGRequest = {
   encode(
     message: SearchOGRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.hierarchyAndName !== "") {
+    if (message.hierarchyAndName !== '') {
       writer.uint32(10).string(message.hierarchyAndName);
     }
     return writer;
@@ -1694,7 +1705,7 @@ export const SearchOGRequest = {
     ) {
       message.hierarchyAndName = String(object.hierarchyAndName);
     } else {
-      message.hierarchyAndName = "";
+      message.hierarchyAndName = '';
     }
     return message;
   },
@@ -1714,7 +1725,7 @@ export const SearchOGRequest = {
     ) {
       message.hierarchyAndName = object.hierarchyAndName;
     } else {
-      message.hierarchyAndName = "";
+      message.hierarchyAndName = '';
     }
     return message;
   },
@@ -1789,20 +1800,20 @@ export const OGArray = {
   },
 };
 
-const baseCreateOGRequest: object = { name: "", parent: "", source: "" };
+const baseCreateOGRequest: object = { name: '', parent: '', source: '' };
 
 export const CreateOGRequest = {
   encode(
     message: CreateOGRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.name !== "") {
+    if (message.name !== '') {
       writer.uint32(10).string(message.name);
     }
-    if (message.parent !== "") {
+    if (message.parent !== '') {
       writer.uint32(18).string(message.parent);
     }
-    if (message.source !== "") {
+    if (message.source !== '') {
       writer.uint32(26).string(message.source);
     }
     return writer;
@@ -1837,17 +1848,17 @@ export const CreateOGRequest = {
     if (object.name !== undefined && object.name !== null) {
       message.name = String(object.name);
     } else {
-      message.name = "";
+      message.name = '';
     }
     if (object.parent !== undefined && object.parent !== null) {
       message.parent = String(object.parent);
     } else {
-      message.parent = "";
+      message.parent = '';
     }
     if (object.source !== undefined && object.source !== null) {
       message.source = String(object.source);
     } else {
-      message.source = "";
+      message.source = '';
     }
     return message;
   },
@@ -1865,27 +1876,27 @@ export const CreateOGRequest = {
     if (object.name !== undefined && object.name !== null) {
       message.name = object.name;
     } else {
-      message.name = "";
+      message.name = '';
     }
     if (object.parent !== undefined && object.parent !== null) {
       message.parent = object.parent;
     } else {
-      message.parent = "";
+      message.parent = '';
     }
     if (object.source !== undefined && object.source !== null) {
       message.source = object.source;
     } else {
-      message.source = "";
+      message.source = '';
     }
     return message;
   },
 };
 
 const baseCreateDIRequest: object = {
-  type: "",
-  source: "",
-  uniqueId: "",
-  mail: "",
+  type: '',
+  source: '',
+  uniqueId: '',
+  mail: '',
   isRoleAttachable: false,
 };
 
@@ -1894,16 +1905,16 @@ export const CreateDIRequest = {
     message: CreateDIRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.type !== "") {
+    if (message.type !== '') {
       writer.uint32(10).string(message.type);
     }
-    if (message.source !== "") {
+    if (message.source !== '') {
       writer.uint32(18).string(message.source);
     }
-    if (message.uniqueId !== "") {
+    if (message.uniqueId !== '') {
       writer.uint32(26).string(message.uniqueId);
     }
-    if (message.mail !== "") {
+    if (message.mail !== '') {
       writer.uint32(34).string(message.mail);
     }
     if (message.isRoleAttachable === true) {
@@ -1947,22 +1958,22 @@ export const CreateDIRequest = {
     if (object.type !== undefined && object.type !== null) {
       message.type = String(object.type);
     } else {
-      message.type = "";
+      message.type = '';
     }
     if (object.source !== undefined && object.source !== null) {
       message.source = String(object.source);
     } else {
-      message.source = "";
+      message.source = '';
     }
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = String(object.uniqueId);
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     if (object.mail !== undefined && object.mail !== null) {
       message.mail = String(object.mail);
     } else {
-      message.mail = "";
+      message.mail = '';
     }
     if (
       object.isRoleAttachable !== undefined &&
@@ -1991,22 +2002,22 @@ export const CreateDIRequest = {
     if (object.type !== undefined && object.type !== null) {
       message.type = object.type;
     } else {
-      message.type = "";
+      message.type = '';
     }
     if (object.source !== undefined && object.source !== null) {
       message.source = object.source;
     } else {
-      message.source = "";
+      message.source = '';
     }
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = object.uniqueId;
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     if (object.mail !== undefined && object.mail !== null) {
       message.mail = object.mail;
     } else {
-      message.mail = "";
+      message.mail = '';
     }
     if (
       object.isRoleAttachable !== undefined &&
@@ -2021,10 +2032,10 @@ export const CreateDIRequest = {
 };
 
 const baseCreateRoleRequest: object = {
-  jobTitle: "",
-  directGroup: "",
-  source: "",
-  roleId: "",
+  jobTitle: '',
+  directGroup: '',
+  source: '',
+  roleId: '',
 };
 
 export const CreateRoleRequest = {
@@ -2032,16 +2043,16 @@ export const CreateRoleRequest = {
     message: CreateRoleRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.jobTitle !== "") {
+    if (message.jobTitle !== '') {
       writer.uint32(10).string(message.jobTitle);
     }
-    if (message.directGroup !== "") {
+    if (message.directGroup !== '') {
       writer.uint32(18).string(message.directGroup);
     }
-    if (message.source !== "") {
+    if (message.source !== '') {
       writer.uint32(26).string(message.source);
     }
-    if (message.roleId !== "") {
+    if (message.roleId !== '') {
       writer.uint32(34).string(message.roleId);
     }
     return writer;
@@ -2079,22 +2090,22 @@ export const CreateRoleRequest = {
     if (object.jobTitle !== undefined && object.jobTitle !== null) {
       message.jobTitle = String(object.jobTitle);
     } else {
-      message.jobTitle = "";
+      message.jobTitle = '';
     }
     if (object.directGroup !== undefined && object.directGroup !== null) {
       message.directGroup = String(object.directGroup);
     } else {
-      message.directGroup = "";
+      message.directGroup = '';
     }
     if (object.source !== undefined && object.source !== null) {
       message.source = String(object.source);
     } else {
-      message.source = "";
+      message.source = '';
     }
     if (object.roleId !== undefined && object.roleId !== null) {
       message.roleId = String(object.roleId);
     } else {
-      message.roleId = "";
+      message.roleId = '';
     }
     return message;
   },
@@ -2114,38 +2125,38 @@ export const CreateRoleRequest = {
     if (object.jobTitle !== undefined && object.jobTitle !== null) {
       message.jobTitle = object.jobTitle;
     } else {
-      message.jobTitle = "";
+      message.jobTitle = '';
     }
     if (object.directGroup !== undefined && object.directGroup !== null) {
       message.directGroup = object.directGroup;
     } else {
-      message.directGroup = "";
+      message.directGroup = '';
     }
     if (object.source !== undefined && object.source !== null) {
       message.source = object.source;
     } else {
-      message.source = "";
+      message.source = '';
     }
     if (object.roleId !== undefined && object.roleId !== null) {
       message.roleId = object.roleId;
     } else {
-      message.roleId = "";
+      message.roleId = '';
     }
     return message;
   },
 };
 
-const baseConnectRoleAndDIRequest: object = { id: "", uniqueId: "" };
+const baseConnectRoleAndDIRequest: object = { id: '', uniqueId: '' };
 
 export const ConnectRoleAndDIRequest = {
   encode(
     message: ConnectRoleAndDIRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
-    if (message.uniqueId !== "") {
+    if (message.uniqueId !== '') {
       writer.uint32(18).string(message.uniqueId);
     }
     return writer;
@@ -2184,12 +2195,12 @@ export const ConnectRoleAndDIRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = String(object.uniqueId);
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     return message;
   },
@@ -2210,12 +2221,12 @@ export const ConnectRoleAndDIRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = object.uniqueId;
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     return message;
   },
@@ -2288,14 +2299,14 @@ export const EntityArray = {
   },
 };
 
-const baseGetRoleByRoleIdRequest: object = { roleId: "" };
+const baseGetRoleByRoleIdRequest: object = { roleId: '' };
 
 export const GetRoleByRoleIdRequest = {
   encode(
     message: GetRoleByRoleIdRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.roleId !== "") {
+    if (message.roleId !== '') {
       writer.uint32(10).string(message.roleId);
     }
     return writer;
@@ -2327,7 +2338,7 @@ export const GetRoleByRoleIdRequest = {
     if (object.roleId !== undefined && object.roleId !== null) {
       message.roleId = String(object.roleId);
     } else {
-      message.roleId = "";
+      message.roleId = '';
     }
     return message;
   },
@@ -2345,20 +2356,20 @@ export const GetRoleByRoleIdRequest = {
     if (object.roleId !== undefined && object.roleId !== null) {
       message.roleId = object.roleId;
     } else {
-      message.roleId = "";
+      message.roleId = '';
     }
     return message;
   },
 };
 
-const baseGetRolesUnderOGRequest: object = { id: "", direct: false };
+const baseGetRolesUnderOGRequest: object = { id: '', direct: false };
 
 export const GetRolesUnderOGRequest = {
   encode(
     message: GetRolesUnderOGRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
     if (message.direct === true) {
@@ -2396,7 +2407,7 @@ export const GetRolesUnderOGRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.direct !== undefined && object.direct !== null) {
       message.direct = Boolean(object.direct);
@@ -2420,7 +2431,7 @@ export const GetRolesUnderOGRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.direct !== undefined && object.direct !== null) {
       message.direct = object.direct;
@@ -2496,17 +2507,17 @@ export const RoleArray = {
   },
 };
 
-const baseConnectEntityAndDIRequest: object = { id: "", uniqueId: "" };
+const baseConnectEntityAndDIRequest: object = { id: '', uniqueId: '' };
 
 export const ConnectEntityAndDIRequest = {
   encode(
     message: ConnectEntityAndDIRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
-    if (message.uniqueId !== "") {
+    if (message.uniqueId !== '') {
       writer.uint32(18).string(message.uniqueId);
     }
     return writer;
@@ -2545,12 +2556,12 @@ export const ConnectEntityAndDIRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = String(object.uniqueId);
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     return message;
   },
@@ -2571,30 +2582,30 @@ export const ConnectEntityAndDIRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = object.uniqueId;
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     return message;
   },
 };
 
 const baseCreateEntityRequest: object = {
-  firstName: "",
-  lastName: "",
-  identityCard: "",
-  personalNumber: "",
-  serviceType: "",
-  phone: "",
-  mobilePhone: "",
-  address: "",
-  clearance: "",
-  sex: "",
-  birthDate: "",
-  entityType: "",
+  firstName: '',
+  lastName: '',
+  identityCard: '',
+  personalNumber: '',
+  serviceType: '',
+  phone: '',
+  mobilePhone: '',
+  address: '',
+  clearance: '',
+  sex: '',
+  birthDate: '',
+  entityType: '',
 };
 
 export const CreateEntityRequest = {
@@ -2602,19 +2613,19 @@ export const CreateEntityRequest = {
     message: CreateEntityRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.firstName !== "") {
+    if (message.firstName !== '') {
       writer.uint32(10).string(message.firstName);
     }
-    if (message.lastName !== "") {
+    if (message.lastName !== '') {
       writer.uint32(18).string(message.lastName);
     }
-    if (message.identityCard !== "") {
+    if (message.identityCard !== '') {
       writer.uint32(26).string(message.identityCard);
     }
-    if (message.personalNumber !== "") {
+    if (message.personalNumber !== '') {
       writer.uint32(34).string(message.personalNumber);
     }
-    if (message.serviceType !== "") {
+    if (message.serviceType !== '') {
       writer.uint32(42).string(message.serviceType);
     }
     for (const v of message.phone) {
@@ -2623,19 +2634,19 @@ export const CreateEntityRequest = {
     for (const v of message.mobilePhone) {
       writer.uint32(58).string(v!);
     }
-    if (message.address !== "") {
+    if (message.address !== '') {
       writer.uint32(66).string(message.address);
     }
-    if (message.clearance !== "") {
+    if (message.clearance !== '') {
       writer.uint32(74).string(message.clearance);
     }
-    if (message.sex !== "") {
+    if (message.sex !== '') {
       writer.uint32(82).string(message.sex);
     }
-    if (message.birthDate !== "") {
+    if (message.birthDate !== '') {
       writer.uint32(90).string(message.birthDate);
     }
-    if (message.entityType !== "") {
+    if (message.entityType !== '') {
       writer.uint32(98).string(message.entityType);
     }
     return writer;
@@ -2701,27 +2712,27 @@ export const CreateEntityRequest = {
     if (object.firstName !== undefined && object.firstName !== null) {
       message.firstName = String(object.firstName);
     } else {
-      message.firstName = "";
+      message.firstName = '';
     }
     if (object.lastName !== undefined && object.lastName !== null) {
       message.lastName = String(object.lastName);
     } else {
-      message.lastName = "";
+      message.lastName = '';
     }
     if (object.identityCard !== undefined && object.identityCard !== null) {
       message.identityCard = String(object.identityCard);
     } else {
-      message.identityCard = "";
+      message.identityCard = '';
     }
     if (object.personalNumber !== undefined && object.personalNumber !== null) {
       message.personalNumber = String(object.personalNumber);
     } else {
-      message.personalNumber = "";
+      message.personalNumber = '';
     }
     if (object.serviceType !== undefined && object.serviceType !== null) {
       message.serviceType = String(object.serviceType);
     } else {
-      message.serviceType = "";
+      message.serviceType = '';
     }
     if (object.phone !== undefined && object.phone !== null) {
       for (const e of object.phone) {
@@ -2736,27 +2747,27 @@ export const CreateEntityRequest = {
     if (object.address !== undefined && object.address !== null) {
       message.address = String(object.address);
     } else {
-      message.address = "";
+      message.address = '';
     }
     if (object.clearance !== undefined && object.clearance !== null) {
       message.clearance = String(object.clearance);
     } else {
-      message.clearance = "";
+      message.clearance = '';
     }
     if (object.sex !== undefined && object.sex !== null) {
       message.sex = String(object.sex);
     } else {
-      message.sex = "";
+      message.sex = '';
     }
     if (object.birthDate !== undefined && object.birthDate !== null) {
       message.birthDate = String(object.birthDate);
     } else {
-      message.birthDate = "";
+      message.birthDate = '';
     }
     if (object.entityType !== undefined && object.entityType !== null) {
       message.entityType = String(object.entityType);
     } else {
-      message.entityType = "";
+      message.entityType = '';
     }
     return message;
   },
@@ -2796,27 +2807,27 @@ export const CreateEntityRequest = {
     if (object.firstName !== undefined && object.firstName !== null) {
       message.firstName = object.firstName;
     } else {
-      message.firstName = "";
+      message.firstName = '';
     }
     if (object.lastName !== undefined && object.lastName !== null) {
       message.lastName = object.lastName;
     } else {
-      message.lastName = "";
+      message.lastName = '';
     }
     if (object.identityCard !== undefined && object.identityCard !== null) {
       message.identityCard = object.identityCard;
     } else {
-      message.identityCard = "";
+      message.identityCard = '';
     }
     if (object.personalNumber !== undefined && object.personalNumber !== null) {
       message.personalNumber = object.personalNumber;
     } else {
-      message.personalNumber = "";
+      message.personalNumber = '';
     }
     if (object.serviceType !== undefined && object.serviceType !== null) {
       message.serviceType = object.serviceType;
     } else {
-      message.serviceType = "";
+      message.serviceType = '';
     }
     if (object.phone !== undefined && object.phone !== null) {
       for (const e of object.phone) {
@@ -2831,40 +2842,40 @@ export const CreateEntityRequest = {
     if (object.address !== undefined && object.address !== null) {
       message.address = object.address;
     } else {
-      message.address = "";
+      message.address = '';
     }
     if (object.clearance !== undefined && object.clearance !== null) {
       message.clearance = object.clearance;
     } else {
-      message.clearance = "";
+      message.clearance = '';
     }
     if (object.sex !== undefined && object.sex !== null) {
       message.sex = object.sex;
     } else {
-      message.sex = "";
+      message.sex = '';
     }
     if (object.birthDate !== undefined && object.birthDate !== null) {
       message.birthDate = object.birthDate;
     } else {
-      message.birthDate = "";
+      message.birthDate = '';
     }
     if (object.entityType !== undefined && object.entityType !== null) {
       message.entityType = object.entityType;
     } else {
-      message.entityType = "";
+      message.entityType = '';
     }
     return message;
   },
 };
 
-const baseGetEntityByRoleIdRequest: object = { roleId: "" };
+const baseGetEntityByRoleIdRequest: object = { roleId: '' };
 
 export const GetEntityByRoleIdRequest = {
   encode(
     message: GetEntityByRoleIdRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.roleId !== "") {
+    if (message.roleId !== '') {
       writer.uint32(10).string(message.roleId);
     }
     return writer;
@@ -2900,7 +2911,7 @@ export const GetEntityByRoleIdRequest = {
     if (object.roleId !== undefined && object.roleId !== null) {
       message.roleId = String(object.roleId);
     } else {
-      message.roleId = "";
+      message.roleId = '';
     }
     return message;
   },
@@ -2920,23 +2931,23 @@ export const GetEntityByRoleIdRequest = {
     if (object.roleId !== undefined && object.roleId !== null) {
       message.roleId = object.roleId;
     } else {
-      message.roleId = "";
+      message.roleId = '';
     }
     return message;
   },
 };
 
-const baseDisconnectDIFromEntityRequest: object = { id: "", uniqueId: "" };
+const baseDisconnectDIFromEntityRequest: object = { id: '', uniqueId: '' };
 
 export const DisconnectDIFromEntityRequest = {
   encode(
     message: DisconnectDIFromEntityRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
-    if (message.uniqueId !== "") {
+    if (message.uniqueId !== '') {
       writer.uint32(18).string(message.uniqueId);
     }
     return writer;
@@ -2975,12 +2986,12 @@ export const DisconnectDIFromEntityRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = String(object.uniqueId);
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     return message;
   },
@@ -3001,25 +3012,25 @@ export const DisconnectDIFromEntityRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = object.uniqueId;
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     return message;
   },
 };
 
-const baseGetEntityByIdRequest: object = { id: "" };
+const baseGetEntityByIdRequest: object = { id: '' };
 
 export const GetEntityByIdRequest = {
   encode(
     message: GetEntityByIdRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
     return writer;
@@ -3051,7 +3062,7 @@ export const GetEntityByIdRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     return message;
   },
@@ -3067,20 +3078,20 @@ export const GetEntityByIdRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     return message;
   },
 };
 
-const baseDeleteOGRequest: object = { id: "" };
+const baseDeleteOGRequest: object = { id: '' };
 
 export const DeleteOGRequest = {
   encode(
     message: DeleteOGRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
     return writer;
@@ -3109,7 +3120,7 @@ export const DeleteOGRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     return message;
   },
@@ -3125,20 +3136,20 @@ export const DeleteOGRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     return message;
   },
 };
 
-const baseGetChildrenOfOGRequest: object = { id: "" };
+const baseGetChildrenOfOGRequest: object = { id: '' };
 
 export const GetChildrenOfOGRequest = {
   encode(
     message: GetChildrenOfOGRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
     return writer;
@@ -3170,7 +3181,7 @@ export const GetChildrenOfOGRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     return message;
   },
@@ -3188,20 +3199,20 @@ export const GetChildrenOfOGRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     return message;
   },
 };
 
-const baseDeleteRoleRequest: object = { roleId: "" };
+const baseDeleteRoleRequest: object = { roleId: '' };
 
 export const DeleteRoleRequest = {
   encode(
     message: DeleteRoleRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.roleId !== "") {
+    if (message.roleId !== '') {
       writer.uint32(10).string(message.roleId);
     }
     return writer;
@@ -3230,7 +3241,7 @@ export const DeleteRoleRequest = {
     if (object.roleId !== undefined && object.roleId !== null) {
       message.roleId = String(object.roleId);
     } else {
-      message.roleId = "";
+      message.roleId = '';
     }
     return message;
   },
@@ -3246,20 +3257,20 @@ export const DeleteRoleRequest = {
     if (object.roleId !== undefined && object.roleId !== null) {
       message.roleId = object.roleId;
     } else {
-      message.roleId = "";
+      message.roleId = '';
     }
     return message;
   },
 };
 
-const baseDeleteDIRequest: object = { uniqueId: "" };
+const baseDeleteDIRequest: object = { uniqueId: '' };
 
 export const DeleteDIRequest = {
   encode(
     message: DeleteDIRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.uniqueId !== "") {
+    if (message.uniqueId !== '') {
       writer.uint32(10).string(message.uniqueId);
     }
     return writer;
@@ -3288,7 +3299,7 @@ export const DeleteDIRequest = {
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = String(object.uniqueId);
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     return message;
   },
@@ -3304,14 +3315,14 @@ export const DeleteDIRequest = {
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = object.uniqueId;
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     return message;
   },
 };
 
 const baseGetEntitiesUnderOGRequest: object = {
-  id: "",
+  id: '',
   direct: false,
   page: 0,
   pageSize: 0,
@@ -3322,7 +3333,7 @@ export const GetEntitiesUnderOGRequest = {
     message: GetEntitiesUnderOGRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
     if (message.direct === true) {
@@ -3376,7 +3387,7 @@ export const GetEntitiesUnderOGRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.direct !== undefined && object.direct !== null) {
       message.direct = Boolean(object.direct);
@@ -3414,7 +3425,7 @@ export const GetEntitiesUnderOGRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.direct !== undefined && object.direct !== null) {
       message.direct = object.direct;
@@ -3494,15 +3505,15 @@ export const SuccessMessage = {
 };
 
 const baseOrganizationGroup: object = {
-  id: "",
-  name: "",
-  source: "",
-  ancestors: "",
-  hierarchy: "",
-  status: "",
+  id: '',
+  name: '',
+  source: '',
+  ancestors: '',
+  hierarchy: '',
+  status: '',
   isLeaf: false,
-  createdAt: "",
-  updatedAt: "",
+  createdAt: '',
+  updatedAt: '',
 };
 
 export const OrganizationGroup = {
@@ -3510,31 +3521,31 @@ export const OrganizationGroup = {
     message: OrganizationGroup,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
-    if (message.name !== "") {
+    if (message.name !== '') {
       writer.uint32(18).string(message.name);
     }
-    if (message.source !== "") {
+    if (message.source !== '') {
       writer.uint32(26).string(message.source);
     }
     for (const v of message.ancestors) {
       writer.uint32(34).string(v!);
     }
-    if (message.hierarchy !== "") {
+    if (message.hierarchy !== '') {
       writer.uint32(42).string(message.hierarchy);
     }
-    if (message.status !== "") {
+    if (message.status !== '') {
       writer.uint32(50).string(message.status);
     }
     if (message.isLeaf === true) {
       writer.uint32(56).bool(message.isLeaf);
     }
-    if (message.createdAt !== "") {
+    if (message.createdAt !== '') {
       writer.uint32(66).string(message.createdAt);
     }
-    if (message.updatedAt !== "") {
+    if (message.updatedAt !== '') {
       writer.uint32(74).string(message.updatedAt);
     }
     for (const v of message.directEntities) {
@@ -3605,17 +3616,17 @@ export const OrganizationGroup = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = String(object.name);
     } else {
-      message.name = "";
+      message.name = '';
     }
     if (object.source !== undefined && object.source !== null) {
       message.source = String(object.source);
     } else {
-      message.source = "";
+      message.source = '';
     }
     if (object.ancestors !== undefined && object.ancestors !== null) {
       for (const e of object.ancestors) {
@@ -3625,12 +3636,12 @@ export const OrganizationGroup = {
     if (object.hierarchy !== undefined && object.hierarchy !== null) {
       message.hierarchy = String(object.hierarchy);
     } else {
-      message.hierarchy = "";
+      message.hierarchy = '';
     }
     if (object.status !== undefined && object.status !== null) {
       message.status = String(object.status);
     } else {
-      message.status = "";
+      message.status = '';
     }
     if (object.isLeaf !== undefined && object.isLeaf !== null) {
       message.isLeaf = Boolean(object.isLeaf);
@@ -3640,12 +3651,12 @@ export const OrganizationGroup = {
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = String(object.createdAt);
     } else {
-      message.createdAt = "";
+      message.createdAt = '';
     }
     if (object.updatedAt !== undefined && object.updatedAt !== null) {
       message.updatedAt = String(object.updatedAt);
     } else {
-      message.updatedAt = "";
+      message.updatedAt = '';
     }
     if (object.directEntities !== undefined && object.directEntities !== null) {
       for (const e of object.directEntities) {
@@ -3700,17 +3711,17 @@ export const OrganizationGroup = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = object.name;
     } else {
-      message.name = "";
+      message.name = '';
     }
     if (object.source !== undefined && object.source !== null) {
       message.source = object.source;
     } else {
-      message.source = "";
+      message.source = '';
     }
     if (object.ancestors !== undefined && object.ancestors !== null) {
       for (const e of object.ancestors) {
@@ -3720,12 +3731,12 @@ export const OrganizationGroup = {
     if (object.hierarchy !== undefined && object.hierarchy !== null) {
       message.hierarchy = object.hierarchy;
     } else {
-      message.hierarchy = "";
+      message.hierarchy = '';
     }
     if (object.status !== undefined && object.status !== null) {
       message.status = object.status;
     } else {
-      message.status = "";
+      message.status = '';
     }
     if (object.isLeaf !== undefined && object.isLeaf !== null) {
       message.isLeaf = object.isLeaf;
@@ -3735,12 +3746,12 @@ export const OrganizationGroup = {
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = object.createdAt;
     } else {
-      message.createdAt = "";
+      message.createdAt = '';
     }
     if (object.updatedAt !== undefined && object.updatedAt !== null) {
       message.updatedAt = object.updatedAt;
     } else {
-      message.updatedAt = "";
+      message.updatedAt = '';
     }
     if (object.directEntities !== undefined && object.directEntities !== null) {
       for (const e of object.directEntities) {
@@ -3757,48 +3768,48 @@ export const OrganizationGroup = {
 };
 
 const baseRole: object = {
-  roleId: "",
-  jobTitle: "",
-  digitalIdentityUniqueId: "",
-  directGroup: "",
-  hierarchy: "",
-  hierarchyIds: "",
-  clearance: "",
-  source: "",
-  createdAt: "",
-  updatedAt: "",
+  roleId: '',
+  jobTitle: '',
+  digitalIdentityUniqueId: '',
+  directGroup: '',
+  hierarchy: '',
+  hierarchyIds: '',
+  clearance: '',
+  source: '',
+  createdAt: '',
+  updatedAt: '',
 };
 
 export const Role = {
   encode(message: Role, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.roleId !== "") {
+    if (message.roleId !== '') {
       writer.uint32(10).string(message.roleId);
     }
-    if (message.jobTitle !== "") {
+    if (message.jobTitle !== '') {
       writer.uint32(18).string(message.jobTitle);
     }
-    if (message.digitalIdentityUniqueId !== "") {
+    if (message.digitalIdentityUniqueId !== '') {
       writer.uint32(26).string(message.digitalIdentityUniqueId);
     }
-    if (message.directGroup !== "") {
+    if (message.directGroup !== '') {
       writer.uint32(34).string(message.directGroup);
     }
-    if (message.hierarchy !== "") {
+    if (message.hierarchy !== '') {
       writer.uint32(42).string(message.hierarchy);
     }
     for (const v of message.hierarchyIds) {
       writer.uint32(50).string(v!);
     }
-    if (message.clearance !== "") {
+    if (message.clearance !== '') {
       writer.uint32(58).string(message.clearance);
     }
-    if (message.source !== "") {
+    if (message.source !== '') {
       writer.uint32(66).string(message.source);
     }
-    if (message.createdAt !== "") {
+    if (message.createdAt !== '') {
       writer.uint32(74).string(message.createdAt);
     }
-    if (message.updatedAt !== "") {
+    if (message.updatedAt !== '') {
       writer.uint32(82).string(message.updatedAt);
     }
     return writer;
@@ -3856,12 +3867,12 @@ export const Role = {
     if (object.roleId !== undefined && object.roleId !== null) {
       message.roleId = String(object.roleId);
     } else {
-      message.roleId = "";
+      message.roleId = '';
     }
     if (object.jobTitle !== undefined && object.jobTitle !== null) {
       message.jobTitle = String(object.jobTitle);
     } else {
-      message.jobTitle = "";
+      message.jobTitle = '';
     }
     if (
       object.digitalIdentityUniqueId !== undefined &&
@@ -3869,17 +3880,17 @@ export const Role = {
     ) {
       message.digitalIdentityUniqueId = String(object.digitalIdentityUniqueId);
     } else {
-      message.digitalIdentityUniqueId = "";
+      message.digitalIdentityUniqueId = '';
     }
     if (object.directGroup !== undefined && object.directGroup !== null) {
       message.directGroup = String(object.directGroup);
     } else {
-      message.directGroup = "";
+      message.directGroup = '';
     }
     if (object.hierarchy !== undefined && object.hierarchy !== null) {
       message.hierarchy = String(object.hierarchy);
     } else {
-      message.hierarchy = "";
+      message.hierarchy = '';
     }
     if (object.hierarchyIds !== undefined && object.hierarchyIds !== null) {
       for (const e of object.hierarchyIds) {
@@ -3889,22 +3900,22 @@ export const Role = {
     if (object.clearance !== undefined && object.clearance !== null) {
       message.clearance = String(object.clearance);
     } else {
-      message.clearance = "";
+      message.clearance = '';
     }
     if (object.source !== undefined && object.source !== null) {
       message.source = String(object.source);
     } else {
-      message.source = "";
+      message.source = '';
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = String(object.createdAt);
     } else {
-      message.createdAt = "";
+      message.createdAt = '';
     }
     if (object.updatedAt !== undefined && object.updatedAt !== null) {
       message.updatedAt = String(object.updatedAt);
     } else {
-      message.updatedAt = "";
+      message.updatedAt = '';
     }
     return message;
   },
@@ -3936,12 +3947,12 @@ export const Role = {
     if (object.roleId !== undefined && object.roleId !== null) {
       message.roleId = object.roleId;
     } else {
-      message.roleId = "";
+      message.roleId = '';
     }
     if (object.jobTitle !== undefined && object.jobTitle !== null) {
       message.jobTitle = object.jobTitle;
     } else {
-      message.jobTitle = "";
+      message.jobTitle = '';
     }
     if (
       object.digitalIdentityUniqueId !== undefined &&
@@ -3949,17 +3960,17 @@ export const Role = {
     ) {
       message.digitalIdentityUniqueId = object.digitalIdentityUniqueId;
     } else {
-      message.digitalIdentityUniqueId = "";
+      message.digitalIdentityUniqueId = '';
     }
     if (object.directGroup !== undefined && object.directGroup !== null) {
       message.directGroup = object.directGroup;
     } else {
-      message.directGroup = "";
+      message.directGroup = '';
     }
     if (object.hierarchy !== undefined && object.hierarchy !== null) {
       message.hierarchy = object.hierarchy;
     } else {
-      message.hierarchy = "";
+      message.hierarchy = '';
     }
     if (object.hierarchyIds !== undefined && object.hierarchyIds !== null) {
       for (const e of object.hierarchyIds) {
@@ -3969,54 +3980,54 @@ export const Role = {
     if (object.clearance !== undefined && object.clearance !== null) {
       message.clearance = object.clearance;
     } else {
-      message.clearance = "";
+      message.clearance = '';
     }
     if (object.source !== undefined && object.source !== null) {
       message.source = object.source;
     } else {
-      message.source = "";
+      message.source = '';
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = object.createdAt;
     } else {
-      message.createdAt = "";
+      message.createdAt = '';
     }
     if (object.updatedAt !== undefined && object.updatedAt !== null) {
       message.updatedAt = object.updatedAt;
     } else {
-      message.updatedAt = "";
+      message.updatedAt = '';
     }
     return message;
   },
 };
 
 const baseEntity: object = {
-  id: "",
-  displayName: "",
-  directGroup: "",
-  hierarchy: "",
-  entityType: "",
-  identityCard: "",
-  personalNumber: "",
-  serviceType: "",
-  firstName: "",
-  lastName: "",
-  fullName: "",
-  akaUnit: "",
-  dischargeDay: "",
-  rank: "",
-  mail: "",
-  jobTitle: "",
-  phone: "",
-  mobilePhone: "",
-  address: "",
-  clearance: "",
-  sex: "",
-  birthDate: "",
-  createdAt: "",
-  updatedAt: "",
-  picture: "",
-  goalUserID: "",
+  id: '',
+  displayName: '',
+  directGroup: '',
+  hierarchy: '',
+  entityType: '',
+  identityCard: '',
+  personalNumber: '',
+  serviceType: '',
+  firstName: '',
+  lastName: '',
+  fullName: '',
+  akaUnit: '',
+  dischargeDay: '',
+  rank: '',
+  mail: '',
+  jobTitle: '',
+  phone: '',
+  mobilePhone: '',
+  address: '',
+  clearance: '',
+  sex: '',
+  birthDate: '',
+  createdAt: '',
+  updatedAt: '',
+  picture: '',
+  goalUserID: '',
 };
 
 export const Entity = {
@@ -4024,52 +4035,52 @@ export const Entity = {
     message: Entity,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
-    if (message.displayName !== "") {
+    if (message.displayName !== '') {
       writer.uint32(18).string(message.displayName);
     }
-    if (message.directGroup !== "") {
+    if (message.directGroup !== '') {
       writer.uint32(26).string(message.directGroup);
     }
-    if (message.hierarchy !== "") {
+    if (message.hierarchy !== '') {
       writer.uint32(34).string(message.hierarchy);
     }
-    if (message.entityType !== "") {
+    if (message.entityType !== '') {
       writer.uint32(42).string(message.entityType);
     }
-    if (message.identityCard !== "") {
+    if (message.identityCard !== '') {
       writer.uint32(50).string(message.identityCard);
     }
-    if (message.personalNumber !== "") {
+    if (message.personalNumber !== '') {
       writer.uint32(58).string(message.personalNumber);
     }
-    if (message.serviceType !== "") {
+    if (message.serviceType !== '') {
       writer.uint32(66).string(message.serviceType);
     }
-    if (message.firstName !== "") {
+    if (message.firstName !== '') {
       writer.uint32(74).string(message.firstName);
     }
-    if (message.lastName !== "") {
+    if (message.lastName !== '') {
       writer.uint32(82).string(message.lastName);
     }
-    if (message.fullName !== "") {
+    if (message.fullName !== '') {
       writer.uint32(90).string(message.fullName);
     }
-    if (message.akaUnit !== "") {
+    if (message.akaUnit !== '') {
       writer.uint32(98).string(message.akaUnit);
     }
-    if (message.dischargeDay !== "") {
+    if (message.dischargeDay !== '') {
       writer.uint32(106).string(message.dischargeDay);
     }
-    if (message.rank !== "") {
+    if (message.rank !== '') {
       writer.uint32(114).string(message.rank);
     }
-    if (message.mail !== "") {
+    if (message.mail !== '') {
       writer.uint32(122).string(message.mail);
     }
-    if (message.jobTitle !== "") {
+    if (message.jobTitle !== '') {
       writer.uint32(130).string(message.jobTitle);
     }
     for (const v of message.phone) {
@@ -4078,31 +4089,31 @@ export const Entity = {
     for (const v of message.mobilePhone) {
       writer.uint32(146).string(v!);
     }
-    if (message.address !== "") {
+    if (message.address !== '') {
       writer.uint32(154).string(message.address);
     }
-    if (message.clearance !== "") {
+    if (message.clearance !== '') {
       writer.uint32(162).string(message.clearance);
     }
-    if (message.sex !== "") {
+    if (message.sex !== '') {
       writer.uint32(170).string(message.sex);
     }
-    if (message.birthDate !== "") {
+    if (message.birthDate !== '') {
       writer.uint32(178).string(message.birthDate);
     }
-    if (message.createdAt !== "") {
+    if (message.createdAt !== '') {
       writer.uint32(186).string(message.createdAt);
     }
-    if (message.updatedAt !== "") {
+    if (message.updatedAt !== '') {
       writer.uint32(194).string(message.updatedAt);
     }
     for (const v of message.digitalIdentities) {
       DigitalIdentity.encode(v!, writer.uint32(202).fork()).ldelim();
     }
-    if (message.picture !== "") {
+    if (message.picture !== '') {
       writer.uint32(210).string(message.picture);
     }
-    if (message.goalUserID !== "") {
+    if (message.goalUserID !== '') {
       writer.uint32(218).string(message.goalUserID);
     }
     return writer;
@@ -4217,82 +4228,82 @@ export const Entity = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.displayName !== undefined && object.displayName !== null) {
       message.displayName = String(object.displayName);
     } else {
-      message.displayName = "";
+      message.displayName = '';
     }
     if (object.directGroup !== undefined && object.directGroup !== null) {
       message.directGroup = String(object.directGroup);
     } else {
-      message.directGroup = "";
+      message.directGroup = '';
     }
     if (object.hierarchy !== undefined && object.hierarchy !== null) {
       message.hierarchy = String(object.hierarchy);
     } else {
-      message.hierarchy = "";
+      message.hierarchy = '';
     }
     if (object.entityType !== undefined && object.entityType !== null) {
       message.entityType = String(object.entityType);
     } else {
-      message.entityType = "";
+      message.entityType = '';
     }
     if (object.identityCard !== undefined && object.identityCard !== null) {
       message.identityCard = String(object.identityCard);
     } else {
-      message.identityCard = "";
+      message.identityCard = '';
     }
     if (object.personalNumber !== undefined && object.personalNumber !== null) {
       message.personalNumber = String(object.personalNumber);
     } else {
-      message.personalNumber = "";
+      message.personalNumber = '';
     }
     if (object.serviceType !== undefined && object.serviceType !== null) {
       message.serviceType = String(object.serviceType);
     } else {
-      message.serviceType = "";
+      message.serviceType = '';
     }
     if (object.firstName !== undefined && object.firstName !== null) {
       message.firstName = String(object.firstName);
     } else {
-      message.firstName = "";
+      message.firstName = '';
     }
     if (object.lastName !== undefined && object.lastName !== null) {
       message.lastName = String(object.lastName);
     } else {
-      message.lastName = "";
+      message.lastName = '';
     }
     if (object.fullName !== undefined && object.fullName !== null) {
       message.fullName = String(object.fullName);
     } else {
-      message.fullName = "";
+      message.fullName = '';
     }
     if (object.akaUnit !== undefined && object.akaUnit !== null) {
       message.akaUnit = String(object.akaUnit);
     } else {
-      message.akaUnit = "";
+      message.akaUnit = '';
     }
     if (object.dischargeDay !== undefined && object.dischargeDay !== null) {
       message.dischargeDay = String(object.dischargeDay);
     } else {
-      message.dischargeDay = "";
+      message.dischargeDay = '';
     }
     if (object.rank !== undefined && object.rank !== null) {
       message.rank = String(object.rank);
     } else {
-      message.rank = "";
+      message.rank = '';
     }
     if (object.mail !== undefined && object.mail !== null) {
       message.mail = String(object.mail);
     } else {
-      message.mail = "";
+      message.mail = '';
     }
     if (object.jobTitle !== undefined && object.jobTitle !== null) {
       message.jobTitle = String(object.jobTitle);
     } else {
-      message.jobTitle = "";
+      message.jobTitle = '';
     }
     if (object.phone !== undefined && object.phone !== null) {
       for (const e of object.phone) {
@@ -4307,32 +4318,32 @@ export const Entity = {
     if (object.address !== undefined && object.address !== null) {
       message.address = String(object.address);
     } else {
-      message.address = "";
+      message.address = '';
     }
     if (object.clearance !== undefined && object.clearance !== null) {
       message.clearance = String(object.clearance);
     } else {
-      message.clearance = "";
+      message.clearance = '';
     }
     if (object.sex !== undefined && object.sex !== null) {
       message.sex = String(object.sex);
     } else {
-      message.sex = "";
+      message.sex = '';
     }
     if (object.birthDate !== undefined && object.birthDate !== null) {
       message.birthDate = String(object.birthDate);
     } else {
-      message.birthDate = "";
+      message.birthDate = '';
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = String(object.createdAt);
     } else {
-      message.createdAt = "";
+      message.createdAt = '';
     }
     if (object.updatedAt !== undefined && object.updatedAt !== null) {
       message.updatedAt = String(object.updatedAt);
     } else {
-      message.updatedAt = "";
+      message.updatedAt = '';
     }
     if (
       object.digitalIdentities !== undefined &&
@@ -4345,12 +4356,12 @@ export const Entity = {
     if (object.picture !== undefined && object.picture !== null) {
       message.picture = String(object.picture);
     } else {
-      message.picture = "";
+      message.picture = '';
     }
     if (object.goalUserID !== undefined && object.goalUserID !== null) {
       message.goalUserID = String(object.goalUserID);
     } else {
-      message.goalUserID = "";
+      message.goalUserID = '';
     }
     return message;
   },
@@ -4415,82 +4426,82 @@ export const Entity = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.displayName !== undefined && object.displayName !== null) {
       message.displayName = object.displayName;
     } else {
-      message.displayName = "";
+      message.displayName = '';
     }
     if (object.directGroup !== undefined && object.directGroup !== null) {
       message.directGroup = object.directGroup;
     } else {
-      message.directGroup = "";
+      message.directGroup = '';
     }
     if (object.hierarchy !== undefined && object.hierarchy !== null) {
       message.hierarchy = object.hierarchy;
     } else {
-      message.hierarchy = "";
+      message.hierarchy = '';
     }
     if (object.entityType !== undefined && object.entityType !== null) {
       message.entityType = object.entityType;
     } else {
-      message.entityType = "";
+      message.entityType = '';
     }
     if (object.identityCard !== undefined && object.identityCard !== null) {
       message.identityCard = object.identityCard;
     } else {
-      message.identityCard = "";
+      message.identityCard = '';
     }
     if (object.personalNumber !== undefined && object.personalNumber !== null) {
       message.personalNumber = object.personalNumber;
     } else {
-      message.personalNumber = "";
+      message.personalNumber = '';
     }
     if (object.serviceType !== undefined && object.serviceType !== null) {
       message.serviceType = object.serviceType;
     } else {
-      message.serviceType = "";
+      message.serviceType = '';
     }
     if (object.firstName !== undefined && object.firstName !== null) {
       message.firstName = object.firstName;
     } else {
-      message.firstName = "";
+      message.firstName = '';
     }
     if (object.lastName !== undefined && object.lastName !== null) {
       message.lastName = object.lastName;
     } else {
-      message.lastName = "";
+      message.lastName = '';
     }
     if (object.fullName !== undefined && object.fullName !== null) {
       message.fullName = object.fullName;
     } else {
-      message.fullName = "";
+      message.fullName = '';
     }
     if (object.akaUnit !== undefined && object.akaUnit !== null) {
       message.akaUnit = object.akaUnit;
     } else {
-      message.akaUnit = "";
+      message.akaUnit = '';
     }
     if (object.dischargeDay !== undefined && object.dischargeDay !== null) {
       message.dischargeDay = object.dischargeDay;
     } else {
-      message.dischargeDay = "";
+      message.dischargeDay = '';
     }
     if (object.rank !== undefined && object.rank !== null) {
       message.rank = object.rank;
     } else {
-      message.rank = "";
+      message.rank = '';
     }
     if (object.mail !== undefined && object.mail !== null) {
       message.mail = object.mail;
     } else {
-      message.mail = "";
+      message.mail = '';
     }
     if (object.jobTitle !== undefined && object.jobTitle !== null) {
       message.jobTitle = object.jobTitle;
     } else {
-      message.jobTitle = "";
+      message.jobTitle = '';
     }
     if (object.phone !== undefined && object.phone !== null) {
       for (const e of object.phone) {
@@ -4505,32 +4516,32 @@ export const Entity = {
     if (object.address !== undefined && object.address !== null) {
       message.address = object.address;
     } else {
-      message.address = "";
+      message.address = '';
     }
     if (object.clearance !== undefined && object.clearance !== null) {
       message.clearance = object.clearance;
     } else {
-      message.clearance = "";
+      message.clearance = '';
     }
     if (object.sex !== undefined && object.sex !== null) {
       message.sex = object.sex;
     } else {
-      message.sex = "";
+      message.sex = '';
     }
     if (object.birthDate !== undefined && object.birthDate !== null) {
       message.birthDate = object.birthDate;
     } else {
-      message.birthDate = "";
+      message.birthDate = '';
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = object.createdAt;
     } else {
-      message.createdAt = "";
+      message.createdAt = '';
     }
     if (object.updatedAt !== undefined && object.updatedAt !== null) {
       message.updatedAt = object.updatedAt;
     } else {
-      message.updatedAt = "";
+      message.updatedAt = '';
     }
     if (
       object.digitalIdentities !== undefined &&
@@ -4543,25 +4554,25 @@ export const Entity = {
     if (object.picture !== undefined && object.picture !== null) {
       message.picture = object.picture;
     } else {
-      message.picture = "";
+      message.picture = '';
     }
     if (object.goalUserID !== undefined && object.goalUserID !== null) {
       message.goalUserID = object.goalUserID;
     } else {
-      message.goalUserID = "";
+      message.goalUserID = '';
     }
     return message;
   },
 };
 
 const baseDigitalIdentity: object = {
-  type: "",
-  source: "",
-  mail: "",
-  uniqueId: "",
-  entityId: "",
-  createdAt: "",
-  updatedAt: "",
+  type: '',
+  source: '',
+  mail: '',
+  uniqueId: '',
+  entityId: '',
+  createdAt: '',
+  updatedAt: '',
   isRoleAttachable: false,
 };
 
@@ -4570,25 +4581,25 @@ export const DigitalIdentity = {
     message: DigitalIdentity,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.type !== "") {
+    if (message.type !== '') {
       writer.uint32(10).string(message.type);
     }
-    if (message.source !== "") {
+    if (message.source !== '') {
       writer.uint32(18).string(message.source);
     }
-    if (message.mail !== "") {
+    if (message.mail !== '') {
       writer.uint32(26).string(message.mail);
     }
-    if (message.uniqueId !== "") {
+    if (message.uniqueId !== '') {
       writer.uint32(34).string(message.uniqueId);
     }
-    if (message.entityId !== "") {
+    if (message.entityId !== '') {
       writer.uint32(42).string(message.entityId);
     }
-    if (message.createdAt !== "") {
+    if (message.createdAt !== '') {
       writer.uint32(50).string(message.createdAt);
     }
-    if (message.updatedAt !== "") {
+    if (message.updatedAt !== '') {
       writer.uint32(58).string(message.updatedAt);
     }
     if (message.isRoleAttachable === true) {
@@ -4647,37 +4658,37 @@ export const DigitalIdentity = {
     if (object.type !== undefined && object.type !== null) {
       message.type = String(object.type);
     } else {
-      message.type = "";
+      message.type = '';
     }
     if (object.source !== undefined && object.source !== null) {
       message.source = String(object.source);
     } else {
-      message.source = "";
+      message.source = '';
     }
     if (object.mail !== undefined && object.mail !== null) {
       message.mail = String(object.mail);
     } else {
-      message.mail = "";
+      message.mail = '';
     }
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = String(object.uniqueId);
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     if (object.entityId !== undefined && object.entityId !== null) {
       message.entityId = String(object.entityId);
     } else {
-      message.entityId = "";
+      message.entityId = '';
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = String(object.createdAt);
     } else {
-      message.createdAt = "";
+      message.createdAt = '';
     }
     if (object.updatedAt !== undefined && object.updatedAt !== null) {
       message.updatedAt = String(object.updatedAt);
     } else {
-      message.updatedAt = "";
+      message.updatedAt = '';
     }
     if (
       object.isRoleAttachable !== undefined &&
@@ -4716,37 +4727,37 @@ export const DigitalIdentity = {
     if (object.type !== undefined && object.type !== null) {
       message.type = object.type;
     } else {
-      message.type = "";
+      message.type = '';
     }
     if (object.source !== undefined && object.source !== null) {
       message.source = object.source;
     } else {
-      message.source = "";
+      message.source = '';
     }
     if (object.mail !== undefined && object.mail !== null) {
       message.mail = object.mail;
     } else {
-      message.mail = "";
+      message.mail = '';
     }
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = object.uniqueId;
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     if (object.entityId !== undefined && object.entityId !== null) {
       message.entityId = object.entityId;
     } else {
-      message.entityId = "";
+      message.entityId = '';
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = object.createdAt;
     } else {
-      message.createdAt = "";
+      message.createdAt = '';
     }
     if (object.updatedAt !== undefined && object.updatedAt !== null) {
       message.updatedAt = object.updatedAt;
     } else {
-      message.updatedAt = "";
+      message.updatedAt = '';
     }
     if (
       object.isRoleAttachable !== undefined &&
@@ -4839,8 +4850,8 @@ export class KartoffelClientImpl implements Kartoffel {
   CreateEntity(request: CreateEntityRequest): Promise<Entity> {
     const data = CreateEntityRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "CreateEntity",
+      'Kartoffel.Kartoffel',
+      'CreateEntity',
       data
     );
     return promise.then((data) => Entity.decode(new _m0.Reader(data)));
@@ -4849,8 +4860,8 @@ export class KartoffelClientImpl implements Kartoffel {
   GetEntityByDI(request: GetEntityByDIRequest): Promise<Entity> {
     const data = GetEntityByDIRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "GetEntityByDI",
+      'Kartoffel.Kartoffel',
+      'GetEntityByDI',
       data
     );
     return promise.then((data) => Entity.decode(new _m0.Reader(data)));
@@ -4859,8 +4870,8 @@ export class KartoffelClientImpl implements Kartoffel {
   GetEntityByRoleId(request: GetEntityByRoleIdRequest): Promise<Entity> {
     const data = GetEntityByRoleIdRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "GetEntityByRoleId",
+      'Kartoffel.Kartoffel',
+      'GetEntityByRoleId',
       data
     );
     return promise.then((data) => Entity.decode(new _m0.Reader(data)));
@@ -4869,8 +4880,8 @@ export class KartoffelClientImpl implements Kartoffel {
   GetEntitiesUnderOG(request: GetEntitiesUnderOGRequest): Promise<EntityArray> {
     const data = GetEntitiesUnderOGRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "GetEntitiesUnderOG",
+      'Kartoffel.Kartoffel',
+      'GetEntitiesUnderOG',
       data
     );
     return promise.then((data) => EntityArray.decode(new _m0.Reader(data)));
@@ -4881,8 +4892,8 @@ export class KartoffelClientImpl implements Kartoffel {
   ): Promise<EntityArray> {
     const data = GetEntitiesByHierarchyRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "GetEntitiesByHierarchy",
+      'Kartoffel.Kartoffel',
+      'GetEntitiesByHierarchy',
       data
     );
     return promise.then((data) => EntityArray.decode(new _m0.Reader(data)));
@@ -4893,8 +4904,8 @@ export class KartoffelClientImpl implements Kartoffel {
   ): Promise<Entity> {
     const data = GetEntityByIdentifierRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "GetEntityByIdentifier",
+      'Kartoffel.Kartoffel',
+      'GetEntityByIdentifier',
       data
     );
     return promise.then((data) => Entity.decode(new _m0.Reader(data)));
@@ -4905,8 +4916,8 @@ export class KartoffelClientImpl implements Kartoffel {
   ): Promise<EntityArray> {
     const data = SearchEntitiesByFullNameRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "SearchEntitiesByFullName",
+      'Kartoffel.Kartoffel',
+      'SearchEntitiesByFullName',
       data
     );
     return promise.then((data) => EntityArray.decode(new _m0.Reader(data)));
@@ -4915,8 +4926,8 @@ export class KartoffelClientImpl implements Kartoffel {
   GetEntityById(request: GetEntityByIdRequest): Promise<Entity> {
     const data = GetEntityByIdRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "GetEntityById",
+      'Kartoffel.Kartoffel',
+      'GetEntityById',
       data
     );
     return promise.then((data) => Entity.decode(new _m0.Reader(data)));
@@ -4925,8 +4936,8 @@ export class KartoffelClientImpl implements Kartoffel {
   DeleteEntity(request: DeleteEntityRequest): Promise<SuccessMessage> {
     const data = DeleteEntityRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "DeleteEntity",
+      'Kartoffel.Kartoffel',
+      'DeleteEntity',
       data
     );
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
@@ -4935,8 +4946,8 @@ export class KartoffelClientImpl implements Kartoffel {
   UpdateEntity(request: UpdateEntityRequest): Promise<Entity> {
     const data = UpdateEntityRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "UpdateEntity",
+      'Kartoffel.Kartoffel',
+      'UpdateEntity',
       data
     );
     return promise.then((data) => Entity.decode(new _m0.Reader(data)));
@@ -4947,8 +4958,8 @@ export class KartoffelClientImpl implements Kartoffel {
   ): Promise<SuccessMessage> {
     const data = ConnectEntityAndDIRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "ConnectEntityAndDI",
+      'Kartoffel.Kartoffel',
+      'ConnectEntityAndDI',
       data
     );
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
@@ -4959,8 +4970,8 @@ export class KartoffelClientImpl implements Kartoffel {
   ): Promise<SuccessMessage> {
     const data = DisconnectDIFromEntityRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "DisconnectDIFromEntity",
+      'Kartoffel.Kartoffel',
+      'DisconnectDIFromEntity',
       data
     );
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
@@ -4969,8 +4980,8 @@ export class KartoffelClientImpl implements Kartoffel {
   GetPictureByEntityId(request: GetPictureByEntityIdRequest): Promise<Image> {
     const data = GetPictureByEntityIdRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "GetPictureByEntityId",
+      'Kartoffel.Kartoffel',
+      'GetPictureByEntityId',
       data
     );
     return promise.then((data) => Image.decode(new _m0.Reader(data)));
@@ -4978,13 +4989,13 @@ export class KartoffelClientImpl implements Kartoffel {
 
   SearchOG(request: SearchOGRequest): Promise<OGArray> {
     const data = SearchOGRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "SearchOG", data);
+    const promise = this.rpc.request('Kartoffel.Kartoffel', 'SearchOG', data);
     return promise.then((data) => OGArray.decode(new _m0.Reader(data)));
   }
 
   CreateOG(request: CreateOGRequest): Promise<OrganizationGroup> {
     const data = CreateOGRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "CreateOG", data);
+    const promise = this.rpc.request('Kartoffel.Kartoffel', 'CreateOG', data);
     return promise.then((data) =>
       OrganizationGroup.decode(new _m0.Reader(data))
     );
@@ -4992,21 +5003,21 @@ export class KartoffelClientImpl implements Kartoffel {
 
   CreateDI(request: CreateDIRequest): Promise<DigitalIdentity> {
     const data = CreateDIRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "CreateDI", data);
+    const promise = this.rpc.request('Kartoffel.Kartoffel', 'CreateDI', data);
     return promise.then((data) => DigitalIdentity.decode(new _m0.Reader(data)));
   }
 
   CreateRole(request: CreateRoleRequest): Promise<Role> {
     const data = CreateRoleRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "CreateRole", data);
+    const promise = this.rpc.request('Kartoffel.Kartoffel', 'CreateRole', data);
     return promise.then((data) => Role.decode(new _m0.Reader(data)));
   }
 
   ConnectRoleAndDI(request: ConnectRoleAndDIRequest): Promise<SuccessMessage> {
     const data = ConnectRoleAndDIRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "ConnectRoleAndDI",
+      'Kartoffel.Kartoffel',
+      'ConnectRoleAndDI',
       data
     );
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
@@ -5015,8 +5026,8 @@ export class KartoffelClientImpl implements Kartoffel {
   GetRoleByRoleId(request: GetRoleByRoleIdRequest): Promise<Role> {
     const data = GetRoleByRoleIdRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "GetRoleByRoleId",
+      'Kartoffel.Kartoffel',
+      'GetRoleByRoleId',
       data
     );
     return promise.then((data) => Role.decode(new _m0.Reader(data)));
@@ -5025,8 +5036,8 @@ export class KartoffelClientImpl implements Kartoffel {
   GetRolesUnderOG(request: GetRolesUnderOGRequest): Promise<RoleArray> {
     const data = GetRolesUnderOGRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "GetRolesUnderOG",
+      'Kartoffel.Kartoffel',
+      'GetRolesUnderOG',
       data
     );
     return promise.then((data) => RoleArray.decode(new _m0.Reader(data)));
@@ -5034,15 +5045,15 @@ export class KartoffelClientImpl implements Kartoffel {
 
   DeleteOG(request: DeleteOGRequest): Promise<SuccessMessage> {
     const data = DeleteOGRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "DeleteOG", data);
+    const promise = this.rpc.request('Kartoffel.Kartoffel', 'DeleteOG', data);
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
   GetChildrenOfOG(request: GetChildrenOfOGRequest): Promise<OGArray> {
     const data = GetChildrenOfOGRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "GetChildrenOfOG",
+      'Kartoffel.Kartoffel',
+      'GetChildrenOfOG',
       data
     );
     return promise.then((data) => OGArray.decode(new _m0.Reader(data)));
@@ -5050,31 +5061,31 @@ export class KartoffelClientImpl implements Kartoffel {
 
   DeleteRole(request: DeleteRoleRequest): Promise<SuccessMessage> {
     const data = DeleteRoleRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "DeleteRole", data);
+    const promise = this.rpc.request('Kartoffel.Kartoffel', 'DeleteRole', data);
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
   DeleteDI(request: DeleteDIRequest): Promise<SuccessMessage> {
     const data = DeleteDIRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "DeleteDI", data);
+    const promise = this.rpc.request('Kartoffel.Kartoffel', 'DeleteDI', data);
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
   GetOGTree(request: GetOGTreeRequest): Promise<OGTree> {
     const data = GetOGTreeRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "GetOGTree", data);
+    const promise = this.rpc.request('Kartoffel.Kartoffel', 'GetOGTree', data);
     return promise.then((data) => OGTree.decode(new _m0.Reader(data)));
   }
 
   RenameRole(request: RenameRoleRequest): Promise<SuccessMessage> {
     const data = RenameRoleRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "RenameRole", data);
+    const promise = this.rpc.request('Kartoffel.Kartoffel', 'RenameRole', data);
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
   RenameOG(request: RenameOGRequest): Promise<SuccessMessage> {
     const data = RenameOGRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "RenameOG", data);
+    const promise = this.rpc.request('Kartoffel.Kartoffel', 'RenameOG', data);
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 }

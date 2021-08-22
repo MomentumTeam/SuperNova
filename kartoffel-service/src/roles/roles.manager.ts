@@ -2,11 +2,13 @@ import {
   ConnectRoleAndDIRequest,
   CreateRoleRequest,
   DeleteRoleRequest,
+  DisconnectRoleAndDIRequest,
   GetRoleByRoleIdRequest,
   GetRolesUnderOGRequest,
   Role,
   RoleArray,
   SuccessMessage,
+  UpdateRoleRequest,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { KartoffelFaker } from '../mock/kartoffel.faker';
 import { KartoffelUtils } from '../utils/kartoffel.utils';
@@ -64,6 +66,28 @@ export class RolesManager {
     try {
       return await this.rolesRepository.getRolesUnderOGRequest(
         getRolesUnderOGRequest
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateRole(
+    updateRoleRequest: UpdateRoleRequest
+  ): Promise<SuccessMessage> {
+    try {
+      return await this.rolesRepository.updateRole(updateRoleRequest);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async disconnectRoleAndDI(
+    disconnectRoleAndDIRequest: DisconnectRoleAndDIRequest
+  ): Promise<SuccessMessage> {
+    try {
+      return await this.rolesRepository.disconnectRoleAndDI(
+        disconnectRoleAndDIRequest
       );
     } catch (error) {
       throw error;

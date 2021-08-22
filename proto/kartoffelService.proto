@@ -152,8 +152,18 @@ message CreateRoleRequest{
     string roleId = 4;
 }
 
+// UpdateRoleRequest
+message UpdateRoleRequest {
+    string roleId = 1;
+  }
+  
 // ConnectRoleAndDI
 message ConnectRoleAndDIRequest{
+    string id = 1; //mongoId of role
+    string uniqueId = 2; //uniqueId of DI
+}
+
+message DisconnectRoleAndDIRequest {
     string id = 1; //mongoId of role
     string uniqueId = 2; //uniqueId of DI
 }

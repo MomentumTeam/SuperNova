@@ -3,18 +3,13 @@ import * as protoLoader from '@grpc/proto-loader';
 import * as C from './config';
 import { logger } from './logger';
 import {
-  connectRoleAndDI,
   createDI,
   createOG,
-  createRole,
   deleteDI,
   deleteOG,
-  deleteRole,
   getChildrenOfOG,
-  getRolesUnderOG,
   searchOG,
   getOGTree,
-  getRoleByRoleId,
 } from './kartoffel/kartoffel.controller';
 import { findPath } from './utils/path';
 import { addHealthService } from './health';
@@ -33,6 +28,14 @@ import {
   searchEntitiesByFullName,
   updateEntity,
 } from './entities/entities.controller';
+
+import {
+  connectRoleAndDI,
+  createRole,
+  deleteRole,
+  getRolesUnderOG,
+  getRoleByRoleId,
+} from './roles/roles.controller';
 
 const PROTO_PATH = `${findPath('proto')}/kartoffelService.proto`;
 
