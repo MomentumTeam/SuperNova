@@ -192,7 +192,7 @@ export async function updateOGParent(call: any, callback: any): Promise<void> {
     logger.info(`Call to updateOGParent`, {
       callRequest: call.request,
     });
-    const successMessage: SuccessMessage = await groupsManager.getChildrenOfOG(
+    const successMessage: SuccessMessage = await groupsManager.updateOGParent(
       call.request
     );
     logger.info(`updateOGParent OK`, {
