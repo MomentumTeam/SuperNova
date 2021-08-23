@@ -4,6 +4,34 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "Kartoffel";
 
+export interface UpdateDIRequest {
+  id: string;
+  isRoleAttachable: boolean;
+  mail: string;
+}
+
+export interface GetDIByUniqueIdRequest {
+  id: string;
+}
+
+export interface SearchDIOrUniqueIdRequest {
+  uniqueId: string;
+}
+
+export interface GetDIByRoleIdRequest {
+  roleId: string;
+}
+
+export interface DigitalIdentities {
+  digitalIdentities: DigitalIdentity[];
+}
+
+export interface GetAllDIsRequest {
+  updatedFrom: string;
+  page: string;
+  pageSize: string;
+}
+
 export interface UpdateOGParentRequest {
   id: string;
   parentId: string;
@@ -225,7 +253,7 @@ export interface DeleteRoleRequest {
 /** DeleteDI */
 export interface DeleteDIRequest {
   /** uniqueId of DI (taken from the role) */
-  uniqueId: string;
+  id: string;
 }
 
 /** GetEntitiesUnderOG */
@@ -310,6 +338,474 @@ export interface DigitalIdentity {
   isRoleAttachable: boolean;
   role: Role | undefined;
 }
+
+const baseUpdateDIRequest: object = {
+  id: "",
+  isRoleAttachable: false,
+  mail: "",
+};
+
+export const UpdateDIRequest = {
+  encode(
+    message: UpdateDIRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.isRoleAttachable === true) {
+      writer.uint32(16).bool(message.isRoleAttachable);
+    }
+    if (message.mail !== "") {
+      writer.uint32(26).string(message.mail);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UpdateDIRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseUpdateDIRequest } as UpdateDIRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        case 2:
+          message.isRoleAttachable = reader.bool();
+          break;
+        case 3:
+          message.mail = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UpdateDIRequest {
+    const message = { ...baseUpdateDIRequest } as UpdateDIRequest;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    if (
+      object.isRoleAttachable !== undefined &&
+      object.isRoleAttachable !== null
+    ) {
+      message.isRoleAttachable = Boolean(object.isRoleAttachable);
+    } else {
+      message.isRoleAttachable = false;
+    }
+    if (object.mail !== undefined && object.mail !== null) {
+      message.mail = String(object.mail);
+    } else {
+      message.mail = "";
+    }
+    return message;
+  },
+
+  toJSON(message: UpdateDIRequest): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    message.isRoleAttachable !== undefined &&
+      (obj.isRoleAttachable = message.isRoleAttachable);
+    message.mail !== undefined && (obj.mail = message.mail);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<UpdateDIRequest>): UpdateDIRequest {
+    const message = { ...baseUpdateDIRequest } as UpdateDIRequest;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    if (
+      object.isRoleAttachable !== undefined &&
+      object.isRoleAttachable !== null
+    ) {
+      message.isRoleAttachable = object.isRoleAttachable;
+    } else {
+      message.isRoleAttachable = false;
+    }
+    if (object.mail !== undefined && object.mail !== null) {
+      message.mail = object.mail;
+    } else {
+      message.mail = "";
+    }
+    return message;
+  },
+};
+
+const baseGetDIByUniqueIdRequest: object = { id: "" };
+
+export const GetDIByUniqueIdRequest = {
+  encode(
+    message: GetDIByUniqueIdRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GetDIByUniqueIdRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseGetDIByUniqueIdRequest } as GetDIByUniqueIdRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetDIByUniqueIdRequest {
+    const message = { ...baseGetDIByUniqueIdRequest } as GetDIByUniqueIdRequest;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+
+  toJSON(message: GetDIByUniqueIdRequest): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<GetDIByUniqueIdRequest>
+  ): GetDIByUniqueIdRequest {
+    const message = { ...baseGetDIByUniqueIdRequest } as GetDIByUniqueIdRequest;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+};
+
+const baseSearchDIOrUniqueIdRequest: object = { uniqueId: "" };
+
+export const SearchDIOrUniqueIdRequest = {
+  encode(
+    message: SearchDIOrUniqueIdRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.uniqueId !== "") {
+      writer.uint32(10).string(message.uniqueId);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): SearchDIOrUniqueIdRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseSearchDIOrUniqueIdRequest,
+    } as SearchDIOrUniqueIdRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.uniqueId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SearchDIOrUniqueIdRequest {
+    const message = {
+      ...baseSearchDIOrUniqueIdRequest,
+    } as SearchDIOrUniqueIdRequest;
+    if (object.uniqueId !== undefined && object.uniqueId !== null) {
+      message.uniqueId = String(object.uniqueId);
+    } else {
+      message.uniqueId = "";
+    }
+    return message;
+  },
+
+  toJSON(message: SearchDIOrUniqueIdRequest): unknown {
+    const obj: any = {};
+    message.uniqueId !== undefined && (obj.uniqueId = message.uniqueId);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<SearchDIOrUniqueIdRequest>
+  ): SearchDIOrUniqueIdRequest {
+    const message = {
+      ...baseSearchDIOrUniqueIdRequest,
+    } as SearchDIOrUniqueIdRequest;
+    if (object.uniqueId !== undefined && object.uniqueId !== null) {
+      message.uniqueId = object.uniqueId;
+    } else {
+      message.uniqueId = "";
+    }
+    return message;
+  },
+};
+
+const baseGetDIByRoleIdRequest: object = { roleId: "" };
+
+export const GetDIByRoleIdRequest = {
+  encode(
+    message: GetDIByRoleIdRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.roleId !== "") {
+      writer.uint32(10).string(message.roleId);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GetDIByRoleIdRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseGetDIByRoleIdRequest } as GetDIByRoleIdRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.roleId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetDIByRoleIdRequest {
+    const message = { ...baseGetDIByRoleIdRequest } as GetDIByRoleIdRequest;
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = String(object.roleId);
+    } else {
+      message.roleId = "";
+    }
+    return message;
+  },
+
+  toJSON(message: GetDIByRoleIdRequest): unknown {
+    const obj: any = {};
+    message.roleId !== undefined && (obj.roleId = message.roleId);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<GetDIByRoleIdRequest>): GetDIByRoleIdRequest {
+    const message = { ...baseGetDIByRoleIdRequest } as GetDIByRoleIdRequest;
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = object.roleId;
+    } else {
+      message.roleId = "";
+    }
+    return message;
+  },
+};
+
+const baseDigitalIdentities: object = {};
+
+export const DigitalIdentities = {
+  encode(
+    message: DigitalIdentities,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.digitalIdentities) {
+      DigitalIdentity.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DigitalIdentities {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseDigitalIdentities } as DigitalIdentities;
+    message.digitalIdentities = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.digitalIdentities.push(
+            DigitalIdentity.decode(reader, reader.uint32())
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DigitalIdentities {
+    const message = { ...baseDigitalIdentities } as DigitalIdentities;
+    message.digitalIdentities = [];
+    if (
+      object.digitalIdentities !== undefined &&
+      object.digitalIdentities !== null
+    ) {
+      for (const e of object.digitalIdentities) {
+        message.digitalIdentities.push(DigitalIdentity.fromJSON(e));
+      }
+    }
+    return message;
+  },
+
+  toJSON(message: DigitalIdentities): unknown {
+    const obj: any = {};
+    if (message.digitalIdentities) {
+      obj.digitalIdentities = message.digitalIdentities.map((e) =>
+        e ? DigitalIdentity.toJSON(e) : undefined
+      );
+    } else {
+      obj.digitalIdentities = [];
+    }
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<DigitalIdentities>): DigitalIdentities {
+    const message = { ...baseDigitalIdentities } as DigitalIdentities;
+    message.digitalIdentities = [];
+    if (
+      object.digitalIdentities !== undefined &&
+      object.digitalIdentities !== null
+    ) {
+      for (const e of object.digitalIdentities) {
+        message.digitalIdentities.push(DigitalIdentity.fromPartial(e));
+      }
+    }
+    return message;
+  },
+};
+
+const baseGetAllDIsRequest: object = {
+  updatedFrom: "",
+  page: "",
+  pageSize: "",
+};
+
+export const GetAllDIsRequest = {
+  encode(
+    message: GetAllDIsRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.updatedFrom !== "") {
+      writer.uint32(10).string(message.updatedFrom);
+    }
+    if (message.page !== "") {
+      writer.uint32(18).string(message.page);
+    }
+    if (message.pageSize !== "") {
+      writer.uint32(26).string(message.pageSize);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): GetAllDIsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseGetAllDIsRequest } as GetAllDIsRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.updatedFrom = reader.string();
+          break;
+        case 2:
+          message.page = reader.string();
+          break;
+        case 3:
+          message.pageSize = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetAllDIsRequest {
+    const message = { ...baseGetAllDIsRequest } as GetAllDIsRequest;
+    if (object.updatedFrom !== undefined && object.updatedFrom !== null) {
+      message.updatedFrom = String(object.updatedFrom);
+    } else {
+      message.updatedFrom = "";
+    }
+    if (object.page !== undefined && object.page !== null) {
+      message.page = String(object.page);
+    } else {
+      message.page = "";
+    }
+    if (object.pageSize !== undefined && object.pageSize !== null) {
+      message.pageSize = String(object.pageSize);
+    } else {
+      message.pageSize = "";
+    }
+    return message;
+  },
+
+  toJSON(message: GetAllDIsRequest): unknown {
+    const obj: any = {};
+    message.updatedFrom !== undefined &&
+      (obj.updatedFrom = message.updatedFrom);
+    message.page !== undefined && (obj.page = message.page);
+    message.pageSize !== undefined && (obj.pageSize = message.pageSize);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<GetAllDIsRequest>): GetAllDIsRequest {
+    const message = { ...baseGetAllDIsRequest } as GetAllDIsRequest;
+    if (object.updatedFrom !== undefined && object.updatedFrom !== null) {
+      message.updatedFrom = object.updatedFrom;
+    } else {
+      message.updatedFrom = "";
+    }
+    if (object.page !== undefined && object.page !== null) {
+      message.page = object.page;
+    } else {
+      message.page = "";
+    }
+    if (object.pageSize !== undefined && object.pageSize !== null) {
+      message.pageSize = object.pageSize;
+    } else {
+      message.pageSize = "";
+    }
+    return message;
+  },
+};
 
 const baseUpdateOGParentRequest: object = { id: "", parentId: "", parent: "" };
 
@@ -3490,15 +3986,15 @@ export const DeleteRoleRequest = {
   },
 };
 
-const baseDeleteDIRequest: object = { uniqueId: "" };
+const baseDeleteDIRequest: object = { id: "" };
 
 export const DeleteDIRequest = {
   encode(
     message: DeleteDIRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.uniqueId !== "") {
-      writer.uint32(10).string(message.uniqueId);
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
     }
     return writer;
   },
@@ -3511,7 +4007,7 @@ export const DeleteDIRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.uniqueId = reader.string();
+          message.id = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -3523,26 +4019,26 @@ export const DeleteDIRequest = {
 
   fromJSON(object: any): DeleteDIRequest {
     const message = { ...baseDeleteDIRequest } as DeleteDIRequest;
-    if (object.uniqueId !== undefined && object.uniqueId !== null) {
-      message.uniqueId = String(object.uniqueId);
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
     } else {
-      message.uniqueId = "";
+      message.id = "";
     }
     return message;
   },
 
   toJSON(message: DeleteDIRequest): unknown {
     const obj: any = {};
-    message.uniqueId !== undefined && (obj.uniqueId = message.uniqueId);
+    message.id !== undefined && (obj.id = message.id);
     return obj;
   },
 
   fromPartial(object: DeepPartial<DeleteDIRequest>): DeleteDIRequest {
     const message = { ...baseDeleteDIRequest } as DeleteDIRequest;
-    if (object.uniqueId !== undefined && object.uniqueId !== null) {
-      message.uniqueId = object.uniqueId;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
     } else {
-      message.uniqueId = "";
+      message.id = "";
     }
     return message;
   },
@@ -5036,13 +5532,21 @@ export interface Kartoffel {
   GetOGById(request: GetOGByIdRequest): Promise<OrganizationGroup>;
   GetChildrenOfOG(request: GetChildrenOfOGRequest): Promise<OGArray>;
   UpdateOGParent(request: UpdateOGParentRequest): Promise<SuccessMessage>;
+  /** DI */
+  GetAllDIs(request: GetAllDIsRequest): Promise<DigitalIdentities>;
   CreateDI(request: CreateDIRequest): Promise<DigitalIdentity>;
+  GetDIByRoleId(request: GetDIByRoleIdRequest): Promise<DigitalIdentity>;
+  SearchDIOrUniqueId(
+    request: SearchDIOrUniqueIdRequest
+  ): Promise<DigitalIdentities>;
+  DeleteDI(request: DeleteDIRequest): Promise<SuccessMessage>;
+  GetDIByUniqueId(request: GetDIByUniqueIdRequest): Promise<DigitalIdentity>;
+  UpdateDI(request: UpdateDIRequest): Promise<SuccessMessage>;
   CreateRole(request: CreateRoleRequest): Promise<Role>;
   ConnectRoleAndDI(request: ConnectRoleAndDIRequest): Promise<SuccessMessage>;
   GetRoleByRoleId(request: GetRoleByRoleIdRequest): Promise<Role>;
   GetRolesUnderOG(request: GetRolesUnderOGRequest): Promise<RoleArray>;
   DeleteRole(request: DeleteRoleRequest): Promise<SuccessMessage>;
-  DeleteDI(request: DeleteDIRequest): Promise<SuccessMessage>;
   GetOGTree(request: GetOGTreeRequest): Promise<OGTree>;
 }
 
@@ -5070,13 +5574,18 @@ export class KartoffelClientImpl implements Kartoffel {
     this.GetOGById = this.GetOGById.bind(this);
     this.GetChildrenOfOG = this.GetChildrenOfOG.bind(this);
     this.UpdateOGParent = this.UpdateOGParent.bind(this);
+    this.GetAllDIs = this.GetAllDIs.bind(this);
     this.CreateDI = this.CreateDI.bind(this);
+    this.GetDIByRoleId = this.GetDIByRoleId.bind(this);
+    this.SearchDIOrUniqueId = this.SearchDIOrUniqueId.bind(this);
+    this.DeleteDI = this.DeleteDI.bind(this);
+    this.GetDIByUniqueId = this.GetDIByUniqueId.bind(this);
+    this.UpdateDI = this.UpdateDI.bind(this);
     this.CreateRole = this.CreateRole.bind(this);
     this.ConnectRoleAndDI = this.ConnectRoleAndDI.bind(this);
     this.GetRoleByRoleId = this.GetRoleByRoleId.bind(this);
     this.GetRolesUnderOG = this.GetRolesUnderOG.bind(this);
     this.DeleteRole = this.DeleteRole.bind(this);
-    this.DeleteDI = this.DeleteDI.bind(this);
     this.GetOGTree = this.GetOGTree.bind(this);
   }
   CreateEntity(request: CreateEntityRequest): Promise<Entity> {
@@ -5281,10 +5790,64 @@ export class KartoffelClientImpl implements Kartoffel {
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
+  GetAllDIs(request: GetAllDIsRequest): Promise<DigitalIdentities> {
+    const data = GetAllDIsRequest.encode(request).finish();
+    const promise = this.rpc.request("Kartoffel.Kartoffel", "GetAllDIs", data);
+    return promise.then((data) =>
+      DigitalIdentities.decode(new _m0.Reader(data))
+    );
+  }
+
   CreateDI(request: CreateDIRequest): Promise<DigitalIdentity> {
     const data = CreateDIRequest.encode(request).finish();
     const promise = this.rpc.request("Kartoffel.Kartoffel", "CreateDI", data);
     return promise.then((data) => DigitalIdentity.decode(new _m0.Reader(data)));
+  }
+
+  GetDIByRoleId(request: GetDIByRoleIdRequest): Promise<DigitalIdentity> {
+    const data = GetDIByRoleIdRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "GetDIByRoleId",
+      data
+    );
+    return promise.then((data) => DigitalIdentity.decode(new _m0.Reader(data)));
+  }
+
+  SearchDIOrUniqueId(
+    request: SearchDIOrUniqueIdRequest
+  ): Promise<DigitalIdentities> {
+    const data = SearchDIOrUniqueIdRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "SearchDIOrUniqueId",
+      data
+    );
+    return promise.then((data) =>
+      DigitalIdentities.decode(new _m0.Reader(data))
+    );
+  }
+
+  DeleteDI(request: DeleteDIRequest): Promise<SuccessMessage> {
+    const data = DeleteDIRequest.encode(request).finish();
+    const promise = this.rpc.request("Kartoffel.Kartoffel", "DeleteDI", data);
+    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
+  }
+
+  GetDIByUniqueId(request: GetDIByUniqueIdRequest): Promise<DigitalIdentity> {
+    const data = GetDIByUniqueIdRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "GetDIByUniqueId",
+      data
+    );
+    return promise.then((data) => DigitalIdentity.decode(new _m0.Reader(data)));
+  }
+
+  UpdateDI(request: UpdateDIRequest): Promise<SuccessMessage> {
+    const data = UpdateDIRequest.encode(request).finish();
+    const promise = this.rpc.request("Kartoffel.Kartoffel", "UpdateDI", data);
+    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
   CreateRole(request: CreateRoleRequest): Promise<Role> {
@@ -5326,12 +5889,6 @@ export class KartoffelClientImpl implements Kartoffel {
   DeleteRole(request: DeleteRoleRequest): Promise<SuccessMessage> {
     const data = DeleteRoleRequest.encode(request).finish();
     const promise = this.rpc.request("Kartoffel.Kartoffel", "DeleteRole", data);
-    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
-  }
-
-  DeleteDI(request: DeleteDIRequest): Promise<SuccessMessage> {
-    const data = DeleteDIRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "DeleteDI", data);
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 

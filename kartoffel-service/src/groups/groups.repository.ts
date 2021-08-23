@@ -14,7 +14,6 @@ import {
   UpdateOGParentRequest,
   RenameOGRequest,
 } from '../interfaces/protoc/proto/kartoffelService';
-import { cleanUnderscoreFields } from '../utils/json.utils';
 
 export class GroupsRepository {
   private kartoffelFaker: KartoffelFaker;
@@ -62,7 +61,6 @@ export class GroupsRepository {
     getOGByHierarchyName: GetOGByHierarchyNameRequest
   ): Promise<OrganizationGroup> {
     try {
-      console.log('getOGByHierarchyRequest', getOGByHierarchyName);
       if (C.useFaker) {
         const og: OrganizationGroup = this.kartoffelFaker.randomOG();
         return og;

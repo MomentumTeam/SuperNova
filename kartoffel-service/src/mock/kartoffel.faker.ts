@@ -11,6 +11,7 @@ import {
   EntityArray,
   OGTree,
   Image,
+  DigitalIdentities,
 } from '../interfaces/protoc/proto/kartoffelService';
 
 export class KartoffelFaker {
@@ -46,6 +47,20 @@ export class KartoffelFaker {
       role: undefined,
     };
     return digitalIdentity;
+  }
+
+  randomDiArray(): DigitalIdentities {
+    const length = faker.datatype.number({
+      min: 1,
+      max: 10,
+    });
+    let DigitalIdentities = [];
+    for (let i = 0; i < length; i++) {
+      DigitalIdentities.push(this.randomDI());
+    }
+    return {
+      digitalIdentities: DigitalIdentities,
+    };
   }
 
   async randomPicture(): Promise<Image> {
