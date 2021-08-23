@@ -264,9 +264,9 @@ message DeleteDIRequest{
 // GetEntitiesUnderOG
 message GetEntitiesUnderOGRequest{
     string id = 1; //mongoIds of OG
-    bool direct = 2;
-    int32 page = 3;
-    int32 pageSize = 4;
+    optional bool direct = 2;
+    optional int32 page = 3;
+    optional int32 pageSize = 4;
 }
 
 //SuccessMessage

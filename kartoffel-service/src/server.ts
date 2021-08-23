@@ -63,7 +63,7 @@ export class Server {
           keepCase: true,
           longs: String,
           enums: String,
-          defaults: true,
+          // defaults: true,
           oneofs: true,
         });
       const protoDescriptor: grpc.GrpcObject =
