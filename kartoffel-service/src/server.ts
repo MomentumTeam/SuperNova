@@ -4,11 +4,7 @@ import * as C from './config';
 import { logger } from './logger';
 import {
   createDI,
-  createOG,
   deleteDI,
-  deleteOG,
-  getChildrenOfOG,
-  searchOG,
   getOGTree,
 } from './kartoffel/kartoffel.controller';
 import { findPath } from './utils/path';
@@ -28,6 +24,16 @@ import {
   searchEntitiesByFullName,
   updateEntity,
 } from './entities/entities.controller';
+import {
+  searchOG,
+  createOG,
+  getOGByHierarchyName,
+  deleteOG,
+  getOGById,
+  getChildrenOfOG,
+  updateOGParent,
+  renameOG,
+} from './groups/groups.controller';
 
 import {
   connectRoleAndDI,
@@ -78,6 +84,7 @@ export class Server {
     try {
       const kartoffelServiceDescriptor: any = this.getProtoDescriptor();
       this.server.addService(kartoffelServiceDescriptor.Kartoffel.service, {
+        //entities
         CreateEntity: createEntity,
         GetEntityByDI: getEntityByDI,
         GetEntityByRoleId: getEntityByRoleId,
@@ -92,15 +99,21 @@ export class Server {
         ConnectEntityAndDI: connectEntityAndDI,
         UpdateEntity: updateEntity,
 
+        //groups
         SearchOG: searchOG,
         CreateOG: createOG,
+        getOGByHierarchyName: getOGByHierarchyName,
+        DeleteOG: deleteOG,
+        GetOGById: getOGById,
+        GetChildrenOfOG: getChildrenOfOG,
+        UpdateOGParent: updateOGParent,
+        RenameOG: renameOG,
+
         CreateDI: createDI,
         CreateRole: createRole,
         ConnectRoleAndDI: connectRoleAndDI,
         GetRoleByRoleId: getRoleByRoleId,
         GetRolesUnderOG: getRolesUnderOG,
-        DeleteOG: deleteOG,
-        GetChildrenOfOG: getChildrenOfOG,
         DeleteRole: deleteRole,
         DeleteDI: deleteDI,
         GetOGTree: getOGTree,

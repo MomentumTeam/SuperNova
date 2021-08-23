@@ -11,11 +11,12 @@ export const devMode = process.env.NODE_ENV
   ? process.env.NODE_ENV === 'development'
   : true;
 
-export const kartoffelUrl = process.env.KS_KARTOFFEL_URL || '0.0.0.0:1000';
+export const kartoffelUrl =
+  process.env.KS_KARTOFFEL_URL || 'http://52.188.158.174:7709';
 
 export const useFaker = process.env.KS_USE_FAKER
-  ? process.env.KS_USE_FAKER === 'false'
-  : true;
+  ? process.env.KS_USE_FAKER === 'true'
+  : false;
 
 export const kartoffelAudience =
   process.env.KS_KARTOFFEL_AUDIENCE || 'kartoffel';
