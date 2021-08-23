@@ -192,14 +192,12 @@ export async function updateOGParent(call: any, callback: any): Promise<void> {
     logger.info(`Call to updateOGParent`, {
       callRequest: call.request,
     });
-    const successMessage: SuccessMessage = await groupsManager.getChildrenOfOG(
-      call.request
-    );
+    const ogArray: OGArray = await groupsManager.getChildrenOfOG(call.request);
     logger.info(`updateOGParent OK`, {
       callRequest: call.request,
-      response: successMessage,
+      response: ogArray,
     });
-    callback(null, successMessage);
+    callback(null, ogArray);
   } catch (error) {
     logger.error(`updateOGParent ERROR`, {
       callRequest: call.request,

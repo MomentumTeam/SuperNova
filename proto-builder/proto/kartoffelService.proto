@@ -28,6 +28,7 @@ service Kartoffel {
     rpc GetOGById(GetOGByIdRequest) returns (OrganizationGroup){}   //l
     rpc GetChildrenOfOG(GetChildrenOfOGRequest) returns (OGArray){}
     rpc UpdateOGParent(UpdateOGParentRequest) returns (SuccessMessage){}
+    rpc RenameOG(RenameOGRequest) returns (SuccessMessage){}
 
     rpc CreateDI(CreateDIRequest) returns (DigitalIdentity){}
     rpc CreateRole(CreateRoleRequest) returns (Role){}
@@ -37,8 +38,7 @@ service Kartoffel {
     rpc DeleteRole(DeleteRoleRequest) returns (SuccessMessage){} 
     rpc DeleteDI(DeleteDIRequest) returns (SuccessMessage){}
     rpc GetOGTree(GetOGTreeRequest) returns (OGTree){}
-    // rpc RenameRole(RenameRoleRequest) returns (SuccessMessage){}
-    // rpc RenameOG(RenameOGRequest) returns (SuccessMessage){}
+    rpc RenameRole(RenameRoleRequest) returns (SuccessMessage){}
 
 
 
@@ -177,9 +177,19 @@ message CreateRoleRequest{
     string roleId = 4;
 }
 
+// UpdateRoleRequest
+message UpdateRoleRequest {
+    string roleId = 1;
+  }
+  
 // ConnectRoleAndDI
 message ConnectRoleAndDIRequest{
     string id = 1; //mongoId of role
+    string uniqueId = 2; //uniqueId of DI
+}
+
+message DisconnectRoleAndDIRequest {
+    string roleId = 1; //mongoId of role
     string uniqueId = 2; //uniqueId of DI
 }
 

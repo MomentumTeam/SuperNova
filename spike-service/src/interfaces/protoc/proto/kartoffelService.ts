@@ -134,10 +134,22 @@ export interface CreateRoleRequest {
   roleId: string;
 }
 
+/** UpdateRoleRequest */
+export interface UpdateRoleRequest {
+  roleId: string;
+}
+
 /** ConnectRoleAndDI */
 export interface ConnectRoleAndDIRequest {
   /** mongoId of role */
   id: string;
+  /** uniqueId of DI */
+  uniqueId: string;
+}
+
+export interface DisconnectRoleAndDIRequest {
+  /** mongoId of role */
+  roleId: string;
   /** uniqueId of DI */
   uniqueId: string;
 }
@@ -2373,6 +2385,64 @@ export const CreateRoleRequest = {
   },
 };
 
+const baseUpdateRoleRequest: object = { roleId: "" };
+
+export const UpdateRoleRequest = {
+  encode(
+    message: UpdateRoleRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.roleId !== "") {
+      writer.uint32(10).string(message.roleId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UpdateRoleRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseUpdateRoleRequest } as UpdateRoleRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.roleId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UpdateRoleRequest {
+    const message = { ...baseUpdateRoleRequest } as UpdateRoleRequest;
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = String(object.roleId);
+    } else {
+      message.roleId = "";
+    }
+    return message;
+  },
+
+  toJSON(message: UpdateRoleRequest): unknown {
+    const obj: any = {};
+    message.roleId !== undefined && (obj.roleId = message.roleId);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<UpdateRoleRequest>): UpdateRoleRequest {
+    const message = { ...baseUpdateRoleRequest } as UpdateRoleRequest;
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = object.roleId;
+    } else {
+      message.roleId = "";
+    }
+    return message;
+  },
+};
+
 const baseConnectRoleAndDIRequest: object = { id: "", uniqueId: "" };
 
 export const ConnectRoleAndDIRequest = {
@@ -2449,6 +2519,92 @@ export const ConnectRoleAndDIRequest = {
       message.id = object.id;
     } else {
       message.id = "";
+    }
+    if (object.uniqueId !== undefined && object.uniqueId !== null) {
+      message.uniqueId = object.uniqueId;
+    } else {
+      message.uniqueId = "";
+    }
+    return message;
+  },
+};
+
+const baseDisconnectRoleAndDIRequest: object = { roleId: "", uniqueId: "" };
+
+export const DisconnectRoleAndDIRequest = {
+  encode(
+    message: DisconnectRoleAndDIRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.roleId !== "") {
+      writer.uint32(10).string(message.roleId);
+    }
+    if (message.uniqueId !== "") {
+      writer.uint32(18).string(message.uniqueId);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): DisconnectRoleAndDIRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseDisconnectRoleAndDIRequest,
+    } as DisconnectRoleAndDIRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.roleId = reader.string();
+          break;
+        case 2:
+          message.uniqueId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DisconnectRoleAndDIRequest {
+    const message = {
+      ...baseDisconnectRoleAndDIRequest,
+    } as DisconnectRoleAndDIRequest;
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = String(object.roleId);
+    } else {
+      message.roleId = "";
+    }
+    if (object.uniqueId !== undefined && object.uniqueId !== null) {
+      message.uniqueId = String(object.uniqueId);
+    } else {
+      message.uniqueId = "";
+    }
+    return message;
+  },
+
+  toJSON(message: DisconnectRoleAndDIRequest): unknown {
+    const obj: any = {};
+    message.roleId !== undefined && (obj.roleId = message.roleId);
+    message.uniqueId !== undefined && (obj.uniqueId = message.uniqueId);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<DisconnectRoleAndDIRequest>
+  ): DisconnectRoleAndDIRequest {
+    const message = {
+      ...baseDisconnectRoleAndDIRequest,
+    } as DisconnectRoleAndDIRequest;
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = object.roleId;
+    } else {
+      message.roleId = "";
     }
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = object.uniqueId;
@@ -5036,6 +5192,7 @@ export interface Kartoffel {
   GetOGById(request: GetOGByIdRequest): Promise<OrganizationGroup>;
   GetChildrenOfOG(request: GetChildrenOfOGRequest): Promise<OGArray>;
   UpdateOGParent(request: UpdateOGParentRequest): Promise<SuccessMessage>;
+  RenameOG(request: RenameOGRequest): Promise<SuccessMessage>;
   CreateDI(request: CreateDIRequest): Promise<DigitalIdentity>;
   CreateRole(request: CreateRoleRequest): Promise<Role>;
   ConnectRoleAndDI(request: ConnectRoleAndDIRequest): Promise<SuccessMessage>;
@@ -5044,6 +5201,7 @@ export interface Kartoffel {
   DeleteRole(request: DeleteRoleRequest): Promise<SuccessMessage>;
   DeleteDI(request: DeleteDIRequest): Promise<SuccessMessage>;
   GetOGTree(request: GetOGTreeRequest): Promise<OGTree>;
+  RenameRole(request: RenameRoleRequest): Promise<SuccessMessage>;
 }
 
 export class KartoffelClientImpl implements Kartoffel {
@@ -5070,6 +5228,7 @@ export class KartoffelClientImpl implements Kartoffel {
     this.GetOGById = this.GetOGById.bind(this);
     this.GetChildrenOfOG = this.GetChildrenOfOG.bind(this);
     this.UpdateOGParent = this.UpdateOGParent.bind(this);
+    this.RenameOG = this.RenameOG.bind(this);
     this.CreateDI = this.CreateDI.bind(this);
     this.CreateRole = this.CreateRole.bind(this);
     this.ConnectRoleAndDI = this.ConnectRoleAndDI.bind(this);
@@ -5078,6 +5237,7 @@ export class KartoffelClientImpl implements Kartoffel {
     this.DeleteRole = this.DeleteRole.bind(this);
     this.DeleteDI = this.DeleteDI.bind(this);
     this.GetOGTree = this.GetOGTree.bind(this);
+    this.RenameRole = this.RenameRole.bind(this);
   }
   CreateEntity(request: CreateEntityRequest): Promise<Entity> {
     const data = CreateEntityRequest.encode(request).finish();
@@ -5281,6 +5441,12 @@ export class KartoffelClientImpl implements Kartoffel {
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
+  RenameOG(request: RenameOGRequest): Promise<SuccessMessage> {
+    const data = RenameOGRequest.encode(request).finish();
+    const promise = this.rpc.request("Kartoffel.Kartoffel", "RenameOG", data);
+    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
+  }
+
   CreateDI(request: CreateDIRequest): Promise<DigitalIdentity> {
     const data = CreateDIRequest.encode(request).finish();
     const promise = this.rpc.request("Kartoffel.Kartoffel", "CreateDI", data);
@@ -5339,6 +5505,12 @@ export class KartoffelClientImpl implements Kartoffel {
     const data = GetOGTreeRequest.encode(request).finish();
     const promise = this.rpc.request("Kartoffel.Kartoffel", "GetOGTree", data);
     return promise.then((data) => OGTree.decode(new _m0.Reader(data)));
+  }
+
+  RenameRole(request: RenameRoleRequest): Promise<SuccessMessage> {
+    const data = RenameRoleRequest.encode(request).finish();
+    const promise = this.rpc.request("Kartoffel.Kartoffel", "RenameRole", data);
+    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 }
 

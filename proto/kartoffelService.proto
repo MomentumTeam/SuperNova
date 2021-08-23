@@ -189,7 +189,7 @@ message ConnectRoleAndDIRequest{
 }
 
 message DisconnectRoleAndDIRequest {
-    string id = 1; //mongoId of role
+    string roleId = 1; //mongoId of role
     string uniqueId = 2; //uniqueId of DI
 }
 
