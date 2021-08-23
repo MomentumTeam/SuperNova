@@ -4,9 +4,7 @@ import * as C from './config';
 import { logger } from './logger';
 import {
   connectRoleAndDI,
-  createDI,
   createRole,
-  deleteDI,
   deleteRole,
   getRolesUnderOG,
   getOGTree,
@@ -39,6 +37,15 @@ import {
   updateOGParent,
   renameOG,
 } from './groups/groups.controller';
+import {
+  getAllDIs,
+  createDI,
+  getDIByRoleId,
+  searchDIOrUniqueId,
+  deleteDI,
+  getDIByUniqueId,
+  updateDI
+} from './digitalIdentities/di.controller';
 
 const PROTO_PATH = `${findPath('proto')}/kartoffelService.proto`;
 
@@ -105,13 +112,20 @@ export class Server {
         UpdateOGParent: updateOGParent,
         RenameOG: renameOG,
 
+        //digitalIdentities
+        GetAllDIs: getAllDIs,
         CreateDI: createDI,
+        GetDIByRoleId: getDIByRoleId,
+        SearchDIOrUniqueId: searchDIOrUniqueId,
+        DeleteDI: deleteDI,
+        GetDIByUniqueId: getDIByUniqueId,
+        UpdateDI: updateDI,
+
         CreateRole: createRole,
         ConnectRoleAndDI: connectRoleAndDI,
         GetRoleByRoleId: getRoleByRoleId,
         GetRolesUnderOG: getRolesUnderOG,
         DeleteRole: deleteRole,
-        DeleteDI: deleteDI,
         GetOGTree: getOGTree,
       });
       logger.info(`Grpc services were successfully added to the server`);

@@ -21,24 +21,34 @@ service Kartoffel {
     
     
     //Groups
-    rpc SearchOG(SearchOGRequest) returns (OGArray) {}          //l
-    rpc CreateOG(CreateOGRequest) returns (OrganizationGroup){}        //l
-    rpc DeleteOG(DeleteOGRequest) returns (SuccessMessage){}            //l
-    rpc GetOGByHierarchyName(GetOGByHierarchyNameRequest) returns (OrganizationGroup){}      //l
-    rpc GetOGById(GetOGByIdRequest) returns (OrganizationGroup){}   //l
+    rpc SearchOG(SearchOGRequest) returns (OGArray) {}          
+    rpc CreateOG(CreateOGRequest) returns (OrganizationGroup){}        
+    rpc DeleteOG(DeleteOGRequest) returns (SuccessMessage){}            
+    rpc GetOGByHierarchyName(GetOGByHierarchyNameRequest) returns (OrganizationGroup){}      
+    rpc GetOGById(GetOGByIdRequest) returns (OrganizationGroup){}   
     rpc GetChildrenOfOG(GetChildrenOfOGRequest) returns (OGArray){}
     rpc UpdateOGParent(UpdateOGParentRequest) returns (SuccessMessage){}
-    rpc RenameOG(RenameOGRequest) returns (SuccessMessage){}
 
+
+    //DI    
+    rpc GetAllDIs(GetAllDIsRequest) returns (DigitalIdentities){}
     rpc CreateDI(CreateDIRequest) returns (DigitalIdentity){}
+    rpc GetDIByRoleId(GetDIByRoleIdRequest) returns (DigitalIdentity){}
+    rpc SearchDIOrUniqueId(SearchDIOrUniqueIdRequest) returns (DigitalIdentities){}
+    rpc DeleteDI(DeleteDIRequest) returns (SuccessMessage){}  
+    rpc GetDIByUniqueId(GetDIByUniqueIdRequest) returns (DigitalIdentity){} 
+    rpc UpdateDI(UpdateDIRequest) returns (SuccessMessage){} 
+
+
+
     rpc CreateRole(CreateRoleRequest) returns (Role){}
     rpc ConnectRoleAndDI(ConnectRoleAndDIRequest) returns (SuccessMessage){}
     rpc GetRoleByRoleId(GetRoleByRoleIdRequest) returns (Role){}
     rpc GetRolesUnderOG(GetRolesUnderOGRequest) returns (RoleArray){}
     rpc DeleteRole(DeleteRoleRequest) returns (SuccessMessage){} 
-    rpc DeleteDI(DeleteDIRequest) returns (SuccessMessage){}
     rpc GetOGTree(GetOGTreeRequest) returns (OGTree){}
-    rpc RenameRole(RenameRoleRequest) returns (SuccessMessage){}
+    // rpc RenameRole(RenameRoleRequest) returns (SuccessMessage){}
+    // rpc RenameOG(RenameOGRequest) returns (SuccessMessage){}
 
 
 
@@ -46,19 +56,47 @@ service Kartoffel {
 
 }
 
+
+message UpdateDIRequest{
+    string id = 1;
+    bool isRoleAttachable = 2;
+    string mail = 3;
+}
+
+message GetDIByUniqueIdRequest{
+    string id = 1;
+}
+
+message SearchDIOrUniqueIdRequest{
+    string unique_id = 1;
+}
+
+message GetDIByRoleIdRequest{
+    string roleId = 1;
+}
+
+message DigitalIdentities{
+    repeated DigitalIdentity digitalIdentities = 1;
+}
+
+message GetAllDIsRequest{
+    string updatedFrom = 1;
+    string page = 2;
+    string pageSize = 3;
+}
 
 message UpdateOGParentRequest{
     string id = 1;
     string parentId =2;
-    string parent =3;
+    string parent = 3;
 }
 
 message GetOGByIdRequest{
-    string id=1;
+    string id = 1;
 }
 
 message GetOGByHierarchyNameRequest{
-    string hierarchy=1;
+    string hierarchy = 1;
 }
 
 message DeleteEntityRequest{
@@ -258,7 +296,7 @@ message DeleteRoleRequest{
 
 // DeleteDI
 message DeleteDIRequest{
-    string uniqueId = 1; //uniqueId of DI (taken from the role)
+    string id = 1; //uniqueId of DI (taken from the role)
 }
 
 // GetEntitiesUnderOG
@@ -335,13 +373,13 @@ message Entity{
 }
 
 message DigitalIdentity{
-    string type = 1;
-    string source = 2;
-    string mail = 3;
-    string uniqueId = 4;
-    string entityId = 5;
-    string createdAt = 6;
-    string updatedAt = 7;
-    bool isRoleAttachable = 8;
-    Role role = 9;
+    string type = 1;      
+    string source = 2;       
+    string mail = 3;         
+    string uniqueId = 4;      
+    string entityId = 5;      
+    string createdAt = 6;      
+    string updatedAt = 7;    
+    bool isRoleAttachable = 8;   
+    Role role = 9;        
 }
