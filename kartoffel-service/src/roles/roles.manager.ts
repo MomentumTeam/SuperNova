@@ -20,77 +20,51 @@ export class RolesManager {
     this.rolesRepository = new RolesRepository(kartoffelUtils, kartoffelFaker);
   }
 
+  async getAllRoles(): Promise<RoleArray> {
+    return await this.rolesRepository.getAllRoles();
+  }
+
   async createRole(createRoleRequest: CreateRoleRequest): Promise<Role> {
-    try {
-      return await this.rolesRepository.createRole(createRoleRequest);
-    } catch (error) {
-      throw error;
-    }
+    return await this.rolesRepository.createRole(createRoleRequest);
   }
 
   async deleteRole(
     deleteRoleRequest: DeleteRoleRequest
   ): Promise<SuccessMessage> {
-    try {
-      return await this.rolesRepository.deleteRole(deleteRoleRequest);
-    } catch (error) {
-      throw error;
-    }
+    return await this.rolesRepository.deleteRole(deleteRoleRequest);
   }
 
   async connectRoleAndDI(
     connectRoleAndDIRequest: ConnectRoleAndDIRequest
   ): Promise<SuccessMessage> {
-    try {
-      return await this.rolesRepository.connectRoleAndDI(
-        connectRoleAndDIRequest
-      );
-    } catch (error) {
-      throw error;
-    }
+    return await this.rolesRepository.connectRoleAndDI(connectRoleAndDIRequest);
   }
 
   async getRoleByRoleId(
     getRoleByRoleIdRequest: GetRoleByRoleIdRequest
   ): Promise<Role> {
-    try {
-      return await this.rolesRepository.getRoleByRoleId(getRoleByRoleIdRequest);
-    } catch (error) {
-      throw error;
-    }
+    return await this.rolesRepository.getRoleByRoleId(getRoleByRoleIdRequest);
   }
 
   async getRolesUnderOG(
     getRolesUnderOGRequest: GetRolesUnderOGRequest
   ): Promise<RoleArray> {
-    try {
-      return await this.rolesRepository.getRolesUnderOGRequest(
-        getRolesUnderOGRequest
-      );
-    } catch (error) {
-      throw error;
-    }
+    return await this.rolesRepository.getRolesUnderOGRequest(
+      getRolesUnderOGRequest
+    );
   }
 
   async updateRole(
     updateRoleRequest: UpdateRoleRequest
   ): Promise<SuccessMessage> {
-    try {
-      return await this.rolesRepository.updateRole(updateRoleRequest);
-    } catch (error) {
-      throw error;
-    }
+    return await this.rolesRepository.updateRole(updateRoleRequest);
   }
 
   async disconnectRoleAndDI(
     disconnectRoleAndDIRequest: DisconnectRoleAndDIRequest
   ): Promise<SuccessMessage> {
-    try {
-      return await this.rolesRepository.disconnectRoleAndDI(
-        disconnectRoleAndDIRequest
-      );
-    } catch (error) {
-      throw error;
-    }
+    return await this.rolesRepository.disconnectRoleAndDI(
+      disconnectRoleAndDIRequest
+    );
   }
 }

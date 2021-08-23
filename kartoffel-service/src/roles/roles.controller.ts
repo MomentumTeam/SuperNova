@@ -18,6 +18,31 @@ const rolesManager: RolesManager = new RolesManager(
   kartoffelFaker
 );
 
+export async function getAllRoles(call: any, callback: any): Promise<void> {
+  try {
+    logger.info(`Call to getAllRoles`, { callRequest: call.request });
+    const allRoles: RoleArray = await rolesManager.getAllRoles();
+    logger.info(`getAllRoles OK`, {
+      callRequest: call.request,
+      response: allRoles,
+    });
+    callback(null, allRoles);
+  } catch (error) {
+    logger.error(`createRole OK`, {
+      callRequest: call.request,
+      error: error.message,
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
 export async function createRole(call: any, callback: any): Promise<void> {
   try {
     logger.info(`Call to createRole`, { callRequest: call.request });

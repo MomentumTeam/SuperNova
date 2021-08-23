@@ -22,14 +22,14 @@ export class RolesRepository {
     this.kartoffelUtils = kartoffelUtils;
   }
 
-  async getAllRoles(): Promise<Role> {
+  async getAllRoles(): Promise<RoleArray> {
     if (C.useFaker) {
-      return this.kartoffelFaker.randomRole();
+      return this.kartoffelFaker.randomRoleArray();
     } else {
-      const res = await this.kartoffelUtils.kartoffelGet(
-        `${C.kartoffelUrl}/roles`
+      const data = await this.kartoffelUtils.kartoffelGet(
+        `${C.kartoffelUrl}/api/roles`
       );
-      return res.data as Role;
+      return data as RoleArray;
     }
   }
 
@@ -37,24 +37,11 @@ export class RolesRepository {
     if (C.useFaker) {
       return this.kartoffelFaker.randomRole();
     } else {
-      const res = await this.kartoffelUtils.kartoffelPost(
-        `${C.kartoffelUrl}/roles`,
+      const data = await this.kartoffelUtils.kartoffelPost(
+        `${C.kartoffelUrl}/api/roles`,
         createRoleRequest
       );
-      return res.data as Role;
-    }
-  }
-
-  async deleteRole(
-    deleteRoleRequest: DeleteRoleRequest
-  ): Promise<SuccessMessage> {
-    if (C.useFaker) {
-      return { success: true };
-    } else {
-      await this.kartoffelUtils.kartoffelDelete(
-        `${C.kartoffelUrl}/roles/${deleteRoleRequest.roleId}`
-      );
-      return { success: true };
+      return data as Role;
     }
   }
 
@@ -64,10 +51,23 @@ export class RolesRepository {
     if (C.useFaker) {
       return this.kartoffelFaker.randomRoleArray();
     } else {
-      const res = await this.kartoffelUtils.kartoffelGet(
-        `${C.kartoffelUrl}/roles/hierarchy/${getRolesUnderOGRequest.id}?direct=${getRolesUnderOGRequest.direct}`
+      const data = await this.kartoffelUtils.kartoffelGet(
+        `${C.kartoffelUrl}/api/roles/group/${getRolesUnderOGRequest.id}`
       );
-      return { roles: res.data as Role[] };
+      return { roles: data as Role[] };
+    }
+  }
+
+  async deleteRole(
+    deleteRoleRequest: DeleteRoleRequest
+  ): Promise<SuccessMessage> {
+    if (C.useFaker) {
+      return { success: true };
+    } else {
+      const data = await this.kartoffelUtils.kartoffelDelete(
+        `${C.kartoffelUrl}/api/roles/${deleteRoleRequest.roleId}`
+      );
+      return { success: true };
     }
   }
 
@@ -77,11 +77,11 @@ export class RolesRepository {
     if (C.useFaker) {
       return this.kartoffelFaker.randomRole();
     } else {
-      const res = await this.kartoffelUtils.kartoffelPatch(
-        `${C.kartoffelUrl}/roles/${connectRoleAndDIRequest.id}/digitalIdentity/${connectRoleAndDIRequest.uniqueId}`,
+      const data = await this.kartoffelUtils.kartoffelPatch(
+        `${C.kartoffelUrl}/api/roles/${connectRoleAndDIRequest.id}/digitalIdentity/${connectRoleAndDIRequest.uniqueId}`,
         ConnectRoleAndDIRequest
       );
-      return res.data as Role;
+      return data as Role;
     }
   }
 
@@ -92,7 +92,7 @@ export class RolesRepository {
       return { success: true };
     } else {
       await this.kartoffelUtils.kartoffelPatch(
-        `${C.kartoffelUrl}/roles/${connectRoleAndDIRequest.id}/connectDigitalIdentity`,
+        `${C.kartoffelUrl}/api/roles/${connectRoleAndDIRequest.id}/connectDigitalIdentity`,
         {
           digitalIdentityUniqueId: connectRoleAndDIRequest.uniqueId,
         }
@@ -107,10 +107,10 @@ export class RolesRepository {
     if (C.useFaker) {
       return this.kartoffelFaker.randomRole();
     } else {
-      const res = await this.kartoffelUtils.kartoffelGet(
-        `${C.kartoffelUrl}/roles/search?roleId=${getRoleByRoleIdRequest.roleId}`
+      const data = await this.kartoffelUtils.kartoffelGet(
+        `${C.kartoffelUrl}/api/roles/${getRoleByRoleIdRequest.roleId}`
       );
-      return res.data as Role;
+      return data as Role;
     }
   }
 
@@ -120,28 +120,24 @@ export class RolesRepository {
     if (C.useFaker) {
       return { success: true };
     } else {
-      const res = await this.kartoffelUtils.kartoffelDelete(
-        `${C.kartoffelUrl}/roles/${disconnectRoleAndDIRequest.roleId}/digitalIdentity/${disconnectRoleAndDIRequest.uniqueId}`
+      const data = await this.kartoffelUtils.kartoffelDelete(
+        `${C.kartoffelUrl}/api/roles/${disconnectRoleAndDIRequest.roleId}/digitalIdentity/${disconnectRoleAndDIRequest.uniqueId}`
       );
-      return res.data as SuccessMessage;
+      return data as SuccessMessage;
     }
   }
 
   async updateRole(
     updateRoleRequest: UpdateRoleRequest
   ): Promise<SuccessMessage> {
-    try {
-      if (C.useFaker) {
-        return { success: true };
-      } else {
-        const res = await this.kartoffelUtils.kartoffelPatch(
-          `${C.kartoffelUrl}/roles/${updateRoleRequest.roleId}`,
-          updateRoleRequest
-        );
-        return res.data as SuccessMessage;
-      }
-    } catch (error) {
-      throw error;
+    if (C.useFaker) {
+      return { success: true };
+    } else {
+      const data = await this.kartoffelUtils.kartoffelPatch(
+        `${C.kartoffelUrl}/api/roles/${updateRoleRequest.roleId}`,
+        updateRoleRequest
+      );
+      return data as SuccessMessage;
     }
   }
 }
