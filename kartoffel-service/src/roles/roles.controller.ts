@@ -18,31 +18,6 @@ const rolesManager: RolesManager = new RolesManager(
   kartoffelFaker
 );
 
-export async function getAllRoles(call: any, callback: any): Promise<void> {
-  try {
-    logger.info(`Call to getAllRoles`, { callRequest: call.request });
-    const allRoles: RoleArray = await rolesManager.getAllRoles();
-    logger.info(`getAllRoles OK`, {
-      callRequest: call.request,
-      response: allRoles,
-    });
-    callback(null, allRoles);
-  } catch (error) {
-    logger.error(`createRole OK`, {
-      callRequest: call.request,
-      error: error.message,
-    });
-    callback(
-      {
-        code: 400,
-        message: error.message,
-        status: grpc.status.CANCELLED,
-      },
-      null
-    );
-  }
-}
-
 export async function createRole(call: any, callback: any): Promise<void> {
   try {
     logger.info(`Call to createRole`, { callRequest: call.request });
@@ -84,6 +59,35 @@ export async function connectRoleAndDI(
     callback(null, successMessage);
   } catch (error) {
     logger.error(`connectRoleAndDI ERROR`, {
+      callRequest: call.request,
+      error: error.message,
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function disconnectRoleAndDI(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    logger.info(`Call to disconnectRoleAndDI`, { callRequest: call.request });
+    const successMessage: SuccessMessage =
+      await rolesManager.disconnectRoleAndDI(call.request);
+    logger.info(`disconnectRoleAndDI OK`, {
+      callRequest: call.request,
+      response: successMessage,
+    });
+    callback(null, successMessage);
+  } catch (error) {
+    logger.error(`disconnectRoleAndDI ERROR`, {
       callRequest: call.request,
       error: error.message,
     });

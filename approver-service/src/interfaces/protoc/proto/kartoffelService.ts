@@ -141,14 +141,14 @@ export interface UpdateRoleRequest {
 
 /** ConnectRoleAndDI */
 export interface ConnectRoleAndDIRequest {
-  /** mongoId of role */
+  /** id of role */
   id: string;
   /** uniqueId of DI */
   uniqueId: string;
 }
 
 export interface DisconnectRoleAndDIRequest {
-  /** mongoId of role */
+  /** id of role */
   roleId: string;
   /** uniqueId of DI */
   uniqueId: string;
@@ -5196,6 +5196,9 @@ export interface Kartoffel {
   CreateDI(request: CreateDIRequest): Promise<DigitalIdentity>;
   CreateRole(request: CreateRoleRequest): Promise<Role>;
   ConnectRoleAndDI(request: ConnectRoleAndDIRequest): Promise<SuccessMessage>;
+  DisconnectRoleAndDI(
+    request: DisconnectRoleAndDIRequest
+  ): Promise<SuccessMessage>;
   GetRoleByRoleId(request: GetRoleByRoleIdRequest): Promise<Role>;
   GetRolesUnderOG(request: GetRolesUnderOGRequest): Promise<RoleArray>;
   DeleteRole(request: DeleteRoleRequest): Promise<SuccessMessage>;
@@ -5232,6 +5235,7 @@ export class KartoffelClientImpl implements Kartoffel {
     this.CreateDI = this.CreateDI.bind(this);
     this.CreateRole = this.CreateRole.bind(this);
     this.ConnectRoleAndDI = this.ConnectRoleAndDI.bind(this);
+    this.DisconnectRoleAndDI = this.DisconnectRoleAndDI.bind(this);
     this.GetRoleByRoleId = this.GetRoleByRoleId.bind(this);
     this.GetRolesUnderOG = this.GetRolesUnderOG.bind(this);
     this.DeleteRole = this.DeleteRole.bind(this);
@@ -5464,6 +5468,18 @@ export class KartoffelClientImpl implements Kartoffel {
     const promise = this.rpc.request(
       "Kartoffel.Kartoffel",
       "ConnectRoleAndDI",
+      data
+    );
+    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
+  }
+
+  DisconnectRoleAndDI(
+    request: DisconnectRoleAndDIRequest
+  ): Promise<SuccessMessage> {
+    const data = DisconnectRoleAndDIRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "DisconnectRoleAndDI",
       data
     );
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));

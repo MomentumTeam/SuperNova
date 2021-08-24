@@ -33,6 +33,8 @@ service Kartoffel {
     rpc CreateDI(CreateDIRequest) returns (DigitalIdentity){}
     rpc CreateRole(CreateRoleRequest) returns (Role){}
     rpc ConnectRoleAndDI(ConnectRoleAndDIRequest) returns (SuccessMessage){}
+    rpc DisconnectRoleAndDI(DisconnectRoleAndDIRequest) returns (SuccessMessage){}
+
     rpc GetRoleByRoleId(GetRoleByRoleIdRequest) returns (Role){}
     rpc GetRolesUnderOG(GetRolesUnderOGRequest) returns (RoleArray){}
     rpc DeleteRole(DeleteRoleRequest) returns (SuccessMessage){} 
@@ -184,12 +186,12 @@ message UpdateRoleRequest {
   
 // ConnectRoleAndDI
 message ConnectRoleAndDIRequest{
-    string id = 1; //mongoId of role
+    string id = 1; // id of role
     string uniqueId = 2; //uniqueId of DI
 }
 
 message DisconnectRoleAndDIRequest {
-    string roleId = 1; //mongoId of role
+    string roleId = 1; // id of role
     string uniqueId = 2; //uniqueId of DI
 }
 

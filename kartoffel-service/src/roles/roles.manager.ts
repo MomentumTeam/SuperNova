@@ -20,10 +20,6 @@ export class RolesManager {
     this.rolesRepository = new RolesRepository(kartoffelUtils, kartoffelFaker);
   }
 
-  async getAllRoles(): Promise<RoleArray> {
-    return await this.rolesRepository.getAllRoles();
-  }
-
   async createRole(createRoleRequest: CreateRoleRequest): Promise<Role> {
     return await this.rolesRepository.createRole(createRoleRequest);
   }
@@ -37,7 +33,7 @@ export class RolesManager {
   async connectRoleAndDI(
     connectRoleAndDIRequest: ConnectRoleAndDIRequest
   ): Promise<SuccessMessage> {
-    return await this.rolesRepository.connectRoleAndDI(connectRoleAndDIRequest);
+    return this.rolesRepository.ConnectRoleAndDI(connectRoleAndDIRequest);
   }
 
   async getRoleByRoleId(
@@ -52,12 +48,6 @@ export class RolesManager {
     return await this.rolesRepository.getRolesUnderOGRequest(
       getRolesUnderOGRequest
     );
-  }
-
-  async updateRole(
-    updateRoleRequest: UpdateRoleRequest
-  ): Promise<SuccessMessage> {
-    return await this.rolesRepository.updateRole(updateRoleRequest);
   }
 
   async disconnectRoleAndDI(
