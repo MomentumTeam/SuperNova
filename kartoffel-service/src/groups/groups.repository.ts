@@ -68,7 +68,7 @@ export class GroupsRepository {
         return og;
       } else {
         const res = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/api/groups/hierarchy/:${getOGByHierarchyName.hierarchy}`,
+          `${C.kartoffelUrl}/api/groups/hierarchy/${getOGByHierarchyName.hierarchy}`,
           {}
         );
         return res as OrganizationGroup;
@@ -102,7 +102,7 @@ export class GroupsRepository {
         return successMessage;
       } else {
         const res = await this.kartoffelUtils.kartoffelDelete(
-          `${C.kartoffelUrl}/api/groups/:${deleteOGRequest.id}`
+          `${C.kartoffelUrl}/api/groups/${deleteOGRequest.id}`
         );
         return res as SuccessMessage;
       }
@@ -120,7 +120,7 @@ export class GroupsRepository {
         return og;
       } else {
         const res = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/api/groups/:${getOGByIdRequest.id}`,
+          `${C.kartoffelUrl}/api/groups/${getOGByIdRequest.id}`,
           {}
         );
         return res as OrganizationGroup;
@@ -139,7 +139,7 @@ export class GroupsRepository {
         return ogChildern;
       } else {
         const res = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/api/groups/:${getChildrenOfOGRequest.id}/children`,
+          `${C.kartoffelUrl}/api/groups/${getChildrenOfOGRequest.id}/children`,
           getChildrenOfOGRequest
         );
         return res as OGArray;
@@ -158,7 +158,7 @@ export class GroupsRepository {
         return successMessage;
       } else {
         const res = await this.kartoffelUtils.kartoffelPut(
-          `${C.kartoffelUrl}/api/groups/:${updateOGParentRequest.id}/parent/:${updateOGParentRequest.parentId}`,
+          `${C.kartoffelUrl}/api/groups/${updateOGParentRequest.id}/parent/${updateOGParentRequest.parentId}`,
           updateOGParentRequest
         );
         return res as SuccessMessage;
@@ -175,7 +175,7 @@ export class GroupsRepository {
         return successMessage;
       } else {
         const res = await this.kartoffelUtils.kartoffelPatch(
-          `${C.kartoffelUrl}/api/groups/:${renameOGRequest.id}/rename`,
+          `${C.kartoffelUrl}/api/groups/${renameOGRequest.id}/rename`,
           renameOGRequest
         );
         return res as SuccessMessage;
