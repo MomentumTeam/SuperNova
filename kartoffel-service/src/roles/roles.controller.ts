@@ -154,6 +154,33 @@ export async function getRoleByRoleId(call: any, callback: any): Promise<void> {
   }
 }
 
+export async function updateRole(call: any, callback: any): Promise<void> {
+  try {
+    logger.info(`Call to updateRole`, { callRequest: call.request });
+    const successMessage: SuccessMessage = await rolesManager.updateRole(
+      call.request
+    );
+    logger.info(`updateRole OK`, {
+      callRequest: call.request,
+      response: successMessage,
+    });
+    callback(null, successMessage);
+  } catch (error) {
+    logger.error(`updateRole ERROR`, {
+      callRequest: call.request,
+      error: error.message,
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
 export async function getRolesUnderOG(call: any, callback: any): Promise<void> {
   try {
     logger.info(`Call to getRolesUnderOG`, { callRequest: call.request });

@@ -50,6 +50,12 @@ export class RolesManager {
     );
   }
 
+  async updateRole(
+    updateRoleRequest: UpdateRoleRequest
+  ): Promise<SuccessMessage> {
+    return await this.rolesRepository.updateRole(updateRoleRequest);
+  }
+
   async disconnectRoleAndDI(
     disconnectRoleAndDIRequest: DisconnectRoleAndDIRequest
   ): Promise<SuccessMessage> {

@@ -41,11 +41,7 @@ service Kartoffel {
     rpc DeleteDI(DeleteDIRequest) returns (SuccessMessage){}
     rpc GetOGTree(GetOGTreeRequest) returns (OGTree){}
     rpc RenameRole(RenameRoleRequest) returns (SuccessMessage){}
-
-
-
-
-
+    rpc UpdateRole(UpdateRoleRequest) returns (SuccessMessage){}
 }
 
 
@@ -209,6 +205,8 @@ message GetRoleByRoleIdRequest{
 message GetRolesUnderOGRequest{
     string id = 1; //mongoId of OG
     bool direct = 2;
+    int32 page = 3;
+    int32 pageSize = 4;
 }
 
 message RoleArray{

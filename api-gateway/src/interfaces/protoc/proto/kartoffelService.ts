@@ -168,6 +168,8 @@ export interface GetRolesUnderOGRequest {
   /** mongoId of OG */
   id: string;
   direct: boolean;
+  page: number;
+  pageSize: number;
 }
 
 export interface RoleArray {
@@ -2745,7 +2747,12 @@ export const GetRoleByRoleIdRequest = {
   },
 };
 
-const baseGetRolesUnderOGRequest: object = { id: "", direct: false };
+const baseGetRolesUnderOGRequest: object = {
+  id: "",
+  direct: false,
+  page: 0,
+  pageSize: 0,
+};
 
 export const GetRolesUnderOGRequest = {
   encode(
@@ -2757,6 +2764,12 @@ export const GetRolesUnderOGRequest = {
     }
     if (message.direct === true) {
       writer.uint32(16).bool(message.direct);
+    }
+    if (message.page !== 0) {
+      writer.uint32(24).int32(message.page);
+    }
+    if (message.pageSize !== 0) {
+      writer.uint32(32).int32(message.pageSize);
     }
     return writer;
   },
@@ -2776,6 +2789,12 @@ export const GetRolesUnderOGRequest = {
           break;
         case 2:
           message.direct = reader.bool();
+          break;
+        case 3:
+          message.page = reader.int32();
+          break;
+        case 4:
+          message.pageSize = reader.int32();
           break;
         default:
           reader.skipType(tag & 7);
@@ -2797,6 +2816,16 @@ export const GetRolesUnderOGRequest = {
     } else {
       message.direct = false;
     }
+    if (object.page !== undefined && object.page !== null) {
+      message.page = Number(object.page);
+    } else {
+      message.page = 0;
+    }
+    if (object.pageSize !== undefined && object.pageSize !== null) {
+      message.pageSize = Number(object.pageSize);
+    } else {
+      message.pageSize = 0;
+    }
     return message;
   },
 
@@ -2804,6 +2833,8 @@ export const GetRolesUnderOGRequest = {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
     message.direct !== undefined && (obj.direct = message.direct);
+    message.page !== undefined && (obj.page = message.page);
+    message.pageSize !== undefined && (obj.pageSize = message.pageSize);
     return obj;
   },
 
@@ -2820,6 +2851,16 @@ export const GetRolesUnderOGRequest = {
       message.direct = object.direct;
     } else {
       message.direct = false;
+    }
+    if (object.page !== undefined && object.page !== null) {
+      message.page = object.page;
+    } else {
+      message.page = 0;
+    }
+    if (object.pageSize !== undefined && object.pageSize !== null) {
+      message.pageSize = object.pageSize;
+    } else {
+      message.pageSize = 0;
     }
     return message;
   },
@@ -5205,6 +5246,7 @@ export interface Kartoffel {
   DeleteDI(request: DeleteDIRequest): Promise<SuccessMessage>;
   GetOGTree(request: GetOGTreeRequest): Promise<OGTree>;
   RenameRole(request: RenameRoleRequest): Promise<SuccessMessage>;
+  UpdateRole(request: UpdateRoleRequest): Promise<SuccessMessage>;
 }
 
 export class KartoffelClientImpl implements Kartoffel {
@@ -5242,6 +5284,7 @@ export class KartoffelClientImpl implements Kartoffel {
     this.DeleteDI = this.DeleteDI.bind(this);
     this.GetOGTree = this.GetOGTree.bind(this);
     this.RenameRole = this.RenameRole.bind(this);
+    this.UpdateRole = this.UpdateRole.bind(this);
   }
   CreateEntity(request: CreateEntityRequest): Promise<Entity> {
     const data = CreateEntityRequest.encode(request).finish();
@@ -5526,6 +5569,12 @@ export class KartoffelClientImpl implements Kartoffel {
   RenameRole(request: RenameRoleRequest): Promise<SuccessMessage> {
     const data = RenameRoleRequest.encode(request).finish();
     const promise = this.rpc.request("Kartoffel.Kartoffel", "RenameRole", data);
+    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
+  }
+
+  UpdateRole(request: UpdateRoleRequest): Promise<SuccessMessage> {
+    const data = UpdateRoleRequest.encode(request).finish();
+    const promise = this.rpc.request("Kartoffel.Kartoffel", "UpdateRole", data);
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 }
