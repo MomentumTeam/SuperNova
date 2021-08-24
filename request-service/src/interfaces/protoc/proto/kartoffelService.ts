@@ -4,6 +4,14 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "Kartoffel";
 
+export interface GetAllOGsRequest {
+  source: string;
+  akaUnit: string;
+  updatedFrom: string;
+  page: number;
+  pageSize: number;
+}
+
 export interface UpdateDIRequest {
   id: string;
   isRoleAttachable: boolean;
@@ -28,8 +36,8 @@ export interface DigitalIdentities {
 
 export interface GetAllDIsRequest {
   updatedFrom: string;
-  page: string;
-  pageSize: string;
+  page: number;
+  pageSize: number;
 }
 
 export interface UpdateOGParentRequest {
@@ -131,7 +139,7 @@ export interface OGTree {
 
 /** SearchOG */
 export interface SearchOGRequest {
-  hierarchyAndName: string;
+  nameAndHierarchy: string;
 }
 
 export interface OGArray {
@@ -147,11 +155,12 @@ export interface CreateOGRequest {
 
 /** CreateDI */
 export interface CreateDIRequest {
-  type: string;
-  source: string;
-  uniqueId: string;
-  mail: string;
+  entityId: string;
   isRoleAttachable: boolean;
+  mail: string;
+  source: string;
+  type: string;
+  uniqueId: string;
 }
 
 /** CreateRole */
@@ -243,6 +252,9 @@ export interface DeleteOGRequest {
 export interface GetChildrenOfOGRequest {
   /** mongoId of OG */
   id: string;
+  page: number;
+  pageSize: number;
+  direct: boolean;
 }
 
 /** DeleteRole */
@@ -338,6 +350,139 @@ export interface DigitalIdentity {
   isRoleAttachable: boolean;
   role: Role | undefined;
 }
+
+const baseGetAllOGsRequest: object = {
+  source: "",
+  akaUnit: "",
+  updatedFrom: "",
+  page: 0,
+  pageSize: 0,
+};
+
+export const GetAllOGsRequest = {
+  encode(
+    message: GetAllOGsRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.source !== "") {
+      writer.uint32(10).string(message.source);
+    }
+    if (message.akaUnit !== "") {
+      writer.uint32(18).string(message.akaUnit);
+    }
+    if (message.updatedFrom !== "") {
+      writer.uint32(26).string(message.updatedFrom);
+    }
+    if (message.page !== 0) {
+      writer.uint32(32).int32(message.page);
+    }
+    if (message.pageSize !== 0) {
+      writer.uint32(40).int32(message.pageSize);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): GetAllOGsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseGetAllOGsRequest } as GetAllOGsRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.source = reader.string();
+          break;
+        case 2:
+          message.akaUnit = reader.string();
+          break;
+        case 3:
+          message.updatedFrom = reader.string();
+          break;
+        case 4:
+          message.page = reader.int32();
+          break;
+        case 5:
+          message.pageSize = reader.int32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetAllOGsRequest {
+    const message = { ...baseGetAllOGsRequest } as GetAllOGsRequest;
+    if (object.source !== undefined && object.source !== null) {
+      message.source = String(object.source);
+    } else {
+      message.source = "";
+    }
+    if (object.akaUnit !== undefined && object.akaUnit !== null) {
+      message.akaUnit = String(object.akaUnit);
+    } else {
+      message.akaUnit = "";
+    }
+    if (object.updatedFrom !== undefined && object.updatedFrom !== null) {
+      message.updatedFrom = String(object.updatedFrom);
+    } else {
+      message.updatedFrom = "";
+    }
+    if (object.page !== undefined && object.page !== null) {
+      message.page = Number(object.page);
+    } else {
+      message.page = 0;
+    }
+    if (object.pageSize !== undefined && object.pageSize !== null) {
+      message.pageSize = Number(object.pageSize);
+    } else {
+      message.pageSize = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: GetAllOGsRequest): unknown {
+    const obj: any = {};
+    message.source !== undefined && (obj.source = message.source);
+    message.akaUnit !== undefined && (obj.akaUnit = message.akaUnit);
+    message.updatedFrom !== undefined &&
+      (obj.updatedFrom = message.updatedFrom);
+    message.page !== undefined && (obj.page = message.page);
+    message.pageSize !== undefined && (obj.pageSize = message.pageSize);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<GetAllOGsRequest>): GetAllOGsRequest {
+    const message = { ...baseGetAllOGsRequest } as GetAllOGsRequest;
+    if (object.source !== undefined && object.source !== null) {
+      message.source = object.source;
+    } else {
+      message.source = "";
+    }
+    if (object.akaUnit !== undefined && object.akaUnit !== null) {
+      message.akaUnit = object.akaUnit;
+    } else {
+      message.akaUnit = "";
+    }
+    if (object.updatedFrom !== undefined && object.updatedFrom !== null) {
+      message.updatedFrom = object.updatedFrom;
+    } else {
+      message.updatedFrom = "";
+    }
+    if (object.page !== undefined && object.page !== null) {
+      message.page = object.page;
+    } else {
+      message.page = 0;
+    }
+    if (object.pageSize !== undefined && object.pageSize !== null) {
+      message.pageSize = object.pageSize;
+    } else {
+      message.pageSize = 0;
+    }
+    return message;
+  },
+};
 
 const baseUpdateDIRequest: object = {
   id: "",
@@ -710,11 +855,7 @@ export const DigitalIdentities = {
   },
 };
 
-const baseGetAllDIsRequest: object = {
-  updatedFrom: "",
-  page: "",
-  pageSize: "",
-};
+const baseGetAllDIsRequest: object = { updatedFrom: "", page: 0, pageSize: 0 };
 
 export const GetAllDIsRequest = {
   encode(
@@ -724,11 +865,11 @@ export const GetAllDIsRequest = {
     if (message.updatedFrom !== "") {
       writer.uint32(10).string(message.updatedFrom);
     }
-    if (message.page !== "") {
-      writer.uint32(18).string(message.page);
+    if (message.page !== 0) {
+      writer.uint32(16).int32(message.page);
     }
-    if (message.pageSize !== "") {
-      writer.uint32(26).string(message.pageSize);
+    if (message.pageSize !== 0) {
+      writer.uint32(24).int32(message.pageSize);
     }
     return writer;
   },
@@ -744,10 +885,10 @@ export const GetAllDIsRequest = {
           message.updatedFrom = reader.string();
           break;
         case 2:
-          message.page = reader.string();
+          message.page = reader.int32();
           break;
         case 3:
-          message.pageSize = reader.string();
+          message.pageSize = reader.int32();
           break;
         default:
           reader.skipType(tag & 7);
@@ -765,14 +906,14 @@ export const GetAllDIsRequest = {
       message.updatedFrom = "";
     }
     if (object.page !== undefined && object.page !== null) {
-      message.page = String(object.page);
+      message.page = Number(object.page);
     } else {
-      message.page = "";
+      message.page = 0;
     }
     if (object.pageSize !== undefined && object.pageSize !== null) {
-      message.pageSize = String(object.pageSize);
+      message.pageSize = Number(object.pageSize);
     } else {
-      message.pageSize = "";
+      message.pageSize = 0;
     }
     return message;
   },
@@ -796,12 +937,12 @@ export const GetAllDIsRequest = {
     if (object.page !== undefined && object.page !== null) {
       message.page = object.page;
     } else {
-      message.page = "";
+      message.page = 0;
     }
     if (object.pageSize !== undefined && object.pageSize !== null) {
       message.pageSize = object.pageSize;
     } else {
-      message.pageSize = "";
+      message.pageSize = 0;
     }
     return message;
   },
@@ -2389,15 +2530,15 @@ export const OGTree = {
   },
 };
 
-const baseSearchOGRequest: object = { hierarchyAndName: "" };
+const baseSearchOGRequest: object = { nameAndHierarchy: "" };
 
 export const SearchOGRequest = {
   encode(
     message: SearchOGRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.hierarchyAndName !== "") {
-      writer.uint32(10).string(message.hierarchyAndName);
+    if (message.nameAndHierarchy !== "") {
+      writer.uint32(10).string(message.nameAndHierarchy);
     }
     return writer;
   },
@@ -2410,7 +2551,7 @@ export const SearchOGRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.hierarchyAndName = reader.string();
+          message.nameAndHierarchy = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -2423,32 +2564,32 @@ export const SearchOGRequest = {
   fromJSON(object: any): SearchOGRequest {
     const message = { ...baseSearchOGRequest } as SearchOGRequest;
     if (
-      object.hierarchyAndName !== undefined &&
-      object.hierarchyAndName !== null
+      object.nameAndHierarchy !== undefined &&
+      object.nameAndHierarchy !== null
     ) {
-      message.hierarchyAndName = String(object.hierarchyAndName);
+      message.nameAndHierarchy = String(object.nameAndHierarchy);
     } else {
-      message.hierarchyAndName = "";
+      message.nameAndHierarchy = "";
     }
     return message;
   },
 
   toJSON(message: SearchOGRequest): unknown {
     const obj: any = {};
-    message.hierarchyAndName !== undefined &&
-      (obj.hierarchyAndName = message.hierarchyAndName);
+    message.nameAndHierarchy !== undefined &&
+      (obj.nameAndHierarchy = message.nameAndHierarchy);
     return obj;
   },
 
   fromPartial(object: DeepPartial<SearchOGRequest>): SearchOGRequest {
     const message = { ...baseSearchOGRequest } as SearchOGRequest;
     if (
-      object.hierarchyAndName !== undefined &&
-      object.hierarchyAndName !== null
+      object.nameAndHierarchy !== undefined &&
+      object.nameAndHierarchy !== null
     ) {
-      message.hierarchyAndName = object.hierarchyAndName;
+      message.nameAndHierarchy = object.nameAndHierarchy;
     } else {
-      message.hierarchyAndName = "";
+      message.nameAndHierarchy = "";
     }
     return message;
   },
@@ -2616,11 +2757,12 @@ export const CreateOGRequest = {
 };
 
 const baseCreateDIRequest: object = {
-  type: "",
-  source: "",
-  uniqueId: "",
-  mail: "",
+  entityId: "",
   isRoleAttachable: false,
+  mail: "",
+  source: "",
+  type: "",
+  uniqueId: "",
 };
 
 export const CreateDIRequest = {
@@ -2628,20 +2770,23 @@ export const CreateDIRequest = {
     message: CreateDIRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.type !== "") {
-      writer.uint32(10).string(message.type);
-    }
-    if (message.source !== "") {
-      writer.uint32(18).string(message.source);
-    }
-    if (message.uniqueId !== "") {
-      writer.uint32(26).string(message.uniqueId);
-    }
-    if (message.mail !== "") {
-      writer.uint32(34).string(message.mail);
+    if (message.entityId !== "") {
+      writer.uint32(10).string(message.entityId);
     }
     if (message.isRoleAttachable === true) {
-      writer.uint32(40).bool(message.isRoleAttachable);
+      writer.uint32(16).bool(message.isRoleAttachable);
+    }
+    if (message.mail !== "") {
+      writer.uint32(26).string(message.mail);
+    }
+    if (message.source !== "") {
+      writer.uint32(34).string(message.source);
+    }
+    if (message.type !== "") {
+      writer.uint32(42).string(message.type);
+    }
+    if (message.uniqueId !== "") {
+      writer.uint32(50).string(message.uniqueId);
     }
     return writer;
   },
@@ -2654,19 +2799,22 @@ export const CreateDIRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.type = reader.string();
+          message.entityId = reader.string();
           break;
         case 2:
-          message.source = reader.string();
+          message.isRoleAttachable = reader.bool();
           break;
         case 3:
-          message.uniqueId = reader.string();
-          break;
-        case 4:
           message.mail = reader.string();
           break;
+        case 4:
+          message.source = reader.string();
+          break;
         case 5:
-          message.isRoleAttachable = reader.bool();
+          message.type = reader.string();
+          break;
+        case 6:
+          message.uniqueId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -2678,25 +2826,10 @@ export const CreateDIRequest = {
 
   fromJSON(object: any): CreateDIRequest {
     const message = { ...baseCreateDIRequest } as CreateDIRequest;
-    if (object.type !== undefined && object.type !== null) {
-      message.type = String(object.type);
+    if (object.entityId !== undefined && object.entityId !== null) {
+      message.entityId = String(object.entityId);
     } else {
-      message.type = "";
-    }
-    if (object.source !== undefined && object.source !== null) {
-      message.source = String(object.source);
-    } else {
-      message.source = "";
-    }
-    if (object.uniqueId !== undefined && object.uniqueId !== null) {
-      message.uniqueId = String(object.uniqueId);
-    } else {
-      message.uniqueId = "";
-    }
-    if (object.mail !== undefined && object.mail !== null) {
-      message.mail = String(object.mail);
-    } else {
-      message.mail = "";
+      message.entityId = "";
     }
     if (
       object.isRoleAttachable !== undefined &&
@@ -2706,41 +2839,47 @@ export const CreateDIRequest = {
     } else {
       message.isRoleAttachable = false;
     }
+    if (object.mail !== undefined && object.mail !== null) {
+      message.mail = String(object.mail);
+    } else {
+      message.mail = "";
+    }
+    if (object.source !== undefined && object.source !== null) {
+      message.source = String(object.source);
+    } else {
+      message.source = "";
+    }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = String(object.type);
+    } else {
+      message.type = "";
+    }
+    if (object.uniqueId !== undefined && object.uniqueId !== null) {
+      message.uniqueId = String(object.uniqueId);
+    } else {
+      message.uniqueId = "";
+    }
     return message;
   },
 
   toJSON(message: CreateDIRequest): unknown {
     const obj: any = {};
-    message.type !== undefined && (obj.type = message.type);
-    message.source !== undefined && (obj.source = message.source);
-    message.uniqueId !== undefined && (obj.uniqueId = message.uniqueId);
-    message.mail !== undefined && (obj.mail = message.mail);
+    message.entityId !== undefined && (obj.entityId = message.entityId);
     message.isRoleAttachable !== undefined &&
       (obj.isRoleAttachable = message.isRoleAttachable);
+    message.mail !== undefined && (obj.mail = message.mail);
+    message.source !== undefined && (obj.source = message.source);
+    message.type !== undefined && (obj.type = message.type);
+    message.uniqueId !== undefined && (obj.uniqueId = message.uniqueId);
     return obj;
   },
 
   fromPartial(object: DeepPartial<CreateDIRequest>): CreateDIRequest {
     const message = { ...baseCreateDIRequest } as CreateDIRequest;
-    if (object.type !== undefined && object.type !== null) {
-      message.type = object.type;
+    if (object.entityId !== undefined && object.entityId !== null) {
+      message.entityId = object.entityId;
     } else {
-      message.type = "";
-    }
-    if (object.source !== undefined && object.source !== null) {
-      message.source = object.source;
-    } else {
-      message.source = "";
-    }
-    if (object.uniqueId !== undefined && object.uniqueId !== null) {
-      message.uniqueId = object.uniqueId;
-    } else {
-      message.uniqueId = "";
-    }
-    if (object.mail !== undefined && object.mail !== null) {
-      message.mail = object.mail;
-    } else {
-      message.mail = "";
+      message.entityId = "";
     }
     if (
       object.isRoleAttachable !== undefined &&
@@ -2749,6 +2888,26 @@ export const CreateDIRequest = {
       message.isRoleAttachable = object.isRoleAttachable;
     } else {
       message.isRoleAttachable = false;
+    }
+    if (object.mail !== undefined && object.mail !== null) {
+      message.mail = object.mail;
+    } else {
+      message.mail = "";
+    }
+    if (object.source !== undefined && object.source !== null) {
+      message.source = object.source;
+    } else {
+      message.source = "";
+    }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = object.type;
+    } else {
+      message.type = "";
+    }
+    if (object.uniqueId !== undefined && object.uniqueId !== null) {
+      message.uniqueId = object.uniqueId;
+    } else {
+      message.uniqueId = "";
     }
     return message;
   },
@@ -3865,7 +4024,12 @@ export const DeleteOGRequest = {
   },
 };
 
-const baseGetChildrenOfOGRequest: object = { id: "" };
+const baseGetChildrenOfOGRequest: object = {
+  id: "",
+  page: 0,
+  pageSize: 0,
+  direct: false,
+};
 
 export const GetChildrenOfOGRequest = {
   encode(
@@ -3874,6 +4038,15 @@ export const GetChildrenOfOGRequest = {
   ): _m0.Writer {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
+    }
+    if (message.page !== 0) {
+      writer.uint32(16).int32(message.page);
+    }
+    if (message.pageSize !== 0) {
+      writer.uint32(24).int32(message.pageSize);
+    }
+    if (message.direct === true) {
+      writer.uint32(32).bool(message.direct);
     }
     return writer;
   },
@@ -3891,6 +4064,15 @@ export const GetChildrenOfOGRequest = {
         case 1:
           message.id = reader.string();
           break;
+        case 2:
+          message.page = reader.int32();
+          break;
+        case 3:
+          message.pageSize = reader.int32();
+          break;
+        case 4:
+          message.direct = reader.bool();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -3906,12 +4088,30 @@ export const GetChildrenOfOGRequest = {
     } else {
       message.id = "";
     }
+    if (object.page !== undefined && object.page !== null) {
+      message.page = Number(object.page);
+    } else {
+      message.page = 0;
+    }
+    if (object.pageSize !== undefined && object.pageSize !== null) {
+      message.pageSize = Number(object.pageSize);
+    } else {
+      message.pageSize = 0;
+    }
+    if (object.direct !== undefined && object.direct !== null) {
+      message.direct = Boolean(object.direct);
+    } else {
+      message.direct = false;
+    }
     return message;
   },
 
   toJSON(message: GetChildrenOfOGRequest): unknown {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
+    message.page !== undefined && (obj.page = message.page);
+    message.pageSize !== undefined && (obj.pageSize = message.pageSize);
+    message.direct !== undefined && (obj.direct = message.direct);
     return obj;
   },
 
@@ -3923,6 +4123,21 @@ export const GetChildrenOfOGRequest = {
       message.id = object.id;
     } else {
       message.id = "";
+    }
+    if (object.page !== undefined && object.page !== null) {
+      message.page = object.page;
+    } else {
+      message.page = 0;
+    }
+    if (object.pageSize !== undefined && object.pageSize !== null) {
+      message.pageSize = object.pageSize;
+    } else {
+      message.pageSize = 0;
+    }
+    if (object.direct !== undefined && object.direct !== null) {
+      message.direct = object.direct;
+    } else {
+      message.direct = false;
     }
     return message;
   },
@@ -5523,12 +5738,13 @@ export interface Kartoffel {
   ): Promise<SuccessMessage>;
   GetPictureByEntityId(request: GetPictureByEntityIdRequest): Promise<Image>;
   /** Groups */
-  SearchOG(request: SearchOGRequest): Promise<OGArray>;
+  GetAllOGs(request: GetAllOGsRequest): Promise<OGArray>;
   CreateOG(request: CreateOGRequest): Promise<OrganizationGroup>;
-  DeleteOG(request: DeleteOGRequest): Promise<SuccessMessage>;
   GetOGByHierarchyName(
     request: GetOGByHierarchyNameRequest
   ): Promise<OrganizationGroup>;
+  SearchOG(request: SearchOGRequest): Promise<OGArray>;
+  DeleteOG(request: DeleteOGRequest): Promise<SuccessMessage>;
   GetOGById(request: GetOGByIdRequest): Promise<OrganizationGroup>;
   GetChildrenOfOG(request: GetChildrenOfOGRequest): Promise<OGArray>;
   UpdateOGParent(request: UpdateOGParentRequest): Promise<SuccessMessage>;
@@ -5542,6 +5758,7 @@ export interface Kartoffel {
   DeleteDI(request: DeleteDIRequest): Promise<SuccessMessage>;
   GetDIByUniqueId(request: GetDIByUniqueIdRequest): Promise<DigitalIdentity>;
   UpdateDI(request: UpdateDIRequest): Promise<SuccessMessage>;
+  RenameOG(request: RenameOGRequest): Promise<SuccessMessage>;
   CreateRole(request: CreateRoleRequest): Promise<Role>;
   ConnectRoleAndDI(request: ConnectRoleAndDIRequest): Promise<SuccessMessage>;
   GetRoleByRoleId(request: GetRoleByRoleIdRequest): Promise<Role>;
@@ -5567,10 +5784,11 @@ export class KartoffelClientImpl implements Kartoffel {
     this.ConnectEntityAndDI = this.ConnectEntityAndDI.bind(this);
     this.DisconnectDIFromEntity = this.DisconnectDIFromEntity.bind(this);
     this.GetPictureByEntityId = this.GetPictureByEntityId.bind(this);
-    this.SearchOG = this.SearchOG.bind(this);
+    this.GetAllOGs = this.GetAllOGs.bind(this);
     this.CreateOG = this.CreateOG.bind(this);
-    this.DeleteOG = this.DeleteOG.bind(this);
     this.GetOGByHierarchyName = this.GetOGByHierarchyName.bind(this);
+    this.SearchOG = this.SearchOG.bind(this);
+    this.DeleteOG = this.DeleteOG.bind(this);
     this.GetOGById = this.GetOGById.bind(this);
     this.GetChildrenOfOG = this.GetChildrenOfOG.bind(this);
     this.UpdateOGParent = this.UpdateOGParent.bind(this);
@@ -5581,6 +5799,7 @@ export class KartoffelClientImpl implements Kartoffel {
     this.DeleteDI = this.DeleteDI.bind(this);
     this.GetDIByUniqueId = this.GetDIByUniqueId.bind(this);
     this.UpdateDI = this.UpdateDI.bind(this);
+    this.RenameOG = this.RenameOG.bind(this);
     this.CreateRole = this.CreateRole.bind(this);
     this.ConnectRoleAndDI = this.ConnectRoleAndDI.bind(this);
     this.GetRoleByRoleId = this.GetRoleByRoleId.bind(this);
@@ -5728,9 +5947,9 @@ export class KartoffelClientImpl implements Kartoffel {
     return promise.then((data) => Image.decode(new _m0.Reader(data)));
   }
 
-  SearchOG(request: SearchOGRequest): Promise<OGArray> {
-    const data = SearchOGRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "SearchOG", data);
+  GetAllOGs(request: GetAllOGsRequest): Promise<OGArray> {
+    const data = GetAllOGsRequest.encode(request).finish();
+    const promise = this.rpc.request("Kartoffel.Kartoffel", "GetAllOGs", data);
     return promise.then((data) => OGArray.decode(new _m0.Reader(data)));
   }
 
@@ -5740,12 +5959,6 @@ export class KartoffelClientImpl implements Kartoffel {
     return promise.then((data) =>
       OrganizationGroup.decode(new _m0.Reader(data))
     );
-  }
-
-  DeleteOG(request: DeleteOGRequest): Promise<SuccessMessage> {
-    const data = DeleteOGRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "DeleteOG", data);
-    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
   GetOGByHierarchyName(
@@ -5760,6 +5973,18 @@ export class KartoffelClientImpl implements Kartoffel {
     return promise.then((data) =>
       OrganizationGroup.decode(new _m0.Reader(data))
     );
+  }
+
+  SearchOG(request: SearchOGRequest): Promise<OGArray> {
+    const data = SearchOGRequest.encode(request).finish();
+    const promise = this.rpc.request("Kartoffel.Kartoffel", "SearchOG", data);
+    return promise.then((data) => OGArray.decode(new _m0.Reader(data)));
+  }
+
+  DeleteOG(request: DeleteOGRequest): Promise<SuccessMessage> {
+    const data = DeleteOGRequest.encode(request).finish();
+    const promise = this.rpc.request("Kartoffel.Kartoffel", "DeleteOG", data);
+    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
   GetOGById(request: GetOGByIdRequest): Promise<OrganizationGroup> {
@@ -5847,6 +6072,12 @@ export class KartoffelClientImpl implements Kartoffel {
   UpdateDI(request: UpdateDIRequest): Promise<SuccessMessage> {
     const data = UpdateDIRequest.encode(request).finish();
     const promise = this.rpc.request("Kartoffel.Kartoffel", "UpdateDI", data);
+    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
+  }
+
+  RenameOG(request: RenameOGRequest): Promise<SuccessMessage> {
+    const data = RenameOGRequest.encode(request).finish();
+    const promise = this.rpc.request("Kartoffel.Kartoffel", "RenameOG", data);
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 

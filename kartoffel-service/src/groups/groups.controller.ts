@@ -17,17 +17,20 @@ const groupsManager: GroupsManager = new GroupsManager(
   kartoffelFaker
 );
 
-export async function searchOG(call: any, callback: any): Promise<void> {
+
+export async function getAllOGs(call: any, callback: any): Promise<void> {
   try {
-    logger.info(`Call to searchOG`, { callRequest: call.request });
-    const ogArray: OGArray = await groupsManager.searchOG(call.request);
-    logger.info(`searchOG OK`, {
+    logger.info(`Call to getAllOGs`, {
+      callRequest: call.request,
+    });
+    const ogArray: OGArray = await groupsManager.getAllOGs(call.request);
+    logger.info(`getAllOGs OK`, {
       callRequest: call.request,
       response: ogArray,
     });
     callback(null, ogArray);
   } catch (error) {
-    logger.error(`searchOG ERROR`, {
+    logger.error(`getAllOGs ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
     });
@@ -87,6 +90,31 @@ export async function getOGByHierarchyName(
     callback(null, og);
   } catch (error) {
     logger.error(`getOGByHierarchy ERROR`, {
+      callRequest: call.request,
+      error: { message: error.message },
+    });
+    callback(
+      {
+        code: 400,
+        error: { message: error.message },
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function searchOG(call: any, callback: any): Promise<void> {
+  try {
+    logger.info(`Call to searchOG`, { callRequest: call.request });
+    const ogArray: OGArray = await groupsManager.searchOG(call.request);
+    logger.info(`searchOG OK`, {
+      callRequest: call.request,
+      response: ogArray,
+    });
+    callback(null, ogArray);
+  } catch (error) {
+    logger.error(`searchOG ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
     });

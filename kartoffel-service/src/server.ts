@@ -28,9 +28,10 @@ import {
   updateEntity,
 } from './entities/entities.controller';
 import {
-  searchOG,
+  getAllOGs,
   createOG,
   getOGByHierarchyName,
+  searchOG,
   deleteOG,
   getOGById,
   getChildrenOfOG,
@@ -87,6 +88,7 @@ export class Server {
     try {
       const kartoffelServiceDescriptor: any = this.getProtoDescriptor();
       this.server.addService(kartoffelServiceDescriptor.Kartoffel.service, {
+
         //entities
         CreateEntity: createEntity,
         GetEntityByDI: getEntityByDI,
@@ -103,9 +105,10 @@ export class Server {
         UpdateEntity: updateEntity,
 
         //groups
-        SearchOG: searchOG,
+        GetAllOGs: getAllOGs,
         CreateOG: createOG,
         getOGByHierarchyName: getOGByHierarchyName,
+        SearchOG: searchOG,
         DeleteOG: deleteOG,
         GetOGById: getOGById,
         GetChildrenOfOG: getChildrenOfOG,
@@ -120,6 +123,8 @@ export class Server {
         DeleteDI: deleteDI,
         GetDIByUniqueId: getDIByUniqueId,
         UpdateDI: updateDI,
+
+
 
         CreateRole: createRole,
         ConnectRoleAndDI: connectRoleAndDI,

@@ -13,6 +13,7 @@ import {
   GetChildrenOfOGRequest,
   UpdateOGParentRequest,
   RenameOGRequest,
+  GetAllOGsRequest,
 } from '../interfaces/protoc/proto/kartoffelService';
 
 export class GroupsRepository {
@@ -23,15 +24,16 @@ export class GroupsRepository {
     this.kartoffelUtils = kartoffelUtils;
   }
 
-  async searchOG(searchOGRequest: SearchOGRequest): Promise<OGArray> {
+  
+  async getAllOGs(getAllOGsRequest: GetAllOGsRequest): Promise<OGArray> {
     try {
       if (C.useFaker) {
-        const ogArray: OGArray = await this.kartoffelFaker.randomOGArray();
+        const ogArray: OGArray = this.kartoffelFaker.randomOGArray();
         return ogArray;
       } else {
         const res = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/api/groups/search`,
-          searchOGRequest
+          `${C.kartoffelUrl}/api/groups`,
+          getAllOGsRequest
         );
         return res as OGArray;
       }
@@ -76,14 +78,31 @@ export class GroupsRepository {
     }
   }
 
-  async deleteOG(deleteRoleRequest: DeleteOGRequest): Promise<SuccessMessage> {
+  async searchOG(searchOGRequest: SearchOGRequest): Promise<OGArray> {
+    try {
+      if (C.useFaker) {
+        const ogArray: OGArray = await this.kartoffelFaker.randomOGArray();
+        return ogArray;
+      } else {
+        const res = await this.kartoffelUtils.kartoffelGet(
+          `${C.kartoffelUrl}/api/groups/search`,
+          searchOGRequest
+        );
+        return res as OGArray;
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteOG(deleteOGRequest: DeleteOGRequest): Promise<SuccessMessage> {
     try {
       if (C.useFaker) {
         const successMessage: SuccessMessage = { success: true };
         return successMessage;
       } else {
         const res = await this.kartoffelUtils.kartoffelDelete(
-          `${C.kartoffelUrl}/api/groups/hierarchy/:${deleteRoleRequest.id}`
+          `${C.kartoffelUrl}/api/groups/:${deleteOGRequest.id}`
         );
         return res as SuccessMessage;
       }
@@ -101,7 +120,7 @@ export class GroupsRepository {
         return og;
       } else {
         const res = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/api/groups/hierarchy/:${getOGByIdRequest.id}`,
+          `${C.kartoffelUrl}/api/groups/:${getOGByIdRequest.id}`,
           {}
         );
         return res as OrganizationGroup;
@@ -120,8 +139,8 @@ export class GroupsRepository {
         return ogChildern;
       } else {
         const res = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/api/groups/:${getChildrenOfOGRequest.id}/hierarchy`,
-          {}
+          `${C.kartoffelUrl}/api/groups/:${getChildrenOfOGRequest.id}/children`,
+          getChildrenOfOGRequest
         );
         return res as OGArray;
       }
@@ -139,7 +158,8 @@ export class GroupsRepository {
         return successMessage;
       } else {
         const res = await this.kartoffelUtils.kartoffelPut(
-          `${C.kartoffelUrl}/api/groups/:${updateOGParentRequest.id}/parent/:${updateOGParentRequest.parentId}`
+          `${C.kartoffelUrl}/api/groups/:${updateOGParentRequest.id}/parent/:${updateOGParentRequest.parentId}`,
+          updateOGParentRequest
         );
         return res as SuccessMessage;
       }
@@ -148,9 +168,7 @@ export class GroupsRepository {
     }
   }
 
-  async renameOG(
-    renameOGRequest: RenameOGRequest
-  ): Promise<SuccessMessage> {
+  async renameOG(renameOGRequest: RenameOGRequest): Promise<SuccessMessage> {
     try {
       if (C.useFaker) {
         const successMessage: SuccessMessage = { success: true };
@@ -158,7 +176,7 @@ export class GroupsRepository {
       } else {
         const res = await this.kartoffelUtils.kartoffelPatch(
           `${C.kartoffelUrl}/api/groups/:${renameOGRequest.id}/rename`,
-          { name: renameOGRequest.name }
+          renameOGRequest
         );
         return res as SuccessMessage;
       }

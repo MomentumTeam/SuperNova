@@ -21,10 +21,11 @@ service Kartoffel {
     
     
     //Groups
-    rpc SearchOG(SearchOGRequest) returns (OGArray) {}          
+    rpc GetAllOGs(GetAllOGsRequest) returns (OGArray){}        
     rpc CreateOG(CreateOGRequest) returns (OrganizationGroup){}        
+    rpc GetOGByHierarchyName(GetOGByHierarchyNameRequest) returns (OrganizationGroup){}   
+    rpc SearchOG(SearchOGRequest) returns (OGArray) {}          
     rpc DeleteOG(DeleteOGRequest) returns (SuccessMessage){}            
-    rpc GetOGByHierarchyName(GetOGByHierarchyNameRequest) returns (OrganizationGroup){}      
     rpc GetOGById(GetOGByIdRequest) returns (OrganizationGroup){}   
     rpc GetChildrenOfOG(GetChildrenOfOGRequest) returns (OGArray){}
     rpc UpdateOGParent(UpdateOGParentRequest) returns (SuccessMessage){}
@@ -38,6 +39,7 @@ service Kartoffel {
     rpc DeleteDI(DeleteDIRequest) returns (SuccessMessage){}  
     rpc GetDIByUniqueId(GetDIByUniqueIdRequest) returns (DigitalIdentity){} 
     rpc UpdateDI(UpdateDIRequest) returns (SuccessMessage){} 
+    rpc RenameOG(RenameOGRequest) returns (SuccessMessage){}
 
 
 
@@ -48,7 +50,6 @@ service Kartoffel {
     rpc DeleteRole(DeleteRoleRequest) returns (SuccessMessage){} 
     rpc GetOGTree(GetOGTreeRequest) returns (OGTree){}
     // rpc RenameRole(RenameRoleRequest) returns (SuccessMessage){}
-    // rpc RenameOG(RenameOGRequest) returns (SuccessMessage){}
 
 
 
@@ -56,6 +57,15 @@ service Kartoffel {
 
 }
 
+
+
+message GetAllOGsRequest{
+    string source = 1;
+    string akaUnit = 2;
+    string updatedFrom = 3;
+    int32 page = 4;
+    int32 pageSize = 5;
+}
 
 message UpdateDIRequest{
     string id = 1;
@@ -81,8 +91,8 @@ message DigitalIdentities{
 
 message GetAllDIsRequest{
     string updatedFrom = 1;
-    string page = 2;
-    string pageSize = 3;
+    int32 page = 2;
+    int32 pageSize = 3;
 }
 
 message UpdateOGParentRequest{
@@ -184,7 +194,7 @@ message OGTree{
 
 // SearchOG
 message SearchOGRequest{
-    string hierarchyAndName = 1;
+    string nameAndHierarchy = 1;
 }
 
 message OGArray{
@@ -200,11 +210,12 @@ message CreateOGRequest{
 
 // CreateDI
 message CreateDIRequest{
-    string type = 1;
-    string source = 2;
-    string uniqueId = 3;
-    string mail = 4;
-    bool isRoleAttachable = 5;
+    string entityId = 1;
+    bool isRoleAttachable = 2;
+    string mail = 3;
+    string source = 4;
+    string type = 5;
+    string uniqueId = 6;
 }
 
 // CreateRole
@@ -287,6 +298,9 @@ message DeleteOGRequest{
 // GetChildrenOfOG
 message GetChildrenOfOGRequest{
     string id = 1; //mongoId of OG
+    int32 page = 2;
+    int32 pageSize = 3;
+    bool direct = 4;
 }
 
 // DeleteRole

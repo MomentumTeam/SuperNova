@@ -70,7 +70,6 @@ export class DiRepository {
         const res = await this.kartoffelUtils.kartoffelGet(
           `${C.kartoffelUrl}/api/digitalIdentities/role/:${getDIByRoleIdRequest.roleId}`
         );
-        console.log('res', res);
         return res as DigitalIdentity;
       }
     } catch (error) {
@@ -140,10 +139,7 @@ export class DiRepository {
       } else {
         const res = await this.kartoffelUtils.kartoffelPatch(
           `${C.kartoffelUrl}/api/digitalIdentities/:${updateDIRequest.id}`,
-          {
-            isRoleAttachable: updateDIRequest.isRoleAttachable,
-            mail: updateDIRequest.mail,
-          }
+          updateDIRequest
         );
         return res as SuccessMessage;
       }
