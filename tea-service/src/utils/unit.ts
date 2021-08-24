@@ -1,6 +1,6 @@
-import { Entity } from '../interfaces/protoc/proto/kartoffelService';
 import * as C from '../config';
-export function getUnitKartoffelIdOfEntity(entity: Entity) {
+import { EntityMin } from '../interfaces/protoc/proto/teaService';
+export function getUnitKartoffelIdOfEntity(entity: EntityMin) {
   try {
     return entity.akaUnit;
   } catch (error) {

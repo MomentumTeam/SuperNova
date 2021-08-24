@@ -1,8 +1,4 @@
 syntax = "proto3";
-import "/home/barak/Desktop/SuperNova/proto/kartoffelService.proto";//when loading with bloomRPC
-// import "proto/kartoffelService.proto"; //when running in vscode
-// import "/usr/src/app/proto/kartoffelService.proto"; //When using docker
-
 package Tea;
 
 service Tea {
@@ -76,7 +72,7 @@ message SuccessMessage{
 
 message RetrieveTeaAndUPNByEntityReq{
     Domain domain = 1;
-    Kartoffel.Entity entity = 2;
+    EntityMin entity = 2;
 }
 
 message RetrieveTeaAndUPNByEntityIdReq{
@@ -87,5 +83,15 @@ message RetrieveTeaAndUPNByEntityIdReq{
 message TeaAndUPN{
     string tea = 1;
     string upn = 2;
+}
+
+message EntityMin{
+    string entityType = 1;
+    string akaUnit = 2;
+    optional string personalNumber = 3;
+    optional string identityCard = 4;
+    optional string goalUserID = 5;
+    optional string firstName = 6;
+    optional string lastName = 7;
 }
 

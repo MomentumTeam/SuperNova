@@ -15,7 +15,7 @@ const packageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(
     keepCase: true,
     longs: String,
     enums: String,
-    defaults: true,
+    // defaults: true,
     oneofs: true,
   }
 );

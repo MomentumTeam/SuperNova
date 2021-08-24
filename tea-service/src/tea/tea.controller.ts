@@ -5,6 +5,7 @@ import {
 } from '../interfaces/protoc/proto/teaService';
 import { TeaManager } from './tea.manager';
 import * as grpc from 'grpc';
+import { logger } from '../logger';
 
 const teaManager: TeaManager = new TeaManager();
 
@@ -13,11 +14,20 @@ export async function retrieveTeaAndUPNByEntity(
   callback: any
 ): Promise<void> {
   try {
+    logger.info('Call to retrieveTeaAndUPNByEntity', { request: call.request });
     const teaAndUpn: TeaAndUPN = await teaManager.retrieveTeaAndUPNByEntity(
       call.request
     );
+    logger.info('retrieveTeaAndUPNByEntity OK', {
+      response: teaAndUpn,
+      request: call.request,
+    });
     callback(null, teaAndUpn);
   } catch (error) {
+    logger.error('retrieveTeaAndUPNByEntity ERROR', {
+      error: { message: error.message },
+      request: call.request,
+    });
     callback(
       {
         code: 400,
@@ -34,11 +44,22 @@ export async function retrieveTeaAndUPNByEntityId(
   callback: any
 ): Promise<void> {
   try {
+    logger.info('Call to retrieveTeaAndUPNByEntityId', {
+      request: call.request,
+    });
     const teaAndUpn: TeaAndUPN = await teaManager.retrieveTeaAndUPNByEntityId(
       call.request
     );
+    logger.info('retrieveTeaAndUPNByEntityId OK', {
+      response: teaAndUpn,
+      request: call.request,
+    });
     callback(null, teaAndUpn);
   } catch (error) {
+    logger.error('retrieveTeaAndUPNByEntityId ERROR', {
+      error: { message: error.message },
+      request: call.request,
+    });
     callback(
       {
         code: 400,
@@ -55,11 +76,20 @@ export async function reportTeaSuccess(
   callback: any
 ): Promise<void> {
   try {
+    logger.info('Call to reportTeaSuccess', { request: call.request });
     const successMessage: SuccessMessage = await teaManager.reportTeaSuccess(
       call.request
     );
+    logger.info('reportTeaSuccess OK', {
+      response: successMessage,
+      request: call.request,
+    });
     callback(null, successMessage);
   } catch (error) {
+    logger.error('reportTeaSuccess ERROR', {
+      error: { message: error.message },
+      request: call.request,
+    });
     callback(
       {
         code: 400,
@@ -73,11 +103,20 @@ export async function reportTeaSuccess(
 
 export async function reportTeaFail(call: any, callback: any): Promise<void> {
   try {
+    logger.info('Call to reportTeaFail', { request: call.request });
     const successMessage: SuccessMessage = await teaManager.reportTeaFail(
       call.request
     );
+    logger.info('reportTeaFail OK', {
+      response: successMessage,
+      request: call.request,
+    });
     callback(null, successMessage);
   } catch (error) {
+    logger.error('reportTeaFail ERROR', {
+      error: { message: error.message },
+      request: call.request,
+    });
     callback(
       {
         code: 400,
@@ -91,9 +130,18 @@ export async function reportTeaFail(call: any, callback: any): Promise<void> {
 
 export async function getUnit(call: any, callback: any): Promise<void> {
   try {
+    logger.info('Call to getUnit', { request: call.request });
     const unit: Unit = await teaManager.getUnit(call.request);
+    logger.info('getUnit OK', {
+      response: unit,
+      request: call.request,
+    });
     callback(null, unit);
   } catch (error) {
+    logger.error('getUnit ERROR', {
+      error: { message: error.message },
+      request: call.request,
+    });
     callback(
       {
         code: 400,
@@ -107,9 +155,18 @@ export async function getUnit(call: any, callback: any): Promise<void> {
 
 export async function addUnit(call: any, callback: any): Promise<void> {
   try {
+    logger.info('Call to addUnit', { request: call.request });
     const unit: Unit = await teaManager.addUnit(call.request);
+    logger.info('addUnit OK', {
+      response: unit,
+      request: call.request,
+    });
     callback(null, unit);
   } catch (error) {
+    logger.error('addUnit ERROR', {
+      error: { message: error.message },
+      request: call.request,
+    });
     callback(
       {
         code: 400,
@@ -123,9 +180,18 @@ export async function addUnit(call: any, callback: any): Promise<void> {
 
 export async function updateUnit(call: any, callback: any): Promise<void> {
   try {
+    logger.info('Call to updateUnit', { request: call.request });
     const unit: Unit = await teaManager.updateUnit(call.request);
+    logger.info('updateUnit OK', {
+      response: unit,
+      request: call.request,
+    });
     callback(null, unit);
   } catch (error) {
+    logger.error('updateUnit ERROR', {
+      error: { message: error.message },
+      request: call.request,
+    });
     callback(
       {
         code: 400,
@@ -139,11 +205,20 @@ export async function updateUnit(call: any, callback: any): Promise<void> {
 
 export async function deleteUnit(call: any, callback: any): Promise<void> {
   try {
+    logger.info('Call to deleteUnit', { request: call.request });
     const successMessage: SuccessMessage = await teaManager.deleteUnit(
       call.request
     );
+    logger.info('deleteUnit OK', {
+      response: successMessage,
+      request: call.request,
+    });
     callback(null, successMessage);
   } catch (error) {
+    logger.error('deleteUnit ERROR', {
+      error: { message: error.message },
+      request: call.request,
+    });
     callback(
       {
         code: 400,
