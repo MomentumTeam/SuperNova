@@ -28,18 +28,22 @@ service Kartoffel {
     rpc GetChildrenOfOG(GetChildrenOfOGRequest) returns (OGArray){}
     rpc UpdateOGParent(UpdateOGParentRequest) returns (SuccessMessage){}
     rpc RenameOG(RenameOGRequest) returns (SuccessMessage){}
-
+    rpc GetOGTree(GetOGTreeRequest) returns (OGTree){}
+    
+    rpc DeleteDI(DeleteDIRequest) returns (SuccessMessage){}
     rpc CreateDI(CreateDIRequest) returns (DigitalIdentity){}
+
+    // Roles
+    rpc GetAllRoles(GetAllRolesRequest) returns (RoleArray){}
     rpc CreateRole(CreateRoleRequest) returns (Role){}
     rpc ConnectRoleAndDI(ConnectRoleAndDIRequest) returns (SuccessMessage){}
     rpc DisconnectRoleAndDI(DisconnectRoleAndDIRequest) returns (SuccessMessage){}
-
     rpc GetRoleByRoleId(GetRoleByRoleIdRequest) returns (Role){}
     rpc GetRolesUnderOG(GetRolesUnderOGRequest) returns (RoleArray){}
     rpc DeleteRole(DeleteRoleRequest) returns (SuccessMessage){} 
-    rpc DeleteDI(DeleteDIRequest) returns (SuccessMessage){}
-    rpc GetOGTree(GetOGTreeRequest) returns (OGTree){}
     rpc RenameRole(RenameRoleRequest) returns (SuccessMessage){}
+    rpc GetRolesByHierarchy(GetRolesByHierarchyRequest) returns (SuccessMessage) {}
+    rpc ChangeRoleOG(ChangeRoleOGRequest) returns (SuccessMessage) {}
 }
 
 
@@ -83,34 +87,26 @@ message UpdateEntityRequest{
 }
 
 message UpdateEntityProperties{
-    optional string displayName = 2;
-    optional string entityType = 5;
-    optional string identityCard = 6;
-    optional string personalNumber = 7;
-    optional string serviceType = 8;
-    optional string firstName = 9;
-    optional string lastName = 10;
-    optional string akaUnit = 11;
-    optional string dischargeDay = 12;
-    optional string rank = 13;
-    optional string mail = 14;
-    optional string jobTitle = 15;
-    repeated string phone = 16;
-    repeated string mobilePhone = 17;
-    optional string address = 18;
-    optional string clearance = 19;
-    optional string sex = 20;
-    optional string birthDate = 21;
+    optional string firstName = 1;
+    optional string lastName = 2;
+    optional string identityCard = 3;
+    optional string personalNumber = 4;
+    optional string serviceType = 5;
+    repeated string phone = 6;
+    repeated string mobilePhone = 7;
+    optional string address = 8;
+    optional string clearance = 9;
+    optional string sex = 10;
+    optional string birthDate = 11;
+    optional string entityType = 12;
+    optional string akaUnit = 13;
+    optional string dischargeDay = 14;
+    optional string rank = 15;
 }
 
 message RenameOGRequest{
     string id = 1;
     string name = 2;
-}
-
-message RenameRoleRequest{
-    string roleId = 1;
-    string jobTitle = 2;
 }
 
 message GetPictureByEntityIdRequest{
@@ -164,6 +160,14 @@ message CreateDIRequest{
     string mail = 4;
     bool isRoleAttachable = 5;
 }
+/**  ROLES **/
+
+// GetAllRoles
+message GetAllRolesRequest {
+    string updatedFrom = 1;
+    int32 page = 2;
+    int32 pageSize = 3;
+}
 
 // CreateRole
 message CreateRoleRequest{
@@ -172,20 +176,28 @@ message CreateRoleRequest{
     string source = 3;
     string roleId = 4;
 }
-  
+
+// DeleteRole
+message DeleteRoleRequest{
+    string roleId = 1;
+}
+
+// RenameRole
+message RenameRoleRequest{
+    string roleId = 1;
+    string jobTitle = 2;
+}
+
 // ConnectRoleAndDI
 message ConnectRoleAndDIRequest{
     string id = 1; // id of role
     string uniqueId = 2; //uniqueId of DI
 }
 
+// DisconnectRoleAndDI
 message DisconnectRoleAndDIRequest {
     string roleId = 1; // id of role
     string uniqueId = 2; //uniqueId of DI
-}
-
-message EntityArray{
-    repeated Entity entities = 1;
 }
 
 // GetRoleByRoleId
@@ -201,6 +213,29 @@ message GetRolesUnderOGRequest{
     int32 pageSize = 4;
 }
 
+// GetRolesByDI
+message GetRoleByDIRequest {
+    string uniqueId = 1;
+}
+
+// GetRolesByHierarchy
+message GetRolesByHierarchyRequest {
+    string hierarchy = 1;
+    bool direct = 2;
+    int32 page = 3;
+    int32 pageSize = 4;
+}
+
+// ChangeRoleOG
+message ChangeRoleOGRequest {
+    string roleId = 1;
+    string groupId = 2;
+}
+
+message EntityArray{
+    repeated Entity entities = 1;
+}
+
 message RoleArray{
     repeated Role roles = 1;
 }
@@ -213,18 +248,21 @@ message ConnectEntityAndDIRequest{
 
 // CreateEntity
 message CreateEntityRequest{
-    string firstName = 1;
-    string lastName = 2;
-    string identityCard = 3;
-    string personalNumber = 4;
-    string serviceType = 5;
+    optional string firstName = 1;
+    optional string lastName = 2;
+    optional string identityCard = 3;
+    optional string personalNumber = 4;
+    optional string serviceType = 5;
     repeated string phone = 6;
     repeated string mobilePhone = 7;
-    string address = 8;
-    string clearance = 9;
-    string sex = 10;
-    string birthDate = 11;
-    string entityType = 12;
+    optional string address = 8;
+    optional string clearance = 9;
+    optional string sex = 10;
+    optional string birthDate = 11;
+    optional string entityType = 12;
+    optional string akaUnit = 13;
+    optional string dischargeDay = 14;
+    optional string rank = 15;
 }
 
 // GetEntityByRoleId
@@ -253,11 +291,6 @@ message GetChildrenOfOGRequest{
     string id = 1; //mongoId of OG
 }
 
-// DeleteRole
-message DeleteRoleRequest{
-    string roleId = 1;
-}
-
 // DeleteDI
 message DeleteDIRequest{
     string uniqueId = 1; //uniqueId of DI (taken from the role)
@@ -266,9 +299,9 @@ message DeleteDIRequest{
 // GetEntitiesUnderOG
 message GetEntitiesUnderOGRequest{
     string id = 1; //mongoIds of OG
-    optional bool direct = 2;
-    optional int32 page = 3;
-    optional int32 pageSize = 4;
+    bool direct = 2;
+    int32 page = 3;
+    int32 pageSize = 4;
 }
 
 //SuccessMessage

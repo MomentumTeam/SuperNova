@@ -17,6 +17,31 @@ const rolesManager: RolesManager = new RolesManager(
   kartoffelFaker
 );
 
+export async function getAllRoles(call: any, callback: any): Promise<void> {
+  try {
+    logger.info(`Call to getAllRoles`, { callRequest: call.request });
+    const roleArray: RoleArray = await rolesManager.getAllRoles(call.request);
+    logger.info(`getAllRoles OK`, {
+      callRequest: call.request,
+      response: roleArray,
+    });
+    callback(null, roleArray);
+  } catch (error) {
+    logger.error(`getAllRoles OK`, {
+      callRequest: call.request,
+      error: error.message,
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
 export async function createRole(call: any, callback: any): Promise<void> {
   try {
     logger.info(`Call to createRole`, { callRequest: call.request });
@@ -104,14 +129,12 @@ export async function disconnectRoleAndDI(
 export async function deleteRole(call: any, callback: any): Promise<void> {
   try {
     logger.info(`Call to deleteRole`, { callRequest: call.request });
-    const successMessage: SuccessMessage = await rolesManager.deleteRole(
-      call.request
-    );
+    const role: Role = await rolesManager.deleteRole(call.request);
     logger.info(`deleteRole OK`, {
       callRequest: call.request,
       response: { success: true },
     });
-    callback(null, successMessage);
+    callback(null, role);
   } catch (error) {
     logger.error(`deleteRole ERROR`, {
       callRequest: call.request,
@@ -153,17 +176,45 @@ export async function getRoleByRoleId(call: any, callback: any): Promise<void> {
   }
 }
 
-export async function renameRole(call: any, callback: any): Promise<void> {
+export async function getRolesByHierarchy(
+  call: any,
+  callback: any
+): Promise<void> {
   try {
-    logger.info(`Call to renameRole`, { callRequest: call.request });
-    const role: Role = await rolesManager.renameRole(call.request);
-    logger.info(`renameRole OK`, {
+    logger.info(`Call to getRolesByHierarchy`, { callRequest: call.request });
+    const role: Role = await rolesManager.getRolesByHierarchy(call.request);
+    logger.info(`getRolesByHierarchy OK`, {
       callRequest: call.request,
       response: { success: true },
     });
     callback(null, { success: true });
   } catch (error) {
-    logger.error(`renameRole ERROR`, {
+    logger.error(`getRolesByHierarchy ERROR`, {
+      callRequest: call.request,
+      error: error.message,
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function changeRoleOG(call: any, callback: any): Promise<void> {
+  try {
+    logger.info(`Call to changeRoleOG`, { callRequest: call.request });
+    const role: Role = await rolesManager.changeRoleOG(call.request);
+    logger.info(`changeRoleOG OK`, {
+      callRequest: call.request,
+      response: { success: true },
+    });
+    callback(null, { success: true });
+  } catch (error) {
+    logger.error(`changeRoleOG ERROR`, {
       callRequest: call.request,
       error: error.message,
     });
@@ -191,6 +242,31 @@ export async function getRolesUnderOG(call: any, callback: any): Promise<void> {
     callback(null, roleArray);
   } catch (error) {
     logger.error(`getRolesUnderOG ERROR`, {
+      callRequest: call.request,
+      error: error.message,
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function renameRole(call: any, callback: any): Promise<void> {
+  try {
+    logger.info(`Call to renameRole`, { callRequest: call.request });
+    const role: Role = await rolesManager.renameRole(call.request);
+    logger.info(`renameRole OK`, {
+      callRequest: call.request,
+      response: { success: true },
+    });
+    callback(null, { success: true });
+  } catch (error) {
+    logger.error(`renameRole ERROR`, {
       callRequest: call.request,
       error: error.message,
     });

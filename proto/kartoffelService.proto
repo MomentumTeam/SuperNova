@@ -28,18 +28,22 @@ service Kartoffel {
     rpc GetChildrenOfOG(GetChildrenOfOGRequest) returns (OGArray){}
     rpc UpdateOGParent(UpdateOGParentRequest) returns (SuccessMessage){}
     rpc RenameOG(RenameOGRequest) returns (SuccessMessage){}
-
+    rpc GetOGTree(GetOGTreeRequest) returns (OGTree){}
+    
+    rpc DeleteDI(DeleteDIRequest) returns (SuccessMessage){}
     rpc CreateDI(CreateDIRequest) returns (DigitalIdentity){}
+
+    // Roles
+    rpc GetAllRoles(GetAllRolesRequest) returns (RoleArray){}
     rpc CreateRole(CreateRoleRequest) returns (Role){}
     rpc ConnectRoleAndDI(ConnectRoleAndDIRequest) returns (SuccessMessage){}
     rpc DisconnectRoleAndDI(DisconnectRoleAndDIRequest) returns (SuccessMessage){}
-
     rpc GetRoleByRoleId(GetRoleByRoleIdRequest) returns (Role){}
     rpc GetRolesUnderOG(GetRolesUnderOGRequest) returns (RoleArray){}
     rpc DeleteRole(DeleteRoleRequest) returns (SuccessMessage){} 
-    rpc DeleteDI(DeleteDIRequest) returns (SuccessMessage){}
-    rpc GetOGTree(GetOGTreeRequest) returns (OGTree){}
     rpc RenameRole(RenameRoleRequest) returns (SuccessMessage){}
+    rpc GetRolesByHierarchy(GetRolesByHierarchyRequest) returns (SuccessMessage) {}
+    rpc ChangeRoleOG(ChangeRoleOGRequest) returns (SuccessMessage) {}
 }
 
 
@@ -105,11 +109,6 @@ message RenameOGRequest{
     string name = 2;
 }
 
-message RenameRoleRequest{
-    string roleId = 1;
-    string jobTitle = 2;
-}
-
 message GetPictureByEntityIdRequest{
     string id = 1;
 }
@@ -161,6 +160,14 @@ message CreateDIRequest{
     string mail = 4;
     bool isRoleAttachable = 5;
 }
+/**  ROLES **/
+
+// GetAllRoles
+message GetAllRolesRequest {
+    string updatedFrom = 1;
+    int32 page = 2;
+    int32 pageSize = 3;
+}
 
 // CreateRole
 message CreateRoleRequest{
@@ -169,20 +176,28 @@ message CreateRoleRequest{
     string source = 3;
     string roleId = 4;
 }
-  
+
+// DeleteRole
+message DeleteRoleRequest{
+    string roleId = 1;
+}
+
+// RenameRole
+message RenameRoleRequest{
+    string roleId = 1;
+    string jobTitle = 2;
+}
+
 // ConnectRoleAndDI
 message ConnectRoleAndDIRequest{
     string id = 1; // id of role
     string uniqueId = 2; //uniqueId of DI
 }
 
+// DisconnectRoleAndDI
 message DisconnectRoleAndDIRequest {
     string roleId = 1; // id of role
     string uniqueId = 2; //uniqueId of DI
-}
-
-message EntityArray{
-    repeated Entity entities = 1;
 }
 
 // GetRoleByRoleId
@@ -196,6 +211,29 @@ message GetRolesUnderOGRequest{
     bool direct = 2;
     int32 page = 3;
     int32 pageSize = 4;
+}
+
+// GetRolesByDI
+message GetRoleByDIRequest {
+    string uniqueId = 1;
+}
+
+// GetRolesByHierarchy
+message GetRolesByHierarchyRequest {
+    string hierarchy = 1;
+    bool direct = 2;
+    int32 page = 3;
+    int32 pageSize = 4;
+}
+
+// ChangeRoleOG
+message ChangeRoleOGRequest {
+    string roleId = 1;
+    string groupId = 2;
+}
+
+message EntityArray{
+    repeated Entity entities = 1;
 }
 
 message RoleArray{
@@ -251,11 +289,6 @@ message DeleteOGRequest{
 // GetChildrenOfOG
 message GetChildrenOfOGRequest{
     string id = 1; //mongoId of OG
-}
-
-// DeleteRole
-message DeleteRoleRequest{
-    string roleId = 1;
 }
 
 // DeleteDI

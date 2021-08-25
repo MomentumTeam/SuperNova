@@ -43,6 +43,9 @@ import {
   getRolesUnderOG,
   getRoleByRoleId,
   renameRole,
+  getAllRoles,
+  getRolesByHierarchy,
+  changeRoleOG,
 } from './roles/roles.controller';
 
 const PROTO_PATH = `${findPath('proto')}/kartoffelService.proto`;
@@ -115,6 +118,7 @@ export class Server {
         DeleteDI: deleteDI,
 
         // roles
+        GetAllRoles: getAllRoles,
         CreateRole: createRole,
         ConnectRoleAndDI: connectRoleAndDI,
         DisconnectRoleAndDI: disconnectRoleAndDI,
@@ -122,6 +126,8 @@ export class Server {
         GetRolesUnderOG: getRolesUnderOG,
         DeleteRole: deleteRole,
         RenameRole: renameRole,
+        GetRolesByHierarchy: getRolesByHierarchy,
+        ChangeRoleOG: changeRoleOG,
       });
       logger.info(`Grpc services were successfully added to the server`);
     } catch (error) {
