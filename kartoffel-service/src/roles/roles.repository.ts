@@ -42,11 +42,7 @@ export class RolesRepository {
     } else {
       const data: Role[] = await this.kartoffelUtils.kartoffelGet(
         `${C.kartoffelUrl}/api/roles/group/${getRolesUnderOGRequest.id}`,
-        {
-          direct: getRolesUnderOGRequest?.direct,
-          page: getRolesUnderOGRequest?.page,
-          pageSize: getRolesUnderOGRequest?.pageSize,
-        }
+        getRolesUnderOGRequest
       );
       return { roles: data };
     }
@@ -112,7 +108,7 @@ export class RolesRepository {
     } else {
       const data: SuccessMessage = await this.kartoffelUtils.kartoffelPatch(
         `${C.kartoffelUrl}/api/roles/${updateRoleRequest.roleId}`,
-        { jobTitle: 'works' }
+        updateRoleRequest
       );
       return data;
     }

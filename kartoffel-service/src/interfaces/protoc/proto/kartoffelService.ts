@@ -137,6 +137,7 @@ export interface CreateRoleRequest {
 /** UpdateRoleRequest */
 export interface UpdateRoleRequest {
   roleId: string;
+  jobTitle: string;
 }
 
 /** ConnectRoleAndDI */
@@ -2387,7 +2388,7 @@ export const CreateRoleRequest = {
   },
 };
 
-const baseUpdateRoleRequest: object = { roleId: "" };
+const baseUpdateRoleRequest: object = { roleId: "", jobTitle: "" };
 
 export const UpdateRoleRequest = {
   encode(
@@ -2396,6 +2397,9 @@ export const UpdateRoleRequest = {
   ): _m0.Writer {
     if (message.roleId !== "") {
       writer.uint32(10).string(message.roleId);
+    }
+    if (message.jobTitle !== "") {
+      writer.uint32(18).string(message.jobTitle);
     }
     return writer;
   },
@@ -2409,6 +2413,9 @@ export const UpdateRoleRequest = {
       switch (tag >>> 3) {
         case 1:
           message.roleId = reader.string();
+          break;
+        case 2:
+          message.jobTitle = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -2425,12 +2432,18 @@ export const UpdateRoleRequest = {
     } else {
       message.roleId = "";
     }
+    if (object.jobTitle !== undefined && object.jobTitle !== null) {
+      message.jobTitle = String(object.jobTitle);
+    } else {
+      message.jobTitle = "";
+    }
     return message;
   },
 
   toJSON(message: UpdateRoleRequest): unknown {
     const obj: any = {};
     message.roleId !== undefined && (obj.roleId = message.roleId);
+    message.jobTitle !== undefined && (obj.jobTitle = message.jobTitle);
     return obj;
   },
 
@@ -2440,6 +2453,11 @@ export const UpdateRoleRequest = {
       message.roleId = object.roleId;
     } else {
       message.roleId = "";
+    }
+    if (object.jobTitle !== undefined && object.jobTitle !== null) {
+      message.jobTitle = object.jobTitle;
+    } else {
+      message.jobTitle = "";
     }
     return message;
   },

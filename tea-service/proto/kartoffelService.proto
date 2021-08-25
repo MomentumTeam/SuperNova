@@ -19,7 +19,6 @@ service Kartoffel {
     rpc DisconnectDIFromEntity(DisconnectDIFromEntityRequest) returns (SuccessMessage){}
     rpc GetPictureByEntityId(GetPictureByEntityIdRequest) returns (Image){}
     
-    
     //Groups
     rpc SearchOG(SearchOGRequest) returns (OGArray) {}          //l
     rpc CreateOG(CreateOGRequest) returns (OrganizationGroup){}        //l
@@ -178,6 +177,7 @@ message CreateRoleRequest{
 // UpdateRoleRequest
 message UpdateRoleRequest {
     string roleId = 1;
+    string jobTitle = 2;
   }
   
 // ConnectRoleAndDI
@@ -194,7 +194,6 @@ message DisconnectRoleAndDIRequest {
 message EntityArray{
     repeated Entity entities = 1;
 }
-
 
 // GetRoleByRoleId
 message GetRoleByRoleIdRequest{
