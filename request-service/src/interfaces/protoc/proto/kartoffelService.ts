@@ -69,7 +69,7 @@ export interface RenameOGRequest {
 }
 
 export interface RenameRoleRequest {
-  uniqueId: string;
+  roleId: string;
   jobTitle: string;
 }
 
@@ -132,12 +132,6 @@ export interface CreateRoleRequest {
   directGroup: string;
   source: string;
   roleId: string;
-}
-
-/** UpdateRoleRequest */
-export interface UpdateRoleRequest {
-  roleId: string;
-  jobTitle: string;
 }
 
 /** ConnectRoleAndDI */
@@ -1395,15 +1389,15 @@ export const RenameOGRequest = {
   },
 };
 
-const baseRenameRoleRequest: object = { uniqueId: "", jobTitle: "" };
+const baseRenameRoleRequest: object = { roleId: "", jobTitle: "" };
 
 export const RenameRoleRequest = {
   encode(
     message: RenameRoleRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.uniqueId !== "") {
-      writer.uint32(10).string(message.uniqueId);
+    if (message.roleId !== "") {
+      writer.uint32(10).string(message.roleId);
     }
     if (message.jobTitle !== "") {
       writer.uint32(18).string(message.jobTitle);
@@ -1419,7 +1413,7 @@ export const RenameRoleRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.uniqueId = reader.string();
+          message.roleId = reader.string();
           break;
         case 2:
           message.jobTitle = reader.string();
@@ -1434,10 +1428,10 @@ export const RenameRoleRequest = {
 
   fromJSON(object: any): RenameRoleRequest {
     const message = { ...baseRenameRoleRequest } as RenameRoleRequest;
-    if (object.uniqueId !== undefined && object.uniqueId !== null) {
-      message.uniqueId = String(object.uniqueId);
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = String(object.roleId);
     } else {
-      message.uniqueId = "";
+      message.roleId = "";
     }
     if (object.jobTitle !== undefined && object.jobTitle !== null) {
       message.jobTitle = String(object.jobTitle);
@@ -1449,17 +1443,17 @@ export const RenameRoleRequest = {
 
   toJSON(message: RenameRoleRequest): unknown {
     const obj: any = {};
-    message.uniqueId !== undefined && (obj.uniqueId = message.uniqueId);
+    message.roleId !== undefined && (obj.roleId = message.roleId);
     message.jobTitle !== undefined && (obj.jobTitle = message.jobTitle);
     return obj;
   },
 
   fromPartial(object: DeepPartial<RenameRoleRequest>): RenameRoleRequest {
     const message = { ...baseRenameRoleRequest } as RenameRoleRequest;
-    if (object.uniqueId !== undefined && object.uniqueId !== null) {
-      message.uniqueId = object.uniqueId;
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = object.roleId;
     } else {
-      message.uniqueId = "";
+      message.roleId = "";
     }
     if (object.jobTitle !== undefined && object.jobTitle !== null) {
       message.jobTitle = object.jobTitle;
@@ -2383,81 +2377,6 @@ export const CreateRoleRequest = {
       message.roleId = object.roleId;
     } else {
       message.roleId = "";
-    }
-    return message;
-  },
-};
-
-const baseUpdateRoleRequest: object = { roleId: "", jobTitle: "" };
-
-export const UpdateRoleRequest = {
-  encode(
-    message: UpdateRoleRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.roleId !== "") {
-      writer.uint32(10).string(message.roleId);
-    }
-    if (message.jobTitle !== "") {
-      writer.uint32(18).string(message.jobTitle);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): UpdateRoleRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseUpdateRoleRequest } as UpdateRoleRequest;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.roleId = reader.string();
-          break;
-        case 2:
-          message.jobTitle = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): UpdateRoleRequest {
-    const message = { ...baseUpdateRoleRequest } as UpdateRoleRequest;
-    if (object.roleId !== undefined && object.roleId !== null) {
-      message.roleId = String(object.roleId);
-    } else {
-      message.roleId = "";
-    }
-    if (object.jobTitle !== undefined && object.jobTitle !== null) {
-      message.jobTitle = String(object.jobTitle);
-    } else {
-      message.jobTitle = "";
-    }
-    return message;
-  },
-
-  toJSON(message: UpdateRoleRequest): unknown {
-    const obj: any = {};
-    message.roleId !== undefined && (obj.roleId = message.roleId);
-    message.jobTitle !== undefined && (obj.jobTitle = message.jobTitle);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<UpdateRoleRequest>): UpdateRoleRequest {
-    const message = { ...baseUpdateRoleRequest } as UpdateRoleRequest;
-    if (object.roleId !== undefined && object.roleId !== null) {
-      message.roleId = object.roleId;
-    } else {
-      message.roleId = "";
-    }
-    if (object.jobTitle !== undefined && object.jobTitle !== null) {
-      message.jobTitle = object.jobTitle;
-    } else {
-      message.jobTitle = "";
     }
     return message;
   },
@@ -5264,7 +5183,6 @@ export interface Kartoffel {
   DeleteDI(request: DeleteDIRequest): Promise<SuccessMessage>;
   GetOGTree(request: GetOGTreeRequest): Promise<OGTree>;
   RenameRole(request: RenameRoleRequest): Promise<SuccessMessage>;
-  UpdateRole(request: UpdateRoleRequest): Promise<SuccessMessage>;
 }
 
 export class KartoffelClientImpl implements Kartoffel {
@@ -5302,7 +5220,6 @@ export class KartoffelClientImpl implements Kartoffel {
     this.DeleteDI = this.DeleteDI.bind(this);
     this.GetOGTree = this.GetOGTree.bind(this);
     this.RenameRole = this.RenameRole.bind(this);
-    this.UpdateRole = this.UpdateRole.bind(this);
   }
   CreateEntity(request: CreateEntityRequest): Promise<Entity> {
     const data = CreateEntityRequest.encode(request).finish();
@@ -5587,12 +5504,6 @@ export class KartoffelClientImpl implements Kartoffel {
   RenameRole(request: RenameRoleRequest): Promise<SuccessMessage> {
     const data = RenameRoleRequest.encode(request).finish();
     const promise = this.rpc.request("Kartoffel.Kartoffel", "RenameRole", data);
-    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
-  }
-
-  UpdateRole(request: UpdateRoleRequest): Promise<SuccessMessage> {
-    const data = UpdateRoleRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "UpdateRole", data);
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 }

@@ -7,7 +7,7 @@ import {
   Role,
   RoleArray,
   SuccessMessage,
-  UpdateRoleRequest,
+  RenameRoleRequest,
   DisconnectRoleAndDIRequest,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { KartoffelFaker } from '../mock/kartoffel.faker';
@@ -66,7 +66,7 @@ export class RolesRepository {
     if (C.useFaker) {
       return { success: true };
     } else {
-      const data: SuccessMessage = await this.kartoffelUtils.kartoffelPatch(
+      const data: SuccessMessage = await this.kartoffelUtils.kartoffelPut(
         `${C.kartoffelUrl}/api/roles/${connectRoleAndDIRequest.id}/digitalIdentity/${connectRoleAndDIRequest.uniqueId}`,
         ConnectRoleAndDIRequest
       );
@@ -100,15 +100,13 @@ export class RolesRepository {
     }
   }
 
-  async updateRole(
-    updateRoleRequest: UpdateRoleRequest
-  ): Promise<SuccessMessage> {
+  async renameRole(RenameRoleRequest: RenameRoleRequest): Promise<Role> {
     if (C.useFaker) {
-      return { success: true };
+      return this.kartoffelFaker.randomRole();
     } else {
-      const data: SuccessMessage = await this.kartoffelUtils.kartoffelPatch(
-        `${C.kartoffelUrl}/api/roles/${updateRoleRequest.roleId}`,
-        updateRoleRequest
+      const data: Role = await this.kartoffelUtils.kartoffelPatch(
+        `${C.kartoffelUrl}/api/roles/${RenameRoleRequest.roleId}`,
+        RenameRoleRequest
       );
       return data;
     }

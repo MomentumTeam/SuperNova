@@ -8,7 +8,7 @@ import {
   Role,
   RoleArray,
   SuccessMessage,
-  UpdateRoleRequest,
+  RenameRoleRequest,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { KartoffelFaker } from '../mock/kartoffel.faker';
 import { KartoffelUtils } from '../utils/kartoffel.utils';
@@ -50,10 +50,8 @@ export class RolesManager {
     );
   }
 
-  async updateRole(
-    updateRoleRequest: UpdateRoleRequest
-  ): Promise<SuccessMessage> {
-    return await this.rolesRepository.updateRole(updateRoleRequest);
+  async renameRole(RenameRoleRequest: RenameRoleRequest): Promise<Role> {
+    return await this.rolesRepository.renameRole(RenameRoleRequest);
   }
 
   async disconnectRoleAndDI(

@@ -40,7 +40,6 @@ service Kartoffel {
     rpc DeleteDI(DeleteDIRequest) returns (SuccessMessage){}
     rpc GetOGTree(GetOGTreeRequest) returns (OGTree){}
     rpc RenameRole(RenameRoleRequest) returns (SuccessMessage){}
-    rpc UpdateRole(UpdateRoleRequest) returns (SuccessMessage){}
 }
 
 
@@ -110,7 +109,7 @@ message RenameOGRequest{
 }
 
 message RenameRoleRequest{
-    string uniqueId = 1;
+    string roleId = 1;
     string jobTitle = 2;
 }
 
@@ -173,12 +172,6 @@ message CreateRoleRequest{
     string source = 3;
     string roleId = 4;
 }
-
-// UpdateRoleRequest
-message UpdateRoleRequest {
-    string roleId = 1;
-    string jobTitle = 2;
-  }
   
 // ConnectRoleAndDI
 message ConnectRoleAndDIRequest{

@@ -1,6 +1,5 @@
 import * as grpc from 'grpc';
 import {
-  Image,
   Role,
   RoleArray,
   SuccessMessage,
@@ -110,7 +109,7 @@ export async function deleteRole(call: any, callback: any): Promise<void> {
     );
     logger.info(`deleteRole OK`, {
       callRequest: call.request,
-      response: successMessage,
+      response: { success: true },
     });
     callback(null, successMessage);
   } catch (error) {
@@ -154,19 +153,17 @@ export async function getRoleByRoleId(call: any, callback: any): Promise<void> {
   }
 }
 
-export async function updateRole(call: any, callback: any): Promise<void> {
+export async function renameRole(call: any, callback: any): Promise<void> {
   try {
-    logger.info(`Call to updateRole`, { callRequest: call.request });
-    const successMessage: SuccessMessage = await rolesManager.updateRole(
-      call.request
-    );
-    logger.info(`updateRole OK`, {
+    logger.info(`Call to renameRole`, { callRequest: call.request });
+    const role: Role = await rolesManager.renameRole(call.request);
+    logger.info(`renameRole OK`, {
       callRequest: call.request,
-      response: successMessage,
+      response: { success: true },
     });
-    callback(null, successMessage);
+    callback(null, { success: true });
   } catch (error) {
-    logger.error(`updateRole ERROR`, {
+    logger.error(`renameRole ERROR`, {
       callRequest: call.request,
       error: error.message,
     });

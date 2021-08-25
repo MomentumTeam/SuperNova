@@ -42,7 +42,7 @@ import {
   deleteRole,
   getRolesUnderOG,
   getRoleByRoleId,
-  updateRole,
+  renameRole,
 } from './roles/roles.controller';
 
 const PROTO_PATH = `${findPath('proto')}/kartoffelService.proto`;
@@ -121,7 +121,7 @@ export class Server {
         GetRoleByRoleId: getRoleByRoleId,
         GetRolesUnderOG: getRolesUnderOG,
         DeleteRole: deleteRole,
-        UpdateRole: updateRole,
+        RenameRole: renameRole,
       });
       logger.info(`Grpc services were successfully added to the server`);
     } catch (error) {
