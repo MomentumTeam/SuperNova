@@ -41,7 +41,7 @@ export class RolesRepository {
       return this.kartoffelFaker.randomRoleArray();
     } else {
       const data: Role[] = await this.kartoffelUtils.kartoffelGet(
-        `${C.kartoffelUrl}/api/roles/group/${getRolesUnderOGRequest.id}`,
+        `${C.kartoffelUrl}/api/roles/group/${getRolesUnderOGRequest.groupId}`,
         getRolesUnderOGRequest
       );
       return { roles: data };

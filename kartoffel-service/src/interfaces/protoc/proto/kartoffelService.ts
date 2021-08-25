@@ -160,8 +160,7 @@ export interface GetRoleByRoleIdRequest {
 
 /** GetRolesUnderOG */
 export interface GetRolesUnderOGRequest {
-  /** mongoId of OG */
-  id: string;
+  groupId: string;
   direct: boolean;
   page: number;
   pageSize: number;
@@ -2685,7 +2684,7 @@ export const GetRoleByRoleIdRequest = {
 };
 
 const baseGetRolesUnderOGRequest: object = {
-  id: "",
+  groupId: "",
   direct: false,
   page: 0,
   pageSize: 0,
@@ -2696,8 +2695,8 @@ export const GetRolesUnderOGRequest = {
     message: GetRolesUnderOGRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
+    if (message.groupId !== "") {
+      writer.uint32(10).string(message.groupId);
     }
     if (message.direct === true) {
       writer.uint32(16).bool(message.direct);
@@ -2722,7 +2721,7 @@ export const GetRolesUnderOGRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.id = reader.string();
+          message.groupId = reader.string();
           break;
         case 2:
           message.direct = reader.bool();
@@ -2743,10 +2742,10 @@ export const GetRolesUnderOGRequest = {
 
   fromJSON(object: any): GetRolesUnderOGRequest {
     const message = { ...baseGetRolesUnderOGRequest } as GetRolesUnderOGRequest;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
+    if (object.groupId !== undefined && object.groupId !== null) {
+      message.groupId = String(object.groupId);
     } else {
-      message.id = "";
+      message.groupId = "";
     }
     if (object.direct !== undefined && object.direct !== null) {
       message.direct = Boolean(object.direct);
@@ -2768,7 +2767,7 @@ export const GetRolesUnderOGRequest = {
 
   toJSON(message: GetRolesUnderOGRequest): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
+    message.groupId !== undefined && (obj.groupId = message.groupId);
     message.direct !== undefined && (obj.direct = message.direct);
     message.page !== undefined && (obj.page = message.page);
     message.pageSize !== undefined && (obj.pageSize = message.pageSize);
@@ -2779,10 +2778,10 @@ export const GetRolesUnderOGRequest = {
     object: DeepPartial<GetRolesUnderOGRequest>
   ): GetRolesUnderOGRequest {
     const message = { ...baseGetRolesUnderOGRequest } as GetRolesUnderOGRequest;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
+    if (object.groupId !== undefined && object.groupId !== null) {
+      message.groupId = object.groupId;
     } else {
-      message.id = "";
+      message.groupId = "";
     }
     if (object.direct !== undefined && object.direct !== null) {
       message.direct = object.direct;
