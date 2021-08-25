@@ -19,8 +19,6 @@ import {
   EntityArray,
   GetChildrenOfOGRequest,
   GetEntitiesUnderOGRequest,
-  GetEntityByIdNumberRequest,
-  GetEntityByMongoIdRequest,
   GetEntityByRoleIdRequest,
   GetOGTreeRequest,
   GetPictureByEntityIdRequest,
@@ -275,24 +273,6 @@ export class KartoffelRepository {
     }
   }
 
-  async getEntityByIdNumber(
-    getEntityByIdNumberRequest: GetEntityByIdNumberRequest
-  ): Promise<Entity> {
-    try {
-      if (C.useFaker) {
-        const entity: Entity = await this.kartoffelFaker.randomEntity(true);
-        return entity;
-      } else {
-        const res = await this.kartoffelGet(
-          `${C.kartoffelUrl}/entities/identifier/${getEntityByIdNumberRequest.idNumber}`
-        );
-        return res.data as Entity;
-      }
-    } catch (error) {
-      throw error;
-    }
-  }
-
   async getRoleByRoleId(
     getRoleByRoleIdRequest: GetRoleByRoleIdRequest
   ): Promise<Role> {
@@ -398,24 +378,6 @@ export class KartoffelRepository {
           }
         );
         return { success: true };
-      }
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async getEntityByMongoId(
-    getEntityByMongoIdRequest: GetEntityByMongoIdRequest
-  ): Promise<Entity> {
-    try {
-      if (C.useFaker) {
-        const entity: Entity = await this.kartoffelFaker.randomEntity(true);
-        return entity;
-      } else {
-        const res = await this.kartoffelGet(
-          `${C.kartoffelUrl}/entities/${getEntityByMongoIdRequest.id}`
-        );
-        return res.data as Entity;
       }
     } catch (error) {
       throw error;
