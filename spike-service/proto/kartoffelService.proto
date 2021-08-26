@@ -28,6 +28,7 @@ service Kartoffel {
     rpc GetOGById(GetOGByIdRequest) returns (OrganizationGroup){}   //l
     rpc GetChildrenOfOG(GetChildrenOfOGRequest) returns (OGArray){}
     rpc UpdateOGParent(UpdateOGParentRequest) returns (SuccessMessage){}
+    rpc RenameOG(RenameOGRequest) returns (SuccessMessage){}
 
     rpc CreateDI(CreateDIRequest) returns (DigitalIdentity){}
     rpc CreateRole(CreateRoleRequest) returns (Role){}
@@ -37,8 +38,7 @@ service Kartoffel {
     rpc DeleteRole(DeleteRoleRequest) returns (SuccessMessage){} 
     rpc DeleteDI(DeleteDIRequest) returns (SuccessMessage){}
     rpc GetOGTree(GetOGTreeRequest) returns (OGTree){}
-    // rpc RenameRole(RenameRoleRequest) returns (SuccessMessage){}
-    // rpc RenameOG(RenameOGRequest) returns (SuccessMessage){}
+    rpc RenameRole(RenameRoleRequest) returns (SuccessMessage){}
 
 
 
@@ -87,24 +87,21 @@ message UpdateEntityRequest{
 }
 
 message UpdateEntityProperties{
-    optional string displayName = 2;
-    optional string entityType = 5;
-    optional string identityCard = 6;
-    optional string personalNumber = 7;
-    optional string serviceType = 8;
-    optional string firstName = 9;
-    optional string lastName = 10;
-    optional string akaUnit = 11;
-    optional string dischargeDay = 12;
-    optional string rank = 13;
-    optional string mail = 14;
-    optional string jobTitle = 15;
-    repeated string phone = 16;
-    repeated string mobilePhone = 17;
-    optional string address = 18;
-    optional string clearance = 19;
-    optional string sex = 20;
-    optional string birthDate = 21;
+    optional string firstName = 1;
+    optional string lastName = 2;
+    optional string identityCard = 3;
+    optional string personalNumber = 4;
+    optional string serviceType = 5;
+    repeated string phone = 6;
+    repeated string mobilePhone = 7;
+    optional string address = 8;
+    optional string clearance = 9;
+    optional string sex = 10;
+    optional string birthDate = 11;
+    optional string entityType = 12;
+    optional string akaUnit = 13;
+    optional string dischargeDay = 14;
+    optional string rank = 15;
 }
 
 message RenameOGRequest{
@@ -211,18 +208,21 @@ message ConnectEntityAndDIRequest{
 
 // CreateEntity
 message CreateEntityRequest{
-    string firstName = 1;
-    string lastName = 2;
-    string identityCard = 3;
-    string personalNumber = 4;
-    string serviceType = 5;
+    optional string firstName = 1;
+    optional string lastName = 2;
+    optional string identityCard = 3;
+    optional string personalNumber = 4;
+    optional string serviceType = 5;
     repeated string phone = 6;
     repeated string mobilePhone = 7;
-    string address = 8;
-    string clearance = 9;
-    string sex = 10;
-    string birthDate = 11;
-    string entityType = 12;
+    optional string address = 8;
+    optional string clearance = 9;
+    optional string sex = 10;
+    optional string birthDate = 11;
+    optional string entityType = 12;
+    optional string akaUnit = 13;
+    optional string dischargeDay = 14;
+    optional string rank = 15;
 }
 
 // GetEntityByRoleId
@@ -264,9 +264,9 @@ message DeleteDIRequest{
 // GetEntitiesUnderOG
 message GetEntitiesUnderOGRequest{
     string id = 1; //mongoIds of OG
-    optional bool direct = 2;
-    optional int32 page = 3;
-    optional int32 pageSize = 4;
+    bool direct = 2;
+    int32 page = 3;
+    int32 pageSize = 4;
 }
 
 //SuccessMessage

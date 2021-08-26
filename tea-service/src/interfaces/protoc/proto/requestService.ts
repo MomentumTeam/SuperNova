@@ -721,8 +721,8 @@ export interface RenameOGRes {
 }
 
 export interface RenameOGKartoffelParams {
-  roleId: string;
-  userId: string;
+  id: string;
+  name: string;
 }
 
 export interface RenameOGADParams {
@@ -10018,18 +10018,18 @@ export const RenameOGRes = {
   },
 };
 
-const baseRenameOGKartoffelParams: object = { roleId: "", userId: "" };
+const baseRenameOGKartoffelParams: object = { id: "", name: "" };
 
 export const RenameOGKartoffelParams = {
   encode(
     message: RenameOGKartoffelParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.roleId !== "") {
-      writer.uint32(10).string(message.roleId);
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
     }
-    if (message.userId !== "") {
-      writer.uint32(18).string(message.userId);
+    if (message.name !== "") {
+      writer.uint32(18).string(message.name);
     }
     return writer;
   },
@@ -10047,10 +10047,10 @@ export const RenameOGKartoffelParams = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.roleId = reader.string();
+          message.id = reader.string();
           break;
         case 2:
-          message.userId = reader.string();
+          message.name = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -10064,23 +10064,23 @@ export const RenameOGKartoffelParams = {
     const message = {
       ...baseRenameOGKartoffelParams,
     } as RenameOGKartoffelParams;
-    if (object.roleId !== undefined && object.roleId !== null) {
-      message.roleId = String(object.roleId);
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
     } else {
-      message.roleId = "";
+      message.id = "";
     }
-    if (object.userId !== undefined && object.userId !== null) {
-      message.userId = String(object.userId);
+    if (object.name !== undefined && object.name !== null) {
+      message.name = String(object.name);
     } else {
-      message.userId = "";
+      message.name = "";
     }
     return message;
   },
 
   toJSON(message: RenameOGKartoffelParams): unknown {
     const obj: any = {};
-    message.roleId !== undefined && (obj.roleId = message.roleId);
-    message.userId !== undefined && (obj.userId = message.userId);
+    message.id !== undefined && (obj.id = message.id);
+    message.name !== undefined && (obj.name = message.name);
     return obj;
   },
 
@@ -10090,15 +10090,15 @@ export const RenameOGKartoffelParams = {
     const message = {
       ...baseRenameOGKartoffelParams,
     } as RenameOGKartoffelParams;
-    if (object.roleId !== undefined && object.roleId !== null) {
-      message.roleId = object.roleId;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
     } else {
-      message.roleId = "";
+      message.id = "";
     }
-    if (object.userId !== undefined && object.userId !== null) {
-      message.userId = object.userId;
+    if (object.name !== undefined && object.name !== null) {
+      message.name = object.name;
     } else {
-      message.userId = "";
+      message.name = "";
     }
     return message;
   },
