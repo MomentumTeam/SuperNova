@@ -4,6 +4,42 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "Kartoffel";
 
+export interface GetAllOGsRequest {
+  source: string;
+  akaUnit: string;
+  updatedFrom: string;
+  page: number;
+  pageSize: number;
+}
+
+export interface UpdateDIRequest {
+  id: string;
+  isRoleAttachable: boolean;
+  mail: string;
+}
+
+export interface GetDIByUniqueIdRequest {
+  id: string;
+}
+
+export interface SearchDIOrUniqueIdRequest {
+  uniqueId: string;
+}
+
+export interface GetDIByRoleIdRequest {
+  roleId: string;
+}
+
+export interface DigitalIdentities {
+  digitalIdentities: DigitalIdentity[];
+}
+
+export interface GetAllDIsRequest {
+  updatedFrom: string;
+  page: number;
+  pageSize: number;
+}
+
 export interface UpdateOGParentRequest {
   id: string;
   parentId: string;
@@ -43,34 +79,26 @@ export interface UpdateEntityRequest {
 }
 
 export interface UpdateEntityProperties {
-  displayName?: string | undefined;
-  entityType?: string | undefined;
+  firstName?: string | undefined;
+  lastName?: string | undefined;
   identityCard?: string | undefined;
   personalNumber?: string | undefined;
   serviceType?: string | undefined;
-  firstName?: string | undefined;
-  lastName?: string | undefined;
-  akaUnit?: string | undefined;
-  dischargeDay?: string | undefined;
-  rank?: string | undefined;
-  mail?: string | undefined;
-  jobTitle?: string | undefined;
   phone: string[];
   mobilePhone: string[];
   address?: string | undefined;
   clearance?: string | undefined;
   sex?: string | undefined;
   birthDate?: string | undefined;
+  entityType?: string | undefined;
+  akaUnit?: string | undefined;
+  dischargeDay?: string | undefined;
+  rank?: string | undefined;
 }
 
 export interface RenameOGRequest {
   id: string;
   name: string;
-}
-
-export interface RenameRoleRequest {
-  uniqueId: string;
-  jobTitle: string;
 }
 
 export interface GetPictureByEntityIdRequest {
@@ -103,7 +131,7 @@ export interface OGTree {
 
 /** SearchOG */
 export interface SearchOGRequest {
-  hierarchyAndName: string;
+  nameAndHierarchy: string;
 }
 
 export interface OGArray {
@@ -119,11 +147,19 @@ export interface CreateOGRequest {
 
 /** CreateDI */
 export interface CreateDIRequest {
-  type: string;
-  source: string;
-  uniqueId: string;
-  mail: string;
+  entityId: string;
   isRoleAttachable: boolean;
+  mail: string;
+  source: string;
+  type: string;
+  uniqueId: string;
+}
+
+/** GetAllRoles */
+export interface GetAllRolesRequest {
+  updatedFrom: string;
+  page: number;
+  pageSize: number;
 }
 
 /** CreateRole */
@@ -134,16 +170,31 @@ export interface CreateRoleRequest {
   roleId: string;
 }
 
+/** DeleteRole */
+export interface DeleteRoleRequest {
+  roleId: string;
+}
+
+/** RenameRole */
+export interface RenameRoleRequest {
+  roleId: string;
+  jobTitle: string;
+}
+
 /** ConnectRoleAndDI */
 export interface ConnectRoleAndDIRequest {
-  /** mongoId of role */
+  /** id of role */
   id: string;
   /** uniqueId of DI */
   uniqueId: string;
 }
 
-export interface EntityArray {
-  entities: Entity[];
+/** DisconnectRoleAndDI */
+export interface DisconnectRoleAndDIRequest {
+  /** id of role */
+  roleId: string;
+  /** uniqueId of DI */
+  uniqueId: string;
 }
 
 /** GetRoleByRoleId */
@@ -153,9 +204,33 @@ export interface GetRoleByRoleIdRequest {
 
 /** GetRolesUnderOG */
 export interface GetRolesUnderOGRequest {
-  /** mongoId of OG */
-  id: string;
+  groupId: string;
   direct: boolean;
+  page: number;
+  pageSize: number;
+}
+
+/** GetRolesByDI */
+export interface GetRoleByDIRequest {
+  uniqueId: string;
+}
+
+/** GetRolesByHierarchy */
+export interface GetRolesByHierarchyRequest {
+  hierarchy: string;
+  direct: boolean;
+  page: number;
+  pageSize: number;
+}
+
+/** ChangeRoleOG */
+export interface ChangeRoleOGRequest {
+  roleId: string;
+  groupId: string;
+}
+
+export interface EntityArray {
+  entities: Entity[];
 }
 
 export interface RoleArray {
@@ -172,18 +247,21 @@ export interface ConnectEntityAndDIRequest {
 
 /** CreateEntity */
 export interface CreateEntityRequest {
-  firstName: string;
-  lastName: string;
-  identityCard: string;
-  personalNumber: string;
-  serviceType: string;
+  firstName?: string | undefined;
+  lastName?: string | undefined;
+  identityCard?: string | undefined;
+  personalNumber?: string | undefined;
+  serviceType?: string | undefined;
   phone: string[];
   mobilePhone: string[];
-  address: string;
-  clearance: string;
-  sex: string;
-  birthDate: string;
-  entityType: string;
+  address?: string | undefined;
+  clearance?: string | undefined;
+  sex?: string | undefined;
+  birthDate?: string | undefined;
+  entityType?: string | undefined;
+  akaUnit?: string | undefined;
+  dischargeDay?: string | undefined;
+  rank?: string | undefined;
 }
 
 /** GetEntityByRoleId */
@@ -215,17 +293,15 @@ export interface DeleteOGRequest {
 export interface GetChildrenOfOGRequest {
   /** mongoId of OG */
   id: string;
-}
-
-/** DeleteRole */
-export interface DeleteRoleRequest {
-  roleId: string;
+  page: number;
+  pageSize: number;
+  direct: boolean;
 }
 
 /** DeleteDI */
 export interface DeleteDIRequest {
   /** uniqueId of DI (taken from the role) */
-  uniqueId: string;
+  id: string;
 }
 
 /** GetEntitiesUnderOG */
@@ -310,6 +386,603 @@ export interface DigitalIdentity {
   isRoleAttachable: boolean;
   role: Role | undefined;
 }
+
+const baseGetAllOGsRequest: object = {
+  source: "",
+  akaUnit: "",
+  updatedFrom: "",
+  page: 0,
+  pageSize: 0,
+};
+
+export const GetAllOGsRequest = {
+  encode(
+    message: GetAllOGsRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.source !== "") {
+      writer.uint32(10).string(message.source);
+    }
+    if (message.akaUnit !== "") {
+      writer.uint32(18).string(message.akaUnit);
+    }
+    if (message.updatedFrom !== "") {
+      writer.uint32(26).string(message.updatedFrom);
+    }
+    if (message.page !== 0) {
+      writer.uint32(32).int32(message.page);
+    }
+    if (message.pageSize !== 0) {
+      writer.uint32(40).int32(message.pageSize);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): GetAllOGsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseGetAllOGsRequest } as GetAllOGsRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.source = reader.string();
+          break;
+        case 2:
+          message.akaUnit = reader.string();
+          break;
+        case 3:
+          message.updatedFrom = reader.string();
+          break;
+        case 4:
+          message.page = reader.int32();
+          break;
+        case 5:
+          message.pageSize = reader.int32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetAllOGsRequest {
+    const message = { ...baseGetAllOGsRequest } as GetAllOGsRequest;
+    if (object.source !== undefined && object.source !== null) {
+      message.source = String(object.source);
+    } else {
+      message.source = "";
+    }
+    if (object.akaUnit !== undefined && object.akaUnit !== null) {
+      message.akaUnit = String(object.akaUnit);
+    } else {
+      message.akaUnit = "";
+    }
+    if (object.updatedFrom !== undefined && object.updatedFrom !== null) {
+      message.updatedFrom = String(object.updatedFrom);
+    } else {
+      message.updatedFrom = "";
+    }
+    if (object.page !== undefined && object.page !== null) {
+      message.page = Number(object.page);
+    } else {
+      message.page = 0;
+    }
+    if (object.pageSize !== undefined && object.pageSize !== null) {
+      message.pageSize = Number(object.pageSize);
+    } else {
+      message.pageSize = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: GetAllOGsRequest): unknown {
+    const obj: any = {};
+    message.source !== undefined && (obj.source = message.source);
+    message.akaUnit !== undefined && (obj.akaUnit = message.akaUnit);
+    message.updatedFrom !== undefined &&
+      (obj.updatedFrom = message.updatedFrom);
+    message.page !== undefined && (obj.page = message.page);
+    message.pageSize !== undefined && (obj.pageSize = message.pageSize);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<GetAllOGsRequest>): GetAllOGsRequest {
+    const message = { ...baseGetAllOGsRequest } as GetAllOGsRequest;
+    if (object.source !== undefined && object.source !== null) {
+      message.source = object.source;
+    } else {
+      message.source = "";
+    }
+    if (object.akaUnit !== undefined && object.akaUnit !== null) {
+      message.akaUnit = object.akaUnit;
+    } else {
+      message.akaUnit = "";
+    }
+    if (object.updatedFrom !== undefined && object.updatedFrom !== null) {
+      message.updatedFrom = object.updatedFrom;
+    } else {
+      message.updatedFrom = "";
+    }
+    if (object.page !== undefined && object.page !== null) {
+      message.page = object.page;
+    } else {
+      message.page = 0;
+    }
+    if (object.pageSize !== undefined && object.pageSize !== null) {
+      message.pageSize = object.pageSize;
+    } else {
+      message.pageSize = 0;
+    }
+    return message;
+  },
+};
+
+const baseUpdateDIRequest: object = {
+  id: "",
+  isRoleAttachable: false,
+  mail: "",
+};
+
+export const UpdateDIRequest = {
+  encode(
+    message: UpdateDIRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.isRoleAttachable === true) {
+      writer.uint32(16).bool(message.isRoleAttachable);
+    }
+    if (message.mail !== "") {
+      writer.uint32(26).string(message.mail);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UpdateDIRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseUpdateDIRequest } as UpdateDIRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        case 2:
+          message.isRoleAttachable = reader.bool();
+          break;
+        case 3:
+          message.mail = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UpdateDIRequest {
+    const message = { ...baseUpdateDIRequest } as UpdateDIRequest;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    if (
+      object.isRoleAttachable !== undefined &&
+      object.isRoleAttachable !== null
+    ) {
+      message.isRoleAttachable = Boolean(object.isRoleAttachable);
+    } else {
+      message.isRoleAttachable = false;
+    }
+    if (object.mail !== undefined && object.mail !== null) {
+      message.mail = String(object.mail);
+    } else {
+      message.mail = "";
+    }
+    return message;
+  },
+
+  toJSON(message: UpdateDIRequest): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    message.isRoleAttachable !== undefined &&
+      (obj.isRoleAttachable = message.isRoleAttachable);
+    message.mail !== undefined && (obj.mail = message.mail);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<UpdateDIRequest>): UpdateDIRequest {
+    const message = { ...baseUpdateDIRequest } as UpdateDIRequest;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    if (
+      object.isRoleAttachable !== undefined &&
+      object.isRoleAttachable !== null
+    ) {
+      message.isRoleAttachable = object.isRoleAttachable;
+    } else {
+      message.isRoleAttachable = false;
+    }
+    if (object.mail !== undefined && object.mail !== null) {
+      message.mail = object.mail;
+    } else {
+      message.mail = "";
+    }
+    return message;
+  },
+};
+
+const baseGetDIByUniqueIdRequest: object = { id: "" };
+
+export const GetDIByUniqueIdRequest = {
+  encode(
+    message: GetDIByUniqueIdRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GetDIByUniqueIdRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseGetDIByUniqueIdRequest } as GetDIByUniqueIdRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetDIByUniqueIdRequest {
+    const message = { ...baseGetDIByUniqueIdRequest } as GetDIByUniqueIdRequest;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+
+  toJSON(message: GetDIByUniqueIdRequest): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<GetDIByUniqueIdRequest>
+  ): GetDIByUniqueIdRequest {
+    const message = { ...baseGetDIByUniqueIdRequest } as GetDIByUniqueIdRequest;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+};
+
+const baseSearchDIOrUniqueIdRequest: object = { uniqueId: "" };
+
+export const SearchDIOrUniqueIdRequest = {
+  encode(
+    message: SearchDIOrUniqueIdRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.uniqueId !== "") {
+      writer.uint32(10).string(message.uniqueId);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): SearchDIOrUniqueIdRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseSearchDIOrUniqueIdRequest,
+    } as SearchDIOrUniqueIdRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.uniqueId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SearchDIOrUniqueIdRequest {
+    const message = {
+      ...baseSearchDIOrUniqueIdRequest,
+    } as SearchDIOrUniqueIdRequest;
+    if (object.uniqueId !== undefined && object.uniqueId !== null) {
+      message.uniqueId = String(object.uniqueId);
+    } else {
+      message.uniqueId = "";
+    }
+    return message;
+  },
+
+  toJSON(message: SearchDIOrUniqueIdRequest): unknown {
+    const obj: any = {};
+    message.uniqueId !== undefined && (obj.uniqueId = message.uniqueId);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<SearchDIOrUniqueIdRequest>
+  ): SearchDIOrUniqueIdRequest {
+    const message = {
+      ...baseSearchDIOrUniqueIdRequest,
+    } as SearchDIOrUniqueIdRequest;
+    if (object.uniqueId !== undefined && object.uniqueId !== null) {
+      message.uniqueId = object.uniqueId;
+    } else {
+      message.uniqueId = "";
+    }
+    return message;
+  },
+};
+
+const baseGetDIByRoleIdRequest: object = { roleId: "" };
+
+export const GetDIByRoleIdRequest = {
+  encode(
+    message: GetDIByRoleIdRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.roleId !== "") {
+      writer.uint32(10).string(message.roleId);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GetDIByRoleIdRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseGetDIByRoleIdRequest } as GetDIByRoleIdRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.roleId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetDIByRoleIdRequest {
+    const message = { ...baseGetDIByRoleIdRequest } as GetDIByRoleIdRequest;
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = String(object.roleId);
+    } else {
+      message.roleId = "";
+    }
+    return message;
+  },
+
+  toJSON(message: GetDIByRoleIdRequest): unknown {
+    const obj: any = {};
+    message.roleId !== undefined && (obj.roleId = message.roleId);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<GetDIByRoleIdRequest>): GetDIByRoleIdRequest {
+    const message = { ...baseGetDIByRoleIdRequest } as GetDIByRoleIdRequest;
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = object.roleId;
+    } else {
+      message.roleId = "";
+    }
+    return message;
+  },
+};
+
+const baseDigitalIdentities: object = {};
+
+export const DigitalIdentities = {
+  encode(
+    message: DigitalIdentities,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.digitalIdentities) {
+      DigitalIdentity.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DigitalIdentities {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseDigitalIdentities } as DigitalIdentities;
+    message.digitalIdentities = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.digitalIdentities.push(
+            DigitalIdentity.decode(reader, reader.uint32())
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DigitalIdentities {
+    const message = { ...baseDigitalIdentities } as DigitalIdentities;
+    message.digitalIdentities = [];
+    if (
+      object.digitalIdentities !== undefined &&
+      object.digitalIdentities !== null
+    ) {
+      for (const e of object.digitalIdentities) {
+        message.digitalIdentities.push(DigitalIdentity.fromJSON(e));
+      }
+    }
+    return message;
+  },
+
+  toJSON(message: DigitalIdentities): unknown {
+    const obj: any = {};
+    if (message.digitalIdentities) {
+      obj.digitalIdentities = message.digitalIdentities.map((e) =>
+        e ? DigitalIdentity.toJSON(e) : undefined
+      );
+    } else {
+      obj.digitalIdentities = [];
+    }
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<DigitalIdentities>): DigitalIdentities {
+    const message = { ...baseDigitalIdentities } as DigitalIdentities;
+    message.digitalIdentities = [];
+    if (
+      object.digitalIdentities !== undefined &&
+      object.digitalIdentities !== null
+    ) {
+      for (const e of object.digitalIdentities) {
+        message.digitalIdentities.push(DigitalIdentity.fromPartial(e));
+      }
+    }
+    return message;
+  },
+};
+
+const baseGetAllDIsRequest: object = { updatedFrom: "", page: 0, pageSize: 0 };
+
+export const GetAllDIsRequest = {
+  encode(
+    message: GetAllDIsRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.updatedFrom !== "") {
+      writer.uint32(10).string(message.updatedFrom);
+    }
+    if (message.page !== 0) {
+      writer.uint32(16).int32(message.page);
+    }
+    if (message.pageSize !== 0) {
+      writer.uint32(24).int32(message.pageSize);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): GetAllDIsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseGetAllDIsRequest } as GetAllDIsRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.updatedFrom = reader.string();
+          break;
+        case 2:
+          message.page = reader.int32();
+          break;
+        case 3:
+          message.pageSize = reader.int32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetAllDIsRequest {
+    const message = { ...baseGetAllDIsRequest } as GetAllDIsRequest;
+    if (object.updatedFrom !== undefined && object.updatedFrom !== null) {
+      message.updatedFrom = String(object.updatedFrom);
+    } else {
+      message.updatedFrom = "";
+    }
+    if (object.page !== undefined && object.page !== null) {
+      message.page = Number(object.page);
+    } else {
+      message.page = 0;
+    }
+    if (object.pageSize !== undefined && object.pageSize !== null) {
+      message.pageSize = Number(object.pageSize);
+    } else {
+      message.pageSize = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: GetAllDIsRequest): unknown {
+    const obj: any = {};
+    message.updatedFrom !== undefined &&
+      (obj.updatedFrom = message.updatedFrom);
+    message.page !== undefined && (obj.page = message.page);
+    message.pageSize !== undefined && (obj.pageSize = message.pageSize);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<GetAllDIsRequest>): GetAllDIsRequest {
+    const message = { ...baseGetAllDIsRequest } as GetAllDIsRequest;
+    if (object.updatedFrom !== undefined && object.updatedFrom !== null) {
+      message.updatedFrom = object.updatedFrom;
+    } else {
+      message.updatedFrom = "";
+    }
+    if (object.page !== undefined && object.page !== null) {
+      message.page = object.page;
+    } else {
+      message.page = 0;
+    }
+    if (object.pageSize !== undefined && object.pageSize !== null) {
+      message.pageSize = object.pageSize;
+    } else {
+      message.pageSize = 0;
+    }
+    return message;
+  },
+};
 
 const baseUpdateOGParentRequest: object = { id: "", parentId: "", parent: "" };
 
@@ -941,59 +1614,50 @@ export const UpdateEntityProperties = {
     message: UpdateEntityProperties,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.displayName !== undefined) {
-      writer.uint32(18).string(message.displayName);
-    }
-    if (message.entityType !== undefined) {
-      writer.uint32(42).string(message.entityType);
-    }
-    if (message.identityCard !== undefined) {
-      writer.uint32(50).string(message.identityCard);
-    }
-    if (message.personalNumber !== undefined) {
-      writer.uint32(58).string(message.personalNumber);
-    }
-    if (message.serviceType !== undefined) {
-      writer.uint32(66).string(message.serviceType);
-    }
     if (message.firstName !== undefined) {
-      writer.uint32(74).string(message.firstName);
+      writer.uint32(10).string(message.firstName);
     }
     if (message.lastName !== undefined) {
-      writer.uint32(82).string(message.lastName);
+      writer.uint32(18).string(message.lastName);
     }
-    if (message.akaUnit !== undefined) {
-      writer.uint32(90).string(message.akaUnit);
+    if (message.identityCard !== undefined) {
+      writer.uint32(26).string(message.identityCard);
     }
-    if (message.dischargeDay !== undefined) {
-      writer.uint32(98).string(message.dischargeDay);
+    if (message.personalNumber !== undefined) {
+      writer.uint32(34).string(message.personalNumber);
     }
-    if (message.rank !== undefined) {
-      writer.uint32(106).string(message.rank);
-    }
-    if (message.mail !== undefined) {
-      writer.uint32(114).string(message.mail);
-    }
-    if (message.jobTitle !== undefined) {
-      writer.uint32(122).string(message.jobTitle);
+    if (message.serviceType !== undefined) {
+      writer.uint32(42).string(message.serviceType);
     }
     for (const v of message.phone) {
-      writer.uint32(130).string(v!);
+      writer.uint32(50).string(v!);
     }
     for (const v of message.mobilePhone) {
-      writer.uint32(138).string(v!);
+      writer.uint32(58).string(v!);
     }
     if (message.address !== undefined) {
-      writer.uint32(146).string(message.address);
+      writer.uint32(66).string(message.address);
     }
     if (message.clearance !== undefined) {
-      writer.uint32(154).string(message.clearance);
+      writer.uint32(74).string(message.clearance);
     }
     if (message.sex !== undefined) {
-      writer.uint32(162).string(message.sex);
+      writer.uint32(82).string(message.sex);
     }
     if (message.birthDate !== undefined) {
-      writer.uint32(170).string(message.birthDate);
+      writer.uint32(90).string(message.birthDate);
+    }
+    if (message.entityType !== undefined) {
+      writer.uint32(98).string(message.entityType);
+    }
+    if (message.akaUnit !== undefined) {
+      writer.uint32(106).string(message.akaUnit);
+    }
+    if (message.dischargeDay !== undefined) {
+      writer.uint32(114).string(message.dischargeDay);
+    }
+    if (message.rank !== undefined) {
+      writer.uint32(122).string(message.rank);
     }
     return writer;
   },
@@ -1010,59 +1674,50 @@ export const UpdateEntityProperties = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        case 2:
-          message.displayName = reader.string();
-          break;
-        case 5:
-          message.entityType = reader.string();
-          break;
-        case 6:
-          message.identityCard = reader.string();
-          break;
-        case 7:
-          message.personalNumber = reader.string();
-          break;
-        case 8:
-          message.serviceType = reader.string();
-          break;
-        case 9:
+        case 1:
           message.firstName = reader.string();
           break;
-        case 10:
+        case 2:
           message.lastName = reader.string();
           break;
-        case 11:
-          message.akaUnit = reader.string();
+        case 3:
+          message.identityCard = reader.string();
           break;
-        case 12:
-          message.dischargeDay = reader.string();
+        case 4:
+          message.personalNumber = reader.string();
           break;
-        case 13:
-          message.rank = reader.string();
+        case 5:
+          message.serviceType = reader.string();
           break;
-        case 14:
-          message.mail = reader.string();
-          break;
-        case 15:
-          message.jobTitle = reader.string();
-          break;
-        case 16:
+        case 6:
           message.phone.push(reader.string());
           break;
-        case 17:
+        case 7:
           message.mobilePhone.push(reader.string());
           break;
-        case 18:
+        case 8:
           message.address = reader.string();
           break;
-        case 19:
+        case 9:
           message.clearance = reader.string();
           break;
-        case 20:
+        case 10:
           message.sex = reader.string();
           break;
-        case 21:
+        case 11:
           message.birthDate = reader.string();
+          break;
+        case 12:
+          message.entityType = reader.string();
+          break;
+        case 13:
+          message.akaUnit = reader.string();
+          break;
+        case 14:
+          message.dischargeDay = reader.string();
+          break;
+        case 15:
+          message.rank = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -1076,15 +1731,15 @@ export const UpdateEntityProperties = {
     const message = { ...baseUpdateEntityProperties } as UpdateEntityProperties;
     message.phone = [];
     message.mobilePhone = [];
-    if (object.displayName !== undefined && object.displayName !== null) {
-      message.displayName = String(object.displayName);
+    if (object.firstName !== undefined && object.firstName !== null) {
+      message.firstName = String(object.firstName);
     } else {
-      message.displayName = undefined;
+      message.firstName = undefined;
     }
-    if (object.entityType !== undefined && object.entityType !== null) {
-      message.entityType = String(object.entityType);
+    if (object.lastName !== undefined && object.lastName !== null) {
+      message.lastName = String(object.lastName);
     } else {
-      message.entityType = undefined;
+      message.lastName = undefined;
     }
     if (object.identityCard !== undefined && object.identityCard !== null) {
       message.identityCard = String(object.identityCard);
@@ -1100,41 +1755,6 @@ export const UpdateEntityProperties = {
       message.serviceType = String(object.serviceType);
     } else {
       message.serviceType = undefined;
-    }
-    if (object.firstName !== undefined && object.firstName !== null) {
-      message.firstName = String(object.firstName);
-    } else {
-      message.firstName = undefined;
-    }
-    if (object.lastName !== undefined && object.lastName !== null) {
-      message.lastName = String(object.lastName);
-    } else {
-      message.lastName = undefined;
-    }
-    if (object.akaUnit !== undefined && object.akaUnit !== null) {
-      message.akaUnit = String(object.akaUnit);
-    } else {
-      message.akaUnit = undefined;
-    }
-    if (object.dischargeDay !== undefined && object.dischargeDay !== null) {
-      message.dischargeDay = String(object.dischargeDay);
-    } else {
-      message.dischargeDay = undefined;
-    }
-    if (object.rank !== undefined && object.rank !== null) {
-      message.rank = String(object.rank);
-    } else {
-      message.rank = undefined;
-    }
-    if (object.mail !== undefined && object.mail !== null) {
-      message.mail = String(object.mail);
-    } else {
-      message.mail = undefined;
-    }
-    if (object.jobTitle !== undefined && object.jobTitle !== null) {
-      message.jobTitle = String(object.jobTitle);
-    } else {
-      message.jobTitle = undefined;
     }
     if (object.phone !== undefined && object.phone !== null) {
       for (const e of object.phone) {
@@ -1166,28 +1786,39 @@ export const UpdateEntityProperties = {
     } else {
       message.birthDate = undefined;
     }
+    if (object.entityType !== undefined && object.entityType !== null) {
+      message.entityType = String(object.entityType);
+    } else {
+      message.entityType = undefined;
+    }
+    if (object.akaUnit !== undefined && object.akaUnit !== null) {
+      message.akaUnit = String(object.akaUnit);
+    } else {
+      message.akaUnit = undefined;
+    }
+    if (object.dischargeDay !== undefined && object.dischargeDay !== null) {
+      message.dischargeDay = String(object.dischargeDay);
+    } else {
+      message.dischargeDay = undefined;
+    }
+    if (object.rank !== undefined && object.rank !== null) {
+      message.rank = String(object.rank);
+    } else {
+      message.rank = undefined;
+    }
     return message;
   },
 
   toJSON(message: UpdateEntityProperties): unknown {
     const obj: any = {};
-    message.displayName !== undefined &&
-      (obj.displayName = message.displayName);
-    message.entityType !== undefined && (obj.entityType = message.entityType);
+    message.firstName !== undefined && (obj.firstName = message.firstName);
+    message.lastName !== undefined && (obj.lastName = message.lastName);
     message.identityCard !== undefined &&
       (obj.identityCard = message.identityCard);
     message.personalNumber !== undefined &&
       (obj.personalNumber = message.personalNumber);
     message.serviceType !== undefined &&
       (obj.serviceType = message.serviceType);
-    message.firstName !== undefined && (obj.firstName = message.firstName);
-    message.lastName !== undefined && (obj.lastName = message.lastName);
-    message.akaUnit !== undefined && (obj.akaUnit = message.akaUnit);
-    message.dischargeDay !== undefined &&
-      (obj.dischargeDay = message.dischargeDay);
-    message.rank !== undefined && (obj.rank = message.rank);
-    message.mail !== undefined && (obj.mail = message.mail);
-    message.jobTitle !== undefined && (obj.jobTitle = message.jobTitle);
     if (message.phone) {
       obj.phone = message.phone.map((e) => e);
     } else {
@@ -1202,6 +1833,11 @@ export const UpdateEntityProperties = {
     message.clearance !== undefined && (obj.clearance = message.clearance);
     message.sex !== undefined && (obj.sex = message.sex);
     message.birthDate !== undefined && (obj.birthDate = message.birthDate);
+    message.entityType !== undefined && (obj.entityType = message.entityType);
+    message.akaUnit !== undefined && (obj.akaUnit = message.akaUnit);
+    message.dischargeDay !== undefined &&
+      (obj.dischargeDay = message.dischargeDay);
+    message.rank !== undefined && (obj.rank = message.rank);
     return obj;
   },
 
@@ -1211,15 +1847,15 @@ export const UpdateEntityProperties = {
     const message = { ...baseUpdateEntityProperties } as UpdateEntityProperties;
     message.phone = [];
     message.mobilePhone = [];
-    if (object.displayName !== undefined && object.displayName !== null) {
-      message.displayName = object.displayName;
+    if (object.firstName !== undefined && object.firstName !== null) {
+      message.firstName = object.firstName;
     } else {
-      message.displayName = undefined;
+      message.firstName = undefined;
     }
-    if (object.entityType !== undefined && object.entityType !== null) {
-      message.entityType = object.entityType;
+    if (object.lastName !== undefined && object.lastName !== null) {
+      message.lastName = object.lastName;
     } else {
-      message.entityType = undefined;
+      message.lastName = undefined;
     }
     if (object.identityCard !== undefined && object.identityCard !== null) {
       message.identityCard = object.identityCard;
@@ -1235,41 +1871,6 @@ export const UpdateEntityProperties = {
       message.serviceType = object.serviceType;
     } else {
       message.serviceType = undefined;
-    }
-    if (object.firstName !== undefined && object.firstName !== null) {
-      message.firstName = object.firstName;
-    } else {
-      message.firstName = undefined;
-    }
-    if (object.lastName !== undefined && object.lastName !== null) {
-      message.lastName = object.lastName;
-    } else {
-      message.lastName = undefined;
-    }
-    if (object.akaUnit !== undefined && object.akaUnit !== null) {
-      message.akaUnit = object.akaUnit;
-    } else {
-      message.akaUnit = undefined;
-    }
-    if (object.dischargeDay !== undefined && object.dischargeDay !== null) {
-      message.dischargeDay = object.dischargeDay;
-    } else {
-      message.dischargeDay = undefined;
-    }
-    if (object.rank !== undefined && object.rank !== null) {
-      message.rank = object.rank;
-    } else {
-      message.rank = undefined;
-    }
-    if (object.mail !== undefined && object.mail !== null) {
-      message.mail = object.mail;
-    } else {
-      message.mail = undefined;
-    }
-    if (object.jobTitle !== undefined && object.jobTitle !== null) {
-      message.jobTitle = object.jobTitle;
-    } else {
-      message.jobTitle = undefined;
     }
     if (object.phone !== undefined && object.phone !== null) {
       for (const e of object.phone) {
@@ -1300,6 +1901,26 @@ export const UpdateEntityProperties = {
       message.birthDate = object.birthDate;
     } else {
       message.birthDate = undefined;
+    }
+    if (object.entityType !== undefined && object.entityType !== null) {
+      message.entityType = object.entityType;
+    } else {
+      message.entityType = undefined;
+    }
+    if (object.akaUnit !== undefined && object.akaUnit !== null) {
+      message.akaUnit = object.akaUnit;
+    } else {
+      message.akaUnit = undefined;
+    }
+    if (object.dischargeDay !== undefined && object.dischargeDay !== null) {
+      message.dischargeDay = object.dischargeDay;
+    } else {
+      message.dischargeDay = undefined;
+    }
+    if (object.rank !== undefined && object.rank !== null) {
+      message.rank = object.rank;
+    } else {
+      message.rank = undefined;
     }
     return message;
   },
@@ -1375,81 +1996,6 @@ export const RenameOGRequest = {
       message.name = object.name;
     } else {
       message.name = "";
-    }
-    return message;
-  },
-};
-
-const baseRenameRoleRequest: object = { uniqueId: "", jobTitle: "" };
-
-export const RenameRoleRequest = {
-  encode(
-    message: RenameRoleRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.uniqueId !== "") {
-      writer.uint32(10).string(message.uniqueId);
-    }
-    if (message.jobTitle !== "") {
-      writer.uint32(18).string(message.jobTitle);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): RenameRoleRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseRenameRoleRequest } as RenameRoleRequest;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.uniqueId = reader.string();
-          break;
-        case 2:
-          message.jobTitle = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): RenameRoleRequest {
-    const message = { ...baseRenameRoleRequest } as RenameRoleRequest;
-    if (object.uniqueId !== undefined && object.uniqueId !== null) {
-      message.uniqueId = String(object.uniqueId);
-    } else {
-      message.uniqueId = "";
-    }
-    if (object.jobTitle !== undefined && object.jobTitle !== null) {
-      message.jobTitle = String(object.jobTitle);
-    } else {
-      message.jobTitle = "";
-    }
-    return message;
-  },
-
-  toJSON(message: RenameRoleRequest): unknown {
-    const obj: any = {};
-    message.uniqueId !== undefined && (obj.uniqueId = message.uniqueId);
-    message.jobTitle !== undefined && (obj.jobTitle = message.jobTitle);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<RenameRoleRequest>): RenameRoleRequest {
-    const message = { ...baseRenameRoleRequest } as RenameRoleRequest;
-    if (object.uniqueId !== undefined && object.uniqueId !== null) {
-      message.uniqueId = object.uniqueId;
-    } else {
-      message.uniqueId = "";
-    }
-    if (object.jobTitle !== undefined && object.jobTitle !== null) {
-      message.jobTitle = object.jobTitle;
-    } else {
-      message.jobTitle = "";
     }
     return message;
   },
@@ -1893,15 +2439,15 @@ export const OGTree = {
   },
 };
 
-const baseSearchOGRequest: object = { hierarchyAndName: "" };
+const baseSearchOGRequest: object = { nameAndHierarchy: "" };
 
 export const SearchOGRequest = {
   encode(
     message: SearchOGRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.hierarchyAndName !== "") {
-      writer.uint32(10).string(message.hierarchyAndName);
+    if (message.nameAndHierarchy !== "") {
+      writer.uint32(10).string(message.nameAndHierarchy);
     }
     return writer;
   },
@@ -1914,7 +2460,7 @@ export const SearchOGRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.hierarchyAndName = reader.string();
+          message.nameAndHierarchy = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -1927,32 +2473,32 @@ export const SearchOGRequest = {
   fromJSON(object: any): SearchOGRequest {
     const message = { ...baseSearchOGRequest } as SearchOGRequest;
     if (
-      object.hierarchyAndName !== undefined &&
-      object.hierarchyAndName !== null
+      object.nameAndHierarchy !== undefined &&
+      object.nameAndHierarchy !== null
     ) {
-      message.hierarchyAndName = String(object.hierarchyAndName);
+      message.nameAndHierarchy = String(object.nameAndHierarchy);
     } else {
-      message.hierarchyAndName = "";
+      message.nameAndHierarchy = "";
     }
     return message;
   },
 
   toJSON(message: SearchOGRequest): unknown {
     const obj: any = {};
-    message.hierarchyAndName !== undefined &&
-      (obj.hierarchyAndName = message.hierarchyAndName);
+    message.nameAndHierarchy !== undefined &&
+      (obj.nameAndHierarchy = message.nameAndHierarchy);
     return obj;
   },
 
   fromPartial(object: DeepPartial<SearchOGRequest>): SearchOGRequest {
     const message = { ...baseSearchOGRequest } as SearchOGRequest;
     if (
-      object.hierarchyAndName !== undefined &&
-      object.hierarchyAndName !== null
+      object.nameAndHierarchy !== undefined &&
+      object.nameAndHierarchy !== null
     ) {
-      message.hierarchyAndName = object.hierarchyAndName;
+      message.nameAndHierarchy = object.nameAndHierarchy;
     } else {
-      message.hierarchyAndName = "";
+      message.nameAndHierarchy = "";
     }
     return message;
   },
@@ -2120,11 +2666,12 @@ export const CreateOGRequest = {
 };
 
 const baseCreateDIRequest: object = {
-  type: "",
-  source: "",
-  uniqueId: "",
-  mail: "",
+  entityId: "",
   isRoleAttachable: false,
+  mail: "",
+  source: "",
+  type: "",
+  uniqueId: "",
 };
 
 export const CreateDIRequest = {
@@ -2132,20 +2679,23 @@ export const CreateDIRequest = {
     message: CreateDIRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.type !== "") {
-      writer.uint32(10).string(message.type);
-    }
-    if (message.source !== "") {
-      writer.uint32(18).string(message.source);
-    }
-    if (message.uniqueId !== "") {
-      writer.uint32(26).string(message.uniqueId);
-    }
-    if (message.mail !== "") {
-      writer.uint32(34).string(message.mail);
+    if (message.entityId !== "") {
+      writer.uint32(10).string(message.entityId);
     }
     if (message.isRoleAttachable === true) {
-      writer.uint32(40).bool(message.isRoleAttachable);
+      writer.uint32(16).bool(message.isRoleAttachable);
+    }
+    if (message.mail !== "") {
+      writer.uint32(26).string(message.mail);
+    }
+    if (message.source !== "") {
+      writer.uint32(34).string(message.source);
+    }
+    if (message.type !== "") {
+      writer.uint32(42).string(message.type);
+    }
+    if (message.uniqueId !== "") {
+      writer.uint32(50).string(message.uniqueId);
     }
     return writer;
   },
@@ -2158,19 +2708,22 @@ export const CreateDIRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.type = reader.string();
+          message.entityId = reader.string();
           break;
         case 2:
-          message.source = reader.string();
+          message.isRoleAttachable = reader.bool();
           break;
         case 3:
-          message.uniqueId = reader.string();
-          break;
-        case 4:
           message.mail = reader.string();
           break;
+        case 4:
+          message.source = reader.string();
+          break;
         case 5:
-          message.isRoleAttachable = reader.bool();
+          message.type = reader.string();
+          break;
+        case 6:
+          message.uniqueId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -2182,25 +2735,10 @@ export const CreateDIRequest = {
 
   fromJSON(object: any): CreateDIRequest {
     const message = { ...baseCreateDIRequest } as CreateDIRequest;
-    if (object.type !== undefined && object.type !== null) {
-      message.type = String(object.type);
+    if (object.entityId !== undefined && object.entityId !== null) {
+      message.entityId = String(object.entityId);
     } else {
-      message.type = "";
-    }
-    if (object.source !== undefined && object.source !== null) {
-      message.source = String(object.source);
-    } else {
-      message.source = "";
-    }
-    if (object.uniqueId !== undefined && object.uniqueId !== null) {
-      message.uniqueId = String(object.uniqueId);
-    } else {
-      message.uniqueId = "";
-    }
-    if (object.mail !== undefined && object.mail !== null) {
-      message.mail = String(object.mail);
-    } else {
-      message.mail = "";
+      message.entityId = "";
     }
     if (
       object.isRoleAttachable !== undefined &&
@@ -2210,41 +2748,47 @@ export const CreateDIRequest = {
     } else {
       message.isRoleAttachable = false;
     }
+    if (object.mail !== undefined && object.mail !== null) {
+      message.mail = String(object.mail);
+    } else {
+      message.mail = "";
+    }
+    if (object.source !== undefined && object.source !== null) {
+      message.source = String(object.source);
+    } else {
+      message.source = "";
+    }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = String(object.type);
+    } else {
+      message.type = "";
+    }
+    if (object.uniqueId !== undefined && object.uniqueId !== null) {
+      message.uniqueId = String(object.uniqueId);
+    } else {
+      message.uniqueId = "";
+    }
     return message;
   },
 
   toJSON(message: CreateDIRequest): unknown {
     const obj: any = {};
-    message.type !== undefined && (obj.type = message.type);
-    message.source !== undefined && (obj.source = message.source);
-    message.uniqueId !== undefined && (obj.uniqueId = message.uniqueId);
-    message.mail !== undefined && (obj.mail = message.mail);
+    message.entityId !== undefined && (obj.entityId = message.entityId);
     message.isRoleAttachable !== undefined &&
       (obj.isRoleAttachable = message.isRoleAttachable);
+    message.mail !== undefined && (obj.mail = message.mail);
+    message.source !== undefined && (obj.source = message.source);
+    message.type !== undefined && (obj.type = message.type);
+    message.uniqueId !== undefined && (obj.uniqueId = message.uniqueId);
     return obj;
   },
 
   fromPartial(object: DeepPartial<CreateDIRequest>): CreateDIRequest {
     const message = { ...baseCreateDIRequest } as CreateDIRequest;
-    if (object.type !== undefined && object.type !== null) {
-      message.type = object.type;
+    if (object.entityId !== undefined && object.entityId !== null) {
+      message.entityId = object.entityId;
     } else {
-      message.type = "";
-    }
-    if (object.source !== undefined && object.source !== null) {
-      message.source = object.source;
-    } else {
-      message.source = "";
-    }
-    if (object.uniqueId !== undefined && object.uniqueId !== null) {
-      message.uniqueId = object.uniqueId;
-    } else {
-      message.uniqueId = "";
-    }
-    if (object.mail !== undefined && object.mail !== null) {
-      message.mail = object.mail;
-    } else {
-      message.mail = "";
+      message.entityId = "";
     }
     if (
       object.isRoleAttachable !== undefined &&
@@ -2253,6 +2797,123 @@ export const CreateDIRequest = {
       message.isRoleAttachable = object.isRoleAttachable;
     } else {
       message.isRoleAttachable = false;
+    }
+    if (object.mail !== undefined && object.mail !== null) {
+      message.mail = object.mail;
+    } else {
+      message.mail = "";
+    }
+    if (object.source !== undefined && object.source !== null) {
+      message.source = object.source;
+    } else {
+      message.source = "";
+    }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = object.type;
+    } else {
+      message.type = "";
+    }
+    if (object.uniqueId !== undefined && object.uniqueId !== null) {
+      message.uniqueId = object.uniqueId;
+    } else {
+      message.uniqueId = "";
+    }
+    return message;
+  },
+};
+
+const baseGetAllRolesRequest: object = {
+  updatedFrom: "",
+  page: 0,
+  pageSize: 0,
+};
+
+export const GetAllRolesRequest = {
+  encode(
+    message: GetAllRolesRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.updatedFrom !== "") {
+      writer.uint32(10).string(message.updatedFrom);
+    }
+    if (message.page !== 0) {
+      writer.uint32(16).int32(message.page);
+    }
+    if (message.pageSize !== 0) {
+      writer.uint32(24).int32(message.pageSize);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): GetAllRolesRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseGetAllRolesRequest } as GetAllRolesRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.updatedFrom = reader.string();
+          break;
+        case 2:
+          message.page = reader.int32();
+          break;
+        case 3:
+          message.pageSize = reader.int32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetAllRolesRequest {
+    const message = { ...baseGetAllRolesRequest } as GetAllRolesRequest;
+    if (object.updatedFrom !== undefined && object.updatedFrom !== null) {
+      message.updatedFrom = String(object.updatedFrom);
+    } else {
+      message.updatedFrom = "";
+    }
+    if (object.page !== undefined && object.page !== null) {
+      message.page = Number(object.page);
+    } else {
+      message.page = 0;
+    }
+    if (object.pageSize !== undefined && object.pageSize !== null) {
+      message.pageSize = Number(object.pageSize);
+    } else {
+      message.pageSize = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: GetAllRolesRequest): unknown {
+    const obj: any = {};
+    message.updatedFrom !== undefined &&
+      (obj.updatedFrom = message.updatedFrom);
+    message.page !== undefined && (obj.page = message.page);
+    message.pageSize !== undefined && (obj.pageSize = message.pageSize);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<GetAllRolesRequest>): GetAllRolesRequest {
+    const message = { ...baseGetAllRolesRequest } as GetAllRolesRequest;
+    if (object.updatedFrom !== undefined && object.updatedFrom !== null) {
+      message.updatedFrom = object.updatedFrom;
+    } else {
+      message.updatedFrom = "";
+    }
+    if (object.page !== undefined && object.page !== null) {
+      message.page = object.page;
+    } else {
+      message.page = 0;
+    }
+    if (object.pageSize !== undefined && object.pageSize !== null) {
+      message.pageSize = object.pageSize;
+    } else {
+      message.pageSize = 0;
     }
     return message;
   },
@@ -2373,6 +3034,139 @@ export const CreateRoleRequest = {
   },
 };
 
+const baseDeleteRoleRequest: object = { roleId: "" };
+
+export const DeleteRoleRequest = {
+  encode(
+    message: DeleteRoleRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.roleId !== "") {
+      writer.uint32(10).string(message.roleId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DeleteRoleRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseDeleteRoleRequest } as DeleteRoleRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.roleId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DeleteRoleRequest {
+    const message = { ...baseDeleteRoleRequest } as DeleteRoleRequest;
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = String(object.roleId);
+    } else {
+      message.roleId = "";
+    }
+    return message;
+  },
+
+  toJSON(message: DeleteRoleRequest): unknown {
+    const obj: any = {};
+    message.roleId !== undefined && (obj.roleId = message.roleId);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<DeleteRoleRequest>): DeleteRoleRequest {
+    const message = { ...baseDeleteRoleRequest } as DeleteRoleRequest;
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = object.roleId;
+    } else {
+      message.roleId = "";
+    }
+    return message;
+  },
+};
+
+const baseRenameRoleRequest: object = { roleId: "", jobTitle: "" };
+
+export const RenameRoleRequest = {
+  encode(
+    message: RenameRoleRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.roleId !== "") {
+      writer.uint32(10).string(message.roleId);
+    }
+    if (message.jobTitle !== "") {
+      writer.uint32(18).string(message.jobTitle);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): RenameRoleRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseRenameRoleRequest } as RenameRoleRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.roleId = reader.string();
+          break;
+        case 2:
+          message.jobTitle = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RenameRoleRequest {
+    const message = { ...baseRenameRoleRequest } as RenameRoleRequest;
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = String(object.roleId);
+    } else {
+      message.roleId = "";
+    }
+    if (object.jobTitle !== undefined && object.jobTitle !== null) {
+      message.jobTitle = String(object.jobTitle);
+    } else {
+      message.jobTitle = "";
+    }
+    return message;
+  },
+
+  toJSON(message: RenameRoleRequest): unknown {
+    const obj: any = {};
+    message.roleId !== undefined && (obj.roleId = message.roleId);
+    message.jobTitle !== undefined && (obj.jobTitle = message.jobTitle);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<RenameRoleRequest>): RenameRoleRequest {
+    const message = { ...baseRenameRoleRequest } as RenameRoleRequest;
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = object.roleId;
+    } else {
+      message.roleId = "";
+    }
+    if (object.jobTitle !== undefined && object.jobTitle !== null) {
+      message.jobTitle = object.jobTitle;
+    } else {
+      message.jobTitle = "";
+    }
+    return message;
+  },
+};
+
 const baseConnectRoleAndDIRequest: object = { id: "", uniqueId: "" };
 
 export const ConnectRoleAndDIRequest = {
@@ -2459,29 +3253,39 @@ export const ConnectRoleAndDIRequest = {
   },
 };
 
-const baseEntityArray: object = {};
+const baseDisconnectRoleAndDIRequest: object = { roleId: "", uniqueId: "" };
 
-export const EntityArray = {
+export const DisconnectRoleAndDIRequest = {
   encode(
-    message: EntityArray,
+    message: DisconnectRoleAndDIRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    for (const v of message.entities) {
-      Entity.encode(v!, writer.uint32(10).fork()).ldelim();
+    if (message.roleId !== "") {
+      writer.uint32(10).string(message.roleId);
+    }
+    if (message.uniqueId !== "") {
+      writer.uint32(18).string(message.uniqueId);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): EntityArray {
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): DisconnectRoleAndDIRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseEntityArray } as EntityArray;
-    message.entities = [];
+    const message = {
+      ...baseDisconnectRoleAndDIRequest,
+    } as DisconnectRoleAndDIRequest;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.entities.push(Entity.decode(reader, reader.uint32()));
+          message.roleId = reader.string();
+          break;
+        case 2:
+          message.uniqueId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -2491,36 +3295,45 @@ export const EntityArray = {
     return message;
   },
 
-  fromJSON(object: any): EntityArray {
-    const message = { ...baseEntityArray } as EntityArray;
-    message.entities = [];
-    if (object.entities !== undefined && object.entities !== null) {
-      for (const e of object.entities) {
-        message.entities.push(Entity.fromJSON(e));
-      }
+  fromJSON(object: any): DisconnectRoleAndDIRequest {
+    const message = {
+      ...baseDisconnectRoleAndDIRequest,
+    } as DisconnectRoleAndDIRequest;
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = String(object.roleId);
+    } else {
+      message.roleId = "";
+    }
+    if (object.uniqueId !== undefined && object.uniqueId !== null) {
+      message.uniqueId = String(object.uniqueId);
+    } else {
+      message.uniqueId = "";
     }
     return message;
   },
 
-  toJSON(message: EntityArray): unknown {
+  toJSON(message: DisconnectRoleAndDIRequest): unknown {
     const obj: any = {};
-    if (message.entities) {
-      obj.entities = message.entities.map((e) =>
-        e ? Entity.toJSON(e) : undefined
-      );
-    } else {
-      obj.entities = [];
-    }
+    message.roleId !== undefined && (obj.roleId = message.roleId);
+    message.uniqueId !== undefined && (obj.uniqueId = message.uniqueId);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<EntityArray>): EntityArray {
-    const message = { ...baseEntityArray } as EntityArray;
-    message.entities = [];
-    if (object.entities !== undefined && object.entities !== null) {
-      for (const e of object.entities) {
-        message.entities.push(Entity.fromPartial(e));
-      }
+  fromPartial(
+    object: DeepPartial<DisconnectRoleAndDIRequest>
+  ): DisconnectRoleAndDIRequest {
+    const message = {
+      ...baseDisconnectRoleAndDIRequest,
+    } as DisconnectRoleAndDIRequest;
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = object.roleId;
+    } else {
+      message.roleId = "";
+    }
+    if (object.uniqueId !== undefined && object.uniqueId !== null) {
+      message.uniqueId = object.uniqueId;
+    } else {
+      message.uniqueId = "";
     }
     return message;
   },
@@ -2589,18 +3402,29 @@ export const GetRoleByRoleIdRequest = {
   },
 };
 
-const baseGetRolesUnderOGRequest: object = { id: "", direct: false };
+const baseGetRolesUnderOGRequest: object = {
+  groupId: "",
+  direct: false,
+  page: 0,
+  pageSize: 0,
+};
 
 export const GetRolesUnderOGRequest = {
   encode(
     message: GetRolesUnderOGRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
+    if (message.groupId !== "") {
+      writer.uint32(10).string(message.groupId);
     }
     if (message.direct === true) {
       writer.uint32(16).bool(message.direct);
+    }
+    if (message.page !== 0) {
+      writer.uint32(24).int32(message.page);
+    }
+    if (message.pageSize !== 0) {
+      writer.uint32(32).int32(message.pageSize);
     }
     return writer;
   },
@@ -2616,10 +3440,16 @@ export const GetRolesUnderOGRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.id = reader.string();
+          message.groupId = reader.string();
           break;
         case 2:
           message.direct = reader.bool();
+          break;
+        case 3:
+          message.page = reader.int32();
+          break;
+        case 4:
+          message.pageSize = reader.int32();
           break;
         default:
           reader.skipType(tag & 7);
@@ -2631,23 +3461,35 @@ export const GetRolesUnderOGRequest = {
 
   fromJSON(object: any): GetRolesUnderOGRequest {
     const message = { ...baseGetRolesUnderOGRequest } as GetRolesUnderOGRequest;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
+    if (object.groupId !== undefined && object.groupId !== null) {
+      message.groupId = String(object.groupId);
     } else {
-      message.id = "";
+      message.groupId = "";
     }
     if (object.direct !== undefined && object.direct !== null) {
       message.direct = Boolean(object.direct);
     } else {
       message.direct = false;
     }
+    if (object.page !== undefined && object.page !== null) {
+      message.page = Number(object.page);
+    } else {
+      message.page = 0;
+    }
+    if (object.pageSize !== undefined && object.pageSize !== null) {
+      message.pageSize = Number(object.pageSize);
+    } else {
+      message.pageSize = 0;
+    }
     return message;
   },
 
   toJSON(message: GetRolesUnderOGRequest): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
+    message.groupId !== undefined && (obj.groupId = message.groupId);
     message.direct !== undefined && (obj.direct = message.direct);
+    message.page !== undefined && (obj.page = message.page);
+    message.pageSize !== undefined && (obj.pageSize = message.pageSize);
     return obj;
   },
 
@@ -2655,15 +3497,350 @@ export const GetRolesUnderOGRequest = {
     object: DeepPartial<GetRolesUnderOGRequest>
   ): GetRolesUnderOGRequest {
     const message = { ...baseGetRolesUnderOGRequest } as GetRolesUnderOGRequest;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
+    if (object.groupId !== undefined && object.groupId !== null) {
+      message.groupId = object.groupId;
     } else {
-      message.id = "";
+      message.groupId = "";
     }
     if (object.direct !== undefined && object.direct !== null) {
       message.direct = object.direct;
     } else {
       message.direct = false;
+    }
+    if (object.page !== undefined && object.page !== null) {
+      message.page = object.page;
+    } else {
+      message.page = 0;
+    }
+    if (object.pageSize !== undefined && object.pageSize !== null) {
+      message.pageSize = object.pageSize;
+    } else {
+      message.pageSize = 0;
+    }
+    return message;
+  },
+};
+
+const baseGetRoleByDIRequest: object = { uniqueId: "" };
+
+export const GetRoleByDIRequest = {
+  encode(
+    message: GetRoleByDIRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.uniqueId !== "") {
+      writer.uint32(10).string(message.uniqueId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): GetRoleByDIRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseGetRoleByDIRequest } as GetRoleByDIRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.uniqueId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetRoleByDIRequest {
+    const message = { ...baseGetRoleByDIRequest } as GetRoleByDIRequest;
+    if (object.uniqueId !== undefined && object.uniqueId !== null) {
+      message.uniqueId = String(object.uniqueId);
+    } else {
+      message.uniqueId = "";
+    }
+    return message;
+  },
+
+  toJSON(message: GetRoleByDIRequest): unknown {
+    const obj: any = {};
+    message.uniqueId !== undefined && (obj.uniqueId = message.uniqueId);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<GetRoleByDIRequest>): GetRoleByDIRequest {
+    const message = { ...baseGetRoleByDIRequest } as GetRoleByDIRequest;
+    if (object.uniqueId !== undefined && object.uniqueId !== null) {
+      message.uniqueId = object.uniqueId;
+    } else {
+      message.uniqueId = "";
+    }
+    return message;
+  },
+};
+
+const baseGetRolesByHierarchyRequest: object = {
+  hierarchy: "",
+  direct: false,
+  page: 0,
+  pageSize: 0,
+};
+
+export const GetRolesByHierarchyRequest = {
+  encode(
+    message: GetRolesByHierarchyRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.hierarchy !== "") {
+      writer.uint32(10).string(message.hierarchy);
+    }
+    if (message.direct === true) {
+      writer.uint32(16).bool(message.direct);
+    }
+    if (message.page !== 0) {
+      writer.uint32(24).int32(message.page);
+    }
+    if (message.pageSize !== 0) {
+      writer.uint32(32).int32(message.pageSize);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GetRolesByHierarchyRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseGetRolesByHierarchyRequest,
+    } as GetRolesByHierarchyRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.hierarchy = reader.string();
+          break;
+        case 2:
+          message.direct = reader.bool();
+          break;
+        case 3:
+          message.page = reader.int32();
+          break;
+        case 4:
+          message.pageSize = reader.int32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetRolesByHierarchyRequest {
+    const message = {
+      ...baseGetRolesByHierarchyRequest,
+    } as GetRolesByHierarchyRequest;
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = String(object.hierarchy);
+    } else {
+      message.hierarchy = "";
+    }
+    if (object.direct !== undefined && object.direct !== null) {
+      message.direct = Boolean(object.direct);
+    } else {
+      message.direct = false;
+    }
+    if (object.page !== undefined && object.page !== null) {
+      message.page = Number(object.page);
+    } else {
+      message.page = 0;
+    }
+    if (object.pageSize !== undefined && object.pageSize !== null) {
+      message.pageSize = Number(object.pageSize);
+    } else {
+      message.pageSize = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: GetRolesByHierarchyRequest): unknown {
+    const obj: any = {};
+    message.hierarchy !== undefined && (obj.hierarchy = message.hierarchy);
+    message.direct !== undefined && (obj.direct = message.direct);
+    message.page !== undefined && (obj.page = message.page);
+    message.pageSize !== undefined && (obj.pageSize = message.pageSize);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<GetRolesByHierarchyRequest>
+  ): GetRolesByHierarchyRequest {
+    const message = {
+      ...baseGetRolesByHierarchyRequest,
+    } as GetRolesByHierarchyRequest;
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = object.hierarchy;
+    } else {
+      message.hierarchy = "";
+    }
+    if (object.direct !== undefined && object.direct !== null) {
+      message.direct = object.direct;
+    } else {
+      message.direct = false;
+    }
+    if (object.page !== undefined && object.page !== null) {
+      message.page = object.page;
+    } else {
+      message.page = 0;
+    }
+    if (object.pageSize !== undefined && object.pageSize !== null) {
+      message.pageSize = object.pageSize;
+    } else {
+      message.pageSize = 0;
+    }
+    return message;
+  },
+};
+
+const baseChangeRoleOGRequest: object = { roleId: "", groupId: "" };
+
+export const ChangeRoleOGRequest = {
+  encode(
+    message: ChangeRoleOGRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.roleId !== "") {
+      writer.uint32(10).string(message.roleId);
+    }
+    if (message.groupId !== "") {
+      writer.uint32(18).string(message.groupId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ChangeRoleOGRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseChangeRoleOGRequest } as ChangeRoleOGRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.roleId = reader.string();
+          break;
+        case 2:
+          message.groupId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ChangeRoleOGRequest {
+    const message = { ...baseChangeRoleOGRequest } as ChangeRoleOGRequest;
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = String(object.roleId);
+    } else {
+      message.roleId = "";
+    }
+    if (object.groupId !== undefined && object.groupId !== null) {
+      message.groupId = String(object.groupId);
+    } else {
+      message.groupId = "";
+    }
+    return message;
+  },
+
+  toJSON(message: ChangeRoleOGRequest): unknown {
+    const obj: any = {};
+    message.roleId !== undefined && (obj.roleId = message.roleId);
+    message.groupId !== undefined && (obj.groupId = message.groupId);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<ChangeRoleOGRequest>): ChangeRoleOGRequest {
+    const message = { ...baseChangeRoleOGRequest } as ChangeRoleOGRequest;
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = object.roleId;
+    } else {
+      message.roleId = "";
+    }
+    if (object.groupId !== undefined && object.groupId !== null) {
+      message.groupId = object.groupId;
+    } else {
+      message.groupId = "";
+    }
+    return message;
+  },
+};
+
+const baseEntityArray: object = {};
+
+export const EntityArray = {
+  encode(
+    message: EntityArray,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.entities) {
+      Entity.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): EntityArray {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseEntityArray } as EntityArray;
+    message.entities = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.entities.push(Entity.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): EntityArray {
+    const message = { ...baseEntityArray } as EntityArray;
+    message.entities = [];
+    if (object.entities !== undefined && object.entities !== null) {
+      for (const e of object.entities) {
+        message.entities.push(Entity.fromJSON(e));
+      }
+    }
+    return message;
+  },
+
+  toJSON(message: EntityArray): unknown {
+    const obj: any = {};
+    if (message.entities) {
+      obj.entities = message.entities.map((e) =>
+        e ? Entity.toJSON(e) : undefined
+      );
+    } else {
+      obj.entities = [];
+    }
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<EntityArray>): EntityArray {
+    const message = { ...baseEntityArray } as EntityArray;
+    message.entities = [];
+    if (object.entities !== undefined && object.entities !== null) {
+      for (const e of object.entities) {
+        message.entities.push(Entity.fromPartial(e));
+      }
     }
     return message;
   },
@@ -2820,39 +3997,26 @@ export const ConnectEntityAndDIRequest = {
   },
 };
 
-const baseCreateEntityRequest: object = {
-  firstName: "",
-  lastName: "",
-  identityCard: "",
-  personalNumber: "",
-  serviceType: "",
-  phone: "",
-  mobilePhone: "",
-  address: "",
-  clearance: "",
-  sex: "",
-  birthDate: "",
-  entityType: "",
-};
+const baseCreateEntityRequest: object = { phone: "", mobilePhone: "" };
 
 export const CreateEntityRequest = {
   encode(
     message: CreateEntityRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.firstName !== "") {
+    if (message.firstName !== undefined) {
       writer.uint32(10).string(message.firstName);
     }
-    if (message.lastName !== "") {
+    if (message.lastName !== undefined) {
       writer.uint32(18).string(message.lastName);
     }
-    if (message.identityCard !== "") {
+    if (message.identityCard !== undefined) {
       writer.uint32(26).string(message.identityCard);
     }
-    if (message.personalNumber !== "") {
+    if (message.personalNumber !== undefined) {
       writer.uint32(34).string(message.personalNumber);
     }
-    if (message.serviceType !== "") {
+    if (message.serviceType !== undefined) {
       writer.uint32(42).string(message.serviceType);
     }
     for (const v of message.phone) {
@@ -2861,20 +4025,29 @@ export const CreateEntityRequest = {
     for (const v of message.mobilePhone) {
       writer.uint32(58).string(v!);
     }
-    if (message.address !== "") {
+    if (message.address !== undefined) {
       writer.uint32(66).string(message.address);
     }
-    if (message.clearance !== "") {
+    if (message.clearance !== undefined) {
       writer.uint32(74).string(message.clearance);
     }
-    if (message.sex !== "") {
+    if (message.sex !== undefined) {
       writer.uint32(82).string(message.sex);
     }
-    if (message.birthDate !== "") {
+    if (message.birthDate !== undefined) {
       writer.uint32(90).string(message.birthDate);
     }
-    if (message.entityType !== "") {
+    if (message.entityType !== undefined) {
       writer.uint32(98).string(message.entityType);
+    }
+    if (message.akaUnit !== undefined) {
+      writer.uint32(106).string(message.akaUnit);
+    }
+    if (message.dischargeDay !== undefined) {
+      writer.uint32(114).string(message.dischargeDay);
+    }
+    if (message.rank !== undefined) {
+      writer.uint32(122).string(message.rank);
     }
     return writer;
   },
@@ -2924,6 +4097,15 @@ export const CreateEntityRequest = {
         case 12:
           message.entityType = reader.string();
           break;
+        case 13:
+          message.akaUnit = reader.string();
+          break;
+        case 14:
+          message.dischargeDay = reader.string();
+          break;
+        case 15:
+          message.rank = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -2939,27 +4121,27 @@ export const CreateEntityRequest = {
     if (object.firstName !== undefined && object.firstName !== null) {
       message.firstName = String(object.firstName);
     } else {
-      message.firstName = "";
+      message.firstName = undefined;
     }
     if (object.lastName !== undefined && object.lastName !== null) {
       message.lastName = String(object.lastName);
     } else {
-      message.lastName = "";
+      message.lastName = undefined;
     }
     if (object.identityCard !== undefined && object.identityCard !== null) {
       message.identityCard = String(object.identityCard);
     } else {
-      message.identityCard = "";
+      message.identityCard = undefined;
     }
     if (object.personalNumber !== undefined && object.personalNumber !== null) {
       message.personalNumber = String(object.personalNumber);
     } else {
-      message.personalNumber = "";
+      message.personalNumber = undefined;
     }
     if (object.serviceType !== undefined && object.serviceType !== null) {
       message.serviceType = String(object.serviceType);
     } else {
-      message.serviceType = "";
+      message.serviceType = undefined;
     }
     if (object.phone !== undefined && object.phone !== null) {
       for (const e of object.phone) {
@@ -2974,27 +4156,42 @@ export const CreateEntityRequest = {
     if (object.address !== undefined && object.address !== null) {
       message.address = String(object.address);
     } else {
-      message.address = "";
+      message.address = undefined;
     }
     if (object.clearance !== undefined && object.clearance !== null) {
       message.clearance = String(object.clearance);
     } else {
-      message.clearance = "";
+      message.clearance = undefined;
     }
     if (object.sex !== undefined && object.sex !== null) {
       message.sex = String(object.sex);
     } else {
-      message.sex = "";
+      message.sex = undefined;
     }
     if (object.birthDate !== undefined && object.birthDate !== null) {
       message.birthDate = String(object.birthDate);
     } else {
-      message.birthDate = "";
+      message.birthDate = undefined;
     }
     if (object.entityType !== undefined && object.entityType !== null) {
       message.entityType = String(object.entityType);
     } else {
-      message.entityType = "";
+      message.entityType = undefined;
+    }
+    if (object.akaUnit !== undefined && object.akaUnit !== null) {
+      message.akaUnit = String(object.akaUnit);
+    } else {
+      message.akaUnit = undefined;
+    }
+    if (object.dischargeDay !== undefined && object.dischargeDay !== null) {
+      message.dischargeDay = String(object.dischargeDay);
+    } else {
+      message.dischargeDay = undefined;
+    }
+    if (object.rank !== undefined && object.rank !== null) {
+      message.rank = String(object.rank);
+    } else {
+      message.rank = undefined;
     }
     return message;
   },
@@ -3024,6 +4221,10 @@ export const CreateEntityRequest = {
     message.sex !== undefined && (obj.sex = message.sex);
     message.birthDate !== undefined && (obj.birthDate = message.birthDate);
     message.entityType !== undefined && (obj.entityType = message.entityType);
+    message.akaUnit !== undefined && (obj.akaUnit = message.akaUnit);
+    message.dischargeDay !== undefined &&
+      (obj.dischargeDay = message.dischargeDay);
+    message.rank !== undefined && (obj.rank = message.rank);
     return obj;
   },
 
@@ -3034,27 +4235,27 @@ export const CreateEntityRequest = {
     if (object.firstName !== undefined && object.firstName !== null) {
       message.firstName = object.firstName;
     } else {
-      message.firstName = "";
+      message.firstName = undefined;
     }
     if (object.lastName !== undefined && object.lastName !== null) {
       message.lastName = object.lastName;
     } else {
-      message.lastName = "";
+      message.lastName = undefined;
     }
     if (object.identityCard !== undefined && object.identityCard !== null) {
       message.identityCard = object.identityCard;
     } else {
-      message.identityCard = "";
+      message.identityCard = undefined;
     }
     if (object.personalNumber !== undefined && object.personalNumber !== null) {
       message.personalNumber = object.personalNumber;
     } else {
-      message.personalNumber = "";
+      message.personalNumber = undefined;
     }
     if (object.serviceType !== undefined && object.serviceType !== null) {
       message.serviceType = object.serviceType;
     } else {
-      message.serviceType = "";
+      message.serviceType = undefined;
     }
     if (object.phone !== undefined && object.phone !== null) {
       for (const e of object.phone) {
@@ -3069,27 +4270,42 @@ export const CreateEntityRequest = {
     if (object.address !== undefined && object.address !== null) {
       message.address = object.address;
     } else {
-      message.address = "";
+      message.address = undefined;
     }
     if (object.clearance !== undefined && object.clearance !== null) {
       message.clearance = object.clearance;
     } else {
-      message.clearance = "";
+      message.clearance = undefined;
     }
     if (object.sex !== undefined && object.sex !== null) {
       message.sex = object.sex;
     } else {
-      message.sex = "";
+      message.sex = undefined;
     }
     if (object.birthDate !== undefined && object.birthDate !== null) {
       message.birthDate = object.birthDate;
     } else {
-      message.birthDate = "";
+      message.birthDate = undefined;
     }
     if (object.entityType !== undefined && object.entityType !== null) {
       message.entityType = object.entityType;
     } else {
-      message.entityType = "";
+      message.entityType = undefined;
+    }
+    if (object.akaUnit !== undefined && object.akaUnit !== null) {
+      message.akaUnit = object.akaUnit;
+    } else {
+      message.akaUnit = undefined;
+    }
+    if (object.dischargeDay !== undefined && object.dischargeDay !== null) {
+      message.dischargeDay = object.dischargeDay;
+    } else {
+      message.dischargeDay = undefined;
+    }
+    if (object.rank !== undefined && object.rank !== null) {
+      message.rank = object.rank;
+    } else {
+      message.rank = undefined;
     }
     return message;
   },
@@ -3369,7 +4585,12 @@ export const DeleteOGRequest = {
   },
 };
 
-const baseGetChildrenOfOGRequest: object = { id: "" };
+const baseGetChildrenOfOGRequest: object = {
+  id: "",
+  page: 0,
+  pageSize: 0,
+  direct: false,
+};
 
 export const GetChildrenOfOGRequest = {
   encode(
@@ -3378,6 +4599,15 @@ export const GetChildrenOfOGRequest = {
   ): _m0.Writer {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
+    }
+    if (message.page !== 0) {
+      writer.uint32(16).int32(message.page);
+    }
+    if (message.pageSize !== 0) {
+      writer.uint32(24).int32(message.pageSize);
+    }
+    if (message.direct === true) {
+      writer.uint32(32).bool(message.direct);
     }
     return writer;
   },
@@ -3395,6 +4625,15 @@ export const GetChildrenOfOGRequest = {
         case 1:
           message.id = reader.string();
           break;
+        case 2:
+          message.page = reader.int32();
+          break;
+        case 3:
+          message.pageSize = reader.int32();
+          break;
+        case 4:
+          message.direct = reader.bool();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -3410,12 +4649,30 @@ export const GetChildrenOfOGRequest = {
     } else {
       message.id = "";
     }
+    if (object.page !== undefined && object.page !== null) {
+      message.page = Number(object.page);
+    } else {
+      message.page = 0;
+    }
+    if (object.pageSize !== undefined && object.pageSize !== null) {
+      message.pageSize = Number(object.pageSize);
+    } else {
+      message.pageSize = 0;
+    }
+    if (object.direct !== undefined && object.direct !== null) {
+      message.direct = Boolean(object.direct);
+    } else {
+      message.direct = false;
+    }
     return message;
   },
 
   toJSON(message: GetChildrenOfOGRequest): unknown {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
+    message.page !== undefined && (obj.page = message.page);
+    message.pageSize !== undefined && (obj.pageSize = message.pageSize);
+    message.direct !== undefined && (obj.direct = message.direct);
     return obj;
   },
 
@@ -3428,77 +4685,34 @@ export const GetChildrenOfOGRequest = {
     } else {
       message.id = "";
     }
-    return message;
-  },
-};
-
-const baseDeleteRoleRequest: object = { roleId: "" };
-
-export const DeleteRoleRequest = {
-  encode(
-    message: DeleteRoleRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.roleId !== "") {
-      writer.uint32(10).string(message.roleId);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): DeleteRoleRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseDeleteRoleRequest } as DeleteRoleRequest;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.roleId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): DeleteRoleRequest {
-    const message = { ...baseDeleteRoleRequest } as DeleteRoleRequest;
-    if (object.roleId !== undefined && object.roleId !== null) {
-      message.roleId = String(object.roleId);
+    if (object.page !== undefined && object.page !== null) {
+      message.page = object.page;
     } else {
-      message.roleId = "";
+      message.page = 0;
     }
-    return message;
-  },
-
-  toJSON(message: DeleteRoleRequest): unknown {
-    const obj: any = {};
-    message.roleId !== undefined && (obj.roleId = message.roleId);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<DeleteRoleRequest>): DeleteRoleRequest {
-    const message = { ...baseDeleteRoleRequest } as DeleteRoleRequest;
-    if (object.roleId !== undefined && object.roleId !== null) {
-      message.roleId = object.roleId;
+    if (object.pageSize !== undefined && object.pageSize !== null) {
+      message.pageSize = object.pageSize;
     } else {
-      message.roleId = "";
+      message.pageSize = 0;
+    }
+    if (object.direct !== undefined && object.direct !== null) {
+      message.direct = object.direct;
+    } else {
+      message.direct = false;
     }
     return message;
   },
 };
 
-const baseDeleteDIRequest: object = { uniqueId: "" };
+const baseDeleteDIRequest: object = { id: "" };
 
 export const DeleteDIRequest = {
   encode(
     message: DeleteDIRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.uniqueId !== "") {
-      writer.uint32(10).string(message.uniqueId);
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
     }
     return writer;
   },
@@ -3511,7 +4725,7 @@ export const DeleteDIRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.uniqueId = reader.string();
+          message.id = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -3523,26 +4737,26 @@ export const DeleteDIRequest = {
 
   fromJSON(object: any): DeleteDIRequest {
     const message = { ...baseDeleteDIRequest } as DeleteDIRequest;
-    if (object.uniqueId !== undefined && object.uniqueId !== null) {
-      message.uniqueId = String(object.uniqueId);
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
     } else {
-      message.uniqueId = "";
+      message.id = "";
     }
     return message;
   },
 
   toJSON(message: DeleteDIRequest): unknown {
     const obj: any = {};
-    message.uniqueId !== undefined && (obj.uniqueId = message.uniqueId);
+    message.id !== undefined && (obj.id = message.id);
     return obj;
   },
 
   fromPartial(object: DeepPartial<DeleteDIRequest>): DeleteDIRequest {
     const message = { ...baseDeleteDIRequest } as DeleteDIRequest;
-    if (object.uniqueId !== undefined && object.uniqueId !== null) {
-      message.uniqueId = object.uniqueId;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
     } else {
-      message.uniqueId = "";
+      message.id = "";
     }
     return message;
   },
@@ -5027,23 +6241,43 @@ export interface Kartoffel {
   ): Promise<SuccessMessage>;
   GetPictureByEntityId(request: GetPictureByEntityIdRequest): Promise<Image>;
   /** Groups */
-  SearchOG(request: SearchOGRequest): Promise<OGArray>;
+  GetAllOGs(request: GetAllOGsRequest): Promise<OGArray>;
   CreateOG(request: CreateOGRequest): Promise<OrganizationGroup>;
-  DeleteOG(request: DeleteOGRequest): Promise<SuccessMessage>;
   GetOGByHierarchyName(
     request: GetOGByHierarchyNameRequest
   ): Promise<OrganizationGroup>;
+  SearchOG(request: SearchOGRequest): Promise<OGArray>;
+  DeleteOG(request: DeleteOGRequest): Promise<SuccessMessage>;
   GetOGById(request: GetOGByIdRequest): Promise<OrganizationGroup>;
   GetChildrenOfOG(request: GetChildrenOfOGRequest): Promise<OGArray>;
   UpdateOGParent(request: UpdateOGParentRequest): Promise<SuccessMessage>;
+  RenameOG(request: RenameOGRequest): Promise<SuccessMessage>;
+  GetOGTree(request: GetOGTreeRequest): Promise<OGTree>;
+  /** DI */
+  GetAllDIs(request: GetAllDIsRequest): Promise<DigitalIdentities>;
   CreateDI(request: CreateDIRequest): Promise<DigitalIdentity>;
+  GetDIByRoleId(request: GetDIByRoleIdRequest): Promise<DigitalIdentity>;
+  SearchDIOrUniqueId(
+    request: SearchDIOrUniqueIdRequest
+  ): Promise<DigitalIdentities>;
+  DeleteDI(request: DeleteDIRequest): Promise<SuccessMessage>;
+  GetDIByUniqueId(request: GetDIByUniqueIdRequest): Promise<DigitalIdentity>;
+  UpdateDI(request: UpdateDIRequest): Promise<SuccessMessage>;
+  /** Roles */
+  GetAllRoles(request: GetAllRolesRequest): Promise<RoleArray>;
   CreateRole(request: CreateRoleRequest): Promise<Role>;
   ConnectRoleAndDI(request: ConnectRoleAndDIRequest): Promise<SuccessMessage>;
+  DisconnectRoleAndDI(
+    request: DisconnectRoleAndDIRequest
+  ): Promise<SuccessMessage>;
   GetRoleByRoleId(request: GetRoleByRoleIdRequest): Promise<Role>;
   GetRolesUnderOG(request: GetRolesUnderOGRequest): Promise<RoleArray>;
   DeleteRole(request: DeleteRoleRequest): Promise<SuccessMessage>;
-  DeleteDI(request: DeleteDIRequest): Promise<SuccessMessage>;
-  GetOGTree(request: GetOGTreeRequest): Promise<OGTree>;
+  RenameRole(request: RenameRoleRequest): Promise<SuccessMessage>;
+  GetRolesByHierarchy(
+    request: GetRolesByHierarchyRequest
+  ): Promise<SuccessMessage>;
+  ChangeRoleOG(request: ChangeRoleOGRequest): Promise<SuccessMessage>;
 }
 
 export class KartoffelClientImpl implements Kartoffel {
@@ -5063,21 +6297,33 @@ export class KartoffelClientImpl implements Kartoffel {
     this.ConnectEntityAndDI = this.ConnectEntityAndDI.bind(this);
     this.DisconnectDIFromEntity = this.DisconnectDIFromEntity.bind(this);
     this.GetPictureByEntityId = this.GetPictureByEntityId.bind(this);
-    this.SearchOG = this.SearchOG.bind(this);
+    this.GetAllOGs = this.GetAllOGs.bind(this);
     this.CreateOG = this.CreateOG.bind(this);
-    this.DeleteOG = this.DeleteOG.bind(this);
     this.GetOGByHierarchyName = this.GetOGByHierarchyName.bind(this);
+    this.SearchOG = this.SearchOG.bind(this);
+    this.DeleteOG = this.DeleteOG.bind(this);
     this.GetOGById = this.GetOGById.bind(this);
     this.GetChildrenOfOG = this.GetChildrenOfOG.bind(this);
     this.UpdateOGParent = this.UpdateOGParent.bind(this);
+    this.RenameOG = this.RenameOG.bind(this);
+    this.GetOGTree = this.GetOGTree.bind(this);
+    this.GetAllDIs = this.GetAllDIs.bind(this);
     this.CreateDI = this.CreateDI.bind(this);
+    this.GetDIByRoleId = this.GetDIByRoleId.bind(this);
+    this.SearchDIOrUniqueId = this.SearchDIOrUniqueId.bind(this);
+    this.DeleteDI = this.DeleteDI.bind(this);
+    this.GetDIByUniqueId = this.GetDIByUniqueId.bind(this);
+    this.UpdateDI = this.UpdateDI.bind(this);
+    this.GetAllRoles = this.GetAllRoles.bind(this);
     this.CreateRole = this.CreateRole.bind(this);
     this.ConnectRoleAndDI = this.ConnectRoleAndDI.bind(this);
+    this.DisconnectRoleAndDI = this.DisconnectRoleAndDI.bind(this);
     this.GetRoleByRoleId = this.GetRoleByRoleId.bind(this);
     this.GetRolesUnderOG = this.GetRolesUnderOG.bind(this);
     this.DeleteRole = this.DeleteRole.bind(this);
-    this.DeleteDI = this.DeleteDI.bind(this);
-    this.GetOGTree = this.GetOGTree.bind(this);
+    this.RenameRole = this.RenameRole.bind(this);
+    this.GetRolesByHierarchy = this.GetRolesByHierarchy.bind(this);
+    this.ChangeRoleOG = this.ChangeRoleOG.bind(this);
   }
   CreateEntity(request: CreateEntityRequest): Promise<Entity> {
     const data = CreateEntityRequest.encode(request).finish();
@@ -5219,9 +6465,9 @@ export class KartoffelClientImpl implements Kartoffel {
     return promise.then((data) => Image.decode(new _m0.Reader(data)));
   }
 
-  SearchOG(request: SearchOGRequest): Promise<OGArray> {
-    const data = SearchOGRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "SearchOG", data);
+  GetAllOGs(request: GetAllOGsRequest): Promise<OGArray> {
+    const data = GetAllOGsRequest.encode(request).finish();
+    const promise = this.rpc.request("Kartoffel.Kartoffel", "GetAllOGs", data);
     return promise.then((data) => OGArray.decode(new _m0.Reader(data)));
   }
 
@@ -5231,12 +6477,6 @@ export class KartoffelClientImpl implements Kartoffel {
     return promise.then((data) =>
       OrganizationGroup.decode(new _m0.Reader(data))
     );
-  }
-
-  DeleteOG(request: DeleteOGRequest): Promise<SuccessMessage> {
-    const data = DeleteOGRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "DeleteOG", data);
-    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
   GetOGByHierarchyName(
@@ -5251,6 +6491,18 @@ export class KartoffelClientImpl implements Kartoffel {
     return promise.then((data) =>
       OrganizationGroup.decode(new _m0.Reader(data))
     );
+  }
+
+  SearchOG(request: SearchOGRequest): Promise<OGArray> {
+    const data = SearchOGRequest.encode(request).finish();
+    const promise = this.rpc.request("Kartoffel.Kartoffel", "SearchOG", data);
+    return promise.then((data) => OGArray.decode(new _m0.Reader(data)));
+  }
+
+  DeleteOG(request: DeleteOGRequest): Promise<SuccessMessage> {
+    const data = DeleteOGRequest.encode(request).finish();
+    const promise = this.rpc.request("Kartoffel.Kartoffel", "DeleteOG", data);
+    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
   GetOGById(request: GetOGByIdRequest): Promise<OrganizationGroup> {
@@ -5281,10 +6533,86 @@ export class KartoffelClientImpl implements Kartoffel {
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
+  RenameOG(request: RenameOGRequest): Promise<SuccessMessage> {
+    const data = RenameOGRequest.encode(request).finish();
+    const promise = this.rpc.request("Kartoffel.Kartoffel", "RenameOG", data);
+    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
+  }
+
+  GetOGTree(request: GetOGTreeRequest): Promise<OGTree> {
+    const data = GetOGTreeRequest.encode(request).finish();
+    const promise = this.rpc.request("Kartoffel.Kartoffel", "GetOGTree", data);
+    return promise.then((data) => OGTree.decode(new _m0.Reader(data)));
+  }
+
+  GetAllDIs(request: GetAllDIsRequest): Promise<DigitalIdentities> {
+    const data = GetAllDIsRequest.encode(request).finish();
+    const promise = this.rpc.request("Kartoffel.Kartoffel", "GetAllDIs", data);
+    return promise.then((data) =>
+      DigitalIdentities.decode(new _m0.Reader(data))
+    );
+  }
+
   CreateDI(request: CreateDIRequest): Promise<DigitalIdentity> {
     const data = CreateDIRequest.encode(request).finish();
     const promise = this.rpc.request("Kartoffel.Kartoffel", "CreateDI", data);
     return promise.then((data) => DigitalIdentity.decode(new _m0.Reader(data)));
+  }
+
+  GetDIByRoleId(request: GetDIByRoleIdRequest): Promise<DigitalIdentity> {
+    const data = GetDIByRoleIdRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "GetDIByRoleId",
+      data
+    );
+    return promise.then((data) => DigitalIdentity.decode(new _m0.Reader(data)));
+  }
+
+  SearchDIOrUniqueId(
+    request: SearchDIOrUniqueIdRequest
+  ): Promise<DigitalIdentities> {
+    const data = SearchDIOrUniqueIdRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "SearchDIOrUniqueId",
+      data
+    );
+    return promise.then((data) =>
+      DigitalIdentities.decode(new _m0.Reader(data))
+    );
+  }
+
+  DeleteDI(request: DeleteDIRequest): Promise<SuccessMessage> {
+    const data = DeleteDIRequest.encode(request).finish();
+    const promise = this.rpc.request("Kartoffel.Kartoffel", "DeleteDI", data);
+    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
+  }
+
+  GetDIByUniqueId(request: GetDIByUniqueIdRequest): Promise<DigitalIdentity> {
+    const data = GetDIByUniqueIdRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "GetDIByUniqueId",
+      data
+    );
+    return promise.then((data) => DigitalIdentity.decode(new _m0.Reader(data)));
+  }
+
+  UpdateDI(request: UpdateDIRequest): Promise<SuccessMessage> {
+    const data = UpdateDIRequest.encode(request).finish();
+    const promise = this.rpc.request("Kartoffel.Kartoffel", "UpdateDI", data);
+    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
+  }
+
+  GetAllRoles(request: GetAllRolesRequest): Promise<RoleArray> {
+    const data = GetAllRolesRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "GetAllRoles",
+      data
+    );
+    return promise.then((data) => RoleArray.decode(new _m0.Reader(data)));
   }
 
   CreateRole(request: CreateRoleRequest): Promise<Role> {
@@ -5298,6 +6626,18 @@ export class KartoffelClientImpl implements Kartoffel {
     const promise = this.rpc.request(
       "Kartoffel.Kartoffel",
       "ConnectRoleAndDI",
+      data
+    );
+    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
+  }
+
+  DisconnectRoleAndDI(
+    request: DisconnectRoleAndDIRequest
+  ): Promise<SuccessMessage> {
+    const data = DisconnectRoleAndDIRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "DisconnectRoleAndDI",
       data
     );
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
@@ -5329,16 +6669,32 @@ export class KartoffelClientImpl implements Kartoffel {
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
-  DeleteDI(request: DeleteDIRequest): Promise<SuccessMessage> {
-    const data = DeleteDIRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "DeleteDI", data);
+  RenameRole(request: RenameRoleRequest): Promise<SuccessMessage> {
+    const data = RenameRoleRequest.encode(request).finish();
+    const promise = this.rpc.request("Kartoffel.Kartoffel", "RenameRole", data);
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
-  GetOGTree(request: GetOGTreeRequest): Promise<OGTree> {
-    const data = GetOGTreeRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "GetOGTree", data);
-    return promise.then((data) => OGTree.decode(new _m0.Reader(data)));
+  GetRolesByHierarchy(
+    request: GetRolesByHierarchyRequest
+  ): Promise<SuccessMessage> {
+    const data = GetRolesByHierarchyRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "GetRolesByHierarchy",
+      data
+    );
+    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
+  }
+
+  ChangeRoleOG(request: ChangeRoleOGRequest): Promise<SuccessMessage> {
+    const data = ChangeRoleOGRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "ChangeRoleOG",
+      data
+    );
+    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 }
 

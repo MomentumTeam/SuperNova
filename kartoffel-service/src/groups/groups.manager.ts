@@ -9,9 +9,9 @@ import {
   GetOGByIdRequest,
   GetChildrenOfOGRequest,
   UpdateOGParentRequest,
-  RenameOGRequest
+  RenameOGRequest,
+  GetAllOGsRequest,
 } from '../interfaces/protoc/proto/kartoffelService';
-import { DeleteOGReq } from '../interfaces/protoc/proto/requestService';
 import { KartoffelFaker } from '../mock/kartoffel.faker';
 import { KartoffelUtils } from '../utils/kartoffel.utils';
 import { GroupsRepository } from './groups.repository';
@@ -25,9 +25,9 @@ export class GroupsManager {
     );
   }
 
-  async searchOG(searchOGRequest: SearchOGRequest): Promise<OGArray> {
+  async getAllOGs(getAllOGsRequest: GetAllOGsRequest): Promise<OGArray> {
     try {
-      return await this.groupsRepository.searchOG(searchOGRequest);
+      return await this.groupsRepository.getAllOGs(getAllOGsRequest);
     } catch (error) {
       throw error;
     }
@@ -45,24 +45,29 @@ export class GroupsManager {
     getOGByHierarchyName: GetOGByHierarchyNameRequest
   ): Promise<OrganizationGroup> {
     try {
-      return await this.groupsRepository.getOGByHierarchyName(getOGByHierarchyName);
+      return await this.groupsRepository.getOGByHierarchyName(
+        getOGByHierarchyName
+      );
     } catch (error) {
       throw error;
     }
   }
 
-
-  async deleteOG(
-    deleteRoleRequest: DeleteOGRequest
-  ): Promise<SuccessMessage> {
+  async searchOG(searchOGRequest: SearchOGRequest): Promise<OGArray> {
     try {
-      return await this.groupsRepository.deleteOG(deleteRoleRequest);
+      return await this.groupsRepository.searchOG(searchOGRequest);
     } catch (error) {
       throw error;
     }
   }
 
-
+  async deleteOG(deleteOGRequest: DeleteOGRequest): Promise<SuccessMessage> {
+    try {
+      return await this.groupsRepository.deleteOG(deleteOGRequest);
+    } catch (error) {
+      throw error;
+    }
+  }
 
   async getOGById(
     getOGByIdRequest: GetOGByIdRequest
@@ -78,7 +83,9 @@ export class GroupsManager {
     getChildrenOfOGRequest: GetChildrenOfOGRequest
   ): Promise<OGArray> {
     try {
-      return await this.groupsRepository.getChildrenOfOG(getChildrenOfOGRequest);
+      return await this.groupsRepository.getChildrenOfOG(
+        getChildrenOfOGRequest
+      );
     } catch (error) {
       throw error;
     }
@@ -94,11 +101,7 @@ export class GroupsManager {
     }
   }
 
-
-
-  async renameOG(
-    renameOGRequest: RenameOGRequest
-  ): Promise<SuccessMessage> {
+  async renameOG(renameOGRequest: RenameOGRequest): Promise<SuccessMessage> {
     try {
       return await this.groupsRepository.renameOG(renameOGRequest);
     } catch (error) {

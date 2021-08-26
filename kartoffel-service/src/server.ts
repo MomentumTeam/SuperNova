@@ -2,16 +2,6 @@ import * as grpc from 'grpc';
 import * as protoLoader from '@grpc/proto-loader';
 import * as C from './config';
 import { logger } from './logger';
-import {
-  connectRoleAndDI,
-  createDI,
-  createRole,
-  deleteDI,
-  deleteRole,
-  getRolesUnderOG,
-  getOGTree,
-  getRoleByRoleId,
-} from './kartoffel/kartoffel.controller';
 import { findPath } from './utils/path';
 import { addHealthService } from './health';
 import {
@@ -30,15 +20,38 @@ import {
   updateEntity,
 } from './entities/entities.controller';
 import {
-  searchOG,
+  getAllOGs,
   createOG,
   getOGByHierarchyName,
+  searchOG,
   deleteOG,
   getOGById,
   getChildrenOfOG,
   updateOGParent,
   renameOG,
 } from './groups/groups.controller';
+import {
+  getAllDIs,
+  createDI,
+  getDIByRoleId,
+  searchDIOrUniqueId,
+  deleteDI,
+  getDIByUniqueId,
+  updateDI,
+} from './digitalIdentities/di.controller';
+
+import {
+  connectRoleAndDI,
+  disconnectRoleAndDI,
+  createRole,
+  deleteRole,
+  getRolesUnderOG,
+  getRoleByRoleId,
+  renameRole,
+  getAllRoles,
+  getRolesByHierarchy,
+  changeRoleOG,
+} from './roles/roles.controller';
 
 const PROTO_PATH = `${findPath('proto')}/kartoffelService.proto`;
 
@@ -96,23 +109,36 @@ export class Server {
         UpdateEntity: updateEntity,
 
         //groups
-        SearchOG: searchOG,
+        GetAllOGs: getAllOGs,
         CreateOG: createOG,
         getOGByHierarchyName: getOGByHierarchyName,
+        SearchOG: searchOG,
         DeleteOG: deleteOG,
         GetOGById: getOGById,
         GetChildrenOfOG: getChildrenOfOG,
         UpdateOGParent: updateOGParent,
         RenameOG: renameOG,
 
+        //digitalIdentities
+        GetAllDIs: getAllDIs,
         CreateDI: createDI,
+        DeleteDI: deleteDI,
+        GetDIByRoleId: getDIByRoleId,
+        SearchDIOrUniqueId: searchDIOrUniqueId,
+        GetDIByUniqueId: getDIByUniqueId,
+        UpdateDI: updateDI,
+
+        // roles
+        GetAllRoles: getAllRoles,
         CreateRole: createRole,
         ConnectRoleAndDI: connectRoleAndDI,
+        DisconnectRoleAndDI: disconnectRoleAndDI,
         GetRoleByRoleId: getRoleByRoleId,
         GetRolesUnderOG: getRolesUnderOG,
         DeleteRole: deleteRole,
-        DeleteDI: deleteDI,
-        GetOGTree: getOGTree,
+        RenameRole: renameRole,
+        GetRolesByHierarchy: getRolesByHierarchy,
+        ChangeRoleOG: changeRoleOG,
       });
       logger.info(`Grpc services were successfully added to the server`);
     } catch (error) {
