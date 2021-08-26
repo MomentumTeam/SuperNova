@@ -20,21 +20,21 @@ const rolesManager: RolesManager = new RolesManager(
 export async function getAllRoles(call: any, callback: any): Promise<void> {
   try {
     logger.info(`Call to getAllRoles`, { callRequest: call.request });
-    const roleArray: RoleArray = await rolesManager.getAllRoles(call.request);
+    const roles: RoleArray = await rolesManager.getAllRoles(call.request);
     logger.info(`getAllRoles OK`, {
       callRequest: call.request,
-      response: roleArray,
+      response: roles,
     });
-    callback(null, roleArray);
+    callback(null, { roles: roles });
   } catch (error) {
-    logger.error(`getAllRoles OK`, {
+    logger.error(`getAllRoles ERROR`, {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {
         code: 400,
-        message: error.message,
+        error: { message: error.message },
         status: grpc.status.CANCELLED,
       },
       null

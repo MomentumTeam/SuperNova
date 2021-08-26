@@ -439,7 +439,7 @@ export class KartoffelRepository {
         return { success: true };
       } else {
         await this.kartoffelDelete(
-          `${C.kartoffelUrl}/digitalIdentities/${deleteDIRequest.uniqueId}`
+          `${C.kartoffelUrl}/digitalIdentities/${deleteDIRequest.id}`
         );
         return { success: true };
       }

@@ -1,6 +1,5 @@
 import * as grpc from 'grpc';
 import {
-  GetChildrenOfOGRequest,
   OGArray,
   OrganizationGroup,
   SuccessMessage,
@@ -18,24 +17,26 @@ const groupsManager: GroupsManager = new GroupsManager(
   kartoffelFaker
 );
 
-export async function searchOG(call: any, callback: any): Promise<void> {
+export async function getAllOGs(call: any, callback: any): Promise<void> {
   try {
-    logger.info(`Call to searchOG`, { callRequest: call.request });
-    const ogArray: OGArray = await groupsManager.searchOG(call.request);
-    logger.info(`searchOG OK`, {
+    logger.info(`Call to getAllOGs`, {
+      callRequest: call.request,
+    });
+    const ogArray: OGArray = await groupsManager.getAllOGs(call.request);
+    logger.info(`getAllOGs OK`, {
       callRequest: call.request,
       response: ogArray,
     });
-    callback(null, ogArray);
+    callback(null, { groups: ogArray });
   } catch (error) {
-    logger.error(`searchOG ERROR`, {
+    logger.error(`getAllOGs ERROR`, {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {
         code: 400,
-        message: error.message,
+        error: { message: error.message },
         status: grpc.status.CANCELLED,
       },
       null
@@ -57,12 +58,12 @@ export async function createOG(call: any, callback: any): Promise<void> {
   } catch (error) {
     logger.error(`createOG ERROR`, {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {
         code: 400,
-        message: error.message,
+        error: { message: error.message },
         status: grpc.status.CANCELLED,
       },
       null
@@ -89,12 +90,37 @@ export async function getOGByHierarchyName(
   } catch (error) {
     logger.error(`getOGByHierarchy ERROR`, {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {
         code: 400,
-        message: error.message,
+        error: { message: error.message },
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function searchOG(call: any, callback: any): Promise<void> {
+  try {
+    logger.info(`Call to searchOG`, { callRequest: call.request });
+    const ogArray: OGArray = await groupsManager.searchOG(call.request);
+    logger.info(`searchOG OK`, {
+      callRequest: call.request,
+      response: ogArray,
+    });
+    callback(null, ogArray);
+  } catch (error) {
+    logger.error(`searchOG ERROR`, {
+      callRequest: call.request,
+      error: { message: error.message },
+    });
+    callback(
+      {
+        code: 400,
+        error: { message: error.message },
         status: grpc.status.CANCELLED,
       },
       null
@@ -118,12 +144,12 @@ export async function deleteOG(call: any, callback: any): Promise<void> {
   } catch (error) {
     logger.error(`deleteOG ERROR`, {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {
         code: 400,
-        message: error.message,
+        error: { message: error.message },
         status: grpc.status.CANCELLED,
       },
       null
@@ -145,12 +171,12 @@ export async function getOGById(call: any, callback: any): Promise<void> {
   } catch (error) {
     logger.error(`getOGById ERROR`, {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {
         code: 400,
-        message: error.message,
+        error: { message: error.message },
         status: grpc.status.CANCELLED,
       },
       null
@@ -174,12 +200,12 @@ export async function getChildrenOfOG(call: any, callback: any): Promise<void> {
   } catch (error) {
     logger.error(`getChildrenOfOG ERROR`, {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {
         code: 400,
-        message: error.message,
+        error: { message: error.message },
         status: grpc.status.CANCELLED,
       },
       null
@@ -192,21 +218,23 @@ export async function updateOGParent(call: any, callback: any): Promise<void> {
     logger.info(`Call to updateOGParent`, {
       callRequest: call.request,
     });
-    const ogArray: OGArray = await groupsManager.getChildrenOfOG(call.request);
+    const successMessage: SuccessMessage = await groupsManager.updateOGParent(
+      call.request
+    );
     logger.info(`updateOGParent OK`, {
       callRequest: call.request,
-      response: ogArray,
+      response: successMessage,
     });
-    callback(null, ogArray);
+    callback(null, successMessage);
   } catch (error) {
     logger.error(`updateOGParent ERROR`, {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {
         code: 400,
-        message: error.message,
+        error: { message: error.message },
         status: grpc.status.CANCELLED,
       },
       null
@@ -230,12 +258,12 @@ export async function renameOG(call: any, callback: any): Promise<void> {
   } catch (error) {
     logger.error(`renameOG ERROR`, {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {
         code: 400,
-        message: error.message,
+        error: { message: error.message },
         status: grpc.status.CANCELLED,
       },
       null
