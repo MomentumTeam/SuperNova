@@ -51,30 +51,7 @@ const requestsClient: any = new protoDescriptor.RequestService(
 );
 
 export default class RequestsController {
-  static async getRequestById(req: Request, res: Response) {
-    logger.info(`Call to getRequestById in GTW`, {
-      callRequest: { id: req.params.id },
-    });
 
-    requestsClient.GetRequestById(
-      { id: req.params.id },
-      (err: any, response: RequestS) => {
-        if (err) {
-          logger.error(`getRequestById ERROR in GTW`, {
-            err,
-            callRequest: { id: req.params.id },
-          });
-          res.send(err);
-        }
-
-        logger.info(`getRequestById OK in GTW`, {
-          response: response,
-          callRequest: { id: req.params.id },
-        });
-        res.send(response);
-      }
-    );
-  }
 
   static async getAllRequests(req: any, res: Response) {
     //only SECURITY Approvers can see all requests.
@@ -89,14 +66,14 @@ export default class RequestsController {
       userTypeFromJSON(req.user.userType.type) === UserType.SUPER_SECURITY
     ) {
       requestsClient.GetAllRequests(
-        { from: req.query.from, to: req.query.to },
+        data,
         (err: any, response: RequestArray) => {
           if (err) {
             logger.error(`getAllRequests ERROR in GTW`, {
               err,
               callRequest: data,
             });
-            res.send(err);
+            res.status(500).send(err.message);
           }
 
           logger.info(`getAllRequests OK in GTW`, {
@@ -109,6 +86,31 @@ export default class RequestsController {
     } else {
       res.send('You dont have permission to see all requests!');
     }
+  }
+
+  static async getRequestById(req: Request, res: Response) {
+    logger.info(`Call to getRequestById in GTW`, {
+      callRequest: { id: req.params.id },
+    });
+
+    requestsClient.GetRequestById(
+      { id: req.params.id },
+      (err: any, response: RequestS) => {
+        if (err) {
+          logger.error(`getRequestById ERROR in GTW`, {
+            err,
+            callRequest: { id: req.params.id },
+          });
+          res.status(500).send(err.message);
+        }
+
+        logger.info(`getRequestById OK in GTW`, {
+          response: response,
+          callRequest: { id: req.params.id },
+        });
+        res.send(response);
+      }
+    );
   }
 
   static async getMyRequests(req: any, res: Response) {
@@ -126,64 +128,10 @@ export default class RequestsController {
             err,
             callRequest: data,
           });
-          res.send(err);
+          res.status(500).send(err.message);
         }
 
         logger.info(`getMyRequests OK in GTW`, {
-          response: response,
-          callRequest: data,
-        });
-        res.send(response);
-      }
-    );
-  }
-
-  static async getRequestsAsCommander(req: any, res: Response) {
-    const data = { id: req.user.id, from: req.query.from, to: req.query.to };
-
-    logger.info(`Call to getRequestsAsCommander in GTW`, {
-      callRequest: data,
-    });
-
-    requestsClient.GetRequestsByCommander(
-      data,
-      (err: any, response: RequestArray) => {
-        if (err) {
-          logger.error(`getRequestsAsCommander ERROR in GTW`, {
-            err,
-            callRequest: data,
-          });
-          res.send(err);
-        }
-
-        logger.info(`getRequestsAsCommander OK in GTW`, {
-          response: response,
-          callRequest: data,
-        });
-        res.send(response);
-      }
-    );
-  }
-
-  static async getRequestsSubmittedBy(req: Request, res: Response) {
-    const data = { id: req.params.id, from: req.query.from, to: req.query.to };
-
-    logger.info(`Call to getRequestsSubmittedBy in GTW`, {
-      callRequest: data,
-    });
-
-    requestsClient.GetRequestsSubmittedBy(
-      data,
-      (err: any, response: RequestArray) => {
-        if (err) {
-          logger.error(`getRequestsSubmittedBy ERROR in GTW`, {
-            err,
-            callRequest: data,
-          });
-          res.send(err);
-        }
-
-        logger.info(`getRequestsSubmittedBy OK in GTW`, {
           response: response,
           callRequest: data,
         });
@@ -207,7 +155,7 @@ export default class RequestsController {
             err,
             callRequest: data,
           });
-          res.send(err);
+          res.status(500).send(err.message);
         }
 
         logger.info(`getRequestsByCommander OK in GTW`, {
@@ -218,6 +166,277 @@ export default class RequestsController {
       }
     );
   }
+
+  static async getRequestsSubmittedBy(req: Request, res: Response) {
+    const data = { id: req.params.id, from: req.query.from, to: req.query.to };
+
+    logger.info(`Call to getRequestsSubmittedBy in GTW`, {
+      callRequest: data,
+    });
+
+    requestsClient.GetRequestsSubmittedBy(
+      data,
+      (err: any, response: RequestArray) => {
+        if (err) {
+          logger.error(`getRequestsSubmittedBy ERROR in GTW`, {
+            err,
+            callRequest: data,
+          });
+          res.status(500).send(err.message);
+        }
+
+        logger.info(`getRequestsSubmittedBy OK in GTW`, {
+          response: response,
+          callRequest: data,
+        });
+        res.send(response);
+      }
+    );
+  }
+
+  static async getRequestBySerialNumber(req: Request, res: Response) {
+    logger.info(`Call to getRequestBySerialNumber in GTW`, {
+      callRequest: { serialNumber: req.params.serialNumber },
+    });
+
+    requestsClient.GetRequestBySerialNumber(
+      { serialNumber: req.params.serialNumber },
+      (err: any, response: RequestArray) => {
+        if (err) {
+          logger.error(`getRequestBySerialNumber ERROR in GTW`, {
+            err,
+            callRequest: { serialNumber: req.params.serialNumber },
+          });
+          res.status(500).send(err.message);
+        }
+
+        logger.info(`getRequestBySerialNumber OK in GTW`, {
+          response: response,
+          callRequest: { serialNumber: req.params.serialNumber },
+        });
+        res.send(response);
+      }
+    );
+  }
+
+  static async getRequestsBySubmitterIdentifier(req: Request, res: Response) {
+    const data = { identifier: req.params.identifier, from: req.query.from, to: req.query.to };
+
+    logger.info(`Call to getRequestsBySubmitterIdentifier in GTW`, {
+      callRequest: data,
+    });
+
+    requestsClient.GetRequestsBySubmitterIdentifier(
+      data,
+      (err: any, response: RequestS) => {
+        if (err) {
+          logger.error(`getRequestsBySubmitterIdentifier ERROR in GTW`, {
+            err,
+            callRequest: data,
+          });
+          res.status(500).send(err.message);
+        }
+
+        logger.info(`getRequestsBySubmitterIdentifier OK in GTW`, {
+          response: response,
+          callRequest: data,
+        });
+        res.send(response);
+      }
+    );
+  }
+
+  static async getRequestsByCommanderIdentifier(req: Request, res: Response) {
+    const data = { identifier: req.params.identifier, from: req.query.from, to: req.query.to };
+
+    logger.info(`Call to getRequestsByCommanderIdentifier in GTW`, {
+      callRequest: data,
+    });
+
+    requestsClient.GetRequestsByCommanderIdentifier(
+      data,
+      (err: any, response: RequestS) => {
+        if (err) {
+          logger.error(`getRequestsByCommanderIdentifier ERROR in GTW`, {
+            err,
+            callRequest: data,
+          });
+          res.status(500).send(err.message);
+        }
+
+        logger.info(`getRequestsByCommanderIdentifier OK in GTW`, {
+          response: response,
+          callRequest: data,
+        });
+        res.send(response);
+      }
+    );
+  }
+
+  static async getRequestsBySecurityIdentifier(req: Request, res: Response) {
+    const data = { identifier: req.params.identifier, from: req.query.from, to: req.query.to };
+
+    logger.info(`Call to getRequestsBySecurityIdentifier in GTW`, {
+      callRequest: data,
+    });
+
+    requestsClient.GetRequestsBySecurityIdentifier(
+      data,
+      (err: any, response: RequestS) => {
+        if (err) {
+          logger.error(`getRequestsBySecurityIdentifier ERROR in GTW`, {
+            err,
+            callRequest: data,
+          });
+          res.status(500).send(err.message);
+        }
+
+        logger.info(`getRequestsBySecurityIdentifier OK in GTW`, {
+          response: response,
+          callRequest: data,
+        });
+        res.send(response);
+      }
+    );
+  }
+
+  static async getRequestsByApproverIdentifier(req: Request, res: Response) {
+    const data = { identifier: req.params.identifier, from: req.query.from, to: req.query.to };
+
+    logger.info(`Call to getRequestsByApproverIdentifier in GTW`, {
+      callRequest: data,
+    });
+
+    requestsClient.GetRequestsByApproverIdentifier(
+      data,
+      (err: any, response: RequestS) => {
+        if (err) {
+          logger.error(`getRequestsByApproverIdentifier ERROR in GTW`, {
+            err,
+            callRequest: data,
+          });
+          res.status(500).send(err.message);
+        }
+
+        logger.info(`getRequestsByApproverIdentifier OK in GTW`, {
+          response: response,
+          callRequest: data,
+        });
+        res.send(response);
+      }
+    );
+  }
+
+  static async searchRequestsBySubmitterDisplayName(req: Request, res: Response) {
+    const data = { displayName: req.params.displayName, from: req.query.from, to: req.query.to };
+
+    logger.info(`Call to searchRequestsBySubmitterDisplayName in GTW`, {
+      callRequest: data,
+    });
+
+    requestsClient.SearchRequestsBySubmitterDisplayName(
+      data,
+      (err: any, response: RequestS) => {
+        if (err) {
+          logger.error(`searchRequestsBySubmitterDisplayName ERROR in GTW`, {
+            err,
+            callRequest: data,
+          });
+          res.status(500).send(err.message);
+        }
+
+        logger.info(`searchRequestsBySubmitterDisplayName OK in GTW`, {
+          response: response,
+          callRequest: data,
+        });
+        res.send(response);
+      }
+    );
+  }
+
+  static async searchRequestsByCommanderDisplayName(req: Request, res: Response) {
+    const data = { displayName: req.params.displayName, from: req.query.from, to: req.query.to };
+
+    logger.info(`Call to searchRequestsByCommanderDisplayName in GTW`, {
+      callRequest: data,
+    });
+
+    requestsClient.SearchRequestsByCommanderDisplayName(
+      data,
+      (err: any, response: RequestS) => {
+        if (err) {
+          logger.error(`searchRequestsByCommanderDisplayName ERROR in GTW`, {
+            err,
+            callRequest: data,
+          });
+          res.status(500).send(err.message);
+        }
+
+        logger.info(`searchRequestsByCommanderDisplayName OK in GTW`, {
+          response: response,
+          callRequest: data,
+        });
+        res.send(response);
+      }
+    );
+  }
+
+  static async searchRequestsBySecurityDisplayName(req: Request, res: Response) {
+    const data = { displayName: req.params.displayName, from: req.query.from, to: req.query.to };
+
+    logger.info(`Call to searchRequestsBySecurityDisplayName in GTW`, {
+      callRequest: data,
+    });
+
+    requestsClient.searchRequestsBySecurityDisplayName(
+      data,
+      (err: any, response: RequestS) => {
+        if (err) {
+          logger.error(`searchRequestsBySecurityDisplayName ERROR in GTW`, {
+            err,
+            callRequest: data,
+          });
+          res.status(500).send(err.message);
+        }
+
+        logger.info(`searchRequestsBySecurityDisplayName OK in GTW`, {
+          response: response,
+          callRequest: data,
+        });
+        res.send(response);
+      }
+    );
+  }
+
+  static async searchRequestsByApproverDisplayName(req: Request, res: Response) {
+    const data = { displayName: req.params.displayName, from: req.query.from, to: req.query.to };
+
+    logger.info(`Call to searchRequestsByApproverDisplayName in GTW`, {
+      callRequest: data,
+    });
+
+    requestsClient.SearchRequestsByApproverDisplayName(
+      data,
+      (err: any, response: RequestS) => {
+        if (err) {
+          logger.error(`searchRequestsByApproverDisplayName ERROR in GTW`, {
+            err,
+            callRequest: data,
+          });
+          res.status(500).send(err.message);
+        }
+
+        logger.info(`searchRequestsByApproverDisplayName OK in GTW`, {
+          response: response,
+          callRequest: data,
+        });
+        res.send(response);
+      }
+    );
+  }
+
+
+
 
   static async updateADStatus(req: Request, res: Response) {
     const retry: boolean = req.body.Retry;
@@ -319,7 +538,7 @@ export default class RequestsController {
             callRequest: { id: req.params.id },
           });
 
-          res.send(err);
+          res.status(500).send(err.message);
         }
 
         logger.info(`updateRequest OK in GTW`, {
@@ -331,9 +550,70 @@ export default class RequestsController {
     );
   }
 
+  static async updateCommanders(req: Request, res: Response) {
+    const data = { id: req.params.id, approvers: req.body.approvers };
+
+    logger.info(`Call to updateCommanders in GTW`, {
+      callRequest: data,
+    });
+
+    requestsClient.UpdateCommanders(
+      data,
+      (err: any, response: RequestS) => {
+        if (err) {
+          logger.error(`updateCommanders ERROR in GTW`, {
+            err,
+            callRequest: data,
+          });
+
+          res.status(500).send(err.message);
+        }
+
+        logger.info(`updateCommanders OK in GTW`, {
+          response: response,
+          callRequest: data,
+        });
+        res.send(response);
+      }
+    );
+  }
+
+  static async updateSecurityApprovers(req: Request, res: Response) {
+    const data = { id: req.params.id, approvers: req.body.approvers };
+
+    logger.info(`Call to updateSecurityApprovers in GTW`, {
+      callRequest: data,
+    });
+
+    requestsClient.UpdateSecurityApprovers(
+      data,
+      (err: any, response: RequestS) => {
+        if (err) {
+          logger.error(`updateSecurityApprovers ERROR in GTW`, {
+            err,
+            callRequest: data,
+          });
+
+          res.status(500).send(err.message);
+        }
+
+        logger.info(`updateSecurityApprovers OK in GTW`, {
+          response: response,
+          callRequest: data,
+        });
+        res.send(response);
+      }
+    );
+  }
+
   static async updateApproverDecision(req: any, res: Response) {
+    const data = {
+      id: req.params.id,
+      //TODO- ApproverDecision
+    };
+
     logger.info(`Call to updateApproverDecision in GTW`, {
-      callRequest: { id: req.params.id },
+      callRequest: data,
     });
     //TODO(barak)- in requestService make one generic function for updateDecision.
 
@@ -342,18 +622,20 @@ export default class RequestsController {
     switch (userTypeFromJSON(req.userType)) {
       case UserType.COMMANDER: {
         response = requestsClient.UpdateCommanderDecision(
-          {
-            id: req.params.id,
-            //TODO- ApproverDecision
-          },
+          data,
           (err: any, response: Request) => {
             if (err) {
-              logger.error(`updateRequest ERROR in GTW`, {
+              logger.error(`updateCommanderDecision ERROR in GTW`, {
                 err,
-                callRequest: { id: req.params.id },
+                callRequest: data,
               });
-              res.send(err);
+              res.status(500).send(err.message);
             }
+
+            logger.info(`updateCommanderDecision OK in GTW`, {
+              response: response,
+              callRequest: data,
+            });
             return response;
           }
         );
@@ -361,18 +643,20 @@ export default class RequestsController {
       }
       case UserType.SECURITY: {
         response = requestsClient.UpdateSecurityDecision(
-          {
-            id: req.params.id,
-            //TODO- ApproverDecision
-          },
+          data,
           (err: any, response: Request) => {
             if (err) {
-              logger.error(`updateRequest ERROR in GTW`, {
+              logger.error(`updateSecurityDecision ERROR in GTW`, {
                 err,
-                callRequest: { id: req.params.id },
+                callRequest: data,
               });
-              res.send(err);
+              res.status(500).send(err.message);
             }
+
+            logger.info(`updateSecurityDecision OK in GTW`, {
+              response: response,
+              callRequest: data,
+            });
             return response;
           }
         );
@@ -380,18 +664,20 @@ export default class RequestsController {
       }
       case UserType.SUPER_SECURITY: {
         response = requestsClient.UpdateSuperSecurityDecision(
-          {
-            id: req.params.id,
-            //TODO- ApproverDecision
-          },
+          data,
           (err: any, response: Request) => {
             if (err) {
-              logger.error(`updateRequest ERROR in GTW`, {
+              logger.error(`updateSuperSecurityDecision ERROR in GTW`, {
                 err,
-                callRequest: { id: req.params.id },
+                callRequest: data,
               });
-              res.send(err);
+              res.status(500).send(err.message);
             }
+
+            logger.info(`updateSuperSecurityDecision OK in GTW`, {
+              response: response,
+              callRequest: data,
+            });
             return response;
           }
         );
@@ -441,6 +727,179 @@ export default class RequestsController {
     });
   }
 
+
+
+
+  static async createRoleRequest(req: any, res: Response) {
+    logger.info(`Call to createRoleRequest in GTW`, {
+      callRequest: { submittedBy: req.user.id },
+    });
+
+    const submittedBy: EntityMin = {
+      id: req.user.id,
+      displayName: req.user.displayName,
+      identityCard: req.user.identityCard,
+      personalNumber: req.user.personalNumber,
+    };
+
+    req.body.submittedBy = submittedBy;
+
+    requestsClient.CreateRoleRequest(
+      req.body,
+      (err: any, response: CreateRoleRes) => {
+        if (err) {
+          logger.error(`createRoleRequest ERROR in GTW`, {
+            err,
+            callRequest: { submittedBy: req.user.id },
+          });
+          res.status(500).send(err.message);
+        }
+
+        logger.info(`createRoleRequest OK in GTW`, {
+          response: response,
+          callRequest: { submittedBy: req.user.id },
+        });
+        res.send(response);
+      }
+    );
+  }
+
+  static async assignRoleToEntityRequest(req: any, res: Response) {
+    logger.info(`Call to assignRoleToEntityRequest in GTW`, {
+      callRequest: { submittedBy: req.user.id },
+    });
+
+    const submittedBy: EntityMin = {
+      id: req.user.id,
+      displayName: req.user.displayName,
+      identityCard: req.user.identityCard,
+      personalNumber: req.user.personalNumber,
+    };
+
+    req.body.submittedBy = submittedBy;
+
+    requestsClient.AssignRoleToEntityRequest(
+      req.body,
+      (err: any, response: AssignRoleToEntityRes) => {
+        if (err) {
+          logger.error(`assignRoleToEntityRequest ERROR in GTW`, {
+            err,
+            callRequest: { submittedBy: req.user.id },
+          });
+          res.status(500).send(err.message);
+        }
+
+        logger.info(`assignRoleToEntityRequest OK in GTW`, {
+          response: response,
+          callRequest: { submittedBy: req.user.id },
+        });
+        res.send(response);
+      }
+    );
+  }
+
+  static async createOGRequest(req: any, res: Response) {
+    logger.info(`Call to createOGRequest in GTW`, {
+      callRequest: { submittedBy: req.user.id },
+    });
+
+    const submittedBy: EntityMin = {
+      id: req.user.id,
+      displayName: req.user.displayName,
+      identityCard: req.user.identityCard,
+      personalNumber: req.user.personalNumber,
+    };
+
+    req.body.submittedBy = submittedBy;
+
+    requestsClient.CreateOGRequest(
+      req.body,
+      (err: any, response: CreateOGRes) => {
+        if (err) {
+          logger.error(`createOGRequest ERROR in GTW`, {
+            err,
+            callRequest: { submittedBy: req.user.id },
+          });
+          res.status(500).send(err.message);
+        }
+
+        logger.info(`createOGRequest OK in GTW`, {
+          response: response,
+          callRequest: { submittedBy: req.user.id },
+        });
+        res.send(response);
+      }
+    );
+  }
+
+  static async createNewApproverRequest(req: any, res: Response) {
+    logger.info(`Call to createNewApproverRequest in GTW`, {
+      callRequest: { submittedBy: req.user.id },
+    });
+
+    const submittedBy: EntityMin = {
+      id: req.user.id,
+      displayName: req.user.displayName,
+      identityCard: req.user.identityCard,
+      personalNumber: req.user.personalNumber,
+    };
+
+    req.body.submittedBy = submittedBy;
+
+    requestsClient.CreateOGRequest(
+      req.body,
+      (err: any, response: CreateOGRes) => {
+        if (err) {
+          logger.error(`createNewApproverRequest ERROR in GTW`, {
+            err,
+            callRequest: { submittedBy: req.user.id },
+          });
+          res.status(500).send(err.message);
+        }
+
+        logger.info(`createNewApproverRequest OK in GTW`, {
+          response: response,
+          callRequest: { submittedBy: req.user.id },
+        });
+        res.send(response);
+      }
+    );
+  }
+
+  static async createEntityRequest(req: any, res: Response) {
+    logger.info(`Call to createEntityRequest in GTW`, {
+      callRequest: { submittedBy: req.user.id },
+    });
+
+    const submittedBy: EntityMin = {
+      id: req.user.id,
+      displayName: req.user.displayName,
+      identityCard: req.user.identityCard,
+      personalNumber: req.user.personalNumber,
+    };
+
+    req.body.submittedBy = submittedBy;
+
+    requestsClient.CreateEntityRequest(
+      req.body,
+      (err: any, response: CreateEntityRes) => {
+        if (err) {
+          logger.error(`createEntityRequest ERROR in GTW`, {
+            err,
+            callRequest: { submittedBy: req.user.id },
+          });
+          res.status(500).send(err.message);
+        }
+
+        logger.info(`createEntityRequest OK in GTW`, {
+          response: response,
+          callRequest: { submittedBy: req.user.id },
+        });
+        res.send(response);
+      }
+    );
+  }
+
   static async renameOGRequest(req: any, res: Response) {
     logger.info(`Call to renameOGRequest in GTW`, {
       callRequest: { submittedBy: req.user.id },
@@ -463,7 +922,7 @@ export default class RequestsController {
             err,
             callRequest: { submittedBy: req.user.id },
           });
-          res.send(err);
+          res.status(500).send(err.message);
         }
 
         logger.info(`renameOGRequest OK in GTW`, {
@@ -497,147 +956,10 @@ export default class RequestsController {
             err,
             callRequest: { submittedBy: req.user.id },
           });
-          res.send(err);
+          res.status(500).send(err.message);
         }
 
         logger.info(`renameRoleRequest OK in GTW`, {
-          response: response,
-          callRequest: { submittedBy: req.user.id },
-        });
-        res.send(response);
-      }
-    );
-  }
-
-  static async createOGRequest(req: any, res: Response) {
-    logger.info(`Call to createOGRequest in GTW`, {
-      callRequest: { submittedBy: req.user.id },
-    });
-
-    const submittedBy: EntityMin = {
-      id: req.user.id,
-      displayName: req.user.displayName,
-      identityCard: req.user.identityCard,
-      personalNumber: req.user.personalNumber,
-    };
-
-    req.body.submittedBy = submittedBy;
-
-    requestsClient.CreateOGRequest(
-      req.body,
-      (err: any, response: CreateOGRes) => {
-        if (err) {
-          logger.error(`createOGRequest ERROR in GTW`, {
-            err,
-            callRequest: { submittedBy: req.user.id },
-          });
-          res.send(err);
-        }
-
-        logger.info(`createOGRequest OK in GTW`, {
-          response: response,
-          callRequest: { submittedBy: req.user.id },
-        });
-        res.send(response);
-      }
-    );
-  }
-
-  static async createRoleRequest(req: any, res: Response) {
-    logger.info(`Call to createRoleRequest in GTW`, {
-      callRequest: { submittedBy: req.user.id },
-    });
-
-    const submittedBy: EntityMin = {
-      id: req.user.id,
-      displayName: req.user.displayName,
-      identityCard: req.user.identityCard,
-      personalNumber: req.user.personalNumber,
-    };
-    console.log('submittedBy', submittedBy);
-
-    req.body.submittedBy = submittedBy;
-
-    requestsClient.CreateRoleRequest(
-      req.body,
-      (err: any, response: CreateRoleRes) => {
-        if (err) {
-          logger.error(`createRoleRequest ERROR in GTW`, {
-            err,
-            callRequest: { submittedBy: req.user.id },
-          });
-          res.send(err);
-        }
-
-        logger.info(`createRoleRequest OK in GTW`, {
-          response: response,
-          callRequest: { submittedBy: req.user.id },
-        });
-        res.send(response);
-      }
-    );
-  }
-
-  static async createEntityRequest(req: any, res: Response) {
-    logger.info(`Call to createEntityRequest in GTW`, {
-      callRequest: { submittedBy: req.user.id },
-    });
-
-    const submittedBy: EntityMin = {
-      id: req.user.id,
-      displayName: req.user.displayName,
-      identityCard: req.user.identityCard,
-      personalNumber: req.user.personalNumber,
-    };
-
-    req.body.submittedBy = submittedBy;
-
-    requestsClient.CreateEntityRequest(
-      req.body,
-      (err: any, response: CreateEntityRes) => {
-        if (err) {
-          logger.error(`createEntityRequest ERROR in GTW`, {
-            err,
-            callRequest: { submittedBy: req.user.id },
-          });
-          res.send(err);
-        }
-
-        logger.info(`createEntityRequest OK in GTW`, {
-          response: response,
-          callRequest: { submittedBy: req.user.id },
-        });
-        res.send(response);
-      }
-    );
-  }
-
-  static async assignRoleToEntityRequest(req: any, res: Response) {
-    logger.info(`Call to assignRoleToEntityRequest in GTW`, {
-      callRequest: { submittedBy: req.user.id },
-    });
-
-    const submittedBy: EntityMin = {
-      id: req.user.id,
-      displayName: req.user.displayName,
-      identityCard: req.user.identityCard,
-      personalNumber: req.user.personalNumber,
-    };
-
-    req.body.submittedBy = submittedBy;
-
-    requestsClient.AssignRoleToEntityRequest(
-      req.body,
-      (err: any, response: AssignRoleToEntityRes) => {
-        if (err) {
-          logger.error(`assignRoleToEntityRequest ERROR in GTW`, {
-            err,
-            callRequest: { submittedBy: req.user.id },
-          });
-          res.send(err);
-        }
-
-        logger.info(`assignRoleToEntityRequest OK in GTW`, {
           response: response,
           callRequest: { submittedBy: req.user.id },
         });
@@ -668,10 +990,60 @@ export default class RequestsController {
             err,
             callRequest: { submittedBy: req.user.id },
           });
-          res.send(err);
+          res.status(500).send(err.message);
         }
 
         logger.info(`editEntityRequest OK in GTW`, {
+          response: response,
+          callRequest: { submittedBy: req.user.id },
+        });
+        res.send(response);
+      }
+    );
+  }
+
+  static async deleteRoleRequest(req: any, res: Response) {
+    logger.info(`Call to deleteRoleRequest in GTW`, {
+      callRequest: { submittedBy: req.user.id },
+    });
+
+    requestsClient.DeleteRoleRequest(
+      req.body,
+      (err: any, response: DeleteRoleRes) => {
+        if (err) {
+          logger.error(`deleteRoleRequest ERROR in GTW`, {
+            err,
+            callRequest: { submittedBy: req.user.id },
+          });
+          res.status(500).send(err.message);
+        }
+
+        logger.info(`deleteRoleRequest OK in GTW`, {
+          response: response,
+          callRequest: { submittedBy: req.user.id },
+        });
+        res.send(response);
+      }
+    );
+  }
+
+  static async deleteOGRequest(req: any, res: Response) {
+    logger.info(`Call to deleteOGRequest in GTW`, {
+      callRequest: { submittedBy: req.user.id },
+    });
+
+    requestsClient.DeleteOGRequest(
+      req.body,
+      (err: any, response: DeleteOGRes) => {
+        if (err) {
+          logger.error(`deleteOGRequest ERROR in GTW`, {
+            err,
+            callRequest: { submittedBy: req.user.id },
+          });
+          res.status(500).send(err.message);
+        }
+
+        logger.info(`deleteOGRequest OK in GTW`, {
           response: response,
           callRequest: { submittedBy: req.user.id },
         });
@@ -702,7 +1074,7 @@ export default class RequestsController {
             err,
             callRequest: { submittedBy: req.user.id },
           });
-          res.send(err);
+          res.status(500).send(err.message);
         }
 
         logger.info(`disconectRoleFromEntityRequest OK in GTW`, {
@@ -714,74 +1086,31 @@ export default class RequestsController {
     );
   }
 
-  static async deleteRoleRequest(req: any, res: Response) {
-    logger.info(`Call to deleteRoleRequest in GTW`, {
-      callRequest: { submittedBy: req.user.id },
+
+
+
+  static async deleteRequest(req: Request, res: Response) {
+    logger.info(`Call to deleteRequest in GTW`, {
+      callRequest: { id: req.params.id }
     });
 
-    requestsClient.DeleteRoleRequest(
-      req.body,
-      (err: any, response: DeleteRoleRes) => {
+    requestsClient.DeleteRequest(
+      { id: req.params.id },
+      (err: any, response: SuccessMessage) => {
         if (err) {
-          logger.error(`deleteRoleRequest ERROR in GTW`, {
+          logger.error(`deleteRequest ERROR in GTW`, {
             err,
-            callRequest: { submittedBy: req.user.id },
+            callRequest: { id: req.params.id }
           });
-          res.send(err);
+          res.status(500).send(err.message);
         }
 
-        logger.info(`deleteRoleRequest OK in GTW`, {
+        logger.info(`deleteRequest OK in GTW`, {
           response: response,
-          callRequest: { submittedBy: req.user.id },
+          callRequest: { id: req.params.id }
         });
         res.send(response);
       }
     );
   }
-
-  static async deleteOGRequest(req: any, res: Response) {
-    logger.info(`Call to deleteOGRequest in GTW`, {
-      callRequest: { submittedBy: req.user.id },
-    });
-
-    requestsClient.DeleteOGRequest(
-      req.body,
-      (err: any, response: DeleteOGRes) => {
-        if (err) {
-          logger.error(`deleteOGRequest ERROR in GTW`, {
-            err,
-            callRequest: { submittedBy: req.user.id },
-          });
-          res.send(err);
-        }
-
-        logger.info(`deleteOGRequest OK in GTW`, {
-          response: response,
-          callRequest: { submittedBy: req.user.id },
-        });
-        res.send(response);
-      }
-    );
-  }
-
-  // static async deleteRequest(req: Request, res: Response) {
-  //   logger.info(`Call to deleteRequest in GTW`);
-
-  //   requestsClient.DeleteRequest(
-  //     req.body,
-  //     (err: any, response: SuccessMessage) => {
-  //       if (err) {
-  //         logger.error(`deleteRequest ERROR in GTW`, {
-  //           err,
-  //         });
-  //         res.send(err);
-  //       }
-
-  //       logger.info(`deleteRequest OK in GTW`, {
-  //         response: response,
-  //       });
-  //       res.send(response);
-  //     }
-  //   );
-  // }
 }
