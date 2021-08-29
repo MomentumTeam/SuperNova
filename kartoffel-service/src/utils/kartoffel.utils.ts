@@ -57,7 +57,7 @@ export class KartoffelUtils {
         .catch((error) => {
           logger.error(`Kartoffel GET Request ERROR`, {
             url: url,
-            error: error.message,
+            error: { message: error.message },
             queryParams: params,
           });
           reject(error);
@@ -80,7 +80,7 @@ export class KartoffelUtils {
         .catch((error) => {
           logger.error(`Kartoffel DELETE Request ERROR`, {
             url: url,
-            error: error.message,
+            error: { message: error.message },
             queryParams: params,
           });
           reject(error);
@@ -110,7 +110,7 @@ export class KartoffelUtils {
             url: url,
             requestBoody: body,
             queryParams: params,
-            error: error.message,
+            error: { message: error.message },
           });
           reject(error);
         });
@@ -134,7 +134,7 @@ export class KartoffelUtils {
           logger.error(`Kartoffel POST Request ERROR`, {
             url: url,
             requestBoody: body,
-            error: error.message,
+            error: { message: error.message },
             queryParams: params,
           });
           reject(error);
@@ -159,7 +159,7 @@ export class KartoffelUtils {
           logger.error(`Kartoffel PATCH Request ERROR`, {
             url: url,
             requestBoody: body,
-            error: error.message,
+            error: { message: error.message },
             queryParams: params,
           });
           reject(error);

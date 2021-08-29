@@ -298,7 +298,7 @@ export class KartoffelRepository {
         return this.kartoffelFaker.randomRoleArray();
       } else {
         const res = await this.kartoffelGet(
-          `${C.kartoffelUrl}/roles/hierarchy/${getRolesUnderOGRequest.id}?direct=${getRolesUnderOGRequest.direct}`
+          `${C.kartoffelUrl}/roles/hierarchy/${getRolesUnderOGRequest.groupId}?direct=${getRolesUnderOGRequest.direct}`
         );
         return { roles: res.data as Role[] };
       }
@@ -439,7 +439,7 @@ export class KartoffelRepository {
         return { success: true };
       } else {
         await this.kartoffelDelete(
-          `${C.kartoffelUrl}/digitalIdentities/${deleteDIRequest.uniqueId}`
+          `${C.kartoffelUrl}/digitalIdentities/${deleteDIRequest.id}`
         );
         return { success: true };
       }
