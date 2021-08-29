@@ -1,6 +1,7 @@
 import * as grpc from 'grpc';
 import {
   OGArray,
+  OGTree,
   OrganizationGroup,
   SuccessMessage,
 } from '../interfaces/protoc/proto/kartoffelService';
@@ -64,6 +65,31 @@ export async function createOG(call: any, callback: any): Promise<void> {
       {
         code: 400,
         error: { message: error.message },
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function getOGTree(call: any, callback: any): Promise<void> {
+  try {
+    logger.info(`Call to getOGTree`, { callRequest: call.request });
+    const ogTree: OGTree = await groupsManager.getOGTree(call.request);
+    logger.info(`getOGTree OK`, {
+      callRequest: call.request,
+      response: ogTree,
+    });
+    callback(null, ogTree);
+  } catch (error) {
+    logger.error(`getOGTree ERROR`, {
+      callRequest: call.request,
+      error: error.message,
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
         status: grpc.status.CANCELLED,
       },
       null

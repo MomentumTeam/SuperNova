@@ -29,6 +29,7 @@ import {
   getChildrenOfOG,
   updateOGParent,
   renameOG,
+  getOGTree,
 } from './groups/groups.controller';
 import {
   getAllDIs,
@@ -111,13 +112,14 @@ export class Server {
         //groups
         GetAllOGs: getAllOGs,
         CreateOG: createOG,
-        getOGByHierarchyName: getOGByHierarchyName,
+        GetOGByHierarchyName: getOGByHierarchyName,
         SearchOG: searchOG,
         DeleteOG: deleteOG,
         GetOGById: getOGById,
         GetChildrenOfOG: getChildrenOfOG,
         UpdateOGParent: updateOGParent,
         RenameOG: renameOG,
+        GetOGTree: getOGTree,
 
         //digitalIdentities
         GetAllDIs: getAllDIs,

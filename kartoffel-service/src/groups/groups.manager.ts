@@ -11,6 +11,8 @@ import {
   UpdateOGParentRequest,
   RenameOGRequest,
   GetAllOGsRequest,
+  GetOGTreeRequest,
+  OGTree,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { KartoffelFaker } from '../mock/kartoffel.faker';
 import { KartoffelUtils } from '../utils/kartoffel.utils';
@@ -23,6 +25,14 @@ export class GroupsManager {
       kartoffelUtils,
       kartoffelFaker
     );
+  }
+
+  async getOGTree(getOGTreeRequest: GetOGTreeRequest): Promise<OGTree> {
+    try {
+      return await this.groupsRepository.getOGTree(getOGTreeRequest);
+    } catch (error) {
+      throw error;
+    }
   }
 
   async getAllOGs(getAllOGsRequest: GetAllOGsRequest): Promise<OGArray> {

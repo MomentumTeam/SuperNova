@@ -14,6 +14,8 @@ import {
   UpdateOGParentRequest,
   RenameOGRequest,
   GetAllOGsRequest,
+  GetOGTreeRequest,
+  OGTree,
 } from '../interfaces/protoc/proto/kartoffelService';
 
 export class GroupsRepository {
@@ -24,7 +26,19 @@ export class GroupsRepository {
     this.kartoffelUtils = kartoffelUtils;
   }
 
-  
+  async getOGTree(getOGTreeRequest: GetOGTreeRequest): Promise<OGTree> {
+    try {
+      if (C.useFaker) {
+        return this.kartoffelFaker.randomOGTree();
+      } else {
+        //TODO
+        return this.kartoffelFaker.randomOGTree();
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async getAllOGs(getAllOGsRequest: GetAllOGsRequest): Promise<OGArray> {
     try {
       if (C.useFaker) {
