@@ -7,7 +7,7 @@ import {
   Entity,
   SearchEntitiesByFullNameRequest,
   GetEntityByRoleIdRequest,
-  GetEntityByMongoIdRequest,
+  GetEntityByIdRequest,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { logger } from '../logger';
 import { findPath } from '../utils/path';
@@ -84,23 +84,22 @@ export default class KartoffelService {
     });
   }
 
-  static async getEntityByMongoId(
-    getEntityByMongoId: GetEntityByMongoIdRequest
+  static async getEntityById(
+    getEntityById: GetEntityByIdRequest
   ): Promise<Entity> {
-    console.log('getEntityByMongoId');
     return new Promise((resolve, reject) => {
-      kartoffelClient.GetEntityByMongoId(
-        getEntityByMongoId,
+      kartoffelClient.GetEntityById(
+        getEntityById,
         (err: any, entity: Entity) => {
           if (err) {
-            logger.error('getEntityByMongoId in KartoffelService ERROR', {
-              getEntityByMongoId,
+            logger.error('getEntityById in KartoffelService ERROR', {
+              getEntityById,
               err,
             });
             reject(err);
           } else {
-            logger.info('getEntityByMongoId in KartoffelService', {
-              getEntityByMongoId,
+            logger.info('getEntityById in KartoffelService', {
+              getEntityById,
               entity,
             });
             resolve(entity);

@@ -3,7 +3,7 @@ import * as protoLoader from '@grpc/proto-loader';
 import * as config from '../config';
 import {
   Entity,
-  GetEntityByMongoIdRequest,
+  GetEntityByIdRequest,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { findPath } from '../utils/path';
 
@@ -29,13 +29,13 @@ const kartoffelClient: any = new protoDescriptor.Kartoffel(
 );
 
 export default class KartoffelService {
-  static async getEntityByMongoId(
-    getEntityByMongoId: GetEntityByMongoIdRequest
+  static async getEntityById(
+    getEntityById: GetEntityByIdRequest
   ): Promise<Entity> {
-    console.log('getEntityByMongoId');
+    console.log('getEntityById');
     return new Promise((resolve, reject) => {
-      kartoffelClient.GetEntityByMongoId(
-        getEntityByMongoId,
+      kartoffelClient.GetEntityById(
+        getEntityById,
         (err: any, entity: Entity) => {
           if (err) {
             reject(err);
