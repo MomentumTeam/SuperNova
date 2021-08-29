@@ -18,9 +18,9 @@ async function main(): Promise<void> {
     const server: Server = new Server();
     await server.startServer();
 
-    logger.info('Server started successfully');
+    logger.info('tea-service started successfully');
   } catch (error) {
-    logger.error(`Error while trying to start the server: ${error.message}`);
+    logger.error(`Error while trying to start tea-service: ${error.message}`);
   }
 }
 

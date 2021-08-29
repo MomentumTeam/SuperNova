@@ -1146,474 +1146,6 @@ export const GetOGByHierarchyNameRequest = {
     message: GetOGByHierarchyNameRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.hierarchy !== "") {
-      writer.uint32(10).string(message.hierarchy);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): GetOGByHierarchyNameRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseGetOGByHierarchyNameRequest,
-    } as GetOGByHierarchyNameRequest;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.hierarchy = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): GetOGByHierarchyNameRequest {
-    const message = {
-      ...baseGetOGByHierarchyNameRequest,
-    } as GetOGByHierarchyNameRequest;
-    if (object.hierarchy !== undefined && object.hierarchy !== null) {
-      message.hierarchy = String(object.hierarchy);
-    } else {
-      message.hierarchy = "";
-    }
-    return message;
-  },
-
-  toJSON(message: GetOGByHierarchyNameRequest): unknown {
-    const obj: any = {};
-    message.hierarchy !== undefined && (obj.hierarchy = message.hierarchy);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<GetOGByHierarchyNameRequest>
-  ): GetOGByHierarchyNameRequest {
-    const message = {
-      ...baseGetOGByHierarchyNameRequest,
-    } as GetOGByHierarchyNameRequest;
-    if (object.hierarchy !== undefined && object.hierarchy !== null) {
-      message.hierarchy = object.hierarchy;
-    } else {
-      message.hierarchy = "";
-    }
-    return message;
-  },
-};
-
-const baseDeleteEntityRequest: object = { id: "" };
-
-export const DeleteEntityRequest = {
-  encode(
-    message: DeleteEntityRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): DeleteEntityRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseDeleteEntityRequest } as DeleteEntityRequest;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.id = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): DeleteEntityRequest {
-    const message = { ...baseDeleteEntityRequest } as DeleteEntityRequest;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
-    } else {
-      message.id = "";
-    }
-    return message;
-  },
-
-  toJSON(message: DeleteEntityRequest): unknown {
-    const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<DeleteEntityRequest>): DeleteEntityRequest {
-    const message = { ...baseDeleteEntityRequest } as DeleteEntityRequest;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
-    } else {
-      message.id = "";
-    }
-    return message;
-  },
-};
-
-const baseGetEntityByIdentifierRequest: object = { identifier: "" };
-
-export const GetEntityByIdentifierRequest = {
-  encode(
-    message: GetEntityByIdentifierRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.identifier !== "") {
-      writer.uint32(10).string(message.identifier);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): GetEntityByIdentifierRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseGetEntityByIdentifierRequest,
-    } as GetEntityByIdentifierRequest;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.identifier = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): GetEntityByIdentifierRequest {
-    const message = {
-      ...baseGetEntityByIdentifierRequest,
-    } as GetEntityByIdentifierRequest;
-    if (object.identifier !== undefined && object.identifier !== null) {
-      message.identifier = String(object.identifier);
-    } else {
-      message.identifier = "";
-    }
-    return message;
-  },
-
-  toJSON(message: GetEntityByIdentifierRequest): unknown {
-    const obj: any = {};
-    message.identifier !== undefined && (obj.identifier = message.identifier);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<GetEntityByIdentifierRequest>
-  ): GetEntityByIdentifierRequest {
-    const message = {
-      ...baseGetEntityByIdentifierRequest,
-    } as GetEntityByIdentifierRequest;
-    if (object.identifier !== undefined && object.identifier !== null) {
-      message.identifier = object.identifier;
-    } else {
-      message.identifier = "";
-    }
-    return message;
-  },
-};
-
-const baseGetEntitiesByHierarchyRequest: object = {
-  hierarchy: "",
-  direct: false,
-  page: 0,
-  pageSize: 0,
-};
-
-export const GetEntitiesByHierarchyRequest = {
-  encode(
-    message: GetEntitiesByHierarchyRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.hierarchy !== "") {
-      writer.uint32(10).string(message.hierarchy);
-    }
-    if (message.direct === true) {
-      writer.uint32(16).bool(message.direct);
-    }
-    if (message.page !== 0) {
-      writer.uint32(24).int32(message.page);
-    }
-    if (message.pageSize !== 0) {
-      writer.uint32(32).int32(message.pageSize);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): GetEntitiesByHierarchyRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseGetEntitiesByHierarchyRequest,
-    } as GetEntitiesByHierarchyRequest;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.hierarchy = reader.string();
-          break;
-        case 2:
-          message.direct = reader.bool();
-          break;
-        case 3:
-          message.page = reader.int32();
-          break;
-        case 4:
-          message.pageSize = reader.int32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): GetEntitiesByHierarchyRequest {
-    const message = {
-      ...baseGetEntitiesByHierarchyRequest,
-    } as GetEntitiesByHierarchyRequest;
-    if (object.hierarchy !== undefined && object.hierarchy !== null) {
-      message.hierarchy = String(object.hierarchy);
-    } else {
-      message.hierarchy = "";
-    }
-    if (object.direct !== undefined && object.direct !== null) {
-      message.direct = Boolean(object.direct);
-    } else {
-      message.direct = false;
-    }
-    if (object.page !== undefined && object.page !== null) {
-      message.page = Number(object.page);
-    } else {
-      message.page = 0;
-    }
-    if (object.pageSize !== undefined && object.pageSize !== null) {
-      message.pageSize = Number(object.pageSize);
-    } else {
-      message.pageSize = 0;
-    }
-    return message;
-  },
-
-  toJSON(message: GetEntitiesByHierarchyRequest): unknown {
-    const obj: any = {};
-    message.hierarchy !== undefined && (obj.hierarchy = message.hierarchy);
-    message.direct !== undefined && (obj.direct = message.direct);
-    message.page !== undefined && (obj.page = message.page);
-    message.pageSize !== undefined && (obj.pageSize = message.pageSize);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<GetEntitiesByHierarchyRequest>
-  ): GetEntitiesByHierarchyRequest {
-    const message = {
-      ...baseGetEntitiesByHierarchyRequest,
-    } as GetEntitiesByHierarchyRequest;
-    if (object.hierarchy !== undefined && object.hierarchy !== null) {
-      message.hierarchy = object.hierarchy;
-    } else {
-      message.hierarchy = "";
-    }
-    if (object.direct !== undefined && object.direct !== null) {
-      message.direct = object.direct;
-    } else {
-      message.direct = false;
-    }
-    if (object.page !== undefined && object.page !== null) {
-      message.page = object.page;
-    } else {
-      message.page = 0;
-    }
-    if (object.pageSize !== undefined && object.pageSize !== null) {
-      message.pageSize = object.pageSize;
-    } else {
-      message.pageSize = 0;
-    }
-    return message;
-  },
-};
-
-const baseGetEntityByDIRequest: object = { uniqueId: "" };
-
-export const GetEntityByDIRequest = {
-  encode(
-    message: GetEntityByDIRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.uniqueId !== "") {
-      writer.uint32(10).string(message.uniqueId);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): GetEntityByDIRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseGetEntityByDIRequest } as GetEntityByDIRequest;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.uniqueId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): GetEntityByDIRequest {
-    const message = { ...baseGetEntityByDIRequest } as GetEntityByDIRequest;
-    if (object.uniqueId !== undefined && object.uniqueId !== null) {
-      message.uniqueId = String(object.uniqueId);
-    } else {
-      message.uniqueId = "";
-    }
-    return message;
-  },
-
-  toJSON(message: GetEntityByDIRequest): unknown {
-    const obj: any = {};
-    message.uniqueId !== undefined && (obj.uniqueId = message.uniqueId);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<GetEntityByDIRequest>): GetEntityByDIRequest {
-    const message = { ...baseGetEntityByDIRequest } as GetEntityByDIRequest;
-    if (object.uniqueId !== undefined && object.uniqueId !== null) {
-      message.uniqueId = object.uniqueId;
-    } else {
-      message.uniqueId = "";
-    }
-    return message;
-  },
-};
-
-const baseUpdateEntityRequest: object = { id: "" };
-
-export const UpdateEntityRequest = {
-  encode(
-    message: UpdateEntityRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
-    }
-    if (message.properties !== undefined) {
-      UpdateEntityProperties.encode(
-        message.properties,
-        writer.uint32(18).fork()
-      ).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): UpdateEntityRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseUpdateEntityRequest } as UpdateEntityRequest;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.id = reader.string();
-          break;
-        case 2:
-          message.properties = UpdateEntityProperties.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): UpdateEntityRequest {
-    const message = { ...baseUpdateEntityRequest } as UpdateEntityRequest;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
-    } else {
-      message.id = "";
-    }
-    if (object.properties !== undefined && object.properties !== null) {
-      message.properties = UpdateEntityProperties.fromJSON(object.properties);
-    } else {
-      message.properties = undefined;
-    }
-    return message;
-  },
-
-  toJSON(message: UpdateEntityRequest): unknown {
-    const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
-    message.properties !== undefined &&
-      (obj.properties = message.properties
-        ? UpdateEntityProperties.toJSON(message.properties)
-        : undefined);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<UpdateEntityRequest>): UpdateEntityRequest {
-    const message = { ...baseUpdateEntityRequest } as UpdateEntityRequest;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
-    } else {
-      message.id = "";
-    }
-    if (object.properties !== undefined && object.properties !== null) {
-      message.properties = UpdateEntityProperties.fromPartial(
-        object.properties
-      );
-    } else {
-      message.properties = undefined;
-    }
-    return message;
-  },
-};
-
-const baseUpdateEntityProperties: object = { phone: "", mobilePhone: "" };
-
-export const UpdateEntityProperties = {
-  encode(
-    message: UpdateEntityProperties,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
     if (message.firstName !== undefined) {
       writer.uint32(10).string(message.firstName);
     }
@@ -1665,12 +1197,12 @@ export const UpdateEntityProperties = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): UpdateEntityProperties {
+  ): GetOGByHierarchyNameRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseUpdateEntityProperties } as UpdateEntityProperties;
-    message.phone = [];
-    message.mobilePhone = [];
+    const message = {
+      ...baseGetOGByHierarchyNameRequest,
+    } as GetOGByHierarchyNameRequest;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1740,56 +1272,6 @@ export const UpdateEntityProperties = {
       message.lastName = String(object.lastName);
     } else {
       message.lastName = undefined;
-    }
-    if (object.identityCard !== undefined && object.identityCard !== null) {
-      message.identityCard = String(object.identityCard);
-    } else {
-      message.identityCard = undefined;
-    }
-    if (object.personalNumber !== undefined && object.personalNumber !== null) {
-      message.personalNumber = String(object.personalNumber);
-    } else {
-      message.personalNumber = undefined;
-    }
-    if (object.serviceType !== undefined && object.serviceType !== null) {
-      message.serviceType = String(object.serviceType);
-    } else {
-      message.serviceType = undefined;
-    }
-    if (object.phone !== undefined && object.phone !== null) {
-      for (const e of object.phone) {
-        message.phone.push(String(e));
-      }
-    }
-    if (object.mobilePhone !== undefined && object.mobilePhone !== null) {
-      for (const e of object.mobilePhone) {
-        message.mobilePhone.push(String(e));
-      }
-    }
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = undefined;
-    }
-    if (object.clearance !== undefined && object.clearance !== null) {
-      message.clearance = String(object.clearance);
-    } else {
-      message.clearance = undefined;
-    }
-    if (object.sex !== undefined && object.sex !== null) {
-      message.sex = String(object.sex);
-    } else {
-      message.sex = undefined;
-    }
-    if (object.birthDate !== undefined && object.birthDate !== null) {
-      message.birthDate = String(object.birthDate);
-    } else {
-      message.birthDate = undefined;
-    }
-    if (object.entityType !== undefined && object.entityType !== null) {
-      message.entityType = String(object.entityType);
-    } else {
-      message.entityType = undefined;
     }
     if (object.akaUnit !== undefined && object.akaUnit !== null) {
       message.akaUnit = String(object.akaUnit);
@@ -2144,69 +1626,18 @@ export const SearchEntitiesByFullNameRequest = {
     if (message.underGroupId !== undefined) {
       writer.uint32(34).string(message.underGroupId);
     }
-    if (message.status !== undefined) {
-      writer.uint32(42).string(message.status);
-    }
-    if (message.source !== undefined) {
-      writer.uint32(50).string(message.source);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): SearchEntitiesByFullNameRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseSearchEntitiesByFullNameRequest,
-    } as SearchEntitiesByFullNameRequest;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.fullName = reader.string();
-          break;
-        case 2:
-          message.rank = reader.string();
-          break;
-        case 3:
-          message.entityType = reader.string();
-          break;
-        case 4:
-          message.underGroupId = reader.string();
-          break;
-        case 5:
-          message.status = reader.string();
-          break;
-        case 6:
-          message.source = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+    if (object.phone !== undefined && object.phone !== null) {
+      for (const e of object.phone) {
+        message.phone.push(String(e));
       }
     }
-    return message;
-  },
-
-  fromJSON(object: any): SearchEntitiesByFullNameRequest {
-    const message = {
-      ...baseSearchEntitiesByFullNameRequest,
-    } as SearchEntitiesByFullNameRequest;
-    if (object.fullName !== undefined && object.fullName !== null) {
-      message.fullName = String(object.fullName);
-    } else {
-      message.fullName = "";
+    if (object.mobilePhone !== undefined && object.mobilePhone !== null) {
+      for (const e of object.mobilePhone) {
+        message.mobilePhone.push(String(e));
+      }
     }
-    if (object.rank !== undefined && object.rank !== null) {
-      message.rank = String(object.rank);
-    } else {
-      message.rank = undefined;
-    }
-    if (object.entityType !== undefined && object.entityType !== null) {
-      message.entityType = String(object.entityType);
+    if (object.address !== undefined && object.address !== null) {
+      message.address = String(object.address);
     } else {
       message.entityType = undefined;
     }
@@ -2225,70 +1656,96 @@ export const SearchEntitiesByFullNameRequest = {
     } else {
       message.source = undefined;
     }
+    if (object.entityType !== undefined && object.entityType !== null) {
+      message.entityType = String(object.entityType);
+    } else {
+      message.entityType = undefined;
+    }
+    if (object.akaUnit !== undefined && object.akaUnit !== null) {
+      message.akaUnit = String(object.akaUnit);
+    } else {
+      message.akaUnit = undefined;
+    }
+    if (object.dischargeDay !== undefined && object.dischargeDay !== null) {
+      message.dischargeDay = String(object.dischargeDay);
+    } else {
+      message.dischargeDay = undefined;
+    }
+    if (object.rank !== undefined && object.rank !== null) {
+      message.rank = String(object.rank);
+    } else {
+      message.rank = undefined;
+    }
     return message;
   },
 
   toJSON(message: SearchEntitiesByFullNameRequest): unknown {
     const obj: any = {};
-    message.fullName !== undefined && (obj.fullName = message.fullName);
-    message.rank !== undefined && (obj.rank = message.rank);
+    message.firstName !== undefined && (obj.firstName = message.firstName);
+    message.lastName !== undefined && (obj.lastName = message.lastName);
+    message.identityCard !== undefined &&
+      (obj.identityCard = message.identityCard);
+    message.personalNumber !== undefined &&
+      (obj.personalNumber = message.personalNumber);
+    message.serviceType !== undefined &&
+      (obj.serviceType = message.serviceType);
+    if (message.phone) {
+      obj.phone = message.phone.map((e) => e);
+    } else {
+      obj.phone = [];
+    }
+    if (message.mobilePhone) {
+      obj.mobilePhone = message.mobilePhone.map((e) => e);
+    } else {
+      obj.mobilePhone = [];
+    }
+    message.address !== undefined && (obj.address = message.address);
+    message.clearance !== undefined && (obj.clearance = message.clearance);
+    message.sex !== undefined && (obj.sex = message.sex);
+    message.birthDate !== undefined && (obj.birthDate = message.birthDate);
     message.entityType !== undefined && (obj.entityType = message.entityType);
-    message.underGroupId !== undefined &&
-      (obj.underGroupId = message.underGroupId);
-    message.status !== undefined && (obj.status = message.status);
-    message.source !== undefined && (obj.source = message.source);
+    message.akaUnit !== undefined && (obj.akaUnit = message.akaUnit);
+    message.dischargeDay !== undefined &&
+      (obj.dischargeDay = message.dischargeDay);
+    message.rank !== undefined && (obj.rank = message.rank);
     return obj;
   },
 
   fromPartial(
-    object: DeepPartial<SearchEntitiesByFullNameRequest>
-  ): SearchEntitiesByFullNameRequest {
-    const message = {
-      ...baseSearchEntitiesByFullNameRequest,
-    } as SearchEntitiesByFullNameRequest;
-    if (object.fullName !== undefined && object.fullName !== null) {
-      message.fullName = object.fullName;
+    object: DeepPartial<UpdateEntityProperties>
+  ): UpdateEntityProperties {
+    const message = { ...baseUpdateEntityProperties } as UpdateEntityProperties;
+    message.phone = [];
+    message.mobilePhone = [];
+    if (object.firstName !== undefined && object.firstName !== null) {
+      message.firstName = object.firstName;
     } else {
-      message.fullName = "";
+      message.firstName = undefined;
     }
-    if (object.rank !== undefined && object.rank !== null) {
-      message.rank = object.rank;
+    if (object.lastName !== undefined && object.lastName !== null) {
+      message.lastName = object.lastName;
     } else {
-      message.rank = undefined;
+      message.lastName = undefined;
     }
-    if (object.entityType !== undefined && object.entityType !== null) {
-      message.entityType = object.entityType;
+    if (object.identityCard !== undefined && object.identityCard !== null) {
+      message.identityCard = object.identityCard;
     } else {
-      message.entityType = undefined;
+      message.identityCard = undefined;
     }
-    if (object.underGroupId !== undefined && object.underGroupId !== null) {
-      message.underGroupId = object.underGroupId;
+    if (object.personalNumber !== undefined && object.personalNumber !== null) {
+      message.personalNumber = object.personalNumber;
     } else {
-      message.underGroupId = undefined;
+      message.personalNumber = undefined;
     }
-    if (object.status !== undefined && object.status !== null) {
-      message.status = object.status;
+    if (object.serviceType !== undefined && object.serviceType !== null) {
+      message.serviceType = object.serviceType;
     } else {
-      message.status = undefined;
+      message.serviceType = undefined;
     }
-    if (object.source !== undefined && object.source !== null) {
-      message.source = object.source;
-    } else {
-      message.source = undefined;
-    }
-    return message;
-  },
-};
-
-const baseGetOGTreeRequest: object = { rootId: "" };
-
-export const GetOGTreeRequest = {
-  encode(
-    message: GetOGTreeRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.rootId !== "") {
-      writer.uint32(10).string(message.rootId);
+    if (object.phone !== undefined && object.phone !== null) {
+      for (const e of object.phone) {
+        message.phone.push(e);
+      }
     }
     return writer;
   },
@@ -2333,6 +1790,26 @@ export const GetOGTreeRequest = {
       message.rootId = object.rootId;
     } else {
       message.rootId = "";
+    }
+    if (object.entityType !== undefined && object.entityType !== null) {
+      message.entityType = object.entityType;
+    } else {
+      message.entityType = undefined;
+    }
+    if (object.akaUnit !== undefined && object.akaUnit !== null) {
+      message.akaUnit = object.akaUnit;
+    } else {
+      message.akaUnit = undefined;
+    }
+    if (object.dischargeDay !== undefined && object.dischargeDay !== null) {
+      message.dischargeDay = object.dischargeDay;
+    } else {
+      message.dischargeDay = undefined;
+    }
+    if (object.rank !== undefined && object.rank !== null) {
+      message.rank = object.rank;
+    } else {
+      message.rank = undefined;
     }
     return message;
   },
@@ -4282,13 +3759,13 @@ export const CreateEntityRequest = {
     } else {
       message.sex = undefined;
     }
-    if (object.birthDate !== undefined && object.birthDate !== null) {
-      message.birthDate = object.birthDate;
+    if (object.dischargeDay !== undefined && object.dischargeDay !== null) {
+      message.dischargeDay = object.dischargeDay;
     } else {
       message.birthDate = undefined;
     }
-    if (object.entityType !== undefined && object.entityType !== null) {
-      message.entityType = object.entityType;
+    if (object.rank !== undefined && object.rank !== null) {
+      message.rank = object.rank;
     } else {
       message.entityType = undefined;
     }
@@ -6252,9 +5729,6 @@ export interface Kartoffel {
   GetChildrenOfOG(request: GetChildrenOfOGRequest): Promise<OGArray>;
   UpdateOGParent(request: UpdateOGParentRequest): Promise<SuccessMessage>;
   RenameOG(request: RenameOGRequest): Promise<SuccessMessage>;
-  GetOGTree(request: GetOGTreeRequest): Promise<OGTree>;
-  /** DI */
-  GetAllDIs(request: GetAllDIsRequest): Promise<DigitalIdentities>;
   CreateDI(request: CreateDIRequest): Promise<DigitalIdentity>;
   GetDIByRoleId(request: GetDIByRoleIdRequest): Promise<DigitalIdentity>;
   SearchDIOrUniqueId(
@@ -6273,11 +5747,9 @@ export interface Kartoffel {
   GetRoleByRoleId(request: GetRoleByRoleIdRequest): Promise<Role>;
   GetRolesUnderOG(request: GetRolesUnderOGRequest): Promise<RoleArray>;
   DeleteRole(request: DeleteRoleRequest): Promise<SuccessMessage>;
+  DeleteDI(request: DeleteDIRequest): Promise<SuccessMessage>;
+  GetOGTree(request: GetOGTreeRequest): Promise<OGTree>;
   RenameRole(request: RenameRoleRequest): Promise<SuccessMessage>;
-  GetRolesByHierarchy(
-    request: GetRolesByHierarchyRequest
-  ): Promise<SuccessMessage>;
-  ChangeRoleOG(request: ChangeRoleOGRequest): Promise<SuccessMessage>;
 }
 
 export class KartoffelClientImpl implements Kartoffel {
@@ -6306,8 +5778,6 @@ export class KartoffelClientImpl implements Kartoffel {
     this.GetChildrenOfOG = this.GetChildrenOfOG.bind(this);
     this.UpdateOGParent = this.UpdateOGParent.bind(this);
     this.RenameOG = this.RenameOG.bind(this);
-    this.GetOGTree = this.GetOGTree.bind(this);
-    this.GetAllDIs = this.GetAllDIs.bind(this);
     this.CreateDI = this.CreateDI.bind(this);
     this.GetDIByRoleId = this.GetDIByRoleId.bind(this);
     this.SearchDIOrUniqueId = this.SearchDIOrUniqueId.bind(this);
@@ -6321,9 +5791,9 @@ export class KartoffelClientImpl implements Kartoffel {
     this.GetRoleByRoleId = this.GetRoleByRoleId.bind(this);
     this.GetRolesUnderOG = this.GetRolesUnderOG.bind(this);
     this.DeleteRole = this.DeleteRole.bind(this);
+    this.DeleteDI = this.DeleteDI.bind(this);
+    this.GetOGTree = this.GetOGTree.bind(this);
     this.RenameRole = this.RenameRole.bind(this);
-    this.GetRolesByHierarchy = this.GetRolesByHierarchy.bind(this);
-    this.ChangeRoleOG = this.ChangeRoleOG.bind(this);
   }
   CreateEntity(request: CreateEntityRequest): Promise<Entity> {
     const data = CreateEntityRequest.encode(request).finish();
@@ -6539,20 +6009,6 @@ export class KartoffelClientImpl implements Kartoffel {
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
-  GetOGTree(request: GetOGTreeRequest): Promise<OGTree> {
-    const data = GetOGTreeRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "GetOGTree", data);
-    return promise.then((data) => OGTree.decode(new _m0.Reader(data)));
-  }
-
-  GetAllDIs(request: GetAllDIsRequest): Promise<DigitalIdentities> {
-    const data = GetAllDIsRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "GetAllDIs", data);
-    return promise.then((data) =>
-      DigitalIdentities.decode(new _m0.Reader(data))
-    );
-  }
-
   CreateDI(request: CreateDIRequest): Promise<DigitalIdentity> {
     const data = CreateDIRequest.encode(request).finish();
     const promise = this.rpc.request("Kartoffel.Kartoffel", "CreateDI", data);
@@ -6694,6 +6150,12 @@ export class KartoffelClientImpl implements Kartoffel {
       "ChangeRoleOG",
       data
     );
+    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
+  }
+
+  RenameRole(request: RenameRoleRequest): Promise<SuccessMessage> {
+    const data = RenameRoleRequest.encode(request).finish();
+    const promise = this.rpc.request("Kartoffel.Kartoffel", "RenameRole", data);
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 }

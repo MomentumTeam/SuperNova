@@ -39,20 +39,22 @@ services:
       - 6379:6379
     restart: unless-stopped
 
-  # spike-service:
-  #   image: spike-service
-  #   build: ./spike-service
-  #   env_file:
-  #     - ./supernova.env
-  #   ports:
-  #     - '8080:8080'
-  #   depends_on:
-  #     - redis
-  #   environment:
-  #     - SS_REDIS_HOST=redis
-  #     - SS_REDIS_PORT=6379
-  #     - SS_REDIS_PASSWORD=mozart
-  #     - SS_SPIKE_PUBLIC_KEY_FULL_PATH=/usr/src/app/src/spikeUtils/publickey.pem
+  spike-service:
+    image: spike-service
+    build: ./spike-service
+    env_file:
+      - ./supernova.env
+    ports:
+      - '8080:8080'
+    depends_on:
+      - redis
+    environment:
+      - SS_REDIS_HOST=redis
+      - SS_REDIS_PORT=6379
+      - SS_REDIS_PASSWORD=mozart
+      - SS_SPIKE_PUBLIC_KEY_FULL_PATH=/usr/src/app/src/utils/publickey.pem
+      - SS_SHMUEL_AUDIENCE=shmuel
+      - SS_KARTOFFEL_AUDIENCE=kartoffel
 
   request-service:
     image: request-service
@@ -79,6 +81,7 @@ services:
     #   - spike-service
     environment:
       - KS_USE_FAKER=true
+      - KS_SS_URL=spike-service:8080
 
   producer-service:
     image: producer-service
@@ -93,6 +96,10 @@ services:
       - PS_QUEUE_API_URL=https://www.google.com
       - PS_RS_URL=request-service:8080
       - PS_DEV_MODE=true
+      - PS_SS_URL=spike-service:8080
+      - PS_SHMUEL_AUDIENCE=shmuel
+      - PS_OLD_DOMAIN=oldDomain
+      - PS_NEW_DOMAIN=newDomain
 
   notification-service:
     image: notification-service

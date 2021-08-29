@@ -29,7 +29,6 @@ service Kartoffel {
     rpc GetChildrenOfOG(GetChildrenOfOGRequest) returns (OGArray){}
     rpc UpdateOGParent(UpdateOGParentRequest) returns (SuccessMessage){}
     rpc RenameOG(RenameOGRequest) returns (SuccessMessage){}
-    rpc GetOGTree(GetOGTreeRequest) returns (OGTree){}
 
     //DI    
     rpc GetAllDIs(GetAllDIsRequest) returns (DigitalIdentities){}
@@ -48,10 +47,9 @@ service Kartoffel {
     rpc GetRoleByRoleId(GetRoleByRoleIdRequest) returns (Role){}
     rpc GetRolesUnderOG(GetRolesUnderOGRequest) returns (RoleArray){}
     rpc DeleteRole(DeleteRoleRequest) returns (SuccessMessage){} 
+    rpc DeleteDI(DeleteDIRequest) returns (SuccessMessage){}
+    rpc GetOGTree(GetOGTreeRequest) returns (OGTree){}
     rpc RenameRole(RenameRoleRequest) returns (SuccessMessage){}
-    rpc GetRolesByHierarchy(GetRolesByHierarchyRequest) returns (SuccessMessage) {}
-    rpc ChangeRoleOG(ChangeRoleOGRequest) returns (SuccessMessage) {}
-}
 
 
 

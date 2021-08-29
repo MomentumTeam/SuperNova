@@ -27,7 +27,9 @@ export class RequestService {
           logger.error('getRequestById in RequestService ERROR', { err });
           reject(err);
         } else {
-          logger.info('getRequestById in RequestService OK', { res });
+          logger.info('getRequestById in RequestService OK', {
+            'req.id': req.id,
+          });
           res.type = RequestType[res.type];
           resolve(res as Request);
         }
@@ -42,7 +44,7 @@ export class RequestService {
           keepCase: true,
           longs: String,
           enums: String,
-          defaults: true,
+          // defaults: true,
           oneofs: true,
         });
       const protoDescriptor: any =

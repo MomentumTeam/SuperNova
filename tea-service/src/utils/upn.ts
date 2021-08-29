@@ -1,7 +1,7 @@
-import { Entity } from '../interfaces/protoc/proto/kartoffelService';
 import * as C from '../config';
+import { EntityMin } from '../interfaces/protoc/proto/teaService';
 
-export function getUPN(entity: Entity): string {
+export function getUPN(entity: EntityMin): string {
   switch (entity.entityType) {
     case C.soldier:
       return `s${entity.personalNumber}`;
@@ -10,7 +10,11 @@ export function getUPN(entity: Entity): string {
     case C.civilian:
       return `c${entity.identityCard}`;
     case C.goalUser:
-      return `brol${entity.mail}`;
+      if (entity.goalUserID) {
+        return `brol${entity.goalUserID}`;
+      } else {
+        return `brol${new Date().getTime()}`;
+      }
   }
   return '';
 }

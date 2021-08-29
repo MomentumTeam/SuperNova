@@ -539,8 +539,8 @@ message RenameOGRes{
 }
 
 message RenameOGKartoffelParams{
-    string roleId = 1;
-    string userId = 2;
+    string id = 1;
+    string name = 2;
 }
 
 message RenameOGADParams{

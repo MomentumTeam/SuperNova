@@ -1,7 +1,6 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Entity } from "../proto/kartoffelService";
 
 export const protobufPackage = "Tea";
 
@@ -99,7 +98,7 @@ export interface SuccessMessage {
 
 export interface RetrieveTeaAndUPNByEntityReq {
   domain: Domain;
-  entity: Entity | undefined;
+  entity: EntityMin | undefined;
 }
 
 export interface RetrieveTeaAndUPNByEntityIdReq {
@@ -110,6 +109,16 @@ export interface RetrieveTeaAndUPNByEntityIdReq {
 export interface TeaAndUPN {
   tea: string;
   upn: string;
+}
+
+export interface EntityMin {
+  entityType: string;
+  akaUnit: string;
+  personalNumber?: string | undefined;
+  identityCard?: string | undefined;
+  goalUserID?: string | undefined;
+  firstName?: string | undefined;
+  lastName?: string | undefined;
 }
 
 const baseUpdateUnitReq: object = { kartoffelId: "" };
@@ -1053,7 +1062,7 @@ export const RetrieveTeaAndUPNByEntityReq = {
       writer.uint32(8).int32(message.domain);
     }
     if (message.entity !== undefined) {
-      Entity.encode(message.entity, writer.uint32(18).fork()).ldelim();
+      EntityMin.encode(message.entity, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -1074,7 +1083,7 @@ export const RetrieveTeaAndUPNByEntityReq = {
           message.domain = reader.int32() as any;
           break;
         case 2:
-          message.entity = Entity.decode(reader, reader.uint32());
+          message.entity = EntityMin.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -1094,7 +1103,7 @@ export const RetrieveTeaAndUPNByEntityReq = {
       message.domain = 0;
     }
     if (object.entity !== undefined && object.entity !== null) {
-      message.entity = Entity.fromJSON(object.entity);
+      message.entity = EntityMin.fromJSON(object.entity);
     } else {
       message.entity = undefined;
     }
@@ -1105,7 +1114,9 @@ export const RetrieveTeaAndUPNByEntityReq = {
     const obj: any = {};
     message.domain !== undefined && (obj.domain = domainToJSON(message.domain));
     message.entity !== undefined &&
-      (obj.entity = message.entity ? Entity.toJSON(message.entity) : undefined);
+      (obj.entity = message.entity
+        ? EntityMin.toJSON(message.entity)
+        : undefined);
     return obj;
   },
 
@@ -1121,7 +1132,7 @@ export const RetrieveTeaAndUPNByEntityReq = {
       message.domain = 0;
     }
     if (object.entity !== undefined && object.entity !== null) {
-      message.entity = Entity.fromPartial(object.entity);
+      message.entity = EntityMin.fromPartial(object.entity);
     } else {
       message.entity = undefined;
     }
@@ -1285,6 +1296,168 @@ export const TeaAndUPN = {
       message.upn = object.upn;
     } else {
       message.upn = "";
+    }
+    return message;
+  },
+};
+
+const baseEntityMin: object = { entityType: "", akaUnit: "" };
+
+export const EntityMin = {
+  encode(
+    message: EntityMin,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.entityType !== "") {
+      writer.uint32(10).string(message.entityType);
+    }
+    if (message.akaUnit !== "") {
+      writer.uint32(18).string(message.akaUnit);
+    }
+    if (message.personalNumber !== undefined) {
+      writer.uint32(26).string(message.personalNumber);
+    }
+    if (message.identityCard !== undefined) {
+      writer.uint32(34).string(message.identityCard);
+    }
+    if (message.goalUserID !== undefined) {
+      writer.uint32(42).string(message.goalUserID);
+    }
+    if (message.firstName !== undefined) {
+      writer.uint32(50).string(message.firstName);
+    }
+    if (message.lastName !== undefined) {
+      writer.uint32(58).string(message.lastName);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): EntityMin {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseEntityMin } as EntityMin;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.entityType = reader.string();
+          break;
+        case 2:
+          message.akaUnit = reader.string();
+          break;
+        case 3:
+          message.personalNumber = reader.string();
+          break;
+        case 4:
+          message.identityCard = reader.string();
+          break;
+        case 5:
+          message.goalUserID = reader.string();
+          break;
+        case 6:
+          message.firstName = reader.string();
+          break;
+        case 7:
+          message.lastName = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): EntityMin {
+    const message = { ...baseEntityMin } as EntityMin;
+    if (object.entityType !== undefined && object.entityType !== null) {
+      message.entityType = String(object.entityType);
+    } else {
+      message.entityType = "";
+    }
+    if (object.akaUnit !== undefined && object.akaUnit !== null) {
+      message.akaUnit = String(object.akaUnit);
+    } else {
+      message.akaUnit = "";
+    }
+    if (object.personalNumber !== undefined && object.personalNumber !== null) {
+      message.personalNumber = String(object.personalNumber);
+    } else {
+      message.personalNumber = undefined;
+    }
+    if (object.identityCard !== undefined && object.identityCard !== null) {
+      message.identityCard = String(object.identityCard);
+    } else {
+      message.identityCard = undefined;
+    }
+    if (object.goalUserID !== undefined && object.goalUserID !== null) {
+      message.goalUserID = String(object.goalUserID);
+    } else {
+      message.goalUserID = undefined;
+    }
+    if (object.firstName !== undefined && object.firstName !== null) {
+      message.firstName = String(object.firstName);
+    } else {
+      message.firstName = undefined;
+    }
+    if (object.lastName !== undefined && object.lastName !== null) {
+      message.lastName = String(object.lastName);
+    } else {
+      message.lastName = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: EntityMin): unknown {
+    const obj: any = {};
+    message.entityType !== undefined && (obj.entityType = message.entityType);
+    message.akaUnit !== undefined && (obj.akaUnit = message.akaUnit);
+    message.personalNumber !== undefined &&
+      (obj.personalNumber = message.personalNumber);
+    message.identityCard !== undefined &&
+      (obj.identityCard = message.identityCard);
+    message.goalUserID !== undefined && (obj.goalUserID = message.goalUserID);
+    message.firstName !== undefined && (obj.firstName = message.firstName);
+    message.lastName !== undefined && (obj.lastName = message.lastName);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<EntityMin>): EntityMin {
+    const message = { ...baseEntityMin } as EntityMin;
+    if (object.entityType !== undefined && object.entityType !== null) {
+      message.entityType = object.entityType;
+    } else {
+      message.entityType = "";
+    }
+    if (object.akaUnit !== undefined && object.akaUnit !== null) {
+      message.akaUnit = object.akaUnit;
+    } else {
+      message.akaUnit = "";
+    }
+    if (object.personalNumber !== undefined && object.personalNumber !== null) {
+      message.personalNumber = object.personalNumber;
+    } else {
+      message.personalNumber = undefined;
+    }
+    if (object.identityCard !== undefined && object.identityCard !== null) {
+      message.identityCard = object.identityCard;
+    } else {
+      message.identityCard = undefined;
+    }
+    if (object.goalUserID !== undefined && object.goalUserID !== null) {
+      message.goalUserID = object.goalUserID;
+    } else {
+      message.goalUserID = undefined;
+    }
+    if (object.firstName !== undefined && object.firstName !== null) {
+      message.firstName = object.firstName;
+    } else {
+      message.firstName = undefined;
+    }
+    if (object.lastName !== undefined && object.lastName !== null) {
+      message.lastName = object.lastName;
+    } else {
+      message.lastName = undefined;
     }
     return message;
   },

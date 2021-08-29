@@ -7,13 +7,13 @@ const logger = winston.createLogger({
   format: ecsFormat(),
   transports: [
     new winston.transports.Console(),
-    new DailyRotateFile({
-      dirname: './logs',
-      filename: 'winston-%DATE%.log',
-      datePattern: 'YYYY-MM-DD-HH',
-      maxSize: '100m',
-      maxFiles: '14d',
-    }),
+    // new DailyRotateFile({
+    //   dirname: './logs',
+    //   filename: 'winston-%DATE%.log',
+    //   datePattern: 'YYYY-MM-DD-HH',
+    //   maxSize: '100m',
+    //   maxFiles: '14d',
+    // }),
   ],
 });
 
