@@ -16,30 +16,30 @@ export class KartoffelUtils {
       rejectUnauthorized: false,
     });
     this.spikeToken = null;
-    // this.spikeService
-    //   .getSpikeToken()
-    //   .then((token) => {
-    //     this.spikeToken = token;
-    //   })
-    //   .catch((error) => {
-    //     throw error;
-    //   });
-    // this.axiosKartoffel.interceptors.request.use(async (config) => {
-    //   const now = new Date().getTime();
-    //   const hoursDiff = Math.floor(
-    //     (now - this.lastSpikeTokenRecieved) / 1000 / 60 / 60
-    //   );
-    //   if (!this.spikeToken || hoursDiff >= C.spikeTokenRefreshInHours) {
-    //     try {
-    //       this.spikeToken = await this.spikeService.getSpikeToken();
-    //       this.lastSpikeTokenRecieved = new Date().getTime();
-    //     } catch (error) {
-    //       throw error;
-    //     }
-    //   }
-    //   config.headers.Authorization = this.spikeToken;
-    //   return config;
-    // });
+    this.spikeService
+      .getSpikeToken()
+      .then((token) => {
+        this.spikeToken = token;
+      })
+      .catch((error) => {
+        throw error;
+      });
+    this.axiosKartoffel.interceptors.request.use(async (config) => {
+      const now = new Date().getTime();
+      const hoursDiff = Math.floor(
+        (now - this.lastSpikeTokenRecieved) / 1000 / 60 / 60
+      );
+      if (!this.spikeToken || hoursDiff >= C.spikeTokenRefreshInHours) {
+        try {
+          this.spikeToken = await this.spikeService.getSpikeToken();
+          this.lastSpikeTokenRecieved = new Date().getTime();
+        } catch (error) {
+          throw error;
+        }
+      }
+      config.headers.Authorization = this.spikeToken;
+      return config;
+    });
   }
 
   async kartoffelGet(url: string, params: any = {}): Promise<any> {
