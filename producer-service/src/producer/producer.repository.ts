@@ -1,15 +1,21 @@
-import axios from 'axios';
 import * as C from '../config';
+import { logger } from '../logger';
+import { ShmuelUtils } from '../utils/shmuelUtils';
 export class ProducerRepository {
+  private shmuelUtils: ShmuelUtils;
+
+  constructor() {
+    this.shmuelUtils = new ShmuelUtils();
+  }
+
   async pushIntoKartoffelQueue(message: any) {
-    console.log('pushIntoKartoffelQueue');
     if (C.devMode) {
-      console.log(message);
+      logger.info(message);
     } else {
       return new Promise((resolve, reject) => {
         try {
-          axios
-            .post(`${C.queueApi}/kartoffelQueue`, message)
+          this.shmuelUtils
+            .shmuelPost(`${C.queueApi}/kartoffelQueue`, message)
             .then(() => {
               resolve(true);
             })
@@ -23,14 +29,13 @@ export class ProducerRepository {
     }
   }
   async pushIntoADQueue(message: any) {
-    console.log('pushIntoADQueue');
     if (C.devMode) {
-      console.log(message);
+      logger.info(message);
     } else {
       return new Promise((resolve, reject) => {
         try {
-          axios
-            .post(`${C.queueApi}/adQueue`, message)
+          this.shmuelUtils
+            .shmuelPost(`${C.queueApi}/adQueue`, message)
             .then(() => {
               resolve(true);
             })

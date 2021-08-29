@@ -19,7 +19,7 @@ export const spikePubKeyPath =
 
 export const localSpikePublicKeyFullPath =
   process.env.SS_SPIKE_PUBLIC_KEY_FULL_PATH ||
-  '/home/barak/Desktop/SuperNova/spike-service/src/spikeUtils/publickey.pem';
+  '/home/barak/Desktop/SuperNova/spike-service/src/utils/publickey.pem';
 
 export const kartoffelAudience =
   process.env.SS_KARTOFFEL_AUDIENCE || 'kartoffel';

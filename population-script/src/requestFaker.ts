@@ -97,8 +97,8 @@ export class RequestFaker {
   randomCreateOGRequest(): CreateOGReq {
     let request: any = this.generateBasicRequest();
     request.kartoffelParams = {
-      name: faker.company.companyName(),
-      parent: `${faker.company.companyName()}/${faker.company.companyName()}`,
+      name: `${faker.company.companyName()}/${faker.company.companyName()}`,
+      parent: mongoose.Types.ObjectId().toString(),
       source: 'oneTree',
     };
     request.adParams = {
@@ -117,7 +117,7 @@ export class RequestFaker {
       entityId: mongoose.Types.ObjectId().toString(),
       displayName: `${faker.name.firstName()} ${faker.name.lastName()}`,
       domainUsers: [faker.internet.email()],
-      akaUnit: faker.company.companyName,
+      akaUnit: faker.company.companyName(),
       type: FakerHelper.randomEnumValue(ApproverType),
     };
     return request as CreateNewApproverReq;
@@ -147,14 +147,27 @@ export class RequestFaker {
   }
   randomRenameOGRequest(): RenameOGReq {
     let request: any = this.generateBasicRequest();
-    request.kartoffelParams = {};
-    request.adParams = {};
+    request.kartoffelParams = {
+      id: mongoose.Types.ObjectId().toString(),
+      name: faker.internet.email(),
+    };
+    request.adParams = {
+      ouDisplayName: faker.company.companyName(),
+      oldOuName: faker.company.companyName(),
+      newOuName: faker.company.companyName(),
+    };
     return request as RenameOGReq;
   }
   randomRenameRoleRequest(): RenameRoleReq {
     let request: any = this.generateBasicRequest();
-    request.kartoffelParams = {};
-    request.adParams = {};
+    request.kartoffelParams = {
+      roleId: faker.internet.email(),
+      jobTitle: faker.company.companyName(),
+    };
+    request.adParams = {
+      samAccountName: faker.internet.email(),
+      jobTitle: faker.company.companyName(),
+    };
     return request as RenameRoleReq;
   }
   randomEditEntityRequest(): EditEntityReq {

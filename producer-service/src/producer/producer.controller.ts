@@ -22,7 +22,7 @@ export async function produceToKartoffelQueue(
   } catch (error) {
     logger.error('produceToKartoffelQueue ERROR', {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {
@@ -53,7 +53,7 @@ export async function produceToADQueue(
   } catch (error) {
     logger.error('produceToADQueue ERROR', {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {

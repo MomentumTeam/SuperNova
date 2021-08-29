@@ -12,6 +12,7 @@ import {
   AddUnitReq,
   domainToJSON,
   domainFromJSON,
+  EntityMin,
 } from '../interfaces/protoc/proto/teaService';
 import { UnitModel } from '../models/unit.model';
 import { getUnitKartoffelIdOfEntity } from '../utils/unit';
@@ -112,7 +113,7 @@ export class TeaRepository {
       });
       return await this.retrieveTeaAndUPNByEntity({
         domain: retrieveTeaAndUPNByEntityIdReq.domain,
-        entity: entity,
+        entity: entity as EntityMin,
       });
     } catch (error) {
       throw error;

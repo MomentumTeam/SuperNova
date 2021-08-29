@@ -11,7 +11,7 @@ COPY --chown=node:node ./tsconfig.json ./
 
 # copy source code to /app/src folder
 COPY . .
-RUN rm -rf /app/proto && git clone https://github.com/MomentumTeam/SuperNovaProto.git /app/proto
+# RUN rm -rf /app/proto && git clone https://github.com/MomentumTeam/SuperNovaProto.git /app/proto
 
 RUN npm i && npm cache clean --force
 RUN npm run build

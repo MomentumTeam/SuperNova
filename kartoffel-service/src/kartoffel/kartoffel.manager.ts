@@ -11,15 +11,12 @@ import {
   SuccessMessage,
   SearchEntitiesByFullNameRequest,
   EntityArray,
-  GetEntityByIdNumberRequest,
   Entity,
   RoleArray,
   GetRolesUnderOGRequest,
-  ConnectEntityAndDIRequest,
   CreateEntityRequest,
   GetEntityByRoleIdRequest,
   DisconnectDIFromEntityRequest,
-  GetEntityByMongoIdRequest,
   DeleteOGRequest,
   GetChildrenOfOGRequest,
   DeleteRoleRequest,
@@ -107,18 +104,6 @@ export class KartoffelManager {
     }
   }
 
-  async getEntityByIdNumber(
-    getEntityByIdNumberRequest: GetEntityByIdNumberRequest
-  ): Promise<Entity> {
-    try {
-      return await this.kartoffelRepository.getEntityByIdNumber(
-        getEntityByIdNumberRequest
-      );
-    } catch (error) {
-      throw error;
-    }
-  }
-
   async getRoleByRoleId(
     getRoleByRoleIdRequest: GetRoleByRoleIdRequest
   ): Promise<Role> {
@@ -137,18 +122,6 @@ export class KartoffelManager {
     try {
       return await this.kartoffelRepository.getRolesUnderOG(
         getRolesUnderOGRequest
-      );
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async connectEntityAndDI(
-    connectEntityAndDIRequest: ConnectEntityAndDIRequest
-  ): Promise<SuccessMessage> {
-    try {
-      return await this.kartoffelRepository.connectEntityAndDI(
-        connectEntityAndDIRequest
       );
     } catch (error) {
       throw error;
@@ -183,18 +156,6 @@ export class KartoffelManager {
     try {
       return await this.kartoffelRepository.disconnectDIFromEntity(
         disconnectDIFromEntityRequest
-      );
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async getEntityByMongoId(
-    getEntityByMongoIdRequest: GetEntityByMongoIdRequest
-  ): Promise<Entity> {
-    try {
-      return await this.kartoffelRepository.getEntityByMongoId(
-        getEntityByMongoIdRequest
       );
     } catch (error) {
       throw error;
