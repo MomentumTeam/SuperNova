@@ -108,7 +108,7 @@ export class TeaRepository {
     retrieveTeaAndUPNByEntityIdReq: RetrieveTeaAndUPNByEntityIdReq
   ): Promise<TeaAndUPN> {
     try {
-      const entity: Entity = await KartoffelService.getEntityByMongoId({
+      const entity: Entity = await KartoffelService.getEntityById({
         id: retrieveTeaAndUPNByEntityIdReq.entityId,
       });
       return await this.retrieveTeaAndUPNByEntity({

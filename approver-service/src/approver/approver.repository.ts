@@ -142,7 +142,7 @@ export class ApproverRepository {
 
   async syncApprover(syncApproverReq: SyncApproverReq): Promise<Approver> {
     try {
-      const entity: Entity = await KartoffelService.getEntityByMongoId({
+      const entity: Entity = await KartoffelService.getEntityById({
         id: syncApproverReq.approverId,
       });
       const domainUsers = entity.digitalIdentities
@@ -196,7 +196,7 @@ export class ApproverRepository {
           type: documentObj.type,
         };
       } else {
-        const entity = await KartoffelService.getEntityByMongoId({
+        const entity = await KartoffelService.getEntityById({
           id: getUserTypeReq.entityId,
         });
         if (hasCommanderRank(entity)) {
@@ -246,8 +246,6 @@ export class ApproverRepository {
         const kartoffelEntities =
           await KartoffelService.searchEntitiesByFullName({
             fullName: searchByDisplayNameReq.displayName,
-            from: searchByDisplayNameReq.from,
-            to: searchByDisplayNameReq.to,
           });
         logger.info('searchApproverByDisplayName kartoffelResults', {
           kartoffelEntities,
