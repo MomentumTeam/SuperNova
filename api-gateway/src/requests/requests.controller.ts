@@ -140,8 +140,8 @@ export default class RequestsController {
     );
   }
 
-  static async getRequestsByCommander(req: Request, res: Response) {
-    const data = { id: req.params.id, from: req.query.from, to: req.query.to };
+  static async getRequestsByCommander(req: any, res: Response) {
+    const data = { id: req.user.id, from: req.query.from, to: req.query.to };
 
     logger.info(`Call to getRequestsByCommander in GTW`, {
       callRequest: data,

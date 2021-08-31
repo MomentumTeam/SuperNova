@@ -7,7 +7,7 @@ const RequestsRouter: Router = Router();
 RequestsRouter.get('/', RequestsController.getAllRequests);
 RequestsRouter.get('/:id', RequestsController.getRequestById);
 RequestsRouter.get('/myRequests', RequestsController.getMyRequests);
-RequestsRouter.get('/requestsByCommander/:id', RequestsController.getRequestsByCommander);
+RequestsRouter.get('/requestsByCommander', RequestsController.getRequestsByCommander);
 RequestsRouter.get('/submittedBy/:id', RequestsController.getRequestsSubmittedBy);
 RequestsRouter.get('/serialNumber/:serialNumber', RequestsController.getRequestBySerialNumber);
 RequestsRouter.get('/submitterIdentifier/:identifier', RequestsController.getRequestsBySubmitterIdentifier);
