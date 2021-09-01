@@ -23,12 +23,14 @@ export async function getAllOGs(call: any, callback: any): Promise<void> {
     logger.info(`Call to getAllOGs`, {
       callRequest: call.request,
     });
+
     const ogArray: OGArray = await groupsManager.getAllOGs(call.request);
     logger.info(`getAllOGs OK`, {
       callRequest: call.request,
       response: ogArray,
     });
-    callback(null, { groups: ogArray });
+
+    callback(null, ogArray);
   } catch (error) {
     logger.error(`getAllOGs ERROR`, {
       callRequest: call.request,
@@ -86,6 +88,7 @@ export async function getOGTree(call: any, callback: any): Promise<void> {
       callRequest: call.request,
       error: error.message,
     });
+    
     callback(
       {
         code: 400,

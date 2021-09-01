@@ -8,7 +8,7 @@ KartoffelRouter.get('/entities/myUser', KartoffelController.getMyUser);
 KartoffelRouter.get('/entities/:id', KartoffelController.getEntityByMongoId);
 KartoffelRouter.get('/entities/picture', KartoffelController.getPictureByEntityId);
 KartoffelRouter.get('/entities/search', KartoffelController.searchEntitiesByFullName);
-KartoffelRouter.get('/entities/:identifier', KartoffelController.getEntityByIdentifier);
+KartoffelRouter.get('/entities/identifier/:identifier', KartoffelController.getEntityByIdentifier);
 KartoffelRouter.get('/entities/role/:roleId', KartoffelController.getEntityByRoleId);
 KartoffelRouter.get('/entities/groups/:id', KartoffelController.getEntitiesUnderOG);
 KartoffelRouter.get('/entities/hierarchy/:hierarchy', KartoffelController.getEntitiesByHierarchy);
