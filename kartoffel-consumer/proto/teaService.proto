@@ -1,0 +1,91 @@
+syntax = "proto3";
+// import "/home/barak/Desktop/SuperNova/proto/kartoffelService.proto";//when loading with bloomRPC
+import "proto/kartoffelService.proto"; //when running in vscode
+// import "/usr/src/app/proto/kartoffelService.proto"; //When using docker
+
+package Tea;
+
+service Tea {
+    rpc RetrieveTeaAndUPNByEntity(RetrieveTeaAndUPNByEntityReq) returns (TeaAndUPN) {}
+    rpc RetrieveTeaAndUPNByEntityId(RetrieveTeaAndUPNByEntityIdReq) returns (TeaAndUPN) {}
+    rpc ReportTeaSuccess(ReportTeaReq) returns (SuccessMessage) {}
+    rpc ReportTeaFail(ReportTeaReq) returns (SuccessMessage) {}
+    rpc GetUnit(GetUnitReq) returns (Unit){}
+    rpc AddUnit(AddUnitReq) returns (Unit){}
+    rpc UpdateUnit(UpdateUnitReq) returns (Unit){}
+    rpc DeleteUnit(DeleteUnitReq) returns (SuccessMessage){}
+}
+
+message UpdateUnitReq{
+    string kartoffelId = 1;
+    UnitProperties unitProperties = 2;
+}
+
+message DeleteUnitReq{
+    string kartoffelId = 1;
+}
+
+message GetUnitReq{
+    string kartoffelId = 1;
+}
+
+message AddUnitReq{
+    string kartoffelId = 1;
+    string name = 2;
+    string prefix = 3;
+    string oldDomainSuffix = 4; //gmail.com, after @
+    string newDomainSuffix = 5; //gmail.com, after @
+    int32 currentCounter = 6;
+}
+
+message Unit{
+    string kartoffelId = 1;
+    string name = 2;
+    string prefix = 3; //1234
+    string oldDomainSuffix = 4; //gmail.com, after @
+    string newDomainSuffix = 5; //gmail.com, after @
+    int32 currentCounter = 6;
+    repeated string teaInProgress = 7;
+    repeated string failedTea = 8;
+    int64 createdAt = 9;
+}
+
+message UnitProperties{
+    optional string kartoffelId = 1;
+    optional string name = 2;
+    optional string prefix = 3;
+    string oldDomainSuffix = 4; //gmail.com, after @
+    string newDomainSuffix = 5; //gmail.com, after @
+    optional string currentCounter = 6;
+    repeated string teaInProgress = 7;
+    repeated string failedTea = 8;
+}
+
+message ReportTeaReq{
+    string tea = 1;
+}
+
+enum Domain{
+    OLD = 0;
+    NEW = 1;
+}
+
+message SuccessMessage{
+    bool success = 1;
+}
+
+message RetrieveTeaAndUPNByEntityReq{
+    Domain domain = 1;
+    Kartoffel.Entity entity = 2;
+}
+
+message RetrieveTeaAndUPNByEntityIdReq{
+    Domain domain = 1;
+    string entityId = 2;
+}
+
+message TeaAndUPN{
+    string tea = 1;
+    string upn = 2;
+}
+
