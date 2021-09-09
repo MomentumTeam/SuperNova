@@ -27,6 +27,9 @@ export function turnObjectIdsToStrings(document: any) {
   if (document.requestId) {
     document.requestId = document.requestId.toString();
   }
+  if (document.ownerId) {
+    document.ownerId = document.ownerId.toString();
+  }
   cleanUnderscoreFields(document);
 }
 
