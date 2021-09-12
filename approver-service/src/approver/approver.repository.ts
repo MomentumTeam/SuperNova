@@ -184,16 +184,19 @@ export class ApproverRepository {
 
   async getUserType(getUserTypeReq: GetUserTypeReq): Promise<GetUserTypeRes> {
     try {
-      const approver = await ApproverModel.findOne({
+      const approvers = await ApproverModel.find({
         entityId: getUserTypeReq.entityId,
       });
       let response: GetUserTypeRes;
-      if (approver) {
-        const documentObj: any = approver.toObject();
-        turnObjectIdsToStrings(documentObj);
+      if (approvers) {
+        const types: any = approvers.map((approver) => {
+          const documentObj: any = turnObjectIdsToStrings(approver.toObject());
+          return documentObj.type;
+        });
+
         response = {
           entityId: getUserTypeReq.entityId,
-          type: documentObj.type,
+          types,
         };
       } else {
         const entity = await KartoffelService.getEntityById({
@@ -202,12 +205,12 @@ export class ApproverRepository {
         if (hasCommanderRank(entity)) {
           response = {
             entityId: getUserTypeReq.entityId,
-            type: UserType.COMMANDER,
+            types: [UserType.COMMANDER],
           };
         } else {
           response = {
             entityId: getUserTypeReq.entityId,
-            type: UserType.SOLDIER,
+            types: [UserType.SOLDIER],
           };
         }
       }

@@ -7,13 +7,9 @@ import {
 import * as C from '../config';
 
 export function cleanUnderscoreFields(document: any): void {
-  let keys: any = Object.keys(document);
-
-  for (let key of keys) {
-    if (key.startsWith('_') && key !== '_id') {
-      delete document[key];
-    }
-  }
+  Object.keys(document).map((key) => {
+    if (key.startsWith('_') && key !== '_id') delete document[key];
+  });
 }
 
 export function turnObjectIdsToStrings(document: any): void {
@@ -37,21 +33,17 @@ export function turnObjectIdsToStrings(document: any): void {
 }
 
 export function hasCommanderRank(entity: Entity): boolean {
-  if (C.commanderRanks.indexOf(entity.rank) != -1) {
-    return true;
-  } else {
-    return false;
-  }
+  return C.commanderRanks.indexOf(entity.rank) != -1;
 }
 
 export function getMongoApproverArray(approverMongoArray: any): Approver[] {
   if (approverMongoArray) {
-    let documents: any = [];
-    for (let i = 0; i < approverMongoArray.length; i++) {
-      const requestObj: any = approverMongoArray[i].toObject();
+    const documents = approverMongoArray.map((approverMongo: any) => {
+      const requestObj: any = approverMongo.toObject();
       turnObjectIdsToStrings(requestObj);
-      documents.push(requestObj);
-    }
+      return requestObj;
+    });
+
     return documents as Approver[];
   } else {
     return [];
