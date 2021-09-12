@@ -14,7 +14,6 @@ import {
   generateNotifications,
   turnObjectIdsToStrings,
 } from '../utils/notificationHelper';
-import { createNotifications } from './notification.controller';
 
 export class NotificationRepository {
   async markAsRead(
@@ -52,27 +51,43 @@ export class NotificationRepository {
   async createNotifications(
     createNotificationsReq: CreateNotificationsReq
   ): Promise<NotificationArray> {
-    try {
-      let createdNotifications: Notification[] = [];
-      if (createNotificationsReq.request) {
-        const createNotificationRequests: CreateCustomNotificationReq[] =
-          generateNotifications(
-            createNotificationsReq.type,
-            createNotificationsReq.request
-          );
-        for (let createNotificationReq of createNotificationRequests) {
-          let createdNotification: Notification =
-            await this.createCustomNotification(createNotificationReq);
-          createdNotifications.push(createdNotification);
+    return new Promise<NotificationArray>((resolve, reject) => {
+      try {
+        let promises: Promise<Notification>[] = [];
+        if (createNotificationsReq.request) {
+          const createNotificationRequests: CreateCustomNotificationReq[] =
+            generateNotifications(
+              createNotificationsReq.type,
+              createNotificationsReq.request
+            );
+          for (let createNotificationReq of createNotificationRequests) {
+            promises.push(
+              new Promise<Notification>((createResolve, createReject) => {
+                this.createCustomNotification(createNotificationReq)
+                  .then((createdNotification: Notification) => {
+                    createResolve(createdNotification);
+                  })
+                  .catch((error) => createReject(error));
+              })
+            );
+          }
+          Promise.all(promises)
+            .then((createdNotifications: Notification[]) => {
+              resolve({
+                notifications: createdNotifications,
+                totalCount: createdNotifications.length,
+              });
+            })
+            .catch((error) => {
+              reject(error);
+            });
+        } else {
+          reject(new Error('Request must be inserted!'));
         }
+      } catch (error) {
+        reject(error);
       }
-      return {
-        notifications: createdNotifications,
-        totalCount: createdNotifications.length,
-      };
-    } catch (error) {
-      throw error;
-    }
+    });
   }
 
   async createCustomNotification(

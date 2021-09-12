@@ -77,8 +77,8 @@ services:
       - ./supernova.env
     ports:
       - '8082:8080'
-    # depends_on:
-    #   - spike-service
+    depends_on:
+      - spike-service
     environment:
       - KS_USE_FAKER=true
       - KS_SS_URL=spike-service:8080
@@ -157,7 +157,7 @@ services:
     ports:
       - '2000:8080'
     depends_on:
-      # - spike-service
+      - spike-service
       - kartoffel-service
       - producer-service
       - request-service
