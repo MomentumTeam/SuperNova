@@ -10,7 +10,7 @@ export class ProducerRepository {
 
   async pushIntoKartoffelQueue(message: any) {
     if (C.devMode) {
-      logger.info(message);
+      logger.info(JSON.stringify(message));
     } else {
       return new Promise((resolve, reject) => {
         try {
@@ -30,7 +30,7 @@ export class ProducerRepository {
   }
   async pushIntoADQueue(message: any) {
     if (C.devMode) {
-      logger.info(message);
+      logger.info(JSON.stringify(message));
     } else {
       return new Promise((resolve, reject) => {
         try {

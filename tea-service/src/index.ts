@@ -1,8 +1,5 @@
-import { Server } from './server';
-import { logger } from './logger';
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 import { findPath } from './utils/path';
-import * as C from './config';
-import { initUnits } from './utils/initUnits';
 if (process.env.NODE_ENV !== 'production') {
   const ENV_PATH = `${findPath('supernova.env')}`;
   require('dotenv').config({
@@ -10,6 +7,10 @@ if (process.env.NODE_ENV !== 'production') {
   });
 }
 
+import { Server } from './server';
+import { logger } from './logger';
+import * as C from './config';
+import { initUnits } from './utils/initUnits';
 async function main(): Promise<void> {
   try {
     if (C.needInit) {

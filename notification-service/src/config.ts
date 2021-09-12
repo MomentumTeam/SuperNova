@@ -1,8 +1,4 @@
 import {
-  NotificationType,
-  notificationTypeToJSON,
-} from './interfaces/protoc/proto/notificationService';
-import {
   RequestType,
   requestTypeToJSON,
 } from './interfaces/protoc/proto/requestService';
