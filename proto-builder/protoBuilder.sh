@@ -12,3 +12,4 @@ cp -r ./protocOutput/proto ../producer-service/src/interfaces/protoc/
 cp -r ./protocOutput/proto ../request-service/src/interfaces/protoc/
 cp -r ./protocOutput/proto ../tea-service/src/interfaces/protoc/
 cp -r ./protocOutput/proto ../spike-service/src/interfaces/protoc/
+cp -r ./protocOutput/proto ../kartoffel-consumer/src/interfaces/protoc/

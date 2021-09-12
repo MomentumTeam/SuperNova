@@ -1,0 +1,103 @@
+syntax = "proto3";
+// import "/home/barak/Desktop/SuperNova/proto/requestService.proto";//when loading with bloomRPC
+import "proto/requestService.proto"; //when running in vscode
+// import "/usr/src/app/proto/requestService.proto";//When using docker
+
+package ApproverService;
+
+service ApproverService {
+    rpc AddCommanderApprover(AddApproverReq) returns (Approver) {}
+    rpc AddSecurityApprover(AddApproverReq) returns (Approver) {}
+    rpc AddSuperSecurityApprover(AddApproverReq) returns (Approver) {}
+    rpc GetUserType(GetUserTypeReq) returns (GetUserTypeRes) {}
+    rpc SearchApproverByDisplayName(SearchByDisplayNameReq) returns (ApproverArray) {}
+    rpc SearchApproverByDomainUser(SearchByDomainUserReq) returns (ApproverArray) {}
+    rpc GetAllSecurityApprovers(GetAllApproversReq) returns (ApproverArray) {}
+    rpc GetAllSuperSecurityApprovers(GetAllApproversReq) returns (ApproverArray) {}
+    rpc GetAllCommanderApprovers(GetAllApproversReq) returns (ApproverArray) {}
+    
+    rpc UpdateCommanderDecision(RequestService.UpdateDecisionReq) returns (RequestService.Request) {}
+    rpc UpdateSecurityDecision(RequestService.UpdateDecisionReq) returns (RequestService.Request) {}
+    rpc UpdateSuperSecurityDecision(RequestService.UpdateDecisionReq) returns (RequestService.Request) {}
+
+    rpc GetAllApprovers(GetAllApproversReq) returns (ApproverArray) {}
+    rpc GetAllApproverIds(GetAllApproversReq) returns (ApproverIdArray) {}
+    rpc SyncApprover(SyncApproverReq) returns (Approver){}
+    rpc DeleteApprover(DeleteApproverReq) returns (SuccessMessage){}
+}
+
+message SyncApproverReq{
+    string approverId = 1;
+}
+
+message DeleteApproverReq{
+    string approverId = 1;
+}
+
+message ApproverIdArray{
+    repeated string approverIds = 1;
+}
+
+message GetAllApproversReq{
+    
+}
+
+message SuccessMessage{
+    bool success = 1;
+}
+
+message SearchByDisplayNameReq{
+    string displayName = 1;
+    UserType type = 2;
+    int32 from = 3;
+    int32 to = 4;
+
+}
+message SearchByDomainUserReq{
+    string domainUser = 1;
+    UserType type = 2;
+}
+
+message ApproverArray{
+    repeated Approver approvers = 1;
+}
+
+message GetUserTypeReq{
+    string entityId = 1;
+}
+
+message GetUserTypeRes{
+    string entityId = 1;
+    UserType type = 2;
+}
+
+message AddApproverReq{
+    string entityId = 1;
+    string displayName = 2;
+    repeated string domainUsers = 3;
+    string akaUnit = 4;
+}
+
+message Approver{
+    string entityId = 1;
+    string displayName = 2;
+    repeated string domainUsers = 3; //entity may have multiple emails
+    UserType type = 4;
+    string akaUnit = 5;
+    string id = 6;
+}
+
+enum RequestStatus{
+    SUBMITTED = 0;
+    DECLINED = 1;
+    IN_PROGRESS = 2;
+    DONE = 3;
+    FAILED = 4;
+}
+
+enum UserType{
+    SECURITY = 0;
+    SUPER_SECURITY = 1;
+    COMMANDER = 2;
+    SOLDIER = 3;
+}
