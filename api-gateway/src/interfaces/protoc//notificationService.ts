@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Request } from "./requestService";
+import { Request } from "../proto/requestService";
 
 export const protobufPackage = "NotificationService";
 
