@@ -51,14 +51,14 @@ export default class NotificationController {
     });
 
     notificationsClient.GetNotificationsByOwnerId(
-      { ownerId: req.user.id, startTime: startTime, from: from, to: to },
+      data,
       (err: any, response: NotificationArray) => {
         if (err) {
           logger.error(`getMyNotifications ERROR in GTW`, {
             err,
             callRequest: data,
           });
-          res.send(null);
+          res.status(500).send(err.message);
         }
 
         logger.info(`getMyNotifications OK in GTW`, {
@@ -87,12 +87,38 @@ export default class NotificationController {
             err,
             callRequest: { notificationIds: notificationIds },
           });
-          res.send(null);
+          res.status(500).send(err.message);
         }
 
         logger.info(`markAsRead OK in GTW`, {
           response: response,
           callRequest: { notificationIds: notificationIds },
+        });
+        res.send(response);
+      }
+    );
+  }
+
+
+  static async markAllAsRead(req: any, res: Response) {
+    logger.info(`Call to markAllAsRead in GTW`, {
+      callRequest: { ownerId: req.user.id },
+    });
+
+    notificationsClient.MarkAllAsRead(
+      { ownerId: req.user.id },
+      (err: any, response: SuccessMessage) => {
+        if (err) {
+          logger.error(`markAllAsRead ERROR in GTW`, {
+            err,
+            callRequest: { ownerId: req.user.id },
+          });
+          res.status(500).send(err.message);
+        }
+
+        logger.info(`markAsRead OK in GTW`, {
+          response: response,
+          callRequest: { ownerId: req.user.id },
         });
         res.send(response);
       }

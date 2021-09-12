@@ -3,26 +3,28 @@ import ApproverController from './approver.controller';
 
 const ApproverRouter: Router = Router();
 
-ApproverRouter.post('/addCommanderApprover', ApproverController.AddCommanderApprover);
+ApproverRouter.post('/commanderApprover', ApproverController.addCommanderApprover);
 
-ApproverRouter.post('/addSecurityApprover', ApproverController.AddSecurityApprover);
+ApproverRouter.post('/securityApprover', ApproverController.addSecurityApprover);
 
-ApproverRouter.post('/addSuperSecurityApprover', ApproverController.AddSuperSecurityApprover);
+ApproverRouter.post('/superSecurityApprover', ApproverController.addSuperSecurityApprover);
 
-ApproverRouter.get('/getUserType/:id', ApproverController.GetUserType);
+ApproverRouter.get('/userType/:id', ApproverController.getUserType);
 
-ApproverRouter.get('/searchApproverByDisplayName', ApproverController.SearchApproverByDisplayName);
+ApproverRouter.get('/searchByDisplayName', ApproverController.searchApproverByDisplayName);
 
-ApproverRouter.get('/searchApproverByDomainUser', ApproverController.SearchApproverByDomainUser);
+ApproverRouter.get('/searchByDomainUser', ApproverController.searchApproverByDomainUser);
 
-ApproverRouter.get('/getAllSecurityApprovers', ApproverController.GetAllSecurityApprovers);
+ApproverRouter.get('/securityApprovers', ApproverController.getAllSecurityApprovers);
 
-ApproverRouter.get('/getAllSuperSecurityApprovers', ApproverController.GetAllSuperSecurityApprovers);
+ApproverRouter.get('/superSecurityApprovers', ApproverController.getAllSuperSecurityApprovers);
 
-ApproverRouter.get('/getAllCommanderApprovers', ApproverController.GetAllCommanderApprovers);
+ApproverRouter.get('/commanderApprovers', ApproverController.getAllCommanderApprovers);
 
-ApproverRouter.put('/updateCommanderDecision/:requestId', ApproverController.UpdateCommanderDecision);
+ApproverRouter.put('/commanderDecision/:requestId', ApproverController.updateCommanderDecision);
 
-ApproverRouter.put('/updateSecurityDecision/:requestId', ApproverController.UpdateSecurityDecision);
+ApproverRouter.put('/securityDecision/:requestId', ApproverController.updateSecurityDecision);
+
+ApproverRouter.put('/superSecurityDecision/:requestId', ApproverController.updateSuperSecurityDecision);
 
 export default ApproverRouter;

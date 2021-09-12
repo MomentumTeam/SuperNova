@@ -13,47 +13,44 @@ service Kartoffel {
     rpc GetEntityByIdentifier(GetEntityByIdentifierRequest) returns (Entity){}
     rpc SearchEntitiesByFullName(SearchEntitiesByFullNameRequest) returns (EntityArray){}
     rpc GetEntityById(GetEntityByIdRequest) returns (Entity){}
+    rpc GetPictureByEntityId(GetPictureByEntityIdRequest) returns (Image){}
     rpc DeleteEntity(DeleteEntityRequest) returns (SuccessMessage){}
     rpc UpdateEntity(UpdateEntityRequest) returns (Entity){}
     rpc ConnectEntityAndDI(ConnectEntityAndDIRequest) returns (SuccessMessage){}
     rpc DisconnectDIFromEntity(DisconnectDIFromEntityRequest) returns (SuccessMessage){}
-    rpc GetPictureByEntityId(GetPictureByEntityIdRequest) returns (Image){}
     
     //Groups
-    rpc GetAllOGs(GetAllOGsRequest) returns (OGArray){}        
     rpc CreateOG(CreateOGRequest) returns (OrganizationGroup){}        
+    rpc GetAllOGs(GetAllOGsRequest) returns (OGArray){}        
     rpc GetOGByHierarchyName(GetOGByHierarchyNameRequest) returns (OrganizationGroup){}   
     rpc SearchOG(SearchOGRequest) returns (OGArray) {}          
-    rpc DeleteOG(DeleteOGRequest) returns (SuccessMessage){}            
-    rpc GetOGById(GetOGByIdRequest) returns (OrganizationGroup){}   
     rpc GetChildrenOfOG(GetChildrenOfOGRequest) returns (OGArray){}
+    rpc GetOGById(GetOGByIdRequest) returns (OrganizationGroup){}   
+    rpc GetOGTree(GetOGTreeRequest) returns (OGTree){}
+    rpc DeleteOG(DeleteOGRequest) returns (SuccessMessage){}            
     rpc UpdateOGParent(UpdateOGParentRequest) returns (SuccessMessage){}
     rpc RenameOG(RenameOGRequest) returns (SuccessMessage){}
-    rpc GetOGTree(GetOGTreeRequest) returns (OGTree){}
 
     //DI    
-    rpc GetAllDIs(GetAllDIsRequest) returns (DigitalIdentities){}
     rpc CreateDI(CreateDIRequest) returns (DigitalIdentity){}
+    rpc GetAllDIs(GetAllDIsRequest) returns (DigitalIdentities){}
     rpc GetDIByRoleId(GetDIByRoleIdRequest) returns (DigitalIdentity){}
     rpc SearchDIOrUniqueId(SearchDIOrUniqueIdRequest) returns (DigitalIdentities){}
-    rpc DeleteDI(DeleteDIRequest) returns (SuccessMessage){}  
     rpc GetDIByUniqueId(GetDIByUniqueIdRequest) returns (DigitalIdentity){} 
+    rpc DeleteDI(DeleteDIRequest) returns (SuccessMessage){}  
     rpc UpdateDI(UpdateDIRequest) returns (SuccessMessage){} 
 
     // Roles
-    rpc GetAllRoles(GetAllRolesRequest) returns (RoleArray){}
     rpc CreateRole(CreateRoleRequest) returns (Role){}
-    rpc ConnectRoleAndDI(ConnectRoleAndDIRequest) returns (SuccessMessage){}
-    rpc DisconnectRoleAndDI(DisconnectRoleAndDIRequest) returns (SuccessMessage){}
+    rpc GetAllRoles(GetAllRolesRequest) returns (RoleArray){}
     rpc GetRoleByRoleId(GetRoleByRoleIdRequest) returns (Role){}
     rpc GetRolesUnderOG(GetRolesUnderOGRequest) returns (RoleArray){}
+    rpc ConnectRoleAndDI(ConnectRoleAndDIRequest) returns (SuccessMessage){}
+    rpc DisconnectRoleAndDI(DisconnectRoleAndDIRequest) returns (SuccessMessage){}
     rpc DeleteRole(DeleteRoleRequest) returns (SuccessMessage){} 
     rpc RenameRole(RenameRoleRequest) returns (SuccessMessage){}
-    rpc GetRolesByHierarchy(GetRolesByHierarchyRequest) returns (SuccessMessage) {}
-    rpc ChangeRoleOG(ChangeRoleOGRequest) returns (SuccessMessage) {}
+
 }
-
-
 
 message GetAllOGsRequest{
     string source = 1;
