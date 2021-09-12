@@ -34,7 +34,6 @@ export class RequestManager {
         'produceToKartoffelQueue received request successfully and generated queue message',
         {
           produceRequest,
-          request,
           message,
         }
       );
@@ -62,7 +61,6 @@ export class RequestManager {
         'produceToADQueue received request successfully and generated queue message',
         {
           produceRequest,
-          request,
           message,
         }
       );
