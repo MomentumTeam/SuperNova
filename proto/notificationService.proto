@@ -1,7 +1,6 @@
 syntax = "proto3";
-// import "/home/barak/Desktop/SuperNova/proto/requestService.proto";//when loading with bloomRPC
-// import "/home/shalev/Desktop/BarakTrello/SuperNova/proto/requestService.proto";
-// import "proto/requestService.proto"; //when running in vscode
+// import "/home/barak/Desktop/SuperNova/proto/requestService.proto";
+// import "proto/requestService.proto";
 import "/usr/src/app/proto/requestService.proto"; //When using docker
 
 package NotificationService;

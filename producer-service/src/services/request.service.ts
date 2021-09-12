@@ -24,7 +24,9 @@ export class RequestService {
     return new Promise((resolve, reject) => {
       this.client.GetRequestById(req, (err: any, res: any) => {
         if (err) {
-          logger.error('getRequestById in RequestService ERROR', { err });
+          logger.error('getRequestById in RequestService ERROR', {
+            error: err.message,
+          });
           reject(err);
         } else {
           logger.info('getRequestById in RequestService OK', {
