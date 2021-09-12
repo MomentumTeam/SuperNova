@@ -44,7 +44,7 @@ export default class ProducerController {
               err,
               callRequest: { id: requestId },
             });
-            resolve(null);
+            resolve(err);
           }
 
           logger.info(`produceToKartoffelQueue OK in GTW`, {
