@@ -465,243 +465,252 @@ export class RequestRepository {
   async updateRequest(updateReq: any): Promise<Request> {
     //TODO CHECK MORE
     try {
+      // let commanderApproverIdInUpdate: any = undefined,
+      //   securityApproverIdInUpdate: any = undefined,
+      //   superSecurityApproverIdInUpdate: any = undefined,
+      //   commanderApproverDecisionInUpdate: any = undefined,
+      //   securityApproverDecisionInUpdate: any = undefined,
+      //   superSecurityApproverDecisionInUpdate: any = undefined,
+      //   kartoffelStageStatusInUpdate: any = undefined,
+      //   adStageStatusInUpdate: any = undefined;
+
+      // let commanderApproverDecisionInDocument: Decision =
+      //     Decision.DECISION_UNKNOWN,
+      //   securityApproverDecisionInDocument: Decision =
+      //     Decision.DECISION_UNKNOWN,
+      //   superSecurityApproverDecisionInDocument: Decision =
+      //     Decision.DECISION_UNKNOWN,
+      //   kartoffelStageStatusInDocument: StageStatus = StageStatus.STAGE_UNKNOWN,
+      //   adStageStatusInDocument: StageStatus = StageStatus.STAGE_UNKNOWN;
+
+      // if (
+      //   updateReq &&
+      //   updateReq.requestProperties &&
+      //   updateReq.requestProperties.kartoffelStatus &&
+      //   updateReq.requestProperties.kartoffelStatus.status
+      // ) {
+      //   // kartoffel status in update
+      //   kartoffelStageStatusInUpdate = stageStatusFromJSON(
+      //     updateReq.requestProperties.kartoffelStatus.status
+      //   );
+      // }
+
+      // if (
+      //   updateReq &&
+      //   updateReq.requestProperties &&
+      //   updateReq.requestProperties.adStatus &&
+      //   updateReq.requestProperties.adStatus.status
+      // ) {
+      //   // ad status in update
+      //   adStageStatusInUpdate = stageStatusFromJSON(
+      //     updateReq.requestProperties.adStatus.status
+      //   );
+      // }
+
+      // if (
+      //   updateReq &&
+      //   updateReq.requestProperties &&
+      //   updateReq.requestProperties.commanderDecision &&
+      //   updateReq.requestProperties.commanderDecision.approver
+      // ) {
+      //   // commander decision in update
+      //   commanderApproverIdInUpdate =
+      //     updateReq.requestProperties.commanderDecision.approver.id;
+      //   commanderApproverDecisionInUpdate = decisionFromJSON(
+      //     updateReq.requestProperties.commanderDecision.decision
+      //   );
+      // }
+
+      // if (
+      //   updateReq &&
+      //   updateReq.requestProperties &&
+      //   updateReq.requestProperties.securityDecision &&
+      //   updateReq.requestProperties.securityDecision.approver
+      // ) {
+      //   // security decision in update
+      //   securityApproverIdInUpdate =
+      //     updateReq.requestProperties.securityDecision.approver.id;
+      //   securityApproverDecisionInUpdate = decisionFromJSON(
+      //     updateReq.requestProperties.securityDecision.decision
+      //   );
+      // }
+
+      // if (
+      //   updateReq &&
+      //   updateReq.requestProperties &&
+      //   updateReq.requestProperties.superSecurityDecision &&
+      //   updateReq.requestProperties.superSecurityDecision.approver
+      // ) {
+      //   // superSecurity decision in update
+      //   superSecurityApproverIdInUpdate =
+      //     updateReq.requestProperties.superSecurityDecision.approver.id;
+      //   superSecurityApproverDecisionInUpdate = decisionFromJSON(
+      //     updateReq.requestProperties.superSecurityDecision.decision
+      //   );
+      // }
+
+      // if (
+      //   commanderApproverIdInUpdate ||
+      //   securityApproverIdInUpdate ||
+      //   superSecurityApproverIdInUpdate ||
+      //   kartoffelStageStatusInUpdate ||
+      //   adStageStatusInUpdate
+      // ) {
+      //   //update includes decision/stage update
+      //   const documentBefore = await RequestModel.findOne({
+      //     _id: updateReq.id,
+      //   });
+      //   if (documentBefore) {
+      //     const documentBeforeObj: any = documentBefore.toObject();
+      //     turnObjectIdsToStrings(documentBeforeObj);
+      //     const needSuperSecurityDecision =
+      //       documentBeforeObj.needSuperSecurityDecision;
+      //     const needSecurityDecision = documentBeforeObj.needSecurityDecision;
+
+      //     // if (
+      //     //   (commanderApproverIdInUpdate &&
+      //     //     (!documentBeforeObj.commanders ||
+      //     //       !documentBeforeObj.commanders.some(
+      //     //         (commander: any) =>
+      //     //           commander.id === commanderApproverIdInUpdate
+      //     //       ))) ||
+      //     //   (securityApproverIdInUpdate &&
+      //     //     (!documentBeforeObj.securityApprovers ||
+      //     //       (securityApproverIdInUpdate &&
+      //     //         !documentBeforeObj.securityApprovers.some(
+      //     //           (securityApprover: any) =>
+      //     //             securityApprover.id === securityApproverIdInUpdate
+      //     //         ))))
+      //     // ) {
+      //     //   //if one of the approvers does not exist in commanders or securityApprovers, so it is not allowed
+      //     //   throw new Error(
+      //     //     `Commander or security approver is not allowed to decide on this request!`
+      //     //   );
+      //     // }
+
+      //     if (
+      //       documentBeforeObj.commanderDecision &&
+      //       documentBeforeObj.commanderDecision.decision
+      //     ) {
+      //       // commander decision in document
+      //       commanderApproverDecisionInDocument = decisionFromJSON(
+      //         documentBeforeObj.commanderDecision.decision
+      //       );
+      //     }
+
+      //     if (
+      //       documentBeforeObj.securityDecision &&
+      //       documentBeforeObj.securityDecision.decision
+      //     ) {
+      //       // commander decision in document
+      //       securityApproverDecisionInDocument = decisionFromJSON(
+      //         documentBeforeObj.securityDecision.decision
+      //       );
+      //     }
+
+      //     if (
+      //       documentBeforeObj.superSecurityDecision &&
+      //       documentBeforeObj.superSecurityDecision.decision
+      //     ) {
+      //       // commander decision in document
+      //       superSecurityApproverDecisionInDocument = decisionFromJSON(
+      //         documentBeforeObj.superSecurityDecision.decision
+      //       );
+      //     }
+
+      //     if (
+      //       commanderApproverDecisionInUpdate ||
+      //       securityApproverDecisionInUpdate ||
+      //       superSecurityApproverDecisionInUpdate
+      //     ) {
+      //       if (
+      //         commanderApproverDecisionInUpdate === Decision.DENIED ||
+      //         (!commanderApproverDecisionInUpdate &&
+      //           commanderApproverDecisionInDocument === Decision.DENIED) ||
+      //         (needSecurityDecision &&
+      //           (securityApproverDecisionInUpdate === Decision.DENIED ||
+      //             (!securityApproverDecisionInUpdate &&
+      //               securityApproverDecisionInDocument === Decision.DENIED))) ||
+      //         (needSuperSecurityDecision &&
+      //           (superSecurityApproverDecisionInUpdate === Decision.DENIED ||
+      //             (!superSecurityApproverDecisionInUpdate &&
+      //               superSecurityApproverDecisionInDocument ===
+      //                 Decision.DENIED)))
+      //       ) {
+      //         // if one of the approvers denied the request
+      //         requestUpdate.status = requestStatusToJSON(
+      //           RequestStatus.DECLINED
+      //         );
+      //       } else if (
+      //         (commanderApproverDecisionInUpdate === Decision.APPROVED ||
+      //           (!commanderApproverDecisionInUpdate &&
+      //             commanderApproverDecisionInDocument === Decision.APPROVED)) &&
+      //         (!needSecurityDecision ||
+      //           securityApproverDecisionInUpdate === Decision.APPROVED ||
+      //           (!securityApproverDecisionInUpdate &&
+      //             securityApproverDecisionInDocument === Decision.APPROVED)) &&
+      //         (!needSuperSecurityDecision ||
+      //           superSecurityApproverDecisionInUpdate === Decision.APPROVED ||
+      //           (!superSecurityApproverDecisionInUpdate &&
+      //             superSecurityApproverDecisionInDocument ===
+      //               Decision.APPROVED))
+      //       ) {
+      //         // if both approvers approved the request
+      //         requestUpdate.status = requestStatusToJSON(
+      //           RequestStatus.IN_PROGRESS
+      //         );
+      //       }
+      //     }
+
+      //     if (
+      //       documentBeforeObj.kartoffelStatus &&
+      //       documentBeforeObj.kartoffelStatus.status
+      //     ) {
+      //       // kartoffel status in document
+      //       kartoffelStageStatusInDocument = stageStatusFromJSON(
+      //         documentBeforeObj.kartoffelStatus.status
+      //       );
+      //     }
+
+      //     if (documentBeforeObj.adStatus && documentBeforeObj.adStatus.status) {
+      //       // ad status in document
+      //       adStageStatusInDocument = stageStatusFromJSON(
+      //         documentBeforeObj.adStatus.status
+      //       );
+      //     }
+
+      //     if (kartoffelStageStatusInUpdate || adStageStatusInUpdate) {
+      //       if (
+      //         ((!kartoffelStageStatusInUpdate &&
+      //           kartoffelStageStatusInDocument === StageStatus.STAGE_DONE) ||
+      //           kartoffelStageStatusInUpdate === StageStatus.STAGE_DONE) &&
+      //         ((!adStageStatusInUpdate &&
+      //           adStageStatusInDocument === StageStatus.STAGE_DONE) ||
+      //           adStageStatusInUpdate === StageStatus.STAGE_DONE)
+      //       ) {
+      //         // if both stages are done
+      //         requestUpdate.status = requestStatusToJSON(RequestStatus.DONE);
+      //       } else if (
+      //         (!kartoffelStageStatusInUpdate &&
+      //           kartoffelStageStatusInDocument === StageStatus.STAGE_FAILED) ||
+      //         kartoffelStageStatusInUpdate === StageStatus.STAGE_FAILED ||
+      //         (!adStageStatusInUpdate &&
+      //           adStageStatusInDocument === StageStatus.STAGE_FAILED) ||
+      //         adStageStatusInUpdate === StageStatus.STAGE_FAILED
+      //       ) {
+      //         // if both stages are failed
+      //         requestUpdate.status = requestStatusToJSON(RequestStatus.FAILED);
+      //       }
+      //     }
+      //   } else {
+      //     throw new Error(
+      //       `A request with {_id: ${updateReq.id}} was not found!`
+      //     );
+      //   }
+      // }
+
       let requestUpdate: any = { ...updateReq.requestProperties };
       cleanUnderscoreFields(requestUpdate);
-
-      let commanderApproverIdInUpdate: any = undefined,
-        securityApproverIdInUpdate: any = undefined,
-        superSecurityApproverIdInUpdate: any = undefined,
-        commanderApproverDecisionInUpdate: any = undefined,
-        securityApproverDecisionInUpdate: any = undefined,
-        superSecurityApproverDecisionInUpdate: any = undefined,
-        kartoffelStageStatusInUpdate: any = undefined,
-        adStageStatusInUpdate: any = undefined;
-
-      let commanderApproverDecisionInDocument: Decision =
-          Decision.DECISION_UNKNOWN,
-        securityApproverDecisionInDocument: Decision =
-          Decision.DECISION_UNKNOWN,
-        superSecurityApproverDecisionInDocument: Decision =
-          Decision.DECISION_UNKNOWN,
-        kartoffelStageStatusInDocument: StageStatus = StageStatus.STAGE_UNKNOWN,
-        adStageStatusInDocument: StageStatus = StageStatus.STAGE_UNKNOWN;
-
-      if (
-        updateReq &&
-        updateReq.requestProperties &&
-        updateReq.requestProperties.kartoffelStatus &&
-        updateReq.requestProperties.kartoffelStatus.status
-      ) {
-        // kartoffel status in update
-        kartoffelStageStatusInUpdate = stageStatusFromJSON(
-          updateReq.requestProperties.kartoffelStatus.status
-        );
-      }
-
-      if (
-        updateReq &&
-        updateReq.requestProperties &&
-        updateReq.requestProperties.adStatus &&
-        updateReq.requestProperties.adStatus.status
-      ) {
-        // ad status in update
-        adStageStatusInUpdate = stageStatusFromJSON(
-          updateReq.requestProperties.adStatus.status
-        );
-      }
-
-      if (
-        updateReq &&
-        updateReq.requestProperties &&
-        updateReq.requestProperties.commanderDecision &&
-        updateReq.requestProperties.commanderDecision.approver
-      ) {
-        // commander decision in update
-        commanderApproverIdInUpdate =
-          updateReq.requestProperties.commanderDecision.approver.id;
-        commanderApproverDecisionInUpdate = decisionFromJSON(
-          updateReq.requestProperties.commanderDecision.decision
-        );
-      }
-
-      if (
-        updateReq &&
-        updateReq.requestProperties &&
-        updateReq.requestProperties.superSecurityDecision &&
-        updateReq.requestProperties.superSecurityDecision.approver
-      ) {
-        // commander decision in update
-        superSecurityApproverIdInUpdate =
-          updateReq.requestProperties.superSecurityDecision.approver.id;
-        superSecurityApproverDecisionInUpdate = decisionFromJSON(
-          updateReq.requestProperties.superSecurityDecision.decision
-        );
-      }
-
-      if (
-        updateReq &&
-        updateReq.requestProperties &&
-        updateReq.requestProperties.securityDecision &&
-        updateReq.requestProperties.securityDecision.approver
-      ) {
-        // security decision in update
-        securityApproverIdInUpdate =
-          updateReq.requestProperties.securityDecision.approver.id;
-        securityApproverDecisionInUpdate = decisionFromJSON(
-          updateReq.requestProperties.securityDecision.decision
-        );
-      }
-
-      if (
-        commanderApproverIdInUpdate ||
-        securityApproverIdInUpdate ||
-        kartoffelStageStatusInUpdate ||
-        adStageStatusInUpdate
-      ) {
-        //update includes decision/stage update
-        const documentBefore = await RequestModel.findOne({
-          _id: updateReq.id,
-        });
-        if (documentBefore) {
-          const documentBeforeObj: any = documentBefore.toObject();
-          turnObjectIdsToStrings(documentBeforeObj);
-          const needSuperSecurityDecision =
-            documentBeforeObj.needSuperSecurityDecision;
-
-          // if (
-          //   (commanderApproverIdInUpdate &&
-          //     (!documentBeforeObj.commanders ||
-          //       !documentBeforeObj.commanders.some(
-          //         (commander: any) =>
-          //           commander.id === commanderApproverIdInUpdate
-          //       ))) ||
-          //   (securityApproverIdInUpdate &&
-          //     (!documentBeforeObj.securityApprovers ||
-          //       (securityApproverIdInUpdate &&
-          //         !documentBeforeObj.securityApprovers.some(
-          //           (securityApprover: any) =>
-          //             securityApprover.id === securityApproverIdInUpdate
-          //         ))))
-          // ) {
-          //   //if one of the approvers does not exist in commanders or securityApprovers, so it is not allowed
-          //   throw new Error(
-          //     `Commander or security approver is not allowed to decide on this request!`
-          //   );
-          // }
-
-          if (
-            documentBeforeObj.commanderDecision &&
-            documentBeforeObj.commanderDecision.decision
-          ) {
-            // commander decision in document
-            commanderApproverDecisionInDocument = decisionFromJSON(
-              documentBeforeObj.commanderDecision.decision
-            );
-          }
-
-          if (
-            documentBeforeObj.securityDecision &&
-            documentBeforeObj.securityDecision.decision
-          ) {
-            // commander decision in document
-            securityApproverDecisionInDocument = decisionFromJSON(
-              documentBeforeObj.securityDecision.decision
-            );
-          }
-
-          if (
-            documentBeforeObj.superSecurityDecision &&
-            documentBeforeObj.superSecurityDecision.decision
-          ) {
-            // commander decision in document
-            superSecurityApproverDecisionInDocument = decisionFromJSON(
-              documentBeforeObj.superSecurityDecision.decision
-            );
-          }
-
-          if (
-            commanderApproverDecisionInUpdate ||
-            securityApproverDecisionInUpdate ||
-            superSecurityApproverDecisionInUpdate
-          ) {
-            if (
-              commanderApproverDecisionInUpdate === Decision.DENIED ||
-              (!commanderApproverDecisionInUpdate &&
-                commanderApproverDecisionInDocument === Decision.DENIED) ||
-              securityApproverDecisionInUpdate === Decision.DENIED ||
-              (!securityApproverDecisionInUpdate &&
-                securityApproverDecisionInDocument === Decision.DENIED) ||
-              (needSuperSecurityDecision &&
-                (superSecurityApproverDecisionInUpdate === Decision.DENIED ||
-                  (!superSecurityApproverDecisionInUpdate &&
-                    superSecurityApproverDecisionInDocument ===
-                      Decision.DENIED)))
-            ) {
-              // if one of the approvers denied the request
-              requestUpdate.status = requestStatusToJSON(
-                RequestStatus.DECLINED
-              );
-            } else if (
-              (commanderApproverDecisionInUpdate === Decision.APPROVED ||
-                (!commanderApproverDecisionInUpdate &&
-                  commanderApproverDecisionInDocument === Decision.APPROVED)) &&
-              (securityApproverDecisionInUpdate === Decision.APPROVED ||
-                (!securityApproverDecisionInUpdate &&
-                  securityApproverDecisionInDocument === Decision.APPROVED))
-            ) {
-              // if both approvers approved the request
-              requestUpdate.status = requestStatusToJSON(
-                RequestStatus.IN_PROGRESS
-              );
-            }
-          }
-
-          if (
-            documentBeforeObj.kartoffelStatus &&
-            documentBeforeObj.kartoffelStatus.status
-          ) {
-            // kartoffel status in document
-            kartoffelStageStatusInDocument = stageStatusFromJSON(
-              documentBeforeObj.kartoffelStatus.status
-            );
-          }
-
-          if (documentBeforeObj.adStatus && documentBeforeObj.adStatus.status) {
-            // ad status in document
-            adStageStatusInDocument = stageStatusFromJSON(
-              documentBeforeObj.adStatus.status
-            );
-          }
-
-          if (kartoffelStageStatusInUpdate || adStageStatusInUpdate) {
-            if (
-              ((!kartoffelStageStatusInUpdate &&
-                kartoffelStageStatusInDocument === StageStatus.STAGE_DONE) ||
-                kartoffelStageStatusInUpdate === StageStatus.STAGE_DONE) &&
-              ((!adStageStatusInUpdate &&
-                adStageStatusInDocument === StageStatus.STAGE_DONE) ||
-                adStageStatusInUpdate === StageStatus.STAGE_DONE)
-            ) {
-              // if both stages are done
-              requestUpdate.status = requestStatusToJSON(RequestStatus.DONE);
-            } else if (
-              (!kartoffelStageStatusInUpdate &&
-                kartoffelStageStatusInDocument === StageStatus.STAGE_FAILED) ||
-              kartoffelStageStatusInUpdate === StageStatus.STAGE_FAILED ||
-              (!adStageStatusInUpdate &&
-                adStageStatusInDocument === StageStatus.STAGE_FAILED) ||
-              adStageStatusInUpdate === StageStatus.STAGE_FAILED
-            ) {
-              // if both stages are failed
-              requestUpdate.status = requestStatusToJSON(RequestStatus.FAILED);
-            }
-          }
-        } else {
-          throw new Error(
-            `A request with {_id: ${updateReq.id}} was not found!`
-          );
-        }
-      }
 
       const documentAfter: any = await RequestModel.findOneAndUpdate(
         { _id: updateReq.id },
@@ -723,6 +732,7 @@ export class RequestRepository {
   async updateKartoffelStatus(
     updateKartoffelStatusReq: UpdateKartoffelStatusReq
   ): Promise<Request> {
+    let requestStatus: any = RequestStatus.UNRECOGNIZED;
     let updatedRequest;
     try {
       cleanUnderscoreFields(updateKartoffelStatusReq);
@@ -737,20 +747,44 @@ export class RequestRepository {
         },
       };
       updatedRequest = await this.updateRequest(requestUpdate);
+      let kartoffelStatus: any =
+        typeof updatedRequest.kartoffelStatus?.status === typeof ''
+          ? stageStatusFromJSON(updatedRequest.kartoffelStatus?.status)
+          : updatedRequest.kartoffelStatus?.status;
       if (
-        (updateKartoffelStatusReq.status.toString() ===
-          stageStatusToJSON(StageStatus.STAGE_DONE) ||
-          updateKartoffelStatusReq.status.toString() ===
-            stageStatusToJSON(StageStatus.STAGE_FAILED)) &&
+        kartoffelStatus === StageStatus.STAGE_DONE ||
+        kartoffelStatus === StageStatus.STAGE_FAILED
+      ) {
+        requestStatus =
+          kartoffelStatus === StageStatus.STAGE_DONE
+            ? RequestStatus.DONE
+            : RequestStatus.FAILED;
+        updatedRequest = await this.updateRequest({
+          id: updateKartoffelStatusReq.requestId,
+          requestProperties: {
+            status: requestStatusToJSON(requestStatus),
+          },
+        });
+      }
+
+      if (
+        (kartoffelStatus === StageStatus.STAGE_DONE ||
+          kartoffelStatus === StageStatus.STAGE_FAILED) &&
         updatedRequest.submittedBy
       ) {
         const stageNotificationType: NotificationType =
-          updateKartoffelStatusReq.status === StageStatus.STAGE_DONE
+          kartoffelStatus === StageStatus.STAGE_DONE
             ? NotificationType.KARTOFFEL_STAGE_DONE
             : NotificationType.KARTOFFEL_STAGE_FAILED;
         await createNotifications(stageNotificationType, updatedRequest);
+      }
+      if (
+        (requestStatus === RequestStatus.DONE ||
+          requestStatus === RequestStatus.FAILED) &&
+        updatedRequest.submittedBy
+      ) {
         const notificationType: NotificationType =
-          updateKartoffelStatusReq.status === StageStatus.STAGE_DONE
+          requestStatus === RequestStatus.DONE
             ? NotificationType.REQUEST_DONE
             : NotificationType.REQUEST_FAILED;
         await createNotifications(notificationType, updatedRequest);
@@ -762,6 +796,8 @@ export class RequestRepository {
   }
 
   async updateADStatus(updateADStatusReq: UpdateADStatusReq): Promise<Request> {
+    let updatedRequest;
+    let requestStatus: any = RequestStatus.UNRECOGNIZED;
     try {
       cleanUnderscoreFields(updateADStatusReq);
       let requestUpdate: any = {
@@ -773,29 +809,38 @@ export class RequestRepository {
           },
         },
       };
-      if (
-        updateADStatusReq.status.toString() ===
-        stageStatusToJSON(StageStatus.STAGE_FAILED)
-      ) {
-        requestUpdate.requestProperties.status = requestStatusToJSON(
-          RequestStatus.FAILED
-        );
+      updatedRequest = await this.updateRequest(requestUpdate);
+      let adStatus: any =
+        typeof updatedRequest.adStatus?.status === typeof ''
+          ? stageStatusFromJSON(updatedRequest.adStatus?.status)
+          : updatedRequest.adStatus?.status;
+      if (adStatus === StageStatus.STAGE_FAILED) {
+        requestStatus = RequestStatus.FAILED;
+        updatedRequest = await this.updateRequest({
+          id: updateADStatusReq.requestId,
+          requestProperties: {
+            status: requestStatusToJSON(requestStatus),
+          },
+        });
       }
-      const updatedRequest = await this.updateRequest(requestUpdate);
       if (
-        (updateADStatusReq.status.toString() ===
-          stageStatusToJSON(StageStatus.STAGE_DONE) ||
-          updateADStatusReq.status.toString() ===
-            stageStatusToJSON(StageStatus.STAGE_FAILED)) &&
+        (adStatus === StageStatus.STAGE_DONE ||
+          adStatus === StageStatus.STAGE_FAILED) &&
         updatedRequest.submittedBy
       ) {
         const stageNotificationType: NotificationType =
-          updateADStatusReq.status === StageStatus.STAGE_DONE
+          adStatus === StageStatus.STAGE_DONE
             ? NotificationType.AD_STAGE_DONE
             : NotificationType.AD_STAGE_FAILED;
         await createNotifications(stageNotificationType, updatedRequest);
+      }
+      if (
+        (requestStatus === RequestStatus.DONE ||
+          requestStatus === RequestStatus.FAILED) &&
+        updatedRequest.submittedBy
+      ) {
         const notificationType: NotificationType =
-          updateADStatusReq.status === StageStatus.STAGE_DONE
+          requestStatus === RequestStatus.DONE
             ? NotificationType.REQUEST_DONE
             : NotificationType.REQUEST_FAILED;
         await createNotifications(notificationType, updatedRequest);

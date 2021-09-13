@@ -54,6 +54,35 @@ export function createRequestFuncByType(type: RequestType) {
   return func;
 }
 
+export async function updateRequest(call: any, callback: any): Promise<void> {
+  try {
+    logger.info(`Call to updateRequest`, {
+      callRequest: call.request,
+    });
+    const updateRequestResponse: Request = await requestManager.updateRequest(
+      call.request
+    );
+    logger.info(`updateRequest OK`, {
+      callRequest: call.request,
+      response: updateRequestResponse,
+    });
+    callback(null, updateRequestResponse);
+  } catch (error) {
+    logger.error(`updateRequest ERROR`, {
+      callRequest: call.request,
+      error: error.message,
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
 export function updateApproverDecisionFuncByPersonType(
   personType: PersonTypeInRequest
 ) {
@@ -80,7 +109,7 @@ export function updateApproverDecisionFuncByPersonType(
       logger.error(`updateApproverDecision ERROR`, {
         callRequest: call.request,
         personType: personType,
-        error: error,
+        error: error.message,
       });
       callback(
         {
@@ -121,7 +150,7 @@ export function searchRequestsByDisplayNameFuncByPersonType(
       logger.error(`searchRequestsByDisplayName ERROR`, {
         callRequest: call.request,
         personType: personType,
-        error: error,
+        error: error.message,
       });
       callback(
         {
@@ -162,7 +191,7 @@ export function getRequestsByIdentifierFuncByPersonType(
       logger.error(`getRequestsByIdentifier ERROR`, {
         callRequest: call.request,
         personType: personType,
-        error: error,
+        error: error.message,
       });
       callback(
         {
@@ -196,7 +225,7 @@ export async function canPushToADQueue(
   } catch (error) {
     logger.error(`canPushToADQueue ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: error.message,
     });
     callback(
       {
@@ -228,7 +257,7 @@ export async function canPushToKartoffelQueue(
   } catch (error) {
     logger.error(`canPushToKartoffelQueue ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: error.message,
     });
     callback(
       {
@@ -260,7 +289,7 @@ export async function getRequestBySerialNumber(
   } catch (error) {
     logger.error(`getRequestBySerialNumber ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: error.message,
     });
     callback(
       {
@@ -292,7 +321,7 @@ export async function updateKartoffelStatus(
   } catch (error) {
     logger.error(`updateKartoffelStatus ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: error.message,
     });
     callback(
       {
@@ -321,36 +350,7 @@ export async function updateADStatus(call: any, callback: any): Promise<void> {
   } catch (error) {
     logger.error(`updateADStatus ERROR`, {
       callRequest: call.request,
-      error: error,
-    });
-    callback(
-      {
-        code: 400,
-        message: error.message,
-        status: grpc.status.CANCELLED,
-      },
-      null
-    );
-  }
-}
-
-export async function updateRequest(call: any, callback: any): Promise<void> {
-  try {
-    logger.info(`Call to updateRequest`, {
-      callRequest: call.request,
-    });
-    const updateRequestResponse: Request = await requestManager.updateRequest(
-      call.request
-    );
-    logger.info(`updateRequest OK`, {
-      callRequest: call.request,
-      response: updateRequestResponse,
-    });
-    callback(null, updateRequestResponse);
-  } catch (error) {
-    logger.error(`updateRequest ERROR`, {
-      callRequest: call.request,
-      error: error,
+      error: error.message,
     });
     callback(
       {
@@ -378,7 +378,7 @@ export async function deleteRequest(call: any, callback: any): Promise<void> {
   } catch (error) {
     logger.error(`deleteRequest ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: error.message,
     });
     callback(
       {
@@ -405,7 +405,7 @@ export async function getAllRequests(call: any, callback: any): Promise<void> {
   } catch (error) {
     logger.error(`getAllRequests ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: error.message,
     });
     callback(
       {
@@ -432,7 +432,7 @@ export async function getRequestById(call: any, callback: any): Promise<void> {
   } catch (error) {
     logger.error(`getRequestById ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: error.message,
     });
     callback(
       {
@@ -464,7 +464,7 @@ export async function incrementKartoffelRetries(
   } catch (error) {
     logger.error(`incrementKartoffelRetries ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: error.message,
     });
     callback(
       {
@@ -534,7 +534,7 @@ export async function getRequestsInProgressByDue(
   } catch (error) {
     logger.error(`getRequestsInProgressByDue ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: error.message,
     });
     callback(
       {
@@ -566,7 +566,7 @@ export async function getRequestIdsInProgressByDue(
   } catch (error) {
     logger.error(`getRequestIdsInProgressByDue ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: error.message,
     });
     callback(
       {
@@ -596,7 +596,7 @@ export async function incrementADRetries(
   } catch (error) {
     logger.error(`incrementADRetries ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: error.message,
     });
     callback(
       {
@@ -629,7 +629,7 @@ export async function getRequestsByCommander(
   } catch (error) {
     logger.error(`getRequestsByCommander ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: error.message,
     });
     callback(
       {
@@ -662,7 +662,7 @@ export async function getRequestsSubmittedBy(
   } catch (error) {
     logger.error(`getRequestsSubmittedBy ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: error.message,
     });
     callback(
       {
