@@ -1,6 +1,6 @@
 import * as Joi from 'joi';
 import { Request } from 'express';
-import { UserError } from '../erros/errorTypes';
+import { UserError } from '../errors/errorTypes';
 
 class ValidationError extends UserError {
   constructor(message = 'Validation error') {

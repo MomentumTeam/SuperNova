@@ -12,18 +12,6 @@ export class InvalidBodyError extends UserError {
   }
 }
 
-export class QueryParamInvalidError extends UserError {
-  constructor(message = 'Query param is invalid') {
-    super(message, 400);
-  }
-}
-
-export class GroupNotFound extends UserError {
-  constructor(id: string, message = 'Group not found') {
-    super(`${message}, id:${id}`, 404);
-  }
-}
-
 export class AuthenticationError extends UserError {
   constructor(message = 'Authentication Error') {
     super(message, 401);

@@ -1,4 +1,4 @@
-import * as errorhandlers from './utils/erros/errorHandlers';
+import * as errorhandlers from './utils/errors/errorHandlers';
 import morgan from 'morgan';
 
 import express from 'express';
@@ -11,8 +11,8 @@ import addHeaders from './utils/addHeaders';
 import { config } from './config';
 import { logger } from './utils/logger/logger';
 import { swaggerDocument } from './swagger';
-
-const auth = require('./auth/auth');
+import { addMockToken } from './utils/auth/user.mock';
+import { Authenticator } from './utils/auth/auth';
 
 export class Server {
   private static _instance: Server;
@@ -47,6 +47,11 @@ export class Server {
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(cookieParser());
     this.app.use(morgan('dev'));
+
+    if (!config.authentication.required) this.app.use(addMockToken);
+
+    this.app.use(Authenticator.initialize());
+    this.app.use(Authenticator.middleware);
   }
 
   private initializeRouters() {

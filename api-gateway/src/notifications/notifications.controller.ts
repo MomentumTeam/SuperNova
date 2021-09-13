@@ -3,158 +3,95 @@ import { notificationsClient } from './notifications.service';
 import { logger } from '../utils/logger/logger';
 import { SuccessMessage } from '../interfaces/protoc/proto/producerService';
 import {
-  CreateNotificationsReq,
-  NotificationArray,
+    GetNotificationsByOwnerIdReq,
+    MarkAllAsReadReq,
+    NotificationArray,
+    NotificationIdArray,
 } from '../interfaces/protoc/proto/notificationService';
+import { AuthenticationError } from '../utils/errors/userErrors';
 
 export default class NotificationController {
-  // GET
-  static async getMyNotifications(req: any, res: Response) {
-    const weekAgo: number = Date.now() - 86400000 * 7;
-    const from: string = req.query.from ? req.query.from.toString() : '1';
-    const to: string = req.query.to ? req.query.to.toString() : '10';
-    const startTime: string = req.query.startTime
-      ? req.query.startTime.toString()
-      : weekAgo.toString();
+    // GET
+    static async getMyNotifications(req: any, res: Response) {
+        if (!req.user && !req.user.id) throw new AuthenticationError();
 
-    const data = {
-      ownerId: req.user.id,
-      startTime: startTime,
-      from: from,
-      to: to,
-    };
+        const getNotificationsByOwnerIdReq: GetNotificationsByOwnerIdReq = {
+            ownerId: req.user.id,
+            startTime: req.query.startTime.toString(),
+            from: req.query.from,
+            to: req.query.to,
+        };
 
-    logger.info(`Call to getMyNotifications in GTW`, {
-      callRequest: data,
-    });
-
-    notificationsClient.GetNotificationsByOwnerId(
-      data,
-      (err: any, response: NotificationArray) => {
-        if (err) {
-          logger.error(`getMyNotifications ERROR in GTW`, {
-            err,
-            callRequest: data,
-          });
-          res.status(500).send(err.message);
-        }
-
-        logger.info(`getMyNotifications OK in GTW`, {
-          response: response,
-          callRequest: data,
+        logger.info(`Call to getMyNotifications in GTW`, {
+            callRequest: getNotificationsByOwnerIdReq,
         });
-        res.send(response);
-      }
-    );
-  }
 
-  // POST
-  static async createNotifications(req: any, res: Response) {
-    // TODO
-    let createNotificationsReq: Partial<CreateNotificationsReq> = {};
-    logger.info(`Call to createNotifications in GTW`, createNotificationsReq);
+        notificationsClient.GetNotificationsByOwnerId(
+            getNotificationsByOwnerIdReq,
+            (err: any, response: NotificationArray) => {
+                if (err) {
+                    logger.error(`getMyNotifications ERROR in GTW`, {
+                        err,
+                        callRequest: getNotificationsByOwnerIdReq,
+                    });
+                    res.status(500).send(err.message);
+                }
 
-    notificationsClient.CreateNotifications(
-      { createNotificationsReq },
-      (err: any, response: SuccessMessage) => {
-        if (err) {
-          logger.error(`createNotifications ERROR in GTW`, {
-            err,
-            callRequest: createNotificationsReq,
-          });
-          res.status(500).send(err.message);
-        }
+                logger.info(`getMyNotifications OK in GTW`, {
+                    response: response,
+                    callRequest: getNotificationsByOwnerIdReq,
+                });
+                res.send(response);
+            }
+        );
+    }
 
-        logger.info(`createNotifications OK in GTW`, {
-          response: response,
-          callRequest: createNotificationsReq,
+    // PUT
+    static async markAsRead(req: any, res: Response) {
+        // TODO: check if the user has priviliges (that the notification belong to him)
+        if (!req.user && !req.user.id) throw new AuthenticationError();
+
+        const markAsReadReq: NotificationIdArray = { notificationIds: req.body.notificationIds };
+        logger.info(`Call to markAsRead in GTW`, {
+            callRequest: markAsReadReq,
         });
-        res.send(response);
-      }
-    );
-  }
 
-  // POST
-  static async createCustomNotifications(req: any, res: Response) {
-    // TODO
-    let createCustomNotificationsReq: CreateCustomNotificationsReq = {};
-    logger.info(
-      `Call to createNotifications in GTW`,
-      createCustomNotificationsReq
-    );
+        notificationsClient.MarkAsRead(markAsReadReq, (err: any, response: SuccessMessage) => {
+            if (err) {
+                logger.error(`markAsRead ERROR in GTW`, {
+                    err,
+                    callRequest: markAsReadReq,
+                });
+                res.status(500).send(err.message);
+            }
 
-    notificationsClient.CreateNotifications(
-      { createCustomNotificationsReq },
-      (err: any, response: SuccessMessage) => {
-        if (err) {
-          logger.error(`createNotifications ERROR in GTW`, {
-            err,
-            callRequest: createCustomNotificationsReq,
-          });
-          res.status(500).send(err.message);
-        }
-
-        logger.info(`createNotifications OK in GTW`, {
-          response: response,
-          callRequest: createCustomNotificationsReq,
+            logger.info(`markAsRead OK in GTW`, {
+                response: response,
+                callRequest: markAsReadReq,
+            });
+            res.send(response);
         });
-        res.send(response);
-      }
-    );
-  }
+    }
 
-  // PUT
-  static async markAsRead(req: any, res: Response) {
-    const notificationIds = req.body.notificationIds
-      ? req.body.notificationIds
-      : [];
+    static async markAllAsRead(req: any, res: Response) {
+        if (!req.user && !req.user.id) throw new AuthenticationError();
+        const markAllAsReadReq: MarkAllAsReadReq = { ownerId: req.user.id };
 
-    logger.info(`Call to markAsRead in GTW`, {
-      callRequest: { notificationIds: notificationIds },
-    });
+        logger.info(`Call to markAllAsRead in GTW`, {callRequest: markAllAsReadReq});
+        notificationsClient.MarkAllAsRead(markAllAsReadReq, (err: any, response: SuccessMessage) => {
+            if (err) {
+                logger.error(`markAllAsRead ERROR in GTW`, {
+                    err,
+                    callRequest: markAllAsReadReq,
+                });
+                res.status(500).send(err.message);
+            }
 
-    notificationsClient.MarkAsRead(
-      { notificationIds: notificationIds },
-      (err: any, response: SuccessMessage) => {
-        if (err) {
-          logger.error(`markAsRead ERROR in GTW`, {
-            err,
-            callRequest: { notificationIds: notificationIds },
-          });
-          res.status(500).send(err.message);
-        }
-
-        logger.info(`markAsRead OK in GTW`, {
-          response: response,
-          callRequest: { notificationIds: notificationIds },
+            logger.info(`markAsRead OK in GTW`, {
+                response: response,
+                callRequest: markAllAsReadReq,
+            });
+            res.send(response);
         });
-        res.send(response);
-      }
-    );
-  }
-
-  static async markAllAsRead(req: any, res: Response) {
-    logger.info(`Call to markAllAsRead in GTW`, {
-      callRequest: { ownerId: req.user.id },
-    });
-
-    notificationsClient.MarkAllAsRead(
-      { ownerId: req.user.id },
-      (err: any, response: SuccessMessage) => {
-        if (err) {
-          logger.error(`markAllAsRead ERROR in GTW`, {
-            err,
-            callRequest: { ownerId: req.user.id },
-          });
-          res.status(500).send(err.message);
-        }
-
-        logger.info(`markAsRead OK in GTW`, {
-          response: response,
-          callRequest: { ownerId: req.user.id },
-        });
-        res.send(response);
-      }
-    );
-  }
+    }
 }

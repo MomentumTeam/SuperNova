@@ -8,213 +8,208 @@ import {
   RoleArray,
   Role,
   Image,
+  GetEntityByIdRequest,
+  GetPictureByEntityIdRequest,
+  SearchEntitiesByFullNameRequest,
+  GetEntityByIdentifierRequest,
+  GetEntityByRoleIdRequest,
+  GetEntitiesUnderOGRequest,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { OGTree } from '../interfaces/protoc/proto/kartoffelService';
+import { AuthenticationError } from '../utils/errors/userErrors';
 
 export default class KartoffelController {
-  //entities
+  // Entities
   static async getMyUser(req: any, res: Response) {
-    const data = { id: req.user.id };
+    if (!req.user && !req.user.id) throw new AuthenticationError();
+    const getMyUserReq: GetEntityByIdRequest = { id: req.user.id };
 
     logger.info(`Call to getMyUser in GTW`, {
-      callRequest: data,
+        callRequest: getMyUserReq,
     });
 
-    kartoffelClient.GetEntityById(data, (err: any, response: Entity) => {
+    kartoffelClient.GetEntityById(getMyUserReq, (err: any, response: Entity) => {
       if (err) {
         logger.error(`getMyUser ERROR in GTW`, {
-          err,
-          callRequest: data,
+            err,
+            callRequest: getMyUserReq,
         });
         res.status(500).send(err.message);
       }
 
       logger.info(`getMyUser OK in GTW`, {
-        response: response,
-        callRequest: data,
+          response: response,
+          callRequest: getMyUserReq,
       });
       res.send(response);
     });
   }
 
   static async getEntityByMongoId(req: Request, res: Response) {
-    const data = { id: req.params.id };
-
+    const getEntityByMongoIdReq: GetEntityByIdRequest = { id: req.params.id };
     logger.info(`Call to getEntityByMongoId in GTW`, {
-      callRequest: data,
+        callRequest: getEntityByMongoIdReq,
     });
 
-    kartoffelClient.GetEntityById(data, (err: any, response: Entity) => {
-      if (err) {
-        logger.error(`getEntityByMongoId ERROR in GTW`, {
-          err,
-          callRequest: data,
-        });
-        res.status(500).send(err.message);
-      }
+    kartoffelClient.GetEntityById(getEntityByMongoIdReq, (err: any, response: Entity) => {
+        if (err) {
+            logger.error(`getEntityByMongoId ERROR in GTW`, {
+                err,
+                callRequest: getEntityByMongoIdReq,
+            });
+            res.status(500).send(err.message);
+        }
 
-      logger.info(`getEntityByMongoId OK in GTW`, {
-        response: response,
-        callRequest: data,
-      });
-      res.send(response);
+        logger.info(`getEntityByMongoId OK in GTW`, {
+            response: response,
+            callRequest: getEntityByMongoIdReq,
+        });
+        res.send(response);
     });
   }
 
   static async getPictureByEntityId(req: any, res: Response) {
-    const data = { id: req.user.id };
+    if (!req.user && !req.user.id) throw new AuthenticationError();
+    const getPictureByEntityIdReq: GetPictureByEntityIdRequest = { id: req.user.id };
 
     logger.info(`Call to getPictureByEntityId in GTW`, {
-      callRequest: data,
+        callRequest: getPictureByEntityIdReq,
     });
 
-    kartoffelClient.GetPictureByEntityId(data, (err: any, response: Image) => {
-      if (err) {
-        logger.error(`getPictureByEntityId ERROR in GTW`, {
-          err,
-          callRequest: data,
-        });
-        res.status(500).send(err.message);
-      }
+    kartoffelClient.GetPictureByEntityId(getPictureByEntityIdReq, (err: any, response: Image) => {
+        if (err) {
+            logger.error(`getPictureByEntityId ERROR in GTW`, {
+                err,
+                callRequest: getPictureByEntityIdReq,
+            });
+            res.status(500).send(err.message);
+        }
 
-      logger.info(`getPictureByEntityId OK in GTW`, {
-        response: response,
-        callRequest: data,
-      });
-      res.send(response);
+        logger.info(`getPictureByEntityId OK in GTW`, {
+            response: response,
+            callRequest: getPictureByEntityIdReq,
+        });
+        res.send(response);
     });
   }
 
   static async searchEntitiesByFullName(req: Request, res: Response) {
-    const data = req.query;
+    const searchEntitiesByFullNameReq = req.query;
 
     logger.info(`Call to searchEntitiesByFullName in GTW`, {
-      callRequest: data,
+        callRequest: searchEntitiesByFullNameReq,
     });
 
-    kartoffelClient.SearchEntitiesByFullName(
-      data,
-      (err: any, response: EntityArray) => {
+    kartoffelClient.SearchEntitiesByFullName(searchEntitiesByFullNameReq, (err: any, response: EntityArray) => {
         if (err) {
-          logger.error(`searchEntitiesByFullName ERROR in GTW`, {
-            err,
-            callRequest: data,
-          });
-          res.status(500).send(err.message);
+            logger.error(`searchEntitiesByFullName ERROR in GTW`, {
+                err,
+                callRequest: searchEntitiesByFullNameReq,
+            });
+            res.status(500).send(err.message);
         }
 
         logger.info(`searchEntitiesByFullName OK in GTW`, {
-          response: response,
-          callRequest: data,
+            response: response,
+            callRequest: searchEntitiesByFullNameReq,
         });
         res.send(response);
-      }
-    );
+    });
   }
 
   static async getEntityByIdentifier(req: Request, res: Response) {
-    const data = { identifier: req.params.identifier };
-
+    const getEntityByIdentifierReq: GetEntityByIdentifierRequest = { identifier: req.params.identifier };
     logger.info(`Call to getEntityByIdentifier in GTW`, {
-      callRequest: data,
+        callRequest: getEntityByIdentifierReq,
     });
 
-    kartoffelClient.GetEntityByIdentifier(
-      data,
-      (err: any, response: Entity) => {
+    kartoffelClient.GetEntityByIdentifier(getEntityByIdentifierReq, (err: any, response: Entity) => {
         if (err) {
-          logger.error(`getEntityByIdentifier ERROR in GTW`, {
-            err,
-            callRequest: data,
-          });
-          res.status(500).send(err.message);
+            logger.error(`getEntityByIdentifier ERROR in GTW`, {
+                err,
+                callRequest: getEntityByIdentifierReq,
+            });
+            res.status(500).send(err.message);
         }
 
         logger.info(`getEntityByIdentifier OK in GTW`, {
-          response: response,
-          callRequest: data,
+            response: response,
+            callRequest: getEntityByIdentifierReq,
         });
         res.send(response);
-      }
-    );
+    });
   }
 
   static async getEntityByRoleId(req: Request, res: Response) {
-    const data = { roleId: req.params.roleId };
+    const getEntityByRoleIdReq: GetEntityByRoleIdRequest = { roleId: req.params.roleId };
 
     logger.info(`Call to getEntityByRoleId in GTW`, {
-      callRequest: data,
+        callRequest: getEntityByRoleIdReq,
     });
 
-    kartoffelClient.GetEntityByRoleId(data, (err: any, response: Entity) => {
-      if (err) {
-        logger.error(`getEntityByRoleId ERROR in GTW`, {
-          err,
-          callRequest: data,
-        });
-        res.status(500).send(err.message);
-      }
+    kartoffelClient.GetEntityByRoleId(getEntityByRoleIdReq, (err: any, response: Entity) => {
+        if (err) {
+            logger.error(`getEntityByRoleId ERROR in GTW`, {
+                err,
+                callRequest: getEntityByRoleIdReq,
+            });
+            res.status(500).send(err.message);
+        }
 
-      logger.info(`getEntityByRoleId OK in GTW`, {
-        response: response,
-        callRequest: data,
-      });
-      res.send(response);
+        logger.info(`getEntityByRoleId OK in GTW`, {
+            response: response,
+            callRequest: getEntityByRoleIdReq,
+        });
+        res.send(response);
     });
   }
 
   static async getEntitiesUnderOG(req: Request, res: Response) {
-    const data = { ...req.params, ...req.query };
+    const getEntitiesUnderOGReq = { ...req.params, ...req.query };
 
     logger.info(`Call to getEntitiesUnderOG in GTW`, {
-      callRequest: data,
+        callRequest: getEntitiesUnderOGReq,
     });
 
-    kartoffelClient.GetEntitiesUnderOG(
-      data,
-      (err: any, response: EntityArray) => {
+    kartoffelClient.GetEntitiesUnderOG(getEntitiesUnderOGReq, (err: any, response: EntityArray) => {
         if (err) {
-          logger.error(`getEntitiesUnderOG ERROR in GTW`, {
-            err,
-            callRequest: data,
-          });
-          res.status(500).send(err.message);
+            logger.error(`getEntitiesUnderOG ERROR in GTW`, {
+                err,
+                callRequest: getEntitiesUnderOGReq,
+            });
+            res.status(500).send(err.message);
         }
 
         logger.info(`getEntitiesUnderOG OK in GTW`, {
-          response: response,
-          callRequest: data,
+            response: response,
+            callRequest: getEntitiesUnderOGReq,
         });
         res.send(response);
-      }
-    );
+    });
   }
 
   static async getEntitiesByHierarchy(req: Request, res: Response) {
-    const data = { ...req.params, ...req.query };
+    const getEntitiesByHierarchyReq = { ...req.params, ...req.query };
 
     logger.info(`Call to getEntitiesByHierarchy in GTW`, {
-      callRequest: data,
+        callRequest: getEntitiesByHierarchyReq,
     });
 
-    kartoffelClient.GetEntitiesByHierarchy(
-      data,
-      (err: any, response: EntityArray) => {
+    kartoffelClient.GetEntitiesByHierarchy(getEntitiesByHierarchyReq, (err: any, response: EntityArray) => {
         if (err) {
-          logger.error(`getEntitiesByHierarchy ERROR in GTW`, {
-            err,
-            callRequest: data,
-          });
-          res.status(500).send(err.message);
+            logger.error(`getEntitiesByHierarchy ERROR in GTW`, {
+                err,
+                callRequest: getEntitiesByHierarchyReq,
+            });
+            res.status(500).send(err.message);
         }
 
         logger.info(`getEntitiesByHierarchy OK in GTW`, {
-          response: response,
-          callRequest: data,
+            response: response,
+            callRequest: getEntitiesByHierarchyReq,
         });
         res.send(response);
-      }
-    );
+    });
   }
 
   static async getEntityByDI(req: Request, res: Response) {

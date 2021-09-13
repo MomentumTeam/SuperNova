@@ -1,17 +1,14 @@
 import { Router } from 'express';
 import NotificationController from './notifications.controller';
+import { NotificationValidator } from './notifications.validator';
 
 const NotificationRouter: Router = Router();
 
 // GET
-NotificationRouter.get('/',NotificationController.getMyNotifications);
-
-// POST
-NotificationRouter.post('/', NotificationController.createNotifications);
-NotificationRouter.post('/custom', NotificationController.createCustomNotifications);
+NotificationRouter.get('/', NotificationValidator.isGetMyNotificationsValid, NotificationController.getMyNotifications);
 
 // PUT
-NotificationRouter.put('/markAsRead', NotificationController.markAsRead);
+NotificationRouter.put('/markAsRead', NotificationValidator.isMarkAsReadValid, NotificationController.markAsRead);
 NotificationRouter.put('/markAsRead/all', NotificationController.markAllAsRead);
 
 export default NotificationRouter;

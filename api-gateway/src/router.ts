@@ -13,9 +13,9 @@ mainRouter.get('/auth/login', (req, res) => {
 });
 
 mainRouter.use('/approvers', ApproverRouter);
+mainRouter.use('/notifications', NotificationRouter);
 mainRouter.use('/kartoffel', KartoffelRouter);
 mainRouter.use('/requests', RequestsRouter);
-mainRouter.use('/notifications', NotificationRouter);
 
 // mainRouter.use('/producer', ProducerRouter);
 
