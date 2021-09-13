@@ -230,6 +230,18 @@ export class RequestManager {
     }
   }
 
+  async updateSuperSecurityApprovers(
+    updateApproversReq: UpdateApproversReq
+  ): Promise<Request> {
+    try {
+      return (await this.requestRepository.updateSuperSecurityApprovers(
+        updateApproversReq
+      )) as Request;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async updateSecurityApprovers(
     updateApproversReq: UpdateApproversReq
   ): Promise<Request> {

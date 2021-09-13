@@ -27,12 +27,15 @@ service RequestService {
     rpc GetRequestById(GetRequestByIdReq) returns (Request) {}
     rpc UpdateApproverDecision(UpdateApproverDecisionReq) returns (Request) {}
     rpc IsRequestApproved(IsRequestApprovedReq) returns (IsRequestApprovedRes){}
-
-    
     rpc CanPushToKartoffelQueue(CanPushToQueueReq) returns (CanPushToQueueRes){}
     rpc CanPushToADQueue(CanPushToQueueReq) returns (CanPushToQueueRes){}
     rpc IncrementKartoffelRetries(IncrementRetriesReq) returns (Request){}
     rpc IncrementADRetries(IncrementRetriesReq) returns (Request){}
+    rpc UpdateCommanders(UpdateApproversReq) returns (Request){}
+    rpc UpdateSecurityApprovers(UpdateApproversReq) returns (Request){}
+    rpc UpdateSuperSecurityApprovers(UpdateApproversReq) returns (Request){}
+    rpc GetRequestsInProgressByDue(GetRequestsInProgressByDueReq) returns (RequestArray){}
+    rpc GetRequestIdsInProgressByDue(GetRequestsInProgressByDueReq) returns (RequestIdArray){}
 
     rpc SearchRequestsBySubmitterDisplayName(SearchRequestsByDisplayNameReq) returns (RequestArray) {}
     rpc SearchRequestsByCommanderDisplayName(SearchRequestsByDisplayNameReq) returns (RequestArray) {}
@@ -40,11 +43,6 @@ service RequestService {
     rpc SearchRequestsByApproverDisplayName(SearchRequestsByDisplayNameReq) returns (RequestArray) {}
 
 
-
-    rpc GetRequestsInProgressByDue(GetRequestsInProgressByDueReq) returns (RequestArray){}
-    rpc GetRequestIdsInProgressByDue(GetRequestsInProgressByDueReq) returns (RequestIdArray){}
-    rpc UpdateCommanders(UpdateApproversReq) returns (Request){}
-    rpc UpdateSecurityApprovers(UpdateApproversReq) returns (Request){}
 }
 
 // ---------------------------------------------LEGO Requests------------------------------------------------------------
@@ -776,7 +774,8 @@ message UpdateReqProperties{
     optional ADParams adParams = 9;
     optional int64 due = 10;
     repeated EntityMin commanders = 11; 
-    repeated EntityMin securityApprovers = 12;  
+    repeated EntityMin securityApprovers = 12; 
+    repeated EntityMin superSecurityApprovers = 13; 
 }
 
 //UpdateKartoffelStatus
@@ -785,6 +784,7 @@ message UpdateKartoffelStatusReq{
     StageStatus status = 2;
     optional string message = 3;
     optional string createdId = 4;
+    optional int32 failedRetries = 5;
 }
 
 //UpdateADStatus
@@ -792,6 +792,7 @@ message UpdateADStatusReq{
     string requestId = 1;
     StageStatus status = 2;
     string message = 3;
+    optional int32 failedRetries = 4;
 }
 
 //DeleteRequest

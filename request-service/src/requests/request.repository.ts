@@ -32,6 +32,7 @@ import {
   UpdateApproversReq,
   UpdateApproverDecisionReq,
   UpdateKartoffelStatusReq,
+  stageStatusToJSON,
 } from '../interfaces/protoc/proto/requestService';
 import { createNotifications } from '../services/notificationHelper';
 import * as C from '../config';
@@ -66,45 +67,30 @@ export class RequestRepository {
     canPushToQueueReq: CanPushToQueueReq
   ): Promise<CanPushToQueueRes> {
     try {
-      const request = await RequestModel.findOne({
-        _id: canPushToQueueReq.id,
+      const isRequestApprovedRes = await this.isRequestApproved({
+        id: canPushToQueueReq.id,
       });
-      if (request) {
-        const document: any = request.toObject();
-        turnObjectIdsToStrings(document);
-        const commanderDecision: Decision = document.commanderDecision
-          ? decisionFromJSON(document.commanderDecision.decision)
-          : Decision.DECISION_UNKNOWN;
-        const securityDecision: Decision = document.securityDecision
-          ? decisionFromJSON(document.securityDecision.decision)
-          : Decision.DECISION_UNKNOWN;
-        const superSecurityDecision: Decision = document.superSecurityDecision
-          ? decisionFromJSON(document.superSecurityDecision.decision)
-          : Decision.DECISION_UNKNOWN;
-        const needSuperSecurityDecision = document.needSuperSecurityDecision;
-        const due: number = document.due;
-        const kartoffelFailedRetries = document.kartoffelStatus.failedRetries;
-        const now = new Date().getTime();
-        if (
-          commanderDecision === Decision.APPROVED &&
-          securityDecision === Decision.APPROVED &&
-          (!needSuperSecurityDecision ||
-            superSecurityDecision === Decision.APPROVED) &&
-          due <= now &&
-          kartoffelFailedRetries < C.maxQueueRetries
-        ) {
-          return {
-            canPushToQueue: true,
-          };
-        } else {
-          return {
-            canPushToQueue: false,
-          };
-        }
+      const request = await this.getRequestById({ id: canPushToQueueReq.id });
+      const due = request.due;
+      let kartoffelFailedRetries = request.kartoffelStatus?.failedRetries;
+      if (!kartoffelFailedRetries) {
+        kartoffelFailedRetries = 0;
+      }
+      let kartoffelStatus: any = request.kartoffelStatus?.status;
+      kartoffelStatus =
+        typeof kartoffelStatus === typeof ''
+          ? stageStatusFromJSON(kartoffelStatus)
+          : kartoffelStatus;
+
+      if (
+        isRequestApprovedRes.isRequestApproved &&
+        due <= new Date().getTime() &&
+        kartoffelFailedRetries < C.maxQueueRetries &&
+        kartoffelStatus != StageStatus.STAGE_FAILED
+      ) {
+        return { canPushToQueue: true };
       } else {
-        throw new Error(
-          `A request with {id: ${canPushToQueueReq.id}} was not found!`
-        );
+        return { canPushToQueue: false };
       }
     } catch (error) {
       throw error;
@@ -239,25 +225,29 @@ export class RequestRepository {
       let request: Request = await this.getRequestById(
         incrementRetriesReq as GetRequestByIdReq
       );
-      let kartoffelStatus = request.kartoffelStatus;
-      if (kartoffelStatus) {
-        if (kartoffelStatus.failedRetries >= C.maxQueueRetries) {
-          throw new Error(
-            `request reached the highest allowed number of retries`
-          );
-        } else {
-          kartoffelStatus.failedRetries = kartoffelStatus.failedRetries + 1;
-          const updateQuery = {
-            id: incrementRetriesReq.id,
-            requestProperties: { kartoffelStatus: kartoffelStatus },
-          };
-          const updatedRequest = await this.updateRequest(updateQuery);
-          return updatedRequest;
-        }
-      } else {
+      let kartoffelStatus: any = request.kartoffelStatus;
+      if (!kartoffelStatus) {
+        kartoffelStatus = {
+          status: stageStatusToJSON(StageStatus.STAGE_IN_PROGRESS),
+          message: '',
+          failedRetries: 0,
+          createdId: '',
+        };
+      } else if (!kartoffelStatus.failedRetries) {
+        kartoffelStatus.failedRetries = 0;
+      }
+      if (kartoffelStatus.failedRetries > C.maxQueueRetries) {
         throw new Error(
-          `kartoffel status is null for requestId ${incrementRetriesReq.id}`
+          `request reached the highest allowed number of retries`
         );
+      } else {
+        kartoffelStatus.failedRetries = kartoffelStatus.failedRetries + 1;
+        const updateQuery = {
+          id: incrementRetriesReq.id,
+          requestProperties: { kartoffelStatus: kartoffelStatus },
+        };
+        const updatedRequest = await this.updateRequest(updateQuery);
+        return updatedRequest;
       }
     } catch (error) {
       throw error;
@@ -271,25 +261,28 @@ export class RequestRepository {
       let request: Request = await this.getRequestById(
         incrementRetriesReq as GetRequestByIdReq
       );
-      let adStatus = request.adStatus;
-      if (adStatus) {
-        if (adStatus.failedRetries >= C.maxQueueRetries) {
-          throw new Error(
-            `request reached the highest allowed number of retries`
-          );
-        } else {
-          adStatus.failedRetries = adStatus.failedRetries + 1;
-          const updateQuery = {
-            id: incrementRetriesReq.id,
-            requestProperties: { adStatus: adStatus },
-          };
-          const updatedRequest = await this.updateRequest(updateQuery);
-          return updatedRequest;
-        }
-      } else {
+      let adStatus: any = request.adStatus;
+      if (!adStatus) {
+        adStatus = {
+          status: stageStatusToJSON(StageStatus.STAGE_IN_PROGRESS),
+          message: '',
+          failedRetries: 0,
+        };
+      } else if (!adStatus.failedRetries) {
+        adStatus.failedRetries = 0;
+      }
+      if (adStatus.failedRetries > C.maxQueueRetries) {
         throw new Error(
-          `kartoffel status is null for requestId ${incrementRetriesReq.id}`
+          `request reached the highest allowed number of retries`
         );
+      } else {
+        adStatus.failedRetries = adStatus.failedRetries + 1;
+        const updateQuery = {
+          id: incrementRetriesReq.id,
+          requestProperties: { adStatus: adStatus },
+        };
+        const updatedRequest = await this.updateRequest(updateQuery);
+        return updatedRequest;
       }
     } catch (error) {
       throw error;
@@ -300,28 +293,30 @@ export class RequestRepository {
     canPushToQueueReq: CanPushToQueueReq
   ): Promise<CanPushToQueueRes> {
     try {
-      const request = await RequestModel.findOne({
-        _id: canPushToQueueReq.id,
-      });
-      if (request) {
-        const document: any = request.toObject();
-        turnObjectIdsToStrings(document);
-        const kartoffelStageStatus = stageStatusFromJSON(
-          document.kartoffelStatus.status
-        );
-        const adFailedRetries = document.adStatus.failedRetries;
-        if (
-          kartoffelStageStatus === StageStatus.STAGE_DONE &&
-          adFailedRetries < C.maxQueueRetries
-        ) {
-          return { canPushToQueue: true };
-        } else {
-          return { canPushToQueue: false };
-        }
+      const request = await this.getRequestById({ id: canPushToQueueReq.id });
+      let kartoffelStatus: any = request.kartoffelStatus?.status;
+      kartoffelStatus =
+        typeof kartoffelStatus === typeof ''
+          ? stageStatusFromJSON(kartoffelStatus)
+          : kartoffelStatus;
+      let adStatus: any = request.adStatus?.status;
+      adStatus =
+        typeof adStatus === typeof ''
+          ? stageStatusFromJSON(adStatus)
+          : adStatus;
+      let adFailedRetries = request.adStatus?.failedRetries;
+      if (!adFailedRetries) {
+        adFailedRetries = 0;
+      }
+
+      if (
+        kartoffelStatus === StageStatus.STAGE_DONE &&
+        adStatus != StageStatus.STAGE_FAILED &&
+        adFailedRetries < C.maxQueueRetries
+      ) {
+        return { canPushToQueue: true };
       } else {
-        throw new Error(
-          `A request with {id: ${canPushToQueueReq.id}} was not found!`
-        );
+        return { canPushToQueue: false };
       }
     } catch (error) {
       throw error;
@@ -794,15 +789,20 @@ export class RequestRepository {
     let updatedRequest;
     try {
       cleanUnderscoreFields(updateKartoffelStatusReq);
+      let requestProperties: any = {
+        kartoffelStatus: {
+          status: updateKartoffelStatusReq.status,
+          message: updateKartoffelStatusReq.message,
+          createdId: updateKartoffelStatusReq.createdId,
+        },
+      };
+      if (updateKartoffelStatusReq.failedRetries) {
+        requestProperties.kartoffelStatus.failedRetries =
+          updateKartoffelStatusReq.failedRetries;
+      }
       let requestUpdate: any = {
         id: updateKartoffelStatusReq.requestId,
-        requestProperties: {
-          kartoffelStatus: {
-            status: updateKartoffelStatusReq.status,
-            message: updateKartoffelStatusReq.message,
-            createdId: updateKartoffelStatusReq.createdId,
-          },
-        },
+        requestProperties: requestProperties,
       };
       updatedRequest = await this.updateRequest(requestUpdate);
       let kartoffelStatus: any =
@@ -858,14 +858,19 @@ export class RequestRepository {
     let requestStatus: any = RequestStatus.UNRECOGNIZED;
     try {
       cleanUnderscoreFields(updateADStatusReq);
+      let requestProperties: any = {
+        adStatus: {
+          status: updateADStatusReq.status,
+          message: updateADStatusReq.message,
+        },
+      };
+      if (updateADStatusReq.failedRetries) {
+        requestProperties.adStatus.failedRetries =
+          updateADStatusReq.failedRetries;
+      }
       let requestUpdate: any = {
         id: updateADStatusReq.requestId,
-        requestProperties: {
-          adStatus: {
-            status: updateADStatusReq.status,
-            message: updateADStatusReq.message,
-          },
-        },
+        requestProperties: requestProperties,
       };
       updatedRequest = await this.updateRequest(requestUpdate);
       let adStatus: any =
@@ -1044,6 +1049,22 @@ export class RequestRepository {
       const request: Request = await this.updateRequest({
         id: updateApproversReq.id,
         requestProperties: { commanders: updateApproversReq.approvers },
+      });
+      return request;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateSuperSecurityApprovers(
+    updateApproversReq: UpdateApproversReq
+  ): Promise<Request> {
+    try {
+      const request: Request = await this.updateRequest({
+        id: updateApproversReq.id,
+        requestProperties: {
+          superSecurityApprovers: updateApproversReq.approvers,
+        },
       });
       return request;
     } catch (error) {

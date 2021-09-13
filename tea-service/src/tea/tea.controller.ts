@@ -1,13 +1,105 @@
 import {
   SuccessMessage,
   TeaAndUPN,
+  TeaMessage,
   Unit,
+  UPNMessage,
 } from '../interfaces/protoc/proto/teaService';
 import { TeaManager } from './tea.manager';
 import * as grpc from 'grpc';
 import { logger } from '../logger';
 
 const teaManager: TeaManager = new TeaManager();
+
+export async function retrieveTeaByUnit(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    logger.info('Call to retrieveTeaByUnit', { request: call.request });
+    const teaMessage: TeaMessage = await teaManager.retrieveTeaByUnit(
+      call.request
+    );
+    logger.info('retrieveTeaByUnit OK', {
+      response: teaMessage,
+      request: call.request,
+    });
+    callback(null, teaMessage);
+  } catch (error) {
+    logger.error('retrieveTeaByUnit ERROR', {
+      error: { message: error.message },
+      request: call.request,
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function retrieveUPNByEntity(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    logger.info('Call to retrieveUPNByEntity', { request: call.request });
+    const upnMessage: UPNMessage = await teaManager.retrieveUPNByEntity(
+      call.request
+    );
+    logger.info('retrieveUPNByEntity OK', {
+      response: upnMessage,
+      request: call.request,
+    });
+    callback(null, upnMessage);
+  } catch (error) {
+    logger.error('retrieveUPNByEntity ERROR', {
+      error: { message: error.message },
+      request: call.request,
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function retrieveUPNByEntityId(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    logger.info('Call to RetrieveUPNByEntityId', { request: call.request });
+    const upn: UPNMessage = await teaManager.retrieveUPNByEntityId(
+      call.request
+    );
+    logger.info('RetrieveUPNByEntityId OK', {
+      response: upn,
+      request: call.request,
+    });
+    callback(null, upn);
+  } catch (error) {
+    logger.error('RetrieveUPNByEntityId ERROR', {
+      error: { message: error.message },
+      request: call.request,
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
 
 export async function retrieveTeaAndUPNByEntity(
   call: any,

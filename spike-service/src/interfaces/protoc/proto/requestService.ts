@@ -1076,6 +1076,7 @@ export interface UpdateReqProperties {
   due?: number | undefined;
   commanders: EntityMin[];
   securityApprovers: EntityMin[];
+  superSecurityApprovers: EntityMin[];
 }
 
 /** UpdateKartoffelStatus */
@@ -1084,6 +1085,7 @@ export interface UpdateKartoffelStatusReq {
   status: StageStatus;
   message?: string | undefined;
   createdId?: string | undefined;
+  failedRetries?: number | undefined;
 }
 
 /** UpdateADStatus */
@@ -1091,6 +1093,7 @@ export interface UpdateADStatusReq {
   requestId: string;
   status: StageStatus;
   message: string;
+  failedRetries?: number | undefined;
 }
 
 /** DeleteRequest */
@@ -16762,6 +16765,9 @@ export const UpdateReqProperties = {
     for (const v of message.securityApprovers) {
       EntityMin.encode(v!, writer.uint32(98).fork()).ldelim();
     }
+    for (const v of message.superSecurityApprovers) {
+      EntityMin.encode(v!, writer.uint32(106).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -16771,6 +16777,7 @@ export const UpdateReqProperties = {
     const message = { ...baseUpdateReqProperties } as UpdateReqProperties;
     message.commanders = [];
     message.securityApprovers = [];
+    message.superSecurityApprovers = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -16827,6 +16834,11 @@ export const UpdateReqProperties = {
             EntityMin.decode(reader, reader.uint32())
           );
           break;
+        case 13:
+          message.superSecurityApprovers.push(
+            EntityMin.decode(reader, reader.uint32())
+          );
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -16839,6 +16851,7 @@ export const UpdateReqProperties = {
     const message = { ...baseUpdateReqProperties } as UpdateReqProperties;
     message.commanders = [];
     message.securityApprovers = [];
+    message.superSecurityApprovers = [];
     if (object.submittedBy !== undefined && object.submittedBy !== null) {
       message.submittedBy = EntityMin.fromJSON(object.submittedBy);
     } else {
@@ -16927,6 +16940,14 @@ export const UpdateReqProperties = {
         message.securityApprovers.push(EntityMin.fromJSON(e));
       }
     }
+    if (
+      object.superSecurityApprovers !== undefined &&
+      object.superSecurityApprovers !== null
+    ) {
+      for (const e of object.superSecurityApprovers) {
+        message.superSecurityApprovers.push(EntityMin.fromJSON(e));
+      }
+    }
     return message;
   },
 
@@ -16984,6 +17005,13 @@ export const UpdateReqProperties = {
     } else {
       obj.securityApprovers = [];
     }
+    if (message.superSecurityApprovers) {
+      obj.superSecurityApprovers = message.superSecurityApprovers.map((e) =>
+        e ? EntityMin.toJSON(e) : undefined
+      );
+    } else {
+      obj.superSecurityApprovers = [];
+    }
     return obj;
   },
 
@@ -16991,6 +17019,7 @@ export const UpdateReqProperties = {
     const message = { ...baseUpdateReqProperties } as UpdateReqProperties;
     message.commanders = [];
     message.securityApprovers = [];
+    message.superSecurityApprovers = [];
     if (object.submittedBy !== undefined && object.submittedBy !== null) {
       message.submittedBy = EntityMin.fromPartial(object.submittedBy);
     } else {
@@ -17079,6 +17108,14 @@ export const UpdateReqProperties = {
         message.securityApprovers.push(EntityMin.fromPartial(e));
       }
     }
+    if (
+      object.superSecurityApprovers !== undefined &&
+      object.superSecurityApprovers !== null
+    ) {
+      for (const e of object.superSecurityApprovers) {
+        message.superSecurityApprovers.push(EntityMin.fromPartial(e));
+      }
+    }
     return message;
   },
 };
@@ -17101,6 +17138,9 @@ export const UpdateKartoffelStatusReq = {
     }
     if (message.createdId !== undefined) {
       writer.uint32(34).string(message.createdId);
+    }
+    if (message.failedRetries !== undefined) {
+      writer.uint32(40).int32(message.failedRetries);
     }
     return writer;
   },
@@ -17128,6 +17168,9 @@ export const UpdateKartoffelStatusReq = {
           break;
         case 4:
           message.createdId = reader.string();
+          break;
+        case 5:
+          message.failedRetries = reader.int32();
           break;
         default:
           reader.skipType(tag & 7);
@@ -17161,6 +17204,11 @@ export const UpdateKartoffelStatusReq = {
     } else {
       message.createdId = undefined;
     }
+    if (object.failedRetries !== undefined && object.failedRetries !== null) {
+      message.failedRetries = Number(object.failedRetries);
+    } else {
+      message.failedRetries = undefined;
+    }
     return message;
   },
 
@@ -17171,6 +17219,8 @@ export const UpdateKartoffelStatusReq = {
       (obj.status = stageStatusToJSON(message.status));
     message.message !== undefined && (obj.message = message.message);
     message.createdId !== undefined && (obj.createdId = message.createdId);
+    message.failedRetries !== undefined &&
+      (obj.failedRetries = message.failedRetries);
     return obj;
   },
 
@@ -17200,6 +17250,11 @@ export const UpdateKartoffelStatusReq = {
     } else {
       message.createdId = undefined;
     }
+    if (object.failedRetries !== undefined && object.failedRetries !== null) {
+      message.failedRetries = object.failedRetries;
+    } else {
+      message.failedRetries = undefined;
+    }
     return message;
   },
 };
@@ -17220,6 +17275,9 @@ export const UpdateADStatusReq = {
     if (message.message !== "") {
       writer.uint32(26).string(message.message);
     }
+    if (message.failedRetries !== undefined) {
+      writer.uint32(32).int32(message.failedRetries);
+    }
     return writer;
   },
 
@@ -17238,6 +17296,9 @@ export const UpdateADStatusReq = {
           break;
         case 3:
           message.message = reader.string();
+          break;
+        case 4:
+          message.failedRetries = reader.int32();
           break;
         default:
           reader.skipType(tag & 7);
@@ -17264,6 +17325,11 @@ export const UpdateADStatusReq = {
     } else {
       message.message = "";
     }
+    if (object.failedRetries !== undefined && object.failedRetries !== null) {
+      message.failedRetries = Number(object.failedRetries);
+    } else {
+      message.failedRetries = undefined;
+    }
     return message;
   },
 
@@ -17273,6 +17339,8 @@ export const UpdateADStatusReq = {
     message.status !== undefined &&
       (obj.status = stageStatusToJSON(message.status));
     message.message !== undefined && (obj.message = message.message);
+    message.failedRetries !== undefined &&
+      (obj.failedRetries = message.failedRetries);
     return obj;
   },
 
@@ -17292,6 +17360,11 @@ export const UpdateADStatusReq = {
       message.message = object.message;
     } else {
       message.message = "";
+    }
+    if (object.failedRetries !== undefined && object.failedRetries !== null) {
+      message.failedRetries = object.failedRetries;
+    } else {
+      message.failedRetries = undefined;
     }
     return message;
   },
@@ -20957,6 +21030,21 @@ export interface RequestService {
   IsRequestApproved(
     request: IsRequestApprovedReq
   ): Promise<IsRequestApprovedRes>;
+  CanPushToKartoffelQueue(
+    request: CanPushToQueueReq
+  ): Promise<CanPushToQueueRes>;
+  CanPushToADQueue(request: CanPushToQueueReq): Promise<CanPushToQueueRes>;
+  IncrementKartoffelRetries(request: IncrementRetriesReq): Promise<Request>;
+  IncrementADRetries(request: IncrementRetriesReq): Promise<Request>;
+  UpdateCommanders(request: UpdateApproversReq): Promise<Request>;
+  UpdateSecurityApprovers(request: UpdateApproversReq): Promise<Request>;
+  UpdateSuperSecurityApprovers(request: UpdateApproversReq): Promise<Request>;
+  GetRequestsInProgressByDue(
+    request: GetRequestsInProgressByDueReq
+  ): Promise<RequestArray>;
+  GetRequestIdsInProgressByDue(
+    request: GetRequestsInProgressByDueReq
+  ): Promise<RequestIdArray>;
   SearchRequestsBySubmitterDisplayName(
     request: SearchRequestsByDisplayNameReq
   ): Promise<RequestArray>;
@@ -20969,20 +21057,6 @@ export interface RequestService {
   SearchRequestsByApproverDisplayName(
     request: SearchRequestsByDisplayNameReq
   ): Promise<RequestArray>;
-  CanPushToKartoffelQueue(
-    request: CanPushToQueueReq
-  ): Promise<CanPushToQueueRes>;
-  CanPushToADQueue(request: CanPushToQueueReq): Promise<CanPushToQueueRes>;
-  IncrementKartoffelRetries(request: IncrementRetriesReq): Promise<Request>;
-  IncrementADRetries(request: IncrementRetriesReq): Promise<Request>;
-  GetRequestsInProgressByDue(
-    request: GetRequestsInProgressByDueReq
-  ): Promise<RequestArray>;
-  GetRequestIdsInProgressByDue(
-    request: GetRequestsInProgressByDueReq
-  ): Promise<RequestIdArray>;
-  UpdateCommanders(request: UpdateApproversReq): Promise<Request>;
-  UpdateSecurityApprovers(request: UpdateApproversReq): Promise<Request>;
 }
 
 export class RequestServiceClientImpl implements RequestService {
@@ -21012,6 +21086,18 @@ export class RequestServiceClientImpl implements RequestService {
     this.GetRequestById = this.GetRequestById.bind(this);
     this.UpdateApproverDecision = this.UpdateApproverDecision.bind(this);
     this.IsRequestApproved = this.IsRequestApproved.bind(this);
+    this.CanPushToKartoffelQueue = this.CanPushToKartoffelQueue.bind(this);
+    this.CanPushToADQueue = this.CanPushToADQueue.bind(this);
+    this.IncrementKartoffelRetries = this.IncrementKartoffelRetries.bind(this);
+    this.IncrementADRetries = this.IncrementADRetries.bind(this);
+    this.UpdateCommanders = this.UpdateCommanders.bind(this);
+    this.UpdateSecurityApprovers = this.UpdateSecurityApprovers.bind(this);
+    this.UpdateSuperSecurityApprovers =
+      this.UpdateSuperSecurityApprovers.bind(this);
+    this.GetRequestsInProgressByDue =
+      this.GetRequestsInProgressByDue.bind(this);
+    this.GetRequestIdsInProgressByDue =
+      this.GetRequestIdsInProgressByDue.bind(this);
     this.SearchRequestsBySubmitterDisplayName =
       this.SearchRequestsBySubmitterDisplayName.bind(this);
     this.SearchRequestsByCommanderDisplayName =
@@ -21020,16 +21106,6 @@ export class RequestServiceClientImpl implements RequestService {
       this.SearchRequestsBySecurityDisplayName.bind(this);
     this.SearchRequestsByApproverDisplayName =
       this.SearchRequestsByApproverDisplayName.bind(this);
-    this.CanPushToKartoffelQueue = this.CanPushToKartoffelQueue.bind(this);
-    this.CanPushToADQueue = this.CanPushToADQueue.bind(this);
-    this.IncrementKartoffelRetries = this.IncrementKartoffelRetries.bind(this);
-    this.IncrementADRetries = this.IncrementADRetries.bind(this);
-    this.GetRequestsInProgressByDue =
-      this.GetRequestsInProgressByDue.bind(this);
-    this.GetRequestIdsInProgressByDue =
-      this.GetRequestIdsInProgressByDue.bind(this);
-    this.UpdateCommanders = this.UpdateCommanders.bind(this);
-    this.UpdateSecurityApprovers = this.UpdateSecurityApprovers.bind(this);
   }
   CreateRoleRequest(request: CreateRoleReq): Promise<CreateRoleRes> {
     const data = CreateRoleReq.encode(request).finish();
@@ -21269,54 +21345,6 @@ export class RequestServiceClientImpl implements RequestService {
     );
   }
 
-  SearchRequestsBySubmitterDisplayName(
-    request: SearchRequestsByDisplayNameReq
-  ): Promise<RequestArray> {
-    const data = SearchRequestsByDisplayNameReq.encode(request).finish();
-    const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "SearchRequestsBySubmitterDisplayName",
-      data
-    );
-    return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
-  }
-
-  SearchRequestsByCommanderDisplayName(
-    request: SearchRequestsByDisplayNameReq
-  ): Promise<RequestArray> {
-    const data = SearchRequestsByDisplayNameReq.encode(request).finish();
-    const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "SearchRequestsByCommanderDisplayName",
-      data
-    );
-    return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
-  }
-
-  SearchRequestsBySecurityDisplayName(
-    request: SearchRequestsByDisplayNameReq
-  ): Promise<RequestArray> {
-    const data = SearchRequestsByDisplayNameReq.encode(request).finish();
-    const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "SearchRequestsBySecurityDisplayName",
-      data
-    );
-    return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
-  }
-
-  SearchRequestsByApproverDisplayName(
-    request: SearchRequestsByDisplayNameReq
-  ): Promise<RequestArray> {
-    const data = SearchRequestsByDisplayNameReq.encode(request).finish();
-    const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "SearchRequestsByApproverDisplayName",
-      data
-    );
-    return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
-  }
-
   CanPushToKartoffelQueue(
     request: CanPushToQueueReq
   ): Promise<CanPushToQueueRes> {
@@ -21363,6 +21391,36 @@ export class RequestServiceClientImpl implements RequestService {
     return promise.then((data) => Request.decode(new _m0.Reader(data)));
   }
 
+  UpdateCommanders(request: UpdateApproversReq): Promise<Request> {
+    const data = UpdateApproversReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "UpdateCommanders",
+      data
+    );
+    return promise.then((data) => Request.decode(new _m0.Reader(data)));
+  }
+
+  UpdateSecurityApprovers(request: UpdateApproversReq): Promise<Request> {
+    const data = UpdateApproversReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "UpdateSecurityApprovers",
+      data
+    );
+    return promise.then((data) => Request.decode(new _m0.Reader(data)));
+  }
+
+  UpdateSuperSecurityApprovers(request: UpdateApproversReq): Promise<Request> {
+    const data = UpdateApproversReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "UpdateSuperSecurityApprovers",
+      data
+    );
+    return promise.then((data) => Request.decode(new _m0.Reader(data)));
+  }
+
   GetRequestsInProgressByDue(
     request: GetRequestsInProgressByDueReq
   ): Promise<RequestArray> {
@@ -21387,24 +21445,52 @@ export class RequestServiceClientImpl implements RequestService {
     return promise.then((data) => RequestIdArray.decode(new _m0.Reader(data)));
   }
 
-  UpdateCommanders(request: UpdateApproversReq): Promise<Request> {
-    const data = UpdateApproversReq.encode(request).finish();
+  SearchRequestsBySubmitterDisplayName(
+    request: SearchRequestsByDisplayNameReq
+  ): Promise<RequestArray> {
+    const data = SearchRequestsByDisplayNameReq.encode(request).finish();
     const promise = this.rpc.request(
       "RequestService.RequestService",
-      "UpdateCommanders",
+      "SearchRequestsBySubmitterDisplayName",
       data
     );
-    return promise.then((data) => Request.decode(new _m0.Reader(data)));
+    return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
   }
 
-  UpdateSecurityApprovers(request: UpdateApproversReq): Promise<Request> {
-    const data = UpdateApproversReq.encode(request).finish();
+  SearchRequestsByCommanderDisplayName(
+    request: SearchRequestsByDisplayNameReq
+  ): Promise<RequestArray> {
+    const data = SearchRequestsByDisplayNameReq.encode(request).finish();
     const promise = this.rpc.request(
       "RequestService.RequestService",
-      "UpdateSecurityApprovers",
+      "SearchRequestsByCommanderDisplayName",
       data
     );
-    return promise.then((data) => Request.decode(new _m0.Reader(data)));
+    return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
+  }
+
+  SearchRequestsBySecurityDisplayName(
+    request: SearchRequestsByDisplayNameReq
+  ): Promise<RequestArray> {
+    const data = SearchRequestsByDisplayNameReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "SearchRequestsBySecurityDisplayName",
+      data
+    );
+    return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
+  }
+
+  SearchRequestsByApproverDisplayName(
+    request: SearchRequestsByDisplayNameReq
+  ): Promise<RequestArray> {
+    const data = SearchRequestsByDisplayNameReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "SearchRequestsByApproverDisplayName",
+      data
+    );
+    return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
   }
 }
 

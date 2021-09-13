@@ -36,6 +36,18 @@ export function domainToJSON(object: Domain): string {
   }
 }
 
+export interface RetrieveTeaByUnitReq {
+  kartoffelId: string;
+}
+
+export interface TeaMessage {
+  tea: string;
+}
+
+export interface UPNMessage {
+  upn: string;
+}
+
 export interface UpdateUnitReq {
   kartoffelId: string;
   unitProperties: UnitProperties | undefined;
@@ -96,12 +108,12 @@ export interface SuccessMessage {
   success: boolean;
 }
 
-export interface RetrieveTeaAndUPNByEntityReq {
+export interface RetrieveByEntityReq {
   domain: Domain;
   entity: EntityMin | undefined;
 }
 
-export interface RetrieveTeaAndUPNByEntityIdReq {
+export interface RetrieveByEntityIdReq {
   domain: Domain;
   entityId: string;
 }
@@ -120,6 +132,184 @@ export interface EntityMin {
   firstName?: string | undefined;
   lastName?: string | undefined;
 }
+
+const baseRetrieveTeaByUnitReq: object = { kartoffelId: "" };
+
+export const RetrieveTeaByUnitReq = {
+  encode(
+    message: RetrieveTeaByUnitReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.kartoffelId !== "") {
+      writer.uint32(10).string(message.kartoffelId);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): RetrieveTeaByUnitReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseRetrieveTeaByUnitReq } as RetrieveTeaByUnitReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.kartoffelId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RetrieveTeaByUnitReq {
+    const message = { ...baseRetrieveTeaByUnitReq } as RetrieveTeaByUnitReq;
+    if (object.kartoffelId !== undefined && object.kartoffelId !== null) {
+      message.kartoffelId = String(object.kartoffelId);
+    } else {
+      message.kartoffelId = "";
+    }
+    return message;
+  },
+
+  toJSON(message: RetrieveTeaByUnitReq): unknown {
+    const obj: any = {};
+    message.kartoffelId !== undefined &&
+      (obj.kartoffelId = message.kartoffelId);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<RetrieveTeaByUnitReq>): RetrieveTeaByUnitReq {
+    const message = { ...baseRetrieveTeaByUnitReq } as RetrieveTeaByUnitReq;
+    if (object.kartoffelId !== undefined && object.kartoffelId !== null) {
+      message.kartoffelId = object.kartoffelId;
+    } else {
+      message.kartoffelId = "";
+    }
+    return message;
+  },
+};
+
+const baseTeaMessage: object = { tea: "" };
+
+export const TeaMessage = {
+  encode(
+    message: TeaMessage,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.tea !== "") {
+      writer.uint32(10).string(message.tea);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): TeaMessage {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseTeaMessage } as TeaMessage;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.tea = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): TeaMessage {
+    const message = { ...baseTeaMessage } as TeaMessage;
+    if (object.tea !== undefined && object.tea !== null) {
+      message.tea = String(object.tea);
+    } else {
+      message.tea = "";
+    }
+    return message;
+  },
+
+  toJSON(message: TeaMessage): unknown {
+    const obj: any = {};
+    message.tea !== undefined && (obj.tea = message.tea);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<TeaMessage>): TeaMessage {
+    const message = { ...baseTeaMessage } as TeaMessage;
+    if (object.tea !== undefined && object.tea !== null) {
+      message.tea = object.tea;
+    } else {
+      message.tea = "";
+    }
+    return message;
+  },
+};
+
+const baseUPNMessage: object = { upn: "" };
+
+export const UPNMessage = {
+  encode(
+    message: UPNMessage,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.upn !== "") {
+      writer.uint32(10).string(message.upn);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UPNMessage {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseUPNMessage } as UPNMessage;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.upn = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UPNMessage {
+    const message = { ...baseUPNMessage } as UPNMessage;
+    if (object.upn !== undefined && object.upn !== null) {
+      message.upn = String(object.upn);
+    } else {
+      message.upn = "";
+    }
+    return message;
+  },
+
+  toJSON(message: UPNMessage): unknown {
+    const obj: any = {};
+    message.upn !== undefined && (obj.upn = message.upn);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<UPNMessage>): UPNMessage {
+    const message = { ...baseUPNMessage } as UPNMessage;
+    if (object.upn !== undefined && object.upn !== null) {
+      message.upn = object.upn;
+    } else {
+      message.upn = "";
+    }
+    return message;
+  },
+};
 
 const baseUpdateUnitReq: object = { kartoffelId: "" };
 
@@ -1051,11 +1241,11 @@ export const SuccessMessage = {
   },
 };
 
-const baseRetrieveTeaAndUPNByEntityReq: object = { domain: 0 };
+const baseRetrieveByEntityReq: object = { domain: 0 };
 
-export const RetrieveTeaAndUPNByEntityReq = {
+export const RetrieveByEntityReq = {
   encode(
-    message: RetrieveTeaAndUPNByEntityReq,
+    message: RetrieveByEntityReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.domain !== 0) {
@@ -1067,15 +1257,10 @@ export const RetrieveTeaAndUPNByEntityReq = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): RetrieveTeaAndUPNByEntityReq {
+  decode(input: _m0.Reader | Uint8Array, length?: number): RetrieveByEntityReq {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseRetrieveTeaAndUPNByEntityReq,
-    } as RetrieveTeaAndUPNByEntityReq;
+    const message = { ...baseRetrieveByEntityReq } as RetrieveByEntityReq;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1093,10 +1278,8 @@ export const RetrieveTeaAndUPNByEntityReq = {
     return message;
   },
 
-  fromJSON(object: any): RetrieveTeaAndUPNByEntityReq {
-    const message = {
-      ...baseRetrieveTeaAndUPNByEntityReq,
-    } as RetrieveTeaAndUPNByEntityReq;
+  fromJSON(object: any): RetrieveByEntityReq {
+    const message = { ...baseRetrieveByEntityReq } as RetrieveByEntityReq;
     if (object.domain !== undefined && object.domain !== null) {
       message.domain = domainFromJSON(object.domain);
     } else {
@@ -1110,7 +1293,7 @@ export const RetrieveTeaAndUPNByEntityReq = {
     return message;
   },
 
-  toJSON(message: RetrieveTeaAndUPNByEntityReq): unknown {
+  toJSON(message: RetrieveByEntityReq): unknown {
     const obj: any = {};
     message.domain !== undefined && (obj.domain = domainToJSON(message.domain));
     message.entity !== undefined &&
@@ -1120,12 +1303,8 @@ export const RetrieveTeaAndUPNByEntityReq = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<RetrieveTeaAndUPNByEntityReq>
-  ): RetrieveTeaAndUPNByEntityReq {
-    const message = {
-      ...baseRetrieveTeaAndUPNByEntityReq,
-    } as RetrieveTeaAndUPNByEntityReq;
+  fromPartial(object: DeepPartial<RetrieveByEntityReq>): RetrieveByEntityReq {
+    const message = { ...baseRetrieveByEntityReq } as RetrieveByEntityReq;
     if (object.domain !== undefined && object.domain !== null) {
       message.domain = object.domain;
     } else {
@@ -1140,11 +1319,11 @@ export const RetrieveTeaAndUPNByEntityReq = {
   },
 };
 
-const baseRetrieveTeaAndUPNByEntityIdReq: object = { domain: 0, entityId: "" };
+const baseRetrieveByEntityIdReq: object = { domain: 0, entityId: "" };
 
-export const RetrieveTeaAndUPNByEntityIdReq = {
+export const RetrieveByEntityIdReq = {
   encode(
-    message: RetrieveTeaAndUPNByEntityIdReq,
+    message: RetrieveByEntityIdReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.domain !== 0) {
@@ -1159,12 +1338,10 @@ export const RetrieveTeaAndUPNByEntityIdReq = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): RetrieveTeaAndUPNByEntityIdReq {
+  ): RetrieveByEntityIdReq {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseRetrieveTeaAndUPNByEntityIdReq,
-    } as RetrieveTeaAndUPNByEntityIdReq;
+    const message = { ...baseRetrieveByEntityIdReq } as RetrieveByEntityIdReq;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1182,10 +1359,8 @@ export const RetrieveTeaAndUPNByEntityIdReq = {
     return message;
   },
 
-  fromJSON(object: any): RetrieveTeaAndUPNByEntityIdReq {
-    const message = {
-      ...baseRetrieveTeaAndUPNByEntityIdReq,
-    } as RetrieveTeaAndUPNByEntityIdReq;
+  fromJSON(object: any): RetrieveByEntityIdReq {
+    const message = { ...baseRetrieveByEntityIdReq } as RetrieveByEntityIdReq;
     if (object.domain !== undefined && object.domain !== null) {
       message.domain = domainFromJSON(object.domain);
     } else {
@@ -1199,7 +1374,7 @@ export const RetrieveTeaAndUPNByEntityIdReq = {
     return message;
   },
 
-  toJSON(message: RetrieveTeaAndUPNByEntityIdReq): unknown {
+  toJSON(message: RetrieveByEntityIdReq): unknown {
     const obj: any = {};
     message.domain !== undefined && (obj.domain = domainToJSON(message.domain));
     message.entityId !== undefined && (obj.entityId = message.entityId);
@@ -1207,11 +1382,9 @@ export const RetrieveTeaAndUPNByEntityIdReq = {
   },
 
   fromPartial(
-    object: DeepPartial<RetrieveTeaAndUPNByEntityIdReq>
-  ): RetrieveTeaAndUPNByEntityIdReq {
-    const message = {
-      ...baseRetrieveTeaAndUPNByEntityIdReq,
-    } as RetrieveTeaAndUPNByEntityIdReq;
+    object: DeepPartial<RetrieveByEntityIdReq>
+  ): RetrieveByEntityIdReq {
+    const message = { ...baseRetrieveByEntityIdReq } as RetrieveByEntityIdReq;
     if (object.domain !== undefined && object.domain !== null) {
       message.domain = object.domain;
     } else {
@@ -1464,11 +1637,12 @@ export const EntityMin = {
 };
 
 export interface Tea {
-  RetrieveTeaAndUPNByEntity(
-    request: RetrieveTeaAndUPNByEntityReq
-  ): Promise<TeaAndUPN>;
+  RetrieveTeaByUnit(request: RetrieveTeaByUnitReq): Promise<TeaMessage>;
+  RetrieveUPNByEntity(request: RetrieveByEntityReq): Promise<UPNMessage>;
+  RetrieveUPNByEntityId(request: RetrieveByEntityIdReq): Promise<UPNMessage>;
+  RetrieveTeaAndUPNByEntity(request: RetrieveByEntityReq): Promise<TeaAndUPN>;
   RetrieveTeaAndUPNByEntityId(
-    request: RetrieveTeaAndUPNByEntityIdReq
+    request: RetrieveByEntityIdReq
   ): Promise<TeaAndUPN>;
   ReportTeaSuccess(request: ReportTeaReq): Promise<SuccessMessage>;
   ReportTeaFail(request: ReportTeaReq): Promise<SuccessMessage>;
@@ -1482,6 +1656,9 @@ export class TeaClientImpl implements Tea {
   private readonly rpc: Rpc;
   constructor(rpc: Rpc) {
     this.rpc = rpc;
+    this.RetrieveTeaByUnit = this.RetrieveTeaByUnit.bind(this);
+    this.RetrieveUPNByEntity = this.RetrieveUPNByEntity.bind(this);
+    this.RetrieveUPNByEntityId = this.RetrieveUPNByEntityId.bind(this);
     this.RetrieveTeaAndUPNByEntity = this.RetrieveTeaAndUPNByEntity.bind(this);
     this.RetrieveTeaAndUPNByEntityId =
       this.RetrieveTeaAndUPNByEntityId.bind(this);
@@ -1492,10 +1669,26 @@ export class TeaClientImpl implements Tea {
     this.UpdateUnit = this.UpdateUnit.bind(this);
     this.DeleteUnit = this.DeleteUnit.bind(this);
   }
-  RetrieveTeaAndUPNByEntity(
-    request: RetrieveTeaAndUPNByEntityReq
-  ): Promise<TeaAndUPN> {
-    const data = RetrieveTeaAndUPNByEntityReq.encode(request).finish();
+  RetrieveTeaByUnit(request: RetrieveTeaByUnitReq): Promise<TeaMessage> {
+    const data = RetrieveTeaByUnitReq.encode(request).finish();
+    const promise = this.rpc.request("Tea.Tea", "RetrieveTeaByUnit", data);
+    return promise.then((data) => TeaMessage.decode(new _m0.Reader(data)));
+  }
+
+  RetrieveUPNByEntity(request: RetrieveByEntityReq): Promise<UPNMessage> {
+    const data = RetrieveByEntityReq.encode(request).finish();
+    const promise = this.rpc.request("Tea.Tea", "RetrieveUPNByEntity", data);
+    return promise.then((data) => UPNMessage.decode(new _m0.Reader(data)));
+  }
+
+  RetrieveUPNByEntityId(request: RetrieveByEntityIdReq): Promise<UPNMessage> {
+    const data = RetrieveByEntityIdReq.encode(request).finish();
+    const promise = this.rpc.request("Tea.Tea", "RetrieveUPNByEntityId", data);
+    return promise.then((data) => UPNMessage.decode(new _m0.Reader(data)));
+  }
+
+  RetrieveTeaAndUPNByEntity(request: RetrieveByEntityReq): Promise<TeaAndUPN> {
+    const data = RetrieveByEntityReq.encode(request).finish();
     const promise = this.rpc.request(
       "Tea.Tea",
       "RetrieveTeaAndUPNByEntity",
@@ -1505,9 +1698,9 @@ export class TeaClientImpl implements Tea {
   }
 
   RetrieveTeaAndUPNByEntityId(
-    request: RetrieveTeaAndUPNByEntityIdReq
+    request: RetrieveByEntityIdReq
   ): Promise<TeaAndUPN> {
-    const data = RetrieveTeaAndUPNByEntityIdReq.encode(request).finish();
+    const data = RetrieveByEntityIdReq.encode(request).finish();
     const promise = this.rpc.request(
       "Tea.Tea",
       "RetrieveTeaAndUPNByEntityId",

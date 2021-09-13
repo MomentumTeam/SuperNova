@@ -23,6 +23,7 @@ import {
   getRequestsByPerson,
   updateApproverDecision,
   isRequestApproved,
+  updateSuperSecurityApprovers,
 } from './requests/request.controller';
 import {
   PersonTypeInRequest,
@@ -115,6 +116,7 @@ export class Server {
         GetRequestIdsInProgressByDue: getRequestIdsInProgressByDue,
         UpdateCommanders: updateCommanders,
         UpdateSecurityApprovers: updateSecurityApprovers,
+        UpdateSuperSecurityApprovers: updateSuperSecurityApprovers,
         IsRequestApproved: isRequestApproved,
       });
       logger.info(`Grpc services were successfully added to the server`);

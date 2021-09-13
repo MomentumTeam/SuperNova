@@ -1,7 +1,5 @@
 import {
-  RetrieveTeaAndUPNByEntityReq,
   TeaAndUPN,
-  RetrieveTeaAndUPNByEntityIdReq,
   ReportTeaReq,
   GetUnitReq,
   Unit,
@@ -13,6 +11,11 @@ import {
   domainToJSON,
   domainFromJSON,
   EntityMin,
+  RetrieveByEntityReq,
+  RetrieveByEntityIdReq,
+  UPNMessage,
+  RetrieveTeaByUnitReq,
+  TeaMessage,
 } from '../interfaces/protoc/proto/teaService';
 import { UnitModel } from '../models/unit.model';
 import { getUnitKartoffelIdOfEntity } from '../utils/unit';
@@ -26,8 +29,80 @@ export class TeaRepository {
     return String(num).padStart(places, '0');
   }
 
+  async retrieveTeaByUnit(
+    retrieveTeaByUnitReq: RetrieveTeaByUnitReq
+  ): Promise<TeaMessage> {
+    try {
+      const kartoffelId = retrieveTeaByUnitReq.kartoffelId;
+      let tea;
+      const documentBeforePop = await UnitModel.findOneAndUpdate(
+        { kartoffelId: kartoffelId },
+        { $pop: { failedTea: -1 } }
+      );
+      if (!documentBeforePop) {
+        throw new Error(`Failed to get Unit with kartoffelId=${kartoffelId}`);
+      }
+      const unitBeforePop: any = documentBeforePop.toObject();
+
+      if (unitBeforePop.failedTea && unitBeforePop.failedTea.length > 0) {
+        tea = unitBeforePop.failedTea[0];
+      } else {
+        const documentAfterInc = await UnitModel.findOneAndUpdate(
+          { kartoffelId: kartoffelId },
+          { $inc: { currentCounter: 1 } }
+        );
+        if (!documentAfterInc) {
+          throw new Error(`Failed to get Unit with kartoffelId=${kartoffelId}`);
+        }
+        const unitAfterInc: any = documentAfterInc.toObject();
+        tea = `T${unitBeforePop.prefix}${this.zeroPad(
+          unitAfterInc.currentCounter,
+          4
+        )}@${unitAfterInc.oldDomainSuffix}`;
+      }
+      await UnitModel.updateOne(
+        { kartoffelId: kartoffelId },
+        { $addToSet: { teaInProgress: tea } }
+      );
+      return { tea: tea };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async retrieveUPNByEntity(
+    retrieveUPNByEntityReq: RetrieveByEntityReq
+  ): Promise<UPNMessage> {
+    try {
+      if (!retrieveUPNByEntityReq.entity) {
+        throw new Error('Entity must be inserted!');
+      } else {
+        const upn: string = getUPN(retrieveUPNByEntityReq.entity);
+        return { upn: upn };
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async retrieveUPNByEntityId(
+    retrieveByEntityIdReq: RetrieveByEntityIdReq
+  ): Promise<UPNMessage> {
+    try {
+      const entity: Entity = await KartoffelService.getEntityById({
+        id: retrieveByEntityIdReq.entityId,
+      });
+      return await this.retrieveUPNByEntity({
+        domain: retrieveByEntityIdReq.domain,
+        entity: entity as EntityMin,
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async retrieveTeaAndUPNByEntity(
-    retrieveTeaAndUPNByEntityReq: RetrieveTeaAndUPNByEntityReq
+    retrieveTeaAndUPNByEntityReq: RetrieveByEntityReq
   ): Promise<TeaAndUPN> {
     const domain =
       typeof retrieveTeaAndUPNByEntityReq.domain == typeof ''
@@ -58,37 +133,10 @@ export class TeaRepository {
     if (domain === Domain.OLD) {
       //oldDomain
       try {
-        const documentBeforePop = await UnitModel.findOneAndUpdate(
-          { kartoffelId: kartoffelId },
-          { $pop: { failedTea: -1 } }
-        );
-        if (!documentBeforePop) {
-          throw new Error(`Failed to get Unit with kartoffelId=${kartoffelId}`);
-        }
-        const unitBeforePop: any = documentBeforePop.toObject();
-
-        if (unitBeforePop.failedTea && unitBeforePop.failedTea.length > 0) {
-          tea = unitBeforePop.failedTea[0];
-        } else {
-          const documentAfterInc = await UnitModel.findOneAndUpdate(
-            { kartoffelId: kartoffelId },
-            { $inc: { currentCounter: 1 } }
-          );
-          if (!documentAfterInc) {
-            throw new Error(
-              `Failed to get Unit with kartoffelId=${kartoffelId}`
-            );
-          }
-          const unitAfterInc: any = documentAfterInc.toObject();
-          tea = `T${unitBeforePop.prefix}${this.zeroPad(
-            unitAfterInc.currentCounter,
-            4
-          )}@${unitAfterInc.oldDomainSuffix}`;
-        }
-        await UnitModel.updateOne(
-          { kartoffelId: kartoffelId },
-          { $addToSet: { teaInProgress: tea } }
-        );
+        const teaMessage = await this.retrieveTeaByUnit({
+          kartoffelId: kartoffelId,
+        });
+        tea = teaMessage.tea;
       } catch (error) {
         throw error;
       }
@@ -105,7 +153,7 @@ export class TeaRepository {
   }
 
   async retrieveTeaAndUPNByEntityId(
-    retrieveTeaAndUPNByEntityIdReq: RetrieveTeaAndUPNByEntityIdReq
+    retrieveTeaAndUPNByEntityIdReq: RetrieveByEntityIdReq
   ): Promise<TeaAndUPN> {
     try {
       const entity: Entity = await KartoffelService.getEntityById({
