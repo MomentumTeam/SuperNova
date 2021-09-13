@@ -47,6 +47,24 @@ import {
 } from '../interfaces/protoc/proto/notificationService';
 
 export class RequestRepository {
+  async createRequest(
+    createRequestReq: any,
+    type: RequestType
+  ): Promise<Request> {
+    try {
+      const request: any = new RequestModel(createRequestReq);
+      this.setNeedApproversDecisionsValues(request, type);
+      request.type = requestTypeToJSON(type);
+      const createdCreateRequest = await request.save();
+      const document = createdCreateRequest.toObject();
+      turnObjectIdsToStrings(document);
+      await createNotifications(NotificationType.REQUEST_SUBMITTED, document);
+      return document as Request;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async canPushToKartoffelQueue(
     canPushToQueueReq: CanPushToQueueReq
   ): Promise<CanPushToQueueRes> {
@@ -788,8 +806,7 @@ export class RequestRepository {
     }
   }
 
-  setNeedApproversDecisionsValues(request: any): void {
-    const type: RequestType = requestTypeFromJSON(request.type);
+  setNeedApproversDecisionsValues(request: any, type: RequestType): void {
     switch (type) {
       case RequestType.CREATE_OG:
         request.needSecurityDecision = false;
@@ -843,7 +860,7 @@ export class RequestRepository {
 
       case RequestType.ADD_APPROVER:
         const approverType: ApproverType = approverTypeFromJSON(
-          request.submittedBy.additionalParams.type
+          request.additionalParams.type
         );
 
         switch (approverType) {
@@ -860,25 +877,6 @@ export class RequestRepository {
             request.needSuperSecurityDecision = true;
             break;
         }
-    }
-  }
-
-  async createRequest(
-    createRequestReq: any,
-    type: RequestType
-  ): Promise<Request> {
-    try {
-      const request: any = new RequestModel(createRequestReq);
-      this.setNeedApproversDecisionsValues(request);
-      request.type = requestTypeToJSON(type);
-      request.createdAt = new Date().getTime();
-      const createdCreateRequest = await request.save();
-      const document = createdCreateRequest.toObject();
-      turnObjectIdsToStrings(document);
-      await createNotifications(NotificationType.REQUEST_SUBMITTED, document);
-      return document as Request;
-    } catch (error) {
-      throw error;
     }
   }
 

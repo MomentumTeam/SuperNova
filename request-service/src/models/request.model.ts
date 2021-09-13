@@ -2,9 +2,13 @@ import mongoose from 'mongoose';
 import { connection } from '../mongoose';
 import {
   Decision,
+  decisionToJSON,
   RequestStatus,
+  requestStatusToJSON,
   RequestType,
+  requestTypeToJSON,
   StageStatus,
+  stageStatusToJSON,
 } from '../interfaces/protoc/proto/requestService';
 const { Schema } = mongoose;
 import autoIncrement from 'mongoose-auto-increment';
@@ -33,27 +37,37 @@ const RequestSchema = new Schema(
     submittedBy: {
       type: {
         id: { type: mongoose.Schema.Types.ObjectId, default: null },
-        displayName: { type: String, default: null },
-        identityCard: { type: String, default: null },
-        personalNumber: { type: String, default: null },
+        displayName: { type: String, default: '' },
+        identityCard: { type: String, default: '' },
+        personalNumber: { type: String, default: '' },
       },
-      default: null,
+      default: {
+        id: null,
+        displayName: '',
+        identityCard: '',
+        personalNumber: '',
+      },
     },
     status: {
       type: String,
       enum: RequestStatus,
-      default: RequestStatus.SUBMITTED,
+      default: requestStatusToJSON(RequestStatus.SUBMITTED),
     },
     commanderDecision: {
       type: {
         approver: {
           type: {
             id: { type: mongoose.Schema.Types.ObjectId, default: null },
-            displayName: { type: String, default: null },
-            identityCard: { type: String, default: null },
-            personalNumber: { type: String, default: null },
+            displayName: { type: String, default: '' },
+            identityCard: { type: String, default: '' },
+            personalNumber: { type: String, default: '' },
           },
-          default: null,
+          default: {
+            id: null,
+            displayName: '',
+            identityCard: '',
+            personalNumber: '',
+          },
         },
         reason: {
           type: String,
@@ -61,26 +75,41 @@ const RequestSchema = new Schema(
         },
         date: {
           type: Number,
-          default: new Date().getTime(),
+          default: () => new Date().getTime(),
         },
         decision: {
           type: String,
           enum: Decision,
-          defualt: Decision.DECISION_UNKNOWN,
+          defualt: decisionToJSON(Decision.DECISION_UNKNOWN),
         },
       },
-      default: null,
+      default: {
+        approver: {
+          id: null,
+          displayName: '',
+          identityCard: '',
+          personalNumber: '',
+        },
+        reason: '',
+        date: () => new Date().getTime(),
+        decision: decisionToJSON(Decision.DECISION_UNKNOWN),
+      },
     },
     securityDecision: {
       type: {
         approver: {
           type: {
             id: { type: mongoose.Schema.Types.ObjectId, default: null },
-            displayName: { type: String, default: null },
-            identityCard: { type: String, default: null },
-            personalNumber: { type: String, default: null },
+            displayName: { type: String, default: '' },
+            identityCard: { type: String, default: '' },
+            personalNumber: { type: String, default: '' },
           },
-          default: null,
+          default: {
+            id: null,
+            displayName: '',
+            identityCard: '',
+            personalNumber: '',
+          },
         },
         reason: {
           type: String,
@@ -88,64 +117,89 @@ const RequestSchema = new Schema(
         },
         date: {
           type: Number,
-          default: new Date().getTime(),
+          default: () => new Date().getTime(),
         },
         decision: {
           type: String,
           enum: Decision,
-          defualt: Decision.DECISION_UNKNOWN,
+          defualt: decisionToJSON(Decision.DECISION_UNKNOWN),
         },
       },
-      default: null,
+      default: {
+        approver: {
+          id: null,
+          displayName: '',
+          identityCard: '',
+          personalNumber: '',
+        },
+        reason: '',
+        date: () => new Date().getTime(),
+        decision: decisionToJSON(Decision.DECISION_UNKNOWN),
+      },
     },
     commanders: [
       {
         id: { type: mongoose.Schema.Types.ObjectId, default: null },
-        displayName: { type: String, default: null },
-        identityCard: { type: String, default: null },
-        personalNumber: { type: String, default: null },
+        displayName: { type: String, default: '' },
+        identityCard: { type: String, default: '' },
+        personalNumber: { type: String, default: '' },
       },
     ],
     securityApprovers: [
       {
         id: { type: mongoose.Schema.Types.ObjectId, default: null },
-        displayName: { type: String, default: null },
-        identityCard: { type: String, default: null },
-        personalNumber: { type: String, default: null },
+        displayName: { type: String, default: '' },
+        identityCard: { type: String, default: '' },
+        personalNumber: { type: String, default: '' },
       },
     ],
     kartoffelStatus: {
-      status: {
-        type: String,
-        enum: StageStatus,
-        default: StageStatus.STAGE_UNKNOWN,
+      type: {
+        status: {
+          type: String,
+          enum: StageStatus,
+          default: stageStatusToJSON(StageStatus.STAGE_UNKNOWN),
+        },
+        createdId: {
+          type: String,
+          default: '',
+        },
+        message: {
+          type: String,
+          default: '',
+        },
+        failedRetries: {
+          type: Number,
+          default: 0,
+        },
       },
-      createdId: {
-        type: String,
-        default: null,
-      },
-      message: {
-        type: String,
-        default: null,
-      },
-      failedRetries: {
-        type: Number,
-        default: 0,
+      default: {
+        status: stageStatusToJSON(StageStatus.STAGE_UNKNOWN),
+        createdId: '',
+        message: '',
+        failedRetries: 0,
       },
     },
     adStatus: {
-      status: {
-        type: String,
-        enum: StageStatus,
-        default: StageStatus.STAGE_UNKNOWN,
+      type: {
+        status: {
+          type: String,
+          enum: StageStatus,
+          default: StageStatus.STAGE_UNKNOWN,
+        },
+        message: {
+          type: String,
+          default: null,
+        },
+        failedRetries: {
+          type: Number,
+          default: 0,
+        },
       },
-      message: {
-        type: String,
-        default: null,
-      },
-      failedRetries: {
-        type: Number,
-        default: 0,
+      default: {
+        status: stageStatusToJSON(StageStatus.STAGE_UNKNOWN),
+        message: '',
+        failedRetries: 0,
       },
     },
     kartoffelParams: {
@@ -172,6 +226,7 @@ const RequestSchema = new Schema(
       sex: { type: String, default: null },
       birthdate: { type: Number, default: null },
       entityType: { type: String, default: null },
+      unit: { type: String, default: null },
     },
     adParams: {
       ouDisplayName: { type: String, default: null },

@@ -6,6 +6,7 @@ import {
   Request,
   RequestReq,
   RequestType,
+  requestTypeToJSON,
   SearchRequestsByDisplayNameReq,
   SuccessMessage,
   UpdateDecisionReq,
@@ -13,6 +14,45 @@ import {
 import { logger } from '../logger';
 
 const requestManager: RequestManager = new RequestManager();
+
+export function createRequestFuncByType(type: RequestType) {
+  const func = async function createRequest(
+    call: any,
+    callback: any
+  ): Promise<void> {
+    try {
+      logger.info(`Call to createRequest`, {
+        type: requestTypeToJSON(type),
+        callRequest: call.request,
+      });
+      const response = await requestManager.createRequest(
+        call.request as RequestReq,
+        type
+      );
+      logger.info(`createRequest OK`, {
+        callRequest: call.request,
+        type: type,
+        response: response,
+      });
+      callback(null, response);
+    } catch (error) {
+      logger.error(`createRequest ERROR`, {
+        callRequest: call.request,
+        type: requestTypeToJSON(type),
+        error: error.message,
+      });
+      callback(
+        {
+          code: 400,
+          message: error.message,
+          status: grpc.status.CANCELLED,
+        },
+        null
+      );
+    }
+  };
+  return func;
+}
 
 export function updateApproverDecisionFuncByPersonType(
   personType: PersonTypeInRequest
@@ -122,45 +162,6 @@ export function getRequestsByIdentifierFuncByPersonType(
       logger.error(`getRequestsByIdentifier ERROR`, {
         callRequest: call.request,
         personType: personType,
-        error: error,
-      });
-      callback(
-        {
-          code: 400,
-          message: error.message,
-          status: grpc.status.CANCELLED,
-        },
-        null
-      );
-    }
-  };
-  return func;
-}
-
-export function createRequestFuncByType(type: RequestType) {
-  const func = async function createRequest(
-    call: any,
-    callback: any
-  ): Promise<void> {
-    try {
-      logger.info(`Call to createRequest`, {
-        type: type,
-        callRequest: call.request,
-      });
-      const response = await requestManager.createRequest(
-        call.request as RequestReq,
-        type
-      );
-      logger.info(`createRequest OK`, {
-        callRequest: call.request,
-        type: type,
-        response: response,
-      });
-      callback(null, response);
-    } catch (error) {
-      logger.error(`createRequest ERROR`, {
-        callRequest: call.request,
-        type: type,
         error: error,
       });
       callback(

@@ -29,6 +29,20 @@ export class RequestManager {
     this.requestRepository = new RequestRepository();
   }
 
+  async createRequest(
+    createRequest: RequestReq,
+    type: RequestType
+  ): Promise<Request> {
+    try {
+      return (await this.requestRepository.createRequest(
+        createRequest,
+        type
+      )) as Request;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async canPushToKartoffelQueue(
     CanPushToQueueReq: CanPushToQueueReq
   ): Promise<CanPushToQueueRes> {
@@ -180,20 +194,6 @@ export class RequestManager {
       return (await this.requestRepository.deleteRequest(
         deleteRequestReq
       )) as SuccessMessage;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async createRequest(
-    createRequest: RequestReq,
-    type: RequestType
-  ): Promise<Request> {
-    try {
-      return (await this.requestRepository.createRequest(
-        createRequest,
-        type
-      )) as Request;
     } catch (error) {
       throw error;
     }

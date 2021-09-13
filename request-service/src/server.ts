@@ -31,7 +31,6 @@ import { PersonTypeInRequest } from './enums/personTypeInRequest.enum';
 import { addHealthService } from './health';
 
 const PROTO_PATH = `${findPath('proto')}/requestService.proto`;
-console.log(PROTO_PATH);
 export class Server {
   private server: grpc.Server;
   constructor() {
@@ -47,7 +46,7 @@ export class Server {
           keepCase: true,
           longs: String,
           enums: String,
-          defaults: true,
+          // defaults: true,
           oneofs: true,
         });
       const protoDescriptor: grpc.GrpcObject =

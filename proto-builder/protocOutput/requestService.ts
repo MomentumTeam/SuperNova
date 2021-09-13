@@ -340,19 +340,19 @@ export interface CreateOGReq {
 
 export interface CreateOGRes {
   submittedBy: EntityMin | undefined;
-  status?: RequestStatus | undefined;
-  commanderDecision?: ApproverDecision | undefined;
-  securityDecision?: ApproverDecision | undefined;
-  superSecurityDecision?: ApproverDecision | undefined;
+  status: RequestStatus;
+  commanderDecision: ApproverDecision | undefined;
+  securityDecision: ApproverDecision | undefined;
+  superSecurityDecision: ApproverDecision | undefined;
   commanders: EntityMin[];
   securityApprovers: EntityMin[];
-  kartoffelStatus?: KartoffelStatus | undefined;
-  adStatus?: ADStatus | undefined;
+  kartoffelStatus: KartoffelStatus | undefined;
+  adStatus: ADStatus | undefined;
   kartoffelParams: CreateOGKartoffelParams | undefined;
   adParams: CreateOGADParams | undefined;
-  comments?: string | undefined;
-  approversComments?: string | undefined;
-  due?: number | undefined;
+  comments: string;
+  approversComments: string;
+  due: number;
   id: string;
   createdAt: number;
   updatedAt: number;
@@ -382,19 +382,19 @@ export interface CreateEntityReq {
 
 export interface CreateEntityRes {
   submittedBy: EntityMin | undefined;
-  status?: RequestStatus | undefined;
-  commanderDecision?: ApproverDecision | undefined;
-  securityDecision?: ApproverDecision | undefined;
-  superSecurityDecision?: ApproverDecision | undefined;
+  status: RequestStatus;
+  commanderDecision: ApproverDecision | undefined;
+  securityDecision: ApproverDecision | undefined;
+  superSecurityDecision: ApproverDecision | undefined;
   commanders: EntityMin[];
   securityApprovers: EntityMin[];
-  kartoffelStatus?: KartoffelStatus | undefined;
-  adStatus?: ADStatus | undefined;
+  kartoffelStatus: KartoffelStatus | undefined;
+  adStatus: ADStatus | undefined;
   kartoffelParams: CreateEntityKartoffelParams | undefined;
   adParams: CreateEntityADParams | undefined;
-  comments?: string | undefined;
-  approversComments?: string | undefined;
-  due?: number | undefined;
+  comments: string;
+  approversComments: string;
+  due: number;
   id: string;
   createdAt: number;
   updatedAt: number;
@@ -421,16 +421,16 @@ export interface CreateNewApproverReq {
 
 export interface CreateNewApproverRes {
   submittedBy: EntityMin | undefined;
-  status?: RequestStatus | undefined;
-  commanderDecision?: ApproverDecision | undefined;
-  securityDecision?: ApproverDecision | undefined;
-  superSecurityDecision?: ApproverDecision | undefined;
+  status: RequestStatus;
+  commanderDecision: ApproverDecision | undefined;
+  securityDecision: ApproverDecision | undefined;
+  superSecurityDecision: ApproverDecision | undefined;
   commanders: EntityMin[];
   securityApprovers: EntityMin[];
-  additionalParams?: AdditionalParams | undefined;
-  comments?: string | undefined;
-  approversComments?: string | undefined;
-  due?: number | undefined;
+  additionalParams: AdditionalParams | undefined;
+  comments: string;
+  approversComments: string;
+  due: number;
   id: string;
   createdAt: number;
   updatedAt: number;
@@ -460,19 +460,19 @@ export interface RenameOGReq {
 
 export interface RenameOGRes {
   submittedBy: EntityMin | undefined;
-  status?: RequestStatus | undefined;
-  commanderDecision?: ApproverDecision | undefined;
-  securityDecision?: ApproverDecision | undefined;
-  superSecurityDecision?: ApproverDecision | undefined;
+  status: RequestStatus;
+  commanderDecision: ApproverDecision | undefined;
+  securityDecision: ApproverDecision | undefined;
+  superSecurityDecision: ApproverDecision | undefined;
   commanders: EntityMin[];
   securityApprovers: EntityMin[];
-  kartoffelStatus?: KartoffelStatus | undefined;
-  adStatus?: ADStatus | undefined;
+  kartoffelStatus: KartoffelStatus | undefined;
+  adStatus: ADStatus | undefined;
   kartoffelParams: RenameOGKartoffelParams | undefined;
   adParams: RenameOGADParams | undefined;
-  comments?: string | undefined;
-  approversComments?: string | undefined;
-  due?: number | undefined;
+  comments: string;
+  approversComments: string;
+  due: number;
   id: string;
   createdAt: number;
   updatedAt: number;
@@ -502,19 +502,19 @@ export interface RenameRoleReq {
 
 export interface RenameRoleRes {
   submittedBy: EntityMin | undefined;
-  status?: RequestStatus | undefined;
-  commanderDecision?: ApproverDecision | undefined;
-  securityDecision?: ApproverDecision | undefined;
-  superSecurityDecision?: ApproverDecision | undefined;
+  status: RequestStatus;
+  commanderDecision: ApproverDecision | undefined;
+  securityDecision: ApproverDecision | undefined;
+  superSecurityDecision: ApproverDecision | undefined;
   commanders: EntityMin[];
   securityApprovers: EntityMin[];
-  kartoffelStatus?: KartoffelStatus | undefined;
-  adStatus?: ADStatus | undefined;
+  kartoffelStatus: KartoffelStatus | undefined;
+  adStatus: ADStatus | undefined;
   kartoffelParams: RenameRoleKartoffelParams | undefined;
   adParams: RenameRoleADParams | undefined;
-  comments?: string | undefined;
-  approversComments?: string | undefined;
-  due?: number | undefined;
+  comments: string;
+  approversComments: string;
+  due: number;
   id: string;
   createdAt: number;
   updatedAt: number;
@@ -544,19 +544,19 @@ export interface EditEntityReq {
 
 export interface EditEntityRes {
   submittedBy: EntityMin | undefined;
-  status?: RequestStatus | undefined;
-  commanderDecision?: ApproverDecision | undefined;
-  securityDecision?: ApproverDecision | undefined;
-  superSecurityDecision?: ApproverDecision | undefined;
+  status: RequestStatus;
+  commanderDecision: ApproverDecision | undefined;
+  securityDecision: ApproverDecision | undefined;
+  superSecurityDecision: ApproverDecision | undefined;
   commanders: EntityMin[];
   securityApprovers: EntityMin[];
-  kartoffelStatus?: KartoffelStatus | undefined;
-  adStatus?: ADStatus | undefined;
+  kartoffelStatus: KartoffelStatus | undefined;
+  adStatus: ADStatus | undefined;
   kartoffelParams: EditEntityKartoffelParams | undefined;
   adParams: EditEntityADParams | undefined;
-  comments?: string | undefined;
-  approversComments?: string | undefined;
-  due?: number | undefined;
+  comments: string;
+  approversComments: string;
+  due: number;
   id: string;
   createdAt: number;
   updatedAt: number;
@@ -586,19 +586,19 @@ export interface DeleteOGReq {
 
 export interface DeleteOGRes {
   submittedBy: EntityMin | undefined;
-  status?: RequestStatus | undefined;
-  commanderDecision?: ApproverDecision | undefined;
-  securityDecision?: ApproverDecision | undefined;
-  superSecurityDecision?: ApproverDecision | undefined;
+  status: RequestStatus;
+  commanderDecision: ApproverDecision | undefined;
+  securityDecision: ApproverDecision | undefined;
+  superSecurityDecision: ApproverDecision | undefined;
   commanders: EntityMin[];
   securityApprovers: EntityMin[];
-  kartoffelStatus?: KartoffelStatus | undefined;
-  adStatus?: ADStatus | undefined;
+  kartoffelStatus: KartoffelStatus | undefined;
+  adStatus: ADStatus | undefined;
   kartoffelParams: DeleteOGKartoffelParams | undefined;
   adParams: DeleteOGADParams | undefined;
-  comments?: string | undefined;
-  approversComments?: string | undefined;
-  due?: number | undefined;
+  comments: string;
+  approversComments: string;
+  due: number;
   id: string;
   createdAt: number;
   updatedAt: number;
@@ -628,19 +628,19 @@ export interface DeleteRoleReq {
 
 export interface DeleteRoleRes {
   submittedBy: EntityMin | undefined;
-  status?: RequestStatus | undefined;
-  commanderDecision?: ApproverDecision | undefined;
-  securityDecision?: ApproverDecision | undefined;
-  superSecurityDecision?: ApproverDecision | undefined;
+  status: RequestStatus;
+  commanderDecision: ApproverDecision | undefined;
+  securityDecision: ApproverDecision | undefined;
+  superSecurityDecision: ApproverDecision | undefined;
   commanders: EntityMin[];
   securityApprovers: EntityMin[];
-  kartoffelStatus?: KartoffelStatus | undefined;
-  adStatus?: ADStatus | undefined;
+  kartoffelStatus: KartoffelStatus | undefined;
+  adStatus: ADStatus | undefined;
   kartoffelParams: DeleteRoleKartoffelParams | undefined;
   adParams: DeleteRoleADParams | undefined;
-  comments?: string | undefined;
-  approversComments?: string | undefined;
-  due?: number | undefined;
+  comments: string;
+  approversComments: string;
+  due: number;
   id: string;
   createdAt: number;
   updatedAt: number;
@@ -670,19 +670,19 @@ export interface DeleteEntityReq {
 
 export interface DeleteEntityRes {
   submittedBy: EntityMin | undefined;
-  status?: RequestStatus | undefined;
-  commanderDecision?: ApproverDecision | undefined;
-  securityDecision?: ApproverDecision | undefined;
-  superSecurityDecision?: ApproverDecision | undefined;
+  status: RequestStatus;
+  commanderDecision: ApproverDecision | undefined;
+  securityDecision: ApproverDecision | undefined;
+  superSecurityDecision: ApproverDecision | undefined;
   commanders: EntityMin[];
   securityApprovers: EntityMin[];
-  kartoffelStatus?: KartoffelStatus | undefined;
-  adStatus?: ADStatus | undefined;
+  kartoffelStatus: KartoffelStatus | undefined;
+  adStatus: ADStatus | undefined;
   kartoffelParams: DeleteEntityKartoffelParams | undefined;
   adParams: DeleteEntityADParams | undefined;
-  comments?: string | undefined;
-  approversComments?: string | undefined;
-  due?: number | undefined;
+  comments: string;
+  approversComments: string;
+  due: number;
   id: string;
   createdAt: number;
   updatedAt: number;
@@ -712,19 +712,19 @@ export interface AssignRoleToEntityReq {
 
 export interface AssignRoleToEntityRes {
   submittedBy: EntityMin | undefined;
-  status?: RequestStatus | undefined;
-  commanderDecision?: ApproverDecision | undefined;
-  securityDecision?: ApproverDecision | undefined;
-  superSecurityDecision?: ApproverDecision | undefined;
+  status: RequestStatus;
+  commanderDecision: ApproverDecision | undefined;
+  securityDecision: ApproverDecision | undefined;
+  superSecurityDecision: ApproverDecision | undefined;
   commanders: EntityMin[];
   securityApprovers: EntityMin[];
-  kartoffelStatus?: KartoffelStatus | undefined;
-  adStatus?: ADStatus | undefined;
+  kartoffelStatus: KartoffelStatus | undefined;
+  adStatus: ADStatus | undefined;
   kartoffelParams: AssignRoleToEntityKartoffelParams | undefined;
   adParams: AssignRoleToEntityADParams | undefined;
-  comments?: string | undefined;
-  approversComments?: string | undefined;
-  due?: number | undefined;
+  comments: string;
+  approversComments: string;
+  due: number;
   id: string;
   createdAt: number;
   updatedAt: number;
@@ -754,19 +754,19 @@ export interface DisconectRoleFromEntityReq {
 
 export interface DisconectRoleFromEntityRes {
   submittedBy: EntityMin | undefined;
-  status?: RequestStatus | undefined;
-  commanderDecision?: ApproverDecision | undefined;
-  securityDecision?: ApproverDecision | undefined;
-  superSecurityDecision?: ApproverDecision | undefined;
+  status: RequestStatus;
+  commanderDecision: ApproverDecision | undefined;
+  securityDecision: ApproverDecision | undefined;
+  superSecurityDecision: ApproverDecision | undefined;
   commanders: EntityMin[];
   securityApprovers: EntityMin[];
-  kartoffelStatus?: KartoffelStatus | undefined;
-  adStatus?: ADStatus | undefined;
+  kartoffelStatus: KartoffelStatus | undefined;
+  adStatus: ADStatus | undefined;
   kartoffelParams: DisconectRoleFromEntityKartoffelParams | undefined;
   adParams: DisconectRoleFromEntityADParams | undefined;
-  comments?: string | undefined;
-  approversComments?: string | undefined;
-  due?: number | undefined;
+  comments: string;
+  approversComments: string;
+  due: number;
   id: string;
   createdAt: number;
   updatedAt: number;
@@ -782,24 +782,25 @@ export interface CreateRoleKartoffelParams {
   jobTitle: string;
   /** groupId of direct father */
   directGroup: string;
-  /** T154514... generated automatically somehow */
-  roleId: string;
+  /** T154514... generated automatically by tea-service if not given */
+  roleId?: string | undefined;
   /** clearance of the role */
   clearance: string;
+  akaUnit?: string | undefined;
   /** forDigitalIdentity */
   type: string;
   /** always oneTree */
   source: string;
-  /** T154514... generated automatically somehow */
-  uniqueId: string;
-  /** identical to uniqueId */
-  mail: string;
+  /** T154514... generated automatically by tea-service if not given */
+  uniqueId?: string | undefined;
+  /** T154514... generated automatically by tea-service if not given */
+  mail?: string | undefined;
   /** true, if the role is unoccupied */
   isRoleAttachable: boolean;
 }
 
 export interface CreateRoleADParams {
-  /** T154514... generated automatically somehow */
+  /** T154514... generated automatically by tea-service if not given */
   samAccountName: string;
   /** Role's full hierarchy */
   ouDisplayName: string;
@@ -1118,6 +1119,7 @@ export interface KartoffelParams {
   jobTitle?: string | undefined;
   directGroup?: string | undefined;
   roleId?: string | undefined;
+  akaUnit?: string | undefined;
   /** forDigitalIdentity */
   type?: string | undefined;
   /** string source = 2; */
@@ -2633,6 +2635,10 @@ export const CreateOGReq = {
 };
 
 const baseCreateOGRes: object = {
+  status: 0,
+  comments: "",
+  approversComments: "",
+  due: 0,
   id: "",
   createdAt: 0,
   updatedAt: 0,
@@ -2650,7 +2656,7 @@ export const CreateOGRes = {
     if (message.submittedBy !== undefined) {
       EntityMin.encode(message.submittedBy, writer.uint32(10).fork()).ldelim();
     }
-    if (message.status !== undefined) {
+    if (message.status !== 0) {
       writer.uint32(16).int32(message.status);
     }
     if (message.commanderDecision !== undefined) {
@@ -2698,13 +2704,13 @@ export const CreateOGRes = {
         writer.uint32(90).fork()
       ).ldelim();
     }
-    if (message.comments !== undefined) {
+    if (message.comments !== "") {
       writer.uint32(98).string(message.comments);
     }
-    if (message.approversComments !== undefined) {
+    if (message.approversComments !== "") {
       writer.uint32(106).string(message.approversComments);
     }
-    if (message.due !== undefined) {
+    if (message.due !== 0) {
       writer.uint32(112).int64(message.due);
     }
     if (message.id !== "") {
@@ -2840,7 +2846,7 @@ export const CreateOGRes = {
     if (object.status !== undefined && object.status !== null) {
       message.status = requestStatusFromJSON(object.status);
     } else {
-      message.status = undefined;
+      message.status = 0;
     }
     if (
       object.commanderDecision !== undefined &&
@@ -2918,7 +2924,7 @@ export const CreateOGRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = String(object.comments);
     } else {
-      message.comments = undefined;
+      message.comments = "";
     }
     if (
       object.approversComments !== undefined &&
@@ -2926,12 +2932,12 @@ export const CreateOGRes = {
     ) {
       message.approversComments = String(object.approversComments);
     } else {
-      message.approversComments = undefined;
+      message.approversComments = "";
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = Number(object.due);
     } else {
-      message.due = undefined;
+      message.due = 0;
     }
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
@@ -2986,10 +2992,7 @@ export const CreateOGRes = {
         ? EntityMin.toJSON(message.submittedBy)
         : undefined);
     message.status !== undefined &&
-      (obj.status =
-        message.status !== undefined
-          ? requestStatusToJSON(message.status)
-          : undefined);
+      (obj.status = requestStatusToJSON(message.status));
     message.commanderDecision !== undefined &&
       (obj.commanderDecision = message.commanderDecision
         ? ApproverDecision.toJSON(message.commanderDecision)
@@ -3061,7 +3064,7 @@ export const CreateOGRes = {
     if (object.status !== undefined && object.status !== null) {
       message.status = object.status;
     } else {
-      message.status = undefined;
+      message.status = 0;
     }
     if (
       object.commanderDecision !== undefined &&
@@ -3139,7 +3142,7 @@ export const CreateOGRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = object.comments;
     } else {
-      message.comments = undefined;
+      message.comments = "";
     }
     if (
       object.approversComments !== undefined &&
@@ -3147,12 +3150,12 @@ export const CreateOGRes = {
     ) {
       message.approversComments = object.approversComments;
     } else {
-      message.approversComments = undefined;
+      message.approversComments = "";
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = object.due;
     } else {
-      message.due = undefined;
+      message.due = 0;
     }
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
@@ -3626,6 +3629,10 @@ export const CreateEntityReq = {
 };
 
 const baseCreateEntityRes: object = {
+  status: 0,
+  comments: "",
+  approversComments: "",
+  due: 0,
   id: "",
   createdAt: 0,
   updatedAt: 0,
@@ -3643,7 +3650,7 @@ export const CreateEntityRes = {
     if (message.submittedBy !== undefined) {
       EntityMin.encode(message.submittedBy, writer.uint32(10).fork()).ldelim();
     }
-    if (message.status !== undefined) {
+    if (message.status !== 0) {
       writer.uint32(16).int32(message.status);
     }
     if (message.commanderDecision !== undefined) {
@@ -3691,13 +3698,13 @@ export const CreateEntityRes = {
         writer.uint32(90).fork()
       ).ldelim();
     }
-    if (message.comments !== undefined) {
+    if (message.comments !== "") {
       writer.uint32(98).string(message.comments);
     }
-    if (message.approversComments !== undefined) {
+    if (message.approversComments !== "") {
       writer.uint32(106).string(message.approversComments);
     }
-    if (message.due !== undefined) {
+    if (message.due !== 0) {
       writer.uint32(112).int64(message.due);
     }
     if (message.id !== "") {
@@ -3836,7 +3843,7 @@ export const CreateEntityRes = {
     if (object.status !== undefined && object.status !== null) {
       message.status = requestStatusFromJSON(object.status);
     } else {
-      message.status = undefined;
+      message.status = 0;
     }
     if (
       object.commanderDecision !== undefined &&
@@ -3914,7 +3921,7 @@ export const CreateEntityRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = String(object.comments);
     } else {
-      message.comments = undefined;
+      message.comments = "";
     }
     if (
       object.approversComments !== undefined &&
@@ -3922,12 +3929,12 @@ export const CreateEntityRes = {
     ) {
       message.approversComments = String(object.approversComments);
     } else {
-      message.approversComments = undefined;
+      message.approversComments = "";
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = Number(object.due);
     } else {
-      message.due = undefined;
+      message.due = 0;
     }
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
@@ -3982,10 +3989,7 @@ export const CreateEntityRes = {
         ? EntityMin.toJSON(message.submittedBy)
         : undefined);
     message.status !== undefined &&
-      (obj.status =
-        message.status !== undefined
-          ? requestStatusToJSON(message.status)
-          : undefined);
+      (obj.status = requestStatusToJSON(message.status));
     message.commanderDecision !== undefined &&
       (obj.commanderDecision = message.commanderDecision
         ? ApproverDecision.toJSON(message.commanderDecision)
@@ -4057,7 +4061,7 @@ export const CreateEntityRes = {
     if (object.status !== undefined && object.status !== null) {
       message.status = object.status;
     } else {
-      message.status = undefined;
+      message.status = 0;
     }
     if (
       object.commanderDecision !== undefined &&
@@ -4135,7 +4139,7 @@ export const CreateEntityRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = object.comments;
     } else {
-      message.comments = undefined;
+      message.comments = "";
     }
     if (
       object.approversComments !== undefined &&
@@ -4143,12 +4147,12 @@ export const CreateEntityRes = {
     ) {
       message.approversComments = object.approversComments;
     } else {
-      message.approversComments = undefined;
+      message.approversComments = "";
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = object.due;
     } else {
-      message.due = undefined;
+      message.due = 0;
     }
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
@@ -4543,6 +4547,10 @@ export const CreateNewApproverReq = {
 };
 
 const baseCreateNewApproverRes: object = {
+  status: 0,
+  comments: "",
+  approversComments: "",
+  due: 0,
   id: "",
   createdAt: 0,
   updatedAt: 0,
@@ -4560,7 +4568,7 @@ export const CreateNewApproverRes = {
     if (message.submittedBy !== undefined) {
       EntityMin.encode(message.submittedBy, writer.uint32(10).fork()).ldelim();
     }
-    if (message.status !== undefined) {
+    if (message.status !== 0) {
       writer.uint32(16).int32(message.status);
     }
     if (message.commanderDecision !== undefined) {
@@ -4593,13 +4601,13 @@ export const CreateNewApproverRes = {
         writer.uint32(66).fork()
       ).ldelim();
     }
-    if (message.comments !== undefined) {
+    if (message.comments !== "") {
       writer.uint32(74).string(message.comments);
     }
-    if (message.approversComments !== undefined) {
+    if (message.approversComments !== "") {
       writer.uint32(82).string(message.approversComments);
     }
-    if (message.due !== undefined) {
+    if (message.due !== 0) {
       writer.uint32(88).int64(message.due);
     }
     if (message.id !== "") {
@@ -4726,7 +4734,7 @@ export const CreateNewApproverRes = {
     if (object.status !== undefined && object.status !== null) {
       message.status = requestStatusFromJSON(object.status);
     } else {
-      message.status = undefined;
+      message.status = 0;
     }
     if (
       object.commanderDecision !== undefined &&
@@ -4784,7 +4792,7 @@ export const CreateNewApproverRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = String(object.comments);
     } else {
-      message.comments = undefined;
+      message.comments = "";
     }
     if (
       object.approversComments !== undefined &&
@@ -4792,12 +4800,12 @@ export const CreateNewApproverRes = {
     ) {
       message.approversComments = String(object.approversComments);
     } else {
-      message.approversComments = undefined;
+      message.approversComments = "";
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = Number(object.due);
     } else {
-      message.due = undefined;
+      message.due = 0;
     }
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
@@ -4852,10 +4860,7 @@ export const CreateNewApproverRes = {
         ? EntityMin.toJSON(message.submittedBy)
         : undefined);
     message.status !== undefined &&
-      (obj.status =
-        message.status !== undefined
-          ? requestStatusToJSON(message.status)
-          : undefined);
+      (obj.status = requestStatusToJSON(message.status));
     message.commanderDecision !== undefined &&
       (obj.commanderDecision = message.commanderDecision
         ? ApproverDecision.toJSON(message.commanderDecision)
@@ -4915,7 +4920,7 @@ export const CreateNewApproverRes = {
     if (object.status !== undefined && object.status !== null) {
       message.status = object.status;
     } else {
-      message.status = undefined;
+      message.status = 0;
     }
     if (
       object.commanderDecision !== undefined &&
@@ -4973,7 +4978,7 @@ export const CreateNewApproverRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = object.comments;
     } else {
-      message.comments = undefined;
+      message.comments = "";
     }
     if (
       object.approversComments !== undefined &&
@@ -4981,12 +4986,12 @@ export const CreateNewApproverRes = {
     ) {
       message.approversComments = object.approversComments;
     } else {
-      message.approversComments = undefined;
+      message.approversComments = "";
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = object.due;
     } else {
-      message.due = undefined;
+      message.due = 0;
     }
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
@@ -5457,6 +5462,10 @@ export const RenameOGReq = {
 };
 
 const baseRenameOGRes: object = {
+  status: 0,
+  comments: "",
+  approversComments: "",
+  due: 0,
   id: "",
   createdAt: 0,
   updatedAt: 0,
@@ -5474,7 +5483,7 @@ export const RenameOGRes = {
     if (message.submittedBy !== undefined) {
       EntityMin.encode(message.submittedBy, writer.uint32(10).fork()).ldelim();
     }
-    if (message.status !== undefined) {
+    if (message.status !== 0) {
       writer.uint32(16).int32(message.status);
     }
     if (message.commanderDecision !== undefined) {
@@ -5522,13 +5531,13 @@ export const RenameOGRes = {
         writer.uint32(90).fork()
       ).ldelim();
     }
-    if (message.comments !== undefined) {
+    if (message.comments !== "") {
       writer.uint32(98).string(message.comments);
     }
-    if (message.approversComments !== undefined) {
+    if (message.approversComments !== "") {
       writer.uint32(106).string(message.approversComments);
     }
-    if (message.due !== undefined) {
+    if (message.due !== 0) {
       writer.uint32(112).int64(message.due);
     }
     if (message.id !== "") {
@@ -5664,7 +5673,7 @@ export const RenameOGRes = {
     if (object.status !== undefined && object.status !== null) {
       message.status = requestStatusFromJSON(object.status);
     } else {
-      message.status = undefined;
+      message.status = 0;
     }
     if (
       object.commanderDecision !== undefined &&
@@ -5742,7 +5751,7 @@ export const RenameOGRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = String(object.comments);
     } else {
-      message.comments = undefined;
+      message.comments = "";
     }
     if (
       object.approversComments !== undefined &&
@@ -5750,12 +5759,12 @@ export const RenameOGRes = {
     ) {
       message.approversComments = String(object.approversComments);
     } else {
-      message.approversComments = undefined;
+      message.approversComments = "";
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = Number(object.due);
     } else {
-      message.due = undefined;
+      message.due = 0;
     }
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
@@ -5810,10 +5819,7 @@ export const RenameOGRes = {
         ? EntityMin.toJSON(message.submittedBy)
         : undefined);
     message.status !== undefined &&
-      (obj.status =
-        message.status !== undefined
-          ? requestStatusToJSON(message.status)
-          : undefined);
+      (obj.status = requestStatusToJSON(message.status));
     message.commanderDecision !== undefined &&
       (obj.commanderDecision = message.commanderDecision
         ? ApproverDecision.toJSON(message.commanderDecision)
@@ -5885,7 +5891,7 @@ export const RenameOGRes = {
     if (object.status !== undefined && object.status !== null) {
       message.status = object.status;
     } else {
-      message.status = undefined;
+      message.status = 0;
     }
     if (
       object.commanderDecision !== undefined &&
@@ -5963,7 +5969,7 @@ export const RenameOGRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = object.comments;
     } else {
-      message.comments = undefined;
+      message.comments = "";
     }
     if (
       object.approversComments !== undefined &&
@@ -5971,12 +5977,12 @@ export const RenameOGRes = {
     ) {
       message.approversComments = object.approversComments;
     } else {
-      message.approversComments = undefined;
+      message.approversComments = "";
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = object.due;
     } else {
-      message.due = undefined;
+      message.due = 0;
     }
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
@@ -6447,6 +6453,10 @@ export const RenameRoleReq = {
 };
 
 const baseRenameRoleRes: object = {
+  status: 0,
+  comments: "",
+  approversComments: "",
+  due: 0,
   id: "",
   createdAt: 0,
   updatedAt: 0,
@@ -6464,7 +6474,7 @@ export const RenameRoleRes = {
     if (message.submittedBy !== undefined) {
       EntityMin.encode(message.submittedBy, writer.uint32(10).fork()).ldelim();
     }
-    if (message.status !== undefined) {
+    if (message.status !== 0) {
       writer.uint32(16).int32(message.status);
     }
     if (message.commanderDecision !== undefined) {
@@ -6512,13 +6522,13 @@ export const RenameRoleRes = {
         writer.uint32(90).fork()
       ).ldelim();
     }
-    if (message.comments !== undefined) {
+    if (message.comments !== "") {
       writer.uint32(98).string(message.comments);
     }
-    if (message.approversComments !== undefined) {
+    if (message.approversComments !== "") {
       writer.uint32(106).string(message.approversComments);
     }
-    if (message.due !== undefined) {
+    if (message.due !== 0) {
       writer.uint32(112).int64(message.due);
     }
     if (message.id !== "") {
@@ -6654,7 +6664,7 @@ export const RenameRoleRes = {
     if (object.status !== undefined && object.status !== null) {
       message.status = requestStatusFromJSON(object.status);
     } else {
-      message.status = undefined;
+      message.status = 0;
     }
     if (
       object.commanderDecision !== undefined &&
@@ -6732,7 +6742,7 @@ export const RenameRoleRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = String(object.comments);
     } else {
-      message.comments = undefined;
+      message.comments = "";
     }
     if (
       object.approversComments !== undefined &&
@@ -6740,12 +6750,12 @@ export const RenameRoleRes = {
     ) {
       message.approversComments = String(object.approversComments);
     } else {
-      message.approversComments = undefined;
+      message.approversComments = "";
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = Number(object.due);
     } else {
-      message.due = undefined;
+      message.due = 0;
     }
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
@@ -6800,10 +6810,7 @@ export const RenameRoleRes = {
         ? EntityMin.toJSON(message.submittedBy)
         : undefined);
     message.status !== undefined &&
-      (obj.status =
-        message.status !== undefined
-          ? requestStatusToJSON(message.status)
-          : undefined);
+      (obj.status = requestStatusToJSON(message.status));
     message.commanderDecision !== undefined &&
       (obj.commanderDecision = message.commanderDecision
         ? ApproverDecision.toJSON(message.commanderDecision)
@@ -6875,7 +6882,7 @@ export const RenameRoleRes = {
     if (object.status !== undefined && object.status !== null) {
       message.status = object.status;
     } else {
-      message.status = undefined;
+      message.status = 0;
     }
     if (
       object.commanderDecision !== undefined &&
@@ -6953,7 +6960,7 @@ export const RenameRoleRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = object.comments;
     } else {
-      message.comments = undefined;
+      message.comments = "";
     }
     if (
       object.approversComments !== undefined &&
@@ -6961,12 +6968,12 @@ export const RenameRoleRes = {
     ) {
       message.approversComments = object.approversComments;
     } else {
-      message.approversComments = undefined;
+      message.approversComments = "";
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = object.due;
     } else {
-      message.due = undefined;
+      message.due = 0;
     }
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
@@ -7437,6 +7444,10 @@ export const EditEntityReq = {
 };
 
 const baseEditEntityRes: object = {
+  status: 0,
+  comments: "",
+  approversComments: "",
+  due: 0,
   id: "",
   createdAt: 0,
   updatedAt: 0,
@@ -7454,7 +7465,7 @@ export const EditEntityRes = {
     if (message.submittedBy !== undefined) {
       EntityMin.encode(message.submittedBy, writer.uint32(10).fork()).ldelim();
     }
-    if (message.status !== undefined) {
+    if (message.status !== 0) {
       writer.uint32(16).int32(message.status);
     }
     if (message.commanderDecision !== undefined) {
@@ -7502,13 +7513,13 @@ export const EditEntityRes = {
         writer.uint32(90).fork()
       ).ldelim();
     }
-    if (message.comments !== undefined) {
+    if (message.comments !== "") {
       writer.uint32(98).string(message.comments);
     }
-    if (message.approversComments !== undefined) {
+    if (message.approversComments !== "") {
       writer.uint32(106).string(message.approversComments);
     }
-    if (message.due !== undefined) {
+    if (message.due !== 0) {
       writer.uint32(112).int64(message.due);
     }
     if (message.id !== "") {
@@ -7644,7 +7655,7 @@ export const EditEntityRes = {
     if (object.status !== undefined && object.status !== null) {
       message.status = requestStatusFromJSON(object.status);
     } else {
-      message.status = undefined;
+      message.status = 0;
     }
     if (
       object.commanderDecision !== undefined &&
@@ -7722,7 +7733,7 @@ export const EditEntityRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = String(object.comments);
     } else {
-      message.comments = undefined;
+      message.comments = "";
     }
     if (
       object.approversComments !== undefined &&
@@ -7730,12 +7741,12 @@ export const EditEntityRes = {
     ) {
       message.approversComments = String(object.approversComments);
     } else {
-      message.approversComments = undefined;
+      message.approversComments = "";
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = Number(object.due);
     } else {
-      message.due = undefined;
+      message.due = 0;
     }
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
@@ -7790,10 +7801,7 @@ export const EditEntityRes = {
         ? EntityMin.toJSON(message.submittedBy)
         : undefined);
     message.status !== undefined &&
-      (obj.status =
-        message.status !== undefined
-          ? requestStatusToJSON(message.status)
-          : undefined);
+      (obj.status = requestStatusToJSON(message.status));
     message.commanderDecision !== undefined &&
       (obj.commanderDecision = message.commanderDecision
         ? ApproverDecision.toJSON(message.commanderDecision)
@@ -7865,7 +7873,7 @@ export const EditEntityRes = {
     if (object.status !== undefined && object.status !== null) {
       message.status = object.status;
     } else {
-      message.status = undefined;
+      message.status = 0;
     }
     if (
       object.commanderDecision !== undefined &&
@@ -7943,7 +7951,7 @@ export const EditEntityRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = object.comments;
     } else {
-      message.comments = undefined;
+      message.comments = "";
     }
     if (
       object.approversComments !== undefined &&
@@ -7951,12 +7959,12 @@ export const EditEntityRes = {
     ) {
       message.approversComments = object.approversComments;
     } else {
-      message.approversComments = undefined;
+      message.approversComments = "";
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = object.due;
     } else {
-      message.due = undefined;
+      message.due = 0;
     }
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
@@ -8427,6 +8435,10 @@ export const DeleteOGReq = {
 };
 
 const baseDeleteOGRes: object = {
+  status: 0,
+  comments: "",
+  approversComments: "",
+  due: 0,
   id: "",
   createdAt: 0,
   updatedAt: 0,
@@ -8444,7 +8456,7 @@ export const DeleteOGRes = {
     if (message.submittedBy !== undefined) {
       EntityMin.encode(message.submittedBy, writer.uint32(10).fork()).ldelim();
     }
-    if (message.status !== undefined) {
+    if (message.status !== 0) {
       writer.uint32(16).int32(message.status);
     }
     if (message.commanderDecision !== undefined) {
@@ -8492,13 +8504,13 @@ export const DeleteOGRes = {
         writer.uint32(90).fork()
       ).ldelim();
     }
-    if (message.comments !== undefined) {
+    if (message.comments !== "") {
       writer.uint32(98).string(message.comments);
     }
-    if (message.approversComments !== undefined) {
+    if (message.approversComments !== "") {
       writer.uint32(106).string(message.approversComments);
     }
-    if (message.due !== undefined) {
+    if (message.due !== 0) {
       writer.uint32(112).int64(message.due);
     }
     if (message.id !== "") {
@@ -8634,7 +8646,7 @@ export const DeleteOGRes = {
     if (object.status !== undefined && object.status !== null) {
       message.status = requestStatusFromJSON(object.status);
     } else {
-      message.status = undefined;
+      message.status = 0;
     }
     if (
       object.commanderDecision !== undefined &&
@@ -8712,7 +8724,7 @@ export const DeleteOGRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = String(object.comments);
     } else {
-      message.comments = undefined;
+      message.comments = "";
     }
     if (
       object.approversComments !== undefined &&
@@ -8720,12 +8732,12 @@ export const DeleteOGRes = {
     ) {
       message.approversComments = String(object.approversComments);
     } else {
-      message.approversComments = undefined;
+      message.approversComments = "";
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = Number(object.due);
     } else {
-      message.due = undefined;
+      message.due = 0;
     }
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
@@ -8780,10 +8792,7 @@ export const DeleteOGRes = {
         ? EntityMin.toJSON(message.submittedBy)
         : undefined);
     message.status !== undefined &&
-      (obj.status =
-        message.status !== undefined
-          ? requestStatusToJSON(message.status)
-          : undefined);
+      (obj.status = requestStatusToJSON(message.status));
     message.commanderDecision !== undefined &&
       (obj.commanderDecision = message.commanderDecision
         ? ApproverDecision.toJSON(message.commanderDecision)
@@ -8855,7 +8864,7 @@ export const DeleteOGRes = {
     if (object.status !== undefined && object.status !== null) {
       message.status = object.status;
     } else {
-      message.status = undefined;
+      message.status = 0;
     }
     if (
       object.commanderDecision !== undefined &&
@@ -8933,7 +8942,7 @@ export const DeleteOGRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = object.comments;
     } else {
-      message.comments = undefined;
+      message.comments = "";
     }
     if (
       object.approversComments !== undefined &&
@@ -8941,12 +8950,12 @@ export const DeleteOGRes = {
     ) {
       message.approversComments = object.approversComments;
     } else {
-      message.approversComments = undefined;
+      message.approversComments = "";
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = object.due;
     } else {
-      message.due = undefined;
+      message.due = 0;
     }
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
@@ -9417,6 +9426,10 @@ export const DeleteRoleReq = {
 };
 
 const baseDeleteRoleRes: object = {
+  status: 0,
+  comments: "",
+  approversComments: "",
+  due: 0,
   id: "",
   createdAt: 0,
   updatedAt: 0,
@@ -9434,7 +9447,7 @@ export const DeleteRoleRes = {
     if (message.submittedBy !== undefined) {
       EntityMin.encode(message.submittedBy, writer.uint32(10).fork()).ldelim();
     }
-    if (message.status !== undefined) {
+    if (message.status !== 0) {
       writer.uint32(16).int32(message.status);
     }
     if (message.commanderDecision !== undefined) {
@@ -9482,13 +9495,13 @@ export const DeleteRoleRes = {
         writer.uint32(90).fork()
       ).ldelim();
     }
-    if (message.comments !== undefined) {
+    if (message.comments !== "") {
       writer.uint32(98).string(message.comments);
     }
-    if (message.approversComments !== undefined) {
+    if (message.approversComments !== "") {
       writer.uint32(106).string(message.approversComments);
     }
-    if (message.due !== undefined) {
+    if (message.due !== 0) {
       writer.uint32(112).int64(message.due);
     }
     if (message.id !== "") {
@@ -9624,7 +9637,7 @@ export const DeleteRoleRes = {
     if (object.status !== undefined && object.status !== null) {
       message.status = requestStatusFromJSON(object.status);
     } else {
-      message.status = undefined;
+      message.status = 0;
     }
     if (
       object.commanderDecision !== undefined &&
@@ -9702,7 +9715,7 @@ export const DeleteRoleRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = String(object.comments);
     } else {
-      message.comments = undefined;
+      message.comments = "";
     }
     if (
       object.approversComments !== undefined &&
@@ -9710,12 +9723,12 @@ export const DeleteRoleRes = {
     ) {
       message.approversComments = String(object.approversComments);
     } else {
-      message.approversComments = undefined;
+      message.approversComments = "";
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = Number(object.due);
     } else {
-      message.due = undefined;
+      message.due = 0;
     }
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
@@ -9770,10 +9783,7 @@ export const DeleteRoleRes = {
         ? EntityMin.toJSON(message.submittedBy)
         : undefined);
     message.status !== undefined &&
-      (obj.status =
-        message.status !== undefined
-          ? requestStatusToJSON(message.status)
-          : undefined);
+      (obj.status = requestStatusToJSON(message.status));
     message.commanderDecision !== undefined &&
       (obj.commanderDecision = message.commanderDecision
         ? ApproverDecision.toJSON(message.commanderDecision)
@@ -9845,7 +9855,7 @@ export const DeleteRoleRes = {
     if (object.status !== undefined && object.status !== null) {
       message.status = object.status;
     } else {
-      message.status = undefined;
+      message.status = 0;
     }
     if (
       object.commanderDecision !== undefined &&
@@ -9923,7 +9933,7 @@ export const DeleteRoleRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = object.comments;
     } else {
-      message.comments = undefined;
+      message.comments = "";
     }
     if (
       object.approversComments !== undefined &&
@@ -9931,12 +9941,12 @@ export const DeleteRoleRes = {
     ) {
       message.approversComments = object.approversComments;
     } else {
-      message.approversComments = undefined;
+      message.approversComments = "";
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = object.due;
     } else {
-      message.due = undefined;
+      message.due = 0;
     }
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
@@ -10410,6 +10420,10 @@ export const DeleteEntityReq = {
 };
 
 const baseDeleteEntityRes: object = {
+  status: 0,
+  comments: "",
+  approversComments: "",
+  due: 0,
   id: "",
   createdAt: 0,
   updatedAt: 0,
@@ -10427,7 +10441,7 @@ export const DeleteEntityRes = {
     if (message.submittedBy !== undefined) {
       EntityMin.encode(message.submittedBy, writer.uint32(10).fork()).ldelim();
     }
-    if (message.status !== undefined) {
+    if (message.status !== 0) {
       writer.uint32(16).int32(message.status);
     }
     if (message.commanderDecision !== undefined) {
@@ -10475,13 +10489,13 @@ export const DeleteEntityRes = {
         writer.uint32(90).fork()
       ).ldelim();
     }
-    if (message.comments !== undefined) {
+    if (message.comments !== "") {
       writer.uint32(98).string(message.comments);
     }
-    if (message.approversComments !== undefined) {
+    if (message.approversComments !== "") {
       writer.uint32(106).string(message.approversComments);
     }
-    if (message.due !== undefined) {
+    if (message.due !== 0) {
       writer.uint32(112).int64(message.due);
     }
     if (message.id !== "") {
@@ -10620,7 +10634,7 @@ export const DeleteEntityRes = {
     if (object.status !== undefined && object.status !== null) {
       message.status = requestStatusFromJSON(object.status);
     } else {
-      message.status = undefined;
+      message.status = 0;
     }
     if (
       object.commanderDecision !== undefined &&
@@ -10698,7 +10712,7 @@ export const DeleteEntityRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = String(object.comments);
     } else {
-      message.comments = undefined;
+      message.comments = "";
     }
     if (
       object.approversComments !== undefined &&
@@ -10706,12 +10720,12 @@ export const DeleteEntityRes = {
     ) {
       message.approversComments = String(object.approversComments);
     } else {
-      message.approversComments = undefined;
+      message.approversComments = "";
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = Number(object.due);
     } else {
-      message.due = undefined;
+      message.due = 0;
     }
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
@@ -10766,10 +10780,7 @@ export const DeleteEntityRes = {
         ? EntityMin.toJSON(message.submittedBy)
         : undefined);
     message.status !== undefined &&
-      (obj.status =
-        message.status !== undefined
-          ? requestStatusToJSON(message.status)
-          : undefined);
+      (obj.status = requestStatusToJSON(message.status));
     message.commanderDecision !== undefined &&
       (obj.commanderDecision = message.commanderDecision
         ? ApproverDecision.toJSON(message.commanderDecision)
@@ -10841,7 +10852,7 @@ export const DeleteEntityRes = {
     if (object.status !== undefined && object.status !== null) {
       message.status = object.status;
     } else {
-      message.status = undefined;
+      message.status = 0;
     }
     if (
       object.commanderDecision !== undefined &&
@@ -10919,7 +10930,7 @@ export const DeleteEntityRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = object.comments;
     } else {
-      message.comments = undefined;
+      message.comments = "";
     }
     if (
       object.approversComments !== undefined &&
@@ -10927,12 +10938,12 @@ export const DeleteEntityRes = {
     ) {
       message.approversComments = object.approversComments;
     } else {
-      message.approversComments = undefined;
+      message.approversComments = "";
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = object.due;
     } else {
-      message.due = undefined;
+      message.due = 0;
     }
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
@@ -11413,6 +11424,10 @@ export const AssignRoleToEntityReq = {
 };
 
 const baseAssignRoleToEntityRes: object = {
+  status: 0,
+  comments: "",
+  approversComments: "",
+  due: 0,
   id: "",
   createdAt: 0,
   updatedAt: 0,
@@ -11430,7 +11445,7 @@ export const AssignRoleToEntityRes = {
     if (message.submittedBy !== undefined) {
       EntityMin.encode(message.submittedBy, writer.uint32(10).fork()).ldelim();
     }
-    if (message.status !== undefined) {
+    if (message.status !== 0) {
       writer.uint32(16).int32(message.status);
     }
     if (message.commanderDecision !== undefined) {
@@ -11478,13 +11493,13 @@ export const AssignRoleToEntityRes = {
         writer.uint32(90).fork()
       ).ldelim();
     }
-    if (message.comments !== undefined) {
+    if (message.comments !== "") {
       writer.uint32(98).string(message.comments);
     }
-    if (message.approversComments !== undefined) {
+    if (message.approversComments !== "") {
       writer.uint32(106).string(message.approversComments);
     }
-    if (message.due !== undefined) {
+    if (message.due !== 0) {
       writer.uint32(112).int64(message.due);
     }
     if (message.id !== "") {
@@ -11626,7 +11641,7 @@ export const AssignRoleToEntityRes = {
     if (object.status !== undefined && object.status !== null) {
       message.status = requestStatusFromJSON(object.status);
     } else {
-      message.status = undefined;
+      message.status = 0;
     }
     if (
       object.commanderDecision !== undefined &&
@@ -11704,7 +11719,7 @@ export const AssignRoleToEntityRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = String(object.comments);
     } else {
-      message.comments = undefined;
+      message.comments = "";
     }
     if (
       object.approversComments !== undefined &&
@@ -11712,12 +11727,12 @@ export const AssignRoleToEntityRes = {
     ) {
       message.approversComments = String(object.approversComments);
     } else {
-      message.approversComments = undefined;
+      message.approversComments = "";
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = Number(object.due);
     } else {
-      message.due = undefined;
+      message.due = 0;
     }
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
@@ -11772,10 +11787,7 @@ export const AssignRoleToEntityRes = {
         ? EntityMin.toJSON(message.submittedBy)
         : undefined);
     message.status !== undefined &&
-      (obj.status =
-        message.status !== undefined
-          ? requestStatusToJSON(message.status)
-          : undefined);
+      (obj.status = requestStatusToJSON(message.status));
     message.commanderDecision !== undefined &&
       (obj.commanderDecision = message.commanderDecision
         ? ApproverDecision.toJSON(message.commanderDecision)
@@ -11849,7 +11861,7 @@ export const AssignRoleToEntityRes = {
     if (object.status !== undefined && object.status !== null) {
       message.status = object.status;
     } else {
-      message.status = undefined;
+      message.status = 0;
     }
     if (
       object.commanderDecision !== undefined &&
@@ -11929,7 +11941,7 @@ export const AssignRoleToEntityRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = object.comments;
     } else {
-      message.comments = undefined;
+      message.comments = "";
     }
     if (
       object.approversComments !== undefined &&
@@ -11937,12 +11949,12 @@ export const AssignRoleToEntityRes = {
     ) {
       message.approversComments = object.approversComments;
     } else {
-      message.approversComments = undefined;
+      message.approversComments = "";
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = object.due;
     } else {
-      message.due = undefined;
+      message.due = 0;
     }
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
@@ -12433,6 +12445,10 @@ export const DisconectRoleFromEntityReq = {
 };
 
 const baseDisconectRoleFromEntityRes: object = {
+  status: 0,
+  comments: "",
+  approversComments: "",
+  due: 0,
   id: "",
   createdAt: 0,
   updatedAt: 0,
@@ -12450,7 +12466,7 @@ export const DisconectRoleFromEntityRes = {
     if (message.submittedBy !== undefined) {
       EntityMin.encode(message.submittedBy, writer.uint32(10).fork()).ldelim();
     }
-    if (message.status !== undefined) {
+    if (message.status !== 0) {
       writer.uint32(16).int32(message.status);
     }
     if (message.commanderDecision !== undefined) {
@@ -12498,13 +12514,13 @@ export const DisconectRoleFromEntityRes = {
         writer.uint32(90).fork()
       ).ldelim();
     }
-    if (message.comments !== undefined) {
+    if (message.comments !== "") {
       writer.uint32(98).string(message.comments);
     }
-    if (message.approversComments !== undefined) {
+    if (message.approversComments !== "") {
       writer.uint32(106).string(message.approversComments);
     }
-    if (message.due !== undefined) {
+    if (message.due !== 0) {
       writer.uint32(112).int64(message.due);
     }
     if (message.id !== "") {
@@ -12651,7 +12667,7 @@ export const DisconectRoleFromEntityRes = {
     if (object.status !== undefined && object.status !== null) {
       message.status = requestStatusFromJSON(object.status);
     } else {
-      message.status = undefined;
+      message.status = 0;
     }
     if (
       object.commanderDecision !== undefined &&
@@ -12731,7 +12747,7 @@ export const DisconectRoleFromEntityRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = String(object.comments);
     } else {
-      message.comments = undefined;
+      message.comments = "";
     }
     if (
       object.approversComments !== undefined &&
@@ -12739,12 +12755,12 @@ export const DisconectRoleFromEntityRes = {
     ) {
       message.approversComments = String(object.approversComments);
     } else {
-      message.approversComments = undefined;
+      message.approversComments = "";
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = Number(object.due);
     } else {
-      message.due = undefined;
+      message.due = 0;
     }
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
@@ -12799,10 +12815,7 @@ export const DisconectRoleFromEntityRes = {
         ? EntityMin.toJSON(message.submittedBy)
         : undefined);
     message.status !== undefined &&
-      (obj.status =
-        message.status !== undefined
-          ? requestStatusToJSON(message.status)
-          : undefined);
+      (obj.status = requestStatusToJSON(message.status));
     message.commanderDecision !== undefined &&
       (obj.commanderDecision = message.commanderDecision
         ? ApproverDecision.toJSON(message.commanderDecision)
@@ -12878,7 +12891,7 @@ export const DisconectRoleFromEntityRes = {
     if (object.status !== undefined && object.status !== null) {
       message.status = object.status;
     } else {
-      message.status = undefined;
+      message.status = 0;
     }
     if (
       object.commanderDecision !== undefined &&
@@ -12959,7 +12972,7 @@ export const DisconectRoleFromEntityRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = object.comments;
     } else {
-      message.comments = undefined;
+      message.comments = "";
     }
     if (
       object.approversComments !== undefined &&
@@ -12967,12 +12980,12 @@ export const DisconectRoleFromEntityRes = {
     ) {
       message.approversComments = object.approversComments;
     } else {
-      message.approversComments = undefined;
+      message.approversComments = "";
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = object.due;
     } else {
-      message.due = undefined;
+      message.due = 0;
     }
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
@@ -13022,12 +13035,9 @@ export const DisconectRoleFromEntityRes = {
 const baseCreateRoleKartoffelParams: object = {
   jobTitle: "",
   directGroup: "",
-  roleId: "",
   clearance: "",
   type: "",
   source: "",
-  uniqueId: "",
-  mail: "",
   isRoleAttachable: false,
 };
 
@@ -13042,26 +13052,29 @@ export const CreateRoleKartoffelParams = {
     if (message.directGroup !== "") {
       writer.uint32(18).string(message.directGroup);
     }
-    if (message.roleId !== "") {
+    if (message.roleId !== undefined) {
       writer.uint32(26).string(message.roleId);
     }
     if (message.clearance !== "") {
       writer.uint32(34).string(message.clearance);
     }
+    if (message.akaUnit !== undefined) {
+      writer.uint32(42).string(message.akaUnit);
+    }
     if (message.type !== "") {
-      writer.uint32(42).string(message.type);
+      writer.uint32(50).string(message.type);
     }
     if (message.source !== "") {
-      writer.uint32(50).string(message.source);
+      writer.uint32(58).string(message.source);
     }
-    if (message.uniqueId !== "") {
-      writer.uint32(58).string(message.uniqueId);
+    if (message.uniqueId !== undefined) {
+      writer.uint32(66).string(message.uniqueId);
     }
-    if (message.mail !== "") {
-      writer.uint32(66).string(message.mail);
+    if (message.mail !== undefined) {
+      writer.uint32(74).string(message.mail);
     }
     if (message.isRoleAttachable === true) {
-      writer.uint32(72).bool(message.isRoleAttachable);
+      writer.uint32(80).bool(message.isRoleAttachable);
     }
     return writer;
   },
@@ -13091,18 +13104,21 @@ export const CreateRoleKartoffelParams = {
           message.clearance = reader.string();
           break;
         case 5:
-          message.type = reader.string();
+          message.akaUnit = reader.string();
           break;
         case 6:
-          message.source = reader.string();
+          message.type = reader.string();
           break;
         case 7:
-          message.uniqueId = reader.string();
+          message.source = reader.string();
           break;
         case 8:
-          message.mail = reader.string();
+          message.uniqueId = reader.string();
           break;
         case 9:
+          message.mail = reader.string();
+          break;
+        case 10:
           message.isRoleAttachable = reader.bool();
           break;
         default:
@@ -13130,12 +13146,17 @@ export const CreateRoleKartoffelParams = {
     if (object.roleId !== undefined && object.roleId !== null) {
       message.roleId = String(object.roleId);
     } else {
-      message.roleId = "";
+      message.roleId = undefined;
     }
     if (object.clearance !== undefined && object.clearance !== null) {
       message.clearance = String(object.clearance);
     } else {
       message.clearance = "";
+    }
+    if (object.akaUnit !== undefined && object.akaUnit !== null) {
+      message.akaUnit = String(object.akaUnit);
+    } else {
+      message.akaUnit = undefined;
     }
     if (object.type !== undefined && object.type !== null) {
       message.type = String(object.type);
@@ -13150,12 +13171,12 @@ export const CreateRoleKartoffelParams = {
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = String(object.uniqueId);
     } else {
-      message.uniqueId = "";
+      message.uniqueId = undefined;
     }
     if (object.mail !== undefined && object.mail !== null) {
       message.mail = String(object.mail);
     } else {
-      message.mail = "";
+      message.mail = undefined;
     }
     if (
       object.isRoleAttachable !== undefined &&
@@ -13175,6 +13196,7 @@ export const CreateRoleKartoffelParams = {
       (obj.directGroup = message.directGroup);
     message.roleId !== undefined && (obj.roleId = message.roleId);
     message.clearance !== undefined && (obj.clearance = message.clearance);
+    message.akaUnit !== undefined && (obj.akaUnit = message.akaUnit);
     message.type !== undefined && (obj.type = message.type);
     message.source !== undefined && (obj.source = message.source);
     message.uniqueId !== undefined && (obj.uniqueId = message.uniqueId);
@@ -13203,12 +13225,17 @@ export const CreateRoleKartoffelParams = {
     if (object.roleId !== undefined && object.roleId !== null) {
       message.roleId = object.roleId;
     } else {
-      message.roleId = "";
+      message.roleId = undefined;
     }
     if (object.clearance !== undefined && object.clearance !== null) {
       message.clearance = object.clearance;
     } else {
       message.clearance = "";
+    }
+    if (object.akaUnit !== undefined && object.akaUnit !== null) {
+      message.akaUnit = object.akaUnit;
+    } else {
+      message.akaUnit = undefined;
     }
     if (object.type !== undefined && object.type !== null) {
       message.type = object.type;
@@ -13223,12 +13250,12 @@ export const CreateRoleKartoffelParams = {
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = object.uniqueId;
     } else {
-      message.uniqueId = "";
+      message.uniqueId = undefined;
     }
     if (object.mail !== undefined && object.mail !== null) {
       message.mail = object.mail;
     } else {
-      message.mail = "";
+      message.mail = undefined;
     }
     if (
       object.isRoleAttachable !== undefined &&
@@ -18051,56 +18078,59 @@ export const KartoffelParams = {
     if (message.roleId !== undefined) {
       writer.uint32(50).string(message.roleId);
     }
+    if (message.akaUnit !== undefined) {
+      writer.uint32(58).string(message.akaUnit);
+    }
     if (message.type !== undefined) {
-      writer.uint32(58).string(message.type);
+      writer.uint32(66).string(message.type);
     }
     if (message.uniqueId !== undefined) {
-      writer.uint32(66).string(message.uniqueId);
+      writer.uint32(74).string(message.uniqueId);
     }
     if (message.mail !== undefined) {
-      writer.uint32(74).string(message.mail);
+      writer.uint32(82).string(message.mail);
     }
     if (message.isRoleAttachable !== undefined) {
-      writer.uint32(80).bool(message.isRoleAttachable);
+      writer.uint32(88).bool(message.isRoleAttachable);
     }
     if (message.id !== undefined) {
-      writer.uint32(90).string(message.id);
+      writer.uint32(98).string(message.id);
     }
     if (message.firstName !== undefined) {
-      writer.uint32(98).string(message.firstName);
+      writer.uint32(106).string(message.firstName);
     }
     if (message.lastName !== undefined) {
-      writer.uint32(106).string(message.lastName);
+      writer.uint32(114).string(message.lastName);
     }
     if (message.identityCard !== undefined) {
-      writer.uint32(114).string(message.identityCard);
+      writer.uint32(122).string(message.identityCard);
     }
     if (message.personalNumber !== undefined) {
-      writer.uint32(122).string(message.personalNumber);
+      writer.uint32(130).string(message.personalNumber);
     }
     if (message.serviceType !== undefined) {
-      writer.uint32(130).string(message.serviceType);
+      writer.uint32(138).string(message.serviceType);
     }
     for (const v of message.phone) {
-      writer.uint32(138).string(v!);
-    }
-    for (const v of message.mobilePhone) {
       writer.uint32(146).string(v!);
     }
+    for (const v of message.mobilePhone) {
+      writer.uint32(154).string(v!);
+    }
     if (message.address !== undefined) {
-      writer.uint32(154).string(message.address);
+      writer.uint32(162).string(message.address);
     }
     if (message.clearance !== undefined) {
-      writer.uint32(162).string(message.clearance);
+      writer.uint32(170).string(message.clearance);
     }
     if (message.sex !== undefined) {
-      writer.uint32(170).string(message.sex);
+      writer.uint32(178).string(message.sex);
     }
     if (message.birthdate !== undefined) {
-      writer.uint32(176).int64(message.birthdate);
+      writer.uint32(184).int64(message.birthdate);
     }
     if (message.entityType !== undefined) {
-      writer.uint32(186).string(message.entityType);
+      writer.uint32(194).string(message.entityType);
     }
     return writer;
   },
@@ -18133,54 +18163,57 @@ export const KartoffelParams = {
           message.roleId = reader.string();
           break;
         case 7:
-          message.type = reader.string();
+          message.akaUnit = reader.string();
           break;
         case 8:
-          message.uniqueId = reader.string();
+          message.type = reader.string();
           break;
         case 9:
-          message.mail = reader.string();
+          message.uniqueId = reader.string();
           break;
         case 10:
-          message.isRoleAttachable = reader.bool();
+          message.mail = reader.string();
           break;
         case 11:
-          message.id = reader.string();
+          message.isRoleAttachable = reader.bool();
           break;
         case 12:
-          message.firstName = reader.string();
+          message.id = reader.string();
           break;
         case 13:
-          message.lastName = reader.string();
+          message.firstName = reader.string();
           break;
         case 14:
-          message.identityCard = reader.string();
+          message.lastName = reader.string();
           break;
         case 15:
-          message.personalNumber = reader.string();
+          message.identityCard = reader.string();
           break;
         case 16:
-          message.serviceType = reader.string();
+          message.personalNumber = reader.string();
           break;
         case 17:
-          message.phone.push(reader.string());
+          message.serviceType = reader.string();
           break;
         case 18:
-          message.mobilePhone.push(reader.string());
+          message.phone.push(reader.string());
           break;
         case 19:
-          message.address = reader.string();
+          message.mobilePhone.push(reader.string());
           break;
         case 20:
-          message.clearance = reader.string();
+          message.address = reader.string();
           break;
         case 21:
-          message.sex = reader.string();
+          message.clearance = reader.string();
           break;
         case 22:
-          message.birthdate = longToNumber(reader.int64() as Long);
+          message.sex = reader.string();
           break;
         case 23:
+          message.birthdate = longToNumber(reader.int64() as Long);
+          break;
+        case 24:
           message.entityType = reader.string();
           break;
         default:
@@ -18224,6 +18257,11 @@ export const KartoffelParams = {
       message.roleId = String(object.roleId);
     } else {
       message.roleId = undefined;
+    }
+    if (object.akaUnit !== undefined && object.akaUnit !== null) {
+      message.akaUnit = String(object.akaUnit);
+    } else {
+      message.akaUnit = undefined;
     }
     if (object.type !== undefined && object.type !== null) {
       message.type = String(object.type);
@@ -18325,6 +18363,7 @@ export const KartoffelParams = {
     message.directGroup !== undefined &&
       (obj.directGroup = message.directGroup);
     message.roleId !== undefined && (obj.roleId = message.roleId);
+    message.akaUnit !== undefined && (obj.akaUnit = message.akaUnit);
     message.type !== undefined && (obj.type = message.type);
     message.uniqueId !== undefined && (obj.uniqueId = message.uniqueId);
     message.mail !== undefined && (obj.mail = message.mail);
@@ -18390,6 +18429,11 @@ export const KartoffelParams = {
       message.roleId = object.roleId;
     } else {
       message.roleId = undefined;
+    }
+    if (object.akaUnit !== undefined && object.akaUnit !== null) {
+      message.akaUnit = object.akaUnit;
+    } else {
+      message.akaUnit = undefined;
     }
     if (object.type !== undefined && object.type !== null) {
       message.type = object.type;
