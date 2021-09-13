@@ -1148,9 +1148,10 @@ export interface IncrementRetriesReq {
 }
 
 /** UpdateCommanderDecision, UpdateSecurityDecision, UpdateSuperSecurityDecision */
-export interface UpdateDecisionReq {
+export interface UpdateApproverDecisionReq {
   id: string;
   approverDecision: ApproverDecision | undefined;
+  approverType: PersonTypeInRequest;
 }
 
 /** GetRequestsInProgressByDue, GetRequestIdsInProgressByDue */
@@ -1162,6 +1163,15 @@ export interface GetRequestsInProgressByDueReq {
 export interface UpdateApproversReq {
   id: string;
   approvers: EntityMin[];
+}
+
+/** IsRequestApproved */
+export interface IsRequestApprovedReq {
+  id: string;
+}
+
+export interface IsRequestApprovedRes {
+  isRequestApproved: boolean;
 }
 
 /** ---------------------------------------------Other Objects------------------------------------------------------------ */
@@ -17970,11 +17980,11 @@ export const IncrementRetriesReq = {
   },
 };
 
-const baseUpdateDecisionReq: object = { id: "" };
+const baseUpdateApproverDecisionReq: object = { id: "", approverType: 0 };
 
-export const UpdateDecisionReq = {
+export const UpdateApproverDecisionReq = {
   encode(
-    message: UpdateDecisionReq,
+    message: UpdateApproverDecisionReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.id !== "") {
@@ -17986,13 +17996,21 @@ export const UpdateDecisionReq = {
         writer.uint32(18).fork()
       ).ldelim();
     }
+    if (message.approverType !== 0) {
+      writer.uint32(24).int32(message.approverType);
+    }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): UpdateDecisionReq {
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): UpdateApproverDecisionReq {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseUpdateDecisionReq } as UpdateDecisionReq;
+    const message = {
+      ...baseUpdateApproverDecisionReq,
+    } as UpdateApproverDecisionReq;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -18005,6 +18023,9 @@ export const UpdateDecisionReq = {
             reader.uint32()
           );
           break;
+        case 3:
+          message.approverType = reader.int32() as any;
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -18013,8 +18034,10 @@ export const UpdateDecisionReq = {
     return message;
   },
 
-  fromJSON(object: any): UpdateDecisionReq {
-    const message = { ...baseUpdateDecisionReq } as UpdateDecisionReq;
+  fromJSON(object: any): UpdateApproverDecisionReq {
+    const message = {
+      ...baseUpdateApproverDecisionReq,
+    } as UpdateApproverDecisionReq;
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
@@ -18030,21 +18053,32 @@ export const UpdateDecisionReq = {
     } else {
       message.approverDecision = undefined;
     }
+    if (object.approverType !== undefined && object.approverType !== null) {
+      message.approverType = personTypeInRequestFromJSON(object.approverType);
+    } else {
+      message.approverType = 0;
+    }
     return message;
   },
 
-  toJSON(message: UpdateDecisionReq): unknown {
+  toJSON(message: UpdateApproverDecisionReq): unknown {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
     message.approverDecision !== undefined &&
       (obj.approverDecision = message.approverDecision
         ? ApproverDecision.toJSON(message.approverDecision)
         : undefined);
+    message.approverType !== undefined &&
+      (obj.approverType = personTypeInRequestToJSON(message.approverType));
     return obj;
   },
 
-  fromPartial(object: DeepPartial<UpdateDecisionReq>): UpdateDecisionReq {
-    const message = { ...baseUpdateDecisionReq } as UpdateDecisionReq;
+  fromPartial(
+    object: DeepPartial<UpdateApproverDecisionReq>
+  ): UpdateApproverDecisionReq {
+    const message = {
+      ...baseUpdateApproverDecisionReq,
+    } as UpdateApproverDecisionReq;
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
@@ -18059,6 +18093,11 @@ export const UpdateDecisionReq = {
       );
     } else {
       message.approverDecision = undefined;
+    }
+    if (object.approverType !== undefined && object.approverType !== null) {
+      message.approverType = object.approverType;
+    } else {
+      message.approverType = 0;
     }
     return message;
   },
@@ -18212,6 +18251,135 @@ export const UpdateApproversReq = {
       for (const e of object.approvers) {
         message.approvers.push(EntityMin.fromPartial(e));
       }
+    }
+    return message;
+  },
+};
+
+const baseIsRequestApprovedReq: object = { id: "" };
+
+export const IsRequestApprovedReq = {
+  encode(
+    message: IsRequestApprovedReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): IsRequestApprovedReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseIsRequestApprovedReq } as IsRequestApprovedReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): IsRequestApprovedReq {
+    const message = { ...baseIsRequestApprovedReq } as IsRequestApprovedReq;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+
+  toJSON(message: IsRequestApprovedReq): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<IsRequestApprovedReq>): IsRequestApprovedReq {
+    const message = { ...baseIsRequestApprovedReq } as IsRequestApprovedReq;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+};
+
+const baseIsRequestApprovedRes: object = { isRequestApproved: false };
+
+export const IsRequestApprovedRes = {
+  encode(
+    message: IsRequestApprovedRes,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.isRequestApproved === true) {
+      writer.uint32(8).bool(message.isRequestApproved);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): IsRequestApprovedRes {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseIsRequestApprovedRes } as IsRequestApprovedRes;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.isRequestApproved = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): IsRequestApprovedRes {
+    const message = { ...baseIsRequestApprovedRes } as IsRequestApprovedRes;
+    if (
+      object.isRequestApproved !== undefined &&
+      object.isRequestApproved !== null
+    ) {
+      message.isRequestApproved = Boolean(object.isRequestApproved);
+    } else {
+      message.isRequestApproved = false;
+    }
+    return message;
+  },
+
+  toJSON(message: IsRequestApprovedRes): unknown {
+    const obj: any = {};
+    message.isRequestApproved !== undefined &&
+      (obj.isRequestApproved = message.isRequestApproved);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<IsRequestApprovedRes>): IsRequestApprovedRes {
+    const message = { ...baseIsRequestApprovedRes } as IsRequestApprovedRes;
+    if (
+      object.isRequestApproved !== undefined &&
+      object.isRequestApproved !== null
+    ) {
+      message.isRequestApproved = object.isRequestApproved;
+    } else {
+      message.isRequestApproved = false;
     }
     return message;
   },
@@ -20785,6 +20953,10 @@ export interface RequestService {
   ): Promise<Request>;
   GetAllRequests(request: GetAllRequestsReq): Promise<RequestArray>;
   GetRequestById(request: GetRequestByIdReq): Promise<Request>;
+  UpdateApproverDecision(request: UpdateApproverDecisionReq): Promise<Request>;
+  IsRequestApproved(
+    request: IsRequestApprovedReq
+  ): Promise<IsRequestApprovedRes>;
   SearchRequestsBySubmitterDisplayName(
     request: SearchRequestsByDisplayNameReq
   ): Promise<RequestArray>;
@@ -20803,9 +20975,6 @@ export interface RequestService {
   CanPushToADQueue(request: CanPushToQueueReq): Promise<CanPushToQueueRes>;
   IncrementKartoffelRetries(request: IncrementRetriesReq): Promise<Request>;
   IncrementADRetries(request: IncrementRetriesReq): Promise<Request>;
-  UpdateCommanderDecision(request: UpdateDecisionReq): Promise<Request>;
-  UpdateSecurityDecision(request: UpdateDecisionReq): Promise<Request>;
-  UpdateSuperSecurityDecision(request: UpdateDecisionReq): Promise<Request>;
   GetRequestsInProgressByDue(
     request: GetRequestsInProgressByDueReq
   ): Promise<RequestArray>;
@@ -20841,6 +21010,8 @@ export class RequestServiceClientImpl implements RequestService {
     this.GetRequestBySerialNumber = this.GetRequestBySerialNumber.bind(this);
     this.GetAllRequests = this.GetAllRequests.bind(this);
     this.GetRequestById = this.GetRequestById.bind(this);
+    this.UpdateApproverDecision = this.UpdateApproverDecision.bind(this);
+    this.IsRequestApproved = this.IsRequestApproved.bind(this);
     this.SearchRequestsBySubmitterDisplayName =
       this.SearchRequestsBySubmitterDisplayName.bind(this);
     this.SearchRequestsByCommanderDisplayName =
@@ -20853,10 +21024,6 @@ export class RequestServiceClientImpl implements RequestService {
     this.CanPushToADQueue = this.CanPushToADQueue.bind(this);
     this.IncrementKartoffelRetries = this.IncrementKartoffelRetries.bind(this);
     this.IncrementADRetries = this.IncrementADRetries.bind(this);
-    this.UpdateCommanderDecision = this.UpdateCommanderDecision.bind(this);
-    this.UpdateSecurityDecision = this.UpdateSecurityDecision.bind(this);
-    this.UpdateSuperSecurityDecision =
-      this.UpdateSuperSecurityDecision.bind(this);
     this.GetRequestsInProgressByDue =
       this.GetRequestsInProgressByDue.bind(this);
     this.GetRequestIdsInProgressByDue =
@@ -21078,6 +21245,30 @@ export class RequestServiceClientImpl implements RequestService {
     return promise.then((data) => Request.decode(new _m0.Reader(data)));
   }
 
+  UpdateApproverDecision(request: UpdateApproverDecisionReq): Promise<Request> {
+    const data = UpdateApproverDecisionReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "UpdateApproverDecision",
+      data
+    );
+    return promise.then((data) => Request.decode(new _m0.Reader(data)));
+  }
+
+  IsRequestApproved(
+    request: IsRequestApprovedReq
+  ): Promise<IsRequestApprovedRes> {
+    const data = IsRequestApprovedReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "IsRequestApproved",
+      data
+    );
+    return promise.then((data) =>
+      IsRequestApprovedRes.decode(new _m0.Reader(data))
+    );
+  }
+
   SearchRequestsBySubmitterDisplayName(
     request: SearchRequestsByDisplayNameReq
   ): Promise<RequestArray> {
@@ -21167,36 +21358,6 @@ export class RequestServiceClientImpl implements RequestService {
     const promise = this.rpc.request(
       "RequestService.RequestService",
       "IncrementADRetries",
-      data
-    );
-    return promise.then((data) => Request.decode(new _m0.Reader(data)));
-  }
-
-  UpdateCommanderDecision(request: UpdateDecisionReq): Promise<Request> {
-    const data = UpdateDecisionReq.encode(request).finish();
-    const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "UpdateCommanderDecision",
-      data
-    );
-    return promise.then((data) => Request.decode(new _m0.Reader(data)));
-  }
-
-  UpdateSecurityDecision(request: UpdateDecisionReq): Promise<Request> {
-    const data = UpdateDecisionReq.encode(request).finish();
-    const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "UpdateSecurityDecision",
-      data
-    );
-    return promise.then((data) => Request.decode(new _m0.Reader(data)));
-  }
-
-  UpdateSuperSecurityDecision(request: UpdateDecisionReq): Promise<Request> {
-    const data = UpdateDecisionReq.encode(request).finish();
-    const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "UpdateSuperSecurityDecision",
       data
     );
     return promise.then((data) => Request.decode(new _m0.Reader(data)));

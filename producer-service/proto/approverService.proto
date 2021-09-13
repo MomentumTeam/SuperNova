@@ -14,9 +14,9 @@ service ApproverService {
     rpc GetAllSuperSecurityApprovers(GetAllApproversReq) returns (ApproverArray) {}
     rpc GetAllCommanderApprovers(GetAllApproversReq) returns (ApproverArray) {}
     
-    rpc UpdateCommanderDecision(RequestService.UpdateDecisionReq) returns (RequestService.Request) {}
-    rpc UpdateSecurityDecision(RequestService.UpdateDecisionReq) returns (RequestService.Request) {}
-    rpc UpdateSuperSecurityDecision(RequestService.UpdateDecisionReq) returns (RequestService.Request) {}
+    rpc UpdateCommanderDecision(RequestService.UpdateApproverDecisionReq) returns (RequestService.Request) {}
+    rpc UpdateSecurityDecision(RequestService.UpdateApproverDecisionReq) returns (RequestService.Request) {}
+    rpc UpdateSuperSecurityDecision(RequestService.UpdateApproverDecisionReq) returns (RequestService.Request) {}
 
     rpc GetAllApprovers(GetAllApproversReq) returns (ApproverArray) {}
     rpc GetAllApproverIds(GetAllApproversReq) returns (ApproverIdArray) {}

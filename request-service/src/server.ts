@@ -14,7 +14,6 @@ import {
   canPushToADQueue,
   getRequestBySerialNumber,
   searchRequestsByDisplayNameFuncByPersonType,
-  updateApproverDecisionFuncByPersonType,
   incrementKartoffelRetries,
   incrementADRetries,
   getRequestsInProgressByDue,
@@ -22,6 +21,8 @@ import {
   updateCommanders,
   updateSecurityApprovers,
   getRequestsByPerson,
+  updateApproverDecision,
+  isRequestApproved,
 } from './requests/request.controller';
 import {
   PersonTypeInRequest,
@@ -109,19 +110,12 @@ export class Server {
         CanPushToADQueue: canPushToADQueue,
         IncrementKartoffelRetries: incrementKartoffelRetries,
         IncrementADRetries: incrementADRetries,
-        UpdateCommanderDecision: updateApproverDecisionFuncByPersonType(
-          PersonTypeInRequest.COMMANDER_APPROVER
-        ),
-        UpdateSecurityDecision: updateApproverDecisionFuncByPersonType(
-          PersonTypeInRequest.SECURITY_APPROVER
-        ),
-        UpdateSuperSecurityDecision: updateApproverDecisionFuncByPersonType(
-          PersonTypeInRequest.SUPER_SECURITY_APPROVER
-        ),
+        UpdateApproverDecision: updateApproverDecision,
         GetRequestsInProgressByDue: getRequestsInProgressByDue,
         GetRequestIdsInProgressByDue: getRequestIdsInProgressByDue,
         UpdateCommanders: updateCommanders,
         UpdateSecurityApprovers: updateSecurityApprovers,
+        IsRequestApproved: isRequestApproved,
       });
       logger.info(`Grpc services were successfully added to the server`);
     } catch (error) {

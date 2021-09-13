@@ -1,6 +1,7 @@
 import { RequestManager } from './request.manager';
 import * as grpc from 'grpc';
 import {
+  IsRequestApprovedRes,
   PersonTypeInRequest,
   Request,
   RequestReq,
@@ -8,7 +9,7 @@ import {
   requestTypeToJSON,
   SearchRequestsByDisplayNameReq,
   SuccessMessage,
-  UpdateDecisionReq,
+  UpdateApproverDecisionReq,
 } from '../interfaces/protoc/proto/requestService';
 import { logger } from '../logger';
 
@@ -53,6 +54,37 @@ export function createRequestFuncByType(type: RequestType) {
   return func;
 }
 
+export async function isRequestApproved(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    logger.info(`Call to isRequestApproved`, {
+      callRequest: call.request,
+    });
+    const isRequestApprovedRes: IsRequestApprovedRes =
+      await requestManager.isRequestApproved(call.request);
+    logger.info(`isRequestApproved OK`, {
+      callRequest: call.request,
+      response: isRequestApprovedRes,
+    });
+    callback(null, isRequestApprovedRes);
+  } catch (error) {
+    logger.error(`isRequestApproved ERROR`, {
+      callRequest: call.request,
+      error: error.message,
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
 export async function updateRequest(call: any, callback: any): Promise<void> {
   try {
     logger.info(`Call to updateRequest`, {
@@ -82,45 +114,33 @@ export async function updateRequest(call: any, callback: any): Promise<void> {
   }
 }
 
-export function updateApproverDecisionFuncByPersonType(
-  personType: PersonTypeInRequest
-) {
-  const func = async function updateApproverDecision(
-    call: any,
-    callback: any
-  ): Promise<void> {
-    try {
-      logger.info(`Call to updateApproverDecision`, {
-        personType: personType,
-        callRequest: call.request,
-      });
-      const response = await requestManager.updateApproverDecision(
-        call.request as UpdateDecisionReq,
-        personType
-      );
-      logger.info(`updateApproverDecision OK`, {
-        callRequest: call.request,
-        personType: personType,
-        response: response,
-      });
-      callback(null, response);
-    } catch (error) {
-      logger.error(`updateApproverDecision ERROR`, {
-        callRequest: call.request,
-        personType: personType,
-        error: error.message,
-      });
-      callback(
-        {
-          code: 400,
-          message: error.message,
-          status: grpc.status.CANCELLED,
-        },
-        null
-      );
-    }
-  };
-  return func;
+export async function updateApproverDecision(call: any, callback: any) {
+  try {
+    logger.info(`Call to updateApproverDecision`, {
+      callRequest: call.request,
+    });
+    const response = await requestManager.updateApproverDecision(
+      call.request as UpdateApproverDecisionReq
+    );
+    logger.info(`updateApproverDecision OK`, {
+      callRequest: call.request,
+      response: response,
+    });
+    callback(null, response);
+  } catch (error) {
+    logger.error(`updateApproverDecision ERROR`, {
+      callRequest: call.request,
+      error: error.message,
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
 }
 
 export function searchRequestsByDisplayNameFuncByPersonType(

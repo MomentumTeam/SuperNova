@@ -13,6 +13,8 @@ import {
   GetRequestsByPersonReq,
   GetRequestsInProgressByDueReq,
   IncrementRetriesReq,
+  IsRequestApprovedReq,
+  IsRequestApprovedRes,
   PersonInfoType,
   PersonTypeInRequest,
   Request,
@@ -28,7 +30,7 @@ import {
   SuccessMessage,
   UpdateADStatusReq,
   UpdateApproversReq,
-  UpdateDecisionReq,
+  UpdateApproverDecisionReq,
   UpdateKartoffelStatusReq,
 } from '../interfaces/protoc/proto/requestService';
 import { createNotifications } from '../services/notificationHelper';
@@ -109,9 +111,48 @@ export class RequestRepository {
     }
   }
 
+  async isRequestApproved(
+    isRequestApprovedReq: IsRequestApprovedReq
+  ): Promise<IsRequestApprovedRes> {
+    try {
+      const request = await this.getRequestById({
+        id: isRequestApprovedReq.id,
+      });
+      const needSecurityDecision = request.needSecurityDecision;
+      const needSuperSecurityDecision = request.needSuperSecurityDecision;
+      let commanderDecision: any = request.commanderDecision?.decision;
+      commanderDecision =
+        typeof commanderDecision === typeof ''
+          ? decisionFromJSON(commanderDecision)
+          : commanderDecision;
+      let securityDecision: any = request.securityDecision?.decision;
+      securityDecision =
+        typeof securityDecision === typeof ''
+          ? decisionFromJSON(securityDecision)
+          : securityDecision;
+      let superSecurityDecision: any = request.superSecurityDecision?.decision;
+      superSecurityDecision =
+        typeof superSecurityDecision === typeof ''
+          ? decisionFromJSON(superSecurityDecision)
+          : superSecurityDecision;
+      if (
+        commanderDecision === Decision.APPROVED &&
+        (!needSecurityDecision || securityDecision === Decision.APPROVED) &&
+        (!needSuperSecurityDecision ||
+          superSecurityDecision === Decision.APPROVED)
+      ) {
+        return { isRequestApproved: true };
+      } else {
+        return { isRequestApproved: false };
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async updateApproverDecision(
-    updateDecisionReq: UpdateDecisionReq,
-    personType: PersonTypeInRequest
+    updateDecisionReq: UpdateApproverDecisionReq,
+    approverType: PersonTypeInRequest
   ): Promise<Request> {
     try {
       let updateQuery: any = {
@@ -119,39 +160,54 @@ export class RequestRepository {
         requestProperties: {},
       };
       let approverField;
-      if (personType === PersonTypeInRequest.COMMANDER_APPROVER) {
-        approverField = 'commanderDecision';
-      } else if (personType === PersonTypeInRequest.SECURITY_APPROVER) {
-        approverField = 'securityDecision';
-      } else {
-        approverField = 'superSecurityDecision';
-        // PersonTypeInRequest.SUPER_SECURITY_APPROVER
+      switch (approverType) {
+        case PersonTypeInRequest.COMMANDER_APPROVER:
+          approverField = 'commanderDecision';
+          break;
+        case PersonTypeInRequest.SECURITY_APPROVER:
+          approverField = 'securityDecision';
+          break;
+        default:
+          // PersonTypeInRequest.SUPER_SECURITY_APPROVER
+          approverField = 'superSecurityDecision';
+          break;
       }
       updateQuery.requestProperties[approverField] =
         updateDecisionReq.approverDecision;
-      const updatedRequest = await this.updateRequest(updateQuery);
+      let updatedRequest = await this.updateRequest(updateQuery);
+
       let approvingNotificationType: any = undefined,
-        notificationType: any = undefined;
-      if (
-        updateDecisionReq.approverDecision?.decision.toString() ===
-        decisionToJSON(Decision.APPROVED)
-      ) {
-        if (personType === PersonTypeInRequest.COMMANDER_APPROVER) {
+        requestStatusNotificationType: any = undefined;
+      let newRequestStatus: any = undefined;
+      let decision =
+        typeof updateDecisionReq.approverDecision?.decision === typeof ''
+          ? decisionFromJSON(updateDecisionReq.approverDecision?.decision)
+          : updateDecisionReq.approverDecision?.decision;
+
+      if (decision === Decision.DENIED) {
+        newRequestStatus = RequestStatus.DECLINED;
+      } else if (this.isRequestApproved({ id: updateDecisionReq.id })) {
+        newRequestStatus = RequestStatus.IN_PROGRESS;
+      }
+      if (newRequestStatus) {
+        updatedRequest = await this.updateRequest({
+          id: updateDecisionReq.id,
+          requestProperties: { status: requestStatusToJSON(newRequestStatus) },
+        });
+      }
+
+      if (decision === Decision.APPROVED) {
+        if (approverType === PersonTypeInRequest.COMMANDER_APPROVER) {
           approvingNotificationType = NotificationType.REQUEST_APPROVED_1;
-        } else if (personType === PersonTypeInRequest.SECURITY_APPROVER) {
+        } else if (approverType === PersonTypeInRequest.SECURITY_APPROVER) {
           approvingNotificationType = NotificationType.REQUEST_APPROVED_2;
         } else {
           approvingNotificationType = NotificationType.REQUEST_APPROVED_3;
-          notificationType = NotificationType.REQUEST_IN_PROGRESS;
         }
-      } else if (
-        updateDecisionReq.approverDecision?.decision.toString() ===
-        decisionToJSON(Decision.DENIED)
-      ) {
-        notificationType = NotificationType.REQUEST_DECLINED;
-        if (personType === PersonTypeInRequest.COMMANDER_APPROVER) {
+      } else if (decision === Decision.DENIED) {
+        if (approverType === PersonTypeInRequest.COMMANDER_APPROVER) {
           approvingNotificationType = NotificationType.REQUEST_DECLINED_1;
-        } else if (personType === PersonTypeInRequest.SECURITY_APPROVER) {
+        } else if (approverType === PersonTypeInRequest.SECURITY_APPROVER) {
           approvingNotificationType = NotificationType.REQUEST_DECLINED_2;
         } else {
           approvingNotificationType = NotificationType.REQUEST_DECLINED_3;
@@ -159,8 +215,15 @@ export class RequestRepository {
       }
       if (approvingNotificationType) {
         await createNotifications(approvingNotificationType, updatedRequest);
-        if (notificationType) {
-          await createNotifications(notificationType, updatedRequest);
+        if (newRequestStatus) {
+          requestStatusNotificationType =
+            newRequestStatus === RequestStatus.IN_PROGRESS
+              ? NotificationType.REQUEST_IN_PROGRESS
+              : NotificationType.REQUEST_DECLINED;
+          await createNotifications(
+            requestStatusNotificationType,
+            updatedRequest
+          );
         }
       }
       return updatedRequest;

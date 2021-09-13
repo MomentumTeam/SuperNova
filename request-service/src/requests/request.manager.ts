@@ -21,8 +21,10 @@ import {
   SuccessMessage,
   UpdateADStatusReq,
   UpdateApproversReq,
-  UpdateDecisionReq,
+  UpdateApproverDecisionReq,
   UpdateKartoffelStatusReq,
+  IsRequestApprovedRes,
+  IsRequestApprovedReq,
 } from '../interfaces/protoc/proto/requestService';
 import { RequestRepository } from './request.repository';
 export class RequestManager {
@@ -105,14 +107,25 @@ export class RequestManager {
     }
   }
 
+  async isRequestApproved(
+    isRequestApprovedReq: IsRequestApprovedReq
+  ): Promise<IsRequestApprovedRes> {
+    return (await this.requestRepository.isRequestApproved(
+      isRequestApprovedReq
+    )) as IsRequestApprovedRes;
+  }
+
   async updateApproverDecision(
-    updateDecisionReq: UpdateDecisionReq,
-    personType: PersonTypeInRequest
+    updateDecisionReq: UpdateApproverDecisionReq
   ): Promise<Request> {
     try {
+      const approverType: PersonTypeInRequest =
+        typeof updateDecisionReq.approverType === typeof ''
+          ? personTypeInRequestFromJSON(updateDecisionReq.approverType)
+          : updateDecisionReq.approverType;
       return (await this.requestRepository.updateApproverDecision(
         updateDecisionReq,
-        personType
+        approverType
       )) as Request;
     } catch (error) {
       throw error;

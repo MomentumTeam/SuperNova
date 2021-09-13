@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Request, UpdateDecisionReq } from "./requestService";
+import { Request, UpdateApproverDecisionReq } from "./requestService";
 
 export const protobufPackage = "ApproverService";
 
@@ -1135,9 +1135,11 @@ export interface ApproverService {
     request: GetAllApproversReq
   ): Promise<ApproverArray>;
   GetAllCommanderApprovers(request: GetAllApproversReq): Promise<ApproverArray>;
-  UpdateCommanderDecision(request: UpdateDecisionReq): Promise<Request>;
-  UpdateSecurityDecision(request: UpdateDecisionReq): Promise<Request>;
-  UpdateSuperSecurityDecision(request: UpdateDecisionReq): Promise<Request>;
+  UpdateCommanderDecision(request: UpdateApproverDecisionReq): Promise<Request>;
+  UpdateSecurityDecision(request: UpdateApproverDecisionReq): Promise<Request>;
+  UpdateSuperSecurityDecision(
+    request: UpdateApproverDecisionReq
+  ): Promise<Request>;
   GetAllApprovers(request: GetAllApproversReq): Promise<ApproverArray>;
   GetAllApproverIds(request: GetAllApproversReq): Promise<ApproverIdArray>;
   SyncApprover(request: SyncApproverReq): Promise<Approver>;
@@ -1267,8 +1269,10 @@ export class ApproverServiceClientImpl implements ApproverService {
     return promise.then((data) => ApproverArray.decode(new _m0.Reader(data)));
   }
 
-  UpdateCommanderDecision(request: UpdateDecisionReq): Promise<Request> {
-    const data = UpdateDecisionReq.encode(request).finish();
+  UpdateCommanderDecision(
+    request: UpdateApproverDecisionReq
+  ): Promise<Request> {
+    const data = UpdateApproverDecisionReq.encode(request).finish();
     const promise = this.rpc.request(
       "ApproverService.ApproverService",
       "UpdateCommanderDecision",
@@ -1277,8 +1281,8 @@ export class ApproverServiceClientImpl implements ApproverService {
     return promise.then((data) => Request.decode(new _m0.Reader(data)));
   }
 
-  UpdateSecurityDecision(request: UpdateDecisionReq): Promise<Request> {
-    const data = UpdateDecisionReq.encode(request).finish();
+  UpdateSecurityDecision(request: UpdateApproverDecisionReq): Promise<Request> {
+    const data = UpdateApproverDecisionReq.encode(request).finish();
     const promise = this.rpc.request(
       "ApproverService.ApproverService",
       "UpdateSecurityDecision",
@@ -1287,8 +1291,10 @@ export class ApproverServiceClientImpl implements ApproverService {
     return promise.then((data) => Request.decode(new _m0.Reader(data)));
   }
 
-  UpdateSuperSecurityDecision(request: UpdateDecisionReq): Promise<Request> {
-    const data = UpdateDecisionReq.encode(request).finish();
+  UpdateSuperSecurityDecision(
+    request: UpdateApproverDecisionReq
+  ): Promise<Request> {
+    const data = UpdateApproverDecisionReq.encode(request).finish();
     const promise = this.rpc.request(
       "ApproverService.ApproverService",
       "UpdateSuperSecurityDecision",

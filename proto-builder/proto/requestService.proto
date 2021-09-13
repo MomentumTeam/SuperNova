@@ -26,6 +26,11 @@ service RequestService {
     rpc GetAllRequests(GetAllRequestsReq) returns (RequestArray){}
     rpc GetRequestById(GetRequestByIdReq) returns (Request) {}
 
+
+    rpc UpdateApproverDecision(UpdateApproverDecisionReq) returns (Request) {}
+
+    rpc IsRequestApproved(IsRequestApprovedReq) returns (IsRequestApprovedRes){}
+
     rpc SearchRequestsBySubmitterDisplayName(SearchRequestsByDisplayNameReq) returns (RequestArray) {}
     rpc SearchRequestsByCommanderDisplayName(SearchRequestsByDisplayNameReq) returns (RequestArray) {}
     rpc SearchRequestsBySecurityDisplayName(SearchRequestsByDisplayNameReq) returns (RequestArray) {}
@@ -34,9 +39,6 @@ service RequestService {
     rpc CanPushToADQueue(CanPushToQueueReq) returns (CanPushToQueueRes){}
     rpc IncrementKartoffelRetries(IncrementRetriesReq) returns (Request){}
     rpc IncrementADRetries(IncrementRetriesReq) returns (Request){}
-    rpc UpdateCommanderDecision(UpdateDecisionReq) returns (Request) {}
-    rpc UpdateSecurityDecision(UpdateDecisionReq) returns (Request) {}
-    rpc UpdateSuperSecurityDecision(UpdateDecisionReq) returns (Request) {}
     rpc GetRequestsInProgressByDue(GetRequestsInProgressByDueReq) returns (RequestArray){}
     rpc GetRequestIdsInProgressByDue(GetRequestsInProgressByDueReq) returns (RequestIdArray){}
     rpc UpdateCommanders(UpdateApproversReq) returns (Request){}
@@ -845,9 +847,10 @@ message IncrementRetriesReq{
 }
 
 // UpdateCommanderDecision, UpdateSecurityDecision, UpdateSuperSecurityDecision
-message UpdateDecisionReq{
+message UpdateApproverDecisionReq{
     string id = 1;
     ApproverDecision approverDecision = 2;
+    PersonTypeInRequest approverType = 3;
 }
 
 //GetRequestsInProgressByDue, GetRequestIdsInProgressByDue
@@ -859,6 +862,15 @@ message GetRequestsInProgressByDueReq{
 message UpdateApproversReq{
     string id = 1;
     repeated EntityMin approvers = 2;
+}
+
+//IsRequestApproved
+message IsRequestApprovedReq{
+    string id = 1;
+}
+
+message IsRequestApprovedRes{
+    bool isRequestApproved = 1;
 }
 
 // ---------------------------------------------Other Objects------------------------------------------------------------
