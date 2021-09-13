@@ -4,15 +4,12 @@ import * as C from './config';
 import { logger } from './logger';
 import {
   getRequestById,
-  getRequestsByCommander,
-  getRequestsSubmittedBy,
   updateRequest,
   deleteRequest,
   getAllRequests,
   createRequestFuncByType,
   updateKartoffelStatus,
   updateADStatus,
-  getRequestsByIdentifierFuncByPersonType,
   canPushToKartoffelQueue,
   canPushToADQueue,
   getRequestBySerialNumber,
@@ -24,10 +21,13 @@ import {
   getRequestIdsInProgressByDue,
   updateCommanders,
   updateSecurityApprovers,
+  getRequestsByPerson,
 } from './requests/request.controller';
-import { RequestType } from './interfaces/protoc/proto/requestService';
+import {
+  PersonTypeInRequest,
+  RequestType,
+} from './interfaces/protoc/proto/requestService';
 import { findPath } from './utils/path';
-import { PersonTypeInRequest } from './enums/personTypeInRequest.enum';
 import { addHealthService } from './health';
 
 const PROTO_PATH = `${findPath('proto')}/requestService.proto`;
@@ -81,8 +81,7 @@ export class Server {
         DisconectRoleFromEntityRequest: createRequestFuncByType(
           RequestType.DISCONNECT_ROLE
         ),
-        GetRequestsByCommander: getRequestsByCommander,
-        GetRequestsSubmittedBy: getRequestsSubmittedBy,
+        GetRequestsByPerson: getRequestsByPerson,
         GetRequestById: getRequestById,
         UpdateRequest: updateRequest,
         UpdateKartoffelStatus: updateKartoffelStatus,
@@ -90,27 +89,13 @@ export class Server {
         DeleteRequest: deleteRequest,
         GetAllRequests: getAllRequests,
         GetRequestBySerialNumber: getRequestBySerialNumber,
-        GetRequestsBySubmitterIdentifier:
-          getRequestsByIdentifierFuncByPersonType(
-            PersonTypeInRequest.SUBMITTER
-          ),
-        GetRequestsByCommanderIdentifier:
-          getRequestsByIdentifierFuncByPersonType(
-            PersonTypeInRequest.COMMANDER
-          ),
-        GetRequestsBySecurityIdentifier:
-          getRequestsByIdentifierFuncByPersonType(
-            PersonTypeInRequest.SECURITY_APPROVER
-          ),
-        GetRequestsByApproverIdentifier:
-          getRequestsByIdentifierFuncByPersonType(PersonTypeInRequest.APPROVER),
         SearchRequestsBySubmitterDisplayName:
           searchRequestsByDisplayNameFuncByPersonType(
             PersonTypeInRequest.SUBMITTER
           ),
         SearchRequestsByCommanderDisplayName:
           searchRequestsByDisplayNameFuncByPersonType(
-            PersonTypeInRequest.COMMANDER
+            PersonTypeInRequest.COMMANDER_APPROVER
           ),
         SearchRequestsBySecurityDisplayName:
           searchRequestsByDisplayNameFuncByPersonType(
@@ -125,7 +110,7 @@ export class Server {
         IncrementKartoffelRetries: incrementKartoffelRetries,
         IncrementADRetries: incrementADRetries,
         UpdateCommanderDecision: updateApproverDecisionFuncByPersonType(
-          PersonTypeInRequest.COMMANDER
+          PersonTypeInRequest.COMMANDER_APPROVER
         ),
         UpdateSecurityDecision: updateApproverDecisionFuncByPersonType(
           PersonTypeInRequest.SECURITY_APPROVER

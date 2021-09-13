@@ -1,8 +1,6 @@
-import { PersonTypeInRequest } from '../enums/personTypeInRequest.enum';
 import {
   ApproverType,
   approverTypeFromJSON,
-  approverTypeToJSON,
   CanPushToQueueReq,
   CanPushToQueueRes,
   Decision,
@@ -12,22 +10,21 @@ import {
   GetAllRequestsReq,
   GetRequestByIdReq,
   GetRequestBySerialNumberReq,
-  GetRequestsByIdentifierReq,
-  GetRequestsByPersonIdReq,
+  GetRequestsByPersonReq,
   GetRequestsInProgressByDueReq,
   IncrementRetriesReq,
+  PersonInfoType,
+  PersonTypeInRequest,
   Request,
   RequestArray,
   RequestIdArray,
   RequestStatus,
   requestStatusToJSON,
   RequestType,
-  requestTypeFromJSON,
   requestTypeToJSON,
   SearchRequestsByDisplayNameReq,
   StageStatus,
   stageStatusFromJSON,
-  stageStatusToJSON,
   SuccessMessage,
   UpdateADStatusReq,
   UpdateApproversReq,
@@ -41,10 +38,8 @@ import {
   cleanUnderscoreFields,
   turnObjectIdsToStrings,
 } from '../services/requestHelper';
-import {
-  NotificationType,
-  OwnerType,
-} from '../interfaces/protoc/proto/notificationService';
+import { NotificationType } from '../interfaces/protoc/proto/notificationService';
+import { getIdentifierQuery, getIdQuery } from '../utils/query';
 
 export class RequestRepository {
   async createRequest(
@@ -124,7 +119,7 @@ export class RequestRepository {
         requestProperties: {},
       };
       let approverField;
-      if (personType === PersonTypeInRequest.COMMANDER) {
+      if (personType === PersonTypeInRequest.COMMANDER_APPROVER) {
         approverField = 'commanderDecision';
       } else if (personType === PersonTypeInRequest.SECURITY_APPROVER) {
         approverField = 'securityDecision';
@@ -141,7 +136,7 @@ export class RequestRepository {
         updateDecisionReq.approverDecision?.decision.toString() ===
         decisionToJSON(Decision.APPROVED)
       ) {
-        if (personType === PersonTypeInRequest.COMMANDER) {
+        if (personType === PersonTypeInRequest.COMMANDER_APPROVER) {
           approvingNotificationType = NotificationType.REQUEST_APPROVED_1;
         } else if (personType === PersonTypeInRequest.SECURITY_APPROVER) {
           approvingNotificationType = NotificationType.REQUEST_APPROVED_2;
@@ -154,7 +149,7 @@ export class RequestRepository {
         decisionToJSON(Decision.DENIED)
       ) {
         notificationType = NotificationType.REQUEST_DECLINED;
-        if (personType === PersonTypeInRequest.COMMANDER) {
+        if (personType === PersonTypeInRequest.COMMANDER_APPROVER) {
           approvingNotificationType = NotificationType.REQUEST_DECLINED_1;
         } else if (personType === PersonTypeInRequest.SECURITY_APPROVER) {
           approvingNotificationType = NotificationType.REQUEST_DECLINED_2;
@@ -370,7 +365,7 @@ export class RequestRepository {
         query = {
           $text: { $search: displayName },
         };
-      } else if (personType === PersonTypeInRequest.COMMANDER) {
+      } else if (personType === PersonTypeInRequest.COMMANDER_APPROVER) {
         query = {
           $text: { $search: displayName },
         };
@@ -396,58 +391,58 @@ export class RequestRepository {
     }
   }
 
-  async getRequestsByIdentifier(
-    getRequestsByIdentifierReq: GetRequestsByIdentifierReq,
-    personType: PersonTypeInRequest
-  ): Promise<RequestArray> {
-    try {
-      let query: any = {};
-      const identifier = getRequestsByIdentifierReq.identifier;
-      if (personType === PersonTypeInRequest.SUBMITTER) {
-        query = {
-          $or: [
-            { 'submittedBy.personalNumber': identifier },
-            { 'submittedBy.identityCard': identifier },
-          ],
-        };
-      } else if (personType === PersonTypeInRequest.COMMANDER) {
-        query = {
-          $or: [
-            { 'commanders.personalNumber': identifier },
-            { 'commanders.identityCard': identifier },
-          ],
-        };
-      } else if (personType === PersonTypeInRequest.SECURITY_APPROVER) {
-        query = {
-          $or: [
-            { 'securityApprovers.personalNumber': identifier },
-            { 'securityApprovers.identityCard': identifier },
-          ],
-        };
-      } else {
-        //approver
-        query = {
-          $or: [
-            { 'submittedBy.personalNumber': identifier },
-            { 'submittedBy.identityCard': identifier },
-            { 'commanders.personalNumber': identifier },
-            { 'commanders.identityCard': identifier },
-            { 'securityApprovers.personalNumber': identifier },
-            { 'securityApprovers.identityCard': identifier },
-          ],
-        };
-      }
-      const requestArray = await this.getRequestsByQuery(
-        query,
-        true,
-        getRequestsByIdentifierReq.from,
-        getRequestsByIdentifierReq.to
-      );
-      return requestArray;
-    } catch (error) {
-      throw error;
-    }
-  }
+  // async getRequestsByIdentifier(
+  //   getRequestsByIdentifierReq: GetRequestsByIdentifierReq,
+  //   personType: PersonTypeInRequest
+  // ): Promise<RequestArray> {
+  //   try {
+  //     let query: any = {};
+  //     const identifier = getRequestsByIdentifierReq.identifier;
+  //     if (personType === PersonTypeInRequest.SUBMITTER) {
+  //       query = {
+  //         $or: [
+  //           { 'submittedBy.personalNumber': identifier },
+  //           { 'submittedBy.identityCard': identifier },
+  //         ],
+  //       };
+  //     } else if (personType === PersonTypeInRequest.COMMANDER_APPROVER) {
+  //       query = {
+  //         $or: [
+  //           { 'commanders.personalNumber': identifier },
+  //           { 'commanders.identityCard': identifier },
+  //         ],
+  //       };
+  //     } else if (personType === PersonTypeInRequest.SECURITY_APPROVER) {
+  //       query = {
+  //         $or: [
+  //           { 'securityApprovers.personalNumber': identifier },
+  //           { 'securityApprovers.identityCard': identifier },
+  //         ],
+  //       };
+  //     } else {
+  //       //approver
+  //       query = {
+  //         $or: [
+  //           { 'submittedBy.personalNumber': identifier },
+  //           { 'submittedBy.identityCard': identifier },
+  //           { 'commanders.personalNumber': identifier },
+  //           { 'commanders.identityCard': identifier },
+  //           { 'securityApprovers.personalNumber': identifier },
+  //           { 'securityApprovers.identityCard': identifier },
+  //         ],
+  //       };
+  //     }
+  //     const requestArray = await this.getRequestsByQuery(
+  //       query,
+  //       true,
+  //       getRequestsByIdentifierReq.from,
+  //       getRequestsByIdentifierReq.to
+  //     );
+  //     return requestArray;
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
 
   async deleteRequest(deleteReq: DeleteReq): Promise<SuccessMessage> {
     try {
@@ -1007,27 +1002,28 @@ export class RequestRepository {
     }
   }
 
-  async getRequestsByPersonId(
-    getRequestsByPersonIdReq: GetRequestsByPersonIdReq,
-    personTypeInRequest: PersonTypeInRequest
+  async getRequestsByPerson(
+    getRequestsByPersonReq: GetRequestsByPersonReq,
+    personTypesInRequest: PersonTypeInRequest,
+    personInfoType: PersonInfoType
   ) {
     try {
-      const field =
-        personTypeInRequest === PersonTypeInRequest.COMMANDER
-          ? 'commanders.id'
-          : 'submittedBy.id';
-      const totalCount = await RequestModel.count({
-        [field]: getRequestsByPersonIdReq.id,
-      });
+      let query = {};
+      if (personInfoType === PersonInfoType.ID) {
+        query = getIdQuery(getRequestsByPersonReq.id, personTypesInRequest);
+      } else {
+        query = getIdentifierQuery(
+          getRequestsByPersonReq.id,
+          personTypesInRequest
+        );
+      }
+      const totalCount = await RequestModel.count(query);
       const requests: any = await RequestModel.find(
-        {
-          [field]: getRequestsByPersonIdReq.id,
-        },
+        query,
         {},
         {
-          skip: getRequestsByPersonIdReq.from - 1,
-          limit:
-            getRequestsByPersonIdReq.to - getRequestsByPersonIdReq.from + 1,
+          skip: getRequestsByPersonReq.from - 1,
+          limit: getRequestsByPersonReq.to - getRequestsByPersonReq.from + 1,
         }
       ).sort([['updatedAt', -1]]);
       if (requests) {

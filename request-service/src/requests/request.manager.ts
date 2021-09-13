@@ -1,4 +1,3 @@
-import { PersonTypeInRequest } from '../enums/personTypeInRequest.enum';
 import {
   CanPushToQueueReq,
   CanPushToQueueRes,
@@ -6,10 +5,13 @@ import {
   GetAllRequestsReq,
   GetRequestByIdReq,
   GetRequestBySerialNumberReq,
-  GetRequestsByIdentifierReq,
-  GetRequestsByPersonIdReq,
+  GetRequestsByPersonReq,
   GetRequestsInProgressByDueReq,
   IncrementRetriesReq,
+  PersonInfoType,
+  personInfoTypeFromJSON,
+  PersonTypeInRequest,
+  personTypeInRequestFromJSON,
   Request,
   RequestArray,
   RequestIdArray,
@@ -175,20 +177,6 @@ export class RequestManager {
     }
   }
 
-  async getRequestsByIdentifier(
-    getRequestsByIdentifier: GetRequestsByIdentifierReq,
-    personType: PersonTypeInRequest
-  ): Promise<RequestArray> {
-    try {
-      return (await this.requestRepository.getRequestsByIdentifier(
-        getRequestsByIdentifier,
-        personType
-      )) as RequestArray;
-    } catch (error) {
-      throw error;
-    }
-  }
-
   async deleteRequest(deleteRequestReq: DeleteReq): Promise<SuccessMessage> {
     try {
       return (await this.requestRepository.deleteRequest(
@@ -253,14 +241,20 @@ export class RequestManager {
     }
   }
 
-  async getRequestsByPersonId(
-    getRequestsByPersonIdReq: GetRequestsByPersonIdReq,
-    personTypeInRequest: PersonTypeInRequest
-  ) {
+  async getRequestsByPerson(getRequestsByPersonReq: GetRequestsByPersonReq) {
     try {
-      return await this.requestRepository.getRequestsByPersonId(
-        getRequestsByPersonIdReq,
-        personTypeInRequest
+      const personType: PersonTypeInRequest =
+        typeof getRequestsByPersonReq.personType === typeof ''
+          ? personTypeInRequestFromJSON(getRequestsByPersonReq.personType)
+          : getRequestsByPersonReq.personType;
+      const personInfoType: PersonInfoType =
+        typeof getRequestsByPersonReq.personInfoType === typeof ''
+          ? personInfoTypeFromJSON(getRequestsByPersonReq.personInfoType)
+          : getRequestsByPersonReq.personInfoType;
+      return await this.requestRepository.getRequestsByPerson(
+        getRequestsByPersonReq,
+        personType,
+        personInfoType
       );
     } catch (error) {
       throw error;

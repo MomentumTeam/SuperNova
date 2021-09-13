@@ -153,6 +153,14 @@ const RequestSchema = new Schema(
         personalNumber: { type: String, default: '' },
       },
     ],
+    superSecurityApprovers: [
+      {
+        id: { type: mongoose.Schema.Types.ObjectId, default: null },
+        displayName: { type: String, default: '' },
+        identityCard: { type: String, default: '' },
+        personalNumber: { type: String, default: '' },
+      },
+    ],
     kartoffelStatus: {
       type: {
         status: {

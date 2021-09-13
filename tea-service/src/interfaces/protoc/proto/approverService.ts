@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Request, UpdateDecisionReq } from "../proto/requestService";
+import { Request, UpdateDecisionReq } from "./requestService";
 
 export const protobufPackage = "ApproverService";
 

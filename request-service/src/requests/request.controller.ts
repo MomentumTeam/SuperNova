@@ -1,8 +1,7 @@
 import { RequestManager } from './request.manager';
 import * as grpc from 'grpc';
-import { PersonTypeInRequest } from '../enums/personTypeInRequest.enum';
 import {
-  GetRequestsByIdentifierReq,
+  PersonTypeInRequest,
   Request,
   RequestReq,
   RequestType,
@@ -148,47 +147,6 @@ export function searchRequestsByDisplayNameFuncByPersonType(
       callback(null, response);
     } catch (error) {
       logger.error(`searchRequestsByDisplayName ERROR`, {
-        callRequest: call.request,
-        personType: personType,
-        error: error.message,
-      });
-      callback(
-        {
-          code: 400,
-          message: error.message,
-          status: grpc.status.CANCELLED,
-        },
-        null
-      );
-    }
-  };
-  return func;
-}
-
-export function getRequestsByIdentifierFuncByPersonType(
-  personType: PersonTypeInRequest
-) {
-  const func = async function getRequestsByIdentifier(
-    call: any,
-    callback: any
-  ): Promise<void> {
-    try {
-      logger.info(`Call to getRequestsByIdentifier`, {
-        personType: personType,
-        callRequest: call.request,
-      });
-      const response = await requestManager.getRequestsByIdentifier(
-        call.request as GetRequestsByIdentifierReq,
-        personType
-      );
-      logger.info(`getRequestsByIdentifier OK`, {
-        callRequest: call.request,
-        personType: personType,
-        response: response,
-      });
-      callback(null, response);
-    } catch (error) {
-      logger.error(`getRequestsByIdentifier ERROR`, {
         callRequest: call.request,
         personType: personType,
         error: error.message,
@@ -609,58 +567,22 @@ export async function incrementADRetries(
   }
 }
 
-export async function getRequestsByCommander(
+export async function getRequestsByPerson(
   call: any,
   callback: any
 ): Promise<void> {
   try {
-    logger.info(`Call to getRequestsByCommander`, {
+    logger.info(`Call to getRequestsByPerson`, {
       callRequest: call.request,
     });
-    const requests = await requestManager.getRequestsByPersonId(
-      call.request,
-      PersonTypeInRequest.COMMANDER
-    );
-    logger.info(`getRequestsByCommander OK`, {
+    const requests = await requestManager.getRequestsByPerson(call.request);
+    logger.info(`getRequestsByPerson OK`, {
       callRequest: call.request,
       response: requests,
     });
     callback(null, requests);
   } catch (error) {
-    logger.error(`getRequestsByCommander ERROR`, {
-      callRequest: call.request,
-      error: error.message,
-    });
-    callback(
-      {
-        code: 400,
-        message: error.message,
-        status: grpc.status.CANCELLED,
-      },
-      null
-    );
-  }
-}
-
-export async function getRequestsSubmittedBy(
-  call: any,
-  callback: any
-): Promise<void> {
-  try {
-    logger.info(`Call to getRequestsSubmittedBy`, {
-      callRequest: call.request,
-    });
-    const requests = await requestManager.getRequestsByPersonId(
-      call.request,
-      PersonTypeInRequest.SUBMITTER
-    );
-    logger.info(`getRequestsSubmittedBy OK`, {
-      callRequest: call.request,
-      response: requests,
-    });
-    callback(null, requests);
-  } catch (error) {
-    logger.error(`getRequestsSubmittedBy ERROR`, {
+    logger.error(`getRequestsByPerson ERROR`, {
       callRequest: call.request,
       error: error.message,
     });
