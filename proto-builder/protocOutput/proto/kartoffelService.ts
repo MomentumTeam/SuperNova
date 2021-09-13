@@ -6231,6 +6231,7 @@ export interface Kartoffel {
     request: SearchEntitiesByFullNameRequest
   ): Promise<EntityArray>;
   GetEntityById(request: GetEntityByIdRequest): Promise<Entity>;
+  GetPictureByEntityId(request: GetPictureByEntityIdRequest): Promise<Image>;
   DeleteEntity(request: DeleteEntityRequest): Promise<SuccessMessage>;
   UpdateEntity(request: UpdateEntityRequest): Promise<Entity>;
   ConnectEntityAndDI(
@@ -6239,45 +6240,40 @@ export interface Kartoffel {
   DisconnectDIFromEntity(
     request: DisconnectDIFromEntityRequest
   ): Promise<SuccessMessage>;
-  GetPictureByEntityId(request: GetPictureByEntityIdRequest): Promise<Image>;
   /** Groups */
-  GetAllOGs(request: GetAllOGsRequest): Promise<OGArray>;
   CreateOG(request: CreateOGRequest): Promise<OrganizationGroup>;
+  GetAllOGs(request: GetAllOGsRequest): Promise<OGArray>;
   GetOGByHierarchyName(
     request: GetOGByHierarchyNameRequest
   ): Promise<OrganizationGroup>;
   SearchOG(request: SearchOGRequest): Promise<OGArray>;
-  DeleteOG(request: DeleteOGRequest): Promise<SuccessMessage>;
-  GetOGById(request: GetOGByIdRequest): Promise<OrganizationGroup>;
   GetChildrenOfOG(request: GetChildrenOfOGRequest): Promise<OGArray>;
+  GetOGById(request: GetOGByIdRequest): Promise<OrganizationGroup>;
+  GetOGTree(request: GetOGTreeRequest): Promise<OGTree>;
+  DeleteOG(request: DeleteOGRequest): Promise<SuccessMessage>;
   UpdateOGParent(request: UpdateOGParentRequest): Promise<SuccessMessage>;
   RenameOG(request: RenameOGRequest): Promise<SuccessMessage>;
-  GetOGTree(request: GetOGTreeRequest): Promise<OGTree>;
   /** DI */
-  GetAllDIs(request: GetAllDIsRequest): Promise<DigitalIdentities>;
   CreateDI(request: CreateDIRequest): Promise<DigitalIdentity>;
+  GetAllDIs(request: GetAllDIsRequest): Promise<DigitalIdentities>;
   GetDIByRoleId(request: GetDIByRoleIdRequest): Promise<DigitalIdentity>;
   SearchDIOrUniqueId(
     request: SearchDIOrUniqueIdRequest
   ): Promise<DigitalIdentities>;
-  DeleteDI(request: DeleteDIRequest): Promise<SuccessMessage>;
   GetDIByUniqueId(request: GetDIByUniqueIdRequest): Promise<DigitalIdentity>;
+  DeleteDI(request: DeleteDIRequest): Promise<SuccessMessage>;
   UpdateDI(request: UpdateDIRequest): Promise<SuccessMessage>;
   /** Roles */
-  GetAllRoles(request: GetAllRolesRequest): Promise<RoleArray>;
   CreateRole(request: CreateRoleRequest): Promise<Role>;
+  GetAllRoles(request: GetAllRolesRequest): Promise<RoleArray>;
+  GetRoleByRoleId(request: GetRoleByRoleIdRequest): Promise<Role>;
+  GetRolesUnderOG(request: GetRolesUnderOGRequest): Promise<RoleArray>;
   ConnectRoleAndDI(request: ConnectRoleAndDIRequest): Promise<SuccessMessage>;
   DisconnectRoleAndDI(
     request: DisconnectRoleAndDIRequest
   ): Promise<SuccessMessage>;
-  GetRoleByRoleId(request: GetRoleByRoleIdRequest): Promise<Role>;
-  GetRolesUnderOG(request: GetRolesUnderOGRequest): Promise<RoleArray>;
   DeleteRole(request: DeleteRoleRequest): Promise<SuccessMessage>;
   RenameRole(request: RenameRoleRequest): Promise<SuccessMessage>;
-  GetRolesByHierarchy(
-    request: GetRolesByHierarchyRequest
-  ): Promise<SuccessMessage>;
-  ChangeRoleOG(request: ChangeRoleOGRequest): Promise<SuccessMessage>;
 }
 
 export class KartoffelClientImpl implements Kartoffel {
@@ -6292,38 +6288,36 @@ export class KartoffelClientImpl implements Kartoffel {
     this.GetEntityByIdentifier = this.GetEntityByIdentifier.bind(this);
     this.SearchEntitiesByFullName = this.SearchEntitiesByFullName.bind(this);
     this.GetEntityById = this.GetEntityById.bind(this);
+    this.GetPictureByEntityId = this.GetPictureByEntityId.bind(this);
     this.DeleteEntity = this.DeleteEntity.bind(this);
     this.UpdateEntity = this.UpdateEntity.bind(this);
     this.ConnectEntityAndDI = this.ConnectEntityAndDI.bind(this);
     this.DisconnectDIFromEntity = this.DisconnectDIFromEntity.bind(this);
-    this.GetPictureByEntityId = this.GetPictureByEntityId.bind(this);
-    this.GetAllOGs = this.GetAllOGs.bind(this);
     this.CreateOG = this.CreateOG.bind(this);
+    this.GetAllOGs = this.GetAllOGs.bind(this);
     this.GetOGByHierarchyName = this.GetOGByHierarchyName.bind(this);
     this.SearchOG = this.SearchOG.bind(this);
-    this.DeleteOG = this.DeleteOG.bind(this);
-    this.GetOGById = this.GetOGById.bind(this);
     this.GetChildrenOfOG = this.GetChildrenOfOG.bind(this);
+    this.GetOGById = this.GetOGById.bind(this);
+    this.GetOGTree = this.GetOGTree.bind(this);
+    this.DeleteOG = this.DeleteOG.bind(this);
     this.UpdateOGParent = this.UpdateOGParent.bind(this);
     this.RenameOG = this.RenameOG.bind(this);
-    this.GetOGTree = this.GetOGTree.bind(this);
-    this.GetAllDIs = this.GetAllDIs.bind(this);
     this.CreateDI = this.CreateDI.bind(this);
+    this.GetAllDIs = this.GetAllDIs.bind(this);
     this.GetDIByRoleId = this.GetDIByRoleId.bind(this);
     this.SearchDIOrUniqueId = this.SearchDIOrUniqueId.bind(this);
-    this.DeleteDI = this.DeleteDI.bind(this);
     this.GetDIByUniqueId = this.GetDIByUniqueId.bind(this);
+    this.DeleteDI = this.DeleteDI.bind(this);
     this.UpdateDI = this.UpdateDI.bind(this);
-    this.GetAllRoles = this.GetAllRoles.bind(this);
     this.CreateRole = this.CreateRole.bind(this);
-    this.ConnectRoleAndDI = this.ConnectRoleAndDI.bind(this);
-    this.DisconnectRoleAndDI = this.DisconnectRoleAndDI.bind(this);
+    this.GetAllRoles = this.GetAllRoles.bind(this);
     this.GetRoleByRoleId = this.GetRoleByRoleId.bind(this);
     this.GetRolesUnderOG = this.GetRolesUnderOG.bind(this);
+    this.ConnectRoleAndDI = this.ConnectRoleAndDI.bind(this);
+    this.DisconnectRoleAndDI = this.DisconnectRoleAndDI.bind(this);
     this.DeleteRole = this.DeleteRole.bind(this);
     this.RenameRole = this.RenameRole.bind(this);
-    this.GetRolesByHierarchy = this.GetRolesByHierarchy.bind(this);
-    this.ChangeRoleOG = this.ChangeRoleOG.bind(this);
   }
   CreateEntity(request: CreateEntityRequest): Promise<Entity> {
     const data = CreateEntityRequest.encode(request).finish();
@@ -6411,6 +6405,16 @@ export class KartoffelClientImpl implements Kartoffel {
     return promise.then((data) => Entity.decode(new _m0.Reader(data)));
   }
 
+  GetPictureByEntityId(request: GetPictureByEntityIdRequest): Promise<Image> {
+    const data = GetPictureByEntityIdRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "GetPictureByEntityId",
+      data
+    );
+    return promise.then((data) => Image.decode(new _m0.Reader(data)));
+  }
+
   DeleteEntity(request: DeleteEntityRequest): Promise<SuccessMessage> {
     const data = DeleteEntityRequest.encode(request).finish();
     const promise = this.rpc.request(
@@ -6455,28 +6459,18 @@ export class KartoffelClientImpl implements Kartoffel {
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
-  GetPictureByEntityId(request: GetPictureByEntityIdRequest): Promise<Image> {
-    const data = GetPictureByEntityIdRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "GetPictureByEntityId",
-      data
-    );
-    return promise.then((data) => Image.decode(new _m0.Reader(data)));
-  }
-
-  GetAllOGs(request: GetAllOGsRequest): Promise<OGArray> {
-    const data = GetAllOGsRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "GetAllOGs", data);
-    return promise.then((data) => OGArray.decode(new _m0.Reader(data)));
-  }
-
   CreateOG(request: CreateOGRequest): Promise<OrganizationGroup> {
     const data = CreateOGRequest.encode(request).finish();
     const promise = this.rpc.request("Kartoffel.Kartoffel", "CreateOG", data);
     return promise.then((data) =>
       OrganizationGroup.decode(new _m0.Reader(data))
     );
+  }
+
+  GetAllOGs(request: GetAllOGsRequest): Promise<OGArray> {
+    const data = GetAllOGsRequest.encode(request).finish();
+    const promise = this.rpc.request("Kartoffel.Kartoffel", "GetAllOGs", data);
+    return promise.then((data) => OGArray.decode(new _m0.Reader(data)));
   }
 
   GetOGByHierarchyName(
@@ -6499,10 +6493,14 @@ export class KartoffelClientImpl implements Kartoffel {
     return promise.then((data) => OGArray.decode(new _m0.Reader(data)));
   }
 
-  DeleteOG(request: DeleteOGRequest): Promise<SuccessMessage> {
-    const data = DeleteOGRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "DeleteOG", data);
-    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
+  GetChildrenOfOG(request: GetChildrenOfOGRequest): Promise<OGArray> {
+    const data = GetChildrenOfOGRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "GetChildrenOfOG",
+      data
+    );
+    return promise.then((data) => OGArray.decode(new _m0.Reader(data)));
   }
 
   GetOGById(request: GetOGByIdRequest): Promise<OrganizationGroup> {
@@ -6513,14 +6511,16 @@ export class KartoffelClientImpl implements Kartoffel {
     );
   }
 
-  GetChildrenOfOG(request: GetChildrenOfOGRequest): Promise<OGArray> {
-    const data = GetChildrenOfOGRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "GetChildrenOfOG",
-      data
-    );
-    return promise.then((data) => OGArray.decode(new _m0.Reader(data)));
+  GetOGTree(request: GetOGTreeRequest): Promise<OGTree> {
+    const data = GetOGTreeRequest.encode(request).finish();
+    const promise = this.rpc.request("Kartoffel.Kartoffel", "GetOGTree", data);
+    return promise.then((data) => OGTree.decode(new _m0.Reader(data)));
+  }
+
+  DeleteOG(request: DeleteOGRequest): Promise<SuccessMessage> {
+    const data = DeleteOGRequest.encode(request).finish();
+    const promise = this.rpc.request("Kartoffel.Kartoffel", "DeleteOG", data);
+    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
   UpdateOGParent(request: UpdateOGParentRequest): Promise<SuccessMessage> {
@@ -6539,10 +6539,10 @@ export class KartoffelClientImpl implements Kartoffel {
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
-  GetOGTree(request: GetOGTreeRequest): Promise<OGTree> {
-    const data = GetOGTreeRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "GetOGTree", data);
-    return promise.then((data) => OGTree.decode(new _m0.Reader(data)));
+  CreateDI(request: CreateDIRequest): Promise<DigitalIdentity> {
+    const data = CreateDIRequest.encode(request).finish();
+    const promise = this.rpc.request("Kartoffel.Kartoffel", "CreateDI", data);
+    return promise.then((data) => DigitalIdentity.decode(new _m0.Reader(data)));
   }
 
   GetAllDIs(request: GetAllDIsRequest): Promise<DigitalIdentities> {
@@ -6551,12 +6551,6 @@ export class KartoffelClientImpl implements Kartoffel {
     return promise.then((data) =>
       DigitalIdentities.decode(new _m0.Reader(data))
     );
-  }
-
-  CreateDI(request: CreateDIRequest): Promise<DigitalIdentity> {
-    const data = CreateDIRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "CreateDI", data);
-    return promise.then((data) => DigitalIdentity.decode(new _m0.Reader(data)));
   }
 
   GetDIByRoleId(request: GetDIByRoleIdRequest): Promise<DigitalIdentity> {
@@ -6583,12 +6577,6 @@ export class KartoffelClientImpl implements Kartoffel {
     );
   }
 
-  DeleteDI(request: DeleteDIRequest): Promise<SuccessMessage> {
-    const data = DeleteDIRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "DeleteDI", data);
-    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
-  }
-
   GetDIByUniqueId(request: GetDIByUniqueIdRequest): Promise<DigitalIdentity> {
     const data = GetDIByUniqueIdRequest.encode(request).finish();
     const promise = this.rpc.request(
@@ -6599,10 +6587,22 @@ export class KartoffelClientImpl implements Kartoffel {
     return promise.then((data) => DigitalIdentity.decode(new _m0.Reader(data)));
   }
 
+  DeleteDI(request: DeleteDIRequest): Promise<SuccessMessage> {
+    const data = DeleteDIRequest.encode(request).finish();
+    const promise = this.rpc.request("Kartoffel.Kartoffel", "DeleteDI", data);
+    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
+  }
+
   UpdateDI(request: UpdateDIRequest): Promise<SuccessMessage> {
     const data = UpdateDIRequest.encode(request).finish();
     const promise = this.rpc.request("Kartoffel.Kartoffel", "UpdateDI", data);
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
+  }
+
+  CreateRole(request: CreateRoleRequest): Promise<Role> {
+    const data = CreateRoleRequest.encode(request).finish();
+    const promise = this.rpc.request("Kartoffel.Kartoffel", "CreateRole", data);
+    return promise.then((data) => Role.decode(new _m0.Reader(data)));
   }
 
   GetAllRoles(request: GetAllRolesRequest): Promise<RoleArray> {
@@ -6615,10 +6615,24 @@ export class KartoffelClientImpl implements Kartoffel {
     return promise.then((data) => RoleArray.decode(new _m0.Reader(data)));
   }
 
-  CreateRole(request: CreateRoleRequest): Promise<Role> {
-    const data = CreateRoleRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "CreateRole", data);
+  GetRoleByRoleId(request: GetRoleByRoleIdRequest): Promise<Role> {
+    const data = GetRoleByRoleIdRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "GetRoleByRoleId",
+      data
+    );
     return promise.then((data) => Role.decode(new _m0.Reader(data)));
+  }
+
+  GetRolesUnderOG(request: GetRolesUnderOGRequest): Promise<RoleArray> {
+    const data = GetRolesUnderOGRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "GetRolesUnderOG",
+      data
+    );
+    return promise.then((data) => RoleArray.decode(new _m0.Reader(data)));
   }
 
   ConnectRoleAndDI(request: ConnectRoleAndDIRequest): Promise<SuccessMessage> {
@@ -6643,26 +6657,6 @@ export class KartoffelClientImpl implements Kartoffel {
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
-  GetRoleByRoleId(request: GetRoleByRoleIdRequest): Promise<Role> {
-    const data = GetRoleByRoleIdRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "GetRoleByRoleId",
-      data
-    );
-    return promise.then((data) => Role.decode(new _m0.Reader(data)));
-  }
-
-  GetRolesUnderOG(request: GetRolesUnderOGRequest): Promise<RoleArray> {
-    const data = GetRolesUnderOGRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "GetRolesUnderOG",
-      data
-    );
-    return promise.then((data) => RoleArray.decode(new _m0.Reader(data)));
-  }
-
   DeleteRole(request: DeleteRoleRequest): Promise<SuccessMessage> {
     const data = DeleteRoleRequest.encode(request).finish();
     const promise = this.rpc.request("Kartoffel.Kartoffel", "DeleteRole", data);
@@ -6672,28 +6666,6 @@ export class KartoffelClientImpl implements Kartoffel {
   RenameRole(request: RenameRoleRequest): Promise<SuccessMessage> {
     const data = RenameRoleRequest.encode(request).finish();
     const promise = this.rpc.request("Kartoffel.Kartoffel", "RenameRole", data);
-    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
-  }
-
-  GetRolesByHierarchy(
-    request: GetRolesByHierarchyRequest
-  ): Promise<SuccessMessage> {
-    const data = GetRolesByHierarchyRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "GetRolesByHierarchy",
-      data
-    );
-    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
-  }
-
-  ChangeRoleOG(request: ChangeRoleOGRequest): Promise<SuccessMessage> {
-    const data = ChangeRoleOGRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "ChangeRoleOG",
-      data
-    );
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 }

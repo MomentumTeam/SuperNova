@@ -1,36 +1,14 @@
 import { Request, Response } from 'express';
-import * as grpc from 'grpc';
-import * as protoLoader from '@grpc/proto-loader';
-import path from 'path';
-import * as config from '../config';
-import { logger } from '../logger';
+import { notificationsClient } from './notifications.service';
+import { logger } from '../utils/logger/logger';
 import { SuccessMessage } from '../interfaces/protoc/proto/producerService';
-import { NotificationArray } from '../interfaces/protoc/proto/notificationService';
-
-const PROTO_PATH = __dirname.includes('dist')
-  ? path.join(__dirname, '../../../proto/notificationService.proto')
-  : path.join(__dirname, '../../proto/notificationService.proto');
-
-const packageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(
-  PROTO_PATH,
-  {
-    keepCase: true,
-    longs: String,
-    enums: String,
-    defaults: true,
-    oneofs: true,
-  }
-);
-
-const protoDescriptor: any =
-  grpc.loadPackageDefinition(packageDefinition).NotificationService;
-
-export const notificationsClient: any = new protoDescriptor.NotificationService(
-  config.notificationsUrl,
-  grpc.credentials.createInsecure()
-);
+import {
+  CreateNotificationsReq,
+  NotificationArray,
+} from '../interfaces/protoc/proto/notificationService';
 
 export default class NotificationController {
+  // GET
   static async getMyNotifications(req: any, res: Response) {
     const weekAgo: number = Date.now() - 86400000 * 7;
     const from: string = req.query.from ? req.query.from.toString() : '1';
@@ -70,6 +48,62 @@ export default class NotificationController {
     );
   }
 
+  // POST
+  static async createNotifications(req: any, res: Response) {
+    // TODO
+    let createNotificationsReq: Partial<CreateNotificationsReq> = {};
+    logger.info(`Call to createNotifications in GTW`, createNotificationsReq);
+
+    notificationsClient.CreateNotifications(
+      { createNotificationsReq },
+      (err: any, response: SuccessMessage) => {
+        if (err) {
+          logger.error(`createNotifications ERROR in GTW`, {
+            err,
+            callRequest: createNotificationsReq,
+          });
+          res.status(500).send(err.message);
+        }
+
+        logger.info(`createNotifications OK in GTW`, {
+          response: response,
+          callRequest: createNotificationsReq,
+        });
+        res.send(response);
+      }
+    );
+  }
+
+  // POST
+  static async createCustomNotifications(req: any, res: Response) {
+    // TODO
+    let createCustomNotificationsReq: CreateCustomNotificationsReq = {};
+    logger.info(
+      `Call to createNotifications in GTW`,
+      createCustomNotificationsReq
+    );
+
+    notificationsClient.CreateNotifications(
+      { createCustomNotificationsReq },
+      (err: any, response: SuccessMessage) => {
+        if (err) {
+          logger.error(`createNotifications ERROR in GTW`, {
+            err,
+            callRequest: createCustomNotificationsReq,
+          });
+          res.status(500).send(err.message);
+        }
+
+        logger.info(`createNotifications OK in GTW`, {
+          response: response,
+          callRequest: createCustomNotificationsReq,
+        });
+        res.send(response);
+      }
+    );
+  }
+
+  // PUT
   static async markAsRead(req: any, res: Response) {
     const notificationIds = req.body.notificationIds
       ? req.body.notificationIds
@@ -98,7 +132,6 @@ export default class NotificationController {
       }
     );
   }
-
 
   static async markAllAsRead(req: any, res: Response) {
     logger.info(`Call to markAllAsRead in GTW`, {

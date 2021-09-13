@@ -15,6 +15,7 @@ export const ApproverSchema = new Schema(
 );
 ApproverSchema.index({ displayName: 'text' });
 
+// TODO : unique combination of entityID and type
 export const ApproverModel = connection.model(
   'Approver',
   ApproverSchema,

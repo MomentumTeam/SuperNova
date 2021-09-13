@@ -1,4 +1,4 @@
-protoc --plugin=../node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./protocOutput ./proto/*.proto --proto_path=./proto --experimental_allow_proto3_optional --ts_proto_opt=esModuleInterop=true 
+protoc --plugin=../node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./protocOutput/proto ./proto/*.proto --proto_path=./proto --experimental_allow_proto3_optional --ts_proto_opt=esModuleInterop=true 
 
 cp -r ./protocOutput/proto ../execution-script/src/interfaces/protoc/
 cp -r ./protocOutput/proto ../whiteListSync-script/src/interfaces/protoc/

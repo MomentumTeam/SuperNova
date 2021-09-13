@@ -13,16 +13,14 @@ import {
   SyncApproverReq,
   UserType,
   userTypeFromJSON,
+  UpdateApproverDecisionReq,
   userTypeToJSON,
 } from '../interfaces/protoc/proto/approverService';
 import {
   DigitalIdentity,
   Entity,
 } from '../interfaces/protoc/proto/kartoffelService';
-import {
-  Request,
-  UpdateDecisionReq,
-} from '../interfaces/protoc/proto/requestService';
+import { Request } from '../interfaces/protoc/proto/requestService';
 import { logger } from '../logger';
 import { ApproverModel } from '../models/approver.model';
 import KartoffelService from '../services/kartoffelService';
@@ -32,68 +30,23 @@ import {
   getMongoApproverArray,
   hasCommanderRank,
   turnObjectIdsToStrings,
+  approverTypeValidation,
 } from '../utils/approver.utils';
 
 export class ApproverRepository {
-  async addApprover(addCommanderApproverReq: AddApproverReq, type: UserType) {
+  async addApprover(addApproverReq: AddApproverReq) {
     try {
-      const approver: any = new ApproverModel(addCommanderApproverReq);
-      approver.type = UserType[type];
+      const approver: any = new ApproverModel(addApproverReq);
+      approverTypeValidation(approver.type);
+
       const createdApprover = await approver.save();
       const document = createdApprover.toObject();
       turnObjectIdsToStrings(document);
-      logger.info('addApprover', { document, addCommanderApproverReq, type });
+
+      logger.info('addApprover', { document, addApproverReq });
       return document as Approver;
     } catch (error) {
-      logger.error('addApprover ERROR', { error, addCommanderApproverReq });
-      throw error;
-    }
-  }
-
-  async addCommanderApprover(
-    addCommanderApproverReq: AddApproverReq
-  ): Promise<Approver> {
-    try {
-      return await this.addApprover(
-        addCommanderApproverReq,
-        UserType.COMMANDER
-      );
-    } catch (error) {
-      logger.error('addCommanderApprover ERROR', {
-        error,
-        addCommanderApproverReq,
-      });
-      throw error;
-    }
-  }
-
-  async addSuperSecurityApprover(
-    addSecurityApproverReq: AddApproverReq
-  ): Promise<Approver> {
-    try {
-      return await this.addApprover(
-        addSecurityApproverReq,
-        UserType.SUPER_SECURITY
-      );
-    } catch (error) {
-      logger.error('addSuperSecurityApprover ERROR', {
-        error,
-        addSecurityApproverReq,
-      });
-      throw error;
-    }
-  }
-
-  async addSecurityApprover(
-    addSecurityApproverReq: AddApproverReq
-  ): Promise<Approver> {
-    try {
-      return await this.addApprover(addSecurityApproverReq, UserType.SECURITY);
-    } catch (error) {
-      logger.error('addSecurityApprover ERROR', {
-        error,
-        addSecurityApproverReq,
-      });
+      logger.error('addApprover ERROR', { error, addApproverReq });
       throw error;
     }
   }
@@ -102,6 +55,7 @@ export class ApproverRepository {
     deleteApproverReq: DeleteApproverReq
   ): Promise<SuccessMessage> {
     try {
+      // TODO: what if there is not user? return false??
       await ApproverModel.deleteMany({
         entityId: deleteApproverReq.approverId,
       });
@@ -117,7 +71,13 @@ export class ApproverRepository {
     getAllApproversReq: GetAllApproversReq
   ): Promise<ApproverArray> {
     try {
-      const mongoApprovers: any = await ApproverModel.find({});
+      let query = {};
+      if (getAllApproversReq.type != undefined) {
+        let type = approverTypeValidation(getAllApproversReq.type);
+        query = { type: userTypeToJSON(type) };
+      }
+
+      const mongoApprovers: any = await ApproverModel.find(query);
       logger.info('getAllApprovers', { getAllApproversReq });
       return { approvers: getMongoApproverArray(mongoApprovers) };
     } catch (error) {
@@ -189,14 +149,17 @@ export class ApproverRepository {
       });
       let response: GetUserTypeRes;
       if (approvers) {
-        const types: any = approvers.map((approver) => {
-          const documentObj: any = turnObjectIdsToStrings(approver.toObject());
-          return documentObj.type;
+        let type: any = approvers.map((approver) => {
+          const document: any = approver.toObject();
+          turnObjectIdsToStrings(document);
+
+          return document.type;
         });
+        type = [...new Set(type)];
 
         response = {
           entityId: getUserTypeReq.entityId,
-          types,
+          type,
         };
       } else {
         const entity = await KartoffelService.getEntityById({
@@ -205,12 +168,12 @@ export class ApproverRepository {
         if (hasCommanderRank(entity)) {
           response = {
             entityId: getUserTypeReq.entityId,
-            types: [UserType.COMMANDER],
+            type: [UserType.COMMANDER],
           };
         } else {
           response = {
             entityId: getUserTypeReq.entityId,
-            types: [UserType.SOLDIER],
+            type: [UserType.SOLDIER],
           };
         }
       }
@@ -226,6 +189,8 @@ export class ApproverRepository {
     searchByDisplayNameReq: SearchByDisplayNameReq
   ): Promise<ApproverArray> {
     try {
+      approverTypeValidation(searchByDisplayNameReq.type);
+
       const mongoApprovers: any = await ApproverModel.find(
         {
           type: searchByDisplayNameReq.type,
@@ -245,7 +210,9 @@ export class ApproverRepository {
         approversResult,
       });
 
-      if (userTypeFromJSON(searchByDisplayNameReq.type) !== UserType.SECURITY) {
+      if (
+        userTypeFromJSON(searchByDisplayNameReq.type) === UserType.COMMANDER
+      ) {
         const kartoffelEntities =
           await KartoffelService.searchEntitiesByFullName({
             fullName: searchByDisplayNameReq.displayName,
@@ -327,130 +294,48 @@ export class ApproverRepository {
     }
   }
 
-  async getAllSecurityApprovers(
-    getAllSecurityApproversReq: GetAllApproversReq
-  ): Promise<ApproverArray> {
-    try {
-      const mongoApprovers: any = await ApproverModel.find({
-        type: userTypeToJSON(UserType.SECURITY),
-      });
-      const response = { approvers: getMongoApproverArray(mongoApprovers) };
-      logger.info('getAllSecurityApprovers', {
-        response,
-        getAllSecurityApproversReq,
-      });
-      return response;
-    } catch (error) {
-      logger.error('getAllSecurityApprovers ERROR', {
-        error,
-        getAllSecurityApproversReq,
-      });
-      throw error;
-    }
-  }
-
-  async getAllSuperSecurityApprovers(
-    getAllSuperSecurityApproversReq: GetAllApproversReq
-  ): Promise<ApproverArray> {
-    try {
-      const mongoApprovers: any = await ApproverModel.find({
-        type: userTypeToJSON(UserType.SUPER_SECURITY),
-      });
-      const response = { approvers: getMongoApproverArray(mongoApprovers) };
-      logger.info('getAllSuperSecurityApprovers', {
-        response,
-        getAllSuperSecurityApproversReq,
-      });
-      return response;
-    } catch (error) {
-      logger.error('getAllSuperSecurityApprovers ERROR', {
-        getAllSuperSecurityApproversReq,
-        error,
-      });
-      throw error;
-    }
-  }
-
-  async getAllCommanderApprovers(
-    getAllCommanderApproversReq: GetAllApproversReq
-  ): Promise<ApproverArray> {
-    try {
-      const mongoApprovers: any = await ApproverModel.find({
-        type: userTypeToJSON(UserType.COMMANDER),
-      });
-      const response = { approvers: getMongoApproverArray(mongoApprovers) };
-      logger.info('getAllCommanderApprovers', {
-        response,
-        getAllCommanderApproversReq,
-      });
-      return response;
-    } catch (error) {
-      logger.error('getAllCommanderApprovers ERROR', {
-        error,
-        getAllCommanderApproversReq,
-      });
-      throw error;
-    }
-  }
-
-  async updateCommanderDecision(
-    updateDecisionReq: UpdateDecisionReq
+  async updateApproverDecision(
+    updateApproverDecisionReq: UpdateApproverDecisionReq
   ): Promise<Request> {
     try {
-      const updatedRequest = await RequestService.updateCommanderDecision(
-        updateDecisionReq
-      );
-      logger.info('updateCommanderDecision', {
-        updatedRequest,
-        updateDecisionReq,
-      });
-      return updatedRequest;
-    } catch (error) {
-      logger.error('updateCommanderDecision ERROR', {
-        updateDecisionReq,
-        error,
-      });
-      throw error;
-    }
-  }
+      const userType = updateApproverDecisionReq.type;
+      let updatedRequest;
 
-  async updateSecurityDecision(
-    updateDecisionReq: UpdateDecisionReq
-  ): Promise<Request> {
-    try {
-      const updatedRequest = await RequestService.updateSecurityDecision(
-        updateDecisionReq
-      );
-      logger.info('updateSecurityDecision', {
+      if (updateApproverDecisionReq.decision) {
+        switch (userType) {
+          case UserType.COMMANDER:
+            updatedRequest = await RequestService.updateCommanderDecision(
+              updateApproverDecisionReq.decision
+            );
+            break;
+          case UserType.SECURITY:
+            updatedRequest = await RequestService.updateSecurityDecision(
+              updateApproverDecisionReq.decision
+            );
+            break;
+          case UserType.SUPER_SECURITY:
+            updatedRequest = await RequestService.updateSuperSecurityDecision(
+              updateApproverDecisionReq.decision
+            );
+            break;
+          default:
+            throw new Error(`unsupported usertype ${userType}`);
+        }
+      }
+      logger.info('updateApproverDecision', {
         updatedRequest,
-        updateDecisionReq,
+        updateApproverDecisionReq,
       });
-      return updatedRequest;
-    } catch (error) {
-      logger.error('updateSecurityDecision ERROR', {
-        updateDecisionReq,
-        error,
-      });
-      throw error;
-    }
-  }
 
-  async updateSuperSecurityDecision(
-    updateDecisionReq: UpdateDecisionReq
-  ): Promise<Request> {
-    try {
-      const updatedRequest = await RequestService.updateSuperSecurityDecision(
-        updateDecisionReq
-      );
-      logger.info('updateSuperSecurityDecision', {
-        updatedRequest,
-        updateDecisionReq,
-      });
-      return updatedRequest;
+      if (updatedRequest) {
+        return updatedRequest;
+      } else {
+        throw new Error('Something went wrong');
+      }
     } catch (error) {
-      logger.error('updateSuperSecurityDecision ERROR', {
+      logger.error('updateApproverDecision ERROR', {
+        updateApproverDecisionReq,
         error,
-        updateDecisionReq,
       });
       throw error;
     }

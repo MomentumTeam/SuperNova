@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt, { JwtPayload } from 'jsonwebtoken';
-import * as config from '../config';
-import { logger } from '../logger';
-import { approverClient } from '../approver/approver.controller';
+import jwt, { Jwt, JwtPayload } from 'jsonwebtoken';
+import { config } from '../config';
+import { logger } from '../utils/logger/logger';
+import { approverClient } from '../approver/approver.service';
 import { GetUserTypeRes } from '../interfaces/protoc/proto/approverService';
 
 module.exports = (req: any, res: Response, next: NextFunction) => {
@@ -14,8 +14,8 @@ module.exports = (req: any, res: Response, next: NextFunction) => {
     if (authorization) {
       jwt.verify(
         authorization as string,
-        config.authentication.secret,
-        async function (err, decoded) {
+        config.authentication.secret as any,
+        async function (err: any, decoded: any) {
           if (err) {
             logger.error(`jwt.verify ERROR in GTW`, {
               err,
@@ -37,7 +37,6 @@ module.exports = (req: any, res: Response, next: NextFunction) => {
       );
     } else {
       if (cookie) {
-
         jwt.verify(
           cookie as string,
           'superNova',

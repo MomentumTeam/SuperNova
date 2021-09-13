@@ -3,7 +3,7 @@ import KartoffelController from './kartoffel.controller';
 
 const KartoffelRouter: Router = Router();
 
-
+// GET
 KartoffelRouter.get('/entities/myUser', KartoffelController.getMyUser);
 KartoffelRouter.get('/entities/:id', KartoffelController.getEntityByMongoId);
 KartoffelRouter.get('/entities/picture', KartoffelController.getPictureByEntityId);

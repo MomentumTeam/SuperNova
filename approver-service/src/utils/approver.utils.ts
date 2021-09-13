@@ -1,4 +1,8 @@
-import { Approver, UserType } from '../interfaces/protoc/proto/approverService';
+import {
+  Approver,
+  UserType,
+  userTypeFromJSON,
+} from '../interfaces/protoc/proto/approverService';
 import {
   DigitalIdentity,
   Entity,
@@ -48,6 +52,15 @@ export function getMongoApproverArray(approverMongoArray: any): Approver[] {
   } else {
     return [];
   }
+}
+
+export function approverTypeValidation(type: UserType): UserType {
+  type = userTypeFromJSON(type);
+  if (type === UserType.UNKNOWN || type === UserType.UNRECOGNIZED) {
+    throw Error('unsupported type');
+  }
+
+  return type;
 }
 
 export function getApproverArrayByEntityArray(

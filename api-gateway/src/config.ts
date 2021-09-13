@@ -1,12 +1,24 @@
-export const host = process.env.GATEWAY_HOST || '0.0.0.0';
-export const port = process.env.GATEWAY_PORT || '2000';
-export const kartoffelUrl = process.env.GATEWAY_KS_URL || '0.0.0.0:8082';
-export const requestServiceUrl = process.env.GATEWAY_RS_URL || '0.0.0.0:8081';
-export const producerUrl = process.env.GATEWAY_PS_URL || '0.0.0.0:8083';
-export const notificationsUrl = process.env.GATEWAY_NS_URL || '0.0.0.0:8084';
-export const approverServiceUrl = process.env.GATEWAY_NS_URL || '0.0.0.0:8085';
-export const authentication = {
-  token: process.env.GATEWAY_TOKEN || 'sp-token',
-  secret: process.env.GATEWAY_SECRET_KEY || 'superNova',
-  authServiceUrl: process.env.GATEWAY_AS_URL || '0.0.0.0:9000',
+import * as env from 'env-var';
+
+export const config = {
+  server: {
+    port: env.get('GATEWAY_PORT').default(2000).asPortNumber(),
+    host: env.get('GATEWAY_HOST').default('0.0.0.0'),
+    name: 'api-gatway',
+  },
+  endpoints: {
+    kartoffel: env.get('GATEWAY_KS_URL').default('0.0.0.0:8082').asString(),
+    request: env.get('GATEWAY_RS_URL').default('0.0.0.0:8081').asString(),
+    producer: env.get('GATEWAY_PS_URL').default('0.0.0.0:8083').asString(),
+    notification: env.get('GATEWAY_NS_URL').default('0.0.0.0:8084').asString(),
+    approver: env.get('GATEWAY_APS_URL').default('0.0.0.0:8085').asString(),
+  },
+  authentication: {
+    token: env.get('GATEWAY_TOKEN').default('sp-token'),
+    secret: env.get('GATEWAY_SECRET_KEY').default('superNova'),
+    authServiceUrl: env
+      .get('GATEWAY_AS_URL')
+      .default('0.0.0.0:9000')
+      .asString(),
+  },
 };

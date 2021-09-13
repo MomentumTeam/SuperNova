@@ -1,50 +1,74 @@
+import * as errorhandlers from './utils/erros/errorHandlers';
+import morgan from 'morgan';
+
 import express from 'express';
-import * as http from 'http';
-import * as config from './config';
-import mainRouter from './mainRouter';
-import { logger } from './logger';
-import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
+import mainRouter from './router';
+import addHeaders from './utils/addHeaders';
 
-const auth = require('./auth/auth');
+import { config } from './config';
+import { logger } from './utils/logger/logger';
 import { swaggerDocument } from './swagger';
 
-export class Server {
-  public app: express.Application;
-  private server: http.Server;
+const auth = require('./auth/auth');
 
-  constructor() {
+export class Server {
+  private static _instance: Server;
+  public app: express.Application;
+
+  private constructor() {
     this.app = express();
-    this.configureMiddlewares();
-    this.server = http.createServer(this.app);
+
+    this.initializeMiddlewares();
+    this.initializeRouters();
+    this.initializeErrorHandling();
   }
 
-  private configureMiddlewares() {
-    this.app.use(cors());
-    this.app.use(cookieParser());
-    this.app.use(bodyParser.json());
+  public static bootstrap(): Server {
+    if (!Server._instance) Server._instance = new Server();
+    return Server._instance;
+  }
 
+  public listen() {
+    this.app.listen(config.server.port, () => {
+      logger.info(
+        `${config.server.name} running in on port ${config.server.port}`,
+        'connectedToServer'
+      );
+    });
+  }
+
+  private initializeMiddlewares() {
+    this.app.use(cors());
+    this.app.use(addHeaders);
+    this.app.use(express.json());
+    this.app.use(express.urlencoded({ extended: true }));
+    this.app.use(cookieParser());
+    this.app.use(morgan('dev'));
+  }
+
+  private initializeRouters() {
+    this.app.get('/isAlive', (req, res) => {
+      return res.send('alive');
+    });
+
+    this.app.use('/api', mainRouter);
     this.app.use(
       '/api-docs',
       swaggerUi.serve,
       swaggerUi.setup(swaggerDocument)
     );
 
-    // this.app.use('/api', mainRouter); //For swagger usage
-    this.app.get('/isAlive', (req, res) => {
-      return res.send('alive');
-    });
-    this.app.use('/api', auth, mainRouter);
-    this.app.get('/api/auth/login', (req, res) => {
-      res.redirect(`http://${config.authentication.authServiceUrl}/auth/login`);
+    this.app.use('*', (req, res) => {
+      res.status(404).send('Invalid Route');
     });
   }
 
-  listen() {
-    this.server.listen(config.port, () => {
-      logger.info(`Api-Gateway Server running on port ${config.port}`);
-    });
+  private initializeErrorHandling() {
+    this.app.use(errorhandlers.serverErrorHandler);
+    this.app.use(errorhandlers.userErrorHandler);
+    this.app.use(errorhandlers.unknownErrorHandler);
   }
 }

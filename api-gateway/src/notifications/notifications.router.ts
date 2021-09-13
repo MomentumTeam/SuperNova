@@ -3,9 +3,15 @@ import NotificationController from './notifications.controller';
 
 const NotificationRouter: Router = Router();
 
-
+// GET
 NotificationRouter.get('/',NotificationController.getMyNotifications);
-NotificationRouter.post('/markAsRead', NotificationController.markAsRead);
-NotificationRouter.post('/markAllAsRead', NotificationController.markAllAsRead);
+
+// POST
+NotificationRouter.post('/', NotificationController.createNotifications);
+NotificationRouter.post('/custom', NotificationController.createCustomNotifications);
+
+// PUT
+NotificationRouter.put('/markAsRead', NotificationController.markAsRead);
+NotificationRouter.put('/markAsRead/all', NotificationController.markAllAsRead);
 
 export default NotificationRouter;

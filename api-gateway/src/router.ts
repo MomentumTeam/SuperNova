@@ -1,23 +1,22 @@
 import Router from 'express';
 import KartoffelRouter from './kartoffel/kartoffel.router';
 import RequestsRouter from './requests/requests.router';
-// import ProducerRouter from './producer/producer.router';
 import NotificationRouter from './notifications/notifications.router';
 import ApproverRouter from './approver/approver.router';
+import { config } from './config';
+// import ProducerRouter from './producer/producer.router';
 
 const mainRouter = Router();
 
-mainRouter.use('/kartoffel', KartoffelRouter);
-mainRouter.use('/requests', RequestsRouter);
-// mainRouter.use('/producer', ProducerRouter);
-mainRouter.use('/notifications', NotificationRouter);
-mainRouter.use('/approver', ApproverRouter);
-mainRouter.all('/health/live', (_, res) => {
-  res.status(200).send('OK');
+mainRouter.get('/auth/login', (req, res) => {
+  res.redirect(`http://${config.authentication.authServiceUrl}/auth/login`);
 });
 
-mainRouter.all('/health/ready', (_, res) => {
-  res.status(200).send('OK');
-});
+mainRouter.use('/approvers', ApproverRouter);
+mainRouter.use('/kartoffel', KartoffelRouter);
+mainRouter.use('/requests', RequestsRouter);
+mainRouter.use('/notifications', NotificationRouter);
+
+// mainRouter.use('/producer', ProducerRouter);
 
 export default mainRouter;
