@@ -1,8 +1,9 @@
 import winston from 'winston';
+
 const ecsFormat = require('@elastic/ecs-winston-format');
 const DailyRotateFile = require('winston-daily-rotate-file');
 
-const logger = winston.createLogger({
+export const logger = winston.createLogger({
   level: 'info',
   format: ecsFormat(),
   transports: [
@@ -16,5 +17,3 @@ const logger = winston.createLogger({
     }),
   ],
 });
-
-export { logger };

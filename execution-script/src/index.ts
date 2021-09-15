@@ -1,18 +1,18 @@
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 import { findPath } from './utils/path';
+import { logger } from './logger';
+import RequestService from './services/requestService';
+import ProducerService from './services/producerService';
+
+import * as config from './config';
+const schedule = require('node-schedule');
+
 if (process.env.NODE_ENV !== 'production') {
   const ENV_PATH = `${findPath('supernova.env')}`;
   require('dotenv').config({
     path: ENV_PATH,
   });
 }
-
-import { logger } from './logger';
-import RequestService from './services/requestService';
-import ProducerService from './services/producerService';
-import * as config from './config';
-
-const schedule = require('node-schedule');
 
 async function main() {
   try {

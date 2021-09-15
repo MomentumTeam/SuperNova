@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Request, UpdateDecisionReq } from "./requestService";
+import { UpdateDecisionReq, Request } from "./requestService";
 
 export const protobufPackage = "ApproverService";
 
@@ -56,27 +56,39 @@ export function requestStatusToJSON(object: RequestStatus): string {
 }
 
 export enum UserType {
-  SECURITY = 0,
-  SUPER_SECURITY = 1,
-  COMMANDER = 2,
-  SOLDIER = 3,
+  UNKNOWN = 0,
+  SUPER_SECURITY = 2,
+  SECURITY = 1,
+  COMMANDER = 3,
+  SOLDIER = 4,
+  ADMIN = 5,
+  BULK = 6,
   UNRECOGNIZED = -1,
 }
 
 export function userTypeFromJSON(object: any): UserType {
   switch (object) {
     case 0:
-    case "SECURITY":
-      return UserType.SECURITY;
-    case 1:
+    case "UNKNOWN":
+      return UserType.UNKNOWN;
+    case 2:
     case "SUPER_SECURITY":
       return UserType.SUPER_SECURITY;
-    case 2:
+    case 1:
+    case "SECURITY":
+      return UserType.SECURITY;
+    case 3:
     case "COMMANDER":
       return UserType.COMMANDER;
-    case 3:
+    case 4:
     case "SOLDIER":
       return UserType.SOLDIER;
+    case 5:
+    case "ADMIN":
+      return UserType.ADMIN;
+    case 6:
+    case "BULK":
+      return UserType.BULK;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -86,14 +98,20 @@ export function userTypeFromJSON(object: any): UserType {
 
 export function userTypeToJSON(object: UserType): string {
   switch (object) {
-    case UserType.SECURITY:
-      return "SECURITY";
+    case UserType.UNKNOWN:
+      return "UNKNOWN";
     case UserType.SUPER_SECURITY:
       return "SUPER_SECURITY";
+    case UserType.SECURITY:
+      return "SECURITY";
     case UserType.COMMANDER:
       return "COMMANDER";
     case UserType.SOLDIER:
       return "SOLDIER";
+    case UserType.ADMIN:
+      return "ADMIN";
+    case UserType.BULK:
+      return "BULK";
     default:
       return "UNKNOWN";
   }
@@ -111,7 +129,9 @@ export interface ApproverIdArray {
   approverIds: string[];
 }
 
-export interface GetAllApproversReq {}
+export interface GetAllApproversReq {
+  type: UserType | undefined;
+}
 
 export interface SuccessMessage {
   success: boolean;
@@ -139,7 +159,7 @@ export interface GetUserTypeReq {
 
 export interface GetUserTypeRes {
   entityId: string;
-  type: UserType;
+  type: UserType[];
 }
 
 export interface AddApproverReq {
@@ -147,6 +167,7 @@ export interface AddApproverReq {
   displayName: string;
   domainUsers: string[];
   akaUnit: string;
+  type: UserType;
 }
 
 export interface Approver {
@@ -157,6 +178,11 @@ export interface Approver {
   type: UserType;
   akaUnit: string;
   id: string;
+}
+
+export interface UpdateApproverDecisionReq {
+  decision: UpdateDecisionReq | undefined;
+  type: UserType;
 }
 
 const baseSyncApproverReq: object = { approverId: "" };
@@ -344,9 +370,12 @@ const baseGetAllApproversReq: object = {};
 
 export const GetAllApproversReq = {
   encode(
-    _: GetAllApproversReq,
+    message: GetAllApproversReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
+    if (message.type !== undefined) {
+      writer.uint32(8).int32(message.type);
+    }
     return writer;
   },
 
@@ -357,6 +386,9 @@ export const GetAllApproversReq = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.type = reader.int32() as any;
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -365,18 +397,31 @@ export const GetAllApproversReq = {
     return message;
   },
 
-  fromJSON(_: any): GetAllApproversReq {
+  fromJSON(object: any): GetAllApproversReq {
     const message = { ...baseGetAllApproversReq } as GetAllApproversReq;
+    if (object.type !== undefined && object.type !== null) {
+      message.type = userTypeFromJSON(object.type);
+    } else {
+      message.type = undefined;
+    }
     return message;
   },
 
-  toJSON(_: GetAllApproversReq): unknown {
+  toJSON(message: GetAllApproversReq): unknown {
     const obj: any = {};
+    message.type !== undefined &&
+      (obj.type =
+        message.type !== undefined ? userTypeToJSON(message.type) : undefined);
     return obj;
   },
 
-  fromPartial(_: DeepPartial<GetAllApproversReq>): GetAllApproversReq {
+  fromPartial(object: DeepPartial<GetAllApproversReq>): GetAllApproversReq {
     const message = { ...baseGetAllApproversReq } as GetAllApproversReq;
+    if (object.type !== undefined && object.type !== null) {
+      message.type = object.type;
+    } else {
+      message.type = undefined;
+    }
     return message;
   },
 };
@@ -774,9 +819,11 @@ export const GetUserTypeRes = {
     if (message.entityId !== "") {
       writer.uint32(10).string(message.entityId);
     }
-    if (message.type !== 0) {
-      writer.uint32(16).int32(message.type);
+    writer.uint32(18).fork();
+    for (const v of message.type) {
+      writer.int32(v);
     }
+    writer.ldelim();
     return writer;
   },
 
@@ -784,6 +831,7 @@ export const GetUserTypeRes = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseGetUserTypeRes } as GetUserTypeRes;
+    message.type = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -791,7 +839,14 @@ export const GetUserTypeRes = {
           message.entityId = reader.string();
           break;
         case 2:
-          message.type = reader.int32() as any;
+          if ((tag & 7) === 2) {
+            const end2 = reader.uint32() + reader.pos;
+            while (reader.pos < end2) {
+              message.type.push(reader.int32() as any);
+            }
+          } else {
+            message.type.push(reader.int32() as any);
+          }
           break;
         default:
           reader.skipType(tag & 7);
@@ -803,15 +858,16 @@ export const GetUserTypeRes = {
 
   fromJSON(object: any): GetUserTypeRes {
     const message = { ...baseGetUserTypeRes } as GetUserTypeRes;
+    message.type = [];
     if (object.entityId !== undefined && object.entityId !== null) {
       message.entityId = String(object.entityId);
     } else {
       message.entityId = "";
     }
     if (object.type !== undefined && object.type !== null) {
-      message.type = userTypeFromJSON(object.type);
-    } else {
-      message.type = 0;
+      for (const e of object.type) {
+        message.type.push(userTypeFromJSON(e));
+      }
     }
     return message;
   },
@@ -819,21 +875,26 @@ export const GetUserTypeRes = {
   toJSON(message: GetUserTypeRes): unknown {
     const obj: any = {};
     message.entityId !== undefined && (obj.entityId = message.entityId);
-    message.type !== undefined && (obj.type = userTypeToJSON(message.type));
+    if (message.type) {
+      obj.type = message.type.map((e) => userTypeToJSON(e));
+    } else {
+      obj.type = [];
+    }
     return obj;
   },
 
   fromPartial(object: DeepPartial<GetUserTypeRes>): GetUserTypeRes {
     const message = { ...baseGetUserTypeRes } as GetUserTypeRes;
+    message.type = [];
     if (object.entityId !== undefined && object.entityId !== null) {
       message.entityId = object.entityId;
     } else {
       message.entityId = "";
     }
     if (object.type !== undefined && object.type !== null) {
-      message.type = object.type;
-    } else {
-      message.type = 0;
+      for (const e of object.type) {
+        message.type.push(e);
+      }
     }
     return message;
   },
@@ -844,6 +905,7 @@ const baseAddApproverReq: object = {
   displayName: "",
   domainUsers: "",
   akaUnit: "",
+  type: 0,
 };
 
 export const AddApproverReq = {
@@ -862,6 +924,9 @@ export const AddApproverReq = {
     }
     if (message.akaUnit !== "") {
       writer.uint32(34).string(message.akaUnit);
+    }
+    if (message.type !== 0) {
+      writer.uint32(40).int32(message.type);
     }
     return writer;
   },
@@ -885,6 +950,9 @@ export const AddApproverReq = {
           break;
         case 4:
           message.akaUnit = reader.string();
+          break;
+        case 5:
+          message.type = reader.int32() as any;
           break;
         default:
           reader.skipType(tag & 7);
@@ -917,6 +985,11 @@ export const AddApproverReq = {
     } else {
       message.akaUnit = "";
     }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = userTypeFromJSON(object.type);
+    } else {
+      message.type = 0;
+    }
     return message;
   },
 
@@ -931,6 +1004,7 @@ export const AddApproverReq = {
       obj.domainUsers = [];
     }
     message.akaUnit !== undefined && (obj.akaUnit = message.akaUnit);
+    message.type !== undefined && (obj.type = userTypeToJSON(message.type));
     return obj;
   },
 
@@ -956,6 +1030,11 @@ export const AddApproverReq = {
       message.akaUnit = object.akaUnit;
     } else {
       message.akaUnit = "";
+    }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = object.type;
+    } else {
+      message.type = 0;
     }
     return message;
   },
@@ -1119,10 +1198,100 @@ export const Approver = {
   },
 };
 
+const baseUpdateApproverDecisionReq: object = { type: 0 };
+
+export const UpdateApproverDecisionReq = {
+  encode(
+    message: UpdateApproverDecisionReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.decision !== undefined) {
+      UpdateDecisionReq.encode(
+        message.decision,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    if (message.type !== 0) {
+      writer.uint32(16).int32(message.type);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): UpdateApproverDecisionReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseUpdateApproverDecisionReq,
+    } as UpdateApproverDecisionReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.decision = UpdateDecisionReq.decode(reader, reader.uint32());
+          break;
+        case 2:
+          message.type = reader.int32() as any;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UpdateApproverDecisionReq {
+    const message = {
+      ...baseUpdateApproverDecisionReq,
+    } as UpdateApproverDecisionReq;
+    if (object.decision !== undefined && object.decision !== null) {
+      message.decision = UpdateDecisionReq.fromJSON(object.decision);
+    } else {
+      message.decision = undefined;
+    }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = userTypeFromJSON(object.type);
+    } else {
+      message.type = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: UpdateApproverDecisionReq): unknown {
+    const obj: any = {};
+    message.decision !== undefined &&
+      (obj.decision = message.decision
+        ? UpdateDecisionReq.toJSON(message.decision)
+        : undefined);
+    message.type !== undefined && (obj.type = userTypeToJSON(message.type));
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<UpdateApproverDecisionReq>
+  ): UpdateApproverDecisionReq {
+    const message = {
+      ...baseUpdateApproverDecisionReq,
+    } as UpdateApproverDecisionReq;
+    if (object.decision !== undefined && object.decision !== null) {
+      message.decision = UpdateDecisionReq.fromPartial(object.decision);
+    } else {
+      message.decision = undefined;
+    }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = object.type;
+    } else {
+      message.type = 0;
+    }
+    return message;
+  },
+};
+
 export interface ApproverService {
-  AddCommanderApprover(request: AddApproverReq): Promise<Approver>;
-  AddSecurityApprover(request: AddApproverReq): Promise<Approver>;
-  AddSuperSecurityApprover(request: AddApproverReq): Promise<Approver>;
+  AddApprover(request: AddApproverReq): Promise<Approver>;
   GetUserType(request: GetUserTypeReq): Promise<GetUserTypeRes>;
   SearchApproverByDisplayName(
     request: SearchByDisplayNameReq
@@ -1130,14 +1299,7 @@ export interface ApproverService {
   SearchApproverByDomainUser(
     request: SearchByDomainUserReq
   ): Promise<ApproverArray>;
-  GetAllSecurityApprovers(request: GetAllApproversReq): Promise<ApproverArray>;
-  GetAllSuperSecurityApprovers(
-    request: GetAllApproversReq
-  ): Promise<ApproverArray>;
-  GetAllCommanderApprovers(request: GetAllApproversReq): Promise<ApproverArray>;
-  UpdateCommanderDecision(request: UpdateDecisionReq): Promise<Request>;
-  UpdateSecurityDecision(request: UpdateDecisionReq): Promise<Request>;
-  UpdateSuperSecurityDecision(request: UpdateDecisionReq): Promise<Request>;
+  UpdateApproverDecision(request: UpdateApproverDecisionReq): Promise<Request>;
   GetAllApprovers(request: GetAllApproversReq): Promise<ApproverArray>;
   GetAllApproverIds(request: GetAllApproversReq): Promise<ApproverIdArray>;
   SyncApprover(request: SyncApproverReq): Promise<Approver>;
@@ -1148,52 +1310,23 @@ export class ApproverServiceClientImpl implements ApproverService {
   private readonly rpc: Rpc;
   constructor(rpc: Rpc) {
     this.rpc = rpc;
-    this.AddCommanderApprover = this.AddCommanderApprover.bind(this);
-    this.AddSecurityApprover = this.AddSecurityApprover.bind(this);
-    this.AddSuperSecurityApprover = this.AddSuperSecurityApprover.bind(this);
+    this.AddApprover = this.AddApprover.bind(this);
     this.GetUserType = this.GetUserType.bind(this);
     this.SearchApproverByDisplayName =
       this.SearchApproverByDisplayName.bind(this);
     this.SearchApproverByDomainUser =
       this.SearchApproverByDomainUser.bind(this);
-    this.GetAllSecurityApprovers = this.GetAllSecurityApprovers.bind(this);
-    this.GetAllSuperSecurityApprovers =
-      this.GetAllSuperSecurityApprovers.bind(this);
-    this.GetAllCommanderApprovers = this.GetAllCommanderApprovers.bind(this);
-    this.UpdateCommanderDecision = this.UpdateCommanderDecision.bind(this);
-    this.UpdateSecurityDecision = this.UpdateSecurityDecision.bind(this);
-    this.UpdateSuperSecurityDecision =
-      this.UpdateSuperSecurityDecision.bind(this);
+    this.UpdateApproverDecision = this.UpdateApproverDecision.bind(this);
     this.GetAllApprovers = this.GetAllApprovers.bind(this);
     this.GetAllApproverIds = this.GetAllApproverIds.bind(this);
     this.SyncApprover = this.SyncApprover.bind(this);
     this.DeleteApprover = this.DeleteApprover.bind(this);
   }
-  AddCommanderApprover(request: AddApproverReq): Promise<Approver> {
+  AddApprover(request: AddApproverReq): Promise<Approver> {
     const data = AddApproverReq.encode(request).finish();
     const promise = this.rpc.request(
       "ApproverService.ApproverService",
-      "AddCommanderApprover",
-      data
-    );
-    return promise.then((data) => Approver.decode(new _m0.Reader(data)));
-  }
-
-  AddSecurityApprover(request: AddApproverReq): Promise<Approver> {
-    const data = AddApproverReq.encode(request).finish();
-    const promise = this.rpc.request(
-      "ApproverService.ApproverService",
-      "AddSecurityApprover",
-      data
-    );
-    return promise.then((data) => Approver.decode(new _m0.Reader(data)));
-  }
-
-  AddSuperSecurityApprover(request: AddApproverReq): Promise<Approver> {
-    const data = AddApproverReq.encode(request).finish();
-    const promise = this.rpc.request(
-      "ApproverService.ApproverService",
-      "AddSuperSecurityApprover",
+      "AddApprover",
       data
     );
     return promise.then((data) => Approver.decode(new _m0.Reader(data)));
@@ -1233,65 +1366,11 @@ export class ApproverServiceClientImpl implements ApproverService {
     return promise.then((data) => ApproverArray.decode(new _m0.Reader(data)));
   }
 
-  GetAllSecurityApprovers(request: GetAllApproversReq): Promise<ApproverArray> {
-    const data = GetAllApproversReq.encode(request).finish();
+  UpdateApproverDecision(request: UpdateApproverDecisionReq): Promise<Request> {
+    const data = UpdateApproverDecisionReq.encode(request).finish();
     const promise = this.rpc.request(
       "ApproverService.ApproverService",
-      "GetAllSecurityApprovers",
-      data
-    );
-    return promise.then((data) => ApproverArray.decode(new _m0.Reader(data)));
-  }
-
-  GetAllSuperSecurityApprovers(
-    request: GetAllApproversReq
-  ): Promise<ApproverArray> {
-    const data = GetAllApproversReq.encode(request).finish();
-    const promise = this.rpc.request(
-      "ApproverService.ApproverService",
-      "GetAllSuperSecurityApprovers",
-      data
-    );
-    return promise.then((data) => ApproverArray.decode(new _m0.Reader(data)));
-  }
-
-  GetAllCommanderApprovers(
-    request: GetAllApproversReq
-  ): Promise<ApproverArray> {
-    const data = GetAllApproversReq.encode(request).finish();
-    const promise = this.rpc.request(
-      "ApproverService.ApproverService",
-      "GetAllCommanderApprovers",
-      data
-    );
-    return promise.then((data) => ApproverArray.decode(new _m0.Reader(data)));
-  }
-
-  UpdateCommanderDecision(request: UpdateDecisionReq): Promise<Request> {
-    const data = UpdateDecisionReq.encode(request).finish();
-    const promise = this.rpc.request(
-      "ApproverService.ApproverService",
-      "UpdateCommanderDecision",
-      data
-    );
-    return promise.then((data) => Request.decode(new _m0.Reader(data)));
-  }
-
-  UpdateSecurityDecision(request: UpdateDecisionReq): Promise<Request> {
-    const data = UpdateDecisionReq.encode(request).finish();
-    const promise = this.rpc.request(
-      "ApproverService.ApproverService",
-      "UpdateSecurityDecision",
-      data
-    );
-    return promise.then((data) => Request.decode(new _m0.Reader(data)));
-  }
-
-  UpdateSuperSecurityDecision(request: UpdateDecisionReq): Promise<Request> {
-    const data = UpdateDecisionReq.encode(request).finish();
-    const promise = this.rpc.request(
-      "ApproverService.ApproverService",
-      "UpdateSuperSecurityDecision",
+      "UpdateApproverDecision",
       data
     );
     return promise.then((data) => Request.decode(new _m0.Reader(data)));

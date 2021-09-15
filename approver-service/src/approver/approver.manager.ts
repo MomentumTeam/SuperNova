@@ -11,6 +11,7 @@ import {
   SearchByDomainUserReq,
   SuccessMessage,
   SyncApproverReq,
+  UpdateApproverDecisionReq,
 } from '../interfaces/protoc/proto/approverService';
 import {
   Request,
@@ -24,36 +25,10 @@ export class ApproverManager {
     this.approverRepository = new ApproverRepository();
   }
 
-  async addCommanderApprover(
-    addCommanderApproverReq: AddApproverReq
-  ): Promise<Approver> {
+  async addApprover(addApproverReq: AddApproverReq): Promise<Approver> {
     try {
-      return (await this.approverRepository.addCommanderApprover(
-        addCommanderApproverReq
-      )) as Approver;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async addSecurityApprover(
-    addSecurityApproverReq: AddApproverReq
-  ): Promise<Approver> {
-    try {
-      return (await this.approverRepository.addSecurityApprover(
-        addSecurityApproverReq
-      )) as Approver;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async addSuperSecurityApprover(
-    addSecurityApproverReq: AddApproverReq
-  ): Promise<Approver> {
-    try {
-      return (await this.approverRepository.addSuperSecurityApprover(
-        addSecurityApproverReq
+      return (await this.approverRepository.addApprover(
+        addApproverReq
       )) as Approver;
     } catch (error) {
       throw error;
@@ -94,71 +69,11 @@ export class ApproverManager {
     }
   }
 
-  async getAllSecurityApprovers(
-    getAllSecurityApproversReq: GetAllApproversReq
-  ): Promise<ApproverArray> {
-    try {
-      return await this.approverRepository.getAllSecurityApprovers(
-        getAllSecurityApproversReq
-      );
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async getAllSuperSecurityApprovers(
-    getAllSecurityApproversReq: GetAllApproversReq
-  ): Promise<ApproverArray> {
-    try {
-      return await this.approverRepository.getAllSuperSecurityApprovers(
-        getAllSecurityApproversReq
-      );
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async getAllCommanderApprovers(
-    getAllSecurityApproversReq: GetAllApproversReq
-  ): Promise<ApproverArray> {
-    try {
-      return await this.approverRepository.getAllCommanderApprovers(
-        getAllSecurityApproversReq
-      );
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async updateCommanderDecision(
-    updateDecisionReq: UpdateDecisionReq
+  async updateApproverDecision(
+    updateDecisionReq: UpdateApproverDecisionReq
   ): Promise<Request> {
     try {
-      return await this.approverRepository.updateCommanderDecision(
-        updateDecisionReq
-      );
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async updateSecurityDecision(
-    updateDecisionReq: UpdateDecisionReq
-  ): Promise<Request> {
-    try {
-      return await this.approverRepository.updateSecurityDecision(
-        updateDecisionReq
-      );
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async updateSuperSecurityDecision(
-    updateDecisionReq: UpdateDecisionReq
-  ): Promise<Request> {
-    try {
-      return await this.approverRepository.updateSuperSecurityDecision(
+      return await this.approverRepository.updateApproverDecision(
         updateDecisionReq
       );
     } catch (error) {

@@ -2,8 +2,8 @@ import { Request, Response } from 'express';
 import * as grpc from 'grpc';
 import * as protoLoader from '@grpc/proto-loader';
 import path from 'path';
-import * as config from '../config';
-import { logger } from '../logger';
+import { config } from '../config';
+import { logger } from '../utils/logger/logger';
 import ProducerController from '../producer/producer.controller';
 import {
   UserType,
@@ -46,13 +46,11 @@ const protoDescriptor: any =
   grpc.loadPackageDefinition(packageDefinition).RequestService;
 
 const requestsClient: any = new protoDescriptor.RequestService(
-  config.requestServiceUrl,
+  config.endpoints.request,
   grpc.credentials.createInsecure()
 );
 
 export default class RequestsController {
-
-
   static async getAllRequests(req: any, res: Response) {
     //only SECURITY Approvers can see all requests.
     const data = { from: req.query.from, to: req.query.to };
@@ -220,7 +218,11 @@ export default class RequestsController {
   }
 
   static async getRequestsBySubmitterIdentifier(req: Request, res: Response) {
-    const data = { identifier: req.params.identifier, from: req.query.from, to: req.query.to };
+    const data = {
+      identifier: req.params.identifier,
+      from: req.query.from,
+      to: req.query.to,
+    };
 
     logger.info(`Call to getRequestsBySubmitterIdentifier in GTW`, {
       callRequest: data,
@@ -247,7 +249,11 @@ export default class RequestsController {
   }
 
   static async getRequestsByCommanderIdentifier(req: Request, res: Response) {
-    const data = { identifier: req.params.identifier, from: req.query.from, to: req.query.to };
+    const data = {
+      identifier: req.params.identifier,
+      from: req.query.from,
+      to: req.query.to,
+    };
 
     logger.info(`Call to getRequestsByCommanderIdentifier in GTW`, {
       callRequest: data,
@@ -274,7 +280,11 @@ export default class RequestsController {
   }
 
   static async getRequestsBySecurityIdentifier(req: Request, res: Response) {
-    const data = { identifier: req.params.identifier, from: req.query.from, to: req.query.to };
+    const data = {
+      identifier: req.params.identifier,
+      from: req.query.from,
+      to: req.query.to,
+    };
 
     logger.info(`Call to getRequestsBySecurityIdentifier in GTW`, {
       callRequest: data,
@@ -301,7 +311,11 @@ export default class RequestsController {
   }
 
   static async getRequestsByApproverIdentifier(req: Request, res: Response) {
-    const data = { identifier: req.params.identifier, from: req.query.from, to: req.query.to };
+    const data = {
+      identifier: req.params.identifier,
+      from: req.query.from,
+      to: req.query.to,
+    };
 
     logger.info(`Call to getRequestsByApproverIdentifier in GTW`, {
       callRequest: data,
@@ -327,8 +341,15 @@ export default class RequestsController {
     );
   }
 
-  static async searchRequestsBySubmitterDisplayName(req: Request, res: Response) {
-    const data = { displayName: req.params.displayName, from: req.query.from, to: req.query.to };
+  static async searchRequestsBySubmitterDisplayName(
+    req: Request,
+    res: Response
+  ) {
+    const data = {
+      displayName: req.params.displayName,
+      from: req.query.from,
+      to: req.query.to,
+    };
 
     logger.info(`Call to searchRequestsBySubmitterDisplayName in GTW`, {
       callRequest: data,
@@ -354,8 +375,15 @@ export default class RequestsController {
     );
   }
 
-  static async searchRequestsByCommanderDisplayName(req: Request, res: Response) {
-    const data = { displayName: req.params.displayName, from: req.query.from, to: req.query.to };
+  static async searchRequestsByCommanderDisplayName(
+    req: Request,
+    res: Response
+  ) {
+    const data = {
+      displayName: req.params.displayName,
+      from: req.query.from,
+      to: req.query.to,
+    };
 
     logger.info(`Call to searchRequestsByCommanderDisplayName in GTW`, {
       callRequest: data,
@@ -381,8 +409,15 @@ export default class RequestsController {
     );
   }
 
-  static async searchRequestsBySecurityDisplayName(req: Request, res: Response) {
-    const data = { displayName: req.params.displayName, from: req.query.from, to: req.query.to };
+  static async searchRequestsBySecurityDisplayName(
+    req: Request,
+    res: Response
+  ) {
+    const data = {
+      displayName: req.params.displayName,
+      from: req.query.from,
+      to: req.query.to,
+    };
 
     logger.info(`Call to searchRequestsBySecurityDisplayName in GTW`, {
       callRequest: data,
@@ -408,8 +443,15 @@ export default class RequestsController {
     );
   }
 
-  static async searchRequestsByApproverDisplayName(req: Request, res: Response) {
-    const data = { displayName: req.params.displayName, from: req.query.from, to: req.query.to };
+  static async searchRequestsByApproverDisplayName(
+    req: Request,
+    res: Response
+  ) {
+    const data = {
+      displayName: req.params.displayName,
+      from: req.query.from,
+      to: req.query.to,
+    };
 
     logger.info(`Call to searchRequestsByApproverDisplayName in GTW`, {
       callRequest: data,
@@ -434,9 +476,6 @@ export default class RequestsController {
       }
     );
   }
-
-
-
 
   static async updateADStatus(req: Request, res: Response) {
     const retry: boolean = req.body.Retry;
@@ -557,25 +596,22 @@ export default class RequestsController {
       callRequest: data,
     });
 
-    requestsClient.UpdateCommanders(
-      data,
-      (err: any, response: RequestS) => {
-        if (err) {
-          logger.error(`updateCommanders ERROR in GTW`, {
-            err,
-            callRequest: data,
-          });
-
-          res.status(500).send(err.message);
-        }
-
-        logger.info(`updateCommanders OK in GTW`, {
-          response: response,
+    requestsClient.UpdateCommanders(data, (err: any, response: RequestS) => {
+      if (err) {
+        logger.error(`updateCommanders ERROR in GTW`, {
+          err,
           callRequest: data,
         });
-        res.send(response);
+
+        res.status(500).send(err.message);
       }
-    );
+
+      logger.info(`updateCommanders OK in GTW`, {
+        response: response,
+        callRequest: data,
+      });
+      res.send(response);
+    });
   }
 
   static async updateSecurityApprovers(req: Request, res: Response) {
@@ -726,9 +762,6 @@ export default class RequestsController {
       );
     });
   }
-
-
-
 
   static async createRoleRequest(req: any, res: Response) {
     logger.info(`Call to createRoleRequest in GTW`, {
@@ -1086,12 +1119,9 @@ export default class RequestsController {
     );
   }
 
-
-
-
   static async deleteRequest(req: Request, res: Response) {
     logger.info(`Call to deleteRequest in GTW`, {
-      callRequest: { id: req.params.id }
+      callRequest: { id: req.params.id },
     });
 
     requestsClient.DeleteRequest(
@@ -1100,14 +1130,14 @@ export default class RequestsController {
         if (err) {
           logger.error(`deleteRequest ERROR in GTW`, {
             err,
-            callRequest: { id: req.params.id }
+            callRequest: { id: req.params.id },
           });
           res.status(500).send(err.message);
         }
 
         logger.info(`deleteRequest OK in GTW`, {
           response: response,
-          callRequest: { id: req.params.id }
+          callRequest: { id: req.params.id },
         });
         res.send(response);
       }

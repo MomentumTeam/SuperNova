@@ -12,119 +12,19 @@ import { ApproverManager } from './approver.manager';
 
 const approverManager: ApproverManager = new ApproverManager();
 
-export async function getAllSuperSecurityApprovers(
-  call: any,
-  callback: any
-): Promise<void> {
+export async function addApprover(call: any, callback: any): Promise<void> {
   try {
-    logger.info(`Call to getAllSuperSecurityApprovers`, {
+    logger.info(`Call to addApprover`, {
       callRequest: call.request,
     });
-    const approverArray: ApproverArray =
-      await approverManager.getAllSuperSecurityApprovers(call.request);
-    logger.info(`getAllSuperSecurityApprovers OK`, {
-      response: approverArray,
-      callRequest: call.request,
-    });
-    callback(null, approverArray);
-  } catch (error) {
-    logger.error(`getAllSuperSecurityApprovers ERROR`, {
-      error,
-      callRequest: call.request,
-    });
-    callback(
-      {
-        code: 400,
-        message: error.message,
-        status: grpc.status.CANCELLED,
-      },
-      null
-    );
-  }
-}
-
-export async function addSuperSecurityApprover(
-  call: any,
-  callback: any
-): Promise<void> {
-  try {
-    logger.info(`Call to addSuperSecurityApprover`, {
-      callRequest: call.request,
-    });
-    const approver: Approver = await approverManager.addSuperSecurityApprover(
-      call.request
-    );
-    logger.info(`addSuperSecurityApprover OK`, {
-      callRequest: call.request,
-      response: approver,
-    });
-    callback(null, approver);
-  } catch (error) {
-    logger.error(`addSuperSecurityApprover ERROR`, {
-      callRequest: call.request,
-      error,
-    });
-    callback(
-      {
-        code: 400,
-        message: error.message,
-        status: grpc.status.CANCELLED,
-      },
-      null
-    );
-  }
-}
-
-export async function addCommanderApprover(
-  call: any,
-  callback: any
-): Promise<void> {
-  try {
-    logger.info(`Call to addCommanderApprover`, {
-      callRequest: call.request,
-    });
-    const approver: Approver = await approverManager.addCommanderApprover(
-      call.request
-    );
-    logger.info(`addCommanderApprover OK`, {
+    const approver: Approver = await approverManager.addApprover(call.request);
+    logger.info(`addApprover OK`, {
       response: approver,
       callRequest: call.request,
     });
     callback(null, approver);
   } catch (error) {
-    logger.error(`addCommanderApprover ERROR`, {
-      callRequest: call.request,
-      error,
-    });
-    callback(
-      {
-        code: 400,
-        message: error.message,
-        status: grpc.status.CANCELLED,
-      },
-      null
-    );
-  }
-}
-
-export async function addSecurityApprover(
-  call: any,
-  callback: any
-): Promise<void> {
-  try {
-    logger.info(`Call to addSecurityApprover`, {
-      callRequest: call.request,
-    });
-    const approver: Approver = await approverManager.addSecurityApprover(
-      call.request
-    );
-    logger.info(`addSecurityApprover OK`, {
-      response: approver,
-      callRequest: call.request,
-    });
-    callback(null, approver);
-  } catch (error) {
-    logger.error(`addSecurityApprover ERROR`, {
+    logger.error(`addApprover ERROR`, {
       callRequest: call.request,
       error,
     });
@@ -230,118 +130,24 @@ export async function searchApproverByDomainUser(
   }
 }
 
-export async function getAllSecurityApprovers(
+export async function updateApproverDecision(
   call: any,
   callback: any
 ): Promise<void> {
   try {
-    logger.info(`Call to getAllSecurityApprovers`, {
+    logger.info(`Call to updateApproverDecision`, {
       callRequest: call.request,
     });
-    const approverArray: ApproverArray =
-      await approverManager.getAllSecurityApprovers(call.request);
-    logger.info(`getAllSecurityApprovers OK`, {
-      response: approverArray,
-      callRequest: call.request,
-    });
-    callback(null, approverArray);
-  } catch (error) {
-    logger.error(`getAllSecurityApprovers ERROR`, {
-      callRequest: call.request,
-      error,
-    });
-    callback(
-      {
-        code: 400,
-        message: error.message,
-        status: grpc.status.CANCELLED,
-      },
-      null
-    );
-  }
-}
-
-export async function getAllCommanderApprovers(
-  call: any,
-  callback: any
-): Promise<void> {
-  try {
-    logger.info(`Call to getAllCommanderApprovers`, {
-      callRequest: call.request,
-    });
-    const approverArray: ApproverArray =
-      await approverManager.getAllCommanderApprovers(call.request);
-    logger.info(`getAllCommanderApprovers OK`, {
-      response: approverArray,
-      callRequest: call.request,
-    });
-    callback(null, approverArray);
-  } catch (error) {
-    logger.error(`getAllCommanderApprovers ERROR`, {
-      callRequest: call.request,
-      error,
-    });
-    callback(
-      {
-        code: 400,
-        message: error.message,
-        status: grpc.status.CANCELLED,
-      },
-      null
-    );
-  }
-}
-
-export async function updateCommanderDecision(
-  call: any,
-  callback: any
-): Promise<void> {
-  try {
-    logger.info(`Call to updateCommanderDecision`, {
-      callRequest: call.request,
-    });
-    const request: Request = await approverManager.updateCommanderDecision(
+    const request: Request = await approverManager.updateApproverDecision(
       call.request
     );
-    logger.info(`updateCommanderDecision OK`, {
+    logger.info(`updateApproverDecision OK`, {
       response: request,
       callRequest: call.request,
     });
     callback(null, request);
   } catch (error) {
-    logger.error(`updateCommanderDecision ERROR`, {
-      callRequest: call.request,
-      error,
-    });
-    callback(
-      {
-        code: 400,
-        message: error.message,
-        status: grpc.status.CANCELLED,
-      },
-      null
-    );
-  }
-}
-
-export async function updateSecurityDecision(
-  call: any,
-  callback: any
-): Promise<void> {
-  try {
-    logger.info(`Call to updateSecurityDecision`, {
-      callRequest: call.request,
-    });
-    const request: Request = await approverManager.updateSecurityDecision(
-      call.request
-    );
-    logger.info(`updateSecurityDecision OK`, {
-      response: request,
-      callRequest: call.request,
-    });
-    callback(null, request);
-  } catch (error) {
-    logger.error(`updateSecurityDecision ERROR`, {
+    logger.error(`updateApproverDecision ERROR`, {
       callRequest: call.request,
       error,
     });
@@ -458,38 +264,6 @@ export async function syncApprover(call: any, callback: any): Promise<void> {
     callback(null, approver);
   } catch (error) {
     logger.error(`syncApprover ERROR`, {
-      callRequest: call.request,
-      error,
-    });
-    callback(
-      {
-        code: 400,
-        message: error.message,
-        status: grpc.status.CANCELLED,
-      },
-      null
-    );
-  }
-}
-
-export async function updateSuperSecurityDecision(
-  call: any,
-  callback: any
-): Promise<void> {
-  try {
-    logger.info(`Call to updateSuperSecurityDecision`, {
-      callRequest: call.request,
-    });
-    const request: Request = await approverManager.updateSuperSecurityDecision(
-      call.request
-    );
-    logger.info(`updateSuperSecurityDecision OK`, {
-      response: request,
-      callRequest: call.request,
-    });
-    callback(null, request);
-  } catch (error) {
-    logger.error(`updateSuperSecurityDecision ERROR`, {
       callRequest: call.request,
       error,
     });

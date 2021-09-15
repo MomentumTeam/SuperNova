@@ -1,30 +1,22 @@
 import { Router } from 'express';
 import ApproverController from './approver.controller';
+import { ApproverValidator } from './approver.validator';
 
 const ApproverRouter: Router = Router();
 
-ApproverRouter.post('/commanderApprover', ApproverController.addCommanderApprover);
+// GET
+ApproverRouter.get('/', ApproverValidator.isGetAllApproversValid, ApproverController.getAllApprovers);
+ApproverRouter.get('/displayname/:displayName', ApproverValidator.isGetSearchByDisplayNameValid, ApproverController.searchApproverByDisplayName);
+ApproverRouter.get('/domainuser/:domainUser',ApproverValidator.isGetSearchByDomainUserValid, ApproverController.searchApproverByDomainUser);
+ApproverRouter.get('/usertype/:entityId', ApproverValidator.isGetUserTypeValid, ApproverController.getUserType); 
 
-ApproverRouter.post('/securityApprover', ApproverController.addSecurityApprover);
+// POST
+ApproverRouter.post('/', ApproverValidator.isAddApproverValid, ApproverController.addApprover); 
 
-ApproverRouter.post('/superSecurityApprover', ApproverController.addSuperSecurityApprover);
+// PUT
+ApproverRouter.put('/decision/:requestId', ApproverValidator.isUpdateApproverDecisionValid, ApproverController.updateApproverDecision);
 
-ApproverRouter.get('/userType/:id', ApproverController.getUserType);
-
-ApproverRouter.get('/searchByDisplayName', ApproverController.searchApproverByDisplayName);
-
-ApproverRouter.get('/searchByDomainUser', ApproverController.searchApproverByDomainUser);
-
-ApproverRouter.get('/securityApprovers', ApproverController.getAllSecurityApprovers);
-
-ApproverRouter.get('/superSecurityApprovers', ApproverController.getAllSuperSecurityApprovers);
-
-ApproverRouter.get('/commanderApprovers', ApproverController.getAllCommanderApprovers);
-
-ApproverRouter.put('/commanderDecision/:requestId', ApproverController.updateCommanderDecision);
-
-ApproverRouter.put('/securityDecision/:requestId', ApproverController.updateSecurityDecision);
-
-ApproverRouter.put('/superSecurityDecision/:requestId', ApproverController.updateSuperSecurityDecision);
+// DELETE
+ApproverRouter.delete('/:id',ApproverValidator.isDeleteApproverValid, ApproverController.deleteApprover);
 
 export default ApproverRouter;

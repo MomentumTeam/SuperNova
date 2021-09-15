@@ -1,134 +1,38 @@
 import { Request, Response } from 'express';
-import * as grpc from 'grpc';
-import * as protoLoader from '@grpc/proto-loader';
-import path from 'path';
-import { logger } from '../logger';
-import * as config from '../config';
+import { logger } from '../utils/logger/logger';
 import {
   Approver,
   GetUserTypeRes,
   ApproverArray,
-  SuccessMessage,
+  SearchByDisplayNameReq,
+  GetAllApproversReq,
+  SearchByDomainUserReq,
+  GetUserTypeReq,
+  AddApproverReq,
+  DeleteApproverReq,
 } from '../interfaces/protoc/proto/approverService';
-
-const PROTO_PATH = __dirname.includes('dist')
-  ? path.join(__dirname, '../../../proto/approverService.proto')
-  : path.join(__dirname, '../../proto/approverService.proto');
-
-const packageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(
-  PROTO_PATH,
-  {
-    keepCase: true,
-    longs: String,
-    enums: String,
-    defaults: true,
-    oneofs: true,
-  }
-);
-
-const protoDescriptor: any =
-  grpc.loadPackageDefinition(packageDefinition).ApproverService;
-
-export const approverClient: any = new protoDescriptor.ApproverService(
-  config.approverServiceUrl,
-  grpc.credentials.createInsecure()
-);
-
+import { approverClient } from './approver.service';
 export default class ApproverController {
+  // GET
+  static async getAllApprovers(req: any, res: Response) {
+    const getAllApproversReq: GetAllApproversReq = {
+      type: req.query?.type ? req.query.type : {},
+    };
+    logger.info(`Call to GetAllApprovers in GTW`, getAllApproversReq);
 
-  static async addCommanderApprover(req: any, res: Response) {
-    logger.info(`Call to AddCommanderApprover in GTW`, {
-      entityId: req.body.entityId,
-    });
-
-    approverClient.AddCommanderApprover(
-      req.body,
-      (err: any, response: Approver) => {
+    approverClient.GetAllApprovers(
+      getAllApproversReq,
+      (err: any, response: ApproverArray) => {
         if (err) {
-          logger.error(`AddCommanderApprover ERROR in GTW`, {
+          logger.error(`getAllApprovers ERROR in GTW`, {
             err,
-            callRequest: { entityId: req.body.entityId },
+            callRequest: getAllApproversReq,
           });
           res.status(500).send(err.message);
         }
-
-        logger.info(`AddCommanderApprover OK in GTW`, {
+        logger.info(`getAllApprovers OK in GTW`, {
           response: response,
-          callRequest: { entityId: req.body.entityId },
-        });
-        res.send(response);
-      }
-    );
-  }
-
-  static async addSecurityApprover(req: any, res: Response) {
-    logger.info(`Call to AddSecurityApprover in GTW`, {
-      entityId: req.body.entityId,
-    });
-
-    approverClient.AddSecurityApprover(
-      req.body,
-      (err: any, response: Approver) => {
-        if (err) {
-          logger.error(`AddSecurityApprover ERROR in GTW`, {
-            err,
-            callRequest: { entityId: req.body.entityId },
-          });
-          res.status(500).send(err.message);
-        }
-
-        logger.info(`AddSecurityApprover OK in GTW`, {
-          response: response,
-          callRequest: { entityId: req.body.entityId },
-        });
-        res.send(response);
-      }
-    );
-  }
-
-  static async addSuperSecurityApprover(req: any, res: Response) {
-    logger.info(`Call to AddSuperSecurityApprover in GTW`, {
-      entityId: req.body.entityId,
-    });
-
-    approverClient.AddSuperSecurityApprover(
-      req.body,
-      (err: any, response: Approver) => {
-        if (err) {
-          logger.error(`AddSuperSecurityApprover ERROR in GTW`, {
-            err,
-            callRequest: { entityId: req.body.entityId },
-          });
-          res.status(500).send(err.message);
-        }
-
-        logger.info(`AddSuperSecurityApprover OK in GTW`, {
-          response: response,
-          callRequest: { entityId: req.body.entityId },
-        });
-        res.send(response);
-      }
-    );
-  }
-
-  static async getUserType(req: any, res: Response) {
-    logger.info(`Call to GetUserType in GTW`, {
-      callRequest: { entityId: req.query.id },
-    });
-
-    approverClient.GetUserType(
-      { entityId: req.params.id },
-      (err: any, response: GetUserTypeRes) => {
-        if (err) {
-          logger.error(`GetUserType ERROR in GTW`, {
-            err,
-            callRequest: { entityId: req.query.id },
-          });
-          res.status(500).send(err.message);
-        }
-        logger.info(`GetUserType OK in GTW`, {
-          response: response,
-          callRequest: { entityId: req.query.id },
+          callRequest: getAllApproversReq,
         });
         res.send(response);
       }
@@ -136,19 +40,31 @@ export default class ApproverController {
   }
 
   static async searchApproverByDisplayName(req: any, res: Response) {
-    logger.info(`Call to SearchApproverByDisplayName in GTW`);
+    const searchByDisplayNameReq: SearchByDisplayNameReq = {
+      displayName: req.params.displayName,
+      type: req.query.type,
+      from: req.query.from,
+      to: req.query.to,
+    };
+
+    logger.info(
+      `Call to SearchApproverByDisplayName in GTW`,
+      searchByDisplayNameReq
+    );
 
     approverClient.SearchApproverByDisplayName(
-      req.body,
+      searchByDisplayNameReq,
       (err: any, response: ApproverArray) => {
         if (err) {
           logger.error(`SearchApproverByDisplayName ERROR in GTW`, {
             err,
+            callRequest: searchByDisplayNameReq,
           });
           res.status(500).send(err.message);
         }
         logger.info(`SearchApproverByDisplayName OK in GTW`, {
           response: response,
+          callRequest: searchByDisplayNameReq,
         });
         res.send(response);
       }
@@ -156,109 +72,122 @@ export default class ApproverController {
   }
 
   static async searchApproverByDomainUser(req: any, res: Response) {
-    logger.info(`Call to SearchApproverByDomainUser in GTW`);
+    const searchByDomainUserReq: SearchByDomainUserReq = {
+      domainUser: req.params.displayName,
+      type: req.query.type,
+    };
+    logger.info(
+      `Call to SearchApproverByDomainUser in GTW`,
+      searchByDomainUserReq
+    );
 
     approverClient.SearchApproverByDomainUser(
-      req.body,
+      searchByDomainUserReq,
       (err: any, response: ApproverArray) => {
         if (err) {
           logger.error(`SearchApproverByDomainUser ERROR in GTW`, {
             err,
+            callRequest: searchByDomainUserReq,
           });
           res.status(500).send(err.message);
         }
         logger.info(`SearchApproverByDomainUser OK in GTW`, {
           response: response,
+          callRequest: searchByDomainUserReq,
         });
         res.send(response);
       }
     );
   }
 
-  static async getAllSecurityApprovers(req: any, res: Response) {
-    logger.info(`Call to GetAllSecurityApprovers in GTW`);
+  static async getUserType(req: any, res: Response) {
+    const getUserTypeReq: GetUserTypeReq = {
+      entityId: req.params.entityId,
+    };
+    logger.info(`Call to GetUserType in GTW`, {
+      callRequest: getUserTypeReq,
+    });
 
-    approverClient.GetAllSecurityApprovers(
-      {},
-      (err: any, response: ApproverArray) => {
+    approverClient.GetUserType(
+      getUserTypeReq,
+      (err: any, response: GetUserTypeRes) => {
         if (err) {
-          logger.error(`GetAllSecurityApprovers ERROR in GTW`, {
+          logger.error(`GetUserType ERROR in GTW`, {
             err,
+            callRequest: getUserTypeReq,
           });
           res.status(500).send(err.message);
         }
-        logger.info(`GetAllSecurityApprovers OK in GTW`, {
+        logger.info(`GetUserType OK in GTW`, {
           response: response,
+          callRequest: getUserTypeReq,
         });
         res.send(response);
       }
     );
   }
 
-  static async getAllSuperSecurityApprovers(req: any, res: Response) {
-    logger.info(`Call to GetAllSuperSecurityApprovers in GTW`);
+  // POST
+  static async addApprover(req: any, res: Response) {
+    let addApproverReq: Partial<AddApproverReq> = {
+      entityId: req.body.entityId,
+      type: req.body.type,
+    };
+    logger.info(`Call to AddApprover in GTW`, addApproverReq);
 
-    approverClient.GetAllSuperSecurityApprovers(
-      {},
-      (err: any, response: ApproverArray) => {
+    // TODO: call kartoffel service and search for domainUsers, akaunit and displayname
+    // add the findings to the body req
+    addApproverReq.akaUnit = 'TODO';
+    addApproverReq.displayName = 'TODO';
+    addApproverReq.domainUsers = ['TODO'];
+
+    approverClient.AddApprover(
+      addApproverReq,
+      (err: any, response: Approver) => {
         if (err) {
-          logger.error(`GetAllSuperSecurityApprovers ERROR in GTW`, {
+          logger.error(`AddApprover ERROR in GTW`, {
             err,
+            callRequest: addApproverReq,
           });
           res.status(500).send(err.message);
         }
-        logger.info(`GetAllSuperSecurityApprovers OK in GTW`, {
+
+        logger.info(`AddApprover OK in GTW`, {
           response: response,
+          callRequest: addApproverReq,
         });
         res.send(response);
       }
     );
   }
 
-  static async getAllCommanderApprovers(req: any, res: Response) {
-    logger.info(`Call to GetAllCommanderApprovers in GTW`);
+  // PUT
+  static async updateApproverDecision(req: any, res: Response) {
+    // TODO
 
-    approverClient.GetAllCommanderApprovers(
-      {},
-      (err: any, response: ApproverArray) => {
-        if (err) {
-          logger.error(`GetAllCommanderApprovers ERROR in GTW`, {
-            err,
-          });
-          res.status(500).send(err.message);
-        }
-        logger.info(`GetAllCommanderApprovers OK in GTW`, {
-          response: response,
-        });
-        res.send(response);
-      }
-    );
-  }
-
-  static async updateCommanderDecision(req: any, res: Response) {
     const data = {
       requestId: req.params.requestId,
       approverDecision: req.body.approverDecision,
     };
 
-    logger.info(`Call to UpdateCommanderDecision in GTW`, {
+    logger.info(`Call to updateApproverDecision in GTW`, {
       callRequest: data,
     });
 
-    approverClient.UpdateCommanderDecision(
+    approverClient.UpdateApproverDecision(
       {
         requestId: req.params.requestId,
         approverDecision: req.body.approverDecision,
       },
       (err: any, response: ApproverArray) => {
         if (err) {
-          logger.error(`UpdateCommanderDecision ERROR in GTW`, {
+          logger.error(`updateApproverDecision ERROR in GTW`, {
             err,
             callRequest: data,
           });
           res.status(500).send(err.message);
         }
-        logger.info(`UpdateCommanderDecision OK in GTW`, {
+        logger.info(`updateApproverDecision OK in GTW`, {
           response: response,
           callRequest: data,
         });
@@ -267,64 +196,29 @@ export default class ApproverController {
     );
   }
 
-  static async updateSecurityDecision(req: any, res: Response) {
-    const data = {
-      requestId: req.params.requestId,
-      approverDecision: req.body.approverDecision,
+  // DELETE
+  static async deleteApprover(req: any, res: Response) {
+    let deleteApproverReq: DeleteApproverReq = {
+      approverId: req.params.id,
     };
+    logger.info(`Call to deleteApprover in GTW`, deleteApproverReq);
 
-    logger.info(`Call to UpdateCommanderDecision in GTW`, {
-      callRequest: data,
-    });
+    //TODO: ADD get user by id to check if the user exists
 
-    approverClient.UpdateSecurityDecision(
-      {
-        requestId: req.params.requestId,
-        approverDecision: req.body.approverDecision,
-      },
-      (err: any, response: ApproverArray) => {
+    approverClient.DeleteApprover(
+      deleteApproverReq,
+      (err: any, response: Approver) => {
         if (err) {
-          logger.error(`UpdateCommanderDecision ERROR in GTW`, {
+          logger.error(`deleteApprover ERROR in GTW`, {
             err,
-            callRequest: data,
+            callRequest: deleteApproverReq,
           });
           res.status(500).send(err.message);
         }
-        logger.info(`UpdateCommanderDecision OK in GTW`, {
+
+        logger.info(`deleteApprover OK in GTW`, {
           response: response,
-          callRequest: data,
-        });
-        res.send(response);
-      }
-    );
-  }
-
-  static async updateSuperSecurityDecision(req: any, res: Response) {
-    const data = {
-      requestId: req.params.requestId,
-      approverDecision: req.body.approverDecision,
-    };
-
-    logger.info(`Call to UpdateCommanderDecision in GTW`, {
-      callRequest: data,
-    });
-
-    approverClient.UpdateSecurityDecision(
-      {
-        requestId: req.params.requestId,
-        approverDecision: req.body.approverDecision,
-      },
-      (err: any, response: ApproverArray) => {
-        if (err) {
-          logger.error(`UpdateCommanderDecision ERROR in GTW`, {
-            err,
-            callRequest: data,
-          });
-          res.status(500).send(err.message);
-        }
-        logger.info(`UpdateCommanderDecision OK in GTW`, {
-          response: response,
-          callRequest: data,
+          callRequest: deleteApproverReq,
         });
         res.send(response);
       }

@@ -12,13 +12,9 @@ import {
 } from '../interfaces/protoc/proto/requestService';
 
 export function cleanUnderscoreFields(document: any): void {
-  let keys: any = Object.keys(document);
-
-  for (let key of keys) {
-    if (key.startsWith('_') && key !== '_id') {
-      delete document[key];
-    }
-  }
+  Object.keys(document).map((key) => {
+    if (key.startsWith('_') && key !== '_id') delete document[key];
+  });
 }
 
 export function turnObjectIdsToStrings(document: any) {
@@ -48,20 +44,25 @@ export function generateNotifications(
         ? requestTypeFromJSON(request.type)
         : request.type;
     const requestTypeStr = requestTypeToJSON(requestType);
+
     if (type === NotificationType.REQUEST_SUBMITTED) {
       message = `התקבלה בקשה חדשה לאישורך מאת ${request.submittedBy?.displayName} עבור ${requestTypeToHebrew[requestTypeStr]}.`;
+
       if (request.commanders) {
-        for (let commander of request.commanders) {
-          notifications.push({
-            type: type,
-            ownerId: commander.id,
-            ownerType: OwnerType.COMMANDER,
-            requestId: request.id,
-            message: message,
-            reason: reason,
+        const addNotification: CreateCustomNotificationReq[] =
+          request.commanders.map((commander) => {
+            return {
+              type: type,
+              ownerId: commander.id,
+              ownerType: OwnerType.COMMANDER,
+              requestId: request.id,
+              message: message,
+              reason: reason,
+            };
           });
-        }
+        notifications = [...addNotification];
       }
+
       return notifications;
     }
 
@@ -115,6 +116,7 @@ export function generateNotifications(
       message = `בקשתך ל${requestTypeToHebrew[requestTypeStr]} מספר ${request.serialNumber} נכשלה.`;
       //REQUEST_FAILED
     }
+
     if (request.submittedBy) {
       notifications.push({
         type: type,
