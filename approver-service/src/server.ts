@@ -3,22 +3,15 @@ import * as protoLoader from '@grpc/proto-loader';
 import * as C from './config';
 import { logger } from './logger';
 import {
-  addCommanderApprover,
-  addSecurityApprover,
-  addSuperSecurityApprover,
+  addApprover,
   deleteApprover,
   getAllApproverIds,
   getAllApprovers,
-  getAllCommanderApprovers,
-  getAllSecurityApprovers,
-  getAllSuperSecurityApprovers,
   getUserType,
   searchApproverByDisplayName,
   searchApproverByDomainUser,
   syncApprover,
-  updateCommanderDecision,
-  updateSecurityDecision,
-  updateSuperSecurityDecision,
+  updateApproverDecision,
 } from './approver/approver.controller';
 import { findPath } from './utils/path';
 import { addHealthService } from './health';
@@ -61,18 +54,11 @@ export class Server {
       this.server.addService(
         approverServiceDescriptor.ApproverService.service,
         {
-          AddCommanderApprover: addCommanderApprover,
-          AddSecurityApprover: addSecurityApprover,
+          AddApprover: addApprover,
           GetUserType: getUserType,
           SearchApproverByDisplayName: searchApproverByDisplayName,
           SearchApproverByDomainUser: searchApproverByDomainUser,
-          GetAllSecurityApprovers: getAllSecurityApprovers,
-          GetAllCommanderApprovers: getAllCommanderApprovers,
-          GetAllSuperSecurityApprovers: getAllSuperSecurityApprovers,
-          AddSuperSecurityApprover: addSuperSecurityApprover,
-          UpdateCommanderDecision: updateCommanderDecision,
-          UpdateSecurityDecision: updateSecurityDecision,
-          UpdateSuperSecurityDecision: updateSuperSecurityDecision,
+          UpdateApproverDecision: updateApproverDecision,
           GetAllApprovers: getAllApprovers,
           GetAllApproverIds: getAllApproverIds,
           SyncApprover: syncApprover,

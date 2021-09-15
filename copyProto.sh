@@ -10,5 +10,6 @@ cp -r ./proto ./producer-service/
 cp -r ./proto ./request-service/
 cp -r ./proto ./tea-service/
 cp -r ./proto ./spike-service/
+cp -r ./proto ./kartoffel-consumer/
 
 cp -r ./proto ./proto-builder/

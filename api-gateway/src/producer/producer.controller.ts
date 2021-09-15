@@ -2,8 +2,8 @@ import { Request, Response } from 'express';
 import * as grpc from 'grpc';
 import * as protoLoader from '@grpc/proto-loader';
 import path from 'path';
-import * as config from '../config';
-import { logger } from '../logger';
+import { config } from '../config';
+import { logger } from '../utils/logger/logger';
 import { SuccessMessage } from '../interfaces/protoc/proto/producerService';
 
 const PROTO_PATH = __dirname.includes('dist')
@@ -25,7 +25,7 @@ const protoDescriptor: any =
   grpc.loadPackageDefinition(packageDefinition).Producer;
 
 const producerClient: any = new protoDescriptor.Producer(
-  config.producerUrl,
+  config.endpoints.producer,
   grpc.credentials.createInsecure()
 );
 

@@ -4,19 +4,12 @@ import "requestService.proto";
 package ApproverService;
 
 service ApproverService {
-    rpc AddCommanderApprover(AddApproverReq) returns (Approver) {}
-    rpc AddSecurityApprover(AddApproverReq) returns (Approver) {}
-    rpc AddSuperSecurityApprover(AddApproverReq) returns (Approver) {}
+    rpc AddApprover(AddApproverReq) returns (Approver) {}
     rpc GetUserType(GetUserTypeReq) returns (GetUserTypeRes) {}
     rpc SearchApproverByDisplayName(SearchByDisplayNameReq) returns (ApproverArray) {}
     rpc SearchApproverByDomainUser(SearchByDomainUserReq) returns (ApproverArray) {}
-    rpc GetAllSecurityApprovers(GetAllApproversReq) returns (ApproverArray) {}
-    rpc GetAllSuperSecurityApprovers(GetAllApproversReq) returns (ApproverArray) {}
-    rpc GetAllCommanderApprovers(GetAllApproversReq) returns (ApproverArray) {}
     
-    rpc UpdateCommanderDecision(RequestService.UpdateApproverDecisionReq) returns (RequestService.Request) {}
-    rpc UpdateSecurityDecision(RequestService.UpdateApproverDecisionReq) returns (RequestService.Request) {}
-    rpc UpdateSuperSecurityDecision(RequestService.UpdateApproverDecisionReq) returns (RequestService.Request) {}
+    rpc UpdateApproverDecision(UpdateApproverDecisionReq) returns (RequestService.Request) {}
 
     rpc GetAllApprovers(GetAllApproversReq) returns (ApproverArray) {}
     rpc GetAllApproverIds(GetAllApproversReq) returns (ApproverIdArray) {}
@@ -37,7 +30,9 @@ message ApproverIdArray{
 }
 
 message GetAllApproversReq{
-    
+    oneof option {
+        UserType type =1;
+    } 
 }
 
 message SuccessMessage{
@@ -66,7 +61,7 @@ message GetUserTypeReq{
 
 message GetUserTypeRes{
     string entityId = 1;
-    UserType type = 2;
+    repeated UserType type = 2;
 }
 
 message AddApproverReq{
@@ -74,6 +69,7 @@ message AddApproverReq{
     string displayName = 2;
     repeated string domainUsers = 3;
     string akaUnit = 4;
+    UserType type = 5;
 }
 
 message Approver{
@@ -85,6 +81,11 @@ message Approver{
     string id = 6;
 }
 
+message UpdateApproverDecisionReq {
+    RequestService.UpdateDecisionReq decision = 1;
+    UserType type =2;
+}
+
 enum RequestStatus{
     SUBMITTED = 0;
     DECLINED = 1;
@@ -94,8 +95,11 @@ enum RequestStatus{
 }
 
 enum UserType{
-    SECURITY = 0;
-    SUPER_SECURITY = 1;
-    COMMANDER = 2;
-    SOLDIER = 3;
+    UNKNOWN = 0;
+    SUPER_SECURITY = 2;
+    SECURITY = 1;
+    COMMANDER = 3;
+    SOLDIER = 4;
+    ADMIN = 5;
+    BULK = 6;
 }
