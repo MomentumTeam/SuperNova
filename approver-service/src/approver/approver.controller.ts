@@ -23,10 +23,10 @@ export async function addApprover(call: any, callback: any): Promise<void> {
       callRequest: call.request,
     });
     callback(null, approver);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`addApprover ERROR`, {
       callRequest: call.request,
-      error,
+      error: { message: error.message },
     });
     callback(
       {
@@ -52,10 +52,10 @@ export async function getUserType(call: any, callback: any): Promise<void> {
       callRequest: call.request,
     });
     callback(null, userTypeRes);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`getUserType ERROR`, {
       callRequest: call.request,
-      error,
+      error: { message: error.message },
     });
     callback(
       {
@@ -83,10 +83,10 @@ export async function searchApproverByDisplayName(
       callRequest: call.request,
     });
     callback(null, approverArray);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`searchApproverByDisplayName ERROR`, {
       callRequest: call.request,
-      error,
+      error: { message: error.message },
     });
     callback(
       {
@@ -114,10 +114,10 @@ export async function searchApproverByDomainUser(
       callRequest: call.request,
     });
     callback(null, approverArray);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`searchApproverByDomainUser ERROR`, {
       callRequest: call.request,
-      error,
+      error: { message: error.message },
     });
     callback(
       {
@@ -146,10 +146,10 @@ export async function updateApproverDecision(
       callRequest: call.request,
     });
     callback(null, request);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`updateApproverDecision ERROR`, {
       callRequest: call.request,
-      error,
+      error: { message: error.message },
     });
     callback(
       {
@@ -175,10 +175,10 @@ export async function getAllApprovers(call: any, callback: any): Promise<void> {
       callRequest: call.request,
     });
     callback(null, approvers);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`getAllApprovers ERROR`, {
       callRequest: call.request,
-      error,
+      error: { message: error.message },
     });
     callback(
       {
@@ -204,10 +204,10 @@ export async function deleteApprover(call: any, callback: any): Promise<void> {
       callRequest: call.request,
     });
     callback(null, successMessage);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`deleteApprover ERROR`, {
       callRequest: call.request,
-      error,
+      error: { message: error.message },
     });
     callback(
       {
@@ -235,10 +235,10 @@ export async function getAllApproverIds(
       callRequest: call.request,
     });
     callback(null, approverIdArray);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`getAllApproverIds ERROR`, {
       callRequest: call.request,
-      error,
+      error: { message: error.message },
     });
     callback(
       {
@@ -262,10 +262,10 @@ export async function syncApprover(call: any, callback: any): Promise<void> {
       callRequest: call.request,
     });
     callback(null, approver);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`syncApprover ERROR`, {
       callRequest: call.request,
-      error,
+      error: { message: error.message },
     });
     callback(
       {

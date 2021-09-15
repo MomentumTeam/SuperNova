@@ -194,9 +194,16 @@ export class RequestRepository {
 
       if (decision === Decision.DENIED) {
         newRequestStatus = RequestStatus.DECLINED;
-      } else if (await this.isRequestApproved({ id: updateDecisionReq.id })) {
-        newRequestStatus = RequestStatus.IN_PROGRESS;
+      } else {
+        const isRequestApprovedObj = await this.isRequestApproved({
+          id: updateDecisionReq.id,
+        });
+        const requestApproved = isRequestApprovedObj.isRequestApproved;
+        if (requestApproved) {
+          newRequestStatus = RequestStatus.IN_PROGRESS;
+        }
       }
+
       if (newRequestStatus) {
         updatedRequest = await this.updateRequest({
           id: updateDecisionReq.id,

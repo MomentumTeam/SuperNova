@@ -591,7 +591,7 @@ message CreateRoleKartoffelParams{
     string directGroup = 2; //groupId of direct father
     optional string roleId = 3; //T154514... generated automatically by tea-service if not given
     string clearance = 4; //clearance of the role
-    optional string akaUnit = 5;
+    optional string unit = 5;
 
     //forDigitalIdentity
     string type = 6; //always domainUser
@@ -736,7 +736,7 @@ message AssignRoleToEntityKartoffelParams{
 message AssignRoleToEntityADParams{
     string oldSAMAccountName = 1;
     string newSAMAccountName = 2;
-    string upn = 3;
+    optional string upn = 3;
     string firstName = 4;
     string lastName = 5;
     string fullName = 6;
@@ -935,7 +935,7 @@ message KartoffelParams{
     optional string jobTitle = 4;
     optional string directGroup = 5;
     optional string roleId = 6;
-    optional string akaUnit = 7;
+    optional string unit = 7;
 
     //forDigitalIdentity
     optional string type = 8;
@@ -1048,11 +1048,12 @@ message RequestReq{
     repeated EntityMin superSecurityApprovers = 8;
     KartoffelStatus kartoffelStatus = 9;
     ADStatus adStatus = 10;
-    KartoffelParams kartoffelParams = 11;
-    ADParams adParams = 12;
-    string comments = 13;
-    string approversComments = 14;
-    optional int64 due = 15;
+    optional KartoffelParams kartoffelParams = 11;
+    optional ADParams adParams = 12;
+    optional AdditionalParams additionalParams = 13;
+    string comments = 14;
+    string approversComments = 15;
+    optional int64 due = 16;
 }
 
 message Request{
@@ -1066,19 +1067,20 @@ message Request{
     repeated EntityMin superSecurityApprovers = 8; 
     KartoffelStatus kartoffelStatus = 9;
     ADStatus adStatus = 10;
-    KartoffelParams kartoffelParams = 11;
-    ADParams adParams = 12;
-    string comments = 13;
-    string approversComments = 14;
-    int64 due = 15;
+    optional KartoffelParams kartoffelParams = 11;
+    optional AdditionalParams additionalParams=12;
+    optional ADParams adParams = 13;
+    string comments = 14;
+    string approversComments = 15;
+    int64 due = 16;
 
-    string id = 16;
-    int64 createdAt = 17;
-    int64 updatedAt = 18; 
-    RequestType type = 19;
-    string serialNumber = 20;
-    bool needSecurityDecision = 21;
-    bool needSuperSecurityDecision = 22;
+    string id = 17;
+    int64 createdAt = 18;
+    int64 updatedAt = 19; 
+    RequestType type = 20;
+    string serialNumber = 21;
+    bool needSecurityDecision = 22;
+    bool needSuperSecurityDecision = 23;
 }
 
 

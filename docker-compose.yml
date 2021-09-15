@@ -133,8 +133,6 @@ services:
       - ./supernova.env
     ports:
       - '8086:8080'
-    depends_on:
-      - request-service
     environment:
       - TS_MONGO_URL=mongodb://mongodb:27017/supernova
       - TS_KS_URL=kartoffel-service:8080

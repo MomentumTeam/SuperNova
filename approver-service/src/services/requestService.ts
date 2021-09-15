@@ -3,7 +3,7 @@ import * as protoLoader from '@grpc/proto-loader';
 import * as config from '../config';
 import {
   Request,
-  UpdateDecisionReq,
+  UpdateApproverDecisionReq,
   UpdateReq,
 } from '../interfaces/protoc/proto/requestService';
 import { logger } from '../logger';
@@ -51,76 +51,23 @@ export default class RequestService {
     });
   }
 
-  static async updateCommanderDecision(
-    updateDecisionReq: UpdateDecisionReq
+  static async updateApproverDecision(
+    updateApproverDecisionReq: UpdateApproverDecisionReq
   ): Promise<Request> {
-    console.log('updateCommanderDecision');
+    console.log('updateApproverDecision');
     return new Promise((resolve, reject) => {
-      requestClient.UpdateCommanderDecision(
-        updateDecisionReq,
+      requestClient.UpdateApproverDecision(
+        updateApproverDecisionReq,
         (err: any, request: Request) => {
           if (err) {
-            logger.error('updateCommanderDecision in RequestService ERROR', {
-              updateDecisionReq,
+            logger.error('updateApproverDecision in RequestService ERROR', {
+              updateApproverDecisionReq,
               err,
             });
             reject(err);
           } else {
-            logger.info('updateCommanderDecision in RequestService', {
-              updateDecisionReq,
-              request,
-            });
-            resolve(request);
-          }
-        }
-      );
-    });
-  }
-
-  static async updateSecurityDecision(
-    updateDecisionReq: UpdateDecisionReq
-  ): Promise<Request> {
-    return new Promise((resolve, reject) => {
-      requestClient.UpdateSecurityDecision(
-        updateDecisionReq,
-        (err: any, request: Request) => {
-          if (err) {
-            logger.error('updateSecurityDecision in RequestService ERROR', {
-              updateDecisionReq,
-              err,
-            });
-            reject(err);
-          } else {
-            logger.info('updateSecurityDecision in RequestService', {
-              updateDecisionReq,
-              request,
-            });
-            resolve(request);
-          }
-        }
-      );
-    });
-  }
-
-  static async updateSuperSecurityDecision(
-    updateDecisionReq: UpdateDecisionReq
-  ): Promise<Request> {
-    return new Promise((resolve, reject) => {
-      requestClient.UpdateSuperSecurityDecision(
-        updateDecisionReq,
-        (err: any, request: Request) => {
-          if (err) {
-            logger.error(
-              'updateSuperSecurityDecision in RequestService ERROR',
-              {
-                updateDecisionReq,
-                err,
-              }
-            );
-            reject(err);
-          } else {
-            logger.info('updateSuperSecurityDecision in RequestService', {
-              updateDecisionReq,
+            logger.info('updateApproverDecision in RequestService', {
+              updateApproverDecisionReq,
               request,
             });
             resolve(request);

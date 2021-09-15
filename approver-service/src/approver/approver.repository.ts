@@ -13,14 +13,17 @@ import {
   SyncApproverReq,
   UserType,
   userTypeFromJSON,
-  UpdateApproverDecisionReq,
   userTypeToJSON,
 } from '../interfaces/protoc/proto/approverService';
 import {
   DigitalIdentity,
   Entity,
 } from '../interfaces/protoc/proto/kartoffelService';
-import { Request } from '../interfaces/protoc/proto/requestService';
+import {
+  PersonTypeInRequest,
+  Request,
+  UpdateApproverDecisionReq,
+} from '../interfaces/protoc/proto/requestService';
 import { logger } from '../logger';
 import { ApproverModel } from '../models/approver.model';
 import KartoffelService from '../services/kartoffelService';
@@ -298,40 +301,9 @@ export class ApproverRepository {
     updateApproverDecisionReq: UpdateApproverDecisionReq
   ): Promise<Request> {
     try {
-      const userType = updateApproverDecisionReq.type;
-      let updatedRequest;
-
-      if (updateApproverDecisionReq.decision) {
-        switch (userType) {
-          case UserType.COMMANDER:
-            updatedRequest = await RequestService.updateCommanderDecision(
-              updateApproverDecisionReq.decision
-            );
-            break;
-          case UserType.SECURITY:
-            updatedRequest = await RequestService.updateSecurityDecision(
-              updateApproverDecisionReq.decision
-            );
-            break;
-          case UserType.SUPER_SECURITY:
-            updatedRequest = await RequestService.updateSuperSecurityDecision(
-              updateApproverDecisionReq.decision
-            );
-            break;
-          default:
-            throw new Error(`unsupported usertype ${userType}`);
-        }
-      }
-      logger.info('updateApproverDecision', {
-        updatedRequest,
-        updateApproverDecisionReq,
-      });
-
-      if (updatedRequest) {
-        return updatedRequest;
-      } else {
-        throw new Error('Something went wrong');
-      }
+      return await RequestService.updateApproverDecision(
+        updateApproverDecisionReq
+      );
     } catch (error) {
       logger.error('updateApproverDecision ERROR', {
         updateApproverDecisionReq,

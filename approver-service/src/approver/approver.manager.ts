@@ -11,11 +11,10 @@ import {
   SearchByDomainUserReq,
   SuccessMessage,
   SyncApproverReq,
-  UpdateApproverDecisionReq,
 } from '../interfaces/protoc/proto/approverService';
 import {
   Request,
-  UpdateDecisionReq,
+  UpdateApproverDecisionReq,
 } from '../interfaces/protoc/proto/requestService';
 import { ApproverRepository } from './approver.repository';
 
