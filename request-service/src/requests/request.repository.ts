@@ -5,7 +5,6 @@ import {
   CanPushToQueueRes,
   Decision,
   decisionFromJSON,
-  decisionToJSON,
   DeleteReq,
   GetAllRequestsReq,
   GetRequestByIdReq,
@@ -43,6 +42,10 @@ import {
 } from '../services/requestHelper';
 import { NotificationType } from '../interfaces/protoc/proto/notificationService';
 import { getIdentifierQuery, getIdQuery } from '../utils/query';
+import {
+  retrieveTeaByUnit,
+  retrieveUPNByEntityId,
+} from '../services/teaHelper';
 
 export class RequestRepository {
   async createRequest(
@@ -50,6 +53,25 @@ export class RequestRepository {
     type: RequestType
   ): Promise<Request> {
     try {
+      if (
+        type === RequestType.CREATE_ROLE &&
+        createRequestReq.kartoffelParams.unit
+      ) {
+        const tea = await retrieveTeaByUnit(
+          createRequestReq.kartoffelParams.unit
+        );
+        createRequestReq.kartoffelParams.roleId = tea;
+        createRequestReq.kartoffelParams.uniqueId = tea;
+        createRequestReq.kartoffelParams.mail = tea;
+        createRequestReq.adParams.samAccountName = tea;
+      } else if (
+        type === RequestType.ASSIGN_ROLE_TO_ENTITY &&
+        !createRequestReq.adParams.upn
+      ) {
+        createRequestReq.adParams.upn = await retrieveUPNByEntityId(
+          createRequestReq.kartoffelParams.id
+        );
+      }
       const request: any = new RequestModel(createRequestReq);
       this.setNeedApproversDecisionsValues(request, type);
       request.type = requestTypeToJSON(type);
@@ -172,7 +194,7 @@ export class RequestRepository {
 
       if (decision === Decision.DENIED) {
         newRequestStatus = RequestStatus.DECLINED;
-      } else if (this.isRequestApproved({ id: updateDecisionReq.id })) {
+      } else if (await this.isRequestApproved({ id: updateDecisionReq.id })) {
         newRequestStatus = RequestStatus.IN_PROGRESS;
       }
       if (newRequestStatus) {

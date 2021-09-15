@@ -1,8 +1,8 @@
 /* eslint-disable */
-import Long from "long";
-import _m0 from "protobufjs/minimal";
+import Long from 'long';
+import _m0 from 'protobufjs/minimal';
 
-export const protobufPackage = "RequestService";
+export const protobufPackage = 'RequestService';
 
 export enum ApproverType {
   COMMANDER = 0,
@@ -14,16 +14,16 @@ export enum ApproverType {
 export function approverTypeFromJSON(object: any): ApproverType {
   switch (object) {
     case 0:
-    case "COMMANDER":
+    case 'COMMANDER':
       return ApproverType.COMMANDER;
     case 1:
-    case "SECURITY":
+    case 'SECURITY':
       return ApproverType.SECURITY;
     case 2:
-    case "SUPER_SECURITY":
+    case 'SUPER_SECURITY':
       return ApproverType.SUPER_SECURITY;
     case -1:
-    case "UNRECOGNIZED":
+    case 'UNRECOGNIZED':
     default:
       return ApproverType.UNRECOGNIZED;
   }
@@ -32,13 +32,13 @@ export function approverTypeFromJSON(object: any): ApproverType {
 export function approverTypeToJSON(object: ApproverType): string {
   switch (object) {
     case ApproverType.COMMANDER:
-      return "COMMANDER";
+      return 'COMMANDER';
     case ApproverType.SECURITY:
-      return "SECURITY";
+      return 'SECURITY';
     case ApproverType.SUPER_SECURITY:
-      return "SUPER_SECURITY";
+      return 'SUPER_SECURITY';
     default:
-      return "UNKNOWN";
+      return 'UNKNOWN';
   }
 }
 
@@ -61,43 +61,43 @@ export enum RequestType {
 export function requestTypeFromJSON(object: any): RequestType {
   switch (object) {
     case 0:
-    case "CREATE_OG":
+    case 'CREATE_OG':
       return RequestType.CREATE_OG;
     case 1:
-    case "CREATE_ROLE":
+    case 'CREATE_ROLE':
       return RequestType.CREATE_ROLE;
     case 2:
-    case "ASSIGN_ROLE_TO_ENTITY":
+    case 'ASSIGN_ROLE_TO_ENTITY':
       return RequestType.ASSIGN_ROLE_TO_ENTITY;
     case 3:
-    case "CREATE_ENTITY":
+    case 'CREATE_ENTITY':
       return RequestType.CREATE_ENTITY;
     case 4:
-    case "RENAME_OG":
+    case 'RENAME_OG':
       return RequestType.RENAME_OG;
     case 5:
-    case "RENAME_ROLE":
+    case 'RENAME_ROLE':
       return RequestType.RENAME_ROLE;
     case 6:
-    case "EDIT_ENTITY":
+    case 'EDIT_ENTITY':
       return RequestType.EDIT_ENTITY;
     case 7:
-    case "DELETE_OG":
+    case 'DELETE_OG':
       return RequestType.DELETE_OG;
     case 8:
-    case "DELETE_ROLE":
+    case 'DELETE_ROLE':
       return RequestType.DELETE_ROLE;
     case 9:
-    case "DELETE_ENTITY":
+    case 'DELETE_ENTITY':
       return RequestType.DELETE_ENTITY;
     case 10:
-    case "DISCONNECT_ROLE":
+    case 'DISCONNECT_ROLE':
       return RequestType.DISCONNECT_ROLE;
     case 11:
-    case "ADD_APPROVER":
+    case 'ADD_APPROVER':
       return RequestType.ADD_APPROVER;
     case -1:
-    case "UNRECOGNIZED":
+    case 'UNRECOGNIZED':
     default:
       return RequestType.UNRECOGNIZED;
   }
@@ -106,31 +106,31 @@ export function requestTypeFromJSON(object: any): RequestType {
 export function requestTypeToJSON(object: RequestType): string {
   switch (object) {
     case RequestType.CREATE_OG:
-      return "CREATE_OG";
+      return 'CREATE_OG';
     case RequestType.CREATE_ROLE:
-      return "CREATE_ROLE";
+      return 'CREATE_ROLE';
     case RequestType.ASSIGN_ROLE_TO_ENTITY:
-      return "ASSIGN_ROLE_TO_ENTITY";
+      return 'ASSIGN_ROLE_TO_ENTITY';
     case RequestType.CREATE_ENTITY:
-      return "CREATE_ENTITY";
+      return 'CREATE_ENTITY';
     case RequestType.RENAME_OG:
-      return "RENAME_OG";
+      return 'RENAME_OG';
     case RequestType.RENAME_ROLE:
-      return "RENAME_ROLE";
+      return 'RENAME_ROLE';
     case RequestType.EDIT_ENTITY:
-      return "EDIT_ENTITY";
+      return 'EDIT_ENTITY';
     case RequestType.DELETE_OG:
-      return "DELETE_OG";
+      return 'DELETE_OG';
     case RequestType.DELETE_ROLE:
-      return "DELETE_ROLE";
+      return 'DELETE_ROLE';
     case RequestType.DELETE_ENTITY:
-      return "DELETE_ENTITY";
+      return 'DELETE_ENTITY';
     case RequestType.DISCONNECT_ROLE:
-      return "DISCONNECT_ROLE";
+      return 'DISCONNECT_ROLE';
     case RequestType.ADD_APPROVER:
-      return "ADD_APPROVER";
+      return 'ADD_APPROVER';
     default:
-      return "UNKNOWN";
+      return 'UNKNOWN';
   }
 }
 
@@ -148,28 +148,28 @@ export enum RequestStatus {
 export function requestStatusFromJSON(object: any): RequestStatus {
   switch (object) {
     case 0:
-    case "SUBMITTED":
+    case 'SUBMITTED':
       return RequestStatus.SUBMITTED;
     case 1:
-    case "DECLINED":
+    case 'DECLINED':
       return RequestStatus.DECLINED;
     case 2:
-    case "APPROVED_BY_COMMANDER":
+    case 'APPROVED_BY_COMMANDER':
       return RequestStatus.APPROVED_BY_COMMANDER;
     case 3:
-    case "APPROVED_BY_SECURITY":
+    case 'APPROVED_BY_SECURITY':
       return RequestStatus.APPROVED_BY_SECURITY;
     case 4:
-    case "IN_PROGRESS":
+    case 'IN_PROGRESS':
       return RequestStatus.IN_PROGRESS;
     case 5:
-    case "DONE":
+    case 'DONE':
       return RequestStatus.DONE;
     case 6:
-    case "FAILED":
+    case 'FAILED':
       return RequestStatus.FAILED;
     case -1:
-    case "UNRECOGNIZED":
+    case 'UNRECOGNIZED':
     default:
       return RequestStatus.UNRECOGNIZED;
   }
@@ -178,21 +178,21 @@ export function requestStatusFromJSON(object: any): RequestStatus {
 export function requestStatusToJSON(object: RequestStatus): string {
   switch (object) {
     case RequestStatus.SUBMITTED:
-      return "SUBMITTED";
+      return 'SUBMITTED';
     case RequestStatus.DECLINED:
-      return "DECLINED";
+      return 'DECLINED';
     case RequestStatus.APPROVED_BY_COMMANDER:
-      return "APPROVED_BY_COMMANDER";
+      return 'APPROVED_BY_COMMANDER';
     case RequestStatus.APPROVED_BY_SECURITY:
-      return "APPROVED_BY_SECURITY";
+      return 'APPROVED_BY_SECURITY';
     case RequestStatus.IN_PROGRESS:
-      return "IN_PROGRESS";
+      return 'IN_PROGRESS';
     case RequestStatus.DONE:
-      return "DONE";
+      return 'DONE';
     case RequestStatus.FAILED:
-      return "FAILED";
+      return 'FAILED';
     default:
-      return "UNKNOWN";
+      return 'UNKNOWN';
   }
 }
 
@@ -207,19 +207,19 @@ export enum StageStatus {
 export function stageStatusFromJSON(object: any): StageStatus {
   switch (object) {
     case 0:
-    case "STAGE_UNKNOWN":
+    case 'STAGE_UNKNOWN':
       return StageStatus.STAGE_UNKNOWN;
     case 1:
-    case "STAGE_IN_PROGRESS":
+    case 'STAGE_IN_PROGRESS':
       return StageStatus.STAGE_IN_PROGRESS;
     case 2:
-    case "STAGE_DONE":
+    case 'STAGE_DONE':
       return StageStatus.STAGE_DONE;
     case 3:
-    case "STAGE_FAILED":
+    case 'STAGE_FAILED':
       return StageStatus.STAGE_FAILED;
     case -1:
-    case "UNRECOGNIZED":
+    case 'UNRECOGNIZED':
     default:
       return StageStatus.UNRECOGNIZED;
   }
@@ -228,15 +228,15 @@ export function stageStatusFromJSON(object: any): StageStatus {
 export function stageStatusToJSON(object: StageStatus): string {
   switch (object) {
     case StageStatus.STAGE_UNKNOWN:
-      return "STAGE_UNKNOWN";
+      return 'STAGE_UNKNOWN';
     case StageStatus.STAGE_IN_PROGRESS:
-      return "STAGE_IN_PROGRESS";
+      return 'STAGE_IN_PROGRESS';
     case StageStatus.STAGE_DONE:
-      return "STAGE_DONE";
+      return 'STAGE_DONE';
     case StageStatus.STAGE_FAILED:
-      return "STAGE_FAILED";
+      return 'STAGE_FAILED';
     default:
-      return "UNKNOWN";
+      return 'UNKNOWN';
   }
 }
 
@@ -250,16 +250,16 @@ export enum Decision {
 export function decisionFromJSON(object: any): Decision {
   switch (object) {
     case 0:
-    case "DECISION_UNKNOWN":
+    case 'DECISION_UNKNOWN':
       return Decision.DECISION_UNKNOWN;
     case 1:
-    case "APPROVED":
+    case 'APPROVED':
       return Decision.APPROVED;
     case 2:
-    case "DENIED":
+    case 'DENIED':
       return Decision.DENIED;
     case -1:
-    case "UNRECOGNIZED":
+    case 'UNRECOGNIZED':
     default:
       return Decision.UNRECOGNIZED;
   }
@@ -268,13 +268,13 @@ export function decisionFromJSON(object: any): Decision {
 export function decisionToJSON(object: Decision): string {
   switch (object) {
     case Decision.DECISION_UNKNOWN:
-      return "DECISION_UNKNOWN";
+      return 'DECISION_UNKNOWN';
     case Decision.APPROVED:
-      return "APPROVED";
+      return 'APPROVED';
     case Decision.DENIED:
-      return "DENIED";
+      return 'DENIED';
     default:
-      return "UNKNOWN";
+      return 'UNKNOWN';
   }
 }
 
@@ -290,22 +290,22 @@ export enum PersonTypeInRequest {
 export function personTypeInRequestFromJSON(object: any): PersonTypeInRequest {
   switch (object) {
     case 0:
-    case "SUBMITTER":
+    case 'SUBMITTER':
       return PersonTypeInRequest.SUBMITTER;
     case 1:
-    case "COMMANDER_APPROVER":
+    case 'COMMANDER_APPROVER':
       return PersonTypeInRequest.COMMANDER_APPROVER;
     case 2:
-    case "SECURITY_APPROVER":
+    case 'SECURITY_APPROVER':
       return PersonTypeInRequest.SECURITY_APPROVER;
     case 3:
-    case "SUPER_SECURITY_APPROVER":
+    case 'SUPER_SECURITY_APPROVER':
       return PersonTypeInRequest.SUPER_SECURITY_APPROVER;
     case 4:
-    case "APPROVER":
+    case 'APPROVER':
       return PersonTypeInRequest.APPROVER;
     case -1:
-    case "UNRECOGNIZED":
+    case 'UNRECOGNIZED':
     default:
       return PersonTypeInRequest.UNRECOGNIZED;
   }
@@ -314,17 +314,17 @@ export function personTypeInRequestFromJSON(object: any): PersonTypeInRequest {
 export function personTypeInRequestToJSON(object: PersonTypeInRequest): string {
   switch (object) {
     case PersonTypeInRequest.SUBMITTER:
-      return "SUBMITTER";
+      return 'SUBMITTER';
     case PersonTypeInRequest.COMMANDER_APPROVER:
-      return "COMMANDER_APPROVER";
+      return 'COMMANDER_APPROVER';
     case PersonTypeInRequest.SECURITY_APPROVER:
-      return "SECURITY_APPROVER";
+      return 'SECURITY_APPROVER';
     case PersonTypeInRequest.SUPER_SECURITY_APPROVER:
-      return "SUPER_SECURITY_APPROVER";
+      return 'SUPER_SECURITY_APPROVER';
     case PersonTypeInRequest.APPROVER:
-      return "APPROVER";
+      return 'APPROVER';
     default:
-      return "UNKNOWN";
+      return 'UNKNOWN';
   }
 }
 
@@ -337,13 +337,13 @@ export enum PersonInfoType {
 export function personInfoTypeFromJSON(object: any): PersonInfoType {
   switch (object) {
     case 0:
-    case "ID":
+    case 'ID':
       return PersonInfoType.ID;
     case 1:
-    case "IDENTIFIER":
+    case 'IDENTIFIER':
       return PersonInfoType.IDENTIFIER;
     case -1:
-    case "UNRECOGNIZED":
+    case 'UNRECOGNIZED':
     default:
       return PersonInfoType.UNRECOGNIZED;
   }
@@ -352,11 +352,11 @@ export function personInfoTypeFromJSON(object: any): PersonInfoType {
 export function personInfoTypeToJSON(object: PersonInfoType): string {
   switch (object) {
     case PersonInfoType.ID:
-      return "ID";
+      return 'ID';
     case PersonInfoType.IDENTIFIER:
-      return "IDENTIFIER";
+      return 'IDENTIFIER';
     default:
-      return "UNKNOWN";
+      return 'UNKNOWN';
   }
 }
 
@@ -892,7 +892,7 @@ export interface CreateRoleKartoffelParams {
   roleId?: string | undefined;
   /** clearance of the role */
   clearance: string;
-  akaUnit?: string | undefined;
+  unit?: string | undefined;
   /** forDigitalIdentity */
   type: string;
   /** always oneTree */
@@ -1040,7 +1040,7 @@ export interface AssignRoleToEntityKartoffelParams {
 export interface AssignRoleToEntityADParams {
   oldSAMAccountName: string;
   newSAMAccountName: string;
-  upn: string;
+  upn?: string | undefined;
   firstName: string;
   lastName: string;
   fullName: string;
@@ -1230,7 +1230,7 @@ export interface KartoffelParams {
   jobTitle?: string | undefined;
   directGroup?: string | undefined;
   roleId?: string | undefined;
-  akaUnit?: string | undefined;
+  unit?: string | undefined;
   /** forDigitalIdentity */
   type?: string | undefined;
   /** string source = 2; */
@@ -1301,8 +1301,9 @@ export interface RequestReq {
   superSecurityApprovers: EntityMin[];
   kartoffelStatus: KartoffelStatus | undefined;
   adStatus: ADStatus | undefined;
-  kartoffelParams: KartoffelParams | undefined;
-  adParams: ADParams | undefined;
+  kartoffelParams?: KartoffelParams | undefined;
+  adParams?: ADParams | undefined;
+  additionalParams?: AdditionalParams | undefined;
   comments: string;
   approversComments: string;
   due?: number | undefined;
@@ -1319,8 +1320,9 @@ export interface Request {
   superSecurityApprovers: EntityMin[];
   kartoffelStatus: KartoffelStatus | undefined;
   adStatus: ADStatus | undefined;
-  kartoffelParams: KartoffelParams | undefined;
-  adParams: ADParams | undefined;
+  kartoffelParams?: KartoffelParams | undefined;
+  additionalParams?: AdditionalParams | undefined;
+  adParams?: ADParams | undefined;
   comments: string;
   approversComments: string;
   due: number;
@@ -1791,11 +1793,11 @@ export const CreateRoleReq = {
 };
 
 const baseCreateRoleRes: object = {
-  id: "",
+  id: '',
   createdAt: 0,
   updatedAt: 0,
   type: 0,
-  serialNumber: "",
+  serialNumber: '',
   needSecurityDecision: false,
   needSuperSecurityDecision: false,
 };
@@ -1868,7 +1870,7 @@ export const CreateRoleRes = {
     if (message.due !== undefined) {
       writer.uint32(120).int64(message.due);
     }
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(130).string(message.id);
     }
     if (message.createdAt !== 0) {
@@ -1880,7 +1882,7 @@ export const CreateRoleRes = {
     if (message.type !== 0) {
       writer.uint32(152).int32(message.type);
     }
-    if (message.serialNumber !== "") {
+    if (message.serialNumber !== '') {
       writer.uint32(162).string(message.serialNumber);
     }
     if (message.needSecurityDecision === true) {
@@ -2112,7 +2114,7 @@ export const CreateRoleRes = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = Number(object.createdAt);
@@ -2132,7 +2134,7 @@ export const CreateRoleRes = {
     if (object.serialNumber !== undefined && object.serialNumber !== null) {
       message.serialNumber = String(object.serialNumber);
     } else {
-      message.serialNumber = "";
+      message.serialNumber = '';
     }
     if (
       object.needSecurityDecision !== undefined &&
@@ -2349,7 +2351,7 @@ export const CreateRoleRes = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = object.createdAt;
@@ -2369,7 +2371,7 @@ export const CreateRoleRes = {
     if (object.serialNumber !== undefined && object.serialNumber !== null) {
       message.serialNumber = object.serialNumber;
     } else {
-      message.serialNumber = "";
+      message.serialNumber = '';
     }
     if (
       object.needSecurityDecision !== undefined &&
@@ -2850,14 +2852,14 @@ export const CreateOGReq = {
 
 const baseCreateOGRes: object = {
   status: 0,
-  comments: "",
-  approversComments: "",
+  comments: '',
+  approversComments: '',
   due: 0,
-  id: "",
+  id: '',
   createdAt: 0,
   updatedAt: 0,
   type: 0,
-  serialNumber: "",
+  serialNumber: '',
   needSecurityDecision: false,
   needSuperSecurityDecision: false,
 };
@@ -2921,16 +2923,16 @@ export const CreateOGRes = {
         writer.uint32(98).fork()
       ).ldelim();
     }
-    if (message.comments !== "") {
+    if (message.comments !== '') {
       writer.uint32(106).string(message.comments);
     }
-    if (message.approversComments !== "") {
+    if (message.approversComments !== '') {
       writer.uint32(114).string(message.approversComments);
     }
     if (message.due !== 0) {
       writer.uint32(120).int64(message.due);
     }
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(130).string(message.id);
     }
     if (message.createdAt !== 0) {
@@ -2942,7 +2944,7 @@ export const CreateOGRes = {
     if (message.type !== 0) {
       writer.uint32(152).int32(message.type);
     }
-    if (message.serialNumber !== "") {
+    if (message.serialNumber !== '') {
       writer.uint32(162).string(message.serialNumber);
     }
     if (message.needSecurityDecision === true) {
@@ -3156,7 +3158,7 @@ export const CreateOGRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = String(object.comments);
     } else {
-      message.comments = "";
+      message.comments = '';
     }
     if (
       object.approversComments !== undefined &&
@@ -3164,7 +3166,7 @@ export const CreateOGRes = {
     ) {
       message.approversComments = String(object.approversComments);
     } else {
-      message.approversComments = "";
+      message.approversComments = '';
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = Number(object.due);
@@ -3174,7 +3176,7 @@ export const CreateOGRes = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = Number(object.createdAt);
@@ -3194,7 +3196,7 @@ export const CreateOGRes = {
     if (object.serialNumber !== undefined && object.serialNumber !== null) {
       message.serialNumber = String(object.serialNumber);
     } else {
-      message.serialNumber = "";
+      message.serialNumber = '';
     }
     if (
       object.needSecurityDecision !== undefined &&
@@ -3390,7 +3392,7 @@ export const CreateOGRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = object.comments;
     } else {
-      message.comments = "";
+      message.comments = '';
     }
     if (
       object.approversComments !== undefined &&
@@ -3398,7 +3400,7 @@ export const CreateOGRes = {
     ) {
       message.approversComments = object.approversComments;
     } else {
-      message.approversComments = "";
+      message.approversComments = '';
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = object.due;
@@ -3408,7 +3410,7 @@ export const CreateOGRes = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = object.createdAt;
@@ -3428,7 +3430,7 @@ export const CreateOGRes = {
     if (object.serialNumber !== undefined && object.serialNumber !== null) {
       message.serialNumber = object.serialNumber;
     } else {
-      message.serialNumber = "";
+      message.serialNumber = '';
     }
     if (
       object.needSecurityDecision !== undefined &&
@@ -3912,14 +3914,14 @@ export const CreateEntityReq = {
 
 const baseCreateEntityRes: object = {
   status: 0,
-  comments: "",
-  approversComments: "",
+  comments: '',
+  approversComments: '',
   due: 0,
-  id: "",
+  id: '',
   createdAt: 0,
   updatedAt: 0,
   type: 0,
-  serialNumber: "",
+  serialNumber: '',
   needSecurityDecision: false,
   needSuperSecurityDecision: false,
 };
@@ -3983,16 +3985,16 @@ export const CreateEntityRes = {
         writer.uint32(98).fork()
       ).ldelim();
     }
-    if (message.comments !== "") {
+    if (message.comments !== '') {
       writer.uint32(106).string(message.comments);
     }
-    if (message.approversComments !== "") {
+    if (message.approversComments !== '') {
       writer.uint32(114).string(message.approversComments);
     }
     if (message.due !== 0) {
       writer.uint32(120).int64(message.due);
     }
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(130).string(message.id);
     }
     if (message.createdAt !== 0) {
@@ -4004,7 +4006,7 @@ export const CreateEntityRes = {
     if (message.type !== 0) {
       writer.uint32(152).int32(message.type);
     }
-    if (message.serialNumber !== "") {
+    if (message.serialNumber !== '') {
       writer.uint32(162).string(message.serialNumber);
     }
     if (message.needSecurityDecision === true) {
@@ -4221,7 +4223,7 @@ export const CreateEntityRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = String(object.comments);
     } else {
-      message.comments = "";
+      message.comments = '';
     }
     if (
       object.approversComments !== undefined &&
@@ -4229,7 +4231,7 @@ export const CreateEntityRes = {
     ) {
       message.approversComments = String(object.approversComments);
     } else {
-      message.approversComments = "";
+      message.approversComments = '';
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = Number(object.due);
@@ -4239,7 +4241,7 @@ export const CreateEntityRes = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = Number(object.createdAt);
@@ -4259,7 +4261,7 @@ export const CreateEntityRes = {
     if (object.serialNumber !== undefined && object.serialNumber !== null) {
       message.serialNumber = String(object.serialNumber);
     } else {
-      message.serialNumber = "";
+      message.serialNumber = '';
     }
     if (
       object.needSecurityDecision !== undefined &&
@@ -4455,7 +4457,7 @@ export const CreateEntityRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = object.comments;
     } else {
-      message.comments = "";
+      message.comments = '';
     }
     if (
       object.approversComments !== undefined &&
@@ -4463,7 +4465,7 @@ export const CreateEntityRes = {
     ) {
       message.approversComments = object.approversComments;
     } else {
-      message.approversComments = "";
+      message.approversComments = '';
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = object.due;
@@ -4473,7 +4475,7 @@ export const CreateEntityRes = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = object.createdAt;
@@ -4493,7 +4495,7 @@ export const CreateEntityRes = {
     if (object.serialNumber !== undefined && object.serialNumber !== null) {
       message.serialNumber = object.serialNumber;
     } else {
-      message.serialNumber = "";
+      message.serialNumber = '';
     }
     if (
       object.needSecurityDecision !== undefined &&
@@ -4898,14 +4900,14 @@ export const CreateNewApproverReq = {
 
 const baseCreateNewApproverRes: object = {
   status: 0,
-  comments: "",
-  approversComments: "",
+  comments: '',
+  approversComments: '',
   due: 0,
-  id: "",
+  id: '',
   createdAt: 0,
   updatedAt: 0,
   type: 0,
-  serialNumber: "",
+  serialNumber: '',
   needSecurityDecision: false,
   needSuperSecurityDecision: false,
 };
@@ -4954,16 +4956,16 @@ export const CreateNewApproverRes = {
         writer.uint32(74).fork()
       ).ldelim();
     }
-    if (message.comments !== "") {
+    if (message.comments !== '') {
       writer.uint32(82).string(message.comments);
     }
-    if (message.approversComments !== "") {
+    if (message.approversComments !== '') {
       writer.uint32(90).string(message.approversComments);
     }
     if (message.due !== 0) {
       writer.uint32(96).int64(message.due);
     }
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(106).string(message.id);
     }
     if (message.createdAt !== 0) {
@@ -4975,7 +4977,7 @@ export const CreateNewApproverRes = {
     if (message.type !== 0) {
       writer.uint32(128).int32(message.type);
     }
-    if (message.serialNumber !== "") {
+    if (message.serialNumber !== '') {
       writer.uint32(138).string(message.serialNumber);
     }
     if (message.needSecurityDecision === true) {
@@ -5160,7 +5162,7 @@ export const CreateNewApproverRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = String(object.comments);
     } else {
-      message.comments = "";
+      message.comments = '';
     }
     if (
       object.approversComments !== undefined &&
@@ -5168,7 +5170,7 @@ export const CreateNewApproverRes = {
     ) {
       message.approversComments = String(object.approversComments);
     } else {
-      message.approversComments = "";
+      message.approversComments = '';
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = Number(object.due);
@@ -5178,7 +5180,7 @@ export const CreateNewApproverRes = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = Number(object.createdAt);
@@ -5198,7 +5200,7 @@ export const CreateNewApproverRes = {
     if (object.serialNumber !== undefined && object.serialNumber !== null) {
       message.serialNumber = String(object.serialNumber);
     } else {
-      message.serialNumber = "";
+      message.serialNumber = '';
     }
     if (
       object.needSecurityDecision !== undefined &&
@@ -5362,7 +5364,7 @@ export const CreateNewApproverRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = object.comments;
     } else {
-      message.comments = "";
+      message.comments = '';
     }
     if (
       object.approversComments !== undefined &&
@@ -5370,7 +5372,7 @@ export const CreateNewApproverRes = {
     ) {
       message.approversComments = object.approversComments;
     } else {
-      message.approversComments = "";
+      message.approversComments = '';
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = object.due;
@@ -5380,7 +5382,7 @@ export const CreateNewApproverRes = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = object.createdAt;
@@ -5400,7 +5402,7 @@ export const CreateNewApproverRes = {
     if (object.serialNumber !== undefined && object.serialNumber !== null) {
       message.serialNumber = object.serialNumber;
     } else {
-      message.serialNumber = "";
+      message.serialNumber = '';
     }
     if (
       object.needSecurityDecision !== undefined &&
@@ -5881,14 +5883,14 @@ export const RenameOGReq = {
 
 const baseRenameOGRes: object = {
   status: 0,
-  comments: "",
-  approversComments: "",
+  comments: '',
+  approversComments: '',
   due: 0,
-  id: "",
+  id: '',
   createdAt: 0,
   updatedAt: 0,
   type: 0,
-  serialNumber: "",
+  serialNumber: '',
   needSecurityDecision: false,
   needSuperSecurityDecision: false,
 };
@@ -5952,16 +5954,16 @@ export const RenameOGRes = {
         writer.uint32(98).fork()
       ).ldelim();
     }
-    if (message.comments !== "") {
+    if (message.comments !== '') {
       writer.uint32(106).string(message.comments);
     }
-    if (message.approversComments !== "") {
+    if (message.approversComments !== '') {
       writer.uint32(114).string(message.approversComments);
     }
     if (message.due !== 0) {
       writer.uint32(120).int64(message.due);
     }
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(130).string(message.id);
     }
     if (message.createdAt !== 0) {
@@ -5973,7 +5975,7 @@ export const RenameOGRes = {
     if (message.type !== 0) {
       writer.uint32(152).int32(message.type);
     }
-    if (message.serialNumber !== "") {
+    if (message.serialNumber !== '') {
       writer.uint32(162).string(message.serialNumber);
     }
     if (message.needSecurityDecision === true) {
@@ -6187,7 +6189,7 @@ export const RenameOGRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = String(object.comments);
     } else {
-      message.comments = "";
+      message.comments = '';
     }
     if (
       object.approversComments !== undefined &&
@@ -6195,7 +6197,7 @@ export const RenameOGRes = {
     ) {
       message.approversComments = String(object.approversComments);
     } else {
-      message.approversComments = "";
+      message.approversComments = '';
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = Number(object.due);
@@ -6205,7 +6207,7 @@ export const RenameOGRes = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = Number(object.createdAt);
@@ -6225,7 +6227,7 @@ export const RenameOGRes = {
     if (object.serialNumber !== undefined && object.serialNumber !== null) {
       message.serialNumber = String(object.serialNumber);
     } else {
-      message.serialNumber = "";
+      message.serialNumber = '';
     }
     if (
       object.needSecurityDecision !== undefined &&
@@ -6421,7 +6423,7 @@ export const RenameOGRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = object.comments;
     } else {
-      message.comments = "";
+      message.comments = '';
     }
     if (
       object.approversComments !== undefined &&
@@ -6429,7 +6431,7 @@ export const RenameOGRes = {
     ) {
       message.approversComments = object.approversComments;
     } else {
-      message.approversComments = "";
+      message.approversComments = '';
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = object.due;
@@ -6439,7 +6441,7 @@ export const RenameOGRes = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = object.createdAt;
@@ -6459,7 +6461,7 @@ export const RenameOGRes = {
     if (object.serialNumber !== undefined && object.serialNumber !== null) {
       message.serialNumber = object.serialNumber;
     } else {
-      message.serialNumber = "";
+      message.serialNumber = '';
     }
     if (
       object.needSecurityDecision !== undefined &&
@@ -6940,14 +6942,14 @@ export const RenameRoleReq = {
 
 const baseRenameRoleRes: object = {
   status: 0,
-  comments: "",
-  approversComments: "",
+  comments: '',
+  approversComments: '',
   due: 0,
-  id: "",
+  id: '',
   createdAt: 0,
   updatedAt: 0,
   type: 0,
-  serialNumber: "",
+  serialNumber: '',
   needSecurityDecision: false,
   needSuperSecurityDecision: false,
 };
@@ -7011,16 +7013,16 @@ export const RenameRoleRes = {
         writer.uint32(98).fork()
       ).ldelim();
     }
-    if (message.comments !== "") {
+    if (message.comments !== '') {
       writer.uint32(106).string(message.comments);
     }
-    if (message.approversComments !== "") {
+    if (message.approversComments !== '') {
       writer.uint32(114).string(message.approversComments);
     }
     if (message.due !== 0) {
       writer.uint32(120).int64(message.due);
     }
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(130).string(message.id);
     }
     if (message.createdAt !== 0) {
@@ -7032,7 +7034,7 @@ export const RenameRoleRes = {
     if (message.type !== 0) {
       writer.uint32(152).int32(message.type);
     }
-    if (message.serialNumber !== "") {
+    if (message.serialNumber !== '') {
       writer.uint32(162).string(message.serialNumber);
     }
     if (message.needSecurityDecision === true) {
@@ -7246,7 +7248,7 @@ export const RenameRoleRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = String(object.comments);
     } else {
-      message.comments = "";
+      message.comments = '';
     }
     if (
       object.approversComments !== undefined &&
@@ -7254,7 +7256,7 @@ export const RenameRoleRes = {
     ) {
       message.approversComments = String(object.approversComments);
     } else {
-      message.approversComments = "";
+      message.approversComments = '';
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = Number(object.due);
@@ -7264,7 +7266,7 @@ export const RenameRoleRes = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = Number(object.createdAt);
@@ -7284,7 +7286,7 @@ export const RenameRoleRes = {
     if (object.serialNumber !== undefined && object.serialNumber !== null) {
       message.serialNumber = String(object.serialNumber);
     } else {
-      message.serialNumber = "";
+      message.serialNumber = '';
     }
     if (
       object.needSecurityDecision !== undefined &&
@@ -7480,7 +7482,7 @@ export const RenameRoleRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = object.comments;
     } else {
-      message.comments = "";
+      message.comments = '';
     }
     if (
       object.approversComments !== undefined &&
@@ -7488,7 +7490,7 @@ export const RenameRoleRes = {
     ) {
       message.approversComments = object.approversComments;
     } else {
-      message.approversComments = "";
+      message.approversComments = '';
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = object.due;
@@ -7498,7 +7500,7 @@ export const RenameRoleRes = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = object.createdAt;
@@ -7518,7 +7520,7 @@ export const RenameRoleRes = {
     if (object.serialNumber !== undefined && object.serialNumber !== null) {
       message.serialNumber = object.serialNumber;
     } else {
-      message.serialNumber = "";
+      message.serialNumber = '';
     }
     if (
       object.needSecurityDecision !== undefined &&
@@ -7999,14 +8001,14 @@ export const EditEntityReq = {
 
 const baseEditEntityRes: object = {
   status: 0,
-  comments: "",
-  approversComments: "",
+  comments: '',
+  approversComments: '',
   due: 0,
-  id: "",
+  id: '',
   createdAt: 0,
   updatedAt: 0,
   type: 0,
-  serialNumber: "",
+  serialNumber: '',
   needSecurityDecision: false,
   needSuperSecurityDecision: false,
 };
@@ -8070,16 +8072,16 @@ export const EditEntityRes = {
         writer.uint32(98).fork()
       ).ldelim();
     }
-    if (message.comments !== "") {
+    if (message.comments !== '') {
       writer.uint32(106).string(message.comments);
     }
-    if (message.approversComments !== "") {
+    if (message.approversComments !== '') {
       writer.uint32(114).string(message.approversComments);
     }
     if (message.due !== 0) {
       writer.uint32(120).int64(message.due);
     }
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(130).string(message.id);
     }
     if (message.createdAt !== 0) {
@@ -8091,7 +8093,7 @@ export const EditEntityRes = {
     if (message.type !== 0) {
       writer.uint32(152).int32(message.type);
     }
-    if (message.serialNumber !== "") {
+    if (message.serialNumber !== '') {
       writer.uint32(162).string(message.serialNumber);
     }
     if (message.needSecurityDecision === true) {
@@ -8305,7 +8307,7 @@ export const EditEntityRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = String(object.comments);
     } else {
-      message.comments = "";
+      message.comments = '';
     }
     if (
       object.approversComments !== undefined &&
@@ -8313,7 +8315,7 @@ export const EditEntityRes = {
     ) {
       message.approversComments = String(object.approversComments);
     } else {
-      message.approversComments = "";
+      message.approversComments = '';
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = Number(object.due);
@@ -8323,7 +8325,7 @@ export const EditEntityRes = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = Number(object.createdAt);
@@ -8343,7 +8345,7 @@ export const EditEntityRes = {
     if (object.serialNumber !== undefined && object.serialNumber !== null) {
       message.serialNumber = String(object.serialNumber);
     } else {
-      message.serialNumber = "";
+      message.serialNumber = '';
     }
     if (
       object.needSecurityDecision !== undefined &&
@@ -8539,7 +8541,7 @@ export const EditEntityRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = object.comments;
     } else {
-      message.comments = "";
+      message.comments = '';
     }
     if (
       object.approversComments !== undefined &&
@@ -8547,7 +8549,7 @@ export const EditEntityRes = {
     ) {
       message.approversComments = object.approversComments;
     } else {
-      message.approversComments = "";
+      message.approversComments = '';
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = object.due;
@@ -8557,7 +8559,7 @@ export const EditEntityRes = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = object.createdAt;
@@ -8577,7 +8579,7 @@ export const EditEntityRes = {
     if (object.serialNumber !== undefined && object.serialNumber !== null) {
       message.serialNumber = object.serialNumber;
     } else {
-      message.serialNumber = "";
+      message.serialNumber = '';
     }
     if (
       object.needSecurityDecision !== undefined &&
@@ -9058,14 +9060,14 @@ export const DeleteOGReq = {
 
 const baseDeleteOGRes: object = {
   status: 0,
-  comments: "",
-  approversComments: "",
+  comments: '',
+  approversComments: '',
   due: 0,
-  id: "",
+  id: '',
   createdAt: 0,
   updatedAt: 0,
   type: 0,
-  serialNumber: "",
+  serialNumber: '',
   needSecurityDecision: false,
   needSuperSecurityDecision: false,
 };
@@ -9129,16 +9131,16 @@ export const DeleteOGRes = {
         writer.uint32(98).fork()
       ).ldelim();
     }
-    if (message.comments !== "") {
+    if (message.comments !== '') {
       writer.uint32(106).string(message.comments);
     }
-    if (message.approversComments !== "") {
+    if (message.approversComments !== '') {
       writer.uint32(114).string(message.approversComments);
     }
     if (message.due !== 0) {
       writer.uint32(120).int64(message.due);
     }
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(130).string(message.id);
     }
     if (message.createdAt !== 0) {
@@ -9150,7 +9152,7 @@ export const DeleteOGRes = {
     if (message.type !== 0) {
       writer.uint32(152).int32(message.type);
     }
-    if (message.serialNumber !== "") {
+    if (message.serialNumber !== '') {
       writer.uint32(162).string(message.serialNumber);
     }
     if (message.needSecurityDecision === true) {
@@ -9364,7 +9366,7 @@ export const DeleteOGRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = String(object.comments);
     } else {
-      message.comments = "";
+      message.comments = '';
     }
     if (
       object.approversComments !== undefined &&
@@ -9372,7 +9374,7 @@ export const DeleteOGRes = {
     ) {
       message.approversComments = String(object.approversComments);
     } else {
-      message.approversComments = "";
+      message.approversComments = '';
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = Number(object.due);
@@ -9382,7 +9384,7 @@ export const DeleteOGRes = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = Number(object.createdAt);
@@ -9402,7 +9404,7 @@ export const DeleteOGRes = {
     if (object.serialNumber !== undefined && object.serialNumber !== null) {
       message.serialNumber = String(object.serialNumber);
     } else {
-      message.serialNumber = "";
+      message.serialNumber = '';
     }
     if (
       object.needSecurityDecision !== undefined &&
@@ -9598,7 +9600,7 @@ export const DeleteOGRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = object.comments;
     } else {
-      message.comments = "";
+      message.comments = '';
     }
     if (
       object.approversComments !== undefined &&
@@ -9606,7 +9608,7 @@ export const DeleteOGRes = {
     ) {
       message.approversComments = object.approversComments;
     } else {
-      message.approversComments = "";
+      message.approversComments = '';
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = object.due;
@@ -9616,7 +9618,7 @@ export const DeleteOGRes = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = object.createdAt;
@@ -9636,7 +9638,7 @@ export const DeleteOGRes = {
     if (object.serialNumber !== undefined && object.serialNumber !== null) {
       message.serialNumber = object.serialNumber;
     } else {
-      message.serialNumber = "";
+      message.serialNumber = '';
     }
     if (
       object.needSecurityDecision !== undefined &&
@@ -10117,14 +10119,14 @@ export const DeleteRoleReq = {
 
 const baseDeleteRoleRes: object = {
   status: 0,
-  comments: "",
-  approversComments: "",
+  comments: '',
+  approversComments: '',
   due: 0,
-  id: "",
+  id: '',
   createdAt: 0,
   updatedAt: 0,
   type: 0,
-  serialNumber: "",
+  serialNumber: '',
   needSecurityDecision: false,
   needSuperSecurityDecision: false,
 };
@@ -10188,16 +10190,16 @@ export const DeleteRoleRes = {
         writer.uint32(98).fork()
       ).ldelim();
     }
-    if (message.comments !== "") {
+    if (message.comments !== '') {
       writer.uint32(106).string(message.comments);
     }
-    if (message.approversComments !== "") {
+    if (message.approversComments !== '') {
       writer.uint32(114).string(message.approversComments);
     }
     if (message.due !== 0) {
       writer.uint32(120).int64(message.due);
     }
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(130).string(message.id);
     }
     if (message.createdAt !== 0) {
@@ -10209,7 +10211,7 @@ export const DeleteRoleRes = {
     if (message.type !== 0) {
       writer.uint32(152).int32(message.type);
     }
-    if (message.serialNumber !== "") {
+    if (message.serialNumber !== '') {
       writer.uint32(162).string(message.serialNumber);
     }
     if (message.needSecurityDecision === true) {
@@ -10423,7 +10425,7 @@ export const DeleteRoleRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = String(object.comments);
     } else {
-      message.comments = "";
+      message.comments = '';
     }
     if (
       object.approversComments !== undefined &&
@@ -10431,7 +10433,7 @@ export const DeleteRoleRes = {
     ) {
       message.approversComments = String(object.approversComments);
     } else {
-      message.approversComments = "";
+      message.approversComments = '';
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = Number(object.due);
@@ -10441,7 +10443,7 @@ export const DeleteRoleRes = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = Number(object.createdAt);
@@ -10461,7 +10463,7 @@ export const DeleteRoleRes = {
     if (object.serialNumber !== undefined && object.serialNumber !== null) {
       message.serialNumber = String(object.serialNumber);
     } else {
-      message.serialNumber = "";
+      message.serialNumber = '';
     }
     if (
       object.needSecurityDecision !== undefined &&
@@ -10657,7 +10659,7 @@ export const DeleteRoleRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = object.comments;
     } else {
-      message.comments = "";
+      message.comments = '';
     }
     if (
       object.approversComments !== undefined &&
@@ -10665,7 +10667,7 @@ export const DeleteRoleRes = {
     ) {
       message.approversComments = object.approversComments;
     } else {
-      message.approversComments = "";
+      message.approversComments = '';
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = object.due;
@@ -10675,7 +10677,7 @@ export const DeleteRoleRes = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = object.createdAt;
@@ -10695,7 +10697,7 @@ export const DeleteRoleRes = {
     if (object.serialNumber !== undefined && object.serialNumber !== null) {
       message.serialNumber = object.serialNumber;
     } else {
-      message.serialNumber = "";
+      message.serialNumber = '';
     }
     if (
       object.needSecurityDecision !== undefined &&
@@ -11179,14 +11181,14 @@ export const DeleteEntityReq = {
 
 const baseDeleteEntityRes: object = {
   status: 0,
-  comments: "",
-  approversComments: "",
+  comments: '',
+  approversComments: '',
   due: 0,
-  id: "",
+  id: '',
   createdAt: 0,
   updatedAt: 0,
   type: 0,
-  serialNumber: "",
+  serialNumber: '',
   needSecurityDecision: false,
   needSuperSecurityDecision: false,
 };
@@ -11250,16 +11252,16 @@ export const DeleteEntityRes = {
         writer.uint32(98).fork()
       ).ldelim();
     }
-    if (message.comments !== "") {
+    if (message.comments !== '') {
       writer.uint32(106).string(message.comments);
     }
-    if (message.approversComments !== "") {
+    if (message.approversComments !== '') {
       writer.uint32(114).string(message.approversComments);
     }
     if (message.due !== 0) {
       writer.uint32(120).int64(message.due);
     }
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(130).string(message.id);
     }
     if (message.createdAt !== 0) {
@@ -11271,7 +11273,7 @@ export const DeleteEntityRes = {
     if (message.type !== 0) {
       writer.uint32(152).int32(message.type);
     }
-    if (message.serialNumber !== "") {
+    if (message.serialNumber !== '') {
       writer.uint32(162).string(message.serialNumber);
     }
     if (message.needSecurityDecision === true) {
@@ -11488,7 +11490,7 @@ export const DeleteEntityRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = String(object.comments);
     } else {
-      message.comments = "";
+      message.comments = '';
     }
     if (
       object.approversComments !== undefined &&
@@ -11496,7 +11498,7 @@ export const DeleteEntityRes = {
     ) {
       message.approversComments = String(object.approversComments);
     } else {
-      message.approversComments = "";
+      message.approversComments = '';
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = Number(object.due);
@@ -11506,7 +11508,7 @@ export const DeleteEntityRes = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = Number(object.createdAt);
@@ -11526,7 +11528,7 @@ export const DeleteEntityRes = {
     if (object.serialNumber !== undefined && object.serialNumber !== null) {
       message.serialNumber = String(object.serialNumber);
     } else {
-      message.serialNumber = "";
+      message.serialNumber = '';
     }
     if (
       object.needSecurityDecision !== undefined &&
@@ -11722,7 +11724,7 @@ export const DeleteEntityRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = object.comments;
     } else {
-      message.comments = "";
+      message.comments = '';
     }
     if (
       object.approversComments !== undefined &&
@@ -11730,7 +11732,7 @@ export const DeleteEntityRes = {
     ) {
       message.approversComments = object.approversComments;
     } else {
-      message.approversComments = "";
+      message.approversComments = '';
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = object.due;
@@ -11740,7 +11742,7 @@ export const DeleteEntityRes = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = object.createdAt;
@@ -11760,7 +11762,7 @@ export const DeleteEntityRes = {
     if (object.serialNumber !== undefined && object.serialNumber !== null) {
       message.serialNumber = object.serialNumber;
     } else {
-      message.serialNumber = "";
+      message.serialNumber = '';
     }
     if (
       object.needSecurityDecision !== undefined &&
@@ -12251,14 +12253,14 @@ export const AssignRoleToEntityReq = {
 
 const baseAssignRoleToEntityRes: object = {
   status: 0,
-  comments: "",
-  approversComments: "",
+  comments: '',
+  approversComments: '',
   due: 0,
-  id: "",
+  id: '',
   createdAt: 0,
   updatedAt: 0,
   type: 0,
-  serialNumber: "",
+  serialNumber: '',
   needSecurityDecision: false,
   needSuperSecurityDecision: false,
 };
@@ -12322,16 +12324,16 @@ export const AssignRoleToEntityRes = {
         writer.uint32(98).fork()
       ).ldelim();
     }
-    if (message.comments !== "") {
+    if (message.comments !== '') {
       writer.uint32(106).string(message.comments);
     }
-    if (message.approversComments !== "") {
+    if (message.approversComments !== '') {
       writer.uint32(114).string(message.approversComments);
     }
     if (message.due !== 0) {
       writer.uint32(120).int64(message.due);
     }
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(130).string(message.id);
     }
     if (message.createdAt !== 0) {
@@ -12343,7 +12345,7 @@ export const AssignRoleToEntityRes = {
     if (message.type !== 0) {
       writer.uint32(152).int32(message.type);
     }
-    if (message.serialNumber !== "") {
+    if (message.serialNumber !== '') {
       writer.uint32(162).string(message.serialNumber);
     }
     if (message.needSecurityDecision === true) {
@@ -12563,7 +12565,7 @@ export const AssignRoleToEntityRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = String(object.comments);
     } else {
-      message.comments = "";
+      message.comments = '';
     }
     if (
       object.approversComments !== undefined &&
@@ -12571,7 +12573,7 @@ export const AssignRoleToEntityRes = {
     ) {
       message.approversComments = String(object.approversComments);
     } else {
-      message.approversComments = "";
+      message.approversComments = '';
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = Number(object.due);
@@ -12581,7 +12583,7 @@ export const AssignRoleToEntityRes = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = Number(object.createdAt);
@@ -12601,7 +12603,7 @@ export const AssignRoleToEntityRes = {
     if (object.serialNumber !== undefined && object.serialNumber !== null) {
       message.serialNumber = String(object.serialNumber);
     } else {
-      message.serialNumber = "";
+      message.serialNumber = '';
     }
     if (
       object.needSecurityDecision !== undefined &&
@@ -12801,7 +12803,7 @@ export const AssignRoleToEntityRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = object.comments;
     } else {
-      message.comments = "";
+      message.comments = '';
     }
     if (
       object.approversComments !== undefined &&
@@ -12809,7 +12811,7 @@ export const AssignRoleToEntityRes = {
     ) {
       message.approversComments = object.approversComments;
     } else {
-      message.approversComments = "";
+      message.approversComments = '';
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = object.due;
@@ -12819,7 +12821,7 @@ export const AssignRoleToEntityRes = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = object.createdAt;
@@ -12839,7 +12841,7 @@ export const AssignRoleToEntityRes = {
     if (object.serialNumber !== undefined && object.serialNumber !== null) {
       message.serialNumber = object.serialNumber;
     } else {
-      message.serialNumber = "";
+      message.serialNumber = '';
     }
     if (
       object.needSecurityDecision !== undefined &&
@@ -13340,14 +13342,14 @@ export const DisconectRoleFromEntityReq = {
 
 const baseDisconectRoleFromEntityRes: object = {
   status: 0,
-  comments: "",
-  approversComments: "",
+  comments: '',
+  approversComments: '',
   due: 0,
-  id: "",
+  id: '',
   createdAt: 0,
   updatedAt: 0,
   type: 0,
-  serialNumber: "",
+  serialNumber: '',
   needSecurityDecision: false,
   needSuperSecurityDecision: false,
 };
@@ -13411,16 +13413,16 @@ export const DisconectRoleFromEntityRes = {
         writer.uint32(98).fork()
       ).ldelim();
     }
-    if (message.comments !== "") {
+    if (message.comments !== '') {
       writer.uint32(106).string(message.comments);
     }
-    if (message.approversComments !== "") {
+    if (message.approversComments !== '') {
       writer.uint32(114).string(message.approversComments);
     }
     if (message.due !== 0) {
       writer.uint32(120).int64(message.due);
     }
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(130).string(message.id);
     }
     if (message.createdAt !== 0) {
@@ -13432,7 +13434,7 @@ export const DisconectRoleFromEntityRes = {
     if (message.type !== 0) {
       writer.uint32(152).int32(message.type);
     }
-    if (message.serialNumber !== "") {
+    if (message.serialNumber !== '') {
       writer.uint32(162).string(message.serialNumber);
     }
     if (message.needSecurityDecision === true) {
@@ -13659,7 +13661,7 @@ export const DisconectRoleFromEntityRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = String(object.comments);
     } else {
-      message.comments = "";
+      message.comments = '';
     }
     if (
       object.approversComments !== undefined &&
@@ -13667,7 +13669,7 @@ export const DisconectRoleFromEntityRes = {
     ) {
       message.approversComments = String(object.approversComments);
     } else {
-      message.approversComments = "";
+      message.approversComments = '';
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = Number(object.due);
@@ -13677,7 +13679,7 @@ export const DisconectRoleFromEntityRes = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = Number(object.createdAt);
@@ -13697,7 +13699,7 @@ export const DisconectRoleFromEntityRes = {
     if (object.serialNumber !== undefined && object.serialNumber !== null) {
       message.serialNumber = String(object.serialNumber);
     } else {
-      message.serialNumber = "";
+      message.serialNumber = '';
     }
     if (
       object.needSecurityDecision !== undefined &&
@@ -13900,7 +13902,7 @@ export const DisconectRoleFromEntityRes = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = object.comments;
     } else {
-      message.comments = "";
+      message.comments = '';
     }
     if (
       object.approversComments !== undefined &&
@@ -13908,7 +13910,7 @@ export const DisconectRoleFromEntityRes = {
     ) {
       message.approversComments = object.approversComments;
     } else {
-      message.approversComments = "";
+      message.approversComments = '';
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = object.due;
@@ -13918,7 +13920,7 @@ export const DisconectRoleFromEntityRes = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = object.createdAt;
@@ -13938,7 +13940,7 @@ export const DisconectRoleFromEntityRes = {
     if (object.serialNumber !== undefined && object.serialNumber !== null) {
       message.serialNumber = object.serialNumber;
     } else {
-      message.serialNumber = "";
+      message.serialNumber = '';
     }
     if (
       object.needSecurityDecision !== undefined &&
@@ -13961,11 +13963,11 @@ export const DisconectRoleFromEntityRes = {
 };
 
 const baseCreateRoleKartoffelParams: object = {
-  jobTitle: "",
-  directGroup: "",
-  clearance: "",
-  type: "",
-  source: "",
+  jobTitle: '',
+  directGroup: '',
+  clearance: '',
+  type: '',
+  source: '',
   isRoleAttachable: false,
 };
 
@@ -13974,25 +13976,25 @@ export const CreateRoleKartoffelParams = {
     message: CreateRoleKartoffelParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.jobTitle !== "") {
+    if (message.jobTitle !== '') {
       writer.uint32(10).string(message.jobTitle);
     }
-    if (message.directGroup !== "") {
+    if (message.directGroup !== '') {
       writer.uint32(18).string(message.directGroup);
     }
     if (message.roleId !== undefined) {
       writer.uint32(26).string(message.roleId);
     }
-    if (message.clearance !== "") {
+    if (message.clearance !== '') {
       writer.uint32(34).string(message.clearance);
     }
-    if (message.akaUnit !== undefined) {
-      writer.uint32(42).string(message.akaUnit);
+    if (message.unit !== undefined) {
+      writer.uint32(42).string(message.unit);
     }
-    if (message.type !== "") {
+    if (message.type !== '') {
       writer.uint32(50).string(message.type);
     }
-    if (message.source !== "") {
+    if (message.source !== '') {
       writer.uint32(58).string(message.source);
     }
     if (message.uniqueId !== undefined) {
@@ -14032,7 +14034,7 @@ export const CreateRoleKartoffelParams = {
           message.clearance = reader.string();
           break;
         case 5:
-          message.akaUnit = reader.string();
+          message.unit = reader.string();
           break;
         case 6:
           message.type = reader.string();
@@ -14064,12 +14066,12 @@ export const CreateRoleKartoffelParams = {
     if (object.jobTitle !== undefined && object.jobTitle !== null) {
       message.jobTitle = String(object.jobTitle);
     } else {
-      message.jobTitle = "";
+      message.jobTitle = '';
     }
     if (object.directGroup !== undefined && object.directGroup !== null) {
       message.directGroup = String(object.directGroup);
     } else {
-      message.directGroup = "";
+      message.directGroup = '';
     }
     if (object.roleId !== undefined && object.roleId !== null) {
       message.roleId = String(object.roleId);
@@ -14079,22 +14081,22 @@ export const CreateRoleKartoffelParams = {
     if (object.clearance !== undefined && object.clearance !== null) {
       message.clearance = String(object.clearance);
     } else {
-      message.clearance = "";
+      message.clearance = '';
     }
-    if (object.akaUnit !== undefined && object.akaUnit !== null) {
-      message.akaUnit = String(object.akaUnit);
+    if (object.unit !== undefined && object.unit !== null) {
+      message.unit = String(object.unit);
     } else {
-      message.akaUnit = undefined;
+      message.unit = undefined;
     }
     if (object.type !== undefined && object.type !== null) {
       message.type = String(object.type);
     } else {
-      message.type = "";
+      message.type = '';
     }
     if (object.source !== undefined && object.source !== null) {
       message.source = String(object.source);
     } else {
-      message.source = "";
+      message.source = '';
     }
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = String(object.uniqueId);
@@ -14124,7 +14126,7 @@ export const CreateRoleKartoffelParams = {
       (obj.directGroup = message.directGroup);
     message.roleId !== undefined && (obj.roleId = message.roleId);
     message.clearance !== undefined && (obj.clearance = message.clearance);
-    message.akaUnit !== undefined && (obj.akaUnit = message.akaUnit);
+    message.unit !== undefined && (obj.unit = message.unit);
     message.type !== undefined && (obj.type = message.type);
     message.source !== undefined && (obj.source = message.source);
     message.uniqueId !== undefined && (obj.uniqueId = message.uniqueId);
@@ -14143,12 +14145,12 @@ export const CreateRoleKartoffelParams = {
     if (object.jobTitle !== undefined && object.jobTitle !== null) {
       message.jobTitle = object.jobTitle;
     } else {
-      message.jobTitle = "";
+      message.jobTitle = '';
     }
     if (object.directGroup !== undefined && object.directGroup !== null) {
       message.directGroup = object.directGroup;
     } else {
-      message.directGroup = "";
+      message.directGroup = '';
     }
     if (object.roleId !== undefined && object.roleId !== null) {
       message.roleId = object.roleId;
@@ -14158,22 +14160,22 @@ export const CreateRoleKartoffelParams = {
     if (object.clearance !== undefined && object.clearance !== null) {
       message.clearance = object.clearance;
     } else {
-      message.clearance = "";
+      message.clearance = '';
     }
-    if (object.akaUnit !== undefined && object.akaUnit !== null) {
-      message.akaUnit = object.akaUnit;
+    if (object.unit !== undefined && object.unit !== null) {
+      message.unit = object.unit;
     } else {
-      message.akaUnit = undefined;
+      message.unit = undefined;
     }
     if (object.type !== undefined && object.type !== null) {
       message.type = object.type;
     } else {
-      message.type = "";
+      message.type = '';
     }
     if (object.source !== undefined && object.source !== null) {
       message.source = object.source;
     } else {
-      message.source = "";
+      message.source = '';
     }
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = object.uniqueId;
@@ -14198,9 +14200,9 @@ export const CreateRoleKartoffelParams = {
 };
 
 const baseCreateRoleADParams: object = {
-  samAccountName: "",
-  ouDisplayName: "",
-  jobTitle: "",
+  samAccountName: '',
+  ouDisplayName: '',
+  jobTitle: '',
 };
 
 export const CreateRoleADParams = {
@@ -14208,13 +14210,13 @@ export const CreateRoleADParams = {
     message: CreateRoleADParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.samAccountName !== "") {
+    if (message.samAccountName !== '') {
       writer.uint32(10).string(message.samAccountName);
     }
-    if (message.ouDisplayName !== "") {
+    if (message.ouDisplayName !== '') {
       writer.uint32(18).string(message.ouDisplayName);
     }
-    if (message.jobTitle !== "") {
+    if (message.jobTitle !== '') {
       writer.uint32(26).string(message.jobTitle);
     }
     return writer;
@@ -14249,17 +14251,17 @@ export const CreateRoleADParams = {
     if (object.samAccountName !== undefined && object.samAccountName !== null) {
       message.samAccountName = String(object.samAccountName);
     } else {
-      message.samAccountName = "";
+      message.samAccountName = '';
     }
     if (object.ouDisplayName !== undefined && object.ouDisplayName !== null) {
       message.ouDisplayName = String(object.ouDisplayName);
     } else {
-      message.ouDisplayName = "";
+      message.ouDisplayName = '';
     }
     if (object.jobTitle !== undefined && object.jobTitle !== null) {
       message.jobTitle = String(object.jobTitle);
     } else {
-      message.jobTitle = "";
+      message.jobTitle = '';
     }
     return message;
   },
@@ -14279,26 +14281,26 @@ export const CreateRoleADParams = {
     if (object.samAccountName !== undefined && object.samAccountName !== null) {
       message.samAccountName = object.samAccountName;
     } else {
-      message.samAccountName = "";
+      message.samAccountName = '';
     }
     if (object.ouDisplayName !== undefined && object.ouDisplayName !== null) {
       message.ouDisplayName = object.ouDisplayName;
     } else {
-      message.ouDisplayName = "";
+      message.ouDisplayName = '';
     }
     if (object.jobTitle !== undefined && object.jobTitle !== null) {
       message.jobTitle = object.jobTitle;
     } else {
-      message.jobTitle = "";
+      message.jobTitle = '';
     }
     return message;
   },
 };
 
 const baseCreateOGKartoffelParams: object = {
-  name: "",
-  parent: "",
-  source: "",
+  name: '',
+  parent: '',
+  source: '',
 };
 
 export const CreateOGKartoffelParams = {
@@ -14306,13 +14308,13 @@ export const CreateOGKartoffelParams = {
     message: CreateOGKartoffelParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.name !== "") {
+    if (message.name !== '') {
       writer.uint32(10).string(message.name);
     }
-    if (message.parent !== "") {
+    if (message.parent !== '') {
       writer.uint32(18).string(message.parent);
     }
-    if (message.source !== "") {
+    if (message.source !== '') {
       writer.uint32(26).string(message.source);
     }
     return writer;
@@ -14354,17 +14356,17 @@ export const CreateOGKartoffelParams = {
     if (object.name !== undefined && object.name !== null) {
       message.name = String(object.name);
     } else {
-      message.name = "";
+      message.name = '';
     }
     if (object.parent !== undefined && object.parent !== null) {
       message.parent = String(object.parent);
     } else {
-      message.parent = "";
+      message.parent = '';
     }
     if (object.source !== undefined && object.source !== null) {
       message.source = String(object.source);
     } else {
-      message.source = "";
+      message.source = '';
     }
     return message;
   },
@@ -14386,26 +14388,26 @@ export const CreateOGKartoffelParams = {
     if (object.name !== undefined && object.name !== null) {
       message.name = object.name;
     } else {
-      message.name = "";
+      message.name = '';
     }
     if (object.parent !== undefined && object.parent !== null) {
       message.parent = object.parent;
     } else {
-      message.parent = "";
+      message.parent = '';
     }
     if (object.source !== undefined && object.source !== null) {
       message.source = object.source;
     } else {
-      message.source = "";
+      message.source = '';
     }
     return message;
   },
 };
 
 const baseCreateOGADParams: object = {
-  ouDisplayName: "",
-  ouName: "",
-  name: "",
+  ouDisplayName: '',
+  ouName: '',
+  name: '',
 };
 
 export const CreateOGADParams = {
@@ -14413,13 +14415,13 @@ export const CreateOGADParams = {
     message: CreateOGADParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.ouDisplayName !== "") {
+    if (message.ouDisplayName !== '') {
       writer.uint32(10).string(message.ouDisplayName);
     }
-    if (message.ouName !== "") {
+    if (message.ouName !== '') {
       writer.uint32(18).string(message.ouName);
     }
-    if (message.name !== "") {
+    if (message.name !== '') {
       writer.uint32(26).string(message.name);
     }
     return writer;
@@ -14454,17 +14456,17 @@ export const CreateOGADParams = {
     if (object.ouDisplayName !== undefined && object.ouDisplayName !== null) {
       message.ouDisplayName = String(object.ouDisplayName);
     } else {
-      message.ouDisplayName = "";
+      message.ouDisplayName = '';
     }
     if (object.ouName !== undefined && object.ouName !== null) {
       message.ouName = String(object.ouName);
     } else {
-      message.ouName = "";
+      message.ouName = '';
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = String(object.name);
     } else {
-      message.name = "";
+      message.name = '';
     }
     return message;
   },
@@ -14483,35 +14485,35 @@ export const CreateOGADParams = {
     if (object.ouDisplayName !== undefined && object.ouDisplayName !== null) {
       message.ouDisplayName = object.ouDisplayName;
     } else {
-      message.ouDisplayName = "";
+      message.ouDisplayName = '';
     }
     if (object.ouName !== undefined && object.ouName !== null) {
       message.ouName = object.ouName;
     } else {
-      message.ouName = "";
+      message.ouName = '';
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = object.name;
     } else {
-      message.name = "";
+      message.name = '';
     }
     return message;
   },
 };
 
 const baseCreateEntityKartoffelParams: object = {
-  firstName: "",
-  lastName: "",
-  identityCard: "",
-  personalNumber: "",
-  serviceType: "",
-  phone: "",
-  mobilePhone: "",
-  address: "",
-  clearance: "",
-  sex: "",
+  firstName: '',
+  lastName: '',
+  identityCard: '',
+  personalNumber: '',
+  serviceType: '',
+  phone: '',
+  mobilePhone: '',
+  address: '',
+  clearance: '',
+  sex: '',
   birthdate: 0,
-  entityType: "",
+  entityType: '',
 };
 
 export const CreateEntityKartoffelParams = {
@@ -14519,19 +14521,19 @@ export const CreateEntityKartoffelParams = {
     message: CreateEntityKartoffelParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.firstName !== "") {
+    if (message.firstName !== '') {
       writer.uint32(10).string(message.firstName);
     }
-    if (message.lastName !== "") {
+    if (message.lastName !== '') {
       writer.uint32(18).string(message.lastName);
     }
-    if (message.identityCard !== "") {
+    if (message.identityCard !== '') {
       writer.uint32(26).string(message.identityCard);
     }
-    if (message.personalNumber !== "") {
+    if (message.personalNumber !== '') {
       writer.uint32(34).string(message.personalNumber);
     }
-    if (message.serviceType !== "") {
+    if (message.serviceType !== '') {
       writer.uint32(42).string(message.serviceType);
     }
     for (const v of message.phone) {
@@ -14540,19 +14542,19 @@ export const CreateEntityKartoffelParams = {
     for (const v of message.mobilePhone) {
       writer.uint32(58).string(v!);
     }
-    if (message.address !== "") {
+    if (message.address !== '') {
       writer.uint32(66).string(message.address);
     }
-    if (message.clearance !== "") {
+    if (message.clearance !== '') {
       writer.uint32(74).string(message.clearance);
     }
-    if (message.sex !== "") {
+    if (message.sex !== '') {
       writer.uint32(82).string(message.sex);
     }
     if (message.birthdate !== 0) {
       writer.uint32(88).int64(message.birthdate);
     }
-    if (message.entityType !== "") {
+    if (message.entityType !== '') {
       writer.uint32(98).string(message.entityType);
     }
     return writer;
@@ -14625,27 +14627,27 @@ export const CreateEntityKartoffelParams = {
     if (object.firstName !== undefined && object.firstName !== null) {
       message.firstName = String(object.firstName);
     } else {
-      message.firstName = "";
+      message.firstName = '';
     }
     if (object.lastName !== undefined && object.lastName !== null) {
       message.lastName = String(object.lastName);
     } else {
-      message.lastName = "";
+      message.lastName = '';
     }
     if (object.identityCard !== undefined && object.identityCard !== null) {
       message.identityCard = String(object.identityCard);
     } else {
-      message.identityCard = "";
+      message.identityCard = '';
     }
     if (object.personalNumber !== undefined && object.personalNumber !== null) {
       message.personalNumber = String(object.personalNumber);
     } else {
-      message.personalNumber = "";
+      message.personalNumber = '';
     }
     if (object.serviceType !== undefined && object.serviceType !== null) {
       message.serviceType = String(object.serviceType);
     } else {
-      message.serviceType = "";
+      message.serviceType = '';
     }
     if (object.phone !== undefined && object.phone !== null) {
       for (const e of object.phone) {
@@ -14660,17 +14662,17 @@ export const CreateEntityKartoffelParams = {
     if (object.address !== undefined && object.address !== null) {
       message.address = String(object.address);
     } else {
-      message.address = "";
+      message.address = '';
     }
     if (object.clearance !== undefined && object.clearance !== null) {
       message.clearance = String(object.clearance);
     } else {
-      message.clearance = "";
+      message.clearance = '';
     }
     if (object.sex !== undefined && object.sex !== null) {
       message.sex = String(object.sex);
     } else {
-      message.sex = "";
+      message.sex = '';
     }
     if (object.birthdate !== undefined && object.birthdate !== null) {
       message.birthdate = Number(object.birthdate);
@@ -14680,7 +14682,7 @@ export const CreateEntityKartoffelParams = {
     if (object.entityType !== undefined && object.entityType !== null) {
       message.entityType = String(object.entityType);
     } else {
-      message.entityType = "";
+      message.entityType = '';
     }
     return message;
   },
@@ -14724,27 +14726,27 @@ export const CreateEntityKartoffelParams = {
     if (object.firstName !== undefined && object.firstName !== null) {
       message.firstName = object.firstName;
     } else {
-      message.firstName = "";
+      message.firstName = '';
     }
     if (object.lastName !== undefined && object.lastName !== null) {
       message.lastName = object.lastName;
     } else {
-      message.lastName = "";
+      message.lastName = '';
     }
     if (object.identityCard !== undefined && object.identityCard !== null) {
       message.identityCard = object.identityCard;
     } else {
-      message.identityCard = "";
+      message.identityCard = '';
     }
     if (object.personalNumber !== undefined && object.personalNumber !== null) {
       message.personalNumber = object.personalNumber;
     } else {
-      message.personalNumber = "";
+      message.personalNumber = '';
     }
     if (object.serviceType !== undefined && object.serviceType !== null) {
       message.serviceType = object.serviceType;
     } else {
-      message.serviceType = "";
+      message.serviceType = '';
     }
     if (object.phone !== undefined && object.phone !== null) {
       for (const e of object.phone) {
@@ -14759,17 +14761,17 @@ export const CreateEntityKartoffelParams = {
     if (object.address !== undefined && object.address !== null) {
       message.address = object.address;
     } else {
-      message.address = "";
+      message.address = '';
     }
     if (object.clearance !== undefined && object.clearance !== null) {
       message.clearance = object.clearance;
     } else {
-      message.clearance = "";
+      message.clearance = '';
     }
     if (object.sex !== undefined && object.sex !== null) {
       message.sex = object.sex;
     } else {
-      message.sex = "";
+      message.sex = '';
     }
     if (object.birthdate !== undefined && object.birthdate !== null) {
       message.birthdate = object.birthdate;
@@ -14779,7 +14781,7 @@ export const CreateEntityKartoffelParams = {
     if (object.entityType !== undefined && object.entityType !== null) {
       message.entityType = object.entityType;
     } else {
-      message.entityType = "";
+      message.entityType = '';
     }
     return message;
   },
@@ -14830,10 +14832,10 @@ export const CreateEntityADParams = {
 };
 
 const baseAdditionalParams: object = {
-  entityId: "",
-  displayName: "",
-  domainUsers: "",
-  akaUnit: "",
+  entityId: '',
+  displayName: '',
+  domainUsers: '',
+  akaUnit: '',
   type: 0,
 };
 
@@ -14842,16 +14844,16 @@ export const AdditionalParams = {
     message: AdditionalParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.entityId !== "") {
+    if (message.entityId !== '') {
       writer.uint32(10).string(message.entityId);
     }
-    if (message.displayName !== "") {
+    if (message.displayName !== '') {
       writer.uint32(18).string(message.displayName);
     }
     for (const v of message.domainUsers) {
       writer.uint32(26).string(v!);
     }
-    if (message.akaUnit !== "") {
+    if (message.akaUnit !== '') {
       writer.uint32(34).string(message.akaUnit);
     }
     if (message.type !== 0) {
@@ -14897,12 +14899,12 @@ export const AdditionalParams = {
     if (object.entityId !== undefined && object.entityId !== null) {
       message.entityId = String(object.entityId);
     } else {
-      message.entityId = "";
+      message.entityId = '';
     }
     if (object.displayName !== undefined && object.displayName !== null) {
       message.displayName = String(object.displayName);
     } else {
-      message.displayName = "";
+      message.displayName = '';
     }
     if (object.domainUsers !== undefined && object.domainUsers !== null) {
       for (const e of object.domainUsers) {
@@ -14912,7 +14914,7 @@ export const AdditionalParams = {
     if (object.akaUnit !== undefined && object.akaUnit !== null) {
       message.akaUnit = String(object.akaUnit);
     } else {
-      message.akaUnit = "";
+      message.akaUnit = '';
     }
     if (object.type !== undefined && object.type !== null) {
       message.type = approverTypeFromJSON(object.type);
@@ -14943,12 +14945,12 @@ export const AdditionalParams = {
     if (object.entityId !== undefined && object.entityId !== null) {
       message.entityId = object.entityId;
     } else {
-      message.entityId = "";
+      message.entityId = '';
     }
     if (object.displayName !== undefined && object.displayName !== null) {
       message.displayName = object.displayName;
     } else {
-      message.displayName = "";
+      message.displayName = '';
     }
     if (object.domainUsers !== undefined && object.domainUsers !== null) {
       for (const e of object.domainUsers) {
@@ -14958,7 +14960,7 @@ export const AdditionalParams = {
     if (object.akaUnit !== undefined && object.akaUnit !== null) {
       message.akaUnit = object.akaUnit;
     } else {
-      message.akaUnit = "";
+      message.akaUnit = '';
     }
     if (object.type !== undefined && object.type !== null) {
       message.type = object.type;
@@ -14969,17 +14971,17 @@ export const AdditionalParams = {
   },
 };
 
-const baseRenameOGKartoffelParams: object = { id: "", name: "" };
+const baseRenameOGKartoffelParams: object = { id: '', name: '' };
 
 export const RenameOGKartoffelParams = {
   encode(
     message: RenameOGKartoffelParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
-    if (message.name !== "") {
+    if (message.name !== '') {
       writer.uint32(18).string(message.name);
     }
     return writer;
@@ -15018,12 +15020,12 @@ export const RenameOGKartoffelParams = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = String(object.name);
     } else {
-      message.name = "";
+      message.name = '';
     }
     return message;
   },
@@ -15044,21 +15046,21 @@ export const RenameOGKartoffelParams = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = object.name;
     } else {
-      message.name = "";
+      message.name = '';
     }
     return message;
   },
 };
 
 const baseRenameOGADParams: object = {
-  ouDisplayName: "",
-  oldOuName: "",
-  newOuName: "",
+  ouDisplayName: '',
+  oldOuName: '',
+  newOuName: '',
 };
 
 export const RenameOGADParams = {
@@ -15066,13 +15068,13 @@ export const RenameOGADParams = {
     message: RenameOGADParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.ouDisplayName !== "") {
+    if (message.ouDisplayName !== '') {
       writer.uint32(10).string(message.ouDisplayName);
     }
-    if (message.oldOuName !== "") {
+    if (message.oldOuName !== '') {
       writer.uint32(18).string(message.oldOuName);
     }
-    if (message.newOuName !== "") {
+    if (message.newOuName !== '') {
       writer.uint32(26).string(message.newOuName);
     }
     return writer;
@@ -15107,17 +15109,17 @@ export const RenameOGADParams = {
     if (object.ouDisplayName !== undefined && object.ouDisplayName !== null) {
       message.ouDisplayName = String(object.ouDisplayName);
     } else {
-      message.ouDisplayName = "";
+      message.ouDisplayName = '';
     }
     if (object.oldOuName !== undefined && object.oldOuName !== null) {
       message.oldOuName = String(object.oldOuName);
     } else {
-      message.oldOuName = "";
+      message.oldOuName = '';
     }
     if (object.newOuName !== undefined && object.newOuName !== null) {
       message.newOuName = String(object.newOuName);
     } else {
-      message.newOuName = "";
+      message.newOuName = '';
     }
     return message;
   },
@@ -15136,33 +15138,33 @@ export const RenameOGADParams = {
     if (object.ouDisplayName !== undefined && object.ouDisplayName !== null) {
       message.ouDisplayName = object.ouDisplayName;
     } else {
-      message.ouDisplayName = "";
+      message.ouDisplayName = '';
     }
     if (object.oldOuName !== undefined && object.oldOuName !== null) {
       message.oldOuName = object.oldOuName;
     } else {
-      message.oldOuName = "";
+      message.oldOuName = '';
     }
     if (object.newOuName !== undefined && object.newOuName !== null) {
       message.newOuName = object.newOuName;
     } else {
-      message.newOuName = "";
+      message.newOuName = '';
     }
     return message;
   },
 };
 
-const baseRenameRoleKartoffelParams: object = { jobTitle: "", roleId: "" };
+const baseRenameRoleKartoffelParams: object = { jobTitle: '', roleId: '' };
 
 export const RenameRoleKartoffelParams = {
   encode(
     message: RenameRoleKartoffelParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.jobTitle !== "") {
+    if (message.jobTitle !== '') {
       writer.uint32(10).string(message.jobTitle);
     }
-    if (message.roleId !== "") {
+    if (message.roleId !== '') {
       writer.uint32(18).string(message.roleId);
     }
     return writer;
@@ -15201,12 +15203,12 @@ export const RenameRoleKartoffelParams = {
     if (object.jobTitle !== undefined && object.jobTitle !== null) {
       message.jobTitle = String(object.jobTitle);
     } else {
-      message.jobTitle = "";
+      message.jobTitle = '';
     }
     if (object.roleId !== undefined && object.roleId !== null) {
       message.roleId = String(object.roleId);
     } else {
-      message.roleId = "";
+      message.roleId = '';
     }
     return message;
   },
@@ -15227,28 +15229,28 @@ export const RenameRoleKartoffelParams = {
     if (object.jobTitle !== undefined && object.jobTitle !== null) {
       message.jobTitle = object.jobTitle;
     } else {
-      message.jobTitle = "";
+      message.jobTitle = '';
     }
     if (object.roleId !== undefined && object.roleId !== null) {
       message.roleId = object.roleId;
     } else {
-      message.roleId = "";
+      message.roleId = '';
     }
     return message;
   },
 };
 
-const baseRenameRoleADParams: object = { samAccountName: "", jobTitle: "" };
+const baseRenameRoleADParams: object = { samAccountName: '', jobTitle: '' };
 
 export const RenameRoleADParams = {
   encode(
     message: RenameRoleADParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.samAccountName !== "") {
+    if (message.samAccountName !== '') {
       writer.uint32(10).string(message.samAccountName);
     }
-    if (message.jobTitle !== "") {
+    if (message.jobTitle !== '') {
       writer.uint32(18).string(message.jobTitle);
     }
     return writer;
@@ -15280,12 +15282,12 @@ export const RenameRoleADParams = {
     if (object.samAccountName !== undefined && object.samAccountName !== null) {
       message.samAccountName = String(object.samAccountName);
     } else {
-      message.samAccountName = "";
+      message.samAccountName = '';
     }
     if (object.jobTitle !== undefined && object.jobTitle !== null) {
       message.jobTitle = String(object.jobTitle);
     } else {
-      message.jobTitle = "";
+      message.jobTitle = '';
     }
     return message;
   },
@@ -15303,30 +15305,30 @@ export const RenameRoleADParams = {
     if (object.samAccountName !== undefined && object.samAccountName !== null) {
       message.samAccountName = object.samAccountName;
     } else {
-      message.samAccountName = "";
+      message.samAccountName = '';
     }
     if (object.jobTitle !== undefined && object.jobTitle !== null) {
       message.jobTitle = object.jobTitle;
     } else {
-      message.jobTitle = "";
+      message.jobTitle = '';
     }
     return message;
   },
 };
 
 const baseEditEntityKartoffelParams: object = {
-  id: "",
-  firstName: "",
-  lastName: "",
-  personalNumber: "",
-  serviceType: "",
-  phone: "",
-  mobilePhone: "",
-  address: "",
-  clearance: "",
-  sex: "",
+  id: '',
+  firstName: '',
+  lastName: '',
+  personalNumber: '',
+  serviceType: '',
+  phone: '',
+  mobilePhone: '',
+  address: '',
+  clearance: '',
+  sex: '',
   birthdate: 0,
-  entityType: "",
+  entityType: '',
 };
 
 export const EditEntityKartoffelParams = {
@@ -15334,22 +15336,22 @@ export const EditEntityKartoffelParams = {
     message: EditEntityKartoffelParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
-    if (message.firstName !== "") {
+    if (message.firstName !== '') {
       writer.uint32(18).string(message.firstName);
     }
-    if (message.lastName !== "") {
+    if (message.lastName !== '') {
       writer.uint32(26).string(message.lastName);
     }
     if (message.identityCard !== undefined) {
       writer.uint32(34).string(message.identityCard);
     }
-    if (message.personalNumber !== "") {
+    if (message.personalNumber !== '') {
       writer.uint32(42).string(message.personalNumber);
     }
-    if (message.serviceType !== "") {
+    if (message.serviceType !== '') {
       writer.uint32(50).string(message.serviceType);
     }
     for (const v of message.phone) {
@@ -15358,19 +15360,19 @@ export const EditEntityKartoffelParams = {
     for (const v of message.mobilePhone) {
       writer.uint32(66).string(v!);
     }
-    if (message.address !== "") {
+    if (message.address !== '') {
       writer.uint32(74).string(message.address);
     }
-    if (message.clearance !== "") {
+    if (message.clearance !== '') {
       writer.uint32(82).string(message.clearance);
     }
-    if (message.sex !== "") {
+    if (message.sex !== '') {
       writer.uint32(90).string(message.sex);
     }
     if (message.birthdate !== 0) {
       writer.uint32(96).int64(message.birthdate);
     }
-    if (message.entityType !== "") {
+    if (message.entityType !== '') {
       writer.uint32(106).string(message.entityType);
     }
     return writer;
@@ -15446,17 +15448,17 @@ export const EditEntityKartoffelParams = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.firstName !== undefined && object.firstName !== null) {
       message.firstName = String(object.firstName);
     } else {
-      message.firstName = "";
+      message.firstName = '';
     }
     if (object.lastName !== undefined && object.lastName !== null) {
       message.lastName = String(object.lastName);
     } else {
-      message.lastName = "";
+      message.lastName = '';
     }
     if (object.identityCard !== undefined && object.identityCard !== null) {
       message.identityCard = String(object.identityCard);
@@ -15466,12 +15468,12 @@ export const EditEntityKartoffelParams = {
     if (object.personalNumber !== undefined && object.personalNumber !== null) {
       message.personalNumber = String(object.personalNumber);
     } else {
-      message.personalNumber = "";
+      message.personalNumber = '';
     }
     if (object.serviceType !== undefined && object.serviceType !== null) {
       message.serviceType = String(object.serviceType);
     } else {
-      message.serviceType = "";
+      message.serviceType = '';
     }
     if (object.phone !== undefined && object.phone !== null) {
       for (const e of object.phone) {
@@ -15486,17 +15488,17 @@ export const EditEntityKartoffelParams = {
     if (object.address !== undefined && object.address !== null) {
       message.address = String(object.address);
     } else {
-      message.address = "";
+      message.address = '';
     }
     if (object.clearance !== undefined && object.clearance !== null) {
       message.clearance = String(object.clearance);
     } else {
-      message.clearance = "";
+      message.clearance = '';
     }
     if (object.sex !== undefined && object.sex !== null) {
       message.sex = String(object.sex);
     } else {
-      message.sex = "";
+      message.sex = '';
     }
     if (object.birthdate !== undefined && object.birthdate !== null) {
       message.birthdate = Number(object.birthdate);
@@ -15506,7 +15508,7 @@ export const EditEntityKartoffelParams = {
     if (object.entityType !== undefined && object.entityType !== null) {
       message.entityType = String(object.entityType);
     } else {
-      message.entityType = "";
+      message.entityType = '';
     }
     return message;
   },
@@ -15551,17 +15553,17 @@ export const EditEntityKartoffelParams = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.firstName !== undefined && object.firstName !== null) {
       message.firstName = object.firstName;
     } else {
-      message.firstName = "";
+      message.firstName = '';
     }
     if (object.lastName !== undefined && object.lastName !== null) {
       message.lastName = object.lastName;
     } else {
-      message.lastName = "";
+      message.lastName = '';
     }
     if (object.identityCard !== undefined && object.identityCard !== null) {
       message.identityCard = object.identityCard;
@@ -15571,12 +15573,12 @@ export const EditEntityKartoffelParams = {
     if (object.personalNumber !== undefined && object.personalNumber !== null) {
       message.personalNumber = object.personalNumber;
     } else {
-      message.personalNumber = "";
+      message.personalNumber = '';
     }
     if (object.serviceType !== undefined && object.serviceType !== null) {
       message.serviceType = object.serviceType;
     } else {
-      message.serviceType = "";
+      message.serviceType = '';
     }
     if (object.phone !== undefined && object.phone !== null) {
       for (const e of object.phone) {
@@ -15591,17 +15593,17 @@ export const EditEntityKartoffelParams = {
     if (object.address !== undefined && object.address !== null) {
       message.address = object.address;
     } else {
-      message.address = "";
+      message.address = '';
     }
     if (object.clearance !== undefined && object.clearance !== null) {
       message.clearance = object.clearance;
     } else {
-      message.clearance = "";
+      message.clearance = '';
     }
     if (object.sex !== undefined && object.sex !== null) {
       message.sex = object.sex;
     } else {
-      message.sex = "";
+      message.sex = '';
     }
     if (object.birthdate !== undefined && object.birthdate !== null) {
       message.birthdate = object.birthdate;
@@ -15611,17 +15613,17 @@ export const EditEntityKartoffelParams = {
     if (object.entityType !== undefined && object.entityType !== null) {
       message.entityType = object.entityType;
     } else {
-      message.entityType = "";
+      message.entityType = '';
     }
     return message;
   },
 };
 
 const baseEditEntityADParams: object = {
-  samAccountName: "",
-  firstName: "",
-  lastName: "",
-  fullName: "",
+  samAccountName: '',
+  firstName: '',
+  lastName: '',
+  fullName: '',
 };
 
 export const EditEntityADParams = {
@@ -15629,16 +15631,16 @@ export const EditEntityADParams = {
     message: EditEntityADParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.samAccountName !== "") {
+    if (message.samAccountName !== '') {
       writer.uint32(10).string(message.samAccountName);
     }
-    if (message.firstName !== "") {
+    if (message.firstName !== '') {
       writer.uint32(18).string(message.firstName);
     }
-    if (message.lastName !== "") {
+    if (message.lastName !== '') {
       writer.uint32(26).string(message.lastName);
     }
-    if (message.fullName !== "") {
+    if (message.fullName !== '') {
       writer.uint32(34).string(message.fullName);
     }
     return writer;
@@ -15676,22 +15678,22 @@ export const EditEntityADParams = {
     if (object.samAccountName !== undefined && object.samAccountName !== null) {
       message.samAccountName = String(object.samAccountName);
     } else {
-      message.samAccountName = "";
+      message.samAccountName = '';
     }
     if (object.firstName !== undefined && object.firstName !== null) {
       message.firstName = String(object.firstName);
     } else {
-      message.firstName = "";
+      message.firstName = '';
     }
     if (object.lastName !== undefined && object.lastName !== null) {
       message.lastName = String(object.lastName);
     } else {
-      message.lastName = "";
+      message.lastName = '';
     }
     if (object.fullName !== undefined && object.fullName !== null) {
       message.fullName = String(object.fullName);
     } else {
-      message.fullName = "";
+      message.fullName = '';
     }
     return message;
   },
@@ -15711,35 +15713,35 @@ export const EditEntityADParams = {
     if (object.samAccountName !== undefined && object.samAccountName !== null) {
       message.samAccountName = object.samAccountName;
     } else {
-      message.samAccountName = "";
+      message.samAccountName = '';
     }
     if (object.firstName !== undefined && object.firstName !== null) {
       message.firstName = object.firstName;
     } else {
-      message.firstName = "";
+      message.firstName = '';
     }
     if (object.lastName !== undefined && object.lastName !== null) {
       message.lastName = object.lastName;
     } else {
-      message.lastName = "";
+      message.lastName = '';
     }
     if (object.fullName !== undefined && object.fullName !== null) {
       message.fullName = object.fullName;
     } else {
-      message.fullName = "";
+      message.fullName = '';
     }
     return message;
   },
 };
 
-const baseDeleteOGKartoffelParams: object = { id: "" };
+const baseDeleteOGKartoffelParams: object = { id: '' };
 
 export const DeleteOGKartoffelParams = {
   encode(
     message: DeleteOGKartoffelParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
     return writer;
@@ -15775,7 +15777,7 @@ export const DeleteOGKartoffelParams = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     return message;
   },
@@ -15795,16 +15797,16 @@ export const DeleteOGKartoffelParams = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     return message;
   },
 };
 
 const baseDeleteOGADParams: object = {
-  ouDisplayName: "",
-  ouName: "",
-  name: "",
+  ouDisplayName: '',
+  ouName: '',
+  name: '',
 };
 
 export const DeleteOGADParams = {
@@ -15812,13 +15814,13 @@ export const DeleteOGADParams = {
     message: DeleteOGADParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.ouDisplayName !== "") {
+    if (message.ouDisplayName !== '') {
       writer.uint32(10).string(message.ouDisplayName);
     }
-    if (message.ouName !== "") {
+    if (message.ouName !== '') {
       writer.uint32(18).string(message.ouName);
     }
-    if (message.name !== "") {
+    if (message.name !== '') {
       writer.uint32(26).string(message.name);
     }
     return writer;
@@ -15853,17 +15855,17 @@ export const DeleteOGADParams = {
     if (object.ouDisplayName !== undefined && object.ouDisplayName !== null) {
       message.ouDisplayName = String(object.ouDisplayName);
     } else {
-      message.ouDisplayName = "";
+      message.ouDisplayName = '';
     }
     if (object.ouName !== undefined && object.ouName !== null) {
       message.ouName = String(object.ouName);
     } else {
-      message.ouName = "";
+      message.ouName = '';
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = String(object.name);
     } else {
-      message.name = "";
+      message.name = '';
     }
     return message;
   },
@@ -15882,33 +15884,33 @@ export const DeleteOGADParams = {
     if (object.ouDisplayName !== undefined && object.ouDisplayName !== null) {
       message.ouDisplayName = object.ouDisplayName;
     } else {
-      message.ouDisplayName = "";
+      message.ouDisplayName = '';
     }
     if (object.ouName !== undefined && object.ouName !== null) {
       message.ouName = object.ouName;
     } else {
-      message.ouName = "";
+      message.ouName = '';
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = object.name;
     } else {
-      message.name = "";
+      message.name = '';
     }
     return message;
   },
 };
 
-const baseDeleteRoleKartoffelParams: object = { roleId: "", uniqueId: "" };
+const baseDeleteRoleKartoffelParams: object = { roleId: '', uniqueId: '' };
 
 export const DeleteRoleKartoffelParams = {
   encode(
     message: DeleteRoleKartoffelParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.roleId !== "") {
+    if (message.roleId !== '') {
       writer.uint32(10).string(message.roleId);
     }
-    if (message.uniqueId !== "") {
+    if (message.uniqueId !== '') {
       writer.uint32(18).string(message.uniqueId);
     }
     return writer;
@@ -15947,12 +15949,12 @@ export const DeleteRoleKartoffelParams = {
     if (object.roleId !== undefined && object.roleId !== null) {
       message.roleId = String(object.roleId);
     } else {
-      message.roleId = "";
+      message.roleId = '';
     }
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = String(object.uniqueId);
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     return message;
   },
@@ -15973,25 +15975,25 @@ export const DeleteRoleKartoffelParams = {
     if (object.roleId !== undefined && object.roleId !== null) {
       message.roleId = object.roleId;
     } else {
-      message.roleId = "";
+      message.roleId = '';
     }
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = object.uniqueId;
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     return message;
   },
 };
 
-const baseDeleteRoleADParams: object = { samAccountName: "" };
+const baseDeleteRoleADParams: object = { samAccountName: '' };
 
 export const DeleteRoleADParams = {
   encode(
     message: DeleteRoleADParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.samAccountName !== "") {
+    if (message.samAccountName !== '') {
       writer.uint32(10).string(message.samAccountName);
     }
     return writer;
@@ -16020,7 +16022,7 @@ export const DeleteRoleADParams = {
     if (object.samAccountName !== undefined && object.samAccountName !== null) {
       message.samAccountName = String(object.samAccountName);
     } else {
-      message.samAccountName = "";
+      message.samAccountName = '';
     }
     return message;
   },
@@ -16037,20 +16039,20 @@ export const DeleteRoleADParams = {
     if (object.samAccountName !== undefined && object.samAccountName !== null) {
       message.samAccountName = object.samAccountName;
     } else {
-      message.samAccountName = "";
+      message.samAccountName = '';
     }
     return message;
   },
 };
 
-const baseDeleteEntityKartoffelParams: object = { id: "" };
+const baseDeleteEntityKartoffelParams: object = { id: '' };
 
 export const DeleteEntityKartoffelParams = {
   encode(
     message: DeleteEntityKartoffelParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
     return writer;
@@ -16086,7 +16088,7 @@ export const DeleteEntityKartoffelParams = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     return message;
   },
@@ -16106,7 +16108,7 @@ export const DeleteEntityKartoffelParams = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     return message;
   },
@@ -16156,17 +16158,17 @@ export const DeleteEntityADParams = {
   },
 };
 
-const baseAssignRoleToEntityKartoffelParams: object = { id: "", uniqueId: "" };
+const baseAssignRoleToEntityKartoffelParams: object = { id: '', uniqueId: '' };
 
 export const AssignRoleToEntityKartoffelParams = {
   encode(
     message: AssignRoleToEntityKartoffelParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
-    if (message.uniqueId !== "") {
+    if (message.uniqueId !== '') {
       writer.uint32(18).string(message.uniqueId);
     }
     return writer;
@@ -16205,12 +16207,12 @@ export const AssignRoleToEntityKartoffelParams = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = String(object.uniqueId);
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     return message;
   },
@@ -16231,26 +16233,25 @@ export const AssignRoleToEntityKartoffelParams = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = object.uniqueId;
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     return message;
   },
 };
 
 const baseAssignRoleToEntityADParams: object = {
-  oldSAMAccountName: "",
-  newSAMAccountName: "",
-  upn: "",
-  firstName: "",
-  lastName: "",
-  fullName: "",
-  rank: "",
-  roleSerialCode: "",
+  oldSAMAccountName: '',
+  newSAMAccountName: '',
+  firstName: '',
+  lastName: '',
+  fullName: '',
+  rank: '',
+  roleSerialCode: '',
 };
 
 export const AssignRoleToEntityADParams = {
@@ -16258,28 +16259,28 @@ export const AssignRoleToEntityADParams = {
     message: AssignRoleToEntityADParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.oldSAMAccountName !== "") {
+    if (message.oldSAMAccountName !== '') {
       writer.uint32(10).string(message.oldSAMAccountName);
     }
-    if (message.newSAMAccountName !== "") {
+    if (message.newSAMAccountName !== '') {
       writer.uint32(18).string(message.newSAMAccountName);
     }
-    if (message.upn !== "") {
+    if (message.upn !== undefined) {
       writer.uint32(26).string(message.upn);
     }
-    if (message.firstName !== "") {
+    if (message.firstName !== '') {
       writer.uint32(34).string(message.firstName);
     }
-    if (message.lastName !== "") {
+    if (message.lastName !== '') {
       writer.uint32(42).string(message.lastName);
     }
-    if (message.fullName !== "") {
+    if (message.fullName !== '') {
       writer.uint32(50).string(message.fullName);
     }
-    if (message.rank !== "") {
+    if (message.rank !== '') {
       writer.uint32(58).string(message.rank);
     }
-    if (message.roleSerialCode !== "") {
+    if (message.roleSerialCode !== '') {
       writer.uint32(66).string(message.roleSerialCode);
     }
     return writer;
@@ -16339,7 +16340,7 @@ export const AssignRoleToEntityADParams = {
     ) {
       message.oldSAMAccountName = String(object.oldSAMAccountName);
     } else {
-      message.oldSAMAccountName = "";
+      message.oldSAMAccountName = '';
     }
     if (
       object.newSAMAccountName !== undefined &&
@@ -16347,37 +16348,37 @@ export const AssignRoleToEntityADParams = {
     ) {
       message.newSAMAccountName = String(object.newSAMAccountName);
     } else {
-      message.newSAMAccountName = "";
+      message.newSAMAccountName = '';
     }
     if (object.upn !== undefined && object.upn !== null) {
       message.upn = String(object.upn);
     } else {
-      message.upn = "";
+      message.upn = undefined;
     }
     if (object.firstName !== undefined && object.firstName !== null) {
       message.firstName = String(object.firstName);
     } else {
-      message.firstName = "";
+      message.firstName = '';
     }
     if (object.lastName !== undefined && object.lastName !== null) {
       message.lastName = String(object.lastName);
     } else {
-      message.lastName = "";
+      message.lastName = '';
     }
     if (object.fullName !== undefined && object.fullName !== null) {
       message.fullName = String(object.fullName);
     } else {
-      message.fullName = "";
+      message.fullName = '';
     }
     if (object.rank !== undefined && object.rank !== null) {
       message.rank = String(object.rank);
     } else {
-      message.rank = "";
+      message.rank = '';
     }
     if (object.roleSerialCode !== undefined && object.roleSerialCode !== null) {
       message.roleSerialCode = String(object.roleSerialCode);
     } else {
-      message.roleSerialCode = "";
+      message.roleSerialCode = '';
     }
     return message;
   },
@@ -16410,7 +16411,7 @@ export const AssignRoleToEntityADParams = {
     ) {
       message.oldSAMAccountName = object.oldSAMAccountName;
     } else {
-      message.oldSAMAccountName = "";
+      message.oldSAMAccountName = '';
     }
     if (
       object.newSAMAccountName !== undefined &&
@@ -16418,45 +16419,45 @@ export const AssignRoleToEntityADParams = {
     ) {
       message.newSAMAccountName = object.newSAMAccountName;
     } else {
-      message.newSAMAccountName = "";
+      message.newSAMAccountName = '';
     }
     if (object.upn !== undefined && object.upn !== null) {
       message.upn = object.upn;
     } else {
-      message.upn = "";
+      message.upn = undefined;
     }
     if (object.firstName !== undefined && object.firstName !== null) {
       message.firstName = object.firstName;
     } else {
-      message.firstName = "";
+      message.firstName = '';
     }
     if (object.lastName !== undefined && object.lastName !== null) {
       message.lastName = object.lastName;
     } else {
-      message.lastName = "";
+      message.lastName = '';
     }
     if (object.fullName !== undefined && object.fullName !== null) {
       message.fullName = object.fullName;
     } else {
-      message.fullName = "";
+      message.fullName = '';
     }
     if (object.rank !== undefined && object.rank !== null) {
       message.rank = object.rank;
     } else {
-      message.rank = "";
+      message.rank = '';
     }
     if (object.roleSerialCode !== undefined && object.roleSerialCode !== null) {
       message.roleSerialCode = object.roleSerialCode;
     } else {
-      message.roleSerialCode = "";
+      message.roleSerialCode = '';
     }
     return message;
   },
 };
 
 const baseDisconectRoleFromEntityKartoffelParams: object = {
-  id: "",
-  uniqueId: "",
+  id: '',
+  uniqueId: '',
 };
 
 export const DisconectRoleFromEntityKartoffelParams = {
@@ -16464,10 +16465,10 @@ export const DisconectRoleFromEntityKartoffelParams = {
     message: DisconectRoleFromEntityKartoffelParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
-    if (message.uniqueId !== "") {
+    if (message.uniqueId !== '') {
       writer.uint32(18).string(message.uniqueId);
     }
     return writer;
@@ -16506,12 +16507,12 @@ export const DisconectRoleFromEntityKartoffelParams = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = String(object.uniqueId);
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     return message;
   },
@@ -16532,25 +16533,25 @@ export const DisconectRoleFromEntityKartoffelParams = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = object.uniqueId;
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     return message;
   },
 };
 
-const baseDisconectRoleFromEntityADParams: object = { samAccountName: "" };
+const baseDisconectRoleFromEntityADParams: object = { samAccountName: '' };
 
 export const DisconectRoleFromEntityADParams = {
   encode(
     message: DisconectRoleFromEntityADParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.samAccountName !== "") {
+    if (message.samAccountName !== '') {
       writer.uint32(10).string(message.samAccountName);
     }
     return writer;
@@ -16586,7 +16587,7 @@ export const DisconectRoleFromEntityADParams = {
     if (object.samAccountName !== undefined && object.samAccountName !== null) {
       message.samAccountName = String(object.samAccountName);
     } else {
-      message.samAccountName = "";
+      message.samAccountName = '';
     }
     return message;
   },
@@ -16607,20 +16608,20 @@ export const DisconectRoleFromEntityADParams = {
     if (object.samAccountName !== undefined && object.samAccountName !== null) {
       message.samAccountName = object.samAccountName;
     } else {
-      message.samAccountName = "";
+      message.samAccountName = '';
     }
     return message;
   },
 };
 
-const baseUpdateReq: object = { id: "" };
+const baseUpdateReq: object = { id: '' };
 
 export const UpdateReq = {
   encode(
     message: UpdateReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
     if (message.requestProperties !== undefined) {
@@ -16661,7 +16662,7 @@ export const UpdateReq = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (
       object.requestProperties !== undefined &&
@@ -16691,7 +16692,7 @@ export const UpdateReq = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (
       object.requestProperties !== undefined &&
@@ -17120,14 +17121,14 @@ export const UpdateReqProperties = {
   },
 };
 
-const baseUpdateKartoffelStatusReq: object = { requestId: "", status: 0 };
+const baseUpdateKartoffelStatusReq: object = { requestId: '', status: 0 };
 
 export const UpdateKartoffelStatusReq = {
   encode(
     message: UpdateKartoffelStatusReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.requestId !== "") {
+    if (message.requestId !== '') {
       writer.uint32(10).string(message.requestId);
     }
     if (message.status !== 0) {
@@ -17187,7 +17188,7 @@ export const UpdateKartoffelStatusReq = {
     if (object.requestId !== undefined && object.requestId !== null) {
       message.requestId = String(object.requestId);
     } else {
-      message.requestId = "";
+      message.requestId = '';
     }
     if (object.status !== undefined && object.status !== null) {
       message.status = stageStatusFromJSON(object.status);
@@ -17233,7 +17234,7 @@ export const UpdateKartoffelStatusReq = {
     if (object.requestId !== undefined && object.requestId !== null) {
       message.requestId = object.requestId;
     } else {
-      message.requestId = "";
+      message.requestId = '';
     }
     if (object.status !== undefined && object.status !== null) {
       message.status = object.status;
@@ -17259,20 +17260,20 @@ export const UpdateKartoffelStatusReq = {
   },
 };
 
-const baseUpdateADStatusReq: object = { requestId: "", status: 0, message: "" };
+const baseUpdateADStatusReq: object = { requestId: '', status: 0, message: '' };
 
 export const UpdateADStatusReq = {
   encode(
     message: UpdateADStatusReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.requestId !== "") {
+    if (message.requestId !== '') {
       writer.uint32(10).string(message.requestId);
     }
     if (message.status !== 0) {
       writer.uint32(16).int32(message.status);
     }
-    if (message.message !== "") {
+    if (message.message !== '') {
       writer.uint32(26).string(message.message);
     }
     if (message.failedRetries !== undefined) {
@@ -17313,7 +17314,7 @@ export const UpdateADStatusReq = {
     if (object.requestId !== undefined && object.requestId !== null) {
       message.requestId = String(object.requestId);
     } else {
-      message.requestId = "";
+      message.requestId = '';
     }
     if (object.status !== undefined && object.status !== null) {
       message.status = stageStatusFromJSON(object.status);
@@ -17323,7 +17324,7 @@ export const UpdateADStatusReq = {
     if (object.message !== undefined && object.message !== null) {
       message.message = String(object.message);
     } else {
-      message.message = "";
+      message.message = '';
     }
     if (object.failedRetries !== undefined && object.failedRetries !== null) {
       message.failedRetries = Number(object.failedRetries);
@@ -17349,7 +17350,7 @@ export const UpdateADStatusReq = {
     if (object.requestId !== undefined && object.requestId !== null) {
       message.requestId = object.requestId;
     } else {
-      message.requestId = "";
+      message.requestId = '';
     }
     if (object.status !== undefined && object.status !== null) {
       message.status = object.status;
@@ -17359,7 +17360,7 @@ export const UpdateADStatusReq = {
     if (object.message !== undefined && object.message !== null) {
       message.message = object.message;
     } else {
-      message.message = "";
+      message.message = '';
     }
     if (object.failedRetries !== undefined && object.failedRetries !== null) {
       message.failedRetries = object.failedRetries;
@@ -17370,14 +17371,14 @@ export const UpdateADStatusReq = {
   },
 };
 
-const baseDeleteReq: object = { id: "" };
+const baseDeleteReq: object = { id: '' };
 
 export const DeleteReq = {
   encode(
     message: DeleteReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
     return writer;
@@ -17406,7 +17407,7 @@ export const DeleteReq = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     return message;
   },
@@ -17422,14 +17423,14 @@ export const DeleteReq = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     return message;
   },
 };
 
 const baseGetRequestsByPersonReq: object = {
-  id: "",
+  id: '',
   personType: 0,
   personInfoType: 0,
   from: 0,
@@ -17441,7 +17442,7 @@ export const GetRequestsByPersonReq = {
     message: GetRequestsByPersonReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
     if (message.personType !== 0) {
@@ -17497,7 +17498,7 @@ export const GetRequestsByPersonReq = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.personType !== undefined && object.personType !== null) {
       message.personType = personTypeInRequestFromJSON(object.personType);
@@ -17541,7 +17542,7 @@ export const GetRequestsByPersonReq = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.personType !== undefined && object.personType !== null) {
       message.personType = object.personType;
@@ -17567,14 +17568,14 @@ export const GetRequestsByPersonReq = {
   },
 };
 
-const baseGetRequestBySerialNumberReq: object = { serialNumber: "" };
+const baseGetRequestBySerialNumberReq: object = { serialNumber: '' };
 
 export const GetRequestBySerialNumberReq = {
   encode(
     message: GetRequestBySerialNumberReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.serialNumber !== "") {
+    if (message.serialNumber !== '') {
       writer.uint32(10).string(message.serialNumber);
     }
     return writer;
@@ -17610,7 +17611,7 @@ export const GetRequestBySerialNumberReq = {
     if (object.serialNumber !== undefined && object.serialNumber !== null) {
       message.serialNumber = String(object.serialNumber);
     } else {
-      message.serialNumber = "";
+      message.serialNumber = '';
     }
     return message;
   },
@@ -17631,7 +17632,7 @@ export const GetRequestBySerialNumberReq = {
     if (object.serialNumber !== undefined && object.serialNumber !== null) {
       message.serialNumber = object.serialNumber;
     } else {
-      message.serialNumber = "";
+      message.serialNumber = '';
     }
     return message;
   },
@@ -17712,14 +17713,14 @@ export const GetAllRequestsReq = {
   },
 };
 
-const baseGetRequestByIdReq: object = { id: "" };
+const baseGetRequestByIdReq: object = { id: '' };
 
 export const GetRequestByIdReq = {
   encode(
     message: GetRequestByIdReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
     return writer;
@@ -17748,7 +17749,7 @@ export const GetRequestByIdReq = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     return message;
   },
@@ -17764,14 +17765,14 @@ export const GetRequestByIdReq = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     return message;
   },
 };
 
 const baseSearchRequestsByDisplayNameReq: object = {
-  displayName: "",
+  displayName: '',
   from: 0,
   to: 0,
 };
@@ -17781,7 +17782,7 @@ export const SearchRequestsByDisplayNameReq = {
     message: SearchRequestsByDisplayNameReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.displayName !== "") {
+    if (message.displayName !== '') {
       writer.uint32(10).string(message.displayName);
     }
     if (message.from !== 0) {
@@ -17829,7 +17830,7 @@ export const SearchRequestsByDisplayNameReq = {
     if (object.displayName !== undefined && object.displayName !== null) {
       message.displayName = String(object.displayName);
     } else {
-      message.displayName = "";
+      message.displayName = '';
     }
     if (object.from !== undefined && object.from !== null) {
       message.from = Number(object.from);
@@ -17862,7 +17863,7 @@ export const SearchRequestsByDisplayNameReq = {
     if (object.displayName !== undefined && object.displayName !== null) {
       message.displayName = object.displayName;
     } else {
-      message.displayName = "";
+      message.displayName = '';
     }
     if (object.from !== undefined && object.from !== null) {
       message.from = object.from;
@@ -17878,14 +17879,14 @@ export const SearchRequestsByDisplayNameReq = {
   },
 };
 
-const baseCanPushToQueueReq: object = { id: "" };
+const baseCanPushToQueueReq: object = { id: '' };
 
 export const CanPushToQueueReq = {
   encode(
     message: CanPushToQueueReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
     return writer;
@@ -17914,7 +17915,7 @@ export const CanPushToQueueReq = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     return message;
   },
@@ -17930,7 +17931,7 @@ export const CanPushToQueueReq = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     return message;
   },
@@ -17995,14 +17996,14 @@ export const CanPushToQueueRes = {
   },
 };
 
-const baseIncrementRetriesReq: object = { id: "" };
+const baseIncrementRetriesReq: object = { id: '' };
 
 export const IncrementRetriesReq = {
   encode(
     message: IncrementRetriesReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
     return writer;
@@ -18031,7 +18032,7 @@ export const IncrementRetriesReq = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     return message;
   },
@@ -18047,20 +18048,20 @@ export const IncrementRetriesReq = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     return message;
   },
 };
 
-const baseUpdateApproverDecisionReq: object = { id: "", approverType: 0 };
+const baseUpdateApproverDecisionReq: object = { id: '', approverType: 0 };
 
 export const UpdateApproverDecisionReq = {
   encode(
     message: UpdateApproverDecisionReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
     if (message.approverDecision !== undefined) {
@@ -18114,7 +18115,7 @@ export const UpdateApproverDecisionReq = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (
       object.approverDecision !== undefined &&
@@ -18155,7 +18156,7 @@ export const UpdateApproverDecisionReq = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (
       object.approverDecision !== undefined &&
@@ -18245,14 +18246,14 @@ export const GetRequestsInProgressByDueReq = {
   },
 };
 
-const baseUpdateApproversReq: object = { id: "" };
+const baseUpdateApproversReq: object = { id: '' };
 
 export const UpdateApproversReq = {
   encode(
     message: UpdateApproversReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
     for (const v of message.approvers) {
@@ -18289,7 +18290,7 @@ export const UpdateApproversReq = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.approvers !== undefined && object.approvers !== null) {
       for (const e of object.approvers) {
@@ -18318,7 +18319,7 @@ export const UpdateApproversReq = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.approvers !== undefined && object.approvers !== null) {
       for (const e of object.approvers) {
@@ -18329,14 +18330,14 @@ export const UpdateApproversReq = {
   },
 };
 
-const baseIsRequestApprovedReq: object = { id: "" };
+const baseIsRequestApprovedReq: object = { id: '' };
 
 export const IsRequestApprovedReq = {
   encode(
     message: IsRequestApprovedReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
     return writer;
@@ -18368,7 +18369,7 @@ export const IsRequestApprovedReq = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     return message;
   },
@@ -18384,7 +18385,7 @@ export const IsRequestApprovedReq = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     return message;
   },
@@ -18458,7 +18459,7 @@ export const IsRequestApprovedRes = {
   },
 };
 
-const baseRequestIdArray: object = { requestIds: "", count: 0 };
+const baseRequestIdArray: object = { requestIds: '', count: 0 };
 
 export const RequestIdArray = {
   encode(
@@ -18541,10 +18542,10 @@ export const RequestIdArray = {
 };
 
 const baseEntityMin: object = {
-  id: "",
-  displayName: "",
-  identityCard: "",
-  personalNumber: "",
+  id: '',
+  displayName: '',
+  identityCard: '',
+  personalNumber: '',
 };
 
 export const EntityMin = {
@@ -18552,16 +18553,16 @@ export const EntityMin = {
     message: EntityMin,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
-    if (message.displayName !== "") {
+    if (message.displayName !== '') {
       writer.uint32(18).string(message.displayName);
     }
-    if (message.identityCard !== "") {
+    if (message.identityCard !== '') {
       writer.uint32(26).string(message.identityCard);
     }
-    if (message.personalNumber !== "") {
+    if (message.personalNumber !== '') {
       writer.uint32(34).string(message.personalNumber);
     }
     return writer;
@@ -18599,22 +18600,22 @@ export const EntityMin = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.displayName !== undefined && object.displayName !== null) {
       message.displayName = String(object.displayName);
     } else {
-      message.displayName = "";
+      message.displayName = '';
     }
     if (object.identityCard !== undefined && object.identityCard !== null) {
       message.identityCard = String(object.identityCard);
     } else {
-      message.identityCard = "";
+      message.identityCard = '';
     }
     if (object.personalNumber !== undefined && object.personalNumber !== null) {
       message.personalNumber = String(object.personalNumber);
     } else {
-      message.personalNumber = "";
+      message.personalNumber = '';
     }
     return message;
   },
@@ -18636,28 +18637,28 @@ export const EntityMin = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.displayName !== undefined && object.displayName !== null) {
       message.displayName = object.displayName;
     } else {
-      message.displayName = "";
+      message.displayName = '';
     }
     if (object.identityCard !== undefined && object.identityCard !== null) {
       message.identityCard = object.identityCard;
     } else {
-      message.identityCard = "";
+      message.identityCard = '';
     }
     if (object.personalNumber !== undefined && object.personalNumber !== null) {
       message.personalNumber = object.personalNumber;
     } else {
-      message.personalNumber = "";
+      message.personalNumber = '';
     }
     return message;
   },
 };
 
-const baseSuccessMessage: object = { success: false, message: "" };
+const baseSuccessMessage: object = { success: false, message: '' };
 
 export const SuccessMessage = {
   encode(
@@ -18667,7 +18668,7 @@ export const SuccessMessage = {
     if (message.success === true) {
       writer.uint32(8).bool(message.success);
     }
-    if (message.message !== "") {
+    if (message.message !== '') {
       writer.uint32(18).string(message.message);
     }
     return writer;
@@ -18704,7 +18705,7 @@ export const SuccessMessage = {
     if (object.message !== undefined && object.message !== null) {
       message.message = String(object.message);
     } else {
-      message.message = "";
+      message.message = '';
     }
     return message;
   },
@@ -18726,7 +18727,7 @@ export const SuccessMessage = {
     if (object.message !== undefined && object.message !== null) {
       message.message = object.message;
     } else {
-      message.message = "";
+      message.message = '';
     }
     return message;
   },
@@ -18847,7 +18848,7 @@ export const ApproverDecision = {
 
 const baseKartoffelStatus: object = {
   status: 0,
-  message: "",
+  message: '',
   failedRetries: 0,
 };
 
@@ -18859,7 +18860,7 @@ export const KartoffelStatus = {
     if (message.status !== 0) {
       writer.uint32(8).int32(message.status);
     }
-    if (message.message !== "") {
+    if (message.message !== '') {
       writer.uint32(18).string(message.message);
     }
     if (message.createdId !== undefined) {
@@ -18908,7 +18909,7 @@ export const KartoffelStatus = {
     if (object.message !== undefined && object.message !== null) {
       message.message = String(object.message);
     } else {
-      message.message = "";
+      message.message = '';
     }
     if (object.createdId !== undefined && object.createdId !== null) {
       message.createdId = String(object.createdId);
@@ -18944,7 +18945,7 @@ export const KartoffelStatus = {
     if (object.message !== undefined && object.message !== null) {
       message.message = object.message;
     } else {
-      message.message = "";
+      message.message = '';
     }
     if (object.createdId !== undefined && object.createdId !== null) {
       message.createdId = object.createdId;
@@ -18960,7 +18961,7 @@ export const KartoffelStatus = {
   },
 };
 
-const baseADStatus: object = { status: 0, message: "", failedRetries: 0 };
+const baseADStatus: object = { status: 0, message: '', failedRetries: 0 };
 
 export const ADStatus = {
   encode(
@@ -18970,7 +18971,7 @@ export const ADStatus = {
     if (message.status !== 0) {
       writer.uint32(8).int32(message.status);
     }
-    if (message.message !== "") {
+    if (message.message !== '') {
       writer.uint32(18).string(message.message);
     }
     if (message.failedRetries !== 0) {
@@ -19013,7 +19014,7 @@ export const ADStatus = {
     if (object.message !== undefined && object.message !== null) {
       message.message = String(object.message);
     } else {
-      message.message = "";
+      message.message = '';
     }
     if (object.failedRetries !== undefined && object.failedRetries !== null) {
       message.failedRetries = Number(object.failedRetries);
@@ -19043,7 +19044,7 @@ export const ADStatus = {
     if (object.message !== undefined && object.message !== null) {
       message.message = object.message;
     } else {
-      message.message = "";
+      message.message = '';
     }
     if (object.failedRetries !== undefined && object.failedRetries !== null) {
       message.failedRetries = object.failedRetries;
@@ -19138,7 +19139,7 @@ export const RequestArray = {
   },
 };
 
-const baseKartoffelParams: object = { phone: "", mobilePhone: "" };
+const baseKartoffelParams: object = { phone: '', mobilePhone: '' };
 
 export const KartoffelParams = {
   encode(
@@ -19163,8 +19164,8 @@ export const KartoffelParams = {
     if (message.roleId !== undefined) {
       writer.uint32(50).string(message.roleId);
     }
-    if (message.akaUnit !== undefined) {
-      writer.uint32(58).string(message.akaUnit);
+    if (message.unit !== undefined) {
+      writer.uint32(58).string(message.unit);
     }
     if (message.type !== undefined) {
       writer.uint32(66).string(message.type);
@@ -19248,7 +19249,7 @@ export const KartoffelParams = {
           message.roleId = reader.string();
           break;
         case 7:
-          message.akaUnit = reader.string();
+          message.unit = reader.string();
           break;
         case 8:
           message.type = reader.string();
@@ -19343,10 +19344,10 @@ export const KartoffelParams = {
     } else {
       message.roleId = undefined;
     }
-    if (object.akaUnit !== undefined && object.akaUnit !== null) {
-      message.akaUnit = String(object.akaUnit);
+    if (object.unit !== undefined && object.unit !== null) {
+      message.unit = String(object.unit);
     } else {
-      message.akaUnit = undefined;
+      message.unit = undefined;
     }
     if (object.type !== undefined && object.type !== null) {
       message.type = String(object.type);
@@ -19448,7 +19449,7 @@ export const KartoffelParams = {
     message.directGroup !== undefined &&
       (obj.directGroup = message.directGroup);
     message.roleId !== undefined && (obj.roleId = message.roleId);
-    message.akaUnit !== undefined && (obj.akaUnit = message.akaUnit);
+    message.unit !== undefined && (obj.unit = message.unit);
     message.type !== undefined && (obj.type = message.type);
     message.uniqueId !== undefined && (obj.uniqueId = message.uniqueId);
     message.mail !== undefined && (obj.mail = message.mail);
@@ -19515,10 +19516,10 @@ export const KartoffelParams = {
     } else {
       message.roleId = undefined;
     }
-    if (object.akaUnit !== undefined && object.akaUnit !== null) {
-      message.akaUnit = object.akaUnit;
+    if (object.unit !== undefined && object.unit !== null) {
+      message.unit = object.unit;
     } else {
-      message.akaUnit = undefined;
+      message.unit = undefined;
     }
     if (object.type !== undefined && object.type !== null) {
       message.type = object.type;
@@ -19945,8 +19946,8 @@ export const ADParams = {
 
 const baseRequestReq: object = {
   status: 0,
-  comments: "",
-  approversComments: "",
+  comments: '',
+  approversComments: '',
 };
 
 export const RequestReq = {
@@ -20005,14 +20006,20 @@ export const RequestReq = {
     if (message.adParams !== undefined) {
       ADParams.encode(message.adParams, writer.uint32(98).fork()).ldelim();
     }
-    if (message.comments !== "") {
-      writer.uint32(106).string(message.comments);
+    if (message.additionalParams !== undefined) {
+      AdditionalParams.encode(
+        message.additionalParams,
+        writer.uint32(106).fork()
+      ).ldelim();
     }
-    if (message.approversComments !== "") {
-      writer.uint32(114).string(message.approversComments);
+    if (message.comments !== '') {
+      writer.uint32(114).string(message.comments);
+    }
+    if (message.approversComments !== '') {
+      writer.uint32(122).string(message.approversComments);
     }
     if (message.due !== undefined) {
-      writer.uint32(120).int64(message.due);
+      writer.uint32(128).int64(message.due);
     }
     return writer;
   },
@@ -20083,12 +20090,18 @@ export const RequestReq = {
           message.adParams = ADParams.decode(reader, reader.uint32());
           break;
         case 13:
-          message.comments = reader.string();
+          message.additionalParams = AdditionalParams.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 14:
-          message.approversComments = reader.string();
+          message.comments = reader.string();
           break;
         case 15:
+          message.approversComments = reader.string();
+          break;
+        case 16:
           message.due = longToNumber(reader.int64() as Long);
           break;
         default:
@@ -20195,10 +20208,20 @@ export const RequestReq = {
     } else {
       message.adParams = undefined;
     }
+    if (
+      object.additionalParams !== undefined &&
+      object.additionalParams !== null
+    ) {
+      message.additionalParams = AdditionalParams.fromJSON(
+        object.additionalParams
+      );
+    } else {
+      message.additionalParams = undefined;
+    }
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = String(object.comments);
     } else {
-      message.comments = "";
+      message.comments = '';
     }
     if (
       object.approversComments !== undefined &&
@@ -20206,7 +20229,7 @@ export const RequestReq = {
     ) {
       message.approversComments = String(object.approversComments);
     } else {
-      message.approversComments = "";
+      message.approversComments = '';
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = Number(object.due);
@@ -20272,6 +20295,10 @@ export const RequestReq = {
     message.adParams !== undefined &&
       (obj.adParams = message.adParams
         ? ADParams.toJSON(message.adParams)
+        : undefined);
+    message.additionalParams !== undefined &&
+      (obj.additionalParams = message.additionalParams
+        ? AdditionalParams.toJSON(message.additionalParams)
         : undefined);
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
@@ -20376,10 +20403,20 @@ export const RequestReq = {
     } else {
       message.adParams = undefined;
     }
+    if (
+      object.additionalParams !== undefined &&
+      object.additionalParams !== null
+    ) {
+      message.additionalParams = AdditionalParams.fromPartial(
+        object.additionalParams
+      );
+    } else {
+      message.additionalParams = undefined;
+    }
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = object.comments;
     } else {
-      message.comments = "";
+      message.comments = '';
     }
     if (
       object.approversComments !== undefined &&
@@ -20387,7 +20424,7 @@ export const RequestReq = {
     ) {
       message.approversComments = object.approversComments;
     } else {
-      message.approversComments = "";
+      message.approversComments = '';
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = object.due;
@@ -20400,14 +20437,14 @@ export const RequestReq = {
 
 const baseRequest: object = {
   status: 0,
-  comments: "",
-  approversComments: "",
+  comments: '',
+  approversComments: '',
   due: 0,
-  id: "",
+  id: '',
   createdAt: 0,
   updatedAt: 0,
   type: 0,
-  serialNumber: "",
+  serialNumber: '',
   needSecurityDecision: false,
   needSuperSecurityDecision: false,
 };
@@ -20465,38 +20502,44 @@ export const Request = {
         writer.uint32(90).fork()
       ).ldelim();
     }
+    if (message.additionalParams !== undefined) {
+      AdditionalParams.encode(
+        message.additionalParams,
+        writer.uint32(98).fork()
+      ).ldelim();
+    }
     if (message.adParams !== undefined) {
-      ADParams.encode(message.adParams, writer.uint32(98).fork()).ldelim();
+      ADParams.encode(message.adParams, writer.uint32(106).fork()).ldelim();
     }
-    if (message.comments !== "") {
-      writer.uint32(106).string(message.comments);
+    if (message.comments !== '') {
+      writer.uint32(114).string(message.comments);
     }
-    if (message.approversComments !== "") {
-      writer.uint32(114).string(message.approversComments);
+    if (message.approversComments !== '') {
+      writer.uint32(122).string(message.approversComments);
     }
     if (message.due !== 0) {
-      writer.uint32(120).int64(message.due);
+      writer.uint32(128).int64(message.due);
     }
-    if (message.id !== "") {
-      writer.uint32(130).string(message.id);
+    if (message.id !== '') {
+      writer.uint32(138).string(message.id);
     }
     if (message.createdAt !== 0) {
-      writer.uint32(136).int64(message.createdAt);
+      writer.uint32(144).int64(message.createdAt);
     }
     if (message.updatedAt !== 0) {
-      writer.uint32(144).int64(message.updatedAt);
+      writer.uint32(152).int64(message.updatedAt);
     }
     if (message.type !== 0) {
-      writer.uint32(152).int32(message.type);
+      writer.uint32(160).int32(message.type);
     }
-    if (message.serialNumber !== "") {
-      writer.uint32(162).string(message.serialNumber);
+    if (message.serialNumber !== '') {
+      writer.uint32(170).string(message.serialNumber);
     }
     if (message.needSecurityDecision === true) {
-      writer.uint32(168).bool(message.needSecurityDecision);
+      writer.uint32(176).bool(message.needSecurityDecision);
     }
     if (message.needSuperSecurityDecision === true) {
-      writer.uint32(176).bool(message.needSuperSecurityDecision);
+      writer.uint32(184).bool(message.needSuperSecurityDecision);
     }
     return writer;
   },
@@ -20564,36 +20607,42 @@ export const Request = {
           );
           break;
         case 12:
-          message.adParams = ADParams.decode(reader, reader.uint32());
+          message.additionalParams = AdditionalParams.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 13:
-          message.comments = reader.string();
+          message.adParams = ADParams.decode(reader, reader.uint32());
           break;
         case 14:
-          message.approversComments = reader.string();
+          message.comments = reader.string();
           break;
         case 15:
-          message.due = longToNumber(reader.int64() as Long);
+          message.approversComments = reader.string();
           break;
         case 16:
-          message.id = reader.string();
+          message.due = longToNumber(reader.int64() as Long);
           break;
         case 17:
-          message.createdAt = longToNumber(reader.int64() as Long);
+          message.id = reader.string();
           break;
         case 18:
-          message.updatedAt = longToNumber(reader.int64() as Long);
+          message.createdAt = longToNumber(reader.int64() as Long);
           break;
         case 19:
-          message.type = reader.int32() as any;
+          message.updatedAt = longToNumber(reader.int64() as Long);
           break;
         case 20:
-          message.serialNumber = reader.string();
+          message.type = reader.int32() as any;
           break;
         case 21:
-          message.needSecurityDecision = reader.bool();
+          message.serialNumber = reader.string();
           break;
         case 22:
+          message.needSecurityDecision = reader.bool();
+          break;
+        case 23:
           message.needSuperSecurityDecision = reader.bool();
           break;
         default:
@@ -20695,6 +20744,16 @@ export const Request = {
     } else {
       message.kartoffelParams = undefined;
     }
+    if (
+      object.additionalParams !== undefined &&
+      object.additionalParams !== null
+    ) {
+      message.additionalParams = AdditionalParams.fromJSON(
+        object.additionalParams
+      );
+    } else {
+      message.additionalParams = undefined;
+    }
     if (object.adParams !== undefined && object.adParams !== null) {
       message.adParams = ADParams.fromJSON(object.adParams);
     } else {
@@ -20703,7 +20762,7 @@ export const Request = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = String(object.comments);
     } else {
-      message.comments = "";
+      message.comments = '';
     }
     if (
       object.approversComments !== undefined &&
@@ -20711,7 +20770,7 @@ export const Request = {
     ) {
       message.approversComments = String(object.approversComments);
     } else {
-      message.approversComments = "";
+      message.approversComments = '';
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = Number(object.due);
@@ -20721,7 +20780,7 @@ export const Request = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = Number(object.createdAt);
@@ -20741,7 +20800,7 @@ export const Request = {
     if (object.serialNumber !== undefined && object.serialNumber !== null) {
       message.serialNumber = String(object.serialNumber);
     } else {
-      message.serialNumber = "";
+      message.serialNumber = '';
     }
     if (
       object.needSecurityDecision !== undefined &&
@@ -20816,6 +20875,10 @@ export const Request = {
     message.kartoffelParams !== undefined &&
       (obj.kartoffelParams = message.kartoffelParams
         ? KartoffelParams.toJSON(message.kartoffelParams)
+        : undefined);
+    message.additionalParams !== undefined &&
+      (obj.additionalParams = message.additionalParams
+        ? AdditionalParams.toJSON(message.additionalParams)
         : undefined);
     message.adParams !== undefined &&
       (obj.adParams = message.adParams
@@ -20929,6 +20992,16 @@ export const Request = {
     } else {
       message.kartoffelParams = undefined;
     }
+    if (
+      object.additionalParams !== undefined &&
+      object.additionalParams !== null
+    ) {
+      message.additionalParams = AdditionalParams.fromPartial(
+        object.additionalParams
+      );
+    } else {
+      message.additionalParams = undefined;
+    }
     if (object.adParams !== undefined && object.adParams !== null) {
       message.adParams = ADParams.fromPartial(object.adParams);
     } else {
@@ -20937,7 +21010,7 @@ export const Request = {
     if (object.comments !== undefined && object.comments !== null) {
       message.comments = object.comments;
     } else {
-      message.comments = "";
+      message.comments = '';
     }
     if (
       object.approversComments !== undefined &&
@@ -20945,7 +21018,7 @@ export const Request = {
     ) {
       message.approversComments = object.approversComments;
     } else {
-      message.approversComments = "";
+      message.approversComments = '';
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = object.due;
@@ -20955,7 +21028,7 @@ export const Request = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = object.createdAt;
@@ -20975,7 +21048,7 @@ export const Request = {
     if (object.serialNumber !== undefined && object.serialNumber !== null) {
       message.serialNumber = object.serialNumber;
     } else {
-      message.serialNumber = "";
+      message.serialNumber = '';
     }
     if (
       object.needSecurityDecision !== undefined &&
@@ -21110,8 +21183,8 @@ export class RequestServiceClientImpl implements RequestService {
   CreateRoleRequest(request: CreateRoleReq): Promise<CreateRoleRes> {
     const data = CreateRoleReq.encode(request).finish();
     const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "CreateRoleRequest",
+      'RequestService.RequestService',
+      'CreateRoleRequest',
       data
     );
     return promise.then((data) => CreateRoleRes.decode(new _m0.Reader(data)));
@@ -21120,8 +21193,8 @@ export class RequestServiceClientImpl implements RequestService {
   CreateOGRequest(request: CreateOGReq): Promise<CreateOGRes> {
     const data = CreateOGReq.encode(request).finish();
     const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "CreateOGRequest",
+      'RequestService.RequestService',
+      'CreateOGRequest',
       data
     );
     return promise.then((data) => CreateOGRes.decode(new _m0.Reader(data)));
@@ -21130,8 +21203,8 @@ export class RequestServiceClientImpl implements RequestService {
   CreateEntityRequest(request: CreateEntityReq): Promise<CreateEntityRes> {
     const data = CreateEntityReq.encode(request).finish();
     const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "CreateEntityRequest",
+      'RequestService.RequestService',
+      'CreateEntityRequest',
       data
     );
     return promise.then((data) => CreateEntityRes.decode(new _m0.Reader(data)));
@@ -21142,8 +21215,8 @@ export class RequestServiceClientImpl implements RequestService {
   ): Promise<CreateNewApproverRes> {
     const data = CreateNewApproverReq.encode(request).finish();
     const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "CreateNewApproverRequest",
+      'RequestService.RequestService',
+      'CreateNewApproverRequest',
       data
     );
     return promise.then((data) =>
@@ -21154,8 +21227,8 @@ export class RequestServiceClientImpl implements RequestService {
   RenameOGRequest(request: RenameOGReq): Promise<RenameOGRes> {
     const data = RenameOGReq.encode(request).finish();
     const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "RenameOGRequest",
+      'RequestService.RequestService',
+      'RenameOGRequest',
       data
     );
     return promise.then((data) => RenameOGRes.decode(new _m0.Reader(data)));
@@ -21164,8 +21237,8 @@ export class RequestServiceClientImpl implements RequestService {
   RenameRoleRequest(request: RenameRoleReq): Promise<EditEntityRes> {
     const data = RenameRoleReq.encode(request).finish();
     const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "RenameRoleRequest",
+      'RequestService.RequestService',
+      'RenameRoleRequest',
       data
     );
     return promise.then((data) => EditEntityRes.decode(new _m0.Reader(data)));
@@ -21174,8 +21247,8 @@ export class RequestServiceClientImpl implements RequestService {
   EditEntityRequest(request: EditEntityReq): Promise<EditEntityRes> {
     const data = EditEntityReq.encode(request).finish();
     const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "EditEntityRequest",
+      'RequestService.RequestService',
+      'EditEntityRequest',
       data
     );
     return promise.then((data) => EditEntityRes.decode(new _m0.Reader(data)));
@@ -21184,8 +21257,8 @@ export class RequestServiceClientImpl implements RequestService {
   DeleteOGRequest(request: DeleteOGReq): Promise<DeleteOGRes> {
     const data = DeleteOGReq.encode(request).finish();
     const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "DeleteOGRequest",
+      'RequestService.RequestService',
+      'DeleteOGRequest',
       data
     );
     return promise.then((data) => DeleteOGRes.decode(new _m0.Reader(data)));
@@ -21194,8 +21267,8 @@ export class RequestServiceClientImpl implements RequestService {
   DeleteRoleRequest(request: DeleteRoleReq): Promise<DeleteRoleRes> {
     const data = DeleteRoleReq.encode(request).finish();
     const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "DeleteRoleRequest",
+      'RequestService.RequestService',
+      'DeleteRoleRequest',
       data
     );
     return promise.then((data) => DeleteRoleRes.decode(new _m0.Reader(data)));
@@ -21204,8 +21277,8 @@ export class RequestServiceClientImpl implements RequestService {
   DeleteEntityRequest(request: DeleteEntityReq): Promise<DeleteEntityRes> {
     const data = DeleteEntityReq.encode(request).finish();
     const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "DeleteEntityRequest",
+      'RequestService.RequestService',
+      'DeleteEntityRequest',
       data
     );
     return promise.then((data) => DeleteEntityRes.decode(new _m0.Reader(data)));
@@ -21216,8 +21289,8 @@ export class RequestServiceClientImpl implements RequestService {
   ): Promise<AssignRoleToEntityRes> {
     const data = AssignRoleToEntityReq.encode(request).finish();
     const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "AssignRoleToEntityRequest",
+      'RequestService.RequestService',
+      'AssignRoleToEntityRequest',
       data
     );
     return promise.then((data) =>
@@ -21230,8 +21303,8 @@ export class RequestServiceClientImpl implements RequestService {
   ): Promise<DisconectRoleFromEntityRes> {
     const data = DisconectRoleFromEntityReq.encode(request).finish();
     const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "DisconectRoleFromEntityRequest",
+      'RequestService.RequestService',
+      'DisconectRoleFromEntityRequest',
       data
     );
     return promise.then((data) =>
@@ -21242,8 +21315,8 @@ export class RequestServiceClientImpl implements RequestService {
   UpdateRequest(request: UpdateReq): Promise<Request> {
     const data = UpdateReq.encode(request).finish();
     const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "UpdateRequest",
+      'RequestService.RequestService',
+      'UpdateRequest',
       data
     );
     return promise.then((data) => Request.decode(new _m0.Reader(data)));
@@ -21252,8 +21325,8 @@ export class RequestServiceClientImpl implements RequestService {
   UpdateKartoffelStatus(request: UpdateKartoffelStatusReq): Promise<Request> {
     const data = UpdateKartoffelStatusReq.encode(request).finish();
     const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "UpdateKartoffelStatus",
+      'RequestService.RequestService',
+      'UpdateKartoffelStatus',
       data
     );
     return promise.then((data) => Request.decode(new _m0.Reader(data)));
@@ -21262,8 +21335,8 @@ export class RequestServiceClientImpl implements RequestService {
   UpdateADStatus(request: UpdateADStatusReq): Promise<Request> {
     const data = UpdateADStatusReq.encode(request).finish();
     const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "UpdateADStatus",
+      'RequestService.RequestService',
+      'UpdateADStatus',
       data
     );
     return promise.then((data) => Request.decode(new _m0.Reader(data)));
@@ -21272,8 +21345,8 @@ export class RequestServiceClientImpl implements RequestService {
   DeleteRequest(request: DeleteReq): Promise<SuccessMessage> {
     const data = DeleteReq.encode(request).finish();
     const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "DeleteRequest",
+      'RequestService.RequestService',
+      'DeleteRequest',
       data
     );
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
@@ -21282,8 +21355,8 @@ export class RequestServiceClientImpl implements RequestService {
   GetRequestsByPerson(request: GetRequestsByPersonReq): Promise<RequestArray> {
     const data = GetRequestsByPersonReq.encode(request).finish();
     const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "GetRequestsByPerson",
+      'RequestService.RequestService',
+      'GetRequestsByPerson',
       data
     );
     return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
@@ -21294,8 +21367,8 @@ export class RequestServiceClientImpl implements RequestService {
   ): Promise<Request> {
     const data = GetRequestBySerialNumberReq.encode(request).finish();
     const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "GetRequestBySerialNumber",
+      'RequestService.RequestService',
+      'GetRequestBySerialNumber',
       data
     );
     return promise.then((data) => Request.decode(new _m0.Reader(data)));
@@ -21304,8 +21377,8 @@ export class RequestServiceClientImpl implements RequestService {
   GetAllRequests(request: GetAllRequestsReq): Promise<RequestArray> {
     const data = GetAllRequestsReq.encode(request).finish();
     const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "GetAllRequests",
+      'RequestService.RequestService',
+      'GetAllRequests',
       data
     );
     return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
@@ -21314,8 +21387,8 @@ export class RequestServiceClientImpl implements RequestService {
   GetRequestById(request: GetRequestByIdReq): Promise<Request> {
     const data = GetRequestByIdReq.encode(request).finish();
     const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "GetRequestById",
+      'RequestService.RequestService',
+      'GetRequestById',
       data
     );
     return promise.then((data) => Request.decode(new _m0.Reader(data)));
@@ -21324,8 +21397,8 @@ export class RequestServiceClientImpl implements RequestService {
   UpdateApproverDecision(request: UpdateApproverDecisionReq): Promise<Request> {
     const data = UpdateApproverDecisionReq.encode(request).finish();
     const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "UpdateApproverDecision",
+      'RequestService.RequestService',
+      'UpdateApproverDecision',
       data
     );
     return promise.then((data) => Request.decode(new _m0.Reader(data)));
@@ -21336,8 +21409,8 @@ export class RequestServiceClientImpl implements RequestService {
   ): Promise<IsRequestApprovedRes> {
     const data = IsRequestApprovedReq.encode(request).finish();
     const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "IsRequestApproved",
+      'RequestService.RequestService',
+      'IsRequestApproved',
       data
     );
     return promise.then((data) =>
@@ -21350,8 +21423,8 @@ export class RequestServiceClientImpl implements RequestService {
   ): Promise<CanPushToQueueRes> {
     const data = CanPushToQueueReq.encode(request).finish();
     const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "CanPushToKartoffelQueue",
+      'RequestService.RequestService',
+      'CanPushToKartoffelQueue',
       data
     );
     return promise.then((data) =>
@@ -21362,8 +21435,8 @@ export class RequestServiceClientImpl implements RequestService {
   CanPushToADQueue(request: CanPushToQueueReq): Promise<CanPushToQueueRes> {
     const data = CanPushToQueueReq.encode(request).finish();
     const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "CanPushToADQueue",
+      'RequestService.RequestService',
+      'CanPushToADQueue',
       data
     );
     return promise.then((data) =>
@@ -21374,8 +21447,8 @@ export class RequestServiceClientImpl implements RequestService {
   IncrementKartoffelRetries(request: IncrementRetriesReq): Promise<Request> {
     const data = IncrementRetriesReq.encode(request).finish();
     const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "IncrementKartoffelRetries",
+      'RequestService.RequestService',
+      'IncrementKartoffelRetries',
       data
     );
     return promise.then((data) => Request.decode(new _m0.Reader(data)));
@@ -21384,8 +21457,8 @@ export class RequestServiceClientImpl implements RequestService {
   IncrementADRetries(request: IncrementRetriesReq): Promise<Request> {
     const data = IncrementRetriesReq.encode(request).finish();
     const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "IncrementADRetries",
+      'RequestService.RequestService',
+      'IncrementADRetries',
       data
     );
     return promise.then((data) => Request.decode(new _m0.Reader(data)));
@@ -21394,8 +21467,8 @@ export class RequestServiceClientImpl implements RequestService {
   UpdateCommanders(request: UpdateApproversReq): Promise<Request> {
     const data = UpdateApproversReq.encode(request).finish();
     const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "UpdateCommanders",
+      'RequestService.RequestService',
+      'UpdateCommanders',
       data
     );
     return promise.then((data) => Request.decode(new _m0.Reader(data)));
@@ -21404,8 +21477,8 @@ export class RequestServiceClientImpl implements RequestService {
   UpdateSecurityApprovers(request: UpdateApproversReq): Promise<Request> {
     const data = UpdateApproversReq.encode(request).finish();
     const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "UpdateSecurityApprovers",
+      'RequestService.RequestService',
+      'UpdateSecurityApprovers',
       data
     );
     return promise.then((data) => Request.decode(new _m0.Reader(data)));
@@ -21414,8 +21487,8 @@ export class RequestServiceClientImpl implements RequestService {
   UpdateSuperSecurityApprovers(request: UpdateApproversReq): Promise<Request> {
     const data = UpdateApproversReq.encode(request).finish();
     const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "UpdateSuperSecurityApprovers",
+      'RequestService.RequestService',
+      'UpdateSuperSecurityApprovers',
       data
     );
     return promise.then((data) => Request.decode(new _m0.Reader(data)));
@@ -21426,8 +21499,8 @@ export class RequestServiceClientImpl implements RequestService {
   ): Promise<RequestArray> {
     const data = GetRequestsInProgressByDueReq.encode(request).finish();
     const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "GetRequestsInProgressByDue",
+      'RequestService.RequestService',
+      'GetRequestsInProgressByDue',
       data
     );
     return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
@@ -21438,8 +21511,8 @@ export class RequestServiceClientImpl implements RequestService {
   ): Promise<RequestIdArray> {
     const data = GetRequestsInProgressByDueReq.encode(request).finish();
     const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "GetRequestIdsInProgressByDue",
+      'RequestService.RequestService',
+      'GetRequestIdsInProgressByDue',
       data
     );
     return promise.then((data) => RequestIdArray.decode(new _m0.Reader(data)));
@@ -21450,8 +21523,8 @@ export class RequestServiceClientImpl implements RequestService {
   ): Promise<RequestArray> {
     const data = SearchRequestsByDisplayNameReq.encode(request).finish();
     const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "SearchRequestsBySubmitterDisplayName",
+      'RequestService.RequestService',
+      'SearchRequestsBySubmitterDisplayName',
       data
     );
     return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
@@ -21462,8 +21535,8 @@ export class RequestServiceClientImpl implements RequestService {
   ): Promise<RequestArray> {
     const data = SearchRequestsByDisplayNameReq.encode(request).finish();
     const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "SearchRequestsByCommanderDisplayName",
+      'RequestService.RequestService',
+      'SearchRequestsByCommanderDisplayName',
       data
     );
     return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
@@ -21474,8 +21547,8 @@ export class RequestServiceClientImpl implements RequestService {
   ): Promise<RequestArray> {
     const data = SearchRequestsByDisplayNameReq.encode(request).finish();
     const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "SearchRequestsBySecurityDisplayName",
+      'RequestService.RequestService',
+      'SearchRequestsBySecurityDisplayName',
       data
     );
     return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
@@ -21486,8 +21559,8 @@ export class RequestServiceClientImpl implements RequestService {
   ): Promise<RequestArray> {
     const data = SearchRequestsByDisplayNameReq.encode(request).finish();
     const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "SearchRequestsByApproverDisplayName",
+      'RequestService.RequestService',
+      'SearchRequestsByApproverDisplayName',
       data
     );
     return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
@@ -21505,11 +21578,11 @@ interface Rpc {
 declare var self: any | undefined;
 declare var window: any | undefined;
 var globalThis: any = (() => {
-  if (typeof globalThis !== "undefined") return globalThis;
-  if (typeof self !== "undefined") return self;
-  if (typeof window !== "undefined") return window;
-  if (typeof global !== "undefined") return global;
-  throw "Unable to locate global object";
+  if (typeof globalThis !== 'undefined') return globalThis;
+  if (typeof self !== 'undefined') return self;
+  if (typeof window !== 'undefined') return window;
+  if (typeof global !== 'undefined') return global;
+  throw 'Unable to locate global object';
 })();
 
 type Builtin =
@@ -21532,7 +21605,7 @@ export type DeepPartial<T> = T extends Builtin
 
 function longToNumber(long: Long): number {
   if (long.gt(Number.MAX_SAFE_INTEGER)) {
-    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
+    throw new globalThis.Error('Value is larger than Number.MAX_SAFE_INTEGER');
   }
   return long.toNumber();
 }

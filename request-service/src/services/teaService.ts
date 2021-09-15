@@ -1,12 +1,6 @@
 import * as grpc from 'grpc';
 import * as protoLoader from '@grpc/proto-loader';
 import * as config from '../config';
-import {
-  CreateCustomNotificationReq,
-  CreateNotificationsReq,
-  Notification,
-  NotificationArray,
-} from '../interfaces/protoc/proto/notificationService';
 import { findPath } from '../utils/path';
 import {
   RetrieveByEntityIdReq,

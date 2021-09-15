@@ -35,7 +35,7 @@ export function createRequestFuncByType(type: RequestType) {
         response: response,
       });
       callback(null, response);
-    } catch (error) {
+    } catch (error: any) {
       logger.error(`createRequest ERROR`, {
         callRequest: call.request,
         type: requestTypeToJSON(type),
@@ -69,7 +69,7 @@ export async function isRequestApproved(
       response: isRequestApprovedRes,
     });
     callback(null, isRequestApprovedRes);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`isRequestApproved ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
@@ -98,7 +98,7 @@ export async function updateRequest(call: any, callback: any): Promise<void> {
       response: updateRequestResponse,
     });
     callback(null, updateRequestResponse);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`updateRequest ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
@@ -127,7 +127,7 @@ export async function updateApproverDecision(call: any, callback: any) {
       response: response,
     });
     callback(null, response);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`updateApproverDecision ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
@@ -165,7 +165,7 @@ export function searchRequestsByDisplayNameFuncByPersonType(
         response: response,
       });
       callback(null, response);
-    } catch (error) {
+    } catch (error: any) {
       logger.error(`searchRequestsByDisplayName ERROR`, {
         callRequest: call.request,
         personType: personType,
@@ -200,7 +200,7 @@ export async function canPushToADQueue(
       response: requestsResponse,
     });
     callback(null, requestsResponse);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`canPushToADQueue ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
@@ -232,7 +232,7 @@ export async function canPushToKartoffelQueue(
       response: requestsResponse,
     });
     callback(null, requestsResponse);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`canPushToKartoffelQueue ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
@@ -264,7 +264,7 @@ export async function getRequestBySerialNumber(
       response: requestsResponse,
     });
     callback(null, requestsResponse);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`getRequestBySerialNumber ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
@@ -296,7 +296,7 @@ export async function updateKartoffelStatus(
       response: updateResponse,
     });
     callback(null, updateResponse);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`updateKartoffelStatus ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
@@ -325,7 +325,7 @@ export async function updateADStatus(call: any, callback: any): Promise<void> {
       response: updateResponse,
     });
     callback(null, updateResponse);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`updateADStatus ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
@@ -353,7 +353,7 @@ export async function deleteRequest(call: any, callback: any): Promise<void> {
       response: deleteRequestResponse,
     });
     callback(null, deleteRequestResponse);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`deleteRequest ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
@@ -380,7 +380,7 @@ export async function getAllRequests(call: any, callback: any): Promise<void> {
       response: requestsResponse,
     });
     callback(null, requestsResponse);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`getAllRequests ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
@@ -407,7 +407,7 @@ export async function getRequestById(call: any, callback: any): Promise<void> {
       response: requestResponse,
     });
     callback(null, requestResponse);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`getRequestById ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
@@ -439,7 +439,7 @@ export async function incrementKartoffelRetries(
       response: request,
     });
     callback(null, request);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`incrementKartoffelRetries ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
@@ -462,7 +462,7 @@ export async function updateCommanders(
   try {
     const request = await requestManager.updateCommanders(call.request);
     callback(null, request);
-  } catch (error) {
+  } catch (error: any) {
     callback(
       {
         code: 400,
@@ -481,7 +481,7 @@ export async function updateSecurityApprovers(
   try {
     const request = await requestManager.updateSecurityApprovers(call.request);
     callback(null, request);
-  } catch (error) {
+  } catch (error: any) {
     callback(
       {
         code: 400,
@@ -502,7 +502,7 @@ export async function updateSuperSecurityApprovers(
       call.request
     );
     callback(null, request);
-  } catch (error) {
+  } catch (error: any) {
     callback(
       {
         code: 400,
@@ -530,7 +530,7 @@ export async function getRequestsInProgressByDue(
       response: requests,
     });
     callback(null, requests);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`getRequestsInProgressByDue ERROR`, {
       callRequest: call.request,
       error: error.message,
@@ -562,7 +562,7 @@ export async function getRequestIdsInProgressByDue(
       response: requestIds,
     });
     callback(null, requestIds);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`getRequestIdsInProgressByDue ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
@@ -592,7 +592,7 @@ export async function incrementADRetries(
       response: request,
     });
     callback(null, request);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`incrementADRetries ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
@@ -622,7 +622,7 @@ export async function getRequestsByPerson(
       response: requests,
     });
     callback(null, requests);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`getRequestsByPerson ERROR`, {
       callRequest: call.request,
       error: { message: error.message },

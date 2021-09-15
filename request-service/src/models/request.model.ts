@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 import { connection } from '../mongoose';
 import {
+  ApproverType,
+  approverTypeToJSON,
   Decision,
   decisionToJSON,
   RequestStatus,
@@ -254,6 +256,17 @@ const RequestSchema = new Schema(
       newName: { type: String, default: null },
       newJobTitle: { type: String, default: null },
     },
+    additionalParams: {
+      entityId: { type: String, default: null },
+      displayName: { type: String, default: null },
+      domainUsers: { type: String, default: null },
+      akaUnit: { type: String, default: null },
+      type: {
+        type: String,
+        enum: ApproverType,
+        default: approverTypeToJSON(ApproverType.COMMANDER),
+      },
+    },
   },
   { strict: false }
 );
@@ -285,6 +298,7 @@ RequestSchema.index({
   'submittedBy.displayName': 'text',
   'commanders.displayName': 'text',
   'securityApprovers.displayName': 'text',
+  'superSecurityApprovers.displayName': 'text',
 });
 
 export const RequestModel = connection.model(
