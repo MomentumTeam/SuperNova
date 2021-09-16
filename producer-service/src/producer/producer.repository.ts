@@ -1,19 +1,51 @@
-import axios from "axios";
-import * as C from "../config";
+import * as C from '../config';
+import { logger } from '../logger';
+import { ShmuelUtils } from '../utils/shmuelUtils';
 export class ProducerRepository {
+  private shmuelUtils: ShmuelUtils;
+
+  constructor() {
+    this.shmuelUtils = new ShmuelUtils();
+  }
+
   async pushIntoKartoffelQueue(message: any) {
-    console.log('pushIntoKartoffelQueue',message )
-    try {
-      await axios.post(`${C.queueApi}/kartoffelQueue`, message);
-    } catch (error) {
-      throw error;
+    if (C.devMode) {
+      logger.info(JSON.stringify(message));
+    } else {
+      return new Promise((resolve, reject) => {
+        try {
+          this.shmuelUtils
+            .shmuelPost(`${C.queueApi}/kartoffelQueue`, message)
+            .then(() => {
+              resolve(true);
+            })
+            .catch((error) => {
+              reject(error);
+            });
+        } catch (error) {
+          throw error;
+        }
+      });
     }
   }
   async pushIntoADQueue(message: any) {
-    try {
-      await axios.post(`${C.queueApi}/kartoffelQueue`, message);
-    } catch (error) {
-      throw error;
+    if (C.devMode) {
+      logger.info(JSON.stringify(message));
+    } else {
+      return new Promise((resolve, reject) => {
+        try {
+          this.shmuelUtils
+            .shmuelPost(`${C.queueApi}/adQueue`, message)
+            .then(() => {
+              resolve(true);
+            })
+            .catch((error) => {
+              reject(error);
+            });
+        } catch (error) {
+          throw error;
+        }
+      });
     }
   }
 }

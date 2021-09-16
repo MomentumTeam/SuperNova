@@ -1,40 +1,75 @@
-import path from "path";
-import * as grpc from "@grpc/grpc-js";
-import * as protoLoader from "@grpc/proto-loader";
-import * as C from "./config";
-import { logger } from "./logger";
+import * as grpc from 'grpc';
+import * as protoLoader from '@grpc/proto-loader';
+import * as C from './config';
+import { logger } from './logger';
+import { findPath } from './utils/path';
+import { addHealthService } from './health';
 import {
   connectEntityAndDI,
-  connectRoleAndDI,
-  createDI,
   createEntity,
-  createOG,
-  createRole,
-  deleteDI,
-  deleteOG,
-  deleteRole,
+  deleteEntity,
   disconnectDIFromEntity,
-  getChildrenOfOG,
+  getEntitiesByHierarchy,
   getEntitiesUnderOG,
-  getEntityByIdNumber,
-  getEntityByMongoId,
+  getEntityByDI,
+  getEntityById,
+  getEntityByIdentifier,
   getEntityByRoleId,
-  searchRolesByRoleId,
-  getRolesUnderOG,
+  getPictureByEntityId,
   searchEntitiesByFullName,
+  updateEntity,
+} from './entities/entities.controller';
+import {
+  getAllOGs,
+  createOG,
+  getOGByHierarchyName,
   searchOG,
+  deleteOG,
+  getOGById,
+  getChildrenOfOG,
+  updateOGParent,
+  renameOG,
   getOGTree,
-} from "./kartoffel/kartoffel.controller";
+} from './groups/groups.controller';
+import {
+  getAllDIs,
+  createDI,
+  getDIByRoleId,
+  searchDIOrUniqueId,
+  deleteDI,
+  getDIByUniqueId,
+  updateDI,
+} from './digitalIdentities/di.controller';
 
-const PROTO_PATH = __dirname.includes("dist")
-  ? path.join(__dirname, "../../proto/kartoffelService.proto")
-  : path.join(__dirname, "../proto/kartoffelService.proto");
+import {
+  connectRoleAndDI,
+  disconnectRoleAndDI,
+  createRole,
+  deleteRole,
+  getRolesUnderOG,
+  getRoleByRoleId,
+  renameRole,
+  getAllRoles,
+  getRolesByHierarchy,
+  changeRoleOG,
+} from './roles/roles.controller';
+
+const PROTO_PATH = `${findPath('proto')}/kartoffelService.proto`;
 
 export class Server {
   private server: grpc.Server;
   constructor() {
     this.server = new grpc.Server();
-    this.initServer();
+    addHealthService(this.server);
+    logger.info(`gRPC server created`);
+    try {
+      this.initServer();
+      logger.info(`gRPC server has been initialized successfully`);
+    } catch (error: any) {
+      logger.error(`Error while creating gRPC server`, {
+        error: { message: error.message },
+      });
+    }
   }
 
   private getProtoDescriptor() {
@@ -44,12 +79,13 @@ export class Server {
           keepCase: true,
           longs: String,
           enums: String,
-          defaults: true,
+          // defaults: true,
           oneofs: true,
         });
       const protoDescriptor: grpc.GrpcObject =
         grpc.loadPackageDefinition(packageDefinition);
       const kartoffelServiceDescriptor: any = protoDescriptor.Kartoffel;
+      logger.info(`Proto file ${PROTO_PATH} was loaded successfully`);
       return kartoffelServiceDescriptor;
     } catch (error) {
       throw error;
@@ -59,44 +95,61 @@ export class Server {
   initServer() {
     try {
       const kartoffelServiceDescriptor: any = this.getProtoDescriptor();
-      logger.log({
-        level: "info",
-        message: `Proto was loaded successfully from file: ${PROTO_PATH}`,
-        label: "initServer",
-      });
       this.server.addService(kartoffelServiceDescriptor.Kartoffel.service, {
-        SearchOG: searchOG,
+        //entities
+        CreateEntity: createEntity,
+        GetEntityByDI: getEntityByDI,
+        GetEntityByRoleId: getEntityByRoleId,
+        GetEntitiesUnderOG: getEntitiesUnderOG,
+        GetEntitiesByHierarchy: getEntitiesByHierarchy,
+        GetEntityByIdentifier: getEntityByIdentifier,
+        SearchEntitiesByFullName: searchEntitiesByFullName,
+        GetEntityById: getEntityById,
+        DeleteEntity: deleteEntity,
+        DisconnectDIFromEntity: disconnectDIFromEntity,
+        GetPictureByEntityId: getPictureByEntityId,
+        ConnectEntityAndDI: connectEntityAndDI,
+        UpdateEntity: updateEntity,
+
+        //groups
+        GetAllOGs: getAllOGs,
         CreateOG: createOG,
+        GetOGByHierarchyName: getOGByHierarchyName,
+        SearchOG: searchOG,
+        DeleteOG: deleteOG,
+        GetOGById: getOGById,
+        GetChildrenOfOG: getChildrenOfOG,
+        UpdateOGParent: updateOGParent,
+        RenameOG: renameOG,
+        GetOGTree: getOGTree,
+
+        //digitalIdentities
+        GetAllDIs: getAllDIs,
         CreateDI: createDI,
+        DeleteDI: deleteDI,
+        GetDIByRoleId: getDIByRoleId,
+        SearchDIOrUniqueId: searchDIOrUniqueId,
+        GetDIByUniqueId: getDIByUniqueId,
+        UpdateDI: updateDI,
+
+        // roles
+        GetAllRoles: getAllRoles,
         CreateRole: createRole,
         ConnectRoleAndDI: connectRoleAndDI,
-        SearchEntitiesByFullName: searchEntitiesByFullName,
-        GetEntityByIdNumber: getEntityByIdNumber,
-        SearchRolesByRoleId: searchRolesByRoleId,
+        DisconnectRoleAndDI: disconnectRoleAndDI,
+        GetRoleByRoleId: getRoleByRoleId,
         GetRolesUnderOG: getRolesUnderOG,
-        ConnectEntityAndDI: connectEntityAndDI,
-        CreateEntity: createEntity,
-        GetEntityByRoleId: getEntityByRoleId,
-        DisconnectDIFromEntity: disconnectDIFromEntity,
-        GetEntityByMongoId: getEntityByMongoId,
-        DeleteOG: deleteOG,
-        GetChildrenOfOG: getChildrenOfOG,
         DeleteRole: deleteRole,
-        DeleteDI: deleteDI,
-        GetEntitiesUnderOG: getEntitiesUnderOG,
-        GetOGTree: getOGTree,
+        RenameRole: renameRole,
+        GetRolesByHierarchy: getRolesByHierarchy,
+        ChangeRoleOG: changeRoleOG,
       });
-      logger.log({
-        level: "info",
-        message: `Grpc services were successfully added to the server`,
-        label: "initServer",
+      logger.info(`Grpc services were successfully added to the server`);
+    } catch (error: any) {
+      logger.error(`Error while initializing the server`, {
+        error: { message: error.message },
       });
-    } catch (error) {
-      logger.log({
-        level: "error",
-        message: `Error while initializing the server: ${error.message}`,
-        label: "initServer",
-      });
+      throw error;
     }
   }
 
@@ -107,10 +160,14 @@ export class Server {
         grpc.ServerCredentials.createInsecure(),
         (bindError) => {
           if (bindError) {
+            logger.error(`Error while binding to ${C.host}:${C.port}`, {
+              error: bindError,
+            });
             reject(bindError);
           } else {
             try {
               this.server.start();
+              logger.info(`Server was started successfully`);
               resolve();
             } catch (startError) {
               reject(startError);

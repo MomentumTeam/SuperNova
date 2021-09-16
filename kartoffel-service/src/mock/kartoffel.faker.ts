@@ -1,5 +1,6 @@
 import faker from 'faker';
 import mongoose from 'mongoose';
+import axios from 'axios';
 import {
   OrganizationGroup,
   DigitalIdentity,
@@ -9,6 +10,8 @@ import {
   RoleArray,
   EntityArray,
   OGTree,
+  Image,
+  DigitalIdentities,
 } from '../interfaces/protoc/proto/kartoffelService';
 
 export class KartoffelFaker {
@@ -23,8 +26,8 @@ export class KartoffelFaker {
       hierarchy: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
       status: 'active',
       isLeaf: true,
-      createdAt: faker.datatype.datetime().getTime(),
-      updatedAt: faker.datatype.datetime().getTime(),
+      createdAt: faker.datatype.datetime().toString(),
+      updatedAt: faker.datatype.datetime().toString(),
       directEntities: [],
       directRoles: [],
     };
@@ -38,12 +41,44 @@ export class KartoffelFaker {
       mail: faker.internet.email(),
       uniqueId: faker.internet.email(),
       entityId: mongoose.Types.ObjectId().toString(),
-      createdAt: faker.datatype.datetime().getTime(),
-      updatedAt: faker.datatype.datetime().getTime(),
+      createdAt: faker.datatype.datetime().toString(),
+      updatedAt: faker.datatype.datetime().toString(),
       isRoleAttachable: true,
       role: undefined,
     };
     return digitalIdentity;
+  }
+
+  randomDiArray(): DigitalIdentities {
+    const length = faker.datatype.number({
+      min: 1,
+      max: 10,
+    });
+    let DigitalIdentities = [];
+    for (let i = 0; i < length; i++) {
+      DigitalIdentities.push(this.randomDI());
+    }
+    return {
+      digitalIdentities: DigitalIdentities,
+    };
+  }
+
+  async randomPicture(): Promise<Image> {
+    return new Promise((resolve, reject) => {
+      axios
+        .get('https://picsum.photos/200', {
+          responseType: 'arraybuffer',
+        })
+        .then((res) => {
+          const image: Image = {
+            image: Buffer.from(res.data).toString('base64'),
+          };
+          resolve(image);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
   }
 
   randomRole(): Role {
@@ -55,39 +90,54 @@ export class KartoffelFaker {
       hierarchy: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
       hierarchyIds: [],
       source: 'oneTree',
-      createdAt: faker.datatype.datetime().getTime(),
-      updatedAt: faker.datatype.datetime().getTime(),
+      createdAt: faker.datatype.datetime().toString(),
+      updatedAt: faker.datatype.datetime().toString(),
+      clearance: '1',
     };
     return role;
   }
-  randomEntity(): Entity {
-    const entity: Entity = {
-      id: mongoose.Types.ObjectId().toString(),
-      displayName: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
-      directGroup: mongoose.Types.ObjectId().toString(),
-      hierarchy: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
-      entityType: 'soldier',
-      identityCard: mongoose.Types.ObjectId().toString(),
-      personalNumber: mongoose.Types.ObjectId().toString(),
-      serviceType: 'מילואים',
-      firstName: faker.name.firstName(),
-      lastName: faker.name.lastName(),
-      akaUnit: faker.company.companyName(),
-      dischargeDay: faker.datatype.datetime().getTime(),
-      rank: 'אזרח',
-      mail: faker.internet.email(),
-      jobTitle: faker.name.jobTitle(),
-      phone: [faker.phone.phoneNumber()],
-      mobilePhone: [faker.phone.phoneNumber()],
-      address: `${faker.address.streetAddress()}, ${faker.address.country()}`,
-      clearance: '2',
-      sex: 'זכר',
-      birthdate: faker.datatype.datetime().getTime(),
-      createdAt: faker.datatype.datetime().getTime(),
-      updatedAt: faker.datatype.datetime().getTime(),
-      digitalIdentities: [],
-    };
-    return entity;
+  async randomEntity(needPicture: boolean): Promise<Entity> {
+    try {
+      const picture: Image = needPicture
+        ? await this.randomPicture()
+        : { image: 'pictureUrl' };
+      const entity: Entity = {
+        id: mongoose.Types.ObjectId().toString(),
+        displayName: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
+        directGroup: mongoose.Types.ObjectId().toString(),
+        hierarchy: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
+        entityType: 'soldier',
+        identityCard: faker.datatype
+          .number({ min: 100000, max: 999999 })
+          .toString(),
+        personalNumber: faker.datatype
+          .number({ min: 100000000, max: 999999999 })
+          .toString(),
+        serviceType: 'מילואים',
+        firstName: faker.name.firstName(),
+        lastName: faker.name.lastName(),
+        fullName: `${faker.name.firstName()} ${faker.name.lastName()}`,
+        akaUnit: faker.company.companyName(),
+        dischargeDay: faker.datatype.datetime().toString(),
+        rank: 'אזרח',
+        mail: faker.internet.email(),
+        jobTitle: faker.name.jobTitle(),
+        phone: [faker.phone.phoneNumber()],
+        mobilePhone: [faker.phone.phoneNumber()],
+        address: `${faker.address.streetAddress()}, ${faker.address.country()}`,
+        clearance: '2',
+        sex: 'זכר',
+        birthDate: faker.datatype.datetime().toString(),
+        createdAt: faker.datatype.datetime().toString(),
+        updatedAt: faker.datatype.datetime().toString(),
+        digitalIdentities: this.randomDiArray().digitalIdentities,
+        picture: picture.image,
+        goalUserID: mongoose.Types.ObjectId().toString(),
+      };
+      return entity;
+    } catch (err) {
+      throw err;
+    }
   }
 
   randomChildrenAray(layers: number): OGTree[] {
@@ -140,15 +190,20 @@ export class KartoffelFaker {
     return { roles: roleArray };
   }
 
-  randomEntityArray(): EntityArray {
-    const length = faker.datatype.number({
-      min: 1,
-      max: 10,
-    });
-    let entityArray = [];
-    for (let i = 0; i < length; i++) {
-      entityArray.push(this.randomEntity());
+  async randomEntityArray(needPicture: boolean): Promise<EntityArray> {
+    try {
+      const length = faker.datatype.number({
+        min: 1,
+        max: 10,
+      });
+      let entityArray = [];
+      for (let i = 0; i < length; i++) {
+        let entity: Entity = await this.randomEntity(needPicture);
+        entityArray.push(entity);
+      }
+      return { entities: entityArray };
+    } catch (err) {
+      throw err;
     }
-    return { entities: entityArray };
   }
 }

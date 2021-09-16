@@ -1,81 +1,259 @@
-import mongoose from "mongoose";
-import { connection } from "../mongoose";
+import mongoose from 'mongoose';
+import { connection } from '../mongoose';
 import {
+  ApproverType,
+  approverTypeToJSON,
   Decision,
+  decisionToJSON,
+  ErrorType,
+  errorTypeToJSON,
   RequestStatus,
+  requestStatusToJSON,
   RequestType,
+  requestTypeToJSON,
   StageStatus,
-} from "../interfaces/protoc/proto/requestService";
+  stageStatusToJSON,
+} from '../interfaces/protoc/proto/requestService';
 const { Schema } = mongoose;
+import autoIncrement from 'mongoose-auto-increment';
 
-export const RequestSchema = new Schema(
+autoIncrement.initialize(connection);
+
+const RequestSchema = new Schema(
   {
-    createdAt: { type: Number, default: new Date().getTime() },
-    updatedAt: { type: Number, default: new Date().getTime() },
+    createdAt: { type: Number, default: () => new Date().getTime() },
+    due: { type: Number, default: () => new Date().getTime() },
+    updatedAt: { type: Number, default: () => new Date().getTime() },
     type: {
       type: String,
       enum: RequestType,
     },
-
-    submittedBy: mongoose.Schema.Types.ObjectId,
+    needSuperSecurityDecision: {
+      type: Boolean,
+      default: false,
+    },
+    needSecurityDecision: {
+      type: Boolean,
+      default: true,
+    },
+    comments: { type: String, default: '' },
+    approversComments: { type: String, default: '' },
+    submittedBy: {
+      type: {
+        id: { type: mongoose.Schema.Types.ObjectId, default: null },
+        displayName: { type: String, default: '' },
+        identityCard: { type: String, default: '' },
+        personalNumber: { type: String, default: '' },
+      },
+      default: {
+        id: null,
+        displayName: '',
+        identityCard: '',
+        personalNumber: '',
+      },
+    },
     status: {
       type: String,
       enum: RequestStatus,
-      default: RequestStatus.SUBMITTED,
+      default: requestStatusToJSON(RequestStatus.SUBMITTED),
     },
     commanderDecision: {
       type: {
-        approverId: {
-          type: mongoose.Schema.Types.ObjectId,
-          default: null,
+        approver: {
+          type: {
+            id: { type: mongoose.Schema.Types.ObjectId, default: null },
+            displayName: { type: String, default: '' },
+            identityCard: { type: String, default: '' },
+            personalNumber: { type: String, default: '' },
+          },
+          default: {
+            id: null,
+            displayName: '',
+            identityCard: '',
+            personalNumber: '',
+          },
         },
-        approverDecision: {
+        reason: {
+          type: String,
+          default: '',
+        },
+        date: {
+          type: Number,
+          default: () => new Date().getTime(),
+        },
+        decision: {
           type: String,
           enum: Decision,
-          defualt: Decision.DECISION_UNKNOWN,
+          defualt: decisionToJSON(Decision.DECISION_UNKNOWN),
         },
       },
-      default: null,
+      default: {
+        approver: {
+          id: null,
+          displayName: '',
+          identityCard: '',
+          personalNumber: '',
+        },
+        reason: '',
+        date: () => new Date().getTime(),
+        decision: decisionToJSON(Decision.DECISION_UNKNOWN),
+      },
     },
     securityDecision: {
       type: {
-        approverId: {
-          type: mongoose.Schema.Types.ObjectId,
-          default: null,
+        approver: {
+          type: {
+            id: { type: mongoose.Schema.Types.ObjectId, default: null },
+            displayName: { type: String, default: '' },
+            identityCard: { type: String, default: '' },
+            personalNumber: { type: String, default: '' },
+          },
+          default: {
+            id: null,
+            displayName: '',
+            identityCard: '',
+            personalNumber: '',
+          },
         },
-        approverDecision: {
+        reason: {
+          type: String,
+          default: '',
+        },
+        date: {
+          type: Number,
+          default: () => new Date().getTime(),
+        },
+        decision: {
           type: String,
           enum: Decision,
-          defualt: Decision.DECISION_UNKNOWN,
+          defualt: decisionToJSON(Decision.DECISION_UNKNOWN),
         },
       },
-      default: null,
+      default: {
+        approver: {
+          id: null,
+          displayName: '',
+          identityCard: '',
+          personalNumber: '',
+        },
+        reason: '',
+        date: () => new Date().getTime(),
+        decision: decisionToJSON(Decision.DECISION_UNKNOWN),
+      },
     },
-    commanders: [mongoose.Schema.Types.ObjectId],
+    superSecurityDecision: {
+      type: {
+        approver: {
+          type: {
+            id: { type: mongoose.Schema.Types.ObjectId, default: null },
+            displayName: { type: String, default: '' },
+            identityCard: { type: String, default: '' },
+            personalNumber: { type: String, default: '' },
+          },
+          default: {
+            id: null,
+            displayName: '',
+            identityCard: '',
+            personalNumber: '',
+          },
+        },
+        reason: {
+          type: String,
+          default: '',
+        },
+        date: {
+          type: Number,
+          default: () => new Date().getTime(),
+        },
+        decision: {
+          type: String,
+          enum: Decision,
+          defualt: decisionToJSON(Decision.DECISION_UNKNOWN),
+        },
+      },
+      default: {
+        approver: {
+          id: null,
+          displayName: '',
+          identityCard: '',
+          personalNumber: '',
+        },
+        reason: '',
+        date: () => new Date().getTime(),
+        decision: decisionToJSON(Decision.DECISION_UNKNOWN),
+      },
+    },
+    commanders: [
+      {
+        id: { type: mongoose.Schema.Types.ObjectId, default: null },
+        displayName: { type: String, default: '' },
+        identityCard: { type: String, default: '' },
+        personalNumber: { type: String, default: '' },
+      },
+    ],
+    securityApprovers: [
+      {
+        id: { type: mongoose.Schema.Types.ObjectId, default: null },
+        displayName: { type: String, default: '' },
+        identityCard: { type: String, default: '' },
+        personalNumber: { type: String, default: '' },
+      },
+    ],
+    superSecurityApprovers: [
+      {
+        id: { type: mongoose.Schema.Types.ObjectId, default: null },
+        displayName: { type: String, default: '' },
+        identityCard: { type: String, default: '' },
+        personalNumber: { type: String, default: '' },
+      },
+    ],
     kartoffelStatus: {
-      status: {
-        type: String,
-        enum: StageStatus,
-        default: StageStatus.STAGE_UNKNOWN,
+      type: {
+        status: {
+          type: String,
+          enum: StageStatus,
+          default: stageStatusToJSON(StageStatus.STAGE_UNKNOWN),
+        },
+        createdId: {
+          type: String,
+          default: '',
+        },
+        message: {
+          type: String,
+          default: '',
+        },
+        failedRetries: {
+          type: Number,
+          default: 0,
+        },
       },
-      createdId: {
-        type: String,
-        default: null,
-      },
-      message: {
-        type: String,
-        default: null,
+      default: {
+        status: stageStatusToJSON(StageStatus.STAGE_UNKNOWN),
+        createdId: '',
+        message: '',
+        failedRetries: 0,
       },
     },
     adStatus: {
-      status: {
-        type: String,
-        enum: StageStatus,
-        default: StageStatus.STAGE_UNKNOWN,
+      type: {
+        status: {
+          type: String,
+          enum: StageStatus,
+          default: StageStatus.STAGE_UNKNOWN,
+        },
+        message: {
+          type: String,
+          default: null,
+        },
+        failedRetries: {
+          type: Number,
+          default: 0,
+        },
       },
-      message: {
-        type: String,
-        default: null,
+      default: {
+        status: stageStatusToJSON(StageStatus.STAGE_UNKNOWN),
+        message: '',
+        failedRetries: 0,
       },
     },
     kartoffelParams: {
@@ -102,6 +280,8 @@ export const RequestSchema = new Schema(
       sex: { type: String, default: null },
       birthdate: { type: Number, default: null },
       entityType: { type: String, default: null },
+      unit: { type: String, default: null },
+      needDisconnect: { type: Boolean, default: false },
     },
     adParams: {
       ouDisplayName: { type: String, default: null },
@@ -121,11 +301,45 @@ export const RequestSchema = new Schema(
       newName: { type: String, default: null },
       newJobTitle: { type: String, default: null },
     },
+    additionalParams: {
+      entityId: { type: String, default: null },
+      displayName: { type: String, default: null },
+      domainUsers: { type: String, default: null },
+      akaUnit: { type: String, default: null },
+      type: {
+        type: String,
+        enum: ApproverType,
+        default: approverTypeToJSON(ApproverType.COMMANDER),
+      },
+    },
+    isPartOfBulk: { type: Boolean, default: false },
+    bulkRequestId: { type: mongoose.Schema.Types.ObjectId, default: null },
+    requestIds: [mongoose.Schema.Types.ObjectId],
+    rowNumber: { type: String, default: '' },
+    rowErrors: [
+      {
+        rowNumber: { type: String, default: '' },
+        error: { type: String, default: '' },
+        errorType: {
+          type: String,
+          enum: ErrorType,
+          default: errorTypeToJSON(ErrorType.UNKNOWN_STAGE),
+        },
+      },
+    ],
+    excelFilePath: { type: String, default: '' },
   },
   { strict: false }
 );
 
-RequestSchema.pre<any>("save", function (next) {
+RequestSchema.plugin(autoIncrement.plugin, {
+  model: 'Request',
+  field: 'serialNumber',
+  startAt: 1,
+  incrementBy: 1,
+});
+
+RequestSchema.pre<any>('save', function (next) {
   const func: any = (object: any) => {
     object.updatedAt = new Date().getTime();
   };
@@ -133,7 +347,7 @@ RequestSchema.pre<any>("save", function (next) {
   return next();
 });
 
-RequestSchema.pre<any>("findOneAndUpdate", function (next) {
+RequestSchema.pre<any>('findOneAndUpdate', function (next) {
   const func: any = (object: any) => {
     object.updatedAt = new Date().getTime();
   };
@@ -141,8 +355,15 @@ RequestSchema.pre<any>("findOneAndUpdate", function (next) {
   return next();
 });
 
+RequestSchema.index({
+  'submittedBy.displayName': 'text',
+  'commanders.displayName': 'text',
+  'securityApprovers.displayName': 'text',
+  'superSecurityApprovers.displayName': 'text',
+});
+
 export const RequestModel = connection.model(
-  "Request",
+  'Request',
   RequestSchema,
-  "requests"
+  'requests'
 );

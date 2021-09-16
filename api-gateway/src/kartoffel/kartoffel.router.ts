@@ -1,41 +1,37 @@
-import { Router } from "express";
-import KartoffelController from "./kartoffel.controller";
+import { Router } from 'express';
+import KartoffelController from './kartoffel.controller';
+import { KartoffelValidator } from './kartoffel.validator';
 
 const KartoffelRouter: Router = Router();
 
-KartoffelRouter.get("/searchOG", KartoffelController.searchOG);
+// Entities
+KartoffelRouter.get('/entities/me', KartoffelController.getMyUser);
+KartoffelRouter.get('/entities/me/picture', KartoffelController.getPictureByEntityId);
+KartoffelRouter.get('/entities/:id', KartoffelValidator.isGetEntityByMongoIdValid, KartoffelController.getEntityByMongoId);
+KartoffelRouter.get('/entities/search', KartoffelValidator.isSearchEntitiesByFullNameValid, KartoffelController.searchEntitiesByFullName);
+KartoffelRouter.get('/entities/identifier/:identifier', KartoffelValidator.isGetEntityByIdentifierValid, KartoffelController.getEntityByIdentifier);
 KartoffelRouter.get(
-  "/searchEntitiesByFullName",
-  KartoffelController.searchEntitiesByFullName
+    '/entities/role/:roleId',
+    KartoffelValidator.isGetEntityByRoleIdValid,
+    KartoffelController.getEntityByRoleId
 );
-KartoffelRouter.get(
-  "/getEntityByIdNumber/:idNumber",
-  KartoffelController.getEntityByIdNumber
-);
-KartoffelRouter.get(
-  "/searchRolesByRoleId/:roleId",
-  KartoffelController.searchRolesByRoleId
-);
-KartoffelRouter.get(
-  "/getRolesUnderOG/:id",
-  KartoffelController.getRolesUnderOG
-);
-KartoffelRouter.get(
-  "/getEntityByRoleId/:roleId",
-  KartoffelController.getEntityByRoleId
-);
-KartoffelRouter.get(
-  "/getEntityByMongoId/:id",
-  KartoffelController.getEntityByMongoId
-);
-KartoffelRouter.get(
-  "/getChildrenOfOG/:id",
-  KartoffelController.getChildrenOfOG
-);
-KartoffelRouter.get(
-  "/getEntitiesUnderOG/:id",
-  KartoffelController.getEntitiesUnderOG
-);
-KartoffelRouter.get("/getOGTree/:rootId", KartoffelController.getOGTree);
+KartoffelRouter.get('/entities/groups/:id', KartoffelValidator.isGetEntitiesUnderOGValid, KartoffelController.getEntitiesUnderOG);
+KartoffelRouter.get('/entities/hierarchy/:hierarchy',KartoffelValidator.isGetEntitiesByHierarchyValid, KartoffelController.getEntitiesByHierarchy);
+KartoffelRouter.get('/entities/di/:uniqueId',KartoffelValidator.isGetEntityByDIRequestValid, KartoffelController.getEntityByDI);
+
+// Groups
+// TODO: add validators
+KartoffelRouter.get('/groups/search', KartoffelController.searchOG);
+KartoffelRouter.get('/groups/:id/children', KartoffelController.getChildrenOfOG);
+KartoffelRouter.get('/groups/tree/:rootId', KartoffelController.getOGTree);
+KartoffelRouter.get('/groups', KartoffelController.getAllOGs);
+KartoffelRouter.get('/groups/:id', KartoffelController.getOGById);
+KartoffelRouter.get('/groups/hierarchy/:hierarchy', KartoffelController.getOGByHierarchyName);
+
+// Roles
+// TODO: add validators
+KartoffelRouter.get('/roles/:roleId', KartoffelController.getRoleByRoleId);
+KartoffelRouter.get('/roles/group/:id', KartoffelController.getRolesUnderOG);
+KartoffelRouter.get('/roles', KartoffelController.getAllRoles);
 
 export default KartoffelRouter;

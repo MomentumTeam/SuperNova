@@ -1,0 +1,22 @@
+{
+  "name": "supernova",
+  "version": "1.0.0",
+  "description": "In order to generate typescript interfaces by the proto file, run the fllowing commands:",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MomentumTeam/SuperNova.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MomentumTeam/SuperNova/issues"
+  },
+  "homepage": "https://github.com/MomentumTeam/SuperNova#readme",
+  "dependencies": {
+    "ts-proto": "^1.83.0"
+  }
+}

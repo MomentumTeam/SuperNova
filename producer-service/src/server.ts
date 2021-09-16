@@ -1,21 +1,21 @@
-import path from "path";
-import * as grpc from "@grpc/grpc-js";
-import * as protoLoader from "@grpc/proto-loader";
-import * as C from "./config";
-import { logger } from "./logger";
+import * as grpc from 'grpc';
+import * as protoLoader from '@grpc/proto-loader';
+import * as C from './config';
+import { logger } from './logger';
 import {
   produceToADQueue,
   produceToKartoffelQueue,
-} from "./producer/producer.controller";
+} from './producer/producer.controller';
+import { findPath } from './utils/path';
+import { addHealthService } from './health';
 
-const PROTO_PATH = __dirname.includes("dist")
-  ? path.join(__dirname, "../../proto/producerService.proto")
-  : path.join(__dirname, "../proto/producerService.proto");
+const PROTO_PATH = `${findPath('proto')}/producerService.proto`;
 
 export class Server {
   private server: grpc.Server;
   constructor() {
     this.server = new grpc.Server();
+    addHealthService(this.server);
     this.initServer();
   }
 
@@ -32,6 +32,7 @@ export class Server {
       const protoDescriptor: grpc.GrpcObject =
         grpc.loadPackageDefinition(packageDefinition);
       const serviceDescriptor: any = protoDescriptor.Producer;
+      logger.info(`Proto file ${PROTO_PATH} was loaded successfully`);
       return serviceDescriptor;
     } catch (error) {
       throw error;
@@ -41,26 +42,15 @@ export class Server {
   initServer() {
     try {
       const producerServiceDescriptor: any = this.getProtoDescriptor();
-      logger.log({
-        level: "info",
-        message: `Proto was loaded successfully from file: ${PROTO_PATH}`,
-        label: "initServer",
-      });
+      logger.info(`Proto was loaded successfully from file: ${PROTO_PATH}`);
       this.server.addService(producerServiceDescriptor.Producer.service, {
         ProduceToKartoffelQueue: produceToKartoffelQueue,
         ProduceToADQueue: produceToADQueue,
       });
-      logger.log({
-        level: "info",
-        message: `Grpc services were successfully added to the server`,
-        label: "initServer",
-      });
+      logger.info(`Grpc services were successfully added to the server`);
     } catch (error) {
-      logger.log({
-        level: "error",
-        message: `Error while initializing the server: ${error.message}`,
-        label: "initServer",
-      });
+      logger.error(`Error while initializing the server`, { error: error });
+      throw error;
     }
   }
 
@@ -71,10 +61,14 @@ export class Server {
         grpc.ServerCredentials.createInsecure(),
         (bindError) => {
           if (bindError) {
+            logger.error(`Error while binding to ${C.host}:${C.port}`, {
+              error: bindError,
+            });
             reject(bindError);
           } else {
             try {
               this.server.start();
+              logger.info(`Server was started successfully`);
               resolve();
             } catch (startError) {
               reject(startError);

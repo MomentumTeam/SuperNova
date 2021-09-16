@@ -1,0 +1,113 @@
+syntax = "proto3";
+package Tea;
+
+service Tea {
+    rpc RetrieveTeaByUnit(RetrieveTeaByUnitReq) returns (TeaMessage){}
+    rpc RetrieveUPNByEntity(RetrieveByEntityReq) returns (UPNMessage) {}
+    rpc RetrieveUPNByEntityId(RetrieveByEntityIdReq) returns (UPNMessage) {}
+
+    rpc RetrieveTeaAndUPNByEntity(RetrieveByEntityReq) returns (TeaAndUPN) {}
+    rpc RetrieveTeaAndUPNByEntityId(RetrieveByEntityIdReq) returns (TeaAndUPN) {}
+    rpc ReportTeaSuccess(ReportTeaReq) returns (SuccessMessage) {}
+    rpc ReportTeaFail(ReportTeaReq) returns (SuccessMessage) {}
+    rpc GetUnit(GetUnitReq) returns (Unit){}
+    rpc AddUnit(AddUnitReq) returns (Unit){}
+    rpc UpdateUnit(UpdateUnitReq) returns (Unit){}
+    rpc DeleteUnit(DeleteUnitReq) returns (SuccessMessage){}
+}
+
+message RetrieveTeaByUnitReq{
+ string kartoffelId = 1;
+}
+
+message TeaMessage{
+    string tea = 1;
+}
+
+message UPNMessage{
+    string upn = 1;
+}
+
+message UpdateUnitReq{
+    string kartoffelId = 1;
+    UnitProperties unitProperties = 2;
+}
+
+message DeleteUnitReq{
+    string kartoffelId = 1;
+}
+
+message GetUnitReq{
+    string kartoffelId = 1;
+}
+
+message AddUnitReq{
+    string kartoffelId = 1;
+    string name = 2;
+    string prefix = 3;
+    string oldDomainSuffix = 4; //gmail.com, after @
+    string newDomainSuffix = 5; //gmail.com, after @
+    int32 currentCounter = 6;
+}
+
+message Unit{
+    string kartoffelId = 1;
+    string name = 2;
+    string prefix = 3; //1234
+    string oldDomainSuffix = 4; //gmail.com, after @
+    string newDomainSuffix = 5; //gmail.com, after @
+    int32 currentCounter = 6;
+    repeated string teaInProgress = 7;
+    repeated string failedTea = 8;
+    int64 createdAt = 9;
+}
+
+message UnitProperties{
+    optional string kartoffelId = 1;
+    optional string name = 2;
+    optional string prefix = 3;
+    string oldDomainSuffix = 4; //gmail.com, after @
+    string newDomainSuffix = 5; //gmail.com, after @
+    optional string currentCounter = 6;
+    repeated string teaInProgress = 7;
+    repeated string failedTea = 8;
+}
+
+message ReportTeaReq{
+    string tea = 1;
+}
+
+enum Domain{
+    OLD = 0;
+    NEW = 1;
+}
+
+message SuccessMessage{
+    bool success = 1;
+}
+
+message RetrieveByEntityReq{
+    Domain domain = 1;
+    EntityMin entity = 2;
+}
+
+message RetrieveByEntityIdReq{
+    Domain domain = 1;
+    string entityId = 2;
+}
+
+message TeaAndUPN{
+    string tea = 1;
+    string upn = 2;
+}
+
+message EntityMin{
+    string entityType = 1;
+    string akaUnit = 2;
+    optional string personalNumber = 3;
+    optional string identityCard = 4;
+    optional string goalUserID = 5;
+    optional string firstName = 6;
+    optional string lastName = 7;
+}
+

@@ -1,11 +1,9 @@
-import path from "path";
-import * as grpc from "@grpc/grpc-js";
-import * as protoLoader from "@grpc/proto-loader";
-import * as C from "../config";
+import * as grpc from 'grpc';
+import * as protoLoader from '@grpc/proto-loader';
+import * as C from '../config';
+import { findPath } from '../utils/path';
 
-const PROTO_PATH = __dirname.includes("dist")
-  ? path.join(__dirname, "../../../proto/spikeService.proto")
-  : path.join(__dirname, "../../proto/spikeService.proto");
+const PROTO_PATH = `${findPath('proto')}/spikeService.proto`;
 
 const packageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(
   PROTO_PATH,
@@ -17,6 +15,7 @@ const packageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(
     oneofs: true,
   }
 );
+
 const protoDescriptor: any =
   grpc.loadPackageDefinition(packageDefinition).Spike;
 
@@ -27,19 +26,23 @@ const client: any = new protoDescriptor.Spike(
 
 export class SpikeService {
   client: any;
+
   constructor() {
     this.client = this.initClient();
   }
 
   async getSpikeToken(): Promise<string> {
     return new Promise((resolve, reject) => {
-      this.client.GetSpikeToken({}, (err: any, res: any) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(res);
+      this.client.GetSpikeToken(
+        { audience: C.kartoffelAudience },
+        (err: any, res: any) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(`Bearer ${res.token}`);
+          }
         }
-      });
+      );
     });
   }
   private initClient(): any {

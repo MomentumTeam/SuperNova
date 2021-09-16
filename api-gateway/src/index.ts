@@ -1,17 +1,25 @@
 import { Server } from './server';
-import { logger } from "./logger";
+import { logger } from './utils/logger/logger';
 
-async function main() {
+process.on('uncaughtException', (err: Error) => {
+  console.error('Unhandled Exception', err.stack);
+  logger.error('Unhandled Exception', err.stack || 'Unhandled Exception');
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (err) => {
+  console.error('Unhandled Rejection', err);
+  logger.error('Unhandled Rejection', 'Unhandled Rejection');
+  process.exit(1);
+});
+
+(async () => {
   try {
-    const server: Server = new Server();
+    const server: Server = Server.bootstrap();
     server.listen();
-  } catch (error) {
-    console.log('error', error)
-    logger.log({
-      level: "error",
-      label: "main",
-      message: `Error while trying to listening the server: ${error.message}`,
-    });  }
-}
 
-main();
+    logger.info('Api-Gateway started successfully!');
+  } catch (error) {
+    logger.error('ERROR while trying to start Api-Gateway');
+  }
+})();
