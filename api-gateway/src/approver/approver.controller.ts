@@ -7,11 +7,11 @@ import {
     GetUserTypeReq,
     AddApproverReq,
     DeleteApproverReq,
-    UpdateApproverDecisionReq,
 } from '../interfaces/protoc/proto/approverService';
 import { ApproverService } from './approver.service';
 import { KartoffelService } from '../kartoffel/kartoffel.service';
 import { Entity, GetEntityByIdRequest } from '../interfaces/protoc/proto/kartoffelService';
+import { UpdateApproverDecisionReq } from '../interfaces/protoc/proto/requestService';
 export default class ApproverController {
     // GET
     static async getAllApprovers(req: any, res: Response) {
@@ -108,8 +108,9 @@ export default class ApproverController {
     // PUT
     static async updateApproverDecision(req: any, res: Response) {
         const updateApproverDecisionReq: UpdateApproverDecisionReq = {
-            decision: { id: req.params.requestId, approverDecision: req.body.approverDecision },
-            type: req.params.type,
+            id:req.params.requestId, 
+            approverDecision: req.body.approverDecision,
+            approverType: req.params.type
         };
 
         try {

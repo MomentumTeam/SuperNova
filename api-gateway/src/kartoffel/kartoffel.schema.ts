@@ -7,7 +7,9 @@ export const getEntityByMongoIdSchema = Joi.object({
     params: {
         id: Joi.objectId().required(),
     },
-    query: {},
+    query: {
+        withPicture: Joi.boolean()
+    },
 });
 
 export const searchEntitiesByFullNameSchema = Joi.object({
