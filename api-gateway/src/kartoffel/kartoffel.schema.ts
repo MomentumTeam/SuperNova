@@ -71,5 +71,87 @@ export const getEntityByDIRequestSchema = Joi.object({
     query: {},
 });
 
-// TODO: Groups
-// TODO: Role
+// Groups
+export const getAllOGsSchema = Joi.object({
+    body: {},
+    params: {},
+    query: {
+        source: Joi.string().required(), // TODO: is it string?
+        akaUnit: Joi.string().required(), // TODO: is it string?
+        updatedFrom: Joi.date()
+            .default(Date.now() - 86400000 * 7) // week ago
+            .max(Date.now()),
+        from: Joi.number().default(1),
+        to: Joi.number().default(100),
+    },
+});
+
+export const searchOGSchema = Joi.object({
+    body: {},
+    params: {},
+    query: {
+        nameAndHierarchy: Joi.string().required(), // TODO: is it string?
+    },
+});
+
+export const GetOGByIdSchema = Joi.object({
+    body: {},
+    params: {
+        id: Joi.objectId().required(),
+    },
+    query: {},
+});
+
+export const GetOGByHierarchyNameSchema = Joi.object({
+    body: {},
+    params: {
+        hierarchy: Joi.string().required(),
+    },
+    query: {},
+});
+
+export const GetOGChildrenSchema = Joi.object({
+    body: {},
+    params: {
+        id: Joi.objectId().required(),
+    },
+    query: {},
+});
+
+export const GetOGTreeSchema = Joi.object({
+    body: {},
+    params: {
+        id: Joi.objectId().required(),
+    },
+    query: {},
+});
+
+
+// Role
+export const getAllRolesSchema = Joi.object({
+    body: {},
+    params: {},
+    query: {
+        updatedFrom: Joi.date()
+            .default(Date.now() - 86400000 * 7) // week ago
+            .max(Date.now()),
+        page: Joi.number().default(1),
+        pageSize: Joi.number().default(100),
+    },
+});
+
+export const GetRoleByIdSchema = Joi.object({
+    body: {},
+    params: {
+        id: Joi.objectId().required(),
+    },
+    query: {},
+});
+
+export const GetRolesUnderOGSchema = Joi.object({
+    body: {},
+    params: {
+        id: Joi.objectId().required(),
+    },
+    query: {},
+});

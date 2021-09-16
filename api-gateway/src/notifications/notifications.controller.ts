@@ -1,11 +1,9 @@
-import { Request, Response } from 'express';
-import { notificationsClient } from './notifications.service';
+import { Response } from 'express';
+import { NotificationService } from './notifications.service';
 import { logger } from '../utils/logger/logger';
-import { SuccessMessage } from '../interfaces/protoc/proto/producerService';
 import {
     GetNotificationsByOwnerIdReq,
     MarkAllAsReadReq,
-    NotificationArray,
     NotificationIdArray,
 } from '../interfaces/protoc/proto/notificationService';
 import { AuthenticationError } from '../utils/errors/userErrors';
@@ -26,24 +24,12 @@ export default class NotificationController {
             callRequest: getNotificationsByOwnerIdReq,
         });
 
-        notificationsClient.GetNotificationsByOwnerId(
-            getNotificationsByOwnerIdReq,
-            (err: any, response: NotificationArray) => {
-                if (err) {
-                    logger.error(`getMyNotifications ERROR in GTW`, {
-                        err,
-                        callRequest: getNotificationsByOwnerIdReq,
-                    });
-                    res.status(500).send(err.message);
-                }
-
-                logger.info(`getMyNotifications OK in GTW`, {
-                    response: response,
-                    callRequest: getNotificationsByOwnerIdReq,
-                });
-                res.send(response);
-            }
-        );
+        try {
+            const notifications = await NotificationService.getNotificationsByOwnerId(getNotificationsByOwnerIdReq);
+            res.send(notifications);
+        } catch (error: any) {
+            res.status(500).send(error.message);
+        }
     }
 
     // PUT
@@ -52,46 +38,24 @@ export default class NotificationController {
         if (!req.user && !req.user.id) throw new AuthenticationError();
 
         const markAsReadReq: NotificationIdArray = { notificationIds: req.body.notificationIds };
-        logger.info(`Call to markAsRead in GTW`, {
-            callRequest: markAsReadReq,
-        });
 
-        notificationsClient.MarkAsRead(markAsReadReq, (err: any, response: SuccessMessage) => {
-            if (err) {
-                logger.error(`markAsRead ERROR in GTW`, {
-                    err,
-                    callRequest: markAsReadReq,
-                });
-                res.status(500).send(err.message);
-            }
-
-            logger.info(`markAsRead OK in GTW`, {
-                response: response,
-                callRequest: markAsReadReq,
-            });
+        try {
+            const response = await NotificationService.markAsRead(markAsReadReq);
             res.send(response);
-        });
+        } catch (error: any) {
+            res.status(500).send(error.message);
+        }
     }
 
     static async markAllAsRead(req: any, res: Response) {
         if (!req.user && !req.user.id) throw new AuthenticationError();
         const markAllAsReadReq: MarkAllAsReadReq = { ownerId: req.user.id };
 
-        logger.info(`Call to markAllAsRead in GTW`, {callRequest: markAllAsReadReq});
-        notificationsClient.MarkAllAsRead(markAllAsReadReq, (err: any, response: SuccessMessage) => {
-            if (err) {
-                logger.error(`markAllAsRead ERROR in GTW`, {
-                    err,
-                    callRequest: markAllAsReadReq,
-                });
-                res.status(500).send(err.message);
-            }
-
-            logger.info(`markAsRead OK in GTW`, {
-                response: response,
-                callRequest: markAllAsReadReq,
-            });
+        try {
+            const response = await NotificationService.markAllAsRead(markAllAsReadReq);
             res.send(response);
-        });
+        } catch (error: any) {
+            res.status(500).send(error.message);
+        }
     }
 }
