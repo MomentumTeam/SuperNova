@@ -250,12 +250,15 @@ export class EntitiesRepository {
         );
         return entity;
       } else {
-        //TODO get picture
         const data = await this.kartoffelUtils.kartoffelGet(
           `${C.kartoffelUrl}/api/entities/${getEntityByIdRequest.id}`,
           { expanded: true }
         );
         delete data.picture;
+        if (withPicture) {
+          const picture = this.getPictureByEntityId(getEntityByIdRequest.id);
+          data.picture = picture;
+        }
         return data as Entity;
       }
     } catch (error) {
