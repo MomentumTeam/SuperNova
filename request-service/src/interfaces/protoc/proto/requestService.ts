@@ -198,9 +198,12 @@ export function requestStatusToJSON(object: RequestStatus): string {
 
 export enum StageStatus {
   STAGE_UNKNOWN = 0,
-  STAGE_IN_PROGRESS = 1,
-  STAGE_DONE = 2,
-  STAGE_FAILED = 3,
+  STAGE_WAITING_FOR_PUSH = 1,
+  STAGE_WAITING_FOR_KARTOFFEL = 2,
+  STAGE_NEED_RETRY = 3,
+  STAGE_IN_PROGRESS = 4,
+  STAGE_DONE = 5,
+  STAGE_FAILED = 6,
   UNRECOGNIZED = -1,
 }
 
@@ -210,12 +213,21 @@ export function stageStatusFromJSON(object: any): StageStatus {
     case 'STAGE_UNKNOWN':
       return StageStatus.STAGE_UNKNOWN;
     case 1:
+    case 'STAGE_WAITING_FOR_PUSH':
+      return StageStatus.STAGE_WAITING_FOR_PUSH;
+    case 2:
+    case 'STAGE_WAITING_FOR_KARTOFFEL':
+      return StageStatus.STAGE_WAITING_FOR_KARTOFFEL;
+    case 3:
+    case 'STAGE_NEED_RETRY':
+      return StageStatus.STAGE_NEED_RETRY;
+    case 4:
     case 'STAGE_IN_PROGRESS':
       return StageStatus.STAGE_IN_PROGRESS;
-    case 2:
+    case 5:
     case 'STAGE_DONE':
       return StageStatus.STAGE_DONE;
-    case 3:
+    case 6:
     case 'STAGE_FAILED':
       return StageStatus.STAGE_FAILED;
     case -1:
@@ -229,6 +241,12 @@ export function stageStatusToJSON(object: StageStatus): string {
   switch (object) {
     case StageStatus.STAGE_UNKNOWN:
       return 'STAGE_UNKNOWN';
+    case StageStatus.STAGE_WAITING_FOR_PUSH:
+      return 'STAGE_WAITING_FOR_PUSH';
+    case StageStatus.STAGE_WAITING_FOR_KARTOFFEL:
+      return 'STAGE_WAITING_FOR_KARTOFFEL';
+    case StageStatus.STAGE_NEED_RETRY:
+      return 'STAGE_NEED_RETRY';
     case StageStatus.STAGE_IN_PROGRESS:
       return 'STAGE_IN_PROGRESS';
     case StageStatus.STAGE_DONE:
@@ -355,6 +373,50 @@ export function personInfoTypeToJSON(object: PersonInfoType): string {
       return 'ID';
     case PersonInfoType.IDENTIFIER:
       return 'IDENTIFIER';
+    default:
+      return 'UNKNOWN';
+  }
+}
+
+export enum ApprovementStatus {
+  COMMANDER_APPROVE = 0,
+  SECURITY_APPROVE = 1,
+  SUPER_SECURITY_APPROVE = 2,
+  ANY = 3,
+  UNRECOGNIZED = -1,
+}
+
+export function approvementStatusFromJSON(object: any): ApprovementStatus {
+  switch (object) {
+    case 0:
+    case 'COMMANDER_APPROVE':
+      return ApprovementStatus.COMMANDER_APPROVE;
+    case 1:
+    case 'SECURITY_APPROVE':
+      return ApprovementStatus.SECURITY_APPROVE;
+    case 2:
+    case 'SUPER_SECURITY_APPROVE':
+      return ApprovementStatus.SUPER_SECURITY_APPROVE;
+    case 3:
+    case 'ANY':
+      return ApprovementStatus.ANY;
+    case -1:
+    case 'UNRECOGNIZED':
+    default:
+      return ApprovementStatus.UNRECOGNIZED;
+  }
+}
+
+export function approvementStatusToJSON(object: ApprovementStatus): string {
+  switch (object) {
+    case ApprovementStatus.COMMANDER_APPROVE:
+      return 'COMMANDER_APPROVE';
+    case ApprovementStatus.SECURITY_APPROVE:
+      return 'SECURITY_APPROVE';
+    case ApprovementStatus.SUPER_SECURITY_APPROVE:
+      return 'SUPER_SECURITY_APPROVE';
+    case ApprovementStatus.ANY:
+      return 'ANY';
     default:
       return 'UNKNOWN';
   }
@@ -1035,6 +1097,7 @@ export interface DeleteEntityADParams {}
 export interface AssignRoleToEntityKartoffelParams {
   id: string;
   uniqueId: string;
+  needDisconnect: boolean;
 }
 
 export interface AssignRoleToEntityADParams {
@@ -1108,6 +1171,7 @@ export interface GetRequestsByPersonReq {
   personInfoType: PersonInfoType;
   from: number;
   to: number;
+  approvementStatus?: ApprovementStatus | undefined;
 }
 
 /** GetRequestBySerialNumber */
@@ -1119,6 +1183,7 @@ export interface GetRequestBySerialNumberReq {
 export interface GetAllRequestsReq {
   from: number;
   to: number;
+  approvementStatus?: ApprovementStatus | undefined;
 }
 
 /** GetRequestById */
@@ -1239,10 +1304,9 @@ export interface KartoffelParams {
   isRoleAttachable?: boolean | undefined;
   /** AssignRoleToEntity, same as changing role to entity */
   id?: string | undefined;
-  /**
-   * string uniqueId = 8;
-   * CreateEntity
-   */
+  /** string uniqueId = 8; */
+  needDisconnect: boolean;
+  /** CreateEntity */
   firstName?: string | undefined;
   lastName?: string | undefined;
   identityCard?: string | undefined;
@@ -16158,7 +16222,11 @@ export const DeleteEntityADParams = {
   },
 };
 
-const baseAssignRoleToEntityKartoffelParams: object = { id: '', uniqueId: '' };
+const baseAssignRoleToEntityKartoffelParams: object = {
+  id: '',
+  uniqueId: '',
+  needDisconnect: false,
+};
 
 export const AssignRoleToEntityKartoffelParams = {
   encode(
@@ -16170,6 +16238,9 @@ export const AssignRoleToEntityKartoffelParams = {
     }
     if (message.uniqueId !== '') {
       writer.uint32(18).string(message.uniqueId);
+    }
+    if (message.needDisconnect === true) {
+      writer.uint32(24).bool(message.needDisconnect);
     }
     return writer;
   },
@@ -16191,6 +16262,9 @@ export const AssignRoleToEntityKartoffelParams = {
           break;
         case 2:
           message.uniqueId = reader.string();
+          break;
+        case 3:
+          message.needDisconnect = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -16214,6 +16288,11 @@ export const AssignRoleToEntityKartoffelParams = {
     } else {
       message.uniqueId = '';
     }
+    if (object.needDisconnect !== undefined && object.needDisconnect !== null) {
+      message.needDisconnect = Boolean(object.needDisconnect);
+    } else {
+      message.needDisconnect = false;
+    }
     return message;
   },
 
@@ -16221,6 +16300,8 @@ export const AssignRoleToEntityKartoffelParams = {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
     message.uniqueId !== undefined && (obj.uniqueId = message.uniqueId);
+    message.needDisconnect !== undefined &&
+      (obj.needDisconnect = message.needDisconnect);
     return obj;
   },
 
@@ -16239,6 +16320,11 @@ export const AssignRoleToEntityKartoffelParams = {
       message.uniqueId = object.uniqueId;
     } else {
       message.uniqueId = '';
+    }
+    if (object.needDisconnect !== undefined && object.needDisconnect !== null) {
+      message.needDisconnect = object.needDisconnect;
+    } else {
+      message.needDisconnect = false;
     }
     return message;
   },
@@ -17457,6 +17543,9 @@ export const GetRequestsByPersonReq = {
     if (message.to !== 0) {
       writer.uint32(40).int32(message.to);
     }
+    if (message.approvementStatus !== undefined) {
+      writer.uint32(48).int32(message.approvementStatus);
+    }
     return writer;
   },
 
@@ -17484,6 +17573,9 @@ export const GetRequestsByPersonReq = {
           break;
         case 5:
           message.to = reader.int32();
+          break;
+        case 6:
+          message.approvementStatus = reader.int32() as any;
           break;
         default:
           reader.skipType(tag & 7);
@@ -17520,6 +17612,16 @@ export const GetRequestsByPersonReq = {
     } else {
       message.to = 0;
     }
+    if (
+      object.approvementStatus !== undefined &&
+      object.approvementStatus !== null
+    ) {
+      message.approvementStatus = approvementStatusFromJSON(
+        object.approvementStatus
+      );
+    } else {
+      message.approvementStatus = undefined;
+    }
     return message;
   },
 
@@ -17532,6 +17634,11 @@ export const GetRequestsByPersonReq = {
       (obj.personInfoType = personInfoTypeToJSON(message.personInfoType));
     message.from !== undefined && (obj.from = message.from);
     message.to !== undefined && (obj.to = message.to);
+    message.approvementStatus !== undefined &&
+      (obj.approvementStatus =
+        message.approvementStatus !== undefined
+          ? approvementStatusToJSON(message.approvementStatus)
+          : undefined);
     return obj;
   },
 
@@ -17563,6 +17670,14 @@ export const GetRequestsByPersonReq = {
       message.to = object.to;
     } else {
       message.to = 0;
+    }
+    if (
+      object.approvementStatus !== undefined &&
+      object.approvementStatus !== null
+    ) {
+      message.approvementStatus = object.approvementStatus;
+    } else {
+      message.approvementStatus = undefined;
     }
     return message;
   },
@@ -17651,6 +17766,9 @@ export const GetAllRequestsReq = {
     if (message.to !== 0) {
       writer.uint32(16).int32(message.to);
     }
+    if (message.approvementStatus !== undefined) {
+      writer.uint32(48).int32(message.approvementStatus);
+    }
     return writer;
   },
 
@@ -17666,6 +17784,9 @@ export const GetAllRequestsReq = {
           break;
         case 2:
           message.to = reader.int32();
+          break;
+        case 6:
+          message.approvementStatus = reader.int32() as any;
           break;
         default:
           reader.skipType(tag & 7);
@@ -17687,6 +17808,16 @@ export const GetAllRequestsReq = {
     } else {
       message.to = 0;
     }
+    if (
+      object.approvementStatus !== undefined &&
+      object.approvementStatus !== null
+    ) {
+      message.approvementStatus = approvementStatusFromJSON(
+        object.approvementStatus
+      );
+    } else {
+      message.approvementStatus = undefined;
+    }
     return message;
   },
 
@@ -17694,6 +17825,11 @@ export const GetAllRequestsReq = {
     const obj: any = {};
     message.from !== undefined && (obj.from = message.from);
     message.to !== undefined && (obj.to = message.to);
+    message.approvementStatus !== undefined &&
+      (obj.approvementStatus =
+        message.approvementStatus !== undefined
+          ? approvementStatusToJSON(message.approvementStatus)
+          : undefined);
     return obj;
   },
 
@@ -17708,6 +17844,14 @@ export const GetAllRequestsReq = {
       message.to = object.to;
     } else {
       message.to = 0;
+    }
+    if (
+      object.approvementStatus !== undefined &&
+      object.approvementStatus !== null
+    ) {
+      message.approvementStatus = object.approvementStatus;
+    } else {
+      message.approvementStatus = undefined;
     }
     return message;
   },
@@ -19139,7 +19283,11 @@ export const RequestArray = {
   },
 };
 
-const baseKartoffelParams: object = { phone: '', mobilePhone: '' };
+const baseKartoffelParams: object = {
+  needDisconnect: false,
+  phone: '',
+  mobilePhone: '',
+};
 
 export const KartoffelParams = {
   encode(
@@ -19182,41 +19330,44 @@ export const KartoffelParams = {
     if (message.id !== undefined) {
       writer.uint32(98).string(message.id);
     }
+    if (message.needDisconnect === true) {
+      writer.uint32(104).bool(message.needDisconnect);
+    }
     if (message.firstName !== undefined) {
-      writer.uint32(106).string(message.firstName);
+      writer.uint32(114).string(message.firstName);
     }
     if (message.lastName !== undefined) {
-      writer.uint32(114).string(message.lastName);
+      writer.uint32(122).string(message.lastName);
     }
     if (message.identityCard !== undefined) {
-      writer.uint32(122).string(message.identityCard);
+      writer.uint32(130).string(message.identityCard);
     }
     if (message.personalNumber !== undefined) {
-      writer.uint32(130).string(message.personalNumber);
+      writer.uint32(138).string(message.personalNumber);
     }
     if (message.serviceType !== undefined) {
-      writer.uint32(138).string(message.serviceType);
+      writer.uint32(146).string(message.serviceType);
     }
     for (const v of message.phone) {
-      writer.uint32(146).string(v!);
-    }
-    for (const v of message.mobilePhone) {
       writer.uint32(154).string(v!);
     }
+    for (const v of message.mobilePhone) {
+      writer.uint32(162).string(v!);
+    }
     if (message.address !== undefined) {
-      writer.uint32(162).string(message.address);
+      writer.uint32(170).string(message.address);
     }
     if (message.clearance !== undefined) {
-      writer.uint32(170).string(message.clearance);
+      writer.uint32(178).string(message.clearance);
     }
     if (message.sex !== undefined) {
-      writer.uint32(178).string(message.sex);
+      writer.uint32(186).string(message.sex);
     }
     if (message.birthdate !== undefined) {
-      writer.uint32(184).int64(message.birthdate);
+      writer.uint32(192).int64(message.birthdate);
     }
     if (message.entityType !== undefined) {
-      writer.uint32(194).string(message.entityType);
+      writer.uint32(202).string(message.entityType);
     }
     return writer;
   },
@@ -19267,39 +19418,42 @@ export const KartoffelParams = {
           message.id = reader.string();
           break;
         case 13:
-          message.firstName = reader.string();
+          message.needDisconnect = reader.bool();
           break;
         case 14:
-          message.lastName = reader.string();
+          message.firstName = reader.string();
           break;
         case 15:
-          message.identityCard = reader.string();
+          message.lastName = reader.string();
           break;
         case 16:
-          message.personalNumber = reader.string();
+          message.identityCard = reader.string();
           break;
         case 17:
-          message.serviceType = reader.string();
+          message.personalNumber = reader.string();
           break;
         case 18:
-          message.phone.push(reader.string());
+          message.serviceType = reader.string();
           break;
         case 19:
-          message.mobilePhone.push(reader.string());
+          message.phone.push(reader.string());
           break;
         case 20:
-          message.address = reader.string();
+          message.mobilePhone.push(reader.string());
           break;
         case 21:
-          message.clearance = reader.string();
+          message.address = reader.string();
           break;
         case 22:
-          message.sex = reader.string();
+          message.clearance = reader.string();
           break;
         case 23:
-          message.birthdate = longToNumber(reader.int64() as Long);
+          message.sex = reader.string();
           break;
         case 24:
+          message.birthdate = longToNumber(reader.int64() as Long);
+          break;
+        case 25:
           message.entityType = reader.string();
           break;
         default:
@@ -19376,6 +19530,11 @@ export const KartoffelParams = {
       message.id = String(object.id);
     } else {
       message.id = undefined;
+    }
+    if (object.needDisconnect !== undefined && object.needDisconnect !== null) {
+      message.needDisconnect = Boolean(object.needDisconnect);
+    } else {
+      message.needDisconnect = false;
     }
     if (object.firstName !== undefined && object.firstName !== null) {
       message.firstName = String(object.firstName);
@@ -19456,6 +19615,8 @@ export const KartoffelParams = {
     message.isRoleAttachable !== undefined &&
       (obj.isRoleAttachable = message.isRoleAttachable);
     message.id !== undefined && (obj.id = message.id);
+    message.needDisconnect !== undefined &&
+      (obj.needDisconnect = message.needDisconnect);
     message.firstName !== undefined && (obj.firstName = message.firstName);
     message.lastName !== undefined && (obj.lastName = message.lastName);
     message.identityCard !== undefined &&
@@ -19548,6 +19709,11 @@ export const KartoffelParams = {
       message.id = object.id;
     } else {
       message.id = undefined;
+    }
+    if (object.needDisconnect !== undefined && object.needDisconnect !== null) {
+      message.needDisconnect = object.needDisconnect;
+    } else {
+      message.needDisconnect = false;
     }
     if (object.firstName !== undefined && object.firstName !== null) {
       message.firstName = object.firstName;

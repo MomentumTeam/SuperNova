@@ -32,6 +32,8 @@ import {
   UpdateApproverDecisionReq,
   UpdateKartoffelStatusReq,
   stageStatusToJSON,
+  ApprovementStatus,
+  approvementStatusFromJSON,
 } from '../interfaces/protoc/proto/requestService';
 import { createNotifications } from '../services/notificationHelper';
 import * as C from '../config';
@@ -41,7 +43,11 @@ import {
   turnObjectIdsToStrings,
 } from '../services/requestHelper';
 import { NotificationType } from '../interfaces/protoc/proto/notificationService';
-import { getIdentifierQuery, getIdQuery } from '../utils/query';
+import {
+  getApprovementQuery,
+  getIdentifierQuery,
+  getIdQuery,
+} from '../utils/query';
 import {
   retrieveTeaByUnit,
   retrieveUPNByEntityId,
@@ -107,8 +113,9 @@ export class RequestRepository {
       if (
         isRequestApprovedRes.isRequestApproved &&
         due <= new Date().getTime() &&
-        kartoffelFailedRetries < C.maxQueueRetries &&
-        kartoffelStatus != StageStatus.STAGE_FAILED
+        kartoffelFailedRetries <= C.maxQueueRetries &&
+        kartoffelStatus != StageStatus.STAGE_FAILED &&
+        kartoffelStatus != StageStatus.STAGE_IN_PROGRESS
       ) {
         return { canPushToQueue: true };
       } else {
@@ -205,9 +212,20 @@ export class RequestRepository {
       }
 
       if (newRequestStatus) {
+        let requestProperties: any = {
+          status: requestStatusToJSON(newRequestStatus),
+        };
+        if (newRequestStatus === RequestStatus.IN_PROGRESS) {
+          requestProperties['kartoffelStatus.status'] = stageStatusToJSON(
+            StageStatus.STAGE_WAITING_FOR_PUSH
+          );
+          requestProperties['adStatus.status'] = stageStatusToJSON(
+            StageStatus.STAGE_WAITING_FOR_KARTOFFEL
+          );
+        }
         updatedRequest = await this.updateRequest({
           id: updateDecisionReq.id,
-          requestProperties: { status: requestStatusToJSON(newRequestStatus) },
+          requestProperties: requestProperties,
         });
       }
 
@@ -257,7 +275,7 @@ export class RequestRepository {
       let kartoffelStatus: any = request.kartoffelStatus;
       if (!kartoffelStatus) {
         kartoffelStatus = {
-          status: stageStatusToJSON(StageStatus.STAGE_IN_PROGRESS),
+          status: stageStatusToJSON(StageStatus.STAGE_NEED_RETRY),
           message: '',
           failedRetries: 0,
           createdId: '',
@@ -265,19 +283,21 @@ export class RequestRepository {
       } else if (!kartoffelStatus.failedRetries) {
         kartoffelStatus.failedRetries = 0;
       }
-      if (kartoffelStatus.failedRetries > C.maxQueueRetries) {
-        throw new Error(
-          `request reached the highest allowed number of retries`
-        );
+      let properties: any = {};
+      if (kartoffelStatus.failedRetries + 1 > C.maxQueueRetries) {
+        kartoffelStatus.status = stageStatusToJSON(StageStatus.STAGE_FAILED);
+        properties.status = requestStatusToJSON(RequestStatus.FAILED);
       } else {
         kartoffelStatus.failedRetries = kartoffelStatus.failedRetries + 1;
-        const updateQuery = {
-          id: incrementRetriesReq.id,
-          requestProperties: { kartoffelStatus: kartoffelStatus },
-        };
-        const updatedRequest = await this.updateRequest(updateQuery);
-        return updatedRequest;
       }
+      properties.kartoffelStatus = kartoffelStatus;
+
+      const updateQuery = {
+        id: incrementRetriesReq.id,
+        requestProperties: properties,
+      };
+      const updatedRequest = await this.updateRequest(updateQuery);
+      return updatedRequest;
     } catch (error) {
       throw error;
     }
@@ -293,26 +313,27 @@ export class RequestRepository {
       let adStatus: any = request.adStatus;
       if (!adStatus) {
         adStatus = {
-          status: stageStatusToJSON(StageStatus.STAGE_IN_PROGRESS),
+          status: stageStatusToJSON(StageStatus.STAGE_NEED_RETRY),
           message: '',
           failedRetries: 0,
         };
       } else if (!adStatus.failedRetries) {
         adStatus.failedRetries = 0;
       }
-      if (adStatus.failedRetries > C.maxQueueRetries) {
-        throw new Error(
-          `request reached the highest allowed number of retries`
-        );
+      let properties: any = {};
+      if (adStatus.failedRetries + 1 > C.maxQueueRetries) {
+        adStatus.status = stageStatusToJSON(StageStatus.STAGE_FAILED);
+        properties.status = requestStatusToJSON(RequestStatus.FAILED);
       } else {
         adStatus.failedRetries = adStatus.failedRetries + 1;
-        const updateQuery = {
-          id: incrementRetriesReq.id,
-          requestProperties: { adStatus: adStatus },
-        };
-        const updatedRequest = await this.updateRequest(updateQuery);
-        return updatedRequest;
       }
+      properties.adStatus = adStatus;
+      const updateQuery = {
+        id: incrementRetriesReq.id,
+        requestProperties: properties,
+      };
+      const updatedRequest = await this.updateRequest(updateQuery);
+      return updatedRequest;
     } catch (error) {
       throw error;
     }
@@ -341,7 +362,8 @@ export class RequestRepository {
       if (
         kartoffelStatus === StageStatus.STAGE_DONE &&
         adStatus != StageStatus.STAGE_FAILED &&
-        adFailedRetries < C.maxQueueRetries
+        adStatus != StageStatus.STAGE_IN_PROGRESS &&
+        adFailedRetries <= C.maxQueueRetries
       ) {
         return { canPushToQueue: true };
       } else {
@@ -545,252 +567,7 @@ export class RequestRepository {
   }
 
   async updateRequest(updateReq: any): Promise<Request> {
-    //TODO CHECK MORE
     try {
-      // let commanderApproverIdInUpdate: any = undefined,
-      //   securityApproverIdInUpdate: any = undefined,
-      //   superSecurityApproverIdInUpdate: any = undefined,
-      //   commanderApproverDecisionInUpdate: any = undefined,
-      //   securityApproverDecisionInUpdate: any = undefined,
-      //   superSecurityApproverDecisionInUpdate: any = undefined,
-      //   kartoffelStageStatusInUpdate: any = undefined,
-      //   adStageStatusInUpdate: any = undefined;
-
-      // let commanderApproverDecisionInDocument: Decision =
-      //     Decision.DECISION_UNKNOWN,
-      //   securityApproverDecisionInDocument: Decision =
-      //     Decision.DECISION_UNKNOWN,
-      //   superSecurityApproverDecisionInDocument: Decision =
-      //     Decision.DECISION_UNKNOWN,
-      //   kartoffelStageStatusInDocument: StageStatus = StageStatus.STAGE_UNKNOWN,
-      //   adStageStatusInDocument: StageStatus = StageStatus.STAGE_UNKNOWN;
-
-      // if (
-      //   updateReq &&
-      //   updateReq.requestProperties &&
-      //   updateReq.requestProperties.kartoffelStatus &&
-      //   updateReq.requestProperties.kartoffelStatus.status
-      // ) {
-      //   // kartoffel status in update
-      //   kartoffelStageStatusInUpdate = stageStatusFromJSON(
-      //     updateReq.requestProperties.kartoffelStatus.status
-      //   );
-      // }
-
-      // if (
-      //   updateReq &&
-      //   updateReq.requestProperties &&
-      //   updateReq.requestProperties.adStatus &&
-      //   updateReq.requestProperties.adStatus.status
-      // ) {
-      //   // ad status in update
-      //   adStageStatusInUpdate = stageStatusFromJSON(
-      //     updateReq.requestProperties.adStatus.status
-      //   );
-      // }
-
-      // if (
-      //   updateReq &&
-      //   updateReq.requestProperties &&
-      //   updateReq.requestProperties.commanderDecision &&
-      //   updateReq.requestProperties.commanderDecision.approver
-      // ) {
-      //   // commander decision in update
-      //   commanderApproverIdInUpdate =
-      //     updateReq.requestProperties.commanderDecision.approver.id;
-      //   commanderApproverDecisionInUpdate = decisionFromJSON(
-      //     updateReq.requestProperties.commanderDecision.decision
-      //   );
-      // }
-
-      // if (
-      //   updateReq &&
-      //   updateReq.requestProperties &&
-      //   updateReq.requestProperties.securityDecision &&
-      //   updateReq.requestProperties.securityDecision.approver
-      // ) {
-      //   // security decision in update
-      //   securityApproverIdInUpdate =
-      //     updateReq.requestProperties.securityDecision.approver.id;
-      //   securityApproverDecisionInUpdate = decisionFromJSON(
-      //     updateReq.requestProperties.securityDecision.decision
-      //   );
-      // }
-
-      // if (
-      //   updateReq &&
-      //   updateReq.requestProperties &&
-      //   updateReq.requestProperties.superSecurityDecision &&
-      //   updateReq.requestProperties.superSecurityDecision.approver
-      // ) {
-      //   // superSecurity decision in update
-      //   superSecurityApproverIdInUpdate =
-      //     updateReq.requestProperties.superSecurityDecision.approver.id;
-      //   superSecurityApproverDecisionInUpdate = decisionFromJSON(
-      //     updateReq.requestProperties.superSecurityDecision.decision
-      //   );
-      // }
-
-      // if (
-      //   commanderApproverIdInUpdate ||
-      //   securityApproverIdInUpdate ||
-      //   superSecurityApproverIdInUpdate ||
-      //   kartoffelStageStatusInUpdate ||
-      //   adStageStatusInUpdate
-      // ) {
-      //   //update includes decision/stage update
-      //   const documentBefore = await RequestModel.findOne({
-      //     _id: updateReq.id,
-      //   });
-      //   if (documentBefore) {
-      //     const documentBeforeObj: any = documentBefore.toObject();
-      //     turnObjectIdsToStrings(documentBeforeObj);
-      //     const needSuperSecurityDecision =
-      //       documentBeforeObj.needSuperSecurityDecision;
-      //     const needSecurityDecision = documentBeforeObj.needSecurityDecision;
-
-      //     // if (
-      //     //   (commanderApproverIdInUpdate &&
-      //     //     (!documentBeforeObj.commanders ||
-      //     //       !documentBeforeObj.commanders.some(
-      //     //         (commander: any) =>
-      //     //           commander.id === commanderApproverIdInUpdate
-      //     //       ))) ||
-      //     //   (securityApproverIdInUpdate &&
-      //     //     (!documentBeforeObj.securityApprovers ||
-      //     //       (securityApproverIdInUpdate &&
-      //     //         !documentBeforeObj.securityApprovers.some(
-      //     //           (securityApprover: any) =>
-      //     //             securityApprover.id === securityApproverIdInUpdate
-      //     //         ))))
-      //     // ) {
-      //     //   //if one of the approvers does not exist in commanders or securityApprovers, so it is not allowed
-      //     //   throw new Error(
-      //     //     `Commander or security approver is not allowed to decide on this request!`
-      //     //   );
-      //     // }
-
-      //     if (
-      //       documentBeforeObj.commanderDecision &&
-      //       documentBeforeObj.commanderDecision.decision
-      //     ) {
-      //       // commander decision in document
-      //       commanderApproverDecisionInDocument = decisionFromJSON(
-      //         documentBeforeObj.commanderDecision.decision
-      //       );
-      //     }
-
-      //     if (
-      //       documentBeforeObj.securityDecision &&
-      //       documentBeforeObj.securityDecision.decision
-      //     ) {
-      //       // commander decision in document
-      //       securityApproverDecisionInDocument = decisionFromJSON(
-      //         documentBeforeObj.securityDecision.decision
-      //       );
-      //     }
-
-      //     if (
-      //       documentBeforeObj.superSecurityDecision &&
-      //       documentBeforeObj.superSecurityDecision.decision
-      //     ) {
-      //       // commander decision in document
-      //       superSecurityApproverDecisionInDocument = decisionFromJSON(
-      //         documentBeforeObj.superSecurityDecision.decision
-      //       );
-      //     }
-
-      //     if (
-      //       commanderApproverDecisionInUpdate ||
-      //       securityApproverDecisionInUpdate ||
-      //       superSecurityApproverDecisionInUpdate
-      //     ) {
-      //       if (
-      //         commanderApproverDecisionInUpdate === Decision.DENIED ||
-      //         (!commanderApproverDecisionInUpdate &&
-      //           commanderApproverDecisionInDocument === Decision.DENIED) ||
-      //         (needSecurityDecision &&
-      //           (securityApproverDecisionInUpdate === Decision.DENIED ||
-      //             (!securityApproverDecisionInUpdate &&
-      //               securityApproverDecisionInDocument === Decision.DENIED))) ||
-      //         (needSuperSecurityDecision &&
-      //           (superSecurityApproverDecisionInUpdate === Decision.DENIED ||
-      //             (!superSecurityApproverDecisionInUpdate &&
-      //               superSecurityApproverDecisionInDocument ===
-      //                 Decision.DENIED)))
-      //       ) {
-      //         // if one of the approvers denied the request
-      //         requestUpdate.status = requestStatusToJSON(
-      //           RequestStatus.DECLINED
-      //         );
-      //       } else if (
-      //         (commanderApproverDecisionInUpdate === Decision.APPROVED ||
-      //           (!commanderApproverDecisionInUpdate &&
-      //             commanderApproverDecisionInDocument === Decision.APPROVED)) &&
-      //         (!needSecurityDecision ||
-      //           securityApproverDecisionInUpdate === Decision.APPROVED ||
-      //           (!securityApproverDecisionInUpdate &&
-      //             securityApproverDecisionInDocument === Decision.APPROVED)) &&
-      //         (!needSuperSecurityDecision ||
-      //           superSecurityApproverDecisionInUpdate === Decision.APPROVED ||
-      //           (!superSecurityApproverDecisionInUpdate &&
-      //             superSecurityApproverDecisionInDocument ===
-      //               Decision.APPROVED))
-      //       ) {
-      //         // if both approvers approved the request
-      //         requestUpdate.status = requestStatusToJSON(
-      //           RequestStatus.IN_PROGRESS
-      //         );
-      //       }
-      //     }
-
-      //     if (
-      //       documentBeforeObj.kartoffelStatus &&
-      //       documentBeforeObj.kartoffelStatus.status
-      //     ) {
-      //       // kartoffel status in document
-      //       kartoffelStageStatusInDocument = stageStatusFromJSON(
-      //         documentBeforeObj.kartoffelStatus.status
-      //       );
-      //     }
-
-      //     if (documentBeforeObj.adStatus && documentBeforeObj.adStatus.status) {
-      //       // ad status in document
-      //       adStageStatusInDocument = stageStatusFromJSON(
-      //         documentBeforeObj.adStatus.status
-      //       );
-      //     }
-
-      //     if (kartoffelStageStatusInUpdate || adStageStatusInUpdate) {
-      //       if (
-      //         ((!kartoffelStageStatusInUpdate &&
-      //           kartoffelStageStatusInDocument === StageStatus.STAGE_DONE) ||
-      //           kartoffelStageStatusInUpdate === StageStatus.STAGE_DONE) &&
-      //         ((!adStageStatusInUpdate &&
-      //           adStageStatusInDocument === StageStatus.STAGE_DONE) ||
-      //           adStageStatusInUpdate === StageStatus.STAGE_DONE)
-      //       ) {
-      //         // if both stages are done
-      //         requestUpdate.status = requestStatusToJSON(RequestStatus.DONE);
-      //       } else if (
-      //         (!kartoffelStageStatusInUpdate &&
-      //           kartoffelStageStatusInDocument === StageStatus.STAGE_FAILED) ||
-      //         kartoffelStageStatusInUpdate === StageStatus.STAGE_FAILED ||
-      //         (!adStageStatusInUpdate &&
-      //           adStageStatusInDocument === StageStatus.STAGE_FAILED) ||
-      //         adStageStatusInUpdate === StageStatus.STAGE_FAILED
-      //       ) {
-      //         // if both stages are failed
-      //         requestUpdate.status = requestStatusToJSON(RequestStatus.FAILED);
-      //       }
-      //     }
-      //   } else {
-      //     throw new Error(
-      //       `A request with {_id: ${updateReq.id}} was not found!`
-      //     );
-      //   }
-      // }
-
       let requestUpdate: any = { ...updateReq.requestProperties };
       cleanUnderscoreFields(requestUpdate);
 
@@ -819,14 +596,12 @@ export class RequestRepository {
     try {
       cleanUnderscoreFields(updateKartoffelStatusReq);
       let requestProperties: any = {
-        kartoffelStatus: {
-          status: updateKartoffelStatusReq.status,
-          message: updateKartoffelStatusReq.message,
-          createdId: updateKartoffelStatusReq.createdId,
-        },
+        'kartoffelStatus.status': updateKartoffelStatusReq.status,
+        'kartoffelStatus.message': updateKartoffelStatusReq.message,
+        'kartoffelStatus.createdId': updateKartoffelStatusReq.createdId,
       };
       if (updateKartoffelStatusReq.failedRetries) {
-        requestProperties.kartoffelStatus.failedRetries =
+        requestProperties['kartoffelStatus.failedRetries'] =
           updateKartoffelStatusReq.failedRetries;
       }
       let requestUpdate: any = {
@@ -846,11 +621,17 @@ export class RequestRepository {
           kartoffelStatus === StageStatus.STAGE_DONE
             ? RequestStatus.DONE
             : RequestStatus.FAILED;
+        let properties: any = {
+          status: requestStatusToJSON(requestStatus),
+        };
+        if (kartoffelStatus === StageStatus.STAGE_DONE) {
+          properties['adStatus.status'] = stageStatusToJSON(
+            StageStatus.STAGE_WAITING_FOR_PUSH
+          );
+        }
         updatedRequest = await this.updateRequest({
           id: updateKartoffelStatusReq.requestId,
-          requestProperties: {
-            status: requestStatusToJSON(requestStatus),
-          },
+          requestProperties: properties,
         });
       }
 
@@ -965,6 +746,11 @@ export class RequestRepository {
         request.needSuperSecurityDecision = false;
         break;
 
+      case RequestType.DELETE_ENTITY:
+        request.needSecurityDecision = false;
+        request.needSuperSecurityDecision = false;
+        break;
+
       case RequestType.RENAME_OG:
         request.needSecurityDecision = false;
         request.needSuperSecurityDecision = true;
@@ -1021,8 +807,16 @@ export class RequestRepository {
     getAllRequestsReq: GetAllRequestsReq
   ): Promise<RequestArray> {
     try {
+      getAllRequestsReq.approvementStatus = getAllRequestsReq.approvementStatus
+        ? getAllRequestsReq.approvementStatus
+        : ApprovementStatus.ANY;
+      const approvementStatus: ApprovementStatus =
+        typeof getAllRequestsReq.approvementStatus === typeof ''
+          ? approvementStatusFromJSON(getAllRequestsReq.approvementStatus)
+          : getAllRequestsReq.approvementStatus;
+      const query = getApprovementQuery(approvementStatus);
       const requestArray = await this.getRequestsByQuery(
-        {},
+        query,
         true,
         getAllRequestsReq.from,
         getAllRequestsReq.to
@@ -1122,12 +916,25 @@ export class RequestRepository {
   ) {
     try {
       let query = {};
+      getRequestsByPersonReq.approvementStatus =
+        getRequestsByPersonReq.approvementStatus
+          ? getRequestsByPersonReq.approvementStatus
+          : ApprovementStatus.ANY;
+      const approvementStatus: ApprovementStatus =
+        typeof getRequestsByPersonReq.approvementStatus === typeof ''
+          ? approvementStatusFromJSON(getRequestsByPersonReq.approvementStatus)
+          : getRequestsByPersonReq.approvementStatus;
       if (personInfoType === PersonInfoType.ID) {
-        query = getIdQuery(getRequestsByPersonReq.id, personTypesInRequest);
+        query = getIdQuery(
+          getRequestsByPersonReq.id,
+          personTypesInRequest,
+          approvementStatus
+        );
       } else {
         query = getIdentifierQuery(
           getRequestsByPersonReq.id,
-          personTypesInRequest
+          personTypesInRequest,
+          approvementStatus
         );
       }
       const totalCount = await RequestModel.count(query);
@@ -1151,7 +958,7 @@ export class RequestRepository {
           totalCount: totalCount,
         };
       } else {
-        return null;
+        return { requests: [], totalCount: 0 };
       }
     } catch (error) {
       throw error;

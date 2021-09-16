@@ -731,6 +731,7 @@ message DeleteEntityADParams{
 message AssignRoleToEntityKartoffelParams{
     string id = 1;
     string uniqueId = 2;
+    bool needDisconnect = 3;
 }
 
 message AssignRoleToEntityADParams{
@@ -807,6 +808,7 @@ message GetRequestsByPersonReq{
     PersonInfoType personInfoType = 3;
     int32 from = 4;
     int32 to = 5;
+    optional ApprovementStatus approvementStatus = 6;
 }
 
 //GetRequestBySerialNumber
@@ -818,6 +820,7 @@ message GetRequestBySerialNumberReq{
 message GetAllRequestsReq{
     int32 from = 1;
     int32 to = 2;
+    optional ApprovementStatus approvementStatus = 6;
 }
 
 //GetRequestById
@@ -947,19 +950,21 @@ message KartoffelParams{
     //AssignRoleToEntity, same as changing role to entity
     optional string id = 12;
     // string uniqueId = 8;
+    bool needDisconnect = 13;
     //CreateEntity
-    optional string firstName = 13;
-    optional string lastName = 14;
-    optional string identityCard = 15;
-    optional string personalNumber = 16;
-    optional string serviceType = 17;
-    repeated string phone = 18;
-    repeated string mobilePhone = 19;
-    optional string address = 20;
-    optional string clearance = 21; //for createRole too
-    optional string sex = 22;
-    optional int64 birthdate = 23;
-    optional string entityType = 24;
+    optional string firstName = 14;
+    optional string lastName = 15;
+    optional string identityCard = 16;
+    optional string personalNumber = 17;
+    optional string serviceType = 18;
+    repeated string phone = 19;
+    repeated string mobilePhone = 20;
+    optional string address = 21;
+    optional string clearance = 22; //for createRole too
+    optional string sex = 23;
+    optional int64 birthdate = 24;
+    optional string entityType = 25;
+    
 
     //RenameOG
     // ?
@@ -1119,9 +1124,12 @@ enum RequestStatus{
 
 enum StageStatus{
     STAGE_UNKNOWN = 0;
-    STAGE_IN_PROGRESS = 1;
-    STAGE_DONE = 2;
-    STAGE_FAILED = 3;
+    STAGE_WAITING_FOR_PUSH = 1;
+    STAGE_WAITING_FOR_KARTOFFEL = 2;
+    STAGE_NEED_RETRY = 3;
+    STAGE_IN_PROGRESS = 4;
+    STAGE_DONE = 5;
+    STAGE_FAILED = 6;
 }
 
 enum Decision{
@@ -1138,8 +1146,14 @@ enum PersonTypeInRequest{
     APPROVER = 4;
 }
 
-
 enum PersonInfoType{
     ID = 0;
     IDENTIFIER = 1;
+}
+
+enum ApprovementStatus{
+    COMMANDER_APPROVE = 0;
+    SECURITY_APPROVE = 1;
+    SUPER_SECURITY_APPROVE = 2;
+    ANY = 3;
 }

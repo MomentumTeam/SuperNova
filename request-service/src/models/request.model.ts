@@ -237,6 +237,7 @@ const RequestSchema = new Schema(
       birthdate: { type: Number, default: null },
       entityType: { type: String, default: null },
       unit: { type: String, default: null },
+      needDisconnect: { type: Boolean, default: false },
     },
     adParams: {
       ouDisplayName: { type: String, default: null },
