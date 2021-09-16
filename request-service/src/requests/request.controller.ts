@@ -637,3 +637,57 @@ export async function getRequestsByPerson(
     );
   }
 }
+
+export async function pushError(call: any, callback: any): Promise<void> {
+  try {
+    logger.info(`Call to pushError`, {
+      callRequest: call.request,
+    });
+    const request = await requestManager.pushError(call.request);
+    logger.info(`pushError OK`, {
+      callRequest: call.request,
+      response: request,
+    });
+    callback(null, request);
+  } catch (error: any) {
+    logger.error(`pushError ERROR`, {
+      callRequest: call.request,
+      error: { message: error.message },
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function syncBulkRequest(call: any, callback: any): Promise<void> {
+  try {
+    logger.info(`Call to syncBulkRequest`, {
+      callRequest: call.request,
+    });
+    const request = await requestManager.syncBulkRequest(call.request);
+    logger.info(`syncBulkRequest OK`, {
+      callRequest: call.request,
+      response: request,
+    });
+    callback(null, request);
+  } catch (error: any) {
+    logger.error(`syncBulkRequest ERROR`, {
+      callRequest: call.request,
+      error: { message: error.message },
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
