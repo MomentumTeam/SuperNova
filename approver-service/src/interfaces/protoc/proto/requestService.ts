@@ -378,6 +378,50 @@ export function personInfoTypeToJSON(object: PersonInfoType): string {
   }
 }
 
+export enum ApprovementStatus {
+  COMMANDER_APPROVE = 0,
+  SECURITY_APPROVE = 1,
+  SUPER_SECURITY_APPROVE = 2,
+  ANY = 3,
+  UNRECOGNIZED = -1,
+}
+
+export function approvementStatusFromJSON(object: any): ApprovementStatus {
+  switch (object) {
+    case 0:
+    case 'COMMANDER_APPROVE':
+      return ApprovementStatus.COMMANDER_APPROVE;
+    case 1:
+    case 'SECURITY_APPROVE':
+      return ApprovementStatus.SECURITY_APPROVE;
+    case 2:
+    case 'SUPER_SECURITY_APPROVE':
+      return ApprovementStatus.SUPER_SECURITY_APPROVE;
+    case 3:
+    case 'ANY':
+      return ApprovementStatus.ANY;
+    case -1:
+    case 'UNRECOGNIZED':
+    default:
+      return ApprovementStatus.UNRECOGNIZED;
+  }
+}
+
+export function approvementStatusToJSON(object: ApprovementStatus): string {
+  switch (object) {
+    case ApprovementStatus.COMMANDER_APPROVE:
+      return 'COMMANDER_APPROVE';
+    case ApprovementStatus.SECURITY_APPROVE:
+      return 'SECURITY_APPROVE';
+    case ApprovementStatus.SUPER_SECURITY_APPROVE:
+      return 'SUPER_SECURITY_APPROVE';
+    case ApprovementStatus.ANY:
+      return 'ANY';
+    default:
+      return 'UNKNOWN';
+  }
+}
+
 /** 1.CreateRole */
 export interface CreateRoleReq {
   submittedBy: EntityMin | undefined;
@@ -1127,6 +1171,7 @@ export interface GetRequestsByPersonReq {
   personInfoType: PersonInfoType;
   from: number;
   to: number;
+  approvementStatus?: ApprovementStatus | undefined;
 }
 
 /** GetRequestBySerialNumber */
@@ -1138,6 +1183,7 @@ export interface GetRequestBySerialNumberReq {
 export interface GetAllRequestsReq {
   from: number;
   to: number;
+  approvementStatus?: ApprovementStatus | undefined;
 }
 
 /** GetRequestById */
@@ -17497,6 +17543,9 @@ export const GetRequestsByPersonReq = {
     if (message.to !== 0) {
       writer.uint32(40).int32(message.to);
     }
+    if (message.approvementStatus !== undefined) {
+      writer.uint32(48).int32(message.approvementStatus);
+    }
     return writer;
   },
 
@@ -17524,6 +17573,9 @@ export const GetRequestsByPersonReq = {
           break;
         case 5:
           message.to = reader.int32();
+          break;
+        case 6:
+          message.approvementStatus = reader.int32() as any;
           break;
         default:
           reader.skipType(tag & 7);
@@ -17560,6 +17612,16 @@ export const GetRequestsByPersonReq = {
     } else {
       message.to = 0;
     }
+    if (
+      object.approvementStatus !== undefined &&
+      object.approvementStatus !== null
+    ) {
+      message.approvementStatus = approvementStatusFromJSON(
+        object.approvementStatus
+      );
+    } else {
+      message.approvementStatus = undefined;
+    }
     return message;
   },
 
@@ -17572,6 +17634,11 @@ export const GetRequestsByPersonReq = {
       (obj.personInfoType = personInfoTypeToJSON(message.personInfoType));
     message.from !== undefined && (obj.from = message.from);
     message.to !== undefined && (obj.to = message.to);
+    message.approvementStatus !== undefined &&
+      (obj.approvementStatus =
+        message.approvementStatus !== undefined
+          ? approvementStatusToJSON(message.approvementStatus)
+          : undefined);
     return obj;
   },
 
@@ -17603,6 +17670,14 @@ export const GetRequestsByPersonReq = {
       message.to = object.to;
     } else {
       message.to = 0;
+    }
+    if (
+      object.approvementStatus !== undefined &&
+      object.approvementStatus !== null
+    ) {
+      message.approvementStatus = object.approvementStatus;
+    } else {
+      message.approvementStatus = undefined;
     }
     return message;
   },
@@ -17691,6 +17766,9 @@ export const GetAllRequestsReq = {
     if (message.to !== 0) {
       writer.uint32(16).int32(message.to);
     }
+    if (message.approvementStatus !== undefined) {
+      writer.uint32(48).int32(message.approvementStatus);
+    }
     return writer;
   },
 
@@ -17706,6 +17784,9 @@ export const GetAllRequestsReq = {
           break;
         case 2:
           message.to = reader.int32();
+          break;
+        case 6:
+          message.approvementStatus = reader.int32() as any;
           break;
         default:
           reader.skipType(tag & 7);
@@ -17727,6 +17808,16 @@ export const GetAllRequestsReq = {
     } else {
       message.to = 0;
     }
+    if (
+      object.approvementStatus !== undefined &&
+      object.approvementStatus !== null
+    ) {
+      message.approvementStatus = approvementStatusFromJSON(
+        object.approvementStatus
+      );
+    } else {
+      message.approvementStatus = undefined;
+    }
     return message;
   },
 
@@ -17734,6 +17825,11 @@ export const GetAllRequestsReq = {
     const obj: any = {};
     message.from !== undefined && (obj.from = message.from);
     message.to !== undefined && (obj.to = message.to);
+    message.approvementStatus !== undefined &&
+      (obj.approvementStatus =
+        message.approvementStatus !== undefined
+          ? approvementStatusToJSON(message.approvementStatus)
+          : undefined);
     return obj;
   },
 
@@ -17748,6 +17844,14 @@ export const GetAllRequestsReq = {
       message.to = object.to;
     } else {
       message.to = 0;
+    }
+    if (
+      object.approvementStatus !== undefined &&
+      object.approvementStatus !== null
+    ) {
+      message.approvementStatus = object.approvementStatus;
+    } else {
+      message.approvementStatus = undefined;
     }
     return message;
   },

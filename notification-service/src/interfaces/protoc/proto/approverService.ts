@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from 'long';
 import _m0 from 'protobufjs/minimal';
-import { UpdateDecisionReq, Request } from './requestService';
+import { Request, UpdateApproverDecisionReq } from './requestService';
 
 export const protobufPackage = 'ApproverService';
 
@@ -178,11 +178,6 @@ export interface Approver {
   type: UserType;
   akaUnit: string;
   id: string;
-}
-
-export interface UpdateApproverDecisionReq {
-  decision: UpdateDecisionReq | undefined;
-  type: UserType;
 }
 
 const baseSyncApproverReq: object = { approverId: '' };
@@ -1193,98 +1188,6 @@ export const Approver = {
       message.id = object.id;
     } else {
       message.id = '';
-    }
-    return message;
-  },
-};
-
-const baseUpdateApproverDecisionReq: object = { type: 0 };
-
-export const UpdateApproverDecisionReq = {
-  encode(
-    message: UpdateApproverDecisionReq,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.decision !== undefined) {
-      UpdateDecisionReq.encode(
-        message.decision,
-        writer.uint32(10).fork()
-      ).ldelim();
-    }
-    if (message.type !== 0) {
-      writer.uint32(16).int32(message.type);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): UpdateApproverDecisionReq {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseUpdateApproverDecisionReq,
-    } as UpdateApproverDecisionReq;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.decision = UpdateDecisionReq.decode(reader, reader.uint32());
-          break;
-        case 2:
-          message.type = reader.int32() as any;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): UpdateApproverDecisionReq {
-    const message = {
-      ...baseUpdateApproverDecisionReq,
-    } as UpdateApproverDecisionReq;
-    if (object.decision !== undefined && object.decision !== null) {
-      message.decision = UpdateDecisionReq.fromJSON(object.decision);
-    } else {
-      message.decision = undefined;
-    }
-    if (object.type !== undefined && object.type !== null) {
-      message.type = userTypeFromJSON(object.type);
-    } else {
-      message.type = 0;
-    }
-    return message;
-  },
-
-  toJSON(message: UpdateApproverDecisionReq): unknown {
-    const obj: any = {};
-    message.decision !== undefined &&
-      (obj.decision = message.decision
-        ? UpdateDecisionReq.toJSON(message.decision)
-        : undefined);
-    message.type !== undefined && (obj.type = userTypeToJSON(message.type));
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<UpdateApproverDecisionReq>
-  ): UpdateApproverDecisionReq {
-    const message = {
-      ...baseUpdateApproverDecisionReq,
-    } as UpdateApproverDecisionReq;
-    if (object.decision !== undefined && object.decision !== null) {
-      message.decision = UpdateDecisionReq.fromPartial(object.decision);
-    } else {
-      message.decision = undefined;
-    }
-    if (object.type !== undefined && object.type !== null) {
-      message.type = object.type;
-    } else {
-      message.type = 0;
     }
     return message;
   },

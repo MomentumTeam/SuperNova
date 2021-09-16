@@ -91,8 +91,8 @@ enum RequestStatus{
 
 enum UserType{
     UNKNOWN = 0;
-    SUPER_SECURITY = 2;
     SECURITY = 1;
+    SUPER_SECURITY = 2;
     COMMANDER = 3;
     SOLDIER = 4;
     ADMIN = 5;

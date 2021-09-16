@@ -36,7 +36,7 @@ export class ApproverManager {
 
   async getUserType(getUserTypeReq: GetUserTypeReq): Promise<GetUserTypeRes> {
     try {
-      return (await this.approverRepository.getUserType(
+      return (await ApproverRepository.getUserType(
         getUserTypeReq
       )) as GetUserTypeRes;
     } catch (error) {

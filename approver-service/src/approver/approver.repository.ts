@@ -21,6 +21,7 @@ import {
 } from '../interfaces/protoc/proto/kartoffelService';
 import {
   PersonTypeInRequest,
+  personTypeInRequestFromJSON,
   Request,
   UpdateApproverDecisionReq,
 } from '../interfaces/protoc/proto/requestService';
@@ -35,6 +36,7 @@ import {
   turnObjectIdsToStrings,
   approverTypeValidation,
 } from '../utils/approver.utils';
+import { hasPermissionToDecide } from '../utils/permission.utils';
 
 export class ApproverRepository {
   async addApprover(addApproverReq: AddApproverReq) {
@@ -145,7 +147,9 @@ export class ApproverRepository {
     }
   }
 
-  async getUserType(getUserTypeReq: GetUserTypeReq): Promise<GetUserTypeRes> {
+  static async getUserType(
+    getUserTypeReq: GetUserTypeReq
+  ): Promise<GetUserTypeRes> {
     try {
       const approvers = await ApproverModel.find({
         entityId: getUserTypeReq.entityId,
@@ -301,9 +305,25 @@ export class ApproverRepository {
     updateApproverDecisionReq: UpdateApproverDecisionReq
   ): Promise<Request> {
     try {
-      return await RequestService.updateApproverDecision(
-        updateApproverDecisionReq
+      const approverId: any =
+        updateApproverDecisionReq.approverDecision?.approver?.id;
+      const personTypeInRequest: PersonTypeInRequest =
+        typeof updateApproverDecisionReq.approverType === typeof ''
+          ? personTypeInRequestFromJSON(updateApproverDecisionReq.approverType)
+          : updateApproverDecisionReq.approverType;
+      const requestId = updateApproverDecisionReq.id;
+      const hasPermission = await hasPermissionToDecide(
+        approverId,
+        personTypeInRequest,
+        requestId
       );
+      if (!hasPermission) {
+        throw new Error('User has no permission!');
+      } else {
+        return await RequestService.updateApproverDecision(
+          updateApproverDecisionReq
+        );
+      }
     } catch (error) {
       logger.error('updateApproverDecision ERROR', {
         updateApproverDecisionReq,

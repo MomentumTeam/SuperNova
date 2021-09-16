@@ -591,7 +591,7 @@ message CreateRoleKartoffelParams{
     string directGroup = 2; //groupId of direct father
     optional string roleId = 3; //T154514... generated automatically by tea-service if not given
     string clearance = 4; //clearance of the role
-    optional string akaUnit = 5;
+    optional string unit = 5;
 
     //forDigitalIdentity
     string type = 6; //always domainUser
@@ -731,12 +731,13 @@ message DeleteEntityADParams{
 message AssignRoleToEntityKartoffelParams{
     string id = 1;
     string uniqueId = 2;
+    bool needDisconnect = 3;
 }
 
 message AssignRoleToEntityADParams{
     string oldSAMAccountName = 1;
     string newSAMAccountName = 2;
-    string upn = 3;
+    optional string upn = 3;
     string firstName = 4;
     string lastName = 5;
     string fullName = 6;
@@ -807,6 +808,7 @@ message GetRequestsByPersonReq{
     PersonInfoType personInfoType = 3;
     int32 from = 4;
     int32 to = 5;
+    optional ApprovementStatus approvementStatus = 6;
 }
 
 //GetRequestBySerialNumber
@@ -818,6 +820,7 @@ message GetRequestBySerialNumberReq{
 message GetAllRequestsReq{
     int32 from = 1;
     int32 to = 2;
+    optional ApprovementStatus approvementStatus = 6;
 }
 
 //GetRequestById
@@ -935,7 +938,7 @@ message KartoffelParams{
     optional string jobTitle = 4;
     optional string directGroup = 5;
     optional string roleId = 6;
-    optional string akaUnit = 7;
+    optional string unit = 7;
 
     //forDigitalIdentity
     optional string type = 8;
@@ -947,19 +950,21 @@ message KartoffelParams{
     //AssignRoleToEntity, same as changing role to entity
     optional string id = 12;
     // string uniqueId = 8;
+    bool needDisconnect = 13;
     //CreateEntity
-    optional string firstName = 13;
-    optional string lastName = 14;
-    optional string identityCard = 15;
-    optional string personalNumber = 16;
-    optional string serviceType = 17;
-    repeated string phone = 18;
-    repeated string mobilePhone = 19;
-    optional string address = 20;
-    optional string clearance = 21; //for createRole too
-    optional string sex = 22;
-    optional int64 birthdate = 23;
-    optional string entityType = 24;
+    optional string firstName = 14;
+    optional string lastName = 15;
+    optional string identityCard = 16;
+    optional string personalNumber = 17;
+    optional string serviceType = 18;
+    repeated string phone = 19;
+    repeated string mobilePhone = 20;
+    optional string address = 21;
+    optional string clearance = 22; //for createRole too
+    optional string sex = 23;
+    optional int64 birthdate = 24;
+    optional string entityType = 25;
+    
 
     //RenameOG
     // ?
@@ -1048,11 +1053,12 @@ message RequestReq{
     repeated EntityMin superSecurityApprovers = 8;
     KartoffelStatus kartoffelStatus = 9;
     ADStatus adStatus = 10;
-    KartoffelParams kartoffelParams = 11;
-    ADParams adParams = 12;
-    string comments = 13;
-    string approversComments = 14;
-    optional int64 due = 15;
+    optional KartoffelParams kartoffelParams = 11;
+    optional ADParams adParams = 12;
+    optional AdditionalParams additionalParams = 13;
+    string comments = 14;
+    string approversComments = 15;
+    optional int64 due = 16;
 }
 
 message Request{
@@ -1066,19 +1072,20 @@ message Request{
     repeated EntityMin superSecurityApprovers = 8; 
     KartoffelStatus kartoffelStatus = 9;
     ADStatus adStatus = 10;
-    KartoffelParams kartoffelParams = 11;
-    ADParams adParams = 12;
-    string comments = 13;
-    string approversComments = 14;
-    int64 due = 15;
+    optional KartoffelParams kartoffelParams = 11;
+    optional AdditionalParams additionalParams=12;
+    optional ADParams adParams = 13;
+    string comments = 14;
+    string approversComments = 15;
+    int64 due = 16;
 
-    string id = 16;
-    int64 createdAt = 17;
-    int64 updatedAt = 18; 
-    RequestType type = 19;
-    string serialNumber = 20;
-    bool needSecurityDecision = 21;
-    bool needSuperSecurityDecision = 22;
+    string id = 17;
+    int64 createdAt = 18;
+    int64 updatedAt = 19; 
+    RequestType type = 20;
+    string serialNumber = 21;
+    bool needSecurityDecision = 22;
+    bool needSuperSecurityDecision = 23;
 }
 
 
@@ -1117,9 +1124,12 @@ enum RequestStatus{
 
 enum StageStatus{
     STAGE_UNKNOWN = 0;
-    STAGE_IN_PROGRESS = 1;
-    STAGE_DONE = 2;
-    STAGE_FAILED = 3;
+    STAGE_WAITING_FOR_PUSH = 1;
+    STAGE_WAITING_FOR_KARTOFFEL = 2;
+    STAGE_NEED_RETRY = 3;
+    STAGE_IN_PROGRESS = 4;
+    STAGE_DONE = 5;
+    STAGE_FAILED = 6;
 }
 
 enum Decision{
@@ -1136,8 +1146,14 @@ enum PersonTypeInRequest{
     APPROVER = 4;
 }
 
-
 enum PersonInfoType{
     ID = 0;
     IDENTIFIER = 1;
+}
+
+enum ApprovementStatus{
+    COMMANDER_APPROVE = 0;
+    SECURITY_APPROVE = 1;
+    SUPER_SECURITY_APPROVE = 2;
+    ANY = 3;
 }
