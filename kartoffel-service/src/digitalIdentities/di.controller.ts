@@ -25,7 +25,7 @@ export async function getAllDIs(call: any, callback: any): Promise<void> {
       response: digitalIdentities,
     });
     callback(null, { digitalIdentities: digitalIdentities });
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`getAllDIs ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
@@ -50,7 +50,7 @@ export async function createDI(call: any, callback: any): Promise<void> {
       response: newDI,
     });
     callback(null, newDI);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`createDI ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
@@ -75,7 +75,7 @@ export async function getDIByRoleId(call: any, callback: any): Promise<void> {
       response: di,
     });
     callback(null, di);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`getDIByRoleId ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
@@ -104,7 +104,7 @@ export async function searchDIOrUniqueId(
       response: DigitalIdentities,
     });
     callback(null, { DigitalIdentities: DigitalIdentities });
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`searchDIOrUniqueId ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
@@ -131,7 +131,7 @@ export async function deleteDI(call: any, callback: any): Promise<void> {
       response: successMessage,
     });
     callback(null, successMessage);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`deleteDI ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
@@ -156,7 +156,7 @@ export async function getDIByUniqueId(call: any, callback: any): Promise<void> {
       response: di,
     });
     callback(null, di);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`getDIByUniqueId ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
@@ -183,7 +183,7 @@ export async function updateDI(call: any, callback: any): Promise<void> {
       response: digitalIdentity,
     });
     callback(null, { success: true });
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`updateDI ERROR`, {
       callRequest: call.request,
       error: { message: error.message },

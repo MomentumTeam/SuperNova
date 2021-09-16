@@ -65,8 +65,10 @@ export class Server {
     try {
       this.initServer();
       logger.info(`gRPC server has been initialized successfully`);
-    } catch (error) {
-      logger.error(`Error while creating gRPC server`, { error: error });
+    } catch (error: any) {
+      logger.error(`Error while creating gRPC server`, {
+        error: { message: error.message },
+      });
     }
   }
 
@@ -143,8 +145,10 @@ export class Server {
         ChangeRoleOG: changeRoleOG,
       });
       logger.info(`Grpc services were successfully added to the server`);
-    } catch (error) {
-      logger.error(`Error while initializing the server`, { error: error });
+    } catch (error: any) {
+      logger.error(`Error while initializing the server`, {
+        error: { message: error.message },
+      });
       throw error;
     }
   }

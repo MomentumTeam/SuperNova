@@ -31,7 +31,7 @@ export async function getAllOGs(call: any, callback: any): Promise<void> {
     });
 
     callback(null, ogArray);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`getAllOGs ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
@@ -58,7 +58,7 @@ export async function createOG(call: any, callback: any): Promise<void> {
       response: newOG,
     });
     callback(null, newOG);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`createOG ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
@@ -83,12 +83,12 @@ export async function getOGTree(call: any, callback: any): Promise<void> {
       response: ogTree,
     });
     callback(null, ogTree);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`getOGTree ERROR`, {
       callRequest: call.request,
       error: error.message,
     });
-    
+
     callback(
       {
         code: 400,
@@ -116,7 +116,7 @@ export async function getOGByHierarchyName(
       response: og,
     });
     callback(null, og);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`getOGByHierarchy ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
@@ -141,7 +141,7 @@ export async function searchOG(call: any, callback: any): Promise<void> {
       response: ogArray,
     });
     callback(null, ogArray);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`searchOG ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
@@ -170,7 +170,7 @@ export async function deleteOG(call: any, callback: any): Promise<void> {
       response: successMessage,
     });
     callback(null, successMessage);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`deleteOG ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
@@ -197,7 +197,7 @@ export async function getOGById(call: any, callback: any): Promise<void> {
       response: og,
     });
     callback(null, og);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`getOGById ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
@@ -226,7 +226,7 @@ export async function getChildrenOfOG(call: any, callback: any): Promise<void> {
       response: ogChildern,
     });
     callback(null, ogChildern);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`getChildrenOfOG ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
@@ -255,7 +255,7 @@ export async function updateOGParent(call: any, callback: any): Promise<void> {
       response: successMessage,
     });
     callback(null, successMessage);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`updateOGParent ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
@@ -284,7 +284,7 @@ export async function renameOG(call: any, callback: any): Promise<void> {
       response: successMessage,
     });
     callback(null, successMessage);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`renameOG ERROR`, {
       callRequest: call.request,
       error: { message: error.message },

@@ -32,10 +32,10 @@ export async function getPictureByEntityId(
       response: image,
     });
     callback(null, image);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`getPictureByEntityId ERROR`, {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {
@@ -57,10 +57,10 @@ export async function createEntity(call: any, callback: any): Promise<void> {
       response: entity,
     });
     callback(null, entity);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`createEntity ERROR`, {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {
@@ -82,10 +82,10 @@ export async function getEntityByDI(call: any, callback: any): Promise<void> {
       response: entity,
     });
     callback(null, entity);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`getEntityByDI ERROR`, {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {
@@ -112,10 +112,10 @@ export async function getEntityByRoleId(
       response: entity,
     });
     callback(null, entity);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`getEntityByRoleId ERROR`, {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {
@@ -142,10 +142,10 @@ export async function getEntitiesUnderOG(
       response: entityArray,
     });
     callback(null, entityArray);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`getEntitiesUnderOG ERROR`, {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {
@@ -174,10 +174,10 @@ export async function getEntitiesByHierarchy(
       response: entities,
     });
     callback(null, entities);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`getEntitiesByHierarchy ERROR`, {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {
@@ -206,10 +206,10 @@ export async function getEntityByIdentifier(
       response: entity,
     });
     callback(null, entity);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`searchEntitiesByIdentifier ERROR`, {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {
@@ -237,10 +237,10 @@ export async function searchEntitiesByFullName(
       response: entityArray,
     });
     callback(null, entityArray);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`searchEntitiesByFullName ERROR`, {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {
@@ -262,10 +262,10 @@ export async function getEntityById(call: any, callback: any): Promise<void> {
       response: entity,
     });
     callback(null, entity);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`getEntityById ERROR`, {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {
@@ -289,10 +289,10 @@ export async function deleteEntity(call: any, callback: any): Promise<void> {
       response: successMessage,
     });
     callback(null, successMessage);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`deleteEntity ERROR`, {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {
@@ -314,10 +314,10 @@ export async function updateEntity(call: any, callback: any): Promise<void> {
       response: entity,
     });
     callback(null, entity);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`updateEntity ERROR`, {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {
@@ -345,10 +345,10 @@ export async function disconnectDIFromEntity(
       response: successMessage,
     });
     callback(null, successMessage);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`disconnectDIFromEntity ERROR`, {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {
@@ -374,10 +374,10 @@ export async function connectEntityAndDI(
       response: successMessage,
     });
     callback(null, successMessage);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`connectEntityAndDI ERROR`, {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {

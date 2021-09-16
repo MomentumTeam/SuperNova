@@ -54,7 +54,7 @@ export class EntitiesRepository {
   ): Promise<Entity> {
     try {
       if (C.useFaker) {
-        const entity: Entity = await this.kartoffelFaker.randomEntity(true);
+        const entity: Entity = await this.kartoffelFaker.randomEntity(false);
         return entity;
       } else {
         const data = await this.kartoffelUtils.kartoffelGet(
@@ -73,7 +73,7 @@ export class EntitiesRepository {
   ): Promise<Entity> {
     try {
       if (C.useFaker) {
-        const entity: Entity = await this.kartoffelFaker.randomEntity(true);
+        const entity: Entity = await this.kartoffelFaker.randomEntity(false);
         return entity;
       } else {
         const data = await this.kartoffelUtils.kartoffelGet(
@@ -250,7 +250,7 @@ export class EntitiesRepository {
         );
         return entity;
       } else {
-        //TODO GET IMAGE
+        //TODO get picture
         const data = await this.kartoffelUtils.kartoffelGet(
           `${C.kartoffelUrl}/api/entities/${getEntityByIdRequest.id}`,
           { expanded: true }
