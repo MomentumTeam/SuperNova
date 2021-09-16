@@ -256,7 +256,9 @@ export class EntitiesRepository {
         );
         delete data.picture;
         if (withPicture) {
-          const picture = this.getPictureByEntityId(getEntityByIdRequest.id);
+          const picture = this.getPictureByEntityId({
+            id: getEntityByIdRequest.id,
+          });
           data.picture = picture;
         }
         return data as Entity;
