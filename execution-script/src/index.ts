@@ -4,8 +4,7 @@ import { logger } from './logger';
 import RequestService from './services/requestService';
 import ProducerService from './services/producerService';
 
-import * as config from './config';
-const schedule = require('node-schedule');
+// const schedule = require('node-schedule');
 
 if (process.env.NODE_ENV !== 'production') {
   const ENV_PATH = `${findPath('supernova.env')}`;
@@ -40,11 +39,13 @@ async function main() {
         logger.info(`Promises were finished successfully`);
       })
       .catch((error) => {
-        logger.error(`Promises exection failed`, { error: error });
+        logger.error(`Promises exection failed`, {
+          error: { message: error.message },
+        });
       });
 
     // });
-  } catch (error) {
+  } catch (error: any) {
     logger.error(
       `Error while trying to start Execution-Script: ${error.message}`
     );

@@ -321,6 +321,7 @@ message DisconnectDIFromEntityRequest{
 // GetEntityByMongoId
 message GetEntityByIdRequest{
     string id = 1; //mongoId of entity
+    optional bool withPicture = 2;
 }
 
 // DeleteOG

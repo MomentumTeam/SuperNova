@@ -13,14 +13,18 @@ import {
   SyncApproverReq,
   UserType,
   userTypeFromJSON,
-  UpdateApproverDecisionReq,
   userTypeToJSON,
 } from '../interfaces/protoc/proto/approverService';
 import {
   DigitalIdentity,
   Entity,
 } from '../interfaces/protoc/proto/kartoffelService';
-import { Request } from '../interfaces/protoc/proto/requestService';
+import {
+  PersonTypeInRequest,
+  personTypeInRequestFromJSON,
+  Request,
+  UpdateApproverDecisionReq,
+} from '../interfaces/protoc/proto/requestService';
 import { logger } from '../logger';
 import { ApproverModel } from '../models/approver.model';
 import KartoffelService from '../services/kartoffelService';
@@ -32,6 +36,7 @@ import {
   turnObjectIdsToStrings,
   approverTypeValidation,
 } from '../utils/approver.utils';
+import { hasPermissionToDecide } from '../utils/permission.utils';
 
 export class ApproverRepository {
   async addApprover(addApproverReq: AddApproverReq) {
@@ -100,7 +105,7 @@ export class ApproverRepository {
     }
   }
 
-  async syncApprover(syncApproverReq: SyncApproverReq): Promise<Approver> {
+  async syncApprover(syncApproverReq: SyncApproverReq): Promise<ApproverArray> {
     try {
       const entity: Entity = await KartoffelService.getEntityById({
         id: syncApproverReq.approverId,
@@ -118,21 +123,22 @@ export class ApproverRepository {
         domainUsers: domainUsers,
         akaUnit: entity.akaUnit,
       };
-      const documentAfter: any = await ApproverModel.findOneAndUpdate(
+      const result: any = await ApproverModel.updateMany(
         { entityId: syncApproverReq.approverId },
-        { $set: updateParams },
-        { new: true }
+        { $set: updateParams }
       );
-      const document = documentAfter.toObject();
-      turnObjectIdsToStrings(document);
+      const documentsObjArray = await ApproverModel.find({
+        entityId: syncApproverReq.approverId,
+      });
+      let approvers = getMongoApproverArray(documentsObjArray);
       logger.info('syncApprover updated Approver successfully', {
         syncApproverReq,
         displayName: entity.displayName,
         domainUsers: domainUsers,
         akaUnit: entity.akaUnit,
-        document,
+        approvers,
       });
-      return document as Approver;
+      return { approvers: approvers } as ApproverArray;
     } catch (error) {
       logger.error('syncApprover ERROR', {
         syncApproverReq,
@@ -142,7 +148,9 @@ export class ApproverRepository {
     }
   }
 
-  async getUserType(getUserTypeReq: GetUserTypeReq): Promise<GetUserTypeRes> {
+  static async getUserType(
+    getUserTypeReq: GetUserTypeReq
+  ): Promise<GetUserTypeRes> {
     try {
       const approvers = await ApproverModel.find({
         entityId: getUserTypeReq.entityId,
@@ -298,39 +306,24 @@ export class ApproverRepository {
     updateApproverDecisionReq: UpdateApproverDecisionReq
   ): Promise<Request> {
     try {
-      const userType = updateApproverDecisionReq.type;
-      let updatedRequest;
-
-      if (updateApproverDecisionReq.decision) {
-        switch (userType) {
-          case UserType.COMMANDER:
-            updatedRequest = await RequestService.updateCommanderDecision(
-              updateApproverDecisionReq.decision
-            );
-            break;
-          case UserType.SECURITY:
-            updatedRequest = await RequestService.updateSecurityDecision(
-              updateApproverDecisionReq.decision
-            );
-            break;
-          case UserType.SUPER_SECURITY:
-            updatedRequest = await RequestService.updateSuperSecurityDecision(
-              updateApproverDecisionReq.decision
-            );
-            break;
-          default:
-            throw new Error(`unsupported usertype ${userType}`);
-        }
-      }
-      logger.info('updateApproverDecision', {
-        updatedRequest,
-        updateApproverDecisionReq,
-      });
-
-      if (updatedRequest) {
-        return updatedRequest;
+      const approverId: any =
+        updateApproverDecisionReq.approverDecision?.approver?.id;
+      const personTypeInRequest: PersonTypeInRequest =
+        typeof updateApproverDecisionReq.approverType === typeof ''
+          ? personTypeInRequestFromJSON(updateApproverDecisionReq.approverType)
+          : updateApproverDecisionReq.approverType;
+      const requestId = updateApproverDecisionReq.id;
+      const hasPermission = await hasPermissionToDecide(
+        approverId,
+        personTypeInRequest,
+        requestId
+      );
+      if (!hasPermission) {
+        throw new Error('User has no permission!');
       } else {
-        throw new Error('Something went wrong');
+        return await RequestService.updateApproverDecision(
+          updateApproverDecisionReq
+        );
       }
     } catch (error) {
       logger.error('updateApproverDecision ERROR', {

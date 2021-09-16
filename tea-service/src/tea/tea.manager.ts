@@ -2,14 +2,17 @@ import {
   AddUnitReq,
   DeleteUnitReq,
   GetUnitReq,
+  RetrieveTeaByUnitReq,
   SuccessMessage,
+  TeaMessage,
   Unit,
   UpdateUnitReq,
+  UPNMessage,
 } from '../interfaces/protoc/proto/teaService';
 import {
   ReportTeaReq,
-  RetrieveTeaAndUPNByEntityIdReq,
-  RetrieveTeaAndUPNByEntityReq,
+  RetrieveByEntityIdReq,
+  RetrieveByEntityReq,
   TeaAndUPN,
 } from '../interfaces/protoc/proto/teaService';
 import { TeaRepository } from './tea.repository';
@@ -20,8 +23,40 @@ export class TeaManager {
     this.teaRepository = new TeaRepository();
   }
 
+  async retrieveTeaByUnit(
+    retrieveTeaByUnitReq: RetrieveTeaByUnitReq
+  ): Promise<TeaMessage> {
+    try {
+      return await this.teaRepository.retrieveTeaByUnit(retrieveTeaByUnitReq);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async retrieveUPNByEntity(
+    retrieveUPNByEntityReq: RetrieveByEntityReq
+  ): Promise<UPNMessage> {
+    try {
+      return await this.teaRepository.retrieveUPNByEntity(
+        retrieveUPNByEntityReq
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+  async retrieveUPNByEntityId(
+    retrieveUPNByEntityIdReq: RetrieveByEntityIdReq
+  ): Promise<UPNMessage> {
+    try {
+      return await this.teaRepository.retrieveUPNByEntityId(
+        retrieveUPNByEntityIdReq
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
   async retrieveTeaAndUPNByEntity(
-    retrieveTeaAndUPNByEntityReq: RetrieveTeaAndUPNByEntityReq
+    retrieveTeaAndUPNByEntityReq: RetrieveByEntityReq
   ): Promise<TeaAndUPN> {
     try {
       return await this.teaRepository.retrieveTeaAndUPNByEntity(
@@ -33,7 +68,7 @@ export class TeaManager {
   }
 
   async retrieveTeaAndUPNByEntityId(
-    retrieveTeaAndUPNByEntityIdReq: RetrieveTeaAndUPNByEntityIdReq
+    retrieveTeaAndUPNByEntityIdReq: RetrieveByEntityIdReq
   ): Promise<TeaAndUPN> {
     try {
       return await this.teaRepository.retrieveTeaAndUPNByEntityId(

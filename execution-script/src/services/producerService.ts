@@ -40,9 +40,9 @@ export default class ProducerService {
       try {
         logger.info(`Call to ProduceToKartoffelQueue in EXS`);
         await ProducerService.produceToKartoffelQueue(requestId);
-      } catch (error) {
+      } catch (error: any) {
         logger.error(`ProduceToKartoffelQueue ERROR in EXS`, {
-          error,
+          error: { message: error.message },
           callRequest: { id: requestId },
         });
         throw error;
@@ -51,9 +51,9 @@ export default class ProducerService {
       try {
         logger.info(`Call to ProduceToADQueue in EXS`);
         await ProducerService.produceToADQueue(requestId);
-      } catch (error) {
+      } catch (error: any) {
         logger.error(`ProduceToADQueue ERROR in EXS`, {
-          error,
+          error: { message: error.message },
           callRequest: { id: requestId },
         });
         throw error;
@@ -69,13 +69,13 @@ export default class ProducerService {
 
       producerClient.ProduceToKartoffelQueue(
         { id: requestId },
-        (err: any, response: SuccessMessage) => {
-          if (err) {
+        (error: any, response: SuccessMessage) => {
+          if (error) {
             logger.error(`produceToKartoffelQueue ERROR in EXS`, {
-              err,
+              error: { message: error.message },
               callRequest: { id: requestId },
             });
-            reject(err);
+            reject(error);
           }
 
           logger.info(`produceToKartoffelQueue OK in EXS`, {
@@ -96,13 +96,13 @@ export default class ProducerService {
 
       producerClient.ProduceToADQueue(
         { id: requestId },
-        (err: any, response: SuccessMessage) => {
-          if (err) {
+        (error: any, response: SuccessMessage) => {
+          if (error) {
             logger.error(`produceToADQueue ERROR in EXS`, {
-              err,
+              error: { message: error.message },
               callRequest: { id: requestId },
             });
-            reject(err);
+            reject(error);
           }
 
           logger.info(`produceToADQueue OK in EXS`, {

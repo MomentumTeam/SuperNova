@@ -1,46 +1,45 @@
 import { RequestManager } from './request.manager';
 import * as grpc from 'grpc';
-import { PersonTypeInRequest } from '../enums/personTypeInRequest.enum';
 import {
-  GetRequestsByIdentifierReq,
+  IsRequestApprovedRes,
+  PersonTypeInRequest,
   Request,
   RequestReq,
   RequestType,
+  requestTypeToJSON,
   SearchRequestsByDisplayNameReq,
   SuccessMessage,
-  UpdateDecisionReq,
+  UpdateApproverDecisionReq,
 } from '../interfaces/protoc/proto/requestService';
 import { logger } from '../logger';
 
 const requestManager: RequestManager = new RequestManager();
 
-export function updateApproverDecisionFuncByPersonType(
-  personType: PersonTypeInRequest
-) {
-  const func = async function updateApproverDecision(
+export function createRequestFuncByType(type: RequestType) {
+  const func = async function createRequest(
     call: any,
     callback: any
   ): Promise<void> {
     try {
-      logger.info(`Call to updateApproverDecision`, {
-        personType: personType,
+      logger.info(`Call to createRequest`, {
+        type: requestTypeToJSON(type),
         callRequest: call.request,
       });
-      const response = await requestManager.updateApproverDecision(
-        call.request as UpdateDecisionReq,
-        personType
+      const response = await requestManager.createRequest(
+        call.request as RequestReq,
+        type
       );
-      logger.info(`updateApproverDecision OK`, {
+      logger.info(`createRequest OK`, {
         callRequest: call.request,
-        personType: personType,
+        type: type,
         response: response,
       });
       callback(null, response);
-    } catch (error) {
-      logger.error(`updateApproverDecision ERROR`, {
+    } catch (error: any) {
+      logger.error(`createRequest ERROR`, {
         callRequest: call.request,
-        personType: personType,
-        error: error,
+        type: requestTypeToJSON(type),
+        error: { message: error.message },
       });
       callback(
         {
@@ -53,6 +52,95 @@ export function updateApproverDecisionFuncByPersonType(
     }
   };
   return func;
+}
+
+export async function isRequestApproved(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    logger.info(`Call to isRequestApproved`, {
+      callRequest: call.request,
+    });
+    const isRequestApprovedRes: IsRequestApprovedRes =
+      await requestManager.isRequestApproved(call.request);
+    logger.info(`isRequestApproved OK`, {
+      callRequest: call.request,
+      response: isRequestApprovedRes,
+    });
+    callback(null, isRequestApprovedRes);
+  } catch (error: any) {
+    logger.error(`isRequestApproved ERROR`, {
+      callRequest: call.request,
+      error: { message: error.message },
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function updateRequest(call: any, callback: any): Promise<void> {
+  try {
+    logger.info(`Call to updateRequest`, {
+      callRequest: call.request,
+    });
+    const updateRequestResponse: Request = await requestManager.updateRequest(
+      call.request
+    );
+    logger.info(`updateRequest OK`, {
+      callRequest: call.request,
+      response: updateRequestResponse,
+    });
+    callback(null, updateRequestResponse);
+  } catch (error: any) {
+    logger.error(`updateRequest ERROR`, {
+      callRequest: call.request,
+      error: { message: error.message },
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function updateApproverDecision(call: any, callback: any) {
+  try {
+    logger.info(`Call to updateApproverDecision`, {
+      callRequest: call.request,
+    });
+    const response = await requestManager.updateApproverDecision(
+      call.request as UpdateApproverDecisionReq
+    );
+    logger.info(`updateApproverDecision OK`, {
+      callRequest: call.request,
+      response: response,
+    });
+    callback(null, response);
+  } catch (error: any) {
+    logger.error(`updateApproverDecision ERROR`, {
+      callRequest: call.request,
+      error: { message: error.message },
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
 }
 
 export function searchRequestsByDisplayNameFuncByPersonType(
@@ -77,91 +165,11 @@ export function searchRequestsByDisplayNameFuncByPersonType(
         response: response,
       });
       callback(null, response);
-    } catch (error) {
+    } catch (error: any) {
       logger.error(`searchRequestsByDisplayName ERROR`, {
         callRequest: call.request,
         personType: personType,
-        error: error,
-      });
-      callback(
-        {
-          code: 400,
-          message: error.message,
-          status: grpc.status.CANCELLED,
-        },
-        null
-      );
-    }
-  };
-  return func;
-}
-
-export function getRequestsByIdentifierFuncByPersonType(
-  personType: PersonTypeInRequest
-) {
-  const func = async function getRequestsByIdentifier(
-    call: any,
-    callback: any
-  ): Promise<void> {
-    try {
-      logger.info(`Call to getRequestsByIdentifier`, {
-        personType: personType,
-        callRequest: call.request,
-      });
-      const response = await requestManager.getRequestsByIdentifier(
-        call.request as GetRequestsByIdentifierReq,
-        personType
-      );
-      logger.info(`getRequestsByIdentifier OK`, {
-        callRequest: call.request,
-        personType: personType,
-        response: response,
-      });
-      callback(null, response);
-    } catch (error) {
-      logger.error(`getRequestsByIdentifier ERROR`, {
-        callRequest: call.request,
-        personType: personType,
-        error: error,
-      });
-      callback(
-        {
-          code: 400,
-          message: error.message,
-          status: grpc.status.CANCELLED,
-        },
-        null
-      );
-    }
-  };
-  return func;
-}
-
-export function createRequestFuncByType(type: RequestType) {
-  const func = async function createRequest(
-    call: any,
-    callback: any
-  ): Promise<void> {
-    try {
-      logger.info(`Call to createRequest`, {
-        type: type,
-        callRequest: call.request,
-      });
-      const response = await requestManager.createRequest(
-        call.request as RequestReq,
-        type
-      );
-      logger.info(`createRequest OK`, {
-        callRequest: call.request,
-        type: type,
-        response: response,
-      });
-      callback(null, response);
-    } catch (error) {
-      logger.error(`createRequest ERROR`, {
-        callRequest: call.request,
-        type: type,
-        error: error,
+        error: { message: error.message },
       });
       callback(
         {
@@ -192,10 +200,10 @@ export async function canPushToADQueue(
       response: requestsResponse,
     });
     callback(null, requestsResponse);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`canPushToADQueue ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: { message: error.message },
     });
     callback(
       {
@@ -224,10 +232,10 @@ export async function canPushToKartoffelQueue(
       response: requestsResponse,
     });
     callback(null, requestsResponse);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`canPushToKartoffelQueue ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: { message: error.message },
     });
     callback(
       {
@@ -256,10 +264,10 @@ export async function getRequestBySerialNumber(
       response: requestsResponse,
     });
     callback(null, requestsResponse);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`getRequestBySerialNumber ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: { message: error.message },
     });
     callback(
       {
@@ -288,10 +296,10 @@ export async function updateKartoffelStatus(
       response: updateResponse,
     });
     callback(null, updateResponse);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`updateKartoffelStatus ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: { message: error.message },
     });
     callback(
       {
@@ -317,39 +325,10 @@ export async function updateADStatus(call: any, callback: any): Promise<void> {
       response: updateResponse,
     });
     callback(null, updateResponse);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`updateADStatus ERROR`, {
       callRequest: call.request,
-      error: error,
-    });
-    callback(
-      {
-        code: 400,
-        message: error.message,
-        status: grpc.status.CANCELLED,
-      },
-      null
-    );
-  }
-}
-
-export async function updateRequest(call: any, callback: any): Promise<void> {
-  try {
-    logger.info(`Call to updateRequest`, {
-      callRequest: call.request,
-    });
-    const updateRequestResponse: Request = await requestManager.updateRequest(
-      call.request
-    );
-    logger.info(`updateRequest OK`, {
-      callRequest: call.request,
-      response: updateRequestResponse,
-    });
-    callback(null, updateRequestResponse);
-  } catch (error) {
-    logger.error(`updateRequest ERROR`, {
-      callRequest: call.request,
-      error: error,
+      error: { message: error.message },
     });
     callback(
       {
@@ -374,10 +353,10 @@ export async function deleteRequest(call: any, callback: any): Promise<void> {
       response: deleteRequestResponse,
     });
     callback(null, deleteRequestResponse);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`deleteRequest ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: { message: error.message },
     });
     callback(
       {
@@ -401,10 +380,10 @@ export async function getAllRequests(call: any, callback: any): Promise<void> {
       response: requestsResponse,
     });
     callback(null, requestsResponse);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`getAllRequests ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: { message: error.message },
     });
     callback(
       {
@@ -428,10 +407,10 @@ export async function getRequestById(call: any, callback: any): Promise<void> {
       response: requestResponse,
     });
     callback(null, requestResponse);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`getRequestById ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: { message: error.message },
     });
     callback(
       {
@@ -460,10 +439,10 @@ export async function incrementKartoffelRetries(
       response: request,
     });
     callback(null, request);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`incrementKartoffelRetries ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: { message: error.message },
     });
     callback(
       {
@@ -483,7 +462,7 @@ export async function updateCommanders(
   try {
     const request = await requestManager.updateCommanders(call.request);
     callback(null, request);
-  } catch (error) {
+  } catch (error: any) {
     callback(
       {
         code: 400,
@@ -502,7 +481,28 @@ export async function updateSecurityApprovers(
   try {
     const request = await requestManager.updateSecurityApprovers(call.request);
     callback(null, request);
-  } catch (error) {
+  } catch (error: any) {
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function updateSuperSecurityApprovers(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    const request = await requestManager.updateSuperSecurityApprovers(
+      call.request
+    );
+    callback(null, request);
+  } catch (error: any) {
     callback(
       {
         code: 400,
@@ -530,10 +530,10 @@ export async function getRequestsInProgressByDue(
       response: requests,
     });
     callback(null, requests);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`getRequestsInProgressByDue ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: error.message,
     });
     callback(
       {
@@ -562,10 +562,10 @@ export async function getRequestIdsInProgressByDue(
       response: requestIds,
     });
     callback(null, requestIds);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`getRequestIdsInProgressByDue ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: { message: error.message },
     });
     callback(
       {
@@ -592,10 +592,10 @@ export async function incrementADRetries(
       response: request,
     });
     callback(null, request);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`incrementADRetries ERROR`, {
       callRequest: call.request,
-      error: error,
+      error: { message: error.message },
     });
     callback(
       {
@@ -608,60 +608,24 @@ export async function incrementADRetries(
   }
 }
 
-export async function getRequestsByCommander(
+export async function getRequestsByPerson(
   call: any,
   callback: any
 ): Promise<void> {
   try {
-    logger.info(`Call to getRequestsByCommander`, {
+    logger.info(`Call to getRequestsByPerson`, {
       callRequest: call.request,
     });
-    const requests = await requestManager.getRequestsByPersonId(
-      call.request,
-      PersonTypeInRequest.COMMANDER
-    );
-    logger.info(`getRequestsByCommander OK`, {
+    const requests = await requestManager.getRequestsByPerson(call.request);
+    logger.info(`getRequestsByPerson OK`, {
       callRequest: call.request,
       response: requests,
     });
     callback(null, requests);
-  } catch (error) {
-    logger.error(`getRequestsByCommander ERROR`, {
+  } catch (error: any) {
+    logger.error(`getRequestsByPerson ERROR`, {
       callRequest: call.request,
-      error: error,
-    });
-    callback(
-      {
-        code: 400,
-        message: error.message,
-        status: grpc.status.CANCELLED,
-      },
-      null
-    );
-  }
-}
-
-export async function getRequestsSubmittedBy(
-  call: any,
-  callback: any
-): Promise<void> {
-  try {
-    logger.info(`Call to getRequestsSubmittedBy`, {
-      callRequest: call.request,
-    });
-    const requests = await requestManager.getRequestsByPersonId(
-      call.request,
-      PersonTypeInRequest.SUBMITTER
-    );
-    logger.info(`getRequestsSubmittedBy OK`, {
-      callRequest: call.request,
-      response: requests,
-    });
-    callback(null, requests);
-  } catch (error) {
-    logger.error(`getRequestsSubmittedBy ERROR`, {
-      callRequest: call.request,
-      error: error,
+      error: { message: error.message },
     });
     callback(
       {

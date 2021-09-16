@@ -1,4 +1,3 @@
-import { PersonTypeInRequest } from '../enums/personTypeInRequest.enum';
 import {
   CanPushToQueueReq,
   CanPushToQueueRes,
@@ -6,10 +5,13 @@ import {
   GetAllRequestsReq,
   GetRequestByIdReq,
   GetRequestBySerialNumberReq,
-  GetRequestsByIdentifierReq,
-  GetRequestsByPersonIdReq,
+  GetRequestsByPersonReq,
   GetRequestsInProgressByDueReq,
   IncrementRetriesReq,
+  PersonInfoType,
+  personInfoTypeFromJSON,
+  PersonTypeInRequest,
+  personTypeInRequestFromJSON,
   Request,
   RequestArray,
   RequestIdArray,
@@ -19,14 +21,30 @@ import {
   SuccessMessage,
   UpdateADStatusReq,
   UpdateApproversReq,
-  UpdateDecisionReq,
+  UpdateApproverDecisionReq,
   UpdateKartoffelStatusReq,
+  IsRequestApprovedRes,
+  IsRequestApprovedReq,
 } from '../interfaces/protoc/proto/requestService';
 import { RequestRepository } from './request.repository';
 export class RequestManager {
   private requestRepository: RequestRepository;
   constructor() {
     this.requestRepository = new RequestRepository();
+  }
+
+  async createRequest(
+    createRequest: RequestReq,
+    type: RequestType
+  ): Promise<Request> {
+    try {
+      return (await this.requestRepository.createRequest(
+        createRequest,
+        type
+      )) as Request;
+    } catch (error) {
+      throw error;
+    }
   }
 
   async canPushToKartoffelQueue(
@@ -89,14 +107,25 @@ export class RequestManager {
     }
   }
 
+  async isRequestApproved(
+    isRequestApprovedReq: IsRequestApprovedReq
+  ): Promise<IsRequestApprovedRes> {
+    return (await this.requestRepository.isRequestApproved(
+      isRequestApprovedReq
+    )) as IsRequestApprovedRes;
+  }
+
   async updateApproverDecision(
-    updateDecisionReq: UpdateDecisionReq,
-    personType: PersonTypeInRequest
+    updateDecisionReq: UpdateApproverDecisionReq
   ): Promise<Request> {
     try {
+      const approverType: PersonTypeInRequest =
+        typeof updateDecisionReq.approverType === typeof ''
+          ? personTypeInRequestFromJSON(updateDecisionReq.approverType)
+          : updateDecisionReq.approverType;
       return (await this.requestRepository.updateApproverDecision(
         updateDecisionReq,
-        personType
+        approverType
       )) as Request;
     } catch (error) {
       throw error;
@@ -161,39 +190,11 @@ export class RequestManager {
     }
   }
 
-  async getRequestsByIdentifier(
-    getRequestsByIdentifier: GetRequestsByIdentifierReq,
-    personType: PersonTypeInRequest
-  ): Promise<RequestArray> {
-    try {
-      return (await this.requestRepository.getRequestsByIdentifier(
-        getRequestsByIdentifier,
-        personType
-      )) as RequestArray;
-    } catch (error) {
-      throw error;
-    }
-  }
-
   async deleteRequest(deleteRequestReq: DeleteReq): Promise<SuccessMessage> {
     try {
       return (await this.requestRepository.deleteRequest(
         deleteRequestReq
       )) as SuccessMessage;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async createRequest(
-    createRequest: RequestReq,
-    type: RequestType
-  ): Promise<Request> {
-    try {
-      return (await this.requestRepository.createRequest(
-        createRequest,
-        type
-      )) as Request;
     } catch (error) {
       throw error;
     }
@@ -229,6 +230,18 @@ export class RequestManager {
     }
   }
 
+  async updateSuperSecurityApprovers(
+    updateApproversReq: UpdateApproversReq
+  ): Promise<Request> {
+    try {
+      return (await this.requestRepository.updateSuperSecurityApprovers(
+        updateApproversReq
+      )) as Request;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async updateSecurityApprovers(
     updateApproversReq: UpdateApproversReq
   ): Promise<Request> {
@@ -253,14 +266,20 @@ export class RequestManager {
     }
   }
 
-  async getRequestsByPersonId(
-    getRequestsByPersonIdReq: GetRequestsByPersonIdReq,
-    personTypeInRequest: PersonTypeInRequest
-  ) {
+  async getRequestsByPerson(getRequestsByPersonReq: GetRequestsByPersonReq) {
     try {
-      return await this.requestRepository.getRequestsByPersonId(
-        getRequestsByPersonIdReq,
-        personTypeInRequest
+      const personType: PersonTypeInRequest =
+        typeof getRequestsByPersonReq.personType === typeof ''
+          ? personTypeInRequestFromJSON(getRequestsByPersonReq.personType)
+          : getRequestsByPersonReq.personType;
+      const personInfoType: PersonInfoType =
+        typeof getRequestsByPersonReq.personInfoType === typeof ''
+          ? personInfoTypeFromJSON(getRequestsByPersonReq.personInfoType)
+          : getRequestsByPersonReq.personInfoType;
+      return await this.requestRepository.getRequestsByPerson(
+        getRequestsByPersonReq,
+        personType,
+        personInfoType
       );
     } catch (error) {
       throw error;

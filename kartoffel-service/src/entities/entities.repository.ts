@@ -54,7 +54,7 @@ export class EntitiesRepository {
   ): Promise<Entity> {
     try {
       if (C.useFaker) {
-        const entity: Entity = await this.kartoffelFaker.randomEntity(true);
+        const entity: Entity = await this.kartoffelFaker.randomEntity(false);
         return entity;
       } else {
         const data = await this.kartoffelUtils.kartoffelGet(
@@ -73,7 +73,7 @@ export class EntitiesRepository {
   ): Promise<Entity> {
     try {
       if (C.useFaker) {
-        const entity: Entity = await this.kartoffelFaker.randomEntity(true);
+        const entity: Entity = await this.kartoffelFaker.randomEntity(false);
         return entity;
       } else {
         const data = await this.kartoffelUtils.kartoffelGet(
@@ -240,8 +240,14 @@ export class EntitiesRepository {
     getEntityByIdRequest: GetEntityByIdRequest
   ): Promise<Entity> {
     try {
+      const withPicture =
+        getEntityByIdRequest.withPicture != undefined
+          ? getEntityByIdRequest.withPicture
+          : false;
       if (C.useFaker) {
-        const entity: Entity = await this.kartoffelFaker.randomEntity(true);
+        const entity: Entity = await this.kartoffelFaker.randomEntity(
+          withPicture
+        );
         return entity;
       } else {
         const data = await this.kartoffelUtils.kartoffelGet(
@@ -249,6 +255,12 @@ export class EntitiesRepository {
           { expanded: true }
         );
         delete data.picture;
+        if (withPicture) {
+          const picture = this.getPictureByEntityId({
+            id: getEntityByIdRequest.id,
+          });
+          data.picture = picture;
+        }
         return data as Entity;
       }
     } catch (error) {

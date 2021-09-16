@@ -2,6 +2,7 @@ import { requestTypeToHebrew } from '../config';
 import {
   CreateCustomNotificationReq,
   NotificationType,
+  notificationTypeFromJSON,
   notificationTypeToJSON,
   OwnerType,
 } from '../interfaces/protoc/proto/notificationService';
@@ -35,7 +36,7 @@ export function generateNotifications(
   request: Request
 ): CreateCustomNotificationReq[] {
   try {
-    type = typeof type == typeof '' ? requestTypeFromJSON(type) : type;
+    type = typeof type == typeof '' ? notificationTypeFromJSON(type) : type;
     let notifications: CreateCustomNotificationReq[] = [];
     let message: string = '';
     let reason: string = '';

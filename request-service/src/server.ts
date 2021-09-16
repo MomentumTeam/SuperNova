@@ -4,34 +4,35 @@ import * as C from './config';
 import { logger } from './logger';
 import {
   getRequestById,
-  getRequestsByCommander,
-  getRequestsSubmittedBy,
   updateRequest,
   deleteRequest,
   getAllRequests,
   createRequestFuncByType,
   updateKartoffelStatus,
   updateADStatus,
-  getRequestsByIdentifierFuncByPersonType,
   canPushToKartoffelQueue,
   canPushToADQueue,
   getRequestBySerialNumber,
   searchRequestsByDisplayNameFuncByPersonType,
-  updateApproverDecisionFuncByPersonType,
   incrementKartoffelRetries,
   incrementADRetries,
   getRequestsInProgressByDue,
   getRequestIdsInProgressByDue,
   updateCommanders,
   updateSecurityApprovers,
+  getRequestsByPerson,
+  updateApproverDecision,
+  isRequestApproved,
+  updateSuperSecurityApprovers,
 } from './requests/request.controller';
-import { RequestType } from './interfaces/protoc/proto/requestService';
+import {
+  PersonTypeInRequest,
+  RequestType,
+} from './interfaces/protoc/proto/requestService';
 import { findPath } from './utils/path';
-import { PersonTypeInRequest } from './enums/personTypeInRequest.enum';
 import { addHealthService } from './health';
 
 const PROTO_PATH = `${findPath('proto')}/requestService.proto`;
-console.log(PROTO_PATH);
 export class Server {
   private server: grpc.Server;
   constructor() {
@@ -47,7 +48,7 @@ export class Server {
           keepCase: true,
           longs: String,
           enums: String,
-          defaults: true,
+          // defaults: true,
           oneofs: true,
         });
       const protoDescriptor: grpc.GrpcObject =
@@ -82,8 +83,7 @@ export class Server {
         DisconectRoleFromEntityRequest: createRequestFuncByType(
           RequestType.DISCONNECT_ROLE
         ),
-        GetRequestsByCommander: getRequestsByCommander,
-        GetRequestsSubmittedBy: getRequestsSubmittedBy,
+        GetRequestsByPerson: getRequestsByPerson,
         GetRequestById: getRequestById,
         UpdateRequest: updateRequest,
         UpdateKartoffelStatus: updateKartoffelStatus,
@@ -91,27 +91,13 @@ export class Server {
         DeleteRequest: deleteRequest,
         GetAllRequests: getAllRequests,
         GetRequestBySerialNumber: getRequestBySerialNumber,
-        GetRequestsBySubmitterIdentifier:
-          getRequestsByIdentifierFuncByPersonType(
-            PersonTypeInRequest.SUBMITTER
-          ),
-        GetRequestsByCommanderIdentifier:
-          getRequestsByIdentifierFuncByPersonType(
-            PersonTypeInRequest.COMMANDER
-          ),
-        GetRequestsBySecurityIdentifier:
-          getRequestsByIdentifierFuncByPersonType(
-            PersonTypeInRequest.SECURITY_APPROVER
-          ),
-        GetRequestsByApproverIdentifier:
-          getRequestsByIdentifierFuncByPersonType(PersonTypeInRequest.APPROVER),
         SearchRequestsBySubmitterDisplayName:
           searchRequestsByDisplayNameFuncByPersonType(
             PersonTypeInRequest.SUBMITTER
           ),
         SearchRequestsByCommanderDisplayName:
           searchRequestsByDisplayNameFuncByPersonType(
-            PersonTypeInRequest.COMMANDER
+            PersonTypeInRequest.COMMANDER_APPROVER
           ),
         SearchRequestsBySecurityDisplayName:
           searchRequestsByDisplayNameFuncByPersonType(
@@ -125,19 +111,13 @@ export class Server {
         CanPushToADQueue: canPushToADQueue,
         IncrementKartoffelRetries: incrementKartoffelRetries,
         IncrementADRetries: incrementADRetries,
-        UpdateCommanderDecision: updateApproverDecisionFuncByPersonType(
-          PersonTypeInRequest.COMMANDER
-        ),
-        UpdateSecurityDecision: updateApproverDecisionFuncByPersonType(
-          PersonTypeInRequest.SECURITY_APPROVER
-        ),
-        UpdateSuperSecurityDecision: updateApproverDecisionFuncByPersonType(
-          PersonTypeInRequest.SUPER_SECURITY_APPROVER
-        ),
+        UpdateApproverDecision: updateApproverDecision,
         GetRequestsInProgressByDue: getRequestsInProgressByDue,
         GetRequestIdsInProgressByDue: getRequestIdsInProgressByDue,
         UpdateCommanders: updateCommanders,
         UpdateSecurityApprovers: updateSecurityApprovers,
+        UpdateSuperSecurityApprovers: updateSuperSecurityApprovers,
+        IsRequestApproved: isRequestApproved,
       });
       logger.info(`Grpc services were successfully added to the server`);
     } catch (error) {

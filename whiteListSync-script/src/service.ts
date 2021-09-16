@@ -3,24 +3,28 @@ import { approverClient } from './clients';
 import {
   ApproverIdArray,
   Approver,
+  UserType,
 } from './interfaces/protoc/proto/approverService';
 
 export function getAllApproverIds(): Promise<ApproverIdArray> {
   logger.info(`Call to getAllApproverIds in WLS`);
 
   return new Promise((resolve, reject) => {
-    approverClient.getAllApproverIds((err: any, response: ApproverIdArray) => {
-      if (err) {
-        logger.error(`SyncApprover ERROR in WLS`, { err });
-        reject(err);
+    approverClient.getAllApproverIds(
+      {},
+      (err: any, response: ApproverIdArray) => {
+        if (err) {
+          logger.error(`SyncApprover ERROR in WLS`, { err });
+          reject(err);
+        }
+
+        logger.info(`SyncApprover OK in WLS`, {
+          response: response,
+        });
+
+        resolve(response);
       }
-
-      logger.info(`SyncApprover OK in WLS`, {
-        response: response,
-      });
-
-      resolve(response);
-    });
+    );
   });
 }
 
