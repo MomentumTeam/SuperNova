@@ -1,8 +1,8 @@
 /* eslint-disable */
-import Long from "long";
-import _m0 from "protobufjs/minimal";
+import Long from 'long';
+import _m0 from 'protobufjs/minimal';
 
-export const protobufPackage = "Kartoffel";
+export const protobufPackage = 'Kartoffel';
 
 export interface GetAllOGsRequest {
   source: string;
@@ -281,6 +281,7 @@ export interface DisconnectDIFromEntityRequest {
 export interface GetEntityByIdRequest {
   /** mongoId of entity */
   id: string;
+  withPicture?: boolean | undefined;
 }
 
 /** DeleteOG */
@@ -388,9 +389,9 @@ export interface DigitalIdentity {
 }
 
 const baseGetAllOGsRequest: object = {
-  source: "",
-  akaUnit: "",
-  updatedFrom: "",
+  source: '',
+  akaUnit: '',
+  updatedFrom: '',
   page: 0,
   pageSize: 0,
 };
@@ -400,13 +401,13 @@ export const GetAllOGsRequest = {
     message: GetAllOGsRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.source !== "") {
+    if (message.source !== '') {
       writer.uint32(10).string(message.source);
     }
-    if (message.akaUnit !== "") {
+    if (message.akaUnit !== '') {
       writer.uint32(18).string(message.akaUnit);
     }
-    if (message.updatedFrom !== "") {
+    if (message.updatedFrom !== '') {
       writer.uint32(26).string(message.updatedFrom);
     }
     if (message.page !== 0) {
@@ -453,17 +454,17 @@ export const GetAllOGsRequest = {
     if (object.source !== undefined && object.source !== null) {
       message.source = String(object.source);
     } else {
-      message.source = "";
+      message.source = '';
     }
     if (object.akaUnit !== undefined && object.akaUnit !== null) {
       message.akaUnit = String(object.akaUnit);
     } else {
-      message.akaUnit = "";
+      message.akaUnit = '';
     }
     if (object.updatedFrom !== undefined && object.updatedFrom !== null) {
       message.updatedFrom = String(object.updatedFrom);
     } else {
-      message.updatedFrom = "";
+      message.updatedFrom = '';
     }
     if (object.page !== undefined && object.page !== null) {
       message.page = Number(object.page);
@@ -494,17 +495,17 @@ export const GetAllOGsRequest = {
     if (object.source !== undefined && object.source !== null) {
       message.source = object.source;
     } else {
-      message.source = "";
+      message.source = '';
     }
     if (object.akaUnit !== undefined && object.akaUnit !== null) {
       message.akaUnit = object.akaUnit;
     } else {
-      message.akaUnit = "";
+      message.akaUnit = '';
     }
     if (object.updatedFrom !== undefined && object.updatedFrom !== null) {
       message.updatedFrom = object.updatedFrom;
     } else {
-      message.updatedFrom = "";
+      message.updatedFrom = '';
     }
     if (object.page !== undefined && object.page !== null) {
       message.page = object.page;
@@ -521,9 +522,9 @@ export const GetAllOGsRequest = {
 };
 
 const baseUpdateDIRequest: object = {
-  id: "",
+  id: '',
   isRoleAttachable: false,
-  mail: "",
+  mail: '',
 };
 
 export const UpdateDIRequest = {
@@ -531,13 +532,13 @@ export const UpdateDIRequest = {
     message: UpdateDIRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
     if (message.isRoleAttachable === true) {
       writer.uint32(16).bool(message.isRoleAttachable);
     }
-    if (message.mail !== "") {
+    if (message.mail !== '') {
       writer.uint32(26).string(message.mail);
     }
     return writer;
@@ -572,7 +573,7 @@ export const UpdateDIRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (
       object.isRoleAttachable !== undefined &&
@@ -585,7 +586,7 @@ export const UpdateDIRequest = {
     if (object.mail !== undefined && object.mail !== null) {
       message.mail = String(object.mail);
     } else {
-      message.mail = "";
+      message.mail = '';
     }
     return message;
   },
@@ -604,7 +605,7 @@ export const UpdateDIRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (
       object.isRoleAttachable !== undefined &&
@@ -617,20 +618,20 @@ export const UpdateDIRequest = {
     if (object.mail !== undefined && object.mail !== null) {
       message.mail = object.mail;
     } else {
-      message.mail = "";
+      message.mail = '';
     }
     return message;
   },
 };
 
-const baseGetDIByUniqueIdRequest: object = { id: "" };
+const baseGetDIByUniqueIdRequest: object = { id: '' };
 
 export const GetDIByUniqueIdRequest = {
   encode(
     message: GetDIByUniqueIdRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
     return writer;
@@ -662,7 +663,7 @@ export const GetDIByUniqueIdRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     return message;
   },
@@ -680,20 +681,20 @@ export const GetDIByUniqueIdRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     return message;
   },
 };
 
-const baseSearchDIOrUniqueIdRequest: object = { uniqueId: "" };
+const baseSearchDIOrUniqueIdRequest: object = { uniqueId: '' };
 
 export const SearchDIOrUniqueIdRequest = {
   encode(
     message: SearchDIOrUniqueIdRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.uniqueId !== "") {
+    if (message.uniqueId !== '') {
       writer.uint32(10).string(message.uniqueId);
     }
     return writer;
@@ -729,7 +730,7 @@ export const SearchDIOrUniqueIdRequest = {
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = String(object.uniqueId);
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     return message;
   },
@@ -749,20 +750,20 @@ export const SearchDIOrUniqueIdRequest = {
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = object.uniqueId;
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     return message;
   },
 };
 
-const baseGetDIByRoleIdRequest: object = { roleId: "" };
+const baseGetDIByRoleIdRequest: object = { roleId: '' };
 
 export const GetDIByRoleIdRequest = {
   encode(
     message: GetDIByRoleIdRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.roleId !== "") {
+    if (message.roleId !== '') {
       writer.uint32(10).string(message.roleId);
     }
     return writer;
@@ -794,7 +795,7 @@ export const GetDIByRoleIdRequest = {
     if (object.roleId !== undefined && object.roleId !== null) {
       message.roleId = String(object.roleId);
     } else {
-      message.roleId = "";
+      message.roleId = '';
     }
     return message;
   },
@@ -810,7 +811,7 @@ export const GetDIByRoleIdRequest = {
     if (object.roleId !== undefined && object.roleId !== null) {
       message.roleId = object.roleId;
     } else {
-      message.roleId = "";
+      message.roleId = '';
     }
     return message;
   },
@@ -891,14 +892,14 @@ export const DigitalIdentities = {
   },
 };
 
-const baseGetAllDIsRequest: object = { updatedFrom: "", page: 0, pageSize: 0 };
+const baseGetAllDIsRequest: object = { updatedFrom: '', page: 0, pageSize: 0 };
 
 export const GetAllDIsRequest = {
   encode(
     message: GetAllDIsRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.updatedFrom !== "") {
+    if (message.updatedFrom !== '') {
       writer.uint32(10).string(message.updatedFrom);
     }
     if (message.page !== 0) {
@@ -939,7 +940,7 @@ export const GetAllDIsRequest = {
     if (object.updatedFrom !== undefined && object.updatedFrom !== null) {
       message.updatedFrom = String(object.updatedFrom);
     } else {
-      message.updatedFrom = "";
+      message.updatedFrom = '';
     }
     if (object.page !== undefined && object.page !== null) {
       message.page = Number(object.page);
@@ -968,7 +969,7 @@ export const GetAllDIsRequest = {
     if (object.updatedFrom !== undefined && object.updatedFrom !== null) {
       message.updatedFrom = object.updatedFrom;
     } else {
-      message.updatedFrom = "";
+      message.updatedFrom = '';
     }
     if (object.page !== undefined && object.page !== null) {
       message.page = object.page;
@@ -984,20 +985,20 @@ export const GetAllDIsRequest = {
   },
 };
 
-const baseUpdateOGParentRequest: object = { id: "", parentId: "", parent: "" };
+const baseUpdateOGParentRequest: object = { id: '', parentId: '', parent: '' };
 
 export const UpdateOGParentRequest = {
   encode(
     message: UpdateOGParentRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
-    if (message.parentId !== "") {
+    if (message.parentId !== '') {
       writer.uint32(18).string(message.parentId);
     }
-    if (message.parent !== "") {
+    if (message.parent !== '') {
       writer.uint32(26).string(message.parent);
     }
     return writer;
@@ -1035,17 +1036,17 @@ export const UpdateOGParentRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.parentId !== undefined && object.parentId !== null) {
       message.parentId = String(object.parentId);
     } else {
-      message.parentId = "";
+      message.parentId = '';
     }
     if (object.parent !== undefined && object.parent !== null) {
       message.parent = String(object.parent);
     } else {
-      message.parent = "";
+      message.parent = '';
     }
     return message;
   },
@@ -1065,30 +1066,30 @@ export const UpdateOGParentRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.parentId !== undefined && object.parentId !== null) {
       message.parentId = object.parentId;
     } else {
-      message.parentId = "";
+      message.parentId = '';
     }
     if (object.parent !== undefined && object.parent !== null) {
       message.parent = object.parent;
     } else {
-      message.parent = "";
+      message.parent = '';
     }
     return message;
   },
 };
 
-const baseGetOGByIdRequest: object = { id: "" };
+const baseGetOGByIdRequest: object = { id: '' };
 
 export const GetOGByIdRequest = {
   encode(
     message: GetOGByIdRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
     return writer;
@@ -1117,7 +1118,7 @@ export const GetOGByIdRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     return message;
   },
@@ -1133,20 +1134,20 @@ export const GetOGByIdRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     return message;
   },
 };
 
-const baseGetOGByHierarchyNameRequest: object = { hierarchy: "" };
+const baseGetOGByHierarchyNameRequest: object = { hierarchy: '' };
 
 export const GetOGByHierarchyNameRequest = {
   encode(
     message: GetOGByHierarchyNameRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.hierarchy !== "") {
+    if (message.hierarchy !== '') {
       writer.uint32(10).string(message.hierarchy);
     }
     return writer;
@@ -1182,7 +1183,7 @@ export const GetOGByHierarchyNameRequest = {
     if (object.hierarchy !== undefined && object.hierarchy !== null) {
       message.hierarchy = String(object.hierarchy);
     } else {
-      message.hierarchy = "";
+      message.hierarchy = '';
     }
     return message;
   },
@@ -1202,20 +1203,20 @@ export const GetOGByHierarchyNameRequest = {
     if (object.hierarchy !== undefined && object.hierarchy !== null) {
       message.hierarchy = object.hierarchy;
     } else {
-      message.hierarchy = "";
+      message.hierarchy = '';
     }
     return message;
   },
 };
 
-const baseDeleteEntityRequest: object = { id: "" };
+const baseDeleteEntityRequest: object = { id: '' };
 
 export const DeleteEntityRequest = {
   encode(
     message: DeleteEntityRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
     return writer;
@@ -1244,7 +1245,7 @@ export const DeleteEntityRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     return message;
   },
@@ -1260,20 +1261,20 @@ export const DeleteEntityRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     return message;
   },
 };
 
-const baseGetEntityByIdentifierRequest: object = { identifier: "" };
+const baseGetEntityByIdentifierRequest: object = { identifier: '' };
 
 export const GetEntityByIdentifierRequest = {
   encode(
     message: GetEntityByIdentifierRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.identifier !== "") {
+    if (message.identifier !== '') {
       writer.uint32(10).string(message.identifier);
     }
     return writer;
@@ -1309,7 +1310,7 @@ export const GetEntityByIdentifierRequest = {
     if (object.identifier !== undefined && object.identifier !== null) {
       message.identifier = String(object.identifier);
     } else {
-      message.identifier = "";
+      message.identifier = '';
     }
     return message;
   },
@@ -1329,14 +1330,14 @@ export const GetEntityByIdentifierRequest = {
     if (object.identifier !== undefined && object.identifier !== null) {
       message.identifier = object.identifier;
     } else {
-      message.identifier = "";
+      message.identifier = '';
     }
     return message;
   },
 };
 
 const baseGetEntitiesByHierarchyRequest: object = {
-  hierarchy: "",
+  hierarchy: '',
   direct: false,
   page: 0,
   pageSize: 0,
@@ -1347,7 +1348,7 @@ export const GetEntitiesByHierarchyRequest = {
     message: GetEntitiesByHierarchyRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.hierarchy !== "") {
+    if (message.hierarchy !== '') {
       writer.uint32(10).string(message.hierarchy);
     }
     if (message.direct === true) {
@@ -1401,7 +1402,7 @@ export const GetEntitiesByHierarchyRequest = {
     if (object.hierarchy !== undefined && object.hierarchy !== null) {
       message.hierarchy = String(object.hierarchy);
     } else {
-      message.hierarchy = "";
+      message.hierarchy = '';
     }
     if (object.direct !== undefined && object.direct !== null) {
       message.direct = Boolean(object.direct);
@@ -1439,7 +1440,7 @@ export const GetEntitiesByHierarchyRequest = {
     if (object.hierarchy !== undefined && object.hierarchy !== null) {
       message.hierarchy = object.hierarchy;
     } else {
-      message.hierarchy = "";
+      message.hierarchy = '';
     }
     if (object.direct !== undefined && object.direct !== null) {
       message.direct = object.direct;
@@ -1460,14 +1461,14 @@ export const GetEntitiesByHierarchyRequest = {
   },
 };
 
-const baseGetEntityByDIRequest: object = { uniqueId: "" };
+const baseGetEntityByDIRequest: object = { uniqueId: '' };
 
 export const GetEntityByDIRequest = {
   encode(
     message: GetEntityByDIRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.uniqueId !== "") {
+    if (message.uniqueId !== '') {
       writer.uint32(10).string(message.uniqueId);
     }
     return writer;
@@ -1499,7 +1500,7 @@ export const GetEntityByDIRequest = {
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = String(object.uniqueId);
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     return message;
   },
@@ -1515,20 +1516,20 @@ export const GetEntityByDIRequest = {
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = object.uniqueId;
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     return message;
   },
 };
 
-const baseUpdateEntityRequest: object = { id: "" };
+const baseUpdateEntityRequest: object = { id: '' };
 
 export const UpdateEntityRequest = {
   encode(
     message: UpdateEntityRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
     if (message.properties !== undefined) {
@@ -1569,7 +1570,7 @@ export const UpdateEntityRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.properties !== undefined && object.properties !== null) {
       message.properties = UpdateEntityProperties.fromJSON(object.properties);
@@ -1594,7 +1595,7 @@ export const UpdateEntityRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.properties !== undefined && object.properties !== null) {
       message.properties = UpdateEntityProperties.fromPartial(
@@ -1607,7 +1608,7 @@ export const UpdateEntityRequest = {
   },
 };
 
-const baseUpdateEntityProperties: object = { phone: "", mobilePhone: "" };
+const baseUpdateEntityProperties: object = { phone: '', mobilePhone: '' };
 
 export const UpdateEntityProperties = {
   encode(
@@ -1926,17 +1927,17 @@ export const UpdateEntityProperties = {
   },
 };
 
-const baseRenameOGRequest: object = { id: "", name: "" };
+const baseRenameOGRequest: object = { id: '', name: '' };
 
 export const RenameOGRequest = {
   encode(
     message: RenameOGRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
-    if (message.name !== "") {
+    if (message.name !== '') {
       writer.uint32(18).string(message.name);
     }
     return writer;
@@ -1968,12 +1969,12 @@ export const RenameOGRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = String(object.name);
     } else {
-      message.name = "";
+      message.name = '';
     }
     return message;
   },
@@ -1990,25 +1991,25 @@ export const RenameOGRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = object.name;
     } else {
-      message.name = "";
+      message.name = '';
     }
     return message;
   },
 };
 
-const baseGetPictureByEntityIdRequest: object = { id: "" };
+const baseGetPictureByEntityIdRequest: object = { id: '' };
 
 export const GetPictureByEntityIdRequest = {
   encode(
     message: GetPictureByEntityIdRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
     return writer;
@@ -2044,7 +2045,7 @@ export const GetPictureByEntityIdRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     return message;
   },
@@ -2064,17 +2065,17 @@ export const GetPictureByEntityIdRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     return message;
   },
 };
 
-const baseImage: object = { image: "" };
+const baseImage: object = { image: '' };
 
 export const Image = {
   encode(message: Image, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.image !== "") {
+    if (message.image !== '') {
       writer.uint32(10).string(message.image);
     }
     return writer;
@@ -2103,7 +2104,7 @@ export const Image = {
     if (object.image !== undefined && object.image !== null) {
       message.image = String(object.image);
     } else {
-      message.image = "";
+      message.image = '';
     }
     return message;
   },
@@ -2119,20 +2120,20 @@ export const Image = {
     if (object.image !== undefined && object.image !== null) {
       message.image = object.image;
     } else {
-      message.image = "";
+      message.image = '';
     }
     return message;
   },
 };
 
-const baseSearchEntitiesByFullNameRequest: object = { fullName: "" };
+const baseSearchEntitiesByFullNameRequest: object = { fullName: '' };
 
 export const SearchEntitiesByFullNameRequest = {
   encode(
     message: SearchEntitiesByFullNameRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.fullName !== "") {
+    if (message.fullName !== '') {
       writer.uint32(10).string(message.fullName);
     }
     if (message.rank !== undefined) {
@@ -2198,7 +2199,7 @@ export const SearchEntitiesByFullNameRequest = {
     if (object.fullName !== undefined && object.fullName !== null) {
       message.fullName = String(object.fullName);
     } else {
-      message.fullName = "";
+      message.fullName = '';
     }
     if (object.rank !== undefined && object.rank !== null) {
       message.rank = String(object.rank);
@@ -2249,7 +2250,7 @@ export const SearchEntitiesByFullNameRequest = {
     if (object.fullName !== undefined && object.fullName !== null) {
       message.fullName = object.fullName;
     } else {
-      message.fullName = "";
+      message.fullName = '';
     }
     if (object.rank !== undefined && object.rank !== null) {
       message.rank = object.rank;
@@ -2280,14 +2281,14 @@ export const SearchEntitiesByFullNameRequest = {
   },
 };
 
-const baseGetOGTreeRequest: object = { rootId: "" };
+const baseGetOGTreeRequest: object = { rootId: '' };
 
 export const GetOGTreeRequest = {
   encode(
     message: GetOGTreeRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.rootId !== "") {
+    if (message.rootId !== '') {
       writer.uint32(10).string(message.rootId);
     }
     return writer;
@@ -2316,7 +2317,7 @@ export const GetOGTreeRequest = {
     if (object.rootId !== undefined && object.rootId !== null) {
       message.rootId = String(object.rootId);
     } else {
-      message.rootId = "";
+      message.rootId = '';
     }
     return message;
   },
@@ -2332,23 +2333,23 @@ export const GetOGTreeRequest = {
     if (object.rootId !== undefined && object.rootId !== null) {
       message.rootId = object.rootId;
     } else {
-      message.rootId = "";
+      message.rootId = '';
     }
     return message;
   },
 };
 
-const baseOGTree: object = { id: "", name: "" };
+const baseOGTree: object = { id: '', name: '' };
 
 export const OGTree = {
   encode(
     message: OGTree,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
-    if (message.name !== "") {
+    if (message.name !== '') {
       writer.uint32(18).string(message.name);
     }
     for (const v of message.children) {
@@ -2388,12 +2389,12 @@ export const OGTree = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = String(object.name);
     } else {
-      message.name = "";
+      message.name = '';
     }
     if (object.children !== undefined && object.children !== null) {
       for (const e of object.children) {
@@ -2423,12 +2424,12 @@ export const OGTree = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = object.name;
     } else {
-      message.name = "";
+      message.name = '';
     }
     if (object.children !== undefined && object.children !== null) {
       for (const e of object.children) {
@@ -2439,14 +2440,14 @@ export const OGTree = {
   },
 };
 
-const baseSearchOGRequest: object = { nameAndHierarchy: "" };
+const baseSearchOGRequest: object = { nameAndHierarchy: '' };
 
 export const SearchOGRequest = {
   encode(
     message: SearchOGRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.nameAndHierarchy !== "") {
+    if (message.nameAndHierarchy !== '') {
       writer.uint32(10).string(message.nameAndHierarchy);
     }
     return writer;
@@ -2478,7 +2479,7 @@ export const SearchOGRequest = {
     ) {
       message.nameAndHierarchy = String(object.nameAndHierarchy);
     } else {
-      message.nameAndHierarchy = "";
+      message.nameAndHierarchy = '';
     }
     return message;
   },
@@ -2498,7 +2499,7 @@ export const SearchOGRequest = {
     ) {
       message.nameAndHierarchy = object.nameAndHierarchy;
     } else {
-      message.nameAndHierarchy = "";
+      message.nameAndHierarchy = '';
     }
     return message;
   },
@@ -2573,20 +2574,20 @@ export const OGArray = {
   },
 };
 
-const baseCreateOGRequest: object = { name: "", parent: "", source: "" };
+const baseCreateOGRequest: object = { name: '', parent: '', source: '' };
 
 export const CreateOGRequest = {
   encode(
     message: CreateOGRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.name !== "") {
+    if (message.name !== '') {
       writer.uint32(10).string(message.name);
     }
-    if (message.parent !== "") {
+    if (message.parent !== '') {
       writer.uint32(18).string(message.parent);
     }
-    if (message.source !== "") {
+    if (message.source !== '') {
       writer.uint32(26).string(message.source);
     }
     return writer;
@@ -2621,17 +2622,17 @@ export const CreateOGRequest = {
     if (object.name !== undefined && object.name !== null) {
       message.name = String(object.name);
     } else {
-      message.name = "";
+      message.name = '';
     }
     if (object.parent !== undefined && object.parent !== null) {
       message.parent = String(object.parent);
     } else {
-      message.parent = "";
+      message.parent = '';
     }
     if (object.source !== undefined && object.source !== null) {
       message.source = String(object.source);
     } else {
-      message.source = "";
+      message.source = '';
     }
     return message;
   },
@@ -2649,29 +2650,29 @@ export const CreateOGRequest = {
     if (object.name !== undefined && object.name !== null) {
       message.name = object.name;
     } else {
-      message.name = "";
+      message.name = '';
     }
     if (object.parent !== undefined && object.parent !== null) {
       message.parent = object.parent;
     } else {
-      message.parent = "";
+      message.parent = '';
     }
     if (object.source !== undefined && object.source !== null) {
       message.source = object.source;
     } else {
-      message.source = "";
+      message.source = '';
     }
     return message;
   },
 };
 
 const baseCreateDIRequest: object = {
-  entityId: "",
+  entityId: '',
   isRoleAttachable: false,
-  mail: "",
-  source: "",
-  type: "",
-  uniqueId: "",
+  mail: '',
+  source: '',
+  type: '',
+  uniqueId: '',
 };
 
 export const CreateDIRequest = {
@@ -2679,22 +2680,22 @@ export const CreateDIRequest = {
     message: CreateDIRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.entityId !== "") {
+    if (message.entityId !== '') {
       writer.uint32(10).string(message.entityId);
     }
     if (message.isRoleAttachable === true) {
       writer.uint32(16).bool(message.isRoleAttachable);
     }
-    if (message.mail !== "") {
+    if (message.mail !== '') {
       writer.uint32(26).string(message.mail);
     }
-    if (message.source !== "") {
+    if (message.source !== '') {
       writer.uint32(34).string(message.source);
     }
-    if (message.type !== "") {
+    if (message.type !== '') {
       writer.uint32(42).string(message.type);
     }
-    if (message.uniqueId !== "") {
+    if (message.uniqueId !== '') {
       writer.uint32(50).string(message.uniqueId);
     }
     return writer;
@@ -2738,7 +2739,7 @@ export const CreateDIRequest = {
     if (object.entityId !== undefined && object.entityId !== null) {
       message.entityId = String(object.entityId);
     } else {
-      message.entityId = "";
+      message.entityId = '';
     }
     if (
       object.isRoleAttachable !== undefined &&
@@ -2751,22 +2752,22 @@ export const CreateDIRequest = {
     if (object.mail !== undefined && object.mail !== null) {
       message.mail = String(object.mail);
     } else {
-      message.mail = "";
+      message.mail = '';
     }
     if (object.source !== undefined && object.source !== null) {
       message.source = String(object.source);
     } else {
-      message.source = "";
+      message.source = '';
     }
     if (object.type !== undefined && object.type !== null) {
       message.type = String(object.type);
     } else {
-      message.type = "";
+      message.type = '';
     }
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = String(object.uniqueId);
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     return message;
   },
@@ -2788,7 +2789,7 @@ export const CreateDIRequest = {
     if (object.entityId !== undefined && object.entityId !== null) {
       message.entityId = object.entityId;
     } else {
-      message.entityId = "";
+      message.entityId = '';
     }
     if (
       object.isRoleAttachable !== undefined &&
@@ -2801,29 +2802,29 @@ export const CreateDIRequest = {
     if (object.mail !== undefined && object.mail !== null) {
       message.mail = object.mail;
     } else {
-      message.mail = "";
+      message.mail = '';
     }
     if (object.source !== undefined && object.source !== null) {
       message.source = object.source;
     } else {
-      message.source = "";
+      message.source = '';
     }
     if (object.type !== undefined && object.type !== null) {
       message.type = object.type;
     } else {
-      message.type = "";
+      message.type = '';
     }
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = object.uniqueId;
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     return message;
   },
 };
 
 const baseGetAllRolesRequest: object = {
-  updatedFrom: "",
+  updatedFrom: '',
   page: 0,
   pageSize: 0,
 };
@@ -2833,7 +2834,7 @@ export const GetAllRolesRequest = {
     message: GetAllRolesRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.updatedFrom !== "") {
+    if (message.updatedFrom !== '') {
       writer.uint32(10).string(message.updatedFrom);
     }
     if (message.page !== 0) {
@@ -2874,7 +2875,7 @@ export const GetAllRolesRequest = {
     if (object.updatedFrom !== undefined && object.updatedFrom !== null) {
       message.updatedFrom = String(object.updatedFrom);
     } else {
-      message.updatedFrom = "";
+      message.updatedFrom = '';
     }
     if (object.page !== undefined && object.page !== null) {
       message.page = Number(object.page);
@@ -2903,7 +2904,7 @@ export const GetAllRolesRequest = {
     if (object.updatedFrom !== undefined && object.updatedFrom !== null) {
       message.updatedFrom = object.updatedFrom;
     } else {
-      message.updatedFrom = "";
+      message.updatedFrom = '';
     }
     if (object.page !== undefined && object.page !== null) {
       message.page = object.page;
@@ -2920,10 +2921,10 @@ export const GetAllRolesRequest = {
 };
 
 const baseCreateRoleRequest: object = {
-  jobTitle: "",
-  directGroup: "",
-  source: "",
-  roleId: "",
+  jobTitle: '',
+  directGroup: '',
+  source: '',
+  roleId: '',
 };
 
 export const CreateRoleRequest = {
@@ -2931,16 +2932,16 @@ export const CreateRoleRequest = {
     message: CreateRoleRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.jobTitle !== "") {
+    if (message.jobTitle !== '') {
       writer.uint32(10).string(message.jobTitle);
     }
-    if (message.directGroup !== "") {
+    if (message.directGroup !== '') {
       writer.uint32(18).string(message.directGroup);
     }
-    if (message.source !== "") {
+    if (message.source !== '') {
       writer.uint32(26).string(message.source);
     }
-    if (message.roleId !== "") {
+    if (message.roleId !== '') {
       writer.uint32(34).string(message.roleId);
     }
     return writer;
@@ -2978,22 +2979,22 @@ export const CreateRoleRequest = {
     if (object.jobTitle !== undefined && object.jobTitle !== null) {
       message.jobTitle = String(object.jobTitle);
     } else {
-      message.jobTitle = "";
+      message.jobTitle = '';
     }
     if (object.directGroup !== undefined && object.directGroup !== null) {
       message.directGroup = String(object.directGroup);
     } else {
-      message.directGroup = "";
+      message.directGroup = '';
     }
     if (object.source !== undefined && object.source !== null) {
       message.source = String(object.source);
     } else {
-      message.source = "";
+      message.source = '';
     }
     if (object.roleId !== undefined && object.roleId !== null) {
       message.roleId = String(object.roleId);
     } else {
-      message.roleId = "";
+      message.roleId = '';
     }
     return message;
   },
@@ -3013,35 +3014,35 @@ export const CreateRoleRequest = {
     if (object.jobTitle !== undefined && object.jobTitle !== null) {
       message.jobTitle = object.jobTitle;
     } else {
-      message.jobTitle = "";
+      message.jobTitle = '';
     }
     if (object.directGroup !== undefined && object.directGroup !== null) {
       message.directGroup = object.directGroup;
     } else {
-      message.directGroup = "";
+      message.directGroup = '';
     }
     if (object.source !== undefined && object.source !== null) {
       message.source = object.source;
     } else {
-      message.source = "";
+      message.source = '';
     }
     if (object.roleId !== undefined && object.roleId !== null) {
       message.roleId = object.roleId;
     } else {
-      message.roleId = "";
+      message.roleId = '';
     }
     return message;
   },
 };
 
-const baseDeleteRoleRequest: object = { roleId: "" };
+const baseDeleteRoleRequest: object = { roleId: '' };
 
 export const DeleteRoleRequest = {
   encode(
     message: DeleteRoleRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.roleId !== "") {
+    if (message.roleId !== '') {
       writer.uint32(10).string(message.roleId);
     }
     return writer;
@@ -3070,7 +3071,7 @@ export const DeleteRoleRequest = {
     if (object.roleId !== undefined && object.roleId !== null) {
       message.roleId = String(object.roleId);
     } else {
-      message.roleId = "";
+      message.roleId = '';
     }
     return message;
   },
@@ -3086,23 +3087,23 @@ export const DeleteRoleRequest = {
     if (object.roleId !== undefined && object.roleId !== null) {
       message.roleId = object.roleId;
     } else {
-      message.roleId = "";
+      message.roleId = '';
     }
     return message;
   },
 };
 
-const baseRenameRoleRequest: object = { roleId: "", jobTitle: "" };
+const baseRenameRoleRequest: object = { roleId: '', jobTitle: '' };
 
 export const RenameRoleRequest = {
   encode(
     message: RenameRoleRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.roleId !== "") {
+    if (message.roleId !== '') {
       writer.uint32(10).string(message.roleId);
     }
-    if (message.jobTitle !== "") {
+    if (message.jobTitle !== '') {
       writer.uint32(18).string(message.jobTitle);
     }
     return writer;
@@ -3134,12 +3135,12 @@ export const RenameRoleRequest = {
     if (object.roleId !== undefined && object.roleId !== null) {
       message.roleId = String(object.roleId);
     } else {
-      message.roleId = "";
+      message.roleId = '';
     }
     if (object.jobTitle !== undefined && object.jobTitle !== null) {
       message.jobTitle = String(object.jobTitle);
     } else {
-      message.jobTitle = "";
+      message.jobTitle = '';
     }
     return message;
   },
@@ -3156,28 +3157,28 @@ export const RenameRoleRequest = {
     if (object.roleId !== undefined && object.roleId !== null) {
       message.roleId = object.roleId;
     } else {
-      message.roleId = "";
+      message.roleId = '';
     }
     if (object.jobTitle !== undefined && object.jobTitle !== null) {
       message.jobTitle = object.jobTitle;
     } else {
-      message.jobTitle = "";
+      message.jobTitle = '';
     }
     return message;
   },
 };
 
-const baseConnectRoleAndDIRequest: object = { id: "", uniqueId: "" };
+const baseConnectRoleAndDIRequest: object = { id: '', uniqueId: '' };
 
 export const ConnectRoleAndDIRequest = {
   encode(
     message: ConnectRoleAndDIRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
-    if (message.uniqueId !== "") {
+    if (message.uniqueId !== '') {
       writer.uint32(18).string(message.uniqueId);
     }
     return writer;
@@ -3216,12 +3217,12 @@ export const ConnectRoleAndDIRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = String(object.uniqueId);
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     return message;
   },
@@ -3242,28 +3243,28 @@ export const ConnectRoleAndDIRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = object.uniqueId;
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     return message;
   },
 };
 
-const baseDisconnectRoleAndDIRequest: object = { roleId: "", uniqueId: "" };
+const baseDisconnectRoleAndDIRequest: object = { roleId: '', uniqueId: '' };
 
 export const DisconnectRoleAndDIRequest = {
   encode(
     message: DisconnectRoleAndDIRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.roleId !== "") {
+    if (message.roleId !== '') {
       writer.uint32(10).string(message.roleId);
     }
-    if (message.uniqueId !== "") {
+    if (message.uniqueId !== '') {
       writer.uint32(18).string(message.uniqueId);
     }
     return writer;
@@ -3302,12 +3303,12 @@ export const DisconnectRoleAndDIRequest = {
     if (object.roleId !== undefined && object.roleId !== null) {
       message.roleId = String(object.roleId);
     } else {
-      message.roleId = "";
+      message.roleId = '';
     }
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = String(object.uniqueId);
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     return message;
   },
@@ -3328,25 +3329,25 @@ export const DisconnectRoleAndDIRequest = {
     if (object.roleId !== undefined && object.roleId !== null) {
       message.roleId = object.roleId;
     } else {
-      message.roleId = "";
+      message.roleId = '';
     }
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = object.uniqueId;
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     return message;
   },
 };
 
-const baseGetRoleByRoleIdRequest: object = { roleId: "" };
+const baseGetRoleByRoleIdRequest: object = { roleId: '' };
 
 export const GetRoleByRoleIdRequest = {
   encode(
     message: GetRoleByRoleIdRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.roleId !== "") {
+    if (message.roleId !== '') {
       writer.uint32(10).string(message.roleId);
     }
     return writer;
@@ -3378,7 +3379,7 @@ export const GetRoleByRoleIdRequest = {
     if (object.roleId !== undefined && object.roleId !== null) {
       message.roleId = String(object.roleId);
     } else {
-      message.roleId = "";
+      message.roleId = '';
     }
     return message;
   },
@@ -3396,14 +3397,14 @@ export const GetRoleByRoleIdRequest = {
     if (object.roleId !== undefined && object.roleId !== null) {
       message.roleId = object.roleId;
     } else {
-      message.roleId = "";
+      message.roleId = '';
     }
     return message;
   },
 };
 
 const baseGetRolesUnderOGRequest: object = {
-  groupId: "",
+  groupId: '',
   direct: false,
   page: 0,
   pageSize: 0,
@@ -3414,7 +3415,7 @@ export const GetRolesUnderOGRequest = {
     message: GetRolesUnderOGRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.groupId !== "") {
+    if (message.groupId !== '') {
       writer.uint32(10).string(message.groupId);
     }
     if (message.direct === true) {
@@ -3464,7 +3465,7 @@ export const GetRolesUnderOGRequest = {
     if (object.groupId !== undefined && object.groupId !== null) {
       message.groupId = String(object.groupId);
     } else {
-      message.groupId = "";
+      message.groupId = '';
     }
     if (object.direct !== undefined && object.direct !== null) {
       message.direct = Boolean(object.direct);
@@ -3500,7 +3501,7 @@ export const GetRolesUnderOGRequest = {
     if (object.groupId !== undefined && object.groupId !== null) {
       message.groupId = object.groupId;
     } else {
-      message.groupId = "";
+      message.groupId = '';
     }
     if (object.direct !== undefined && object.direct !== null) {
       message.direct = object.direct;
@@ -3521,14 +3522,14 @@ export const GetRolesUnderOGRequest = {
   },
 };
 
-const baseGetRoleByDIRequest: object = { uniqueId: "" };
+const baseGetRoleByDIRequest: object = { uniqueId: '' };
 
 export const GetRoleByDIRequest = {
   encode(
     message: GetRoleByDIRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.uniqueId !== "") {
+    if (message.uniqueId !== '') {
       writer.uint32(10).string(message.uniqueId);
     }
     return writer;
@@ -3557,7 +3558,7 @@ export const GetRoleByDIRequest = {
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = String(object.uniqueId);
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     return message;
   },
@@ -3573,14 +3574,14 @@ export const GetRoleByDIRequest = {
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = object.uniqueId;
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     return message;
   },
 };
 
 const baseGetRolesByHierarchyRequest: object = {
-  hierarchy: "",
+  hierarchy: '',
   direct: false,
   page: 0,
   pageSize: 0,
@@ -3591,7 +3592,7 @@ export const GetRolesByHierarchyRequest = {
     message: GetRolesByHierarchyRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.hierarchy !== "") {
+    if (message.hierarchy !== '') {
       writer.uint32(10).string(message.hierarchy);
     }
     if (message.direct === true) {
@@ -3645,7 +3646,7 @@ export const GetRolesByHierarchyRequest = {
     if (object.hierarchy !== undefined && object.hierarchy !== null) {
       message.hierarchy = String(object.hierarchy);
     } else {
-      message.hierarchy = "";
+      message.hierarchy = '';
     }
     if (object.direct !== undefined && object.direct !== null) {
       message.direct = Boolean(object.direct);
@@ -3683,7 +3684,7 @@ export const GetRolesByHierarchyRequest = {
     if (object.hierarchy !== undefined && object.hierarchy !== null) {
       message.hierarchy = object.hierarchy;
     } else {
-      message.hierarchy = "";
+      message.hierarchy = '';
     }
     if (object.direct !== undefined && object.direct !== null) {
       message.direct = object.direct;
@@ -3704,17 +3705,17 @@ export const GetRolesByHierarchyRequest = {
   },
 };
 
-const baseChangeRoleOGRequest: object = { roleId: "", groupId: "" };
+const baseChangeRoleOGRequest: object = { roleId: '', groupId: '' };
 
 export const ChangeRoleOGRequest = {
   encode(
     message: ChangeRoleOGRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.roleId !== "") {
+    if (message.roleId !== '') {
       writer.uint32(10).string(message.roleId);
     }
-    if (message.groupId !== "") {
+    if (message.groupId !== '') {
       writer.uint32(18).string(message.groupId);
     }
     return writer;
@@ -3746,12 +3747,12 @@ export const ChangeRoleOGRequest = {
     if (object.roleId !== undefined && object.roleId !== null) {
       message.roleId = String(object.roleId);
     } else {
-      message.roleId = "";
+      message.roleId = '';
     }
     if (object.groupId !== undefined && object.groupId !== null) {
       message.groupId = String(object.groupId);
     } else {
-      message.groupId = "";
+      message.groupId = '';
     }
     return message;
   },
@@ -3768,12 +3769,12 @@ export const ChangeRoleOGRequest = {
     if (object.roleId !== undefined && object.roleId !== null) {
       message.roleId = object.roleId;
     } else {
-      message.roleId = "";
+      message.roleId = '';
     }
     if (object.groupId !== undefined && object.groupId !== null) {
       message.groupId = object.groupId;
     } else {
-      message.groupId = "";
+      message.groupId = '';
     }
     return message;
   },
@@ -3911,17 +3912,17 @@ export const RoleArray = {
   },
 };
 
-const baseConnectEntityAndDIRequest: object = { id: "", uniqueId: "" };
+const baseConnectEntityAndDIRequest: object = { id: '', uniqueId: '' };
 
 export const ConnectEntityAndDIRequest = {
   encode(
     message: ConnectEntityAndDIRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
-    if (message.uniqueId !== "") {
+    if (message.uniqueId !== '') {
       writer.uint32(18).string(message.uniqueId);
     }
     return writer;
@@ -3960,12 +3961,12 @@ export const ConnectEntityAndDIRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = String(object.uniqueId);
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     return message;
   },
@@ -3986,18 +3987,18 @@ export const ConnectEntityAndDIRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = object.uniqueId;
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     return message;
   },
 };
 
-const baseCreateEntityRequest: object = { phone: "", mobilePhone: "" };
+const baseCreateEntityRequest: object = { phone: '', mobilePhone: '' };
 
 export const CreateEntityRequest = {
   encode(
@@ -4311,14 +4312,14 @@ export const CreateEntityRequest = {
   },
 };
 
-const baseGetEntityByRoleIdRequest: object = { roleId: "" };
+const baseGetEntityByRoleIdRequest: object = { roleId: '' };
 
 export const GetEntityByRoleIdRequest = {
   encode(
     message: GetEntityByRoleIdRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.roleId !== "") {
+    if (message.roleId !== '') {
       writer.uint32(10).string(message.roleId);
     }
     return writer;
@@ -4354,7 +4355,7 @@ export const GetEntityByRoleIdRequest = {
     if (object.roleId !== undefined && object.roleId !== null) {
       message.roleId = String(object.roleId);
     } else {
-      message.roleId = "";
+      message.roleId = '';
     }
     return message;
   },
@@ -4374,23 +4375,23 @@ export const GetEntityByRoleIdRequest = {
     if (object.roleId !== undefined && object.roleId !== null) {
       message.roleId = object.roleId;
     } else {
-      message.roleId = "";
+      message.roleId = '';
     }
     return message;
   },
 };
 
-const baseDisconnectDIFromEntityRequest: object = { id: "", uniqueId: "" };
+const baseDisconnectDIFromEntityRequest: object = { id: '', uniqueId: '' };
 
 export const DisconnectDIFromEntityRequest = {
   encode(
     message: DisconnectDIFromEntityRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
-    if (message.uniqueId !== "") {
+    if (message.uniqueId !== '') {
       writer.uint32(18).string(message.uniqueId);
     }
     return writer;
@@ -4429,12 +4430,12 @@ export const DisconnectDIFromEntityRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = String(object.uniqueId);
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     return message;
   },
@@ -4455,26 +4456,29 @@ export const DisconnectDIFromEntityRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = object.uniqueId;
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     return message;
   },
 };
 
-const baseGetEntityByIdRequest: object = { id: "" };
+const baseGetEntityByIdRequest: object = { id: '' };
 
 export const GetEntityByIdRequest = {
   encode(
     message: GetEntityByIdRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
+    }
+    if (message.withPicture !== undefined) {
+      writer.uint32(16).bool(message.withPicture);
     }
     return writer;
   },
@@ -4492,6 +4496,9 @@ export const GetEntityByIdRequest = {
         case 1:
           message.id = reader.string();
           break;
+        case 2:
+          message.withPicture = reader.bool();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -4505,7 +4512,12 @@ export const GetEntityByIdRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
+    }
+    if (object.withPicture !== undefined && object.withPicture !== null) {
+      message.withPicture = Boolean(object.withPicture);
+    } else {
+      message.withPicture = undefined;
     }
     return message;
   },
@@ -4513,6 +4525,8 @@ export const GetEntityByIdRequest = {
   toJSON(message: GetEntityByIdRequest): unknown {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
+    message.withPicture !== undefined &&
+      (obj.withPicture = message.withPicture);
     return obj;
   },
 
@@ -4521,20 +4535,25 @@ export const GetEntityByIdRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
+    }
+    if (object.withPicture !== undefined && object.withPicture !== null) {
+      message.withPicture = object.withPicture;
+    } else {
+      message.withPicture = undefined;
     }
     return message;
   },
 };
 
-const baseDeleteOGRequest: object = { id: "" };
+const baseDeleteOGRequest: object = { id: '' };
 
 export const DeleteOGRequest = {
   encode(
     message: DeleteOGRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
     return writer;
@@ -4563,7 +4582,7 @@ export const DeleteOGRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     return message;
   },
@@ -4579,14 +4598,14 @@ export const DeleteOGRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     return message;
   },
 };
 
 const baseGetChildrenOfOGRequest: object = {
-  id: "",
+  id: '',
   page: 0,
   pageSize: 0,
   direct: false,
@@ -4597,7 +4616,7 @@ export const GetChildrenOfOGRequest = {
     message: GetChildrenOfOGRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
     if (message.page !== 0) {
@@ -4647,7 +4666,7 @@ export const GetChildrenOfOGRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.page !== undefined && object.page !== null) {
       message.page = Number(object.page);
@@ -4683,7 +4702,7 @@ export const GetChildrenOfOGRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.page !== undefined && object.page !== null) {
       message.page = object.page;
@@ -4704,14 +4723,14 @@ export const GetChildrenOfOGRequest = {
   },
 };
 
-const baseDeleteDIRequest: object = { id: "" };
+const baseDeleteDIRequest: object = { id: '' };
 
 export const DeleteDIRequest = {
   encode(
     message: DeleteDIRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
     return writer;
@@ -4740,7 +4759,7 @@ export const DeleteDIRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     return message;
   },
@@ -4756,14 +4775,14 @@ export const DeleteDIRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     return message;
   },
 };
 
 const baseGetEntitiesUnderOGRequest: object = {
-  id: "",
+  id: '',
   direct: false,
   page: 0,
   pageSize: 0,
@@ -4774,7 +4793,7 @@ export const GetEntitiesUnderOGRequest = {
     message: GetEntitiesUnderOGRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
     if (message.direct === true) {
@@ -4828,7 +4847,7 @@ export const GetEntitiesUnderOGRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.direct !== undefined && object.direct !== null) {
       message.direct = Boolean(object.direct);
@@ -4866,7 +4885,7 @@ export const GetEntitiesUnderOGRequest = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.direct !== undefined && object.direct !== null) {
       message.direct = object.direct;
@@ -4946,15 +4965,15 @@ export const SuccessMessage = {
 };
 
 const baseOrganizationGroup: object = {
-  id: "",
-  name: "",
-  source: "",
-  ancestors: "",
-  hierarchy: "",
-  status: "",
+  id: '',
+  name: '',
+  source: '',
+  ancestors: '',
+  hierarchy: '',
+  status: '',
   isLeaf: false,
-  createdAt: "",
-  updatedAt: "",
+  createdAt: '',
+  updatedAt: '',
 };
 
 export const OrganizationGroup = {
@@ -4962,31 +4981,31 @@ export const OrganizationGroup = {
     message: OrganizationGroup,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
-    if (message.name !== "") {
+    if (message.name !== '') {
       writer.uint32(18).string(message.name);
     }
-    if (message.source !== "") {
+    if (message.source !== '') {
       writer.uint32(26).string(message.source);
     }
     for (const v of message.ancestors) {
       writer.uint32(34).string(v!);
     }
-    if (message.hierarchy !== "") {
+    if (message.hierarchy !== '') {
       writer.uint32(42).string(message.hierarchy);
     }
-    if (message.status !== "") {
+    if (message.status !== '') {
       writer.uint32(50).string(message.status);
     }
     if (message.isLeaf === true) {
       writer.uint32(56).bool(message.isLeaf);
     }
-    if (message.createdAt !== "") {
+    if (message.createdAt !== '') {
       writer.uint32(66).string(message.createdAt);
     }
-    if (message.updatedAt !== "") {
+    if (message.updatedAt !== '') {
       writer.uint32(74).string(message.updatedAt);
     }
     for (const v of message.directEntities) {
@@ -5057,17 +5076,17 @@ export const OrganizationGroup = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = String(object.name);
     } else {
-      message.name = "";
+      message.name = '';
     }
     if (object.source !== undefined && object.source !== null) {
       message.source = String(object.source);
     } else {
-      message.source = "";
+      message.source = '';
     }
     if (object.ancestors !== undefined && object.ancestors !== null) {
       for (const e of object.ancestors) {
@@ -5077,12 +5096,12 @@ export const OrganizationGroup = {
     if (object.hierarchy !== undefined && object.hierarchy !== null) {
       message.hierarchy = String(object.hierarchy);
     } else {
-      message.hierarchy = "";
+      message.hierarchy = '';
     }
     if (object.status !== undefined && object.status !== null) {
       message.status = String(object.status);
     } else {
-      message.status = "";
+      message.status = '';
     }
     if (object.isLeaf !== undefined && object.isLeaf !== null) {
       message.isLeaf = Boolean(object.isLeaf);
@@ -5092,12 +5111,12 @@ export const OrganizationGroup = {
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = String(object.createdAt);
     } else {
-      message.createdAt = "";
+      message.createdAt = '';
     }
     if (object.updatedAt !== undefined && object.updatedAt !== null) {
       message.updatedAt = String(object.updatedAt);
     } else {
-      message.updatedAt = "";
+      message.updatedAt = '';
     }
     if (object.directEntities !== undefined && object.directEntities !== null) {
       for (const e of object.directEntities) {
@@ -5152,17 +5171,17 @@ export const OrganizationGroup = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = object.name;
     } else {
-      message.name = "";
+      message.name = '';
     }
     if (object.source !== undefined && object.source !== null) {
       message.source = object.source;
     } else {
-      message.source = "";
+      message.source = '';
     }
     if (object.ancestors !== undefined && object.ancestors !== null) {
       for (const e of object.ancestors) {
@@ -5172,12 +5191,12 @@ export const OrganizationGroup = {
     if (object.hierarchy !== undefined && object.hierarchy !== null) {
       message.hierarchy = object.hierarchy;
     } else {
-      message.hierarchy = "";
+      message.hierarchy = '';
     }
     if (object.status !== undefined && object.status !== null) {
       message.status = object.status;
     } else {
-      message.status = "";
+      message.status = '';
     }
     if (object.isLeaf !== undefined && object.isLeaf !== null) {
       message.isLeaf = object.isLeaf;
@@ -5187,12 +5206,12 @@ export const OrganizationGroup = {
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = object.createdAt;
     } else {
-      message.createdAt = "";
+      message.createdAt = '';
     }
     if (object.updatedAt !== undefined && object.updatedAt !== null) {
       message.updatedAt = object.updatedAt;
     } else {
-      message.updatedAt = "";
+      message.updatedAt = '';
     }
     if (object.directEntities !== undefined && object.directEntities !== null) {
       for (const e of object.directEntities) {
@@ -5209,48 +5228,48 @@ export const OrganizationGroup = {
 };
 
 const baseRole: object = {
-  roleId: "",
-  jobTitle: "",
-  digitalIdentityUniqueId: "",
-  directGroup: "",
-  hierarchy: "",
-  hierarchyIds: "",
-  clearance: "",
-  source: "",
-  createdAt: "",
-  updatedAt: "",
+  roleId: '',
+  jobTitle: '',
+  digitalIdentityUniqueId: '',
+  directGroup: '',
+  hierarchy: '',
+  hierarchyIds: '',
+  clearance: '',
+  source: '',
+  createdAt: '',
+  updatedAt: '',
 };
 
 export const Role = {
   encode(message: Role, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.roleId !== "") {
+    if (message.roleId !== '') {
       writer.uint32(10).string(message.roleId);
     }
-    if (message.jobTitle !== "") {
+    if (message.jobTitle !== '') {
       writer.uint32(18).string(message.jobTitle);
     }
-    if (message.digitalIdentityUniqueId !== "") {
+    if (message.digitalIdentityUniqueId !== '') {
       writer.uint32(26).string(message.digitalIdentityUniqueId);
     }
-    if (message.directGroup !== "") {
+    if (message.directGroup !== '') {
       writer.uint32(34).string(message.directGroup);
     }
-    if (message.hierarchy !== "") {
+    if (message.hierarchy !== '') {
       writer.uint32(42).string(message.hierarchy);
     }
     for (const v of message.hierarchyIds) {
       writer.uint32(50).string(v!);
     }
-    if (message.clearance !== "") {
+    if (message.clearance !== '') {
       writer.uint32(58).string(message.clearance);
     }
-    if (message.source !== "") {
+    if (message.source !== '') {
       writer.uint32(66).string(message.source);
     }
-    if (message.createdAt !== "") {
+    if (message.createdAt !== '') {
       writer.uint32(74).string(message.createdAt);
     }
-    if (message.updatedAt !== "") {
+    if (message.updatedAt !== '') {
       writer.uint32(82).string(message.updatedAt);
     }
     return writer;
@@ -5308,12 +5327,12 @@ export const Role = {
     if (object.roleId !== undefined && object.roleId !== null) {
       message.roleId = String(object.roleId);
     } else {
-      message.roleId = "";
+      message.roleId = '';
     }
     if (object.jobTitle !== undefined && object.jobTitle !== null) {
       message.jobTitle = String(object.jobTitle);
     } else {
-      message.jobTitle = "";
+      message.jobTitle = '';
     }
     if (
       object.digitalIdentityUniqueId !== undefined &&
@@ -5321,17 +5340,17 @@ export const Role = {
     ) {
       message.digitalIdentityUniqueId = String(object.digitalIdentityUniqueId);
     } else {
-      message.digitalIdentityUniqueId = "";
+      message.digitalIdentityUniqueId = '';
     }
     if (object.directGroup !== undefined && object.directGroup !== null) {
       message.directGroup = String(object.directGroup);
     } else {
-      message.directGroup = "";
+      message.directGroup = '';
     }
     if (object.hierarchy !== undefined && object.hierarchy !== null) {
       message.hierarchy = String(object.hierarchy);
     } else {
-      message.hierarchy = "";
+      message.hierarchy = '';
     }
     if (object.hierarchyIds !== undefined && object.hierarchyIds !== null) {
       for (const e of object.hierarchyIds) {
@@ -5341,22 +5360,22 @@ export const Role = {
     if (object.clearance !== undefined && object.clearance !== null) {
       message.clearance = String(object.clearance);
     } else {
-      message.clearance = "";
+      message.clearance = '';
     }
     if (object.source !== undefined && object.source !== null) {
       message.source = String(object.source);
     } else {
-      message.source = "";
+      message.source = '';
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = String(object.createdAt);
     } else {
-      message.createdAt = "";
+      message.createdAt = '';
     }
     if (object.updatedAt !== undefined && object.updatedAt !== null) {
       message.updatedAt = String(object.updatedAt);
     } else {
-      message.updatedAt = "";
+      message.updatedAt = '';
     }
     return message;
   },
@@ -5388,12 +5407,12 @@ export const Role = {
     if (object.roleId !== undefined && object.roleId !== null) {
       message.roleId = object.roleId;
     } else {
-      message.roleId = "";
+      message.roleId = '';
     }
     if (object.jobTitle !== undefined && object.jobTitle !== null) {
       message.jobTitle = object.jobTitle;
     } else {
-      message.jobTitle = "";
+      message.jobTitle = '';
     }
     if (
       object.digitalIdentityUniqueId !== undefined &&
@@ -5401,17 +5420,17 @@ export const Role = {
     ) {
       message.digitalIdentityUniqueId = object.digitalIdentityUniqueId;
     } else {
-      message.digitalIdentityUniqueId = "";
+      message.digitalIdentityUniqueId = '';
     }
     if (object.directGroup !== undefined && object.directGroup !== null) {
       message.directGroup = object.directGroup;
     } else {
-      message.directGroup = "";
+      message.directGroup = '';
     }
     if (object.hierarchy !== undefined && object.hierarchy !== null) {
       message.hierarchy = object.hierarchy;
     } else {
-      message.hierarchy = "";
+      message.hierarchy = '';
     }
     if (object.hierarchyIds !== undefined && object.hierarchyIds !== null) {
       for (const e of object.hierarchyIds) {
@@ -5421,54 +5440,54 @@ export const Role = {
     if (object.clearance !== undefined && object.clearance !== null) {
       message.clearance = object.clearance;
     } else {
-      message.clearance = "";
+      message.clearance = '';
     }
     if (object.source !== undefined && object.source !== null) {
       message.source = object.source;
     } else {
-      message.source = "";
+      message.source = '';
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = object.createdAt;
     } else {
-      message.createdAt = "";
+      message.createdAt = '';
     }
     if (object.updatedAt !== undefined && object.updatedAt !== null) {
       message.updatedAt = object.updatedAt;
     } else {
-      message.updatedAt = "";
+      message.updatedAt = '';
     }
     return message;
   },
 };
 
 const baseEntity: object = {
-  id: "",
-  displayName: "",
-  directGroup: "",
-  hierarchy: "",
-  entityType: "",
-  identityCard: "",
-  personalNumber: "",
-  serviceType: "",
-  firstName: "",
-  lastName: "",
-  fullName: "",
-  akaUnit: "",
-  dischargeDay: "",
-  rank: "",
-  mail: "",
-  jobTitle: "",
-  phone: "",
-  mobilePhone: "",
-  address: "",
-  clearance: "",
-  sex: "",
-  birthDate: "",
-  createdAt: "",
-  updatedAt: "",
-  picture: "",
-  goalUserID: "",
+  id: '',
+  displayName: '',
+  directGroup: '',
+  hierarchy: '',
+  entityType: '',
+  identityCard: '',
+  personalNumber: '',
+  serviceType: '',
+  firstName: '',
+  lastName: '',
+  fullName: '',
+  akaUnit: '',
+  dischargeDay: '',
+  rank: '',
+  mail: '',
+  jobTitle: '',
+  phone: '',
+  mobilePhone: '',
+  address: '',
+  clearance: '',
+  sex: '',
+  birthDate: '',
+  createdAt: '',
+  updatedAt: '',
+  picture: '',
+  goalUserID: '',
 };
 
 export const Entity = {
@@ -5476,52 +5495,52 @@ export const Entity = {
     message: Entity,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
-    if (message.displayName !== "") {
+    if (message.displayName !== '') {
       writer.uint32(18).string(message.displayName);
     }
-    if (message.directGroup !== "") {
+    if (message.directGroup !== '') {
       writer.uint32(26).string(message.directGroup);
     }
-    if (message.hierarchy !== "") {
+    if (message.hierarchy !== '') {
       writer.uint32(34).string(message.hierarchy);
     }
-    if (message.entityType !== "") {
+    if (message.entityType !== '') {
       writer.uint32(42).string(message.entityType);
     }
-    if (message.identityCard !== "") {
+    if (message.identityCard !== '') {
       writer.uint32(50).string(message.identityCard);
     }
-    if (message.personalNumber !== "") {
+    if (message.personalNumber !== '') {
       writer.uint32(58).string(message.personalNumber);
     }
-    if (message.serviceType !== "") {
+    if (message.serviceType !== '') {
       writer.uint32(66).string(message.serviceType);
     }
-    if (message.firstName !== "") {
+    if (message.firstName !== '') {
       writer.uint32(74).string(message.firstName);
     }
-    if (message.lastName !== "") {
+    if (message.lastName !== '') {
       writer.uint32(82).string(message.lastName);
     }
-    if (message.fullName !== "") {
+    if (message.fullName !== '') {
       writer.uint32(90).string(message.fullName);
     }
-    if (message.akaUnit !== "") {
+    if (message.akaUnit !== '') {
       writer.uint32(98).string(message.akaUnit);
     }
-    if (message.dischargeDay !== "") {
+    if (message.dischargeDay !== '') {
       writer.uint32(106).string(message.dischargeDay);
     }
-    if (message.rank !== "") {
+    if (message.rank !== '') {
       writer.uint32(114).string(message.rank);
     }
-    if (message.mail !== "") {
+    if (message.mail !== '') {
       writer.uint32(122).string(message.mail);
     }
-    if (message.jobTitle !== "") {
+    if (message.jobTitle !== '') {
       writer.uint32(130).string(message.jobTitle);
     }
     for (const v of message.phone) {
@@ -5530,31 +5549,31 @@ export const Entity = {
     for (const v of message.mobilePhone) {
       writer.uint32(146).string(v!);
     }
-    if (message.address !== "") {
+    if (message.address !== '') {
       writer.uint32(154).string(message.address);
     }
-    if (message.clearance !== "") {
+    if (message.clearance !== '') {
       writer.uint32(162).string(message.clearance);
     }
-    if (message.sex !== "") {
+    if (message.sex !== '') {
       writer.uint32(170).string(message.sex);
     }
-    if (message.birthDate !== "") {
+    if (message.birthDate !== '') {
       writer.uint32(178).string(message.birthDate);
     }
-    if (message.createdAt !== "") {
+    if (message.createdAt !== '') {
       writer.uint32(186).string(message.createdAt);
     }
-    if (message.updatedAt !== "") {
+    if (message.updatedAt !== '') {
       writer.uint32(194).string(message.updatedAt);
     }
     for (const v of message.digitalIdentities) {
       DigitalIdentity.encode(v!, writer.uint32(202).fork()).ldelim();
     }
-    if (message.picture !== "") {
+    if (message.picture !== '') {
       writer.uint32(210).string(message.picture);
     }
-    if (message.goalUserID !== "") {
+    if (message.goalUserID !== '') {
       writer.uint32(218).string(message.goalUserID);
     }
     return writer;
@@ -5669,82 +5688,82 @@ export const Entity = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.displayName !== undefined && object.displayName !== null) {
       message.displayName = String(object.displayName);
     } else {
-      message.displayName = "";
+      message.displayName = '';
     }
     if (object.directGroup !== undefined && object.directGroup !== null) {
       message.directGroup = String(object.directGroup);
     } else {
-      message.directGroup = "";
+      message.directGroup = '';
     }
     if (object.hierarchy !== undefined && object.hierarchy !== null) {
       message.hierarchy = String(object.hierarchy);
     } else {
-      message.hierarchy = "";
+      message.hierarchy = '';
     }
     if (object.entityType !== undefined && object.entityType !== null) {
       message.entityType = String(object.entityType);
     } else {
-      message.entityType = "";
+      message.entityType = '';
     }
     if (object.identityCard !== undefined && object.identityCard !== null) {
       message.identityCard = String(object.identityCard);
     } else {
-      message.identityCard = "";
+      message.identityCard = '';
     }
     if (object.personalNumber !== undefined && object.personalNumber !== null) {
       message.personalNumber = String(object.personalNumber);
     } else {
-      message.personalNumber = "";
+      message.personalNumber = '';
     }
     if (object.serviceType !== undefined && object.serviceType !== null) {
       message.serviceType = String(object.serviceType);
     } else {
-      message.serviceType = "";
+      message.serviceType = '';
     }
     if (object.firstName !== undefined && object.firstName !== null) {
       message.firstName = String(object.firstName);
     } else {
-      message.firstName = "";
+      message.firstName = '';
     }
     if (object.lastName !== undefined && object.lastName !== null) {
       message.lastName = String(object.lastName);
     } else {
-      message.lastName = "";
+      message.lastName = '';
     }
     if (object.fullName !== undefined && object.fullName !== null) {
       message.fullName = String(object.fullName);
     } else {
-      message.fullName = "";
+      message.fullName = '';
     }
     if (object.akaUnit !== undefined && object.akaUnit !== null) {
       message.akaUnit = String(object.akaUnit);
     } else {
-      message.akaUnit = "";
+      message.akaUnit = '';
     }
     if (object.dischargeDay !== undefined && object.dischargeDay !== null) {
       message.dischargeDay = String(object.dischargeDay);
     } else {
-      message.dischargeDay = "";
+      message.dischargeDay = '';
     }
     if (object.rank !== undefined && object.rank !== null) {
       message.rank = String(object.rank);
     } else {
-      message.rank = "";
+      message.rank = '';
     }
     if (object.mail !== undefined && object.mail !== null) {
       message.mail = String(object.mail);
     } else {
-      message.mail = "";
+      message.mail = '';
     }
     if (object.jobTitle !== undefined && object.jobTitle !== null) {
       message.jobTitle = String(object.jobTitle);
     } else {
-      message.jobTitle = "";
+      message.jobTitle = '';
     }
     if (object.phone !== undefined && object.phone !== null) {
       for (const e of object.phone) {
@@ -5759,32 +5778,32 @@ export const Entity = {
     if (object.address !== undefined && object.address !== null) {
       message.address = String(object.address);
     } else {
-      message.address = "";
+      message.address = '';
     }
     if (object.clearance !== undefined && object.clearance !== null) {
       message.clearance = String(object.clearance);
     } else {
-      message.clearance = "";
+      message.clearance = '';
     }
     if (object.sex !== undefined && object.sex !== null) {
       message.sex = String(object.sex);
     } else {
-      message.sex = "";
+      message.sex = '';
     }
     if (object.birthDate !== undefined && object.birthDate !== null) {
       message.birthDate = String(object.birthDate);
     } else {
-      message.birthDate = "";
+      message.birthDate = '';
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = String(object.createdAt);
     } else {
-      message.createdAt = "";
+      message.createdAt = '';
     }
     if (object.updatedAt !== undefined && object.updatedAt !== null) {
       message.updatedAt = String(object.updatedAt);
     } else {
-      message.updatedAt = "";
+      message.updatedAt = '';
     }
     if (
       object.digitalIdentities !== undefined &&
@@ -5797,12 +5816,12 @@ export const Entity = {
     if (object.picture !== undefined && object.picture !== null) {
       message.picture = String(object.picture);
     } else {
-      message.picture = "";
+      message.picture = '';
     }
     if (object.goalUserID !== undefined && object.goalUserID !== null) {
       message.goalUserID = String(object.goalUserID);
     } else {
-      message.goalUserID = "";
+      message.goalUserID = '';
     }
     return message;
   },
@@ -5867,82 +5886,82 @@ export const Entity = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = "";
+      message.id = '';
     }
     if (object.displayName !== undefined && object.displayName !== null) {
       message.displayName = object.displayName;
     } else {
-      message.displayName = "";
+      message.displayName = '';
     }
     if (object.directGroup !== undefined && object.directGroup !== null) {
       message.directGroup = object.directGroup;
     } else {
-      message.directGroup = "";
+      message.directGroup = '';
     }
     if (object.hierarchy !== undefined && object.hierarchy !== null) {
       message.hierarchy = object.hierarchy;
     } else {
-      message.hierarchy = "";
+      message.hierarchy = '';
     }
     if (object.entityType !== undefined && object.entityType !== null) {
       message.entityType = object.entityType;
     } else {
-      message.entityType = "";
+      message.entityType = '';
     }
     if (object.identityCard !== undefined && object.identityCard !== null) {
       message.identityCard = object.identityCard;
     } else {
-      message.identityCard = "";
+      message.identityCard = '';
     }
     if (object.personalNumber !== undefined && object.personalNumber !== null) {
       message.personalNumber = object.personalNumber;
     } else {
-      message.personalNumber = "";
+      message.personalNumber = '';
     }
     if (object.serviceType !== undefined && object.serviceType !== null) {
       message.serviceType = object.serviceType;
     } else {
-      message.serviceType = "";
+      message.serviceType = '';
     }
     if (object.firstName !== undefined && object.firstName !== null) {
       message.firstName = object.firstName;
     } else {
-      message.firstName = "";
+      message.firstName = '';
     }
     if (object.lastName !== undefined && object.lastName !== null) {
       message.lastName = object.lastName;
     } else {
-      message.lastName = "";
+      message.lastName = '';
     }
     if (object.fullName !== undefined && object.fullName !== null) {
       message.fullName = object.fullName;
     } else {
-      message.fullName = "";
+      message.fullName = '';
     }
     if (object.akaUnit !== undefined && object.akaUnit !== null) {
       message.akaUnit = object.akaUnit;
     } else {
-      message.akaUnit = "";
+      message.akaUnit = '';
     }
     if (object.dischargeDay !== undefined && object.dischargeDay !== null) {
       message.dischargeDay = object.dischargeDay;
     } else {
-      message.dischargeDay = "";
+      message.dischargeDay = '';
     }
     if (object.rank !== undefined && object.rank !== null) {
       message.rank = object.rank;
     } else {
-      message.rank = "";
+      message.rank = '';
     }
     if (object.mail !== undefined && object.mail !== null) {
       message.mail = object.mail;
     } else {
-      message.mail = "";
+      message.mail = '';
     }
     if (object.jobTitle !== undefined && object.jobTitle !== null) {
       message.jobTitle = object.jobTitle;
     } else {
-      message.jobTitle = "";
+      message.jobTitle = '';
     }
     if (object.phone !== undefined && object.phone !== null) {
       for (const e of object.phone) {
@@ -5957,32 +5976,32 @@ export const Entity = {
     if (object.address !== undefined && object.address !== null) {
       message.address = object.address;
     } else {
-      message.address = "";
+      message.address = '';
     }
     if (object.clearance !== undefined && object.clearance !== null) {
       message.clearance = object.clearance;
     } else {
-      message.clearance = "";
+      message.clearance = '';
     }
     if (object.sex !== undefined && object.sex !== null) {
       message.sex = object.sex;
     } else {
-      message.sex = "";
+      message.sex = '';
     }
     if (object.birthDate !== undefined && object.birthDate !== null) {
       message.birthDate = object.birthDate;
     } else {
-      message.birthDate = "";
+      message.birthDate = '';
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = object.createdAt;
     } else {
-      message.createdAt = "";
+      message.createdAt = '';
     }
     if (object.updatedAt !== undefined && object.updatedAt !== null) {
       message.updatedAt = object.updatedAt;
     } else {
-      message.updatedAt = "";
+      message.updatedAt = '';
     }
     if (
       object.digitalIdentities !== undefined &&
@@ -5995,25 +6014,25 @@ export const Entity = {
     if (object.picture !== undefined && object.picture !== null) {
       message.picture = object.picture;
     } else {
-      message.picture = "";
+      message.picture = '';
     }
     if (object.goalUserID !== undefined && object.goalUserID !== null) {
       message.goalUserID = object.goalUserID;
     } else {
-      message.goalUserID = "";
+      message.goalUserID = '';
     }
     return message;
   },
 };
 
 const baseDigitalIdentity: object = {
-  type: "",
-  source: "",
-  mail: "",
-  uniqueId: "",
-  entityId: "",
-  createdAt: "",
-  updatedAt: "",
+  type: '',
+  source: '',
+  mail: '',
+  uniqueId: '',
+  entityId: '',
+  createdAt: '',
+  updatedAt: '',
   isRoleAttachable: false,
 };
 
@@ -6022,25 +6041,25 @@ export const DigitalIdentity = {
     message: DigitalIdentity,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.type !== "") {
+    if (message.type !== '') {
       writer.uint32(10).string(message.type);
     }
-    if (message.source !== "") {
+    if (message.source !== '') {
       writer.uint32(18).string(message.source);
     }
-    if (message.mail !== "") {
+    if (message.mail !== '') {
       writer.uint32(26).string(message.mail);
     }
-    if (message.uniqueId !== "") {
+    if (message.uniqueId !== '') {
       writer.uint32(34).string(message.uniqueId);
     }
-    if (message.entityId !== "") {
+    if (message.entityId !== '') {
       writer.uint32(42).string(message.entityId);
     }
-    if (message.createdAt !== "") {
+    if (message.createdAt !== '') {
       writer.uint32(50).string(message.createdAt);
     }
-    if (message.updatedAt !== "") {
+    if (message.updatedAt !== '') {
       writer.uint32(58).string(message.updatedAt);
     }
     if (message.isRoleAttachable === true) {
@@ -6099,37 +6118,37 @@ export const DigitalIdentity = {
     if (object.type !== undefined && object.type !== null) {
       message.type = String(object.type);
     } else {
-      message.type = "";
+      message.type = '';
     }
     if (object.source !== undefined && object.source !== null) {
       message.source = String(object.source);
     } else {
-      message.source = "";
+      message.source = '';
     }
     if (object.mail !== undefined && object.mail !== null) {
       message.mail = String(object.mail);
     } else {
-      message.mail = "";
+      message.mail = '';
     }
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = String(object.uniqueId);
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     if (object.entityId !== undefined && object.entityId !== null) {
       message.entityId = String(object.entityId);
     } else {
-      message.entityId = "";
+      message.entityId = '';
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = String(object.createdAt);
     } else {
-      message.createdAt = "";
+      message.createdAt = '';
     }
     if (object.updatedAt !== undefined && object.updatedAt !== null) {
       message.updatedAt = String(object.updatedAt);
     } else {
-      message.updatedAt = "";
+      message.updatedAt = '';
     }
     if (
       object.isRoleAttachable !== undefined &&
@@ -6168,37 +6187,37 @@ export const DigitalIdentity = {
     if (object.type !== undefined && object.type !== null) {
       message.type = object.type;
     } else {
-      message.type = "";
+      message.type = '';
     }
     if (object.source !== undefined && object.source !== null) {
       message.source = object.source;
     } else {
-      message.source = "";
+      message.source = '';
     }
     if (object.mail !== undefined && object.mail !== null) {
       message.mail = object.mail;
     } else {
-      message.mail = "";
+      message.mail = '';
     }
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = object.uniqueId;
     } else {
-      message.uniqueId = "";
+      message.uniqueId = '';
     }
     if (object.entityId !== undefined && object.entityId !== null) {
       message.entityId = object.entityId;
     } else {
-      message.entityId = "";
+      message.entityId = '';
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = object.createdAt;
     } else {
-      message.createdAt = "";
+      message.createdAt = '';
     }
     if (object.updatedAt !== undefined && object.updatedAt !== null) {
       message.updatedAt = object.updatedAt;
     } else {
-      message.updatedAt = "";
+      message.updatedAt = '';
     }
     if (
       object.isRoleAttachable !== undefined &&
@@ -6322,8 +6341,8 @@ export class KartoffelClientImpl implements Kartoffel {
   CreateEntity(request: CreateEntityRequest): Promise<Entity> {
     const data = CreateEntityRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "CreateEntity",
+      'Kartoffel.Kartoffel',
+      'CreateEntity',
       data
     );
     return promise.then((data) => Entity.decode(new _m0.Reader(data)));
@@ -6332,8 +6351,8 @@ export class KartoffelClientImpl implements Kartoffel {
   GetEntityByDI(request: GetEntityByDIRequest): Promise<Entity> {
     const data = GetEntityByDIRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "GetEntityByDI",
+      'Kartoffel.Kartoffel',
+      'GetEntityByDI',
       data
     );
     return promise.then((data) => Entity.decode(new _m0.Reader(data)));
@@ -6342,8 +6361,8 @@ export class KartoffelClientImpl implements Kartoffel {
   GetEntityByRoleId(request: GetEntityByRoleIdRequest): Promise<Entity> {
     const data = GetEntityByRoleIdRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "GetEntityByRoleId",
+      'Kartoffel.Kartoffel',
+      'GetEntityByRoleId',
       data
     );
     return promise.then((data) => Entity.decode(new _m0.Reader(data)));
@@ -6352,8 +6371,8 @@ export class KartoffelClientImpl implements Kartoffel {
   GetEntitiesUnderOG(request: GetEntitiesUnderOGRequest): Promise<EntityArray> {
     const data = GetEntitiesUnderOGRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "GetEntitiesUnderOG",
+      'Kartoffel.Kartoffel',
+      'GetEntitiesUnderOG',
       data
     );
     return promise.then((data) => EntityArray.decode(new _m0.Reader(data)));
@@ -6364,8 +6383,8 @@ export class KartoffelClientImpl implements Kartoffel {
   ): Promise<EntityArray> {
     const data = GetEntitiesByHierarchyRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "GetEntitiesByHierarchy",
+      'Kartoffel.Kartoffel',
+      'GetEntitiesByHierarchy',
       data
     );
     return promise.then((data) => EntityArray.decode(new _m0.Reader(data)));
@@ -6376,8 +6395,8 @@ export class KartoffelClientImpl implements Kartoffel {
   ): Promise<Entity> {
     const data = GetEntityByIdentifierRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "GetEntityByIdentifier",
+      'Kartoffel.Kartoffel',
+      'GetEntityByIdentifier',
       data
     );
     return promise.then((data) => Entity.decode(new _m0.Reader(data)));
@@ -6388,8 +6407,8 @@ export class KartoffelClientImpl implements Kartoffel {
   ): Promise<EntityArray> {
     const data = SearchEntitiesByFullNameRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "SearchEntitiesByFullName",
+      'Kartoffel.Kartoffel',
+      'SearchEntitiesByFullName',
       data
     );
     return promise.then((data) => EntityArray.decode(new _m0.Reader(data)));
@@ -6398,8 +6417,8 @@ export class KartoffelClientImpl implements Kartoffel {
   GetEntityById(request: GetEntityByIdRequest): Promise<Entity> {
     const data = GetEntityByIdRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "GetEntityById",
+      'Kartoffel.Kartoffel',
+      'GetEntityById',
       data
     );
     return promise.then((data) => Entity.decode(new _m0.Reader(data)));
@@ -6408,8 +6427,8 @@ export class KartoffelClientImpl implements Kartoffel {
   GetPictureByEntityId(request: GetPictureByEntityIdRequest): Promise<Image> {
     const data = GetPictureByEntityIdRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "GetPictureByEntityId",
+      'Kartoffel.Kartoffel',
+      'GetPictureByEntityId',
       data
     );
     return promise.then((data) => Image.decode(new _m0.Reader(data)));
@@ -6418,8 +6437,8 @@ export class KartoffelClientImpl implements Kartoffel {
   DeleteEntity(request: DeleteEntityRequest): Promise<SuccessMessage> {
     const data = DeleteEntityRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "DeleteEntity",
+      'Kartoffel.Kartoffel',
+      'DeleteEntity',
       data
     );
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
@@ -6428,8 +6447,8 @@ export class KartoffelClientImpl implements Kartoffel {
   UpdateEntity(request: UpdateEntityRequest): Promise<Entity> {
     const data = UpdateEntityRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "UpdateEntity",
+      'Kartoffel.Kartoffel',
+      'UpdateEntity',
       data
     );
     return promise.then((data) => Entity.decode(new _m0.Reader(data)));
@@ -6440,8 +6459,8 @@ export class KartoffelClientImpl implements Kartoffel {
   ): Promise<SuccessMessage> {
     const data = ConnectEntityAndDIRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "ConnectEntityAndDI",
+      'Kartoffel.Kartoffel',
+      'ConnectEntityAndDI',
       data
     );
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
@@ -6452,8 +6471,8 @@ export class KartoffelClientImpl implements Kartoffel {
   ): Promise<SuccessMessage> {
     const data = DisconnectDIFromEntityRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "DisconnectDIFromEntity",
+      'Kartoffel.Kartoffel',
+      'DisconnectDIFromEntity',
       data
     );
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
@@ -6461,7 +6480,7 @@ export class KartoffelClientImpl implements Kartoffel {
 
   CreateOG(request: CreateOGRequest): Promise<OrganizationGroup> {
     const data = CreateOGRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "CreateOG", data);
+    const promise = this.rpc.request('Kartoffel.Kartoffel', 'CreateOG', data);
     return promise.then((data) =>
       OrganizationGroup.decode(new _m0.Reader(data))
     );
@@ -6469,7 +6488,7 @@ export class KartoffelClientImpl implements Kartoffel {
 
   GetAllOGs(request: GetAllOGsRequest): Promise<OGArray> {
     const data = GetAllOGsRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "GetAllOGs", data);
+    const promise = this.rpc.request('Kartoffel.Kartoffel', 'GetAllOGs', data);
     return promise.then((data) => OGArray.decode(new _m0.Reader(data)));
   }
 
@@ -6478,8 +6497,8 @@ export class KartoffelClientImpl implements Kartoffel {
   ): Promise<OrganizationGroup> {
     const data = GetOGByHierarchyNameRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "GetOGByHierarchyName",
+      'Kartoffel.Kartoffel',
+      'GetOGByHierarchyName',
       data
     );
     return promise.then((data) =>
@@ -6489,15 +6508,15 @@ export class KartoffelClientImpl implements Kartoffel {
 
   SearchOG(request: SearchOGRequest): Promise<OGArray> {
     const data = SearchOGRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "SearchOG", data);
+    const promise = this.rpc.request('Kartoffel.Kartoffel', 'SearchOG', data);
     return promise.then((data) => OGArray.decode(new _m0.Reader(data)));
   }
 
   GetChildrenOfOG(request: GetChildrenOfOGRequest): Promise<OGArray> {
     const data = GetChildrenOfOGRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "GetChildrenOfOG",
+      'Kartoffel.Kartoffel',
+      'GetChildrenOfOG',
       data
     );
     return promise.then((data) => OGArray.decode(new _m0.Reader(data)));
@@ -6505,7 +6524,7 @@ export class KartoffelClientImpl implements Kartoffel {
 
   GetOGById(request: GetOGByIdRequest): Promise<OrganizationGroup> {
     const data = GetOGByIdRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "GetOGById", data);
+    const promise = this.rpc.request('Kartoffel.Kartoffel', 'GetOGById', data);
     return promise.then((data) =>
       OrganizationGroup.decode(new _m0.Reader(data))
     );
@@ -6513,21 +6532,21 @@ export class KartoffelClientImpl implements Kartoffel {
 
   GetOGTree(request: GetOGTreeRequest): Promise<OGTree> {
     const data = GetOGTreeRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "GetOGTree", data);
+    const promise = this.rpc.request('Kartoffel.Kartoffel', 'GetOGTree', data);
     return promise.then((data) => OGTree.decode(new _m0.Reader(data)));
   }
 
   DeleteOG(request: DeleteOGRequest): Promise<SuccessMessage> {
     const data = DeleteOGRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "DeleteOG", data);
+    const promise = this.rpc.request('Kartoffel.Kartoffel', 'DeleteOG', data);
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
   UpdateOGParent(request: UpdateOGParentRequest): Promise<SuccessMessage> {
     const data = UpdateOGParentRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "UpdateOGParent",
+      'Kartoffel.Kartoffel',
+      'UpdateOGParent',
       data
     );
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
@@ -6535,19 +6554,19 @@ export class KartoffelClientImpl implements Kartoffel {
 
   RenameOG(request: RenameOGRequest): Promise<SuccessMessage> {
     const data = RenameOGRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "RenameOG", data);
+    const promise = this.rpc.request('Kartoffel.Kartoffel', 'RenameOG', data);
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
   CreateDI(request: CreateDIRequest): Promise<DigitalIdentity> {
     const data = CreateDIRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "CreateDI", data);
+    const promise = this.rpc.request('Kartoffel.Kartoffel', 'CreateDI', data);
     return promise.then((data) => DigitalIdentity.decode(new _m0.Reader(data)));
   }
 
   GetAllDIs(request: GetAllDIsRequest): Promise<DigitalIdentities> {
     const data = GetAllDIsRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "GetAllDIs", data);
+    const promise = this.rpc.request('Kartoffel.Kartoffel', 'GetAllDIs', data);
     return promise.then((data) =>
       DigitalIdentities.decode(new _m0.Reader(data))
     );
@@ -6556,8 +6575,8 @@ export class KartoffelClientImpl implements Kartoffel {
   GetDIByRoleId(request: GetDIByRoleIdRequest): Promise<DigitalIdentity> {
     const data = GetDIByRoleIdRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "GetDIByRoleId",
+      'Kartoffel.Kartoffel',
+      'GetDIByRoleId',
       data
     );
     return promise.then((data) => DigitalIdentity.decode(new _m0.Reader(data)));
@@ -6568,8 +6587,8 @@ export class KartoffelClientImpl implements Kartoffel {
   ): Promise<DigitalIdentities> {
     const data = SearchDIOrUniqueIdRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "SearchDIOrUniqueId",
+      'Kartoffel.Kartoffel',
+      'SearchDIOrUniqueId',
       data
     );
     return promise.then((data) =>
@@ -6580,8 +6599,8 @@ export class KartoffelClientImpl implements Kartoffel {
   GetDIByUniqueId(request: GetDIByUniqueIdRequest): Promise<DigitalIdentity> {
     const data = GetDIByUniqueIdRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "GetDIByUniqueId",
+      'Kartoffel.Kartoffel',
+      'GetDIByUniqueId',
       data
     );
     return promise.then((data) => DigitalIdentity.decode(new _m0.Reader(data)));
@@ -6589,27 +6608,27 @@ export class KartoffelClientImpl implements Kartoffel {
 
   DeleteDI(request: DeleteDIRequest): Promise<SuccessMessage> {
     const data = DeleteDIRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "DeleteDI", data);
+    const promise = this.rpc.request('Kartoffel.Kartoffel', 'DeleteDI', data);
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
   UpdateDI(request: UpdateDIRequest): Promise<SuccessMessage> {
     const data = UpdateDIRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "UpdateDI", data);
+    const promise = this.rpc.request('Kartoffel.Kartoffel', 'UpdateDI', data);
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
   CreateRole(request: CreateRoleRequest): Promise<Role> {
     const data = CreateRoleRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "CreateRole", data);
+    const promise = this.rpc.request('Kartoffel.Kartoffel', 'CreateRole', data);
     return promise.then((data) => Role.decode(new _m0.Reader(data)));
   }
 
   GetAllRoles(request: GetAllRolesRequest): Promise<RoleArray> {
     const data = GetAllRolesRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "GetAllRoles",
+      'Kartoffel.Kartoffel',
+      'GetAllRoles',
       data
     );
     return promise.then((data) => RoleArray.decode(new _m0.Reader(data)));
@@ -6618,8 +6637,8 @@ export class KartoffelClientImpl implements Kartoffel {
   GetRoleByRoleId(request: GetRoleByRoleIdRequest): Promise<Role> {
     const data = GetRoleByRoleIdRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "GetRoleByRoleId",
+      'Kartoffel.Kartoffel',
+      'GetRoleByRoleId',
       data
     );
     return promise.then((data) => Role.decode(new _m0.Reader(data)));
@@ -6628,8 +6647,8 @@ export class KartoffelClientImpl implements Kartoffel {
   GetRolesUnderOG(request: GetRolesUnderOGRequest): Promise<RoleArray> {
     const data = GetRolesUnderOGRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "GetRolesUnderOG",
+      'Kartoffel.Kartoffel',
+      'GetRolesUnderOG',
       data
     );
     return promise.then((data) => RoleArray.decode(new _m0.Reader(data)));
@@ -6638,8 +6657,8 @@ export class KartoffelClientImpl implements Kartoffel {
   ConnectRoleAndDI(request: ConnectRoleAndDIRequest): Promise<SuccessMessage> {
     const data = ConnectRoleAndDIRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "ConnectRoleAndDI",
+      'Kartoffel.Kartoffel',
+      'ConnectRoleAndDI',
       data
     );
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
@@ -6650,8 +6669,8 @@ export class KartoffelClientImpl implements Kartoffel {
   ): Promise<SuccessMessage> {
     const data = DisconnectRoleAndDIRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Kartoffel.Kartoffel",
-      "DisconnectRoleAndDI",
+      'Kartoffel.Kartoffel',
+      'DisconnectRoleAndDI',
       data
     );
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
@@ -6659,13 +6678,13 @@ export class KartoffelClientImpl implements Kartoffel {
 
   DeleteRole(request: DeleteRoleRequest): Promise<SuccessMessage> {
     const data = DeleteRoleRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "DeleteRole", data);
+    const promise = this.rpc.request('Kartoffel.Kartoffel', 'DeleteRole', data);
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
   RenameRole(request: RenameRoleRequest): Promise<SuccessMessage> {
     const data = RenameRoleRequest.encode(request).finish();
-    const promise = this.rpc.request("Kartoffel.Kartoffel", "RenameRole", data);
+    const promise = this.rpc.request('Kartoffel.Kartoffel', 'RenameRole', data);
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 }

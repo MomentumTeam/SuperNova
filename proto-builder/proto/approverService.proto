@@ -9,11 +9,11 @@ service ApproverService {
     rpc SearchApproverByDisplayName(SearchByDisplayNameReq) returns (ApproverArray) {}
     rpc SearchApproverByDomainUser(SearchByDomainUserReq) returns (ApproverArray) {}
     
-    rpc UpdateApproverDecision(UpdateApproverDecisionReq) returns (RequestService.Request) {}
+    rpc UpdateApproverDecision(RequestService.UpdateApproverDecisionReq) returns (RequestService.Request) {}
 
     rpc GetAllApprovers(GetAllApproversReq) returns (ApproverArray) {}
     rpc GetAllApproverIds(GetAllApproversReq) returns (ApproverIdArray) {}
-    rpc SyncApprover(SyncApproverReq) returns (Approver){}
+    rpc SyncApprover(SyncApproverReq) returns (ApproverArray){}
     rpc DeleteApprover(DeleteApproverReq) returns (SuccessMessage){}
 }
 
@@ -81,11 +81,6 @@ message Approver{
     string id = 6;
 }
 
-message UpdateApproverDecisionReq {
-    RequestService.UpdateDecisionReq decision = 1;
-    UserType type =2;
-}
-
 enum RequestStatus{
     SUBMITTED = 0;
     DECLINED = 1;
@@ -96,8 +91,8 @@ enum RequestStatus{
 
 enum UserType{
     UNKNOWN = 0;
-    SUPER_SECURITY = 2;
     SECURITY = 1;
+    SUPER_SECURITY = 2;
     COMMANDER = 3;
     SOLDIER = 4;
     ADMIN = 5;

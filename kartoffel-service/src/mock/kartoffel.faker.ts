@@ -130,7 +130,7 @@ export class KartoffelFaker {
         birthDate: faker.datatype.datetime().toString(),
         createdAt: faker.datatype.datetime().toString(),
         updatedAt: faker.datatype.datetime().toString(),
-        digitalIdentities: [],
+        digitalIdentities: this.randomDiArray().digitalIdentities,
         picture: picture.image,
         goalUserID: mongoose.Types.ObjectId().toString(),
       };

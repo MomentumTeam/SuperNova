@@ -38,10 +38,12 @@ export default class RequestService {
     return new Promise((resolve, reject) => {
       requestClient.GetRequestIdsInProgressByDue(
         { due: Date.now() },
-        (err: any, response: RequestIdArray) => {
-          if (err) {
-            logger.error(`getRequestIdsInProgress ERROR in EXS`, { err });
-            reject(err);
+        (error: any, response: RequestIdArray) => {
+          if (error) {
+            logger.error(`getRequestIdsInProgress ERROR in EXS`, {
+              error: { message: error.message },
+            });
+            reject(error);
           }
 
           logger.info(`getRequestIdsInProgress OK in EXS`, {
@@ -61,13 +63,13 @@ export default class RequestService {
     return new Promise((resolve, reject) => {
       requestClient.CanPushToKartoffelQueue(
         { id: requestId },
-        (err: any, response: CanPushToQueueRes) => {
-          if (err) {
+        (error: any, response: CanPushToQueueRes) => {
+          if (error) {
             logger.error(`CanPushToKartoffelQueue ERROR in EXS`, {
-              err,
+              error: { message: error.message },
               callRequest: { id: requestId },
             });
-            reject(err);
+            reject(error);
           }
 
           logger.info(`CanPushToKartoffelQueue OK in EXS`, {
@@ -85,13 +87,13 @@ export default class RequestService {
     return new Promise((resolve, reject) => {
       requestClient.CanPushToADQueue(
         { id: requestId },
-        (err: any, response: CanPushToQueueRes) => {
-          if (err) {
+        (error: any, response: CanPushToQueueRes) => {
+          if (error) {
             logger.error(`CanPushToADQueue ERROR in EXS`, {
-              err,
+              error: { message: error.message },
               callRequest: { id: requestId },
             });
-            reject(err);
+            reject(error);
           }
 
           logger.info(`CanPushToADQueue OK in EXS`, {

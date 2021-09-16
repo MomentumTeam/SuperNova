@@ -10,6 +10,9 @@ import {
   reportTeaSuccess,
   retrieveTeaAndUPNByEntity,
   retrieveTeaAndUPNByEntityId,
+  retrieveTeaByUnit,
+  retrieveUPNByEntity,
+  retrieveUPNByEntityId,
   updateUnit,
 } from './tea/tea.controller';
 import { findPath } from './utils/path';
@@ -50,6 +53,9 @@ export class Server {
       const teaServiceDescriptor: any = this.getProtoDescriptor();
       logger.info(`Proto was loaded successfully from file: ${PROTO_PATH}`);
       this.server.addService(teaServiceDescriptor.Tea.service, {
+        RetrieveTeaByUnit: retrieveTeaByUnit,
+        RetrieveUPNByEntity: retrieveUPNByEntity,
+        RetrieveUPNByEntityId: retrieveUPNByEntityId,
         RetrieveTeaAndUPNByEntity: retrieveTeaAndUPNByEntity,
         RetrieveTeaAndUPNByEntityId: retrieveTeaAndUPNByEntityId,
         ReportTeaSuccess: reportTeaSuccess,

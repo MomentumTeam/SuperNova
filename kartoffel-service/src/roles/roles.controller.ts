@@ -26,10 +26,10 @@ export async function getAllRoles(call: any, callback: any): Promise<void> {
       response: roles,
     });
     callback(null, { roles: roles });
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`getAllRoles ERROR`, {
       callRequest: call.request,
-      error: { message: error.message },
+      error: { error: { message: error.message } },
     });
     callback(
       {
@@ -51,10 +51,10 @@ export async function createRole(call: any, callback: any): Promise<void> {
       response: createdRole,
     });
     callback(null, createdRole);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`createRole OK`, {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {
@@ -81,10 +81,10 @@ export async function connectRoleAndDI(
       response: successMessage,
     });
     callback(null, successMessage);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`connectRoleAndDI ERROR`, {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {
@@ -110,10 +110,10 @@ export async function disconnectRoleAndDI(
       response: successMessage,
     });
     callback(null, successMessage);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`disconnectRoleAndDI ERROR`, {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {
@@ -135,10 +135,10 @@ export async function deleteRole(call: any, callback: any): Promise<void> {
       response: { success: true },
     });
     callback(null, role);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`deleteRole ERROR`, {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {
@@ -160,10 +160,10 @@ export async function getRoleByRoleId(call: any, callback: any): Promise<void> {
       response: role,
     });
     callback(null, role);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`getRoleByRoleId ERROR`, {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {
@@ -188,10 +188,10 @@ export async function getRolesByHierarchy(
       response: { success: true },
     });
     callback(null, { success: true });
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`getRolesByHierarchy ERROR`, {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {
@@ -213,10 +213,10 @@ export async function changeRoleOG(call: any, callback: any): Promise<void> {
       response: { success: true },
     });
     callback(null, { success: true });
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`changeRoleOG ERROR`, {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {
@@ -240,10 +240,10 @@ export async function getRolesUnderOG(call: any, callback: any): Promise<void> {
       response: roleArray,
     });
     callback(null, roleArray);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`getRolesUnderOG ERROR`, {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {
@@ -265,10 +265,10 @@ export async function renameRole(call: any, callback: any): Promise<void> {
       response: { success: true },
     });
     callback(null, { success: true });
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`renameRole ERROR`, {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {

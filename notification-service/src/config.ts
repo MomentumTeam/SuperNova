@@ -24,4 +24,5 @@ export const requestTypeToHebrew = {
   [requestTypeToJSON(RequestType.DELETE_ROLE)]: 'מחיקת תפקיד',
   [requestTypeToJSON(RequestType.DISCONNECT_ROLE)]: 'ניתוק תפקיד',
   [requestTypeToJSON(RequestType.ADD_APPROVER)]: 'הוספת גורם מאשר',
+  [requestTypeToJSON(RequestType.DELETE_ENTITY)]: 'מחיקת ישות',
 };

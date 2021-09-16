@@ -3,72 +3,1011 @@ syntax = "proto3";
 package RequestService;
 
 service RequestService {
-    rpc CreateRoleRequest(CreateRoleReq) returns (CreateRoleRes) {}    // בקשה יצירת תפקיד
-    rpc AssignRoleToEntityRequest(AssignRoleToEntityReq) returns (AssignRoleToEntityRes) {}   //בקשה הוספת משתמש   
-    rpc CreateOGRequest(CreateOGReq) returns (CreateOGRes) {}    //בקשה יצירת היררכיה
-    rpc CreateNewApproverRequest(CreateNewApproverReq) returns (CreateNewApproverRes) {}   //בקשה גורם מאשר
-    rpc CreateEntityRequest(CreateEntityReq) returns (CreateEntityRes){}   //בקשה יצירת יישות
+    rpc CreateRoleRequest(CreateRoleReq) returns (CreateRoleRes) {}    // בקשה ליצירת תפקיד May be part of bulk
+    rpc CreateOGRequest(CreateOGReq) returns (CreateOGRes) {}    //בקשה ליצירת היררכיה
+    rpc CreateEntityRequest(CreateEntityReq) returns (CreateEntityRes){}   //בקשה ליצירת ישות
+    rpc CreateNewApproverRequest(CreateNewApproverReq) returns (CreateNewApproverRes) {}   //בקשה להוספת גורם מאשר
     rpc RenameOGRequest(RenameOGReq) returns (RenameOGRes) {}      //בקשה לעריכת היררכיה
     rpc RenameRoleRequest(RenameRoleReq) returns (EditEntityRes) {}   //בקשה לעריכת תפקיד
-    rpc EditEntityRequest(EditEntityReq) returns (EditEntityRes){}  //בקשה לעריכת משתמש
+    rpc EditEntityRequest(EditEntityReq) returns (EditEntityRes){}  //בקשה לעריכת ישות
     rpc DeleteOGRequest(DeleteOGReq) returns (DeleteOGRes){}  //בקשה למחיקת להיררכיה
     rpc DeleteRoleRequest(DeleteRoleReq) returns (DeleteRoleRes){}  //בקשה למחיקת תפקיד
-    rpc DisconectRoleFromEntityRequest(DisconectRoleFromEntityReq) returns (DisconectRoleFromEntityRes){}  //נבקשה לניתוק תפקיד ממשתמש
+    rpc DeleteEntityRequest(DeleteEntityReq) returns (DeleteEntityRes){}  //בקשה למחיקת ישות
+    rpc AssignRoleToEntityRequest(AssignRoleToEntityReq) returns (AssignRoleToEntityRes) {}   //בקשה לקישור ישות לתפקיד (הוספת משתמש/מעבר תפקיד)   
+    rpc DisconectRoleFromEntityRequest(DisconectRoleFromEntityReq) returns (DisconectRoleFromEntityRes){}  //בקשה לניתוק תפקיד ממשתמש
+    rpc ChangeRoleHierarchyRequest(ChangeRoleHierarchyReq) returns (ChangeRoleHierarchyRes){} //שינוי היררכיה לתפקיד May be part of bulk
+    rpc CreateRoleBulkRequest(CreateRoleBulkReq) returns (CreateRoleBulkRes){}
+    rpc ChangeRoleHierarchyBulkRequest(ChangeRoleHierarchyBulkReq) returns (ChangeRoleHierarchyBulkRes){}
+
 
     rpc UpdateRequest(UpdateReq) returns (Request){}
     rpc UpdateKartoffelStatus(UpdateKartoffelStatusReq) returns (Request){}
     rpc UpdateADStatus(UpdateADStatusReq) returns (Request){}
     rpc DeleteRequest(DeleteReq) returns (SuccessMessage){}
-    rpc GetRequestsByCommander(GetRequestsByPersonIdReq) returns (RequestArray){}
-    rpc GetRequestsSubmittedBy(GetRequestsByPersonIdReq) returns (RequestArray){}
+
+    rpc GetRequestsByPerson(GetRequestsByPersonReq) returns (RequestArray){}
     rpc GetRequestBySerialNumber(GetRequestBySerialNumberReq) returns (Request){}
     rpc GetAllRequests(GetAllRequestsReq) returns (RequestArray){}
     rpc GetRequestById(GetRequestByIdReq) returns (Request) {}
-    rpc GetRequestsBySubmitterIdentifier(GetRequestsByIdentifierReq) returns (RequestArray) {}
-    rpc GetRequestsByCommanderIdentifier(GetRequestsByIdentifierReq) returns (RequestArray) {}
-    rpc GetRequestsBySecurityIdentifier(GetRequestsByIdentifierReq) returns (RequestArray) {}
-    rpc GetRequestsByApproverIdentifier(GetRequestsByIdentifierReq) returns (RequestArray) {}
-    rpc SearchRequestsBySubmitterDisplayName(SearchRequestsByDisplayNameReq) returns (RequestArray) {}
-    rpc SearchRequestsByCommanderDisplayName(SearchRequestsByDisplayNameReq) returns (RequestArray) {}
-    rpc SearchRequestsBySecurityDisplayName(SearchRequestsByDisplayNameReq) returns (RequestArray) {}
-    rpc SearchRequestsByApproverDisplayName(SearchRequestsByDisplayNameReq) returns (RequestArray) {}
+    rpc UpdateApproverDecision(UpdateApproverDecisionReq) returns (Request) {}
+    rpc IsRequestApproved(IsRequestApprovedReq) returns (IsRequestApprovedRes){}
     rpc CanPushToKartoffelQueue(CanPushToQueueReq) returns (CanPushToQueueRes){}
     rpc CanPushToADQueue(CanPushToQueueReq) returns (CanPushToQueueRes){}
     rpc IncrementKartoffelRetries(IncrementRetriesReq) returns (Request){}
     rpc IncrementADRetries(IncrementRetriesReq) returns (Request){}
-    rpc UpdateCommanderDecision(UpdateDecisionReq) returns (Request) {}
-    rpc UpdateSecurityDecision(UpdateDecisionReq) returns (Request) {}
-    rpc UpdateSuperSecurityDecision(UpdateDecisionReq) returns (Request) {}
-    rpc GetRequestsInProgressByDue(GetRequestsInProgressByDueReq) returns (RequestArray){}
-    rpc GetRequestIdsInProgressByDue(GetRequestsInProgressByDueReq) returns (RequestIdArray){}
     rpc UpdateCommanders(UpdateApproversReq) returns (Request){}
     rpc UpdateSecurityApprovers(UpdateApproversReq) returns (Request){}
+    rpc UpdateSuperSecurityApprovers(UpdateApproversReq) returns (Request){}
+    rpc GetRequestsInProgressByDue(GetRequestsInProgressByDueReq) returns (RequestArray){}
+    rpc GetRequestIdsInProgressByDue(GetRequestsInProgressByDueReq) returns (RequestIdArray){}
+    rpc PushError(PushErrorReq) returns (Request){}
+    rpc SyncBulkRequest(SyncBulkRequestReq) returns (Request){}
+
+    rpc SearchRequestsBySubmitterDisplayName(SearchRequestsByDisplayNameReq) returns (RequestArray) {}
+    rpc SearchRequestsByCommanderDisplayName(SearchRequestsByDisplayNameReq) returns (RequestArray) {}
+    rpc SearchRequestsBySecurityDisplayName(SearchRequestsByDisplayNameReq) returns (RequestArray) {}
+    rpc SearchRequestsByApproverDisplayName(SearchRequestsByDisplayNameReq) returns (RequestArray) {}
+
+
 }
 
-message UpdateApproversReq{
+// ---------------------------------------------LEGO Requests------------------------------------------------------------
+
+//1.CreateRole
+message CreateRoleReq{
+    EntityMin submittedBy = 1;
+    optional RequestStatus status = 2;
+    optional ApproverDecision commanderDecision = 3;
+    optional ApproverDecision securityDecision = 4;
+    optional ApproverDecision superSecurityDecision = 5;
+    repeated EntityMin commanders = 6;  
+    repeated EntityMin securityApprovers = 7;
+    repeated EntityMin superSecurityApprovers = 8;
+    optional KartoffelStatus kartoffelStatus = 9;
+    optional ADStatus adStatus = 10;
+    CreateRoleKartoffelParams kartoffelParams = 11;
+    CreateRoleADParams adParams = 12;
+    optional string comments = 13;
+    optional string approversComments = 14;
+    optional int64 due = 15;
+    optional bool isPartOfBulk = 16;
+    optional string bulkRequestId = 17;
+    optional string rowNumber = 18;
+}
+
+message CreateRoleRes{
+    EntityMin submittedBy = 1;
+    optional RequestStatus status = 2;
+    optional ApproverDecision commanderDecision = 3;
+    optional ApproverDecision securityDecision = 4;
+    optional ApproverDecision superSecurityDecision = 5;
+    repeated EntityMin commanders = 6;  
+    repeated EntityMin securityApprovers = 7;
+    repeated EntityMin superSecurityApprovers = 8;
+    optional KartoffelStatus kartoffelStatus = 9;
+    optional ADStatus adStatus = 10;
+    CreateRoleKartoffelParams kartoffelParams = 11;
+    CreateRoleADParams adParams = 12;
+    optional string comments = 13;
+    optional string approversComments = 14;
+    optional int64 due = 15;
+    bool isPartOfBulk = 16;
+    string bulkRequestId = 17;
+    optional string rowNumber = 18;
+
+    string id = 19;
+    int64 createdAt = 20;
+    int64 updatedAt = 21;
+    RequestType type = 22; 
+    string serialNumber = 23;
+    bool needSecurityDecision = 24;
+    bool needSuperSecurityDecision = 25;
+}
+
+//2.CreateOG
+message CreateOGReq{
+    EntityMin submittedBy = 1;
+    optional RequestStatus status = 2;
+    optional ApproverDecision commanderDecision = 3;
+    optional ApproverDecision securityDecision = 4;
+    optional ApproverDecision superSecurityDecision = 5;
+    repeated EntityMin commanders = 6;  
+    repeated EntityMin securityApprovers = 7;
+    repeated EntityMin superSecurityApprovers = 8;
+    optional KartoffelStatus kartoffelStatus = 9;
+    optional ADStatus adStatus = 10;
+    CreateOGKartoffelParams kartoffelParams = 11;
+    CreateOGADParams adParams = 12;
+    optional string comments = 13;
+    optional string approversComments = 14;
+    optional int64 due = 15;
+}
+
+message CreateOGRes{
+    EntityMin submittedBy = 1;
+    RequestStatus status = 2;
+    ApproverDecision commanderDecision = 3;
+    ApproverDecision securityDecision = 4;
+    ApproverDecision superSecurityDecision = 5;
+    repeated EntityMin commanders = 6;  
+    repeated EntityMin securityApprovers = 7;
+    repeated EntityMin superSecurityApprovers = 8;
+    KartoffelStatus kartoffelStatus = 9;
+    ADStatus adStatus = 10;
+    CreateOGKartoffelParams kartoffelParams = 11;
+    CreateOGADParams adParams = 12;
+    string comments = 13;
+    string approversComments = 14;
+    int64 due = 15;
+
+    string id = 16;
+    int64 createdAt = 17;
+    int64 updatedAt = 18;
+    RequestType type = 19; 
+    string serialNumber = 20;
+    bool needSecurityDecision = 21;
+    bool needSuperSecurityDecision = 22;
+}
+
+
+//3.CreateEntity
+message CreateEntityReq{
+    EntityMin submittedBy = 1;
+    optional RequestStatus status = 2;
+    optional ApproverDecision commanderDecision = 3;
+    optional ApproverDecision securityDecision = 4;
+    optional ApproverDecision superSecurityDecision = 5;
+    repeated EntityMin commanders = 6;  
+    repeated EntityMin securityApprovers = 7;
+    repeated EntityMin superSecurityApprovers = 8;
+    optional KartoffelStatus kartoffelStatus = 9;
+    optional ADStatus adStatus = 10;
+    CreateEntityKartoffelParams kartoffelParams = 11;
+    CreateEntityADParams adParams = 12;
+    optional string comments = 13;
+    optional string approversComments = 14;
+    optional int64 due = 15;
+}
+
+message CreateEntityRes{
+    EntityMin submittedBy = 1;
+    RequestStatus status = 2;
+    ApproverDecision commanderDecision = 3;
+    ApproverDecision securityDecision = 4;
+    ApproverDecision superSecurityDecision = 5;
+    repeated EntityMin commanders = 6;  
+    repeated EntityMin securityApprovers = 7;
+    repeated EntityMin superSecurityApprovers = 8;
+    KartoffelStatus kartoffelStatus = 9;
+    ADStatus adStatus = 10;
+    CreateEntityKartoffelParams kartoffelParams = 11;
+    CreateEntityADParams adParams = 12;
+    string comments = 13;
+    string approversComments = 14;
+    int64 due = 15;
+
+    string id = 16;
+    int64 createdAt = 17;
+    int64 updatedAt = 18;
+    RequestType type = 19; 
+    string serialNumber = 20;
+    bool needSecurityDecision = 21;
+    bool needSuperSecurityDecision = 22;
+}
+
+//4.CreateNewApproverRequest
+message CreateNewApproverReq{
+    EntityMin submittedBy = 1;
+    optional RequestStatus status = 2;
+    optional ApproverDecision commanderDecision = 3;
+    optional ApproverDecision securityDecision = 4;
+    optional ApproverDecision superSecurityDecision = 5;
+    repeated EntityMin commanders = 6;  
+    repeated EntityMin securityApprovers = 7;
+    repeated EntityMin superSecurityApprovers = 8;
+    optional AdditionalParams additionalParams = 9;
+    optional string comments = 10;
+    optional string approversComments = 11;
+    optional int64 due = 12;
+}
+
+message CreateNewApproverRes{
+    EntityMin submittedBy = 1;
+    RequestStatus status = 2;
+    ApproverDecision commanderDecision = 3;
+    ApproverDecision securityDecision = 4;
+    ApproverDecision superSecurityDecision = 5;
+    repeated EntityMin commanders = 6;  
+    repeated EntityMin securityApprovers = 7;
+    repeated EntityMin superSecurityApprovers = 8;
+    AdditionalParams additionalParams = 9;
+    string comments = 10;
+    string approversComments = 11;
+    int64 due = 12;
+
+    string id = 13;
+    int64 createdAt = 14;
+    int64 updatedAt = 15;
+    RequestType type = 16; 
+    string serialNumber = 17;
+    bool needSecurityDecision = 18;
+    bool needSuperSecurityDecision = 19;
+}
+
+//5.RenameOGRequest
+message RenameOGReq{
+    EntityMin submittedBy = 1;
+    optional RequestStatus status = 2;
+    optional ApproverDecision commanderDecision = 3;
+    optional ApproverDecision securityDecision = 4;
+    optional ApproverDecision superSecurityDecision = 5;
+    repeated EntityMin commanders = 6;  
+    repeated EntityMin securityApprovers = 7;
+    repeated EntityMin superSecurityApprovers = 8;
+    optional KartoffelStatus kartoffelStatus = 9;
+    optional ADStatus adStatus = 10;
+    RenameOGKartoffelParams kartoffelParams = 11;
+    RenameOGADParams adParams = 12;
+    optional string comments = 13;
+    optional string approversComments = 14;
+    optional int64 due = 15;
+}
+
+message RenameOGRes{
+    EntityMin submittedBy = 1;
+    RequestStatus status = 2;
+    ApproverDecision commanderDecision = 3;
+    ApproverDecision securityDecision = 4;
+    ApproverDecision superSecurityDecision = 5;
+    repeated EntityMin commanders = 6;  
+    repeated EntityMin securityApprovers = 7;
+    repeated EntityMin superSecurityApprovers = 8;
+    KartoffelStatus kartoffelStatus = 9;
+    ADStatus adStatus = 10;
+    RenameOGKartoffelParams kartoffelParams = 11;
+    RenameOGADParams adParams = 12;
+    string comments = 13;
+    string approversComments = 14;
+    int64 due = 15;
+
+    string id = 16;
+    int64 createdAt = 17;
+    int64 updatedAt = 18;
+    RequestType type = 19; 
+    string serialNumber = 20;
+    bool needSecurityDecision = 21;
+    bool needSuperSecurityDecision = 22;
+}
+
+//6.RenameRoleRequest
+message RenameRoleReq{
+    EntityMin submittedBy = 1;
+    optional RequestStatus status = 2;
+    optional ApproverDecision commanderDecision = 3;
+    optional ApproverDecision securityDecision = 4;
+    optional ApproverDecision superSecurityDecision = 5;
+    repeated EntityMin commanders = 6;  
+    repeated EntityMin securityApprovers = 7;
+    repeated EntityMin superSecurityApprovers = 8;
+    optional KartoffelStatus kartoffelStatus = 9;
+    optional ADStatus adStatus = 10;
+    RenameRoleKartoffelParams kartoffelParams = 11;
+    RenameRoleADParams adParams = 12;
+    optional string comments = 13;
+    optional string approversComments = 14;
+    optional int64 due = 15;
+}
+
+message RenameRoleRes{
+    EntityMin submittedBy = 1;
+    RequestStatus status = 2;
+    ApproverDecision commanderDecision = 3;
+    ApproverDecision securityDecision = 4;
+    ApproverDecision superSecurityDecision = 5;
+    repeated EntityMin commanders = 6;  
+    repeated EntityMin securityApprovers = 7;
+    repeated EntityMin superSecurityApprovers = 8;
+    KartoffelStatus kartoffelStatus = 9;
+    ADStatus adStatus = 10;
+    RenameRoleKartoffelParams kartoffelParams = 11;
+    RenameRoleADParams adParams = 12;
+    string comments = 13;
+    string approversComments = 14;
+    int64 due = 15;
+
+    string id = 16;
+    int64 createdAt = 17;
+    int64 updatedAt = 18;
+    RequestType type = 19; 
+    string serialNumber = 20;
+    bool needSecurityDecision = 21;
+    bool needSuperSecurityDecision = 22;
+}
+
+//7.EditEntityRequest
+message EditEntityReq{
+    EntityMin submittedBy = 1;
+    optional RequestStatus status = 2;
+    optional ApproverDecision commanderDecision = 3;
+    optional ApproverDecision securityDecision = 4;
+    optional ApproverDecision superSecurityDecision = 5;
+    repeated EntityMin commanders = 6;  
+    repeated EntityMin securityApprovers = 7;
+    repeated EntityMin superSecurityApprovers = 8;
+    optional KartoffelStatus kartoffelStatus = 9;
+    optional ADStatus adStatus = 10;
+    EditEntityKartoffelParams kartoffelParams = 11;
+    EditEntityADParams adParams = 12;
+    optional string comments = 13;
+    optional string approversComments = 14;
+    optional int64 due = 15;
+}
+
+message EditEntityRes{
+    EntityMin submittedBy = 1;
+    RequestStatus status = 2;
+    ApproverDecision commanderDecision = 3;
+    ApproverDecision securityDecision = 4;
+    ApproverDecision superSecurityDecision = 5;
+    repeated EntityMin commanders = 6;  
+    repeated EntityMin securityApprovers = 7;
+    repeated EntityMin superSecurityApprovers = 8;
+    KartoffelStatus kartoffelStatus = 9;
+    ADStatus adStatus = 10;
+    EditEntityKartoffelParams kartoffelParams = 11;
+    EditEntityADParams adParams = 12;
+    string comments = 13;
+    string approversComments = 14;
+    int64 due = 15;
+
+    string id = 16;
+    int64 createdAt = 17;
+    int64 updatedAt = 18;
+    RequestType type = 19; 
+    string serialNumber = 20;
+    bool needSecurityDecision = 21;
+    bool needSuperSecurityDecision = 22;
+}
+
+//8.DeleteOGRequest
+message DeleteOGReq{
+    EntityMin submittedBy = 1;
+    optional RequestStatus status = 2;
+    optional ApproverDecision commanderDecision = 3;
+    optional ApproverDecision securityDecision = 4;
+    optional ApproverDecision superSecurityDecision = 5;
+    repeated EntityMin commanders = 6;  
+    repeated EntityMin securityApprovers = 7;
+    repeated EntityMin superSecurityApprovers = 8;
+    optional KartoffelStatus kartoffelStatus = 9;
+    optional ADStatus adStatus = 10;
+    DeleteOGKartoffelParams kartoffelParams = 11;
+    DeleteOGADParams adParams = 12;
+    optional string comments = 13;
+    optional string approversComments = 14;
+    optional int64 due = 15;
+}
+
+message DeleteOGRes{
+    EntityMin submittedBy = 1;
+    RequestStatus status = 2;
+    ApproverDecision commanderDecision = 3;
+    ApproverDecision securityDecision = 4;
+    ApproverDecision superSecurityDecision = 5;
+    repeated EntityMin commanders = 6;  
+    repeated EntityMin securityApprovers = 7;
+    repeated EntityMin superSecurityApprovers = 8;
+    KartoffelStatus kartoffelStatus = 9;
+    ADStatus adStatus = 10;
+    DeleteOGKartoffelParams kartoffelParams = 11;
+    DeleteOGADParams adParams = 12;
+    string comments = 13;
+    string approversComments = 14;
+    int64 due = 15;
+
+    string id = 16;
+    int64 createdAt = 17;
+    int64 updatedAt = 18;
+    RequestType type = 19; 
+    string serialNumber = 20;
+    bool needSecurityDecision = 21;
+    bool needSuperSecurityDecision = 22;
+}
+
+//9.DeleteRoleRequest
+message DeleteRoleReq{
+    EntityMin submittedBy = 1;
+    optional RequestStatus status = 2;
+    optional ApproverDecision commanderDecision = 3;
+    optional ApproverDecision securityDecision = 4;
+    optional ApproverDecision superSecurityDecision = 5;
+    repeated EntityMin commanders = 6;  
+    repeated EntityMin securityApprovers = 7;
+    repeated EntityMin superSecurityApprovers = 8;
+    optional KartoffelStatus kartoffelStatus = 9;
+    optional ADStatus adStatus = 10;
+    DeleteRoleKartoffelParams kartoffelParams = 11;
+    DeleteRoleADParams adParams = 12;
+    optional string comments = 13;
+    optional string approversComments = 14;
+    optional int64 due = 15;
+}
+
+message DeleteRoleRes{
+    EntityMin submittedBy = 1;
+    RequestStatus status = 2;
+    ApproverDecision commanderDecision = 3;
+    ApproverDecision securityDecision = 4;
+    ApproverDecision superSecurityDecision = 5;
+    repeated EntityMin commanders = 6;  
+    repeated EntityMin securityApprovers = 7;
+    repeated EntityMin superSecurityApprovers = 8;
+    KartoffelStatus kartoffelStatus = 9;
+    ADStatus adStatus = 10;
+    DeleteRoleKartoffelParams kartoffelParams = 11;
+    DeleteRoleADParams adParams = 12;
+    string comments = 13;
+    string approversComments = 14;
+    int64 due = 15;
+
+    string id = 16;
+    int64 createdAt = 17;
+    int64 updatedAt = 18;
+    RequestType type = 19; 
+    string serialNumber = 20;
+    bool needSecurityDecision = 21;
+    bool needSuperSecurityDecision = 22;
+}
+
+//10.DeleteEntityRequest
+message DeleteEntityReq{
+    EntityMin submittedBy = 1;
+    optional RequestStatus status = 2;
+    optional ApproverDecision commanderDecision = 3;
+    optional ApproverDecision securityDecision = 4;
+    optional ApproverDecision superSecurityDecision = 5;
+    repeated EntityMin commanders = 6;  
+    repeated EntityMin securityApprovers = 7;
+    repeated EntityMin superSecurityApprovers = 8;
+    optional KartoffelStatus kartoffelStatus = 9;
+    optional ADStatus adStatus = 10;
+    DeleteEntityKartoffelParams kartoffelParams = 11;
+    DeleteEntityADParams adParams = 12;
+    optional string comments = 13;
+    optional string approversComments = 14;
+    optional int64 due = 15;
+}
+
+message DeleteEntityRes{
+    EntityMin submittedBy = 1;
+    RequestStatus status = 2;
+    ApproverDecision commanderDecision = 3;
+    ApproverDecision securityDecision = 4;
+    ApproverDecision superSecurityDecision = 5;
+    repeated EntityMin commanders = 6;  
+    repeated EntityMin securityApprovers = 7;
+    repeated EntityMin superSecurityApprovers = 8;
+    KartoffelStatus kartoffelStatus = 9;
+    ADStatus adStatus = 10;
+    DeleteEntityKartoffelParams kartoffelParams = 11;
+    DeleteEntityADParams adParams = 12;
+    string comments = 13;
+    string approversComments = 14;
+    int64 due = 15;
+
+    string id = 16;
+    int64 createdAt = 17;
+    int64 updatedAt = 18;
+    RequestType type = 19; 
+    string serialNumber = 20;
+    bool needSecurityDecision = 21;
+    bool needSuperSecurityDecision = 22;
+}
+
+//11.AssignRoleToEntityRequest
+message AssignRoleToEntityReq{
+    EntityMin submittedBy = 1;
+    optional RequestStatus status = 2;
+    optional ApproverDecision commanderDecision = 3;
+    optional ApproverDecision securityDecision = 4;
+    optional ApproverDecision superSecurityDecision = 5;
+    repeated EntityMin commanders = 6;  
+    repeated EntityMin securityApprovers = 7;
+    repeated EntityMin superSecurityApprovers = 8;
+    optional KartoffelStatus kartoffelStatus = 9;
+    optional ADStatus adStatus = 10;
+    AssignRoleToEntityKartoffelParams kartoffelParams = 11;
+    AssignRoleToEntityADParams adParams = 12;
+    optional string comments = 13;
+    optional string approversComments = 14;
+    optional int64 due = 15;
+}
+
+message AssignRoleToEntityRes{
+    EntityMin submittedBy = 1;
+    RequestStatus status = 2;
+    ApproverDecision commanderDecision = 3;
+    ApproverDecision securityDecision = 4;
+    ApproverDecision superSecurityDecision = 5;
+    repeated EntityMin commanders = 6;  
+    repeated EntityMin securityApprovers = 7;
+    repeated EntityMin superSecurityApprovers = 8;
+    KartoffelStatus kartoffelStatus = 9;
+    ADStatus adStatus = 10;
+    AssignRoleToEntityKartoffelParams kartoffelParams = 11;
+    AssignRoleToEntityADParams adParams = 12;
+    string comments = 13;
+    string approversComments = 14;
+    int64 due = 15;
+
+    string id = 16;
+    int64 createdAt = 17;
+    int64 updatedAt = 18;
+    RequestType type = 19; 
+    string serialNumber = 20;
+    bool needSecurityDecision = 21;
+    bool needSuperSecurityDecision = 22;
+}
+
+//12.DisconectRoleFromEntityRequest
+message DisconectRoleFromEntityReq{
+    EntityMin submittedBy = 1;
+    optional RequestStatus status = 2;
+    optional ApproverDecision commanderDecision = 3;
+    optional ApproverDecision securityDecision = 4;
+    optional ApproverDecision superSecurityDecision = 5;
+    repeated EntityMin commanders = 6;  
+    repeated EntityMin securityApprovers = 7;
+    repeated EntityMin superSecurityApprovers = 8;
+    optional KartoffelStatus kartoffelStatus = 9;
+    optional ADStatus adStatus = 10;
+    DisconectRoleFromEntityKartoffelParams kartoffelParams = 11;
+    DisconectRoleFromEntityADParams adParams = 12;
+    optional string comments = 13;
+    optional string approversComments = 14;
+    optional int64 due = 15;
+}
+
+message DisconectRoleFromEntityRes{
+    EntityMin submittedBy = 1;
+    RequestStatus status = 2;
+    ApproverDecision commanderDecision = 3;
+    ApproverDecision securityDecision = 4;
+    ApproverDecision superSecurityDecision = 5;
+    repeated EntityMin commanders = 6;  
+    repeated EntityMin securityApprovers = 7;
+    repeated EntityMin superSecurityApprovers = 8;
+    KartoffelStatus kartoffelStatus = 9;
+    ADStatus adStatus = 10;
+    DisconectRoleFromEntityKartoffelParams kartoffelParams = 11;
+    DisconectRoleFromEntityADParams adParams = 12;
+    string comments = 13;
+    string approversComments = 14;
+    int64 due = 15;
+
+    string id = 16;
+    int64 createdAt = 17;
+    int64 updatedAt = 18;
+    RequestType type = 19; 
+    string serialNumber = 20;
+    bool needSecurityDecision = 21;
+    bool needSuperSecurityDecision = 22;
+}
+
+//13.ChangeHierarchyToRoleRequest
+message ChangeRoleHierarchyReq{
+    EntityMin submittedBy = 1;
+    optional RequestStatus status = 2;
+    optional ApproverDecision commanderDecision = 3;
+    optional ApproverDecision securityDecision = 4;
+    optional ApproverDecision superSecurityDecision = 5;
+    repeated EntityMin commanders = 6;  
+    repeated EntityMin securityApprovers = 7;
+    repeated EntityMin superSecurityApprovers = 8;
+    optional KartoffelStatus kartoffelStatus = 9;
+    optional ADStatus adStatus = 10;
+    ChangeRoleHierarchyKartoffelParams kartoffelParams = 11;
+    ChangeRoleHierarchyADParams adParams = 12;
+    optional string comments = 13;
+    optional string approversComments = 14;
+    optional int64 due = 15;
+    bool isPartOfBulk = 16;
+    string bulkRequestId = 17;
+    optional string rowNumber = 18;
+}
+
+message ChangeRoleHierarchyRes{
+    EntityMin submittedBy = 1;
+    RequestStatus status = 2;
+    ApproverDecision commanderDecision = 3;
+    ApproverDecision securityDecision = 4;
+    ApproverDecision superSecurityDecision = 5;
+    repeated EntityMin commanders = 6;  
+    repeated EntityMin securityApprovers = 7;
+    repeated EntityMin superSecurityApprovers = 8;
+    KartoffelStatus kartoffelStatus = 9;
+    ADStatus adStatus = 10;
+    ChangeRoleHierarchyKartoffelParams kartoffelParams = 11;
+    ChangeRoleHierarchyADParams adParams = 12;
+    string comments = 13;
+    string approversComments = 14;
+    int64 due = 15;
+    bool isPartOfBulk = 16;
+    string bulkRequestId = 17;
+    optional string rowNumber = 18;
+
+    string id = 19;
+    int64 createdAt = 20;
+    int64 updatedAt = 21;
+    RequestType type = 22; 
+    string serialNumber = 23;
+    bool needSecurityDecision = 24;
+    bool needSuperSecurityDecision = 25;
+}
+
+//14.CreateRoleBulkRequest
+message CreateRoleBulkReq{
+    EntityMin submittedBy = 1;
+    optional RequestStatus status = 2;
+    optional ApproverDecision commanderDecision = 3;
+    optional ApproverDecision securityDecision = 4;
+    optional ApproverDecision superSecurityDecision = 5;
+    repeated EntityMin commanders = 6;  
+    repeated EntityMin securityApprovers = 7;
+    repeated EntityMin superSecurityApprovers = 8;
+    optional string comments = 9;
+    optional string approversComments = 10;
+    optional int64 due = 11;
+    repeated string requestIds = 12;
+    repeated RowError rowErrors = 13;
+    string excelFilePath = 14;
+}
+
+message CreateRoleBulkRes{
+    EntityMin submittedBy = 1;
+    optional RequestStatus status = 2;
+    optional ApproverDecision commanderDecision = 3;
+    optional ApproverDecision securityDecision = 4;
+    optional ApproverDecision superSecurityDecision = 5;
+    repeated EntityMin commanders = 6;  
+    repeated EntityMin securityApprovers = 7;
+    repeated EntityMin superSecurityApprovers = 8;
+    optional string comments = 9;
+    optional string approversComments = 10;
+    optional int64 due = 11;
+    repeated string requestIds = 12;
+    repeated RowError rowErrors = 13;
+    string excelFilePath = 14;
+
+    string id = 15;
+    int64 createdAt = 16;
+    int64 updatedAt = 17;
+    RequestType type = 18; 
+    string serialNumber = 19;
+    bool needSecurityDecision = 20;
+    bool needSuperSecurityDecision = 21;
+}
+
+//15.ChangeRoleHierarchyBulkRequest
+message ChangeRoleHierarchyBulkReq{
+    EntityMin submittedBy = 1;
+    optional RequestStatus status = 2;
+    optional ApproverDecision commanderDecision = 3;
+    optional ApproverDecision securityDecision = 4;
+    optional ApproverDecision superSecurityDecision = 5;
+    repeated EntityMin commanders = 6;  
+    repeated EntityMin securityApprovers = 7;
+    repeated EntityMin superSecurityApprovers = 8;
+    optional string comments = 9;
+    optional string approversComments = 10;
+    optional int64 due = 11;
+    repeated string requestIds = 12;
+    string excelFilePath = 13;
+}
+
+message ChangeRoleHierarchyBulkRes{
+    EntityMin submittedBy = 1;
+    optional RequestStatus status = 2;
+    optional ApproverDecision commanderDecision = 3;
+    optional ApproverDecision securityDecision = 4;
+    optional ApproverDecision superSecurityDecision = 5;
+    repeated EntityMin commanders = 6;  
+    repeated EntityMin securityApprovers = 7;
+    repeated EntityMin superSecurityApprovers = 8;
+    optional string comments = 9;
+    optional string approversComments = 10;
+    optional int64 due = 11;
+    repeated string requestIds = 12;
+    string excelFilePath = 13;
+
+    string id = 14;
+    int64 createdAt = 15;
+    int64 updatedAt = 16;
+    RequestType type = 17; 
+    string serialNumber = 18;
+    bool needSecurityDecision = 19;
+    bool needSuperSecurityDecision = 20;
+}
+
+
+// -------------------------------------------------------Params-------------------------------------------------------------------------
+
+//1.CreateRoleRequest
+message CreateRoleKartoffelParams{
+    //for role
+    string jobTitle = 1; //name of the role
+    string directGroup = 2; //groupId of direct father
+    optional string roleId = 3; //T154514... generated automatically by tea-service if not given
+    string clearance = 4; //clearance of the role
+    optional string unit = 5;
+
+    //forDigitalIdentity
+    string type = 6; //always domainUser
+    string source = 7; //always oneTree
+    optional string uniqueId = 8; //T154514... generated automatically by tea-service if not given
+    optional string mail = 9; //T154514... generated automatically by tea-service if not given
+    bool isRoleAttachable = 10; //true, if the role is unoccupied
+}
+
+message CreateRoleADParams{
+    string samAccountName = 1; //T154514... generated automatically by tea-service if not given
+    string ouDisplayName = 2; // Role's full hierarchy
+    string jobTitle = 3; //name of the role
+}
+
+//2.CreateOGRequest
+message CreateOGKartoffelParams{
+    string name = 1;
+    string parent = 2;
+    string source = 3;
+}
+
+message CreateOGADParams{
+    string ouDisplayName = 1;
+    string ouName = 2;
+    string name = 3;
+}
+
+//3.CreateEntityRequest
+message CreateEntityKartoffelParams{
+    string firstName = 1;
+    string lastName = 2;
+    string identityCard = 3;
+    string personalNumber = 4;
+    string serviceType = 5;
+    repeated string phone = 6;
+    repeated string mobilePhone = 7;
+    string address = 8;
+    string clearance = 9;
+    string sex = 10;
+    int64 birthdate = 11;
+    string entityType = 12;
+}
+
+message CreateEntityADParams{
+//NO PARAMETERS NEEDED
+}
+
+//4.CreateNewApproverRequest
+message AdditionalParams{
+    string entityId = 1;
+    string displayName = 2;
+    repeated string domainUsers = 3;
+    string akaUnit = 4;
+    ApproverType type = 5;
+}
+
+//5.RenameOGRequest
+message RenameOGKartoffelParams{
     string id = 1;
-    repeated EntityMin approvers = 2;
+    string name = 2;
 }
 
-message GetRequestsInProgressByDueReq{
-    int64 due = 1;
-}
-
-message RequestIdArray{
-    repeated string requestIds = 1;
-    int32 count = 2;
+message RenameOGADParams{
+    string ouDisplayName = 1;
+    string oldOuName = 2;
+    string newOuName = 3;
 }
 
 
-message UpdateDecisionReq{
+//6.RenameRoleRequest
+message RenameRoleKartoffelParams{
+    string jobTitle = 1;
+    string roleId = 2;
+}
+
+message RenameRoleADParams{
+    string samAccountName = 1;
+    string jobTitle = 2;
+}
+
+//7.EditEntityRequest
+message EditEntityKartoffelParams{
     string id = 1;
-    ApproverDecision approverDecision = 2;
+    string firstName = 2;
+    string lastName = 3;
+    optional string identityCard = 4;
+    string personalNumber = 5;
+    string serviceType = 6;
+    repeated string phone = 7;
+    repeated string mobilePhone = 8;
+    string address = 9;
+    string clearance = 10;
+    string sex = 11;
+    int64 birthdate = 12;
+    string entityType = 13;
 }
 
-message IncrementRetriesReq{
+message EditEntityADParams{
+    string samAccountName = 1;
+    string firstName = 2;
+    string lastName = 3;
+    string fullName = 4;
+}
+
+//8.DeleteOGRequest
+message DeleteOGKartoffelParams{
     string id = 1;
 }
 
+message DeleteOGADParams{
+    string ouDisplayName = 1;
+    string ouName = 2;
+    string name = 3;
+}
+
+//9.DeleteRoleRequest
+message DeleteRoleKartoffelParams{
+    string roleId = 1;
+    string uniqueId = 2;
+}
+
+message DeleteRoleADParams{
+    string samAccountName = 1;
+}
+
+//10.DeleteEntityRequest
+message DeleteEntityKartoffelParams{
+    string id = 1;
+}
+
+message DeleteEntityADParams{
+    //NO PARAMETERS NEEDED
+}
+
+//11.AssignRoleToEntityRequest
+message AssignRoleToEntityKartoffelParams{
+    string id = 1;
+    string uniqueId = 2;
+    bool needDisconnect = 3;
+}
+
+message AssignRoleToEntityADParams{
+    string oldSAMAccountName = 1;
+    string newSAMAccountName = 2;
+    optional string upn = 3;
+    string firstName = 4;
+    string lastName = 5;
+    string fullName = 6;
+    string rank = 7;
+    string roleSerialCode = 8;
+}
+
+//12.DisconnectRoleFromEntityRequest
+message DisconectRoleFromEntityKartoffelParams{
+    string id = 1;
+    string uniqueId = 2;
+}
+
+message DisconectRoleFromEntityADParams{
+    string samAccountName = 1;
+}
+
+//13.ChangeHierarchyToRoleRequest
+message ChangeRoleHierarchyKartoffelParams{
+    string roleId = 1;
+    string directGroup = 2;
+}
+
+message ChangeRoleHierarchyADParams{
+    optional string oldSAMAccountName = 6;
+    optional string newSAMAccountName = 7;
+}
+
+message SyncBulkRequestReq{
+    string id = 1;
+}
+
+// ---------------------------------------------Other Functions Objects------------------------------------------------------------
+
+//UpdateRequest
+
+message UpdateReq{
+    string id = 1;
+    UpdateReqProperties requestProperties = 2;
+}
+message UpdateReqProperties{
+    optional EntityMin submittedBy = 1;
+    optional RequestStatus status = 2;
+    optional ApproverDecision commanderDecision = 3;
+    optional ApproverDecision securityDecision = 4;
+    optional ApproverDecision superSecurityDecision = 5;
+    optional KartoffelStatus kartoffelStatus = 6;
+    optional ADStatus adStatus = 7;
+    optional KartoffelParams kartoffelParams = 8;
+    optional ADParams adParams = 9;
+    optional int64 due = 10;
+    repeated EntityMin commanders = 11; 
+    repeated EntityMin securityApprovers = 12; 
+    repeated EntityMin superSecurityApprovers = 13; 
+    optional bool isPartOfBulk = 14;
+    optional string bulkRequestId = 15;
+    repeated string requestIds = 16;
+    optional string rowNumber = 17;
+    repeated RowError rowErrors = 18;
+    optional string excelFilePath = 19;
+}
+
+//UpdateKartoffelStatus
+message UpdateKartoffelStatusReq{
+    string requestId = 1;
+    StageStatus status = 2;
+    optional string message = 3;
+    optional string createdId = 4;
+    optional int32 failedRetries = 5;
+}
+
+//UpdateADStatus
+message UpdateADStatusReq{
+    string requestId = 1;
+    StageStatus status = 2;
+    string message = 3;
+    optional int32 failedRetries = 4;
+}
+
+//DeleteRequest
+message DeleteReq{
+    string id = 1;
+}
+
+//GetRequestsByPerson
+message GetRequestsByPersonReq{
+    string id = 1;
+    PersonTypeInRequest personType = 2;
+    PersonInfoType personInfoType = 3;
+    int32 from = 4;
+    int32 to = 5;
+    optional ApprovementStatus approvementStatus = 6;
+}
+
+//GetRequestBySerialNumber
+message GetRequestBySerialNumberReq{
+    string serialNumber = 1;
+}
+
+//GetAllRequests
+message GetAllRequestsReq{
+    int32 from = 1;
+    int32 to = 2;
+    optional ApprovementStatus approvementStatus = 6;
+}
+
+//GetRequestById
+message GetRequestByIdReq{
+    string id = 1;
+}
+
+
+// SearchRequestsBySubmitterDisplayName,SearchRequestsByCommanderDisplayName,
+// SearchRequestsBySecurityDisplayNamer,SearchRequestsByApproverDisplayName
+message SearchRequestsByDisplayNameReq{
+    string displayName = 1;
+    int32 from = 2;
+    int32 to = 3;
+}
+
+
+//CanPushToKartoffelQueue, CanPushToADQueue
 message CanPushToQueueReq{
     string id = 1;
 }
@@ -77,29 +1016,49 @@ message CanPushToQueueRes{
     bool canPushToQueue = 1;
 }
 
-message GetRequestsByIdentifierReq{
-    string identifier = 1;
-    int32 from = 2;
-    int32 to = 3;
+//IncrementKartoffelRetries, IncrementADRetries
+message IncrementRetriesReq{
+    string id = 1;
 }
 
-message SearchRequestsByDisplayNameReq{
-    string displayName = 1;
-    int32 from = 2;
-    int32 to = 3;
+// UpdateCommanderDecision, UpdateSecurityDecision, UpdateSuperSecurityDecision
+message UpdateApproverDecisionReq{
+    string id = 1;
+    ApproverDecision approverDecision = 2;
+    PersonTypeInRequest approverType = 3;
 }
 
-message UpdateKartoffelStatusReq{
-    string requestId = 1;
-    StageStatus status = 2;
-    optional string message = 3;
-    optional string createdId = 4;
+//GetRequestsInProgressByDue, GetRequestIdsInProgressByDue
+message GetRequestsInProgressByDueReq{
+    int64 due = 1;
 }
 
-message UpdateADStatusReq{
-    string requestId = 1;
-    StageStatus status = 2;
-    string message = 3;
+//UpdateCommanders, UpdateSecurityApprovers 
+message UpdateApproversReq{
+    string id = 1;
+    repeated EntityMin approvers = 2;
+}
+
+//IsRequestApproved
+message IsRequestApprovedReq{
+    string id = 1;
+}
+
+message IsRequestApprovedRes{
+    bool isRequestApproved = 1;
+}
+
+message PushErrorReq{
+    string id = 1;
+    string rowNumber = 2;
+    string error = 3;
+    ErrorType errorType = 4;
+}
+
+// ---------------------------------------------Other Objects------------------------------------------------------------
+message RequestIdArray{
+    repeated string requestIds = 1;
+    int32 count = 2;
 }
 
 message EntityMin{
@@ -107,54 +1066,6 @@ message EntityMin{
     string displayName = 2;
     string identityCard = 3;
     string personalNumber = 4;
-}
-
-
-//Enums
-
-enum ApproverType{
-    COMMANDER = 0;
-    SECURITY = 1;
-    SUPER_SECURITY = 2;
-}
-
-enum RequestType {
-    CREATE_OG = 0;
-    CREATE_ROLE = 1;
-    ASSIGN_ROLE_TO_ENTITY = 2;
-    CREATE_ENTITY=3;
-    RENAME_OG = 4;
-    RENAME_ROLE = 5;
-    EDIT_ENTITY = 6;
-    DELETE_OG = 7;
-    DELETE_ROLE = 8;
-    DISCONNECT_ROLE=9;
-    ADD_APPROVER = 10;
-}
-
-
-
-enum RequestStatus{
-    SUBMITTED = 0;
-    DECLINED = 1;
-    APPROVED_BY_COMMANDER = 2;
-    APPROVED_BY_SECURITY = 3;
-    IN_PROGRESS = 4;
-    DONE = 5;
-    FAILED = 6;
-}
-
-enum StageStatus{
-    STAGE_UNKNOWN = 0;
-    STAGE_IN_PROGRESS = 1;
-    STAGE_DONE = 2;
-    STAGE_FAILED = 3;
-}
-
-enum Decision{
-    DECISION_UNKNOWN = 0;
-    APPROVED = 1;
-    DENIED = 2;
 }
 
 message SuccessMessage{
@@ -187,642 +1098,13 @@ message RequestArray{
     int32 totalCount = 2;
 }
 
-//simple messages
-
-message GetRequestsByPersonIdReq{
-    string id = 1;
-    int32 from = 2;
-    int32 to = 3;
+message RowError{
+    string rowNumber = 1;
+    string error = 2;
+    ErrorType errorType = 3;
 }
 
-message GetAllRequestsReq{
-    int32 from = 1;
-    int32 to = 2;
-}
-
-message GetRequestByIdReq{
-    string id = 1;
-}
-
-message DeleteReq{
-    string id = 1;
-}
-
-message UpdateReq{
-    string id = 1;
-    UpdateReqProperties requestProperties = 2;
-}
-message UpdateReqProperties{
-    optional EntityMin submittedBy = 1;
-    optional RequestStatus status = 2;
-    optional ApproverDecision commanderDecision = 3;
-    optional ApproverDecision securityDecision = 4;
-    optional ApproverDecision superSecurityDecision = 5;
-    optional KartoffelStatus kartoffelStatus = 6;
-    optional ADStatus adStatus = 7;
-    optional KartoffelParams kartoffelParams = 8;
-    optional ADParams adParams = 9;
-    optional int64 due = 10;
-    // repeated EntityMin commanders = 11; 
-    // repeated EntityMin securityApprovers = 12;  
-}
-
-//Request messages
-
-//NewApproverRequest
-message CreateNewApproverReq{
-    EntityMin submittedBy = 1;
-    RequestStatus status = 2;
-    ApproverDecision commanderDecision = 3;
-    ApproverDecision securityDecision = 4;
-    repeated EntityMin commanders = 5;  
-    KartoffelStatus kartoffelStatus = 6;
-    ADStatus adStatus = 7;
-    AdditionalParams additionalParams = 8;
-    string comments = 9;
-    string approversComments = 10;
-    optional int64 due = 11;
-}
-
-message CreateNewApproverRes{
-    EntityMin submittedBy = 1;
-    RequestStatus status = 2;
-    ApproverDecision commanderDecision = 3;
-    ApproverDecision securityDecision = 4;
-    repeated EntityMin commanders = 5;  
-    KartoffelStatus kartoffelStatus = 6;
-    ADStatus adStatus = 7;
-    AdditionalParams additionalParams = 8;
-    string comments = 9;
-    string approversComments = 10;
-    int64 due = 11;
-
-    string id = 12;
-    int64 createdAt = 13;
-    int64 updatedAt = 14;
-    RequestType type = 15; 
-    string serialNumber = 16;
-    bool needSecurityDecision = 17;
-    bool needSuperSecurityDecision = 18;
-}
-
-//CreateOG
-message CreateOGReq{
-    EntityMin submittedBy = 1;
-    RequestStatus status = 2;
-    ApproverDecision commanderDecision = 3;
-    ApproverDecision securityDecision = 4;
-    repeated EntityMin commanders = 5;  
-    KartoffelStatus kartoffelStatus = 6;
-    ADStatus adStatus = 7;
-    CreateOGKartoffelParams kartoffelParams = 8;
-    CreateOGADParams adParams = 9;
-    string comments = 10;
-    string approversComments = 11;
-    optional int64 due = 12;
-}
-
-message CreateOGRes{
-    EntityMin submittedBy = 1;
-    RequestStatus status = 2;
-    ApproverDecision commanderDecision = 3;
-    ApproverDecision securityDecision = 4;
-    repeated EntityMin commanders = 5;  
-    KartoffelStatus kartoffelStatus = 6;
-    ADStatus adStatus = 7;
-    CreateOGKartoffelParams kartoffelParams = 8;
-    CreateOGADParams adParams = 9;
-    string comments = 10;
-    string approversComments = 11;
-    int64 due = 12;
-
-    string id = 13;
-    int64 createdAt = 14;
-    int64 updatedAt = 15;
-    RequestType type = 16; 
-    string serialNumber = 17;
-    bool needSecurityDecision = 18;
-    bool needSuperSecurityDecision = 19;
-}
-
-message CreateOGKartoffelParams{
-    string name = 1;
-    string parent = 2;
-    string source = 3;
-}
-
-message CreateOGADParams{
-    string ouDisplayName = 1;
-    string ouName = 2;
-    string name = 3;
-}
-
-//CreateRole
-message CreateRoleReq{
-    EntityMin submittedBy = 1;
-    RequestStatus status = 2;
-    ApproverDecision commanderDecision = 3;
-    ApproverDecision securityDecision = 4;
-    ApproverDecision superSecurityDecision = 5;
-    repeated EntityMin commanders = 6;  
-    repeated EntityMin securityApprovers = 7;
-    KartoffelStatus kartoffelStatus = 8;
-    ADStatus adStatus = 9;
-    CreateRoleKartoffelParams kartoffelParams = 10;
-    CreateRoleADParams adParams = 11;
-    string comments = 12;
-    string approversComments = 13;
-    optional int64 due = 14;
-}
-
-message CreateRoleRes{
-    EntityMin submittedBy = 1;
-    RequestStatus status = 2;
-    ApproverDecision commanderDecision = 3;
-    ApproverDecision securityDecision = 4;
-    ApproverDecision superSecurityDecision = 5;
-    repeated EntityMin commanders = 6;  
-    repeated EntityMin securityApprovers = 7;
-    KartoffelStatus kartoffelStatus = 8;
-    ADStatus adStatus = 9;
-    CreateRoleKartoffelParams kartoffelParams = 10;
-    CreateRoleADParams adParams = 11;
-    string comments = 12;
-    string approversComments = 13;
-    int64 due = 14;
-
-    string id = 15;
-    int64 createdAt = 16;
-    int64 updatedAt = 17;
-    RequestType type = 18; 
-    string serialNumber = 19;
-    bool needSecurityDecision = 20;
-    bool needSuperSecurityDecision = 21;
-}
-message CreateRoleKartoffelParams{
-    //for role
-    string jobTitle = 1; //name of the role
-    string directGroup = 2; //groupId of direct father
-    string roleId = 3; //T154514... generated automatically somehow
-    string clearance = 4; //clearance of the role
-
-    //forDigitalIdentity
-    string type = 5; //always domainUser
-    string source = 6; //always oneTree
-    string uniqueId = 7; //T154514... generated automatically somehow
-    string mail = 8; //identical to uniqueId
-    bool isRoleAttachable = 9; //true, if the role is unoccupied
-}
-
-message CreateRoleADParams{
-    string samAccountName = 1; //T154514... generated automatically somehow
-    string ouDisplayName = 2; // Role's full hierarchy
-    string jobTitle = 3; //name of the role
-}
-
-//CreateEntity
-message CreateEntityReq{
-    EntityMin submittedBy = 1;
-    RequestStatus status = 2;
-    ApproverDecision commanderDecision = 3;
-    ApproverDecision securityDecision = 4;
-    repeated EntityMin commanders = 5;  
-    repeated EntityMin securityApprovers = 6;
-    KartoffelStatus kartoffelStatus = 7;
-    ADStatus adStatus = 8;
-    CreateEntityKartoffelParams kartoffelParams = 9;
-    CreateEntityADParams adParams = 10;
-    string comments = 11;
-    string approversComments = 12;
-    optional int64 due = 13;
-}
-
-message CreateEntityRes{
-    EntityMin submittedBy = 1;
-    RequestStatus status = 2;
-    ApproverDecision commanderDecision = 3;
-    ApproverDecision securityDecision = 4;
-    repeated EntityMin commanders = 5;  
-    repeated EntityMin securityApprovers = 6;
-    KartoffelStatus kartoffelStatus = 7;
-    ADStatus adStatus = 8;
-    CreateEntityKartoffelParams kartoffelParams = 9;
-    CreateEntityADParams adParams = 10;
-    string comments = 11;
-    string approversComments = 12;
-    int64 due = 13;
-
-    string id = 14;
-    int64 createdAt = 15;
-    int64 updatedAt = 16;
-    RequestType type = 17; 
-    string serialNumber = 18;
-    bool needSecurityDecision = 19;
-    bool needSuperSecurityDecision = 20;
-}
-message CreateEntityKartoffelParams{
-    string firstName = 1;
-    string lastName = 2;
-    string identityCard = 3;
-    string personalNumber = 4;
-    string serviceType = 5;
-    repeated string phone = 6;
-    repeated string mobilePhone = 7;
-    string address = 8;
-    string clearance = 9;
-    string sex = 10;
-    int64 birthdate = 11;
-    string entityType = 12;
-}
-
-message CreateEntityADParams{
-//TODO-??
-}
-
-//AssignRoleToEntity
-message AssignRoleToEntityReq{
-    EntityMin submittedBy = 1;
-    RequestStatus status = 2;
-    ApproverDecision commanderDecision = 3;
-    ApproverDecision securityDecision = 4;
-    ApproverDecision superSecurityDecision = 5;
-    repeated EntityMin commanders = 6;  
-    repeated EntityMin securityApprovers = 7;
-    KartoffelStatus kartoffelStatus = 8;
-    ADStatus adStatus = 9;
-    AssignRoleToEntityKartoffelParams kartoffelParams = 10;
-    AssignRoleToEntityADParams adParams = 11;
-    string comments = 12;
-    string approversComments = 13;
-    optional int64 due = 14;
-}
-
-message AssignRoleToEntityRes{
-    EntityMin submittedBy = 1;
-    RequestStatus status = 2;
-    ApproverDecision commanderDecision = 3;
-    ApproverDecision securityDecision = 4;
-    ApproverDecision superSecurityDecision = 5;
-    repeated EntityMin commanders = 6;  
-    repeated EntityMin securityApprovers = 7;
-    KartoffelStatus kartoffelStatus = 8;
-    ADStatus adStatus = 9;
-    AssignRoleToEntityKartoffelParams kartoffelParams = 10;
-    AssignRoleToEntityADParams adParams = 11;
-    string comments = 12;
-    string approversComments = 13;
-    int64 due = 14;
-
-    string id = 15;
-    int64 createdAt = 16;
-    int64 updatedAt = 17;
-    RequestType type = 18; 
-    string serialNumber = 19;
-    bool needSecurityDecision = 20;
-    bool needSuperSecurityDecision = 21;
-}
-message AssignRoleToEntityKartoffelParams{
-    string id = 1;
-    string uniqueId = 2;
-}
-
-message AssignRoleToEntityADParams{
-    string oldSAMAccountName = 1;
-    string newSAMAccountName = 2;
-    string upn = 3;
-    string firstName = 4;
-    string lastName = 5;
-    string fullName = 6;
-    string rank = 7;
-    string roleSerialCode = 8;
-}
-
-//RenameOG
-message RenameOGReq{
-    EntityMin submittedBy = 1;
-    RequestStatus status = 2;
-    ApproverDecision commanderDecision = 3;
-    ApproverDecision securityDecision = 4;
-    repeated EntityMin commanders = 5;
-    repeated EntityMin securityApprovers = 6;
-    KartoffelStatus kartoffelStatus = 7;
-    ADStatus adStatus = 8;
-    RenameOGKartoffelParams kartoffelParams = 9;
-    RenameOGADParams adParams = 10;
-    string comments = 11;
-    string approversComments = 12;
-    optional int64 due = 13;
-}
-
-message RenameOGRes{
-    EntityMin submittedBy = 1;
-    RequestStatus status = 2;
-    ApproverDecision commanderDecision = 3;
-    ApproverDecision securityDecision = 4;
-    repeated EntityMin commanders = 5;
-    repeated EntityMin securityApprovers = 6;
-    KartoffelStatus kartoffelStatus = 7;
-    ADStatus adStatus = 8;
-    RenameOGKartoffelParams kartoffelParams = 9;
-    RenameOGADParams adParams = 10;
-    string comments = 11;
-    string approversComments = 12;
-    int64 due = 13;
-
-    string id = 14;
-    int64 createdAt = 15;
-    int64 updatedAt = 16;
-    RequestType type = 17; 
-    string serialNumber = 18;
-    bool needSecurityDecision = 19;
-    bool needSuperSecurityDecision = 20;
-}
-
-message RenameOGKartoffelParams{
-    string id = 1;
-    string name = 2;
-}
-
-message RenameOGADParams{
-    string ouDisplayName = 1;
-    string oldOuName = 2;
-    string newOuName = 3;
-}
-
-//RenameRole
-message RenameRoleReq{
-    EntityMin submittedBy = 1;
-    RequestStatus status = 2;
-    ApproverDecision commanderDecision = 3;
-    ApproverDecision securityDecision = 4;
-    repeated EntityMin commanders = 5;  
-    repeated EntityMin securityApprovers = 6; 
-    KartoffelStatus kartoffelStatus = 7;
-    ADStatus adStatus = 8;
-    RenameRoleKartoffelParams kartoffelParams = 9;
-    RenameRoleADParams adParams = 10;
-    string comments = 11;
-    string approversComments = 12;
-    optional int64 due = 13;
-}
-
-message RenameRoleRes{
-    EntityMin submittedBy = 1;
-    RequestStatus status = 2;
-    ApproverDecision commanderDecision = 3;
-    ApproverDecision securityDecision = 4;
-    repeated EntityMin commanders = 5;  
-    repeated EntityMin securityApprovers = 6; 
-    KartoffelStatus kartoffelStatus = 7;
-    ADStatus adStatus = 8;
-    RenameRoleKartoffelParams kartoffelParams = 9;
-    RenameRoleADParams adParams = 10;
-    string comments = 11;
-    string approversComments = 12;
-    int64 due = 13;
-
-    string id = 14;
-    int64 createdAt = 15;
-    int64 updatedAt = 16;
-    RequestType type = 17; 
-    string serialNumber = 18;
-    bool needSecurityDecision = 19;
-    bool needSuperSecurityDecision = 20;
-}
-message RenameRoleKartoffelParams{
-    string jobTitle = 1;
-    string roleId = 2;
-}
-
-message RenameRoleADParams{
-    string samAccountName = 1;
-    string jobTitle = 2;
-}
-
-//EditEntity
-message EditEntityReq{
-    EntityMin submittedBy = 1;
-    RequestStatus status = 2;
-    ApproverDecision commanderDecision = 3;
-    ApproverDecision securityDecision = 4;
-    repeated EntityMin commanders = 5;  
-    repeated EntityMin securityApprovers = 6; 
-    KartoffelStatus kartoffelStatus = 7;
-    ADStatus adStatus = 8;
-    EditEntityKartoffelParams kartoffelParams = 9;
-    EditEntityADParams adParams = 10;
-    string comments = 11;
-    string approversComments = 12;
-    optional int64 due = 13;
-}
-
-message EditEntityRes{
-    EntityMin submittedBy = 1;
-    RequestStatus status = 2;
-    ApproverDecision commanderDecision = 3;
-    ApproverDecision securityDecision = 4;
-    repeated EntityMin commanders = 5;  
-    repeated EntityMin securityApprovers = 6; 
-    KartoffelStatus kartoffelStatus = 7;
-    ADStatus adStatus = 8;
-    EditEntityKartoffelParams kartoffelParams = 9;
-    EditEntityADParams adParams = 10;
-    string comments = 11;
-    string approversComments = 12;
-    int64 due = 13;
-
-    string id = 14;
-    int64 createdAt = 15;
-    int64 updatedAt = 16;
-    RequestType type = 17; 
-    string serialNumber = 18;
-    bool needSecurityDecision = 19;
-    bool needSuperSecurityDecision = 20;
-}
-message EditEntityKartoffelParams{
-    string id = 1;
-    string firstName = 2;
-    string lastName = 3;
-    optional string identityCard = 4;
-    string personalNumber = 5;
-    string serviceType = 6;
-    repeated string phone = 7;
-    repeated string mobilePhone = 8;
-    string address = 9;
-    string clearance = 10;
-    string sex = 11;
-    int64 birthdate = 12;
-    string entityType = 13;
-}
-
-message EditEntityADParams{
-    string samAccountName = 1;
-    string firstName = 2;
-    string lastName = 3;   //middle and last name
-    string fullName = 4;
-}
-
-//DeleteOG
-message DeleteOGReq{
-    EntityMin submittedBy = 1;
-    RequestStatus status = 2;
-    ApproverDecision commanderDecision = 3;
-    ApproverDecision securityDecision = 4;
-    repeated EntityMin commanders = 5; 
-    repeated EntityMin securityApprovers = 6; 
-    KartoffelStatus kartoffelStatus = 7;
-    ADStatus adStatus = 8;
-    DeleteOGKartoffelParams kartoffelParams = 9;
-    DeleteOGADParams adParams = 10;
-    string comments = 11;
-    string approversComments = 12;
-    optional int64 due = 13;
-}
-
-message DeleteOGRes{
-    EntityMin submittedBy = 1;
-    RequestStatus status = 2;
-    ApproverDecision commanderDecision = 3;
-    ApproverDecision securityDecision = 4;
-    repeated EntityMin commanders = 5;  
-    repeated EntityMin securityApprovers = 6; 
-    KartoffelStatus kartoffelStatus = 7;
-    ADStatus adStatus = 8;
-    DeleteOGKartoffelParams kartoffelParams = 9;
-    DeleteOGADParams adParams = 10;
-    string comments = 11;
-    string approversComments = 12;
-    int64 due = 13;
-
-    string id = 14;
-    int64 createdAt = 15;
-    int64 updatedAt = 16;
-    RequestType type = 17; 
-    string serialNumber = 18;
-    bool needSecurityDecision = 19;
-    bool needSuperSecurityDecision = 20;
-}
-message DeleteOGKartoffelParams{
-    string id = 1;
-}
-
-message DeleteOGADParams{
-    //TODO-?
-}
-
-message GetRequestBySerialNumberReq{
-    string serialNumber = 1;
-}
-
-
-//DeleteRole
-message DeleteRoleReq{
-    EntityMin submittedBy = 1;
-    RequestStatus status = 2;
-    ApproverDecision commanderDecision = 3;
-    ApproverDecision securityDecision = 4;
-    repeated EntityMin commanders = 5; 
-    repeated EntityMin securityApprovers = 6;  
-    KartoffelStatus kartoffelStatus = 7;
-    ADStatus adStatus = 8;
-    DeleteRoleKartoffelParams kartoffelParams = 9;
-    DeleteRoleADParams adParams = 10;
-    string comments = 11;
-    string approversComments = 12;
-    optional int64 due = 13;
-}
-
-message DeleteRoleRes{
-    EntityMin submittedBy = 1;
-    RequestStatus status = 2;
-    ApproverDecision commanderDecision = 3;
-    ApproverDecision securityDecision = 4;
-    repeated EntityMin commanders = 5;  
-    repeated EntityMin securityApprovers = 6;  
-    KartoffelStatus kartoffelStatus = 7;
-    ADStatus adStatus = 8;
-    DeleteRoleKartoffelParams kartoffelParams = 9;
-    DeleteRoleADParams adParams = 10;
-    string comments = 11;
-    string approversComments = 12;
-    int64 due = 13;
-
-    string id = 14;
-    int64 createdAt = 15;
-    int64 updatedAt = 16;
-    RequestType type = 17; 
-    string serialNumber = 18;
-    bool needSecurityDecision = 19;
-    bool needSuperSecurityDecision = 20;
-}
-message DeleteRoleKartoffelParams{
-    string roleId = 1;
-    string uniqueId = 2;
-}
-
-message DeleteRoleADParams{
-    string samAccountName = 1;
-}
-
-//DisconectRoleFromEntity
-message DisconectRoleFromEntityReq{
-    EntityMin submittedBy = 1;
-    RequestStatus status = 2;
-    ApproverDecision commanderDecision = 3;
-    ApproverDecision securityDecision = 4;
-    repeated EntityMin commanders = 5; 
-    repeated EntityMin securityApprovers = 6;   
-    KartoffelStatus kartoffelStatus = 7;
-    ADStatus adStatus = 8;
-    DisconectRoleFromEntityKartoffelParams kartoffelParams = 9;
-    DisconectRoleFromEntityADParams adParams = 10;
-    string comments = 11;
-    string approversComments = 12;
-    optional int64 due = 13;
-}
-
-message DisconectRoleFromEntityRes{
-    EntityMin submittedBy = 1;
-    RequestStatus status = 2;
-    ApproverDecision commanderDecision = 3;
-    ApproverDecision securityDecision = 4;
-    repeated EntityMin commanders = 5;
-    repeated EntityMin securityApprovers = 6;    
-    KartoffelStatus kartoffelStatus = 7;
-    ADStatus adStatus = 8;
-    DisconectRoleFromEntityKartoffelParams kartoffelParams = 9;
-    DisconectRoleFromEntityADParams adParams = 10;
-    string comments = 11;
-    string approversComments = 12;
-    int64 due = 13;
-
-    string id = 14;
-    int64 createdAt = 15;
-    int64 updatedAt = 16;
-    RequestType type = 17; 
-    string serialNumber = 18;
-    bool needSecurityDecision = 19;
-    bool needSuperSecurityDecision = 20;
-}
-message DisconectRoleFromEntityKartoffelParams{
-    string id = 1;
-    string uniqueId = 2;
-}
-
-message DisconectRoleFromEntityADParams{
-    string samAccountName = 1;
-}
-
-
-message AdditionalParams{
-    //for approver request
-    string entityId = 1;
-    string displayName = 2;
-    repeated string domainUsers = 3;
-    string akaUnit = 4;
-    ApproverType type = 5;
-}
-
+// ---------------------------------------------Generalized Objects------------------------------------------------------------
 
 message KartoffelParams{
     //CreateOG
@@ -836,30 +1118,33 @@ message KartoffelParams{
     optional string jobTitle = 4;
     optional string directGroup = 5;
     optional string roleId = 6;
+    optional string unit = 7;
 
     //forDigitalIdentity
-    optional string type = 7;
+    optional string type = 8;
     // string source = 2;
-    optional string uniqueId = 8;
-    optional string mail = 9;
-    optional bool isRoleAttachable = 10;
+    optional string uniqueId = 9;
+    optional string mail = 10;
+    optional bool isRoleAttachable = 11;
 
     //AssignRoleToEntity, same as changing role to entity
-    optional string id = 11;
+    optional string id = 12;
     // string uniqueId = 8;
+    bool needDisconnect = 13;
     //CreateEntity
-    optional string firstName = 12;
-    optional string lastName = 13;
-    optional string identityCard = 14;
-    optional string personalNumber = 15;
-    optional string serviceType = 16;
-    repeated string phone = 17;
-    repeated string mobilePhone = 18;
-    optional string address = 19;
-    optional string clearance = 20; //for createRole too
-    optional string sex = 21;
-    optional int64 birthdate = 22;
-    optional string entityType = 23;
+    optional string firstName = 14;
+    optional string lastName = 15;
+    optional string identityCard = 16;
+    optional string personalNumber = 17;
+    optional string serviceType = 18;
+    repeated string phone = 19;
+    repeated string mobilePhone = 20;
+    optional string address = 21;
+    optional string clearance = 22; //for createRole too
+    optional string sex = 23;
+    optional int64 birthdate = 24;
+    optional string entityType = 25;
+    
 
     //RenameOG
     // ?
@@ -868,18 +1153,18 @@ message KartoffelParams{
     // ?
 
     //EditEntity
-    // string firstName = 9;
-    // string lastName = 10;
-    // string identityCard = 11;
-    // string personalNumber = 12;
-    // string serviceType = 13;
-    // repeated string phone = 14;
-    // repeated string mobilePhone = 15;
-    // string address = 16;
-    // string clearance = 16;
-    // string sex = 17;
-    // int64 birthdate = 18;
-    // string entityType = 19;
+    // string firstName = 25;
+    // string lastName = 26;
+    // string identityCard = 27;
+    // string personalNumber = 28;
+    // string serviceType = 29;
+    // repeated string phone = 30;
+    // repeated string mobilePhone = 31;
+    // string address = 32;
+    // string clearance = 33;
+    // string sex = 34;
+    // int64 birthdate = 35;
+    // string entityType = 36;
     // string id = 
 
     //DeleteOG
@@ -945,13 +1230,21 @@ message RequestReq{
     ApproverDecision superSecurityDecision = 5;
     repeated EntityMin commanders = 6;  
     repeated EntityMin securityApprovers = 7; 
-    KartoffelStatus kartoffelStatus = 8;
-    ADStatus adStatus = 9;
-    KartoffelParams kartoffelParams = 10;
-    ADParams adParams = 11;
-    string comments = 12;
-    string approversComments = 13;
-    optional int64 due = 14;
+    repeated EntityMin superSecurityApprovers = 8;
+    KartoffelStatus kartoffelStatus = 9;
+    ADStatus adStatus = 10;
+    optional KartoffelParams kartoffelParams = 11;
+    optional ADParams adParams = 12;
+    optional AdditionalParams additionalParams = 13;
+    string comments = 14;
+    string approversComments = 15;
+    optional int64 due = 16;
+    optional bool isPartOfBulk = 17;
+    optional string bulkRequestId = 18;
+    repeated string requestIds = 19;
+    optional string rowNumber = 20;
+    repeated RowError rowErrors = 21;
+    optional string excelFilePath = 22;
 }
 
 message Request{
@@ -961,20 +1254,107 @@ message Request{
     ApproverDecision securityDecision = 4;
     ApproverDecision superSecurityDecision = 5;
     repeated EntityMin commanders = 6;  
-    repeated EntityMin securityApprovers = 7; 
-    KartoffelStatus kartoffelStatus = 8;
-    ADStatus adStatus = 9;
-    KartoffelParams kartoffelParams = 10;
-    ADParams adParams = 11;
-    string comments = 12;
-    string approversComments = 13;
-    int64 due = 14;
+    repeated EntityMin securityApprovers = 7;
+    repeated EntityMin superSecurityApprovers = 8; 
+    KartoffelStatus kartoffelStatus = 9;
+    ADStatus adStatus = 10;
+    optional KartoffelParams kartoffelParams = 11;
+    optional AdditionalParams additionalParams=12;
+    optional ADParams adParams = 13;
+    string comments = 14;
+    string approversComments = 15;
+    int64 due = 16;
+    optional bool isPartOfBulk = 17;
+    optional string bulkRequestId = 18;
+    repeated string requestIds = 19;
+    optional string rowNumber = 20;
+    repeated RowError rowErrors = 21;
+    optional string excelFilePath = 22;
 
-    string id = 15;
-    int64 createdAt = 16;
-    int64 updatedAt = 17; 
-    RequestType type = 18;
-    string serialNumber = 19;
-    bool needSecurityDecision = 20;
-    bool needSuperSecurityDecision = 21;
+    string id = 23;
+    int64 createdAt = 24;
+    int64 updatedAt = 25; 
+    RequestType type = 26;
+    string serialNumber = 27;
+    bool needSecurityDecision = 28;
+    bool needSuperSecurityDecision = 29;
+}
+
+
+// ---------------------------------------------Enums------------------------------------------------------------
+
+enum ApproverType{
+    COMMANDER = 0;
+    SECURITY = 1;
+    SUPER_SECURITY = 2;
+}
+
+enum RequestType {
+    CREATE_OG = 0;
+    CREATE_ROLE = 1;
+    ASSIGN_ROLE_TO_ENTITY = 2;
+    CREATE_ENTITY = 3;
+    RENAME_OG = 4;
+    RENAME_ROLE = 5;
+    EDIT_ENTITY = 6;
+    DELETE_OG = 7;
+    DELETE_ROLE = 8;
+    DELETE_ENTITY = 9;
+    DISCONNECT_ROLE = 10;
+    ADD_APPROVER = 11;
+    CHANGE_ROLE_HIERARCHY = 12;
+    CREATE_ROLE_BULK=13;
+    CHANGE_ROLE_HIERARCHY_BULK=14;
+}
+
+enum RequestStatus{
+    SUBMITTED = 0;
+    DECLINED = 1;
+    APPROVED_BY_COMMANDER = 2;
+    APPROVED_BY_SECURITY = 3;
+    IN_PROGRESS = 4;
+    DONE = 5;
+    FAILED = 6;
+}
+
+enum StageStatus{
+    STAGE_UNKNOWN = 0;
+    STAGE_WAITING_FOR_PUSH = 1;
+    STAGE_WAITING_FOR_KARTOFFEL = 2;
+    STAGE_NEED_RETRY = 3;
+    STAGE_IN_PROGRESS = 4;
+    STAGE_DONE = 5;
+    STAGE_FAILED = 6;
+}
+
+enum Decision{
+    DECISION_UNKNOWN = 0;
+    APPROVED = 1;
+    DENIED = 2;
+}
+
+enum PersonTypeInRequest{
+    SUBMITTER = 0;
+    COMMANDER_APPROVER = 1;
+    SECURITY_APPROVER = 2;
+    SUPER_SECURITY_APPROVER = 3;
+    APPROVER = 4;
+}
+
+enum PersonInfoType{
+    ID = 0;
+    IDENTIFIER = 1;
+}
+
+enum ApprovementStatus{
+    COMMANDER_APPROVE = 0;
+    SECURITY_APPROVE = 1;
+    SUPER_SECURITY_APPROVE = 2;
+    ANY = 3;
+}
+
+enum ErrorType{
+    UNKNOWN_STAGE = 0;
+    KARTOFFEL_ERROR = 1;
+    AD_ERROR = 2;
 }

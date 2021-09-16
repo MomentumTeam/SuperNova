@@ -11,11 +11,10 @@ import {
   SearchByDomainUserReq,
   SuccessMessage,
   SyncApproverReq,
-  UpdateApproverDecisionReq,
 } from '../interfaces/protoc/proto/approverService';
 import {
   Request,
-  UpdateDecisionReq,
+  UpdateApproverDecisionReq,
 } from '../interfaces/protoc/proto/requestService';
 import { ApproverRepository } from './approver.repository';
 
@@ -37,7 +36,7 @@ export class ApproverManager {
 
   async getUserType(getUserTypeReq: GetUserTypeReq): Promise<GetUserTypeRes> {
     try {
-      return (await this.approverRepository.getUserType(
+      return (await ApproverRepository.getUserType(
         getUserTypeReq
       )) as GetUserTypeRes;
     } catch (error) {
@@ -113,7 +112,7 @@ export class ApproverManager {
     }
   }
 
-  async syncApprover(syncApproverReq: SyncApproverReq): Promise<Approver> {
+  async syncApprover(syncApproverReq: SyncApproverReq): Promise<ApproverArray> {
     try {
       return await this.approverRepository.syncApprover(syncApproverReq);
     } catch (error) {

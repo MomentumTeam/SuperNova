@@ -69,6 +69,7 @@ services:
     environment:
       - RS_MONGO_URL=mongodb://mongodb:27017/supernova
       - RS_NS_URL=notification-service:8080
+      - RS_TS_URL=tea-service:8080
 
   kartoffel-service:
     image: kartoffel-service
@@ -91,7 +92,7 @@ services:
     ports:
       - '8083:8080'
     depends_on:
-      - kartoffel-service
+      - request-service
     environment:
       - PS_QUEUE_API_URL=https://www.google.com
       - PS_RS_URL=request-service:8080
@@ -120,6 +121,7 @@ services:
       - '8085:8080'
     depends_on:
       - request-service
+      - kartoffel-service
     environment:
       - APS_MONGO_URL=mongodb://mongodb:27017/supernova
       - APS_KS_URL=kartoffel-service:8080
@@ -132,8 +134,6 @@ services:
       - ./supernova.env
     ports:
       - '8086:8080'
-    depends_on:
-      - request-service
     environment:
       - TS_MONGO_URL=mongodb://mongodb:27017/supernova
       - TS_KS_URL=kartoffel-service:8080

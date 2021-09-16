@@ -2,14 +2,30 @@ syntax = "proto3";
 package Tea;
 
 service Tea {
-    rpc RetrieveTeaAndUPNByEntity(RetrieveTeaAndUPNByEntityReq) returns (TeaAndUPN) {}
-    rpc RetrieveTeaAndUPNByEntityId(RetrieveTeaAndUPNByEntityIdReq) returns (TeaAndUPN) {}
+    rpc RetrieveTeaByUnit(RetrieveTeaByUnitReq) returns (TeaMessage){}
+    rpc RetrieveUPNByEntity(RetrieveByEntityReq) returns (UPNMessage) {}
+    rpc RetrieveUPNByEntityId(RetrieveByEntityIdReq) returns (UPNMessage) {}
+
+    rpc RetrieveTeaAndUPNByEntity(RetrieveByEntityReq) returns (TeaAndUPN) {}
+    rpc RetrieveTeaAndUPNByEntityId(RetrieveByEntityIdReq) returns (TeaAndUPN) {}
     rpc ReportTeaSuccess(ReportTeaReq) returns (SuccessMessage) {}
     rpc ReportTeaFail(ReportTeaReq) returns (SuccessMessage) {}
     rpc GetUnit(GetUnitReq) returns (Unit){}
     rpc AddUnit(AddUnitReq) returns (Unit){}
     rpc UpdateUnit(UpdateUnitReq) returns (Unit){}
     rpc DeleteUnit(DeleteUnitReq) returns (SuccessMessage){}
+}
+
+message RetrieveTeaByUnitReq{
+ string kartoffelId = 1;
+}
+
+message TeaMessage{
+    string tea = 1;
+}
+
+message UPNMessage{
+    string upn = 1;
 }
 
 message UpdateUnitReq{
@@ -70,12 +86,12 @@ message SuccessMessage{
     bool success = 1;
 }
 
-message RetrieveTeaAndUPNByEntityReq{
+message RetrieveByEntityReq{
     Domain domain = 1;
     EntityMin entity = 2;
 }
 
-message RetrieveTeaAndUPNByEntityIdReq{
+message RetrieveByEntityIdReq{
     Domain domain = 1;
     string entityId = 2;
 }
