@@ -29,12 +29,12 @@ export async function getAllRoles(call: any, callback: any): Promise<void> {
   } catch (error: any) {
     logger.error(`getAllRoles ERROR`, {
       callRequest: call.request,
-      error: { error: { message: error.message } },
+      error: { message: error.message },
     });
     callback(
       {
         code: 400,
-        error: { message: error.message },
+        error: error.message,
         status: grpc.status.CANCELLED,
       },
       null

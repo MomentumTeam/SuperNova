@@ -12,10 +12,12 @@ export function getAllApproverIds(): Promise<ApproverIdArray> {
   return new Promise((resolve, reject) => {
     approverClient.getAllApproverIds(
       {},
-      (err: any, response: ApproverIdArray) => {
-        if (err) {
-          logger.error(`SyncApprover ERROR in WLS`, { err });
-          reject(err);
+      (error: any, response: ApproverIdArray) => {
+        if (error) {
+          logger.error(`SyncApprover ERROR in WLS`, {
+            error: { message: error.message },
+          });
+          reject(error);
         }
 
         logger.info(`SyncApprover OK in WLS`, {
@@ -36,13 +38,13 @@ export function sync(entityId: string): Promise<Approver> {
   return new Promise((resolve, reject) => {
     approverClient.SyncApprover(
       { approverId: entityId },
-      (err: any, response: Approver) => {
-        if (err) {
+      (error: any, response: Approver) => {
+        if (error) {
           logger.error(`SyncApprover ERROR in WLS`, {
-            err,
+            error: { message: error.message },
             callRequest: { approverId: entityId },
           });
-          reject(err);
+          reject(error);
         }
 
         logger.info(`SyncApprover OK in WLS`, {

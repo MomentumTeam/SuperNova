@@ -40,13 +40,13 @@ export default class KartoffelService {
     return new Promise((resolve, reject) => {
       kartoffelClient.SearchEntitiesByFullName(
         searchEntitiesByFullName,
-        (err: any, entityArray: EntityArray) => {
-          if (err) {
+        (error: any, entityArray: EntityArray) => {
+          if (error) {
             logger.error('searchEntitiesByFullName in KartoffelService ERROR', {
               searchEntitiesByFullName,
-              err,
+              error: { message: error.message },
             });
-            throw reject(err);
+            throw reject(error);
           } else {
             logger.info('searchEntitiesByFullName in KartoffelService', {
               searchEntitiesByFullName,
@@ -65,13 +65,13 @@ export default class KartoffelService {
     return new Promise((resolve, reject) => {
       kartoffelClient.GetEntityByRoleId(
         getEntityByRoleId,
-        (err: any, entity: Entity) => {
-          if (err) {
+        (error: any, entity: Entity) => {
+          if (error) {
             logger.error('getEntityByRoleId in KartoffelService ERROR', {
               getEntityByRoleId,
-              err,
+              error: { message: error.message },
             });
-            reject(err);
+            reject(error);
           } else {
             logger.info('getEntityByRoleId in KartoffelService', {
               getEntityByRoleId,
@@ -90,13 +90,13 @@ export default class KartoffelService {
     return new Promise((resolve, reject) => {
       kartoffelClient.GetEntityById(
         getEntityById,
-        (err: any, entity: Entity) => {
-          if (err) {
+        (error: any, entity: Entity) => {
+          if (error) {
             logger.error('getEntityById in KartoffelService ERROR', {
               getEntityById,
-              err,
+              error: { message: error.message },
             });
-            reject(err);
+            reject(error);
           } else {
             logger.info('getEntityById in KartoffelService', {
               getEntityById,

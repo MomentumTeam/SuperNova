@@ -42,8 +42,10 @@ export class Server {
         grpc.loadPackageDefinition(packageDefinition);
       const teaServiceDescriptor: any = protoDescriptor.Tea;
       return teaServiceDescriptor;
-    } catch (error) {
-      logger.error(`Error while loading the proto file`, { error: error });
+    } catch (error: any) {
+      logger.error(`Error while loading the proto file`, {
+        error: { message: error.message },
+      });
       throw error;
     }
   }
@@ -66,7 +68,7 @@ export class Server {
         DeleteUnit: deleteUnit,
       });
       logger.info(`Grpc services were successfully added to the server`);
-    } catch (error) {
+    } catch (error: any) {
       logger.error(`Error while initializing the server: ${error.message}`);
     }
   }

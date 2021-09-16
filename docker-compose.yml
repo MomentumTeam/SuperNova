@@ -138,6 +138,31 @@ services:
       - TS_MONGO_URL=mongodb://mongodb:27017/supernova
       - TS_KS_URL=kartoffel-service:8080
 
+  execution-script:
+    image: execution-script
+    build: ./execution-script/
+    env_file:
+      - ./supernova.env
+    depends_on:
+      - request-service
+      - producer-service
+    environment:
+      - EXS_RS_URL=request-service:8080
+      - EXS_PS_URL=producer-service:8080
+      - EXS_EVERY_HOUR=1
+
+  whiteListSync-script:
+    image: whiteListSync-script
+    build: ./whiteListSync-script/
+    env_file:
+      - ./supernova.env
+    depends_on:
+      - approver-service
+    environment:
+      - WLS_APS_URL=approver-service:8080
+      - WLS_HOUR=10
+      - WLS_MINUTE=0
+
   authentication-service:
     image: authentication-service
     build: ./authentication-service/
