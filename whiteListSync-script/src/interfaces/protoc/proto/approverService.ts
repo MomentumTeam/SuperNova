@@ -57,8 +57,8 @@ export function requestStatusToJSON(object: RequestStatus): string {
 
 export enum UserType {
   UNKNOWN = 0,
-  SUPER_SECURITY = 2,
   SECURITY = 1,
+  SUPER_SECURITY = 2,
   COMMANDER = 3,
   SOLDIER = 4,
   ADMIN = 5,
@@ -71,12 +71,12 @@ export function userTypeFromJSON(object: any): UserType {
     case 0:
     case 'UNKNOWN':
       return UserType.UNKNOWN;
-    case 2:
-    case 'SUPER_SECURITY':
-      return UserType.SUPER_SECURITY;
     case 1:
     case 'SECURITY':
       return UserType.SECURITY;
+    case 2:
+    case 'SUPER_SECURITY':
+      return UserType.SUPER_SECURITY;
     case 3:
     case 'COMMANDER':
       return UserType.COMMANDER;
@@ -100,10 +100,10 @@ export function userTypeToJSON(object: UserType): string {
   switch (object) {
     case UserType.UNKNOWN:
       return 'UNKNOWN';
-    case UserType.SUPER_SECURITY:
-      return 'SUPER_SECURITY';
     case UserType.SECURITY:
       return 'SECURITY';
+    case UserType.SUPER_SECURITY:
+      return 'SUPER_SECURITY';
     case UserType.COMMANDER:
       return 'COMMANDER';
     case UserType.SOLDIER:
@@ -1205,7 +1205,7 @@ export interface ApproverService {
   UpdateApproverDecision(request: UpdateApproverDecisionReq): Promise<Request>;
   GetAllApprovers(request: GetAllApproversReq): Promise<ApproverArray>;
   GetAllApproverIds(request: GetAllApproversReq): Promise<ApproverIdArray>;
-  SyncApprover(request: SyncApproverReq): Promise<Approver>;
+  SyncApprover(request: SyncApproverReq): Promise<ApproverArray>;
   DeleteApprover(request: DeleteApproverReq): Promise<SuccessMessage>;
 }
 
@@ -1299,14 +1299,14 @@ export class ApproverServiceClientImpl implements ApproverService {
     return promise.then((data) => ApproverIdArray.decode(new _m0.Reader(data)));
   }
 
-  SyncApprover(request: SyncApproverReq): Promise<Approver> {
+  SyncApprover(request: SyncApproverReq): Promise<ApproverArray> {
     const data = SyncApproverReq.encode(request).finish();
     const promise = this.rpc.request(
       'ApproverService.ApproverService',
       'SyncApprover',
       data
     );
-    return promise.then((data) => Approver.decode(new _m0.Reader(data)));
+    return promise.then((data) => ApproverArray.decode(new _m0.Reader(data)));
   }
 
   DeleteApprover(request: DeleteApproverReq): Promise<SuccessMessage> {

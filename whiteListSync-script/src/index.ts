@@ -16,19 +16,41 @@ const schedule = require('node-schedule');
 
 async function main() {
   try {
-    schedule.scheduleJob(
-      `${config.minute} ${config.hour} * * *`,
-      async function () {
-        //run script at midnight - 00:00
-        logger.info(`WhiteList-Script started successfully!`);
+    // schedule.scheduleJob(
+    // `${config.minute} ${config.hour} * * *`,
+    // async function () {
+    //run script at midnight - 00:00
+    logger.info(`WhiteList-Script started successfully!`);
 
-        const approversArray = (await getAllApproverIds()) as ApproverIdArray;
-        approversArray.approverIds.forEach(async (approverId: string) => {
-          await sync(approverId);
+    const approversArray = (await getAllApproverIds()) as ApproverIdArray;
+
+    const promises = approversArray.approverIds.map(
+      async (approverId: string) => {
+        return new Promise((resolve, reject) => {
+          sync(approverId)
+            .then(() => {
+              resolve(true);
+            })
+            .catch((error) => {
+              reject(error);
+            });
         });
       }
     );
-  } catch (error) {
+
+    Promise.all(promises)
+      .then((values) => {
+        logger.info(`Promises were finished successfully`);
+      })
+      .catch((error) => {
+        logger.error(`Promises sync failed`, {
+          error: { message: error.message },
+        });
+      });
+
+    // }
+    // );
+  } catch (error: any) {
     logger.error(
       `Error while trying to start WhiteList-Script: ${error.message}`
     );

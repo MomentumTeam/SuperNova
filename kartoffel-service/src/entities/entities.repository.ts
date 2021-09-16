@@ -240,10 +240,17 @@ export class EntitiesRepository {
     getEntityByIdRequest: GetEntityByIdRequest
   ): Promise<Entity> {
     try {
+      const withPicture =
+        getEntityByIdRequest.withPicture != undefined
+          ? getEntityByIdRequest.withPicture
+          : false;
       if (C.useFaker) {
-        const entity: Entity = await this.kartoffelFaker.randomEntity(true);
+        const entity: Entity = await this.kartoffelFaker.randomEntity(
+          withPicture
+        );
         return entity;
       } else {
+        //TODO GET IMAGE
         const data = await this.kartoffelUtils.kartoffelGet(
           `${C.kartoffelUrl}/api/entities/${getEntityByIdRequest.id}`,
           { expanded: true }

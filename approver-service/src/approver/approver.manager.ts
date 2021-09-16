@@ -112,7 +112,7 @@ export class ApproverManager {
     }
   }
 
-  async syncApprover(syncApproverReq: SyncApproverReq): Promise<Approver> {
+  async syncApprover(syncApproverReq: SyncApproverReq): Promise<ApproverArray> {
     try {
       return await this.approverRepository.syncApprover(syncApproverReq);
     } catch (error) {

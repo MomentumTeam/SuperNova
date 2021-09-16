@@ -256,12 +256,14 @@ export async function syncApprover(call: any, callback: any): Promise<void> {
     logger.info(`Call to syncApprover`, {
       callRequest: call.request,
     });
-    const approver: Approver = await approverManager.syncApprover(call.request);
+    const approverArray: ApproverArray = await approverManager.syncApprover(
+      call.request
+    );
     logger.info(`syncApprover OK`, {
-      response: approver,
+      response: approverArray,
       callRequest: call.request,
     });
-    callback(null, approver);
+    callback(null, approverArray);
   } catch (error: any) {
     logger.error(`syncApprover ERROR`, {
       callRequest: call.request,

@@ -105,7 +105,7 @@ export class ApproverRepository {
     }
   }
 
-  async syncApprover(syncApproverReq: SyncApproverReq): Promise<Approver> {
+  async syncApprover(syncApproverReq: SyncApproverReq): Promise<ApproverArray> {
     try {
       const entity: Entity = await KartoffelService.getEntityById({
         id: syncApproverReq.approverId,
@@ -123,21 +123,22 @@ export class ApproverRepository {
         domainUsers: domainUsers,
         akaUnit: entity.akaUnit,
       };
-      const documentAfter: any = await ApproverModel.findOneAndUpdate(
+      const result: any = await ApproverModel.updateMany(
         { entityId: syncApproverReq.approverId },
-        { $set: updateParams },
-        { new: true }
+        { $set: updateParams }
       );
-      const document = documentAfter.toObject();
-      turnObjectIdsToStrings(document);
+      const documentsObjArray = await ApproverModel.find({
+        entityId: syncApproverReq.approverId,
+      });
+      let approvers = getMongoApproverArray(documentsObjArray);
       logger.info('syncApprover updated Approver successfully', {
         syncApproverReq,
         displayName: entity.displayName,
         domainUsers: domainUsers,
         akaUnit: entity.akaUnit,
-        document,
+        approvers,
       });
-      return document as Approver;
+      return { approvers: approvers } as ApproverArray;
     } catch (error) {
       logger.error('syncApprover ERROR', {
         syncApproverReq,

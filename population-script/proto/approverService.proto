@@ -13,7 +13,7 @@ service ApproverService {
 
     rpc GetAllApprovers(GetAllApproversReq) returns (ApproverArray) {}
     rpc GetAllApproverIds(GetAllApproversReq) returns (ApproverIdArray) {}
-    rpc SyncApprover(SyncApproverReq) returns (Approver){}
+    rpc SyncApprover(SyncApproverReq) returns (ApproverArray){}
     rpc DeleteApprover(DeleteApproverReq) returns (SuccessMessage){}
 }
 
