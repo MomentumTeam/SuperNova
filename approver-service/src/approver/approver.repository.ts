@@ -50,8 +50,11 @@ export class ApproverRepository {
 
       logger.info('addApprover', { document, addApproverReq });
       return document as Approver;
-    } catch (error) {
-      logger.error('addApprover ERROR', { error, addApproverReq });
+    } catch (error: any) {
+      logger.error('addApprover ERROR', {
+        error: { message: error.message },
+        addApproverReq,
+      });
       throw error;
     }
   }
@@ -66,8 +69,11 @@ export class ApproverRepository {
       });
       logger.info('deleteApprover', { deleteApproverReq });
       return { success: true };
-    } catch (error) {
-      logger.error('deleteApprover ERROR', { deleteApproverReq, error });
+    } catch (error: any) {
+      logger.error('deleteApprover ERROR', {
+        deleteApproverReq,
+        error: { message: error.message },
+      });
       throw error;
     }
   }
@@ -85,8 +91,11 @@ export class ApproverRepository {
       const mongoApprovers: any = await ApproverModel.find(query);
       logger.info('getAllApprovers', { getAllApproversReq });
       return { approvers: getMongoApproverArray(mongoApprovers) };
-    } catch (error) {
-      logger.error('getAllApprovers ERROR', { error, getAllApproversReq });
+    } catch (error: any) {
+      logger.error('getAllApprovers ERROR', {
+        error: { message: error.message },
+        getAllApproversReq,
+      });
       throw error;
     }
   }
@@ -99,8 +108,11 @@ export class ApproverRepository {
       approverIds = approverIds.map((approverId: any) => approverId.toString());
       logger.info('getAllApproverIds', { approverIds, getAllApproverIdsReq });
       return { approverIds: approverIds };
-    } catch (error) {
-      logger.error('getAllApproverIds ERROR', { error, getAllApproverIdsReq });
+    } catch (error: any) {
+      logger.error('getAllApproverIds ERROR', {
+        error: { message: error.message },
+        getAllApproverIdsReq,
+      });
       throw error;
     }
   }
@@ -139,10 +151,10 @@ export class ApproverRepository {
         approvers,
       });
       return { approvers: approvers } as ApproverArray;
-    } catch (error) {
+    } catch (error: any) {
       logger.error('syncApprover ERROR', {
         syncApproverReq,
-        error,
+        error: { message: error.message },
       });
       throw error;
     }
@@ -187,8 +199,11 @@ export class ApproverRepository {
       }
       logger.info('getUserType', { getUserTypeReq, response });
       return response;
-    } catch (error) {
-      logger.error('getUserType ERROR', { getUserTypeReq, error });
+    } catch (error: any) {
+      logger.error('getUserType ERROR', {
+        getUserTypeReq,
+        error: { message: error.message },
+      });
       throw error;
     }
   }
@@ -248,9 +263,9 @@ export class ApproverRepository {
         searchByDisplayNameReq,
       });
       return { approvers: uniqueApproversResult };
-    } catch (error) {
+    } catch (error: any) {
       logger.error('searchApproverByDisplayName ERROR', {
-        error,
+        error: { message: error.message },
         searchByDisplayNameReq,
       });
       throw error;
@@ -293,10 +308,10 @@ export class ApproverRepository {
         response,
       });
       return response;
-    } catch (error) {
+    } catch (error: any) {
       logger.error('searchApproverByDomainUser ERROR', {
         searchByDomainUserReq,
-        error,
+        error: { message: error.message },
       });
       throw error;
     }
@@ -325,10 +340,10 @@ export class ApproverRepository {
           updateApproverDecisionReq
         );
       }
-    } catch (error) {
+    } catch (error: any) {
       logger.error('updateApproverDecision ERROR', {
         updateApproverDecisionReq,
-        error,
+        error: { message: error.message },
       });
       throw error;
     }

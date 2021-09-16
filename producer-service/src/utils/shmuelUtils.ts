@@ -55,7 +55,7 @@ export class ShmuelUtils {
           });
           resolve(res.data);
         })
-        .catch((error) => {
+        .catch((error: any) => {
           logger.error(`Shmuel POST Request ERROR`, {
             url: url,
             requestBoody: body,

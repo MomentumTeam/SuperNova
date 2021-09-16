@@ -533,7 +533,7 @@ export async function getRequestsInProgressByDue(
   } catch (error: any) {
     logger.error(`getRequestsInProgressByDue ERROR`, {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {

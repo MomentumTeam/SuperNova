@@ -16,7 +16,7 @@ async function main() {
     const server: Server = new Server();
     await server.startServer();
     logger.info('spike-service started successfully');
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`Error while trying to start spike-service: ${error.message}`);
   }
 }

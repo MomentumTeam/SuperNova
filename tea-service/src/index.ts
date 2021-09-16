@@ -20,7 +20,7 @@ async function main(): Promise<void> {
     await server.startServer();
 
     logger.info('tea-service started successfully');
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`Error while trying to start tea-service: ${error.message}`);
   }
 }

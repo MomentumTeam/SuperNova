@@ -38,8 +38,10 @@ export class Server {
         protoDescriptor.NotificationService;
       logger.info(`Proto file ${PROTO_PATH} was loaded successfully`);
       return notificationServiceDescriptor;
-    } catch (error) {
-      logger.error(`Error while loading the proto file`, { error: error });
+    } catch (error: any) {
+      logger.error(`Error while loading the proto file`, {
+        error: { message: error.message },
+      });
       throw error;
     }
   }
@@ -59,7 +61,7 @@ export class Server {
         }
       );
       logger.info(`Grpc services were successfully added to the server`);
-    } catch (error) {
+    } catch (error: any) {
       logger.error(`Error while initializing the server: ${error.message}`);
     }
   }
