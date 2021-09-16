@@ -3,6 +3,7 @@
 In order to generate typescript interfaces by the proto files, run the fllowing commands:
 
 cd proto-builder && npm i
+
 ./loadProto
 
 To run with docker, just run:
