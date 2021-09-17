@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package Spike;
+
+service Spike {
+    rpc GetSpikeToken(GetSpikeTokenRequest) returns (SpikeToken) {}
+}
+
+message GetSpikeTokenRequest{
+    string audience = 1;
+}
+
+message SpikeToken {
+    string token = 1;
+}

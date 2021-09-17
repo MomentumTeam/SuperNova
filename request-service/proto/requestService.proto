@@ -661,6 +661,9 @@ message CreateRoleBulkReq{
     repeated string requestIds = 12;
     repeated RowError rowErrors = 13;
     string excelFilePath = 14;
+    CreateRoleBulkKartoffelParams kartoffelParams = 15;
+    CreateRoleBulkADParams adParams = 16;
+
 }
 
 message CreateRoleBulkRes{
@@ -678,14 +681,25 @@ message CreateRoleBulkRes{
     repeated string requestIds = 12;
     repeated RowError rowErrors = 13;
     string excelFilePath = 14;
+    CreateRoleBulkKartoffelParams kartoffelParams = 15;
+    CreateRoleBulkADParams adParams = 16;
 
-    string id = 15;
-    int64 createdAt = 16;
-    int64 updatedAt = 17;
-    RequestType type = 18; 
-    string serialNumber = 19;
-    bool needSecurityDecision = 20;
-    bool needSuperSecurityDecision = 21;
+    string id = 17;
+    int64 createdAt = 18;
+    int64 updatedAt = 19;
+    RequestType type = 20; 
+    string serialNumber = 21;
+    bool needSecurityDecision = 22;
+    bool needSuperSecurityDecision = 23;
+}
+
+message CreateRoleBulkKartoffelParams{
+    string directGroup = 1; //The same for all the rows
+    string unit = 2;
+}
+
+message CreateRoleBulkADParams{
+    string ouDisplayName = 1; //The same for all the rows
 }
 
 //15.ChangeRoleHierarchyBulkRequest
@@ -703,6 +717,8 @@ message ChangeRoleHierarchyBulkReq{
     optional int64 due = 11;
     repeated string requestIds = 12;
     string excelFilePath = 13;
+    ChangeRoleHierarchyBulkKartoffelParams kartoffelParams = 14;
+    ChangeRoleHierarchyBulkADParams adParams = 15;
 }
 
 message ChangeRoleHierarchyBulkRes{
@@ -719,14 +735,24 @@ message ChangeRoleHierarchyBulkRes{
     optional int64 due = 11;
     repeated string requestIds = 12;
     string excelFilePath = 13;
+    ChangeRoleHierarchyBulkKartoffelParams kartoffelParams = 14;
+    ChangeRoleHierarchyBulkADParams adParams = 15;
 
-    string id = 14;
-    int64 createdAt = 15;
-    int64 updatedAt = 16;
-    RequestType type = 17; 
-    string serialNumber = 18;
-    bool needSecurityDecision = 19;
-    bool needSuperSecurityDecision = 20;
+    string id = 16;
+    int64 createdAt = 17;
+    int64 updatedAt = 18;
+    RequestType type = 19; 
+    string serialNumber = 20;
+    bool needSecurityDecision = 21;
+    bool needSuperSecurityDecision = 22;
+}
+
+message ChangeRoleHierarchyBulkKartoffelParams{
+    string directGroup = 1;
+}
+
+message ChangeRoleHierarchyBulkADParams{
+    optional string ouDisplayName = 1;
 }
 
 
@@ -747,6 +773,8 @@ message CreateRoleKartoffelParams{
     optional string uniqueId = 8; //T154514... generated automatically by tea-service if not given
     optional string mail = 9; //T154514... generated automatically by tea-service if not given
     bool isRoleAttachable = 10; //true, if the role is unoccupied
+
+    optional string roleEntityType = 11;
 }
 
 message CreateRoleADParams{
@@ -907,11 +935,13 @@ message DisconectRoleFromEntityADParams{
 message ChangeRoleHierarchyKartoffelParams{
     string roleId = 1;
     string directGroup = 2;
+    optional string jobTitle = 3;
 }
 
 message ChangeRoleHierarchyADParams{
-    optional string oldSAMAccountName = 6;
-    optional string newSAMAccountName = 7;
+    optional string samAccountName = 1;
+    optional string ouDisplayName = 2;
+    optional string jobTitle = 3;
 }
 
 message SyncBulkRequestReq{
@@ -1144,6 +1174,8 @@ message KartoffelParams{
     optional string sex = 23;
     optional int64 birthdate = 24;
     optional string entityType = 25;
+
+    optional string roleEntityType = 26;
     
 
     //RenameOG
@@ -1209,6 +1241,11 @@ message ADParams{
     //RenameRole
     // string samAccountName = ;
     optional string newJobTitle = 16;
+
+    //CHANGE ROLE HIERARCHY
+    // optional string samAccountName = 1;
+    // optional string ouDisplayName = 2;
+    // optional string jobTitle = 3;
 
     //DeleteOG - ?
 
