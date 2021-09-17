@@ -57,7 +57,7 @@ export default class ProducerController {
     });
   }
 
-  static async produceToADQueue(requestId: string) {
+  static async produceToADQueue(requestId: string,res:Response) {
     logger.info(`Call to produceToADQueue in GTW`, {
       callRequest: { id: requestId },
     });
@@ -70,14 +70,15 @@ export default class ProducerController {
             err,
             callRequest: { id: requestId },
           });
-          // return null;
+          res.status(500).end(err.message);
         }
 
         logger.info(`produceToADQueue OK in GTW`, {
           response: response,
           callRequest: { id: requestId },
         });
-        // return response;
+
+        res.status(200).send();
       }
     );
   }
