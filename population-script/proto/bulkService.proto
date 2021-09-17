@@ -1,0 +1,9 @@
+syntax = "proto3";
+import "requestService.proto"; 
+
+package BulkService;
+
+service BulkService {
+    rpc CreateRoleBulkRequest(RequestService.CreateRoleBulkReq) returns (RequestService.CreateRoleBulkRes){}
+    rpc ChangeRoleHierarchyBulkRequest(RequestService.ChangeRoleHierarchyBulkReq) returns (RequestService.ChangeRoleHierarchyBulkRes){}
+}

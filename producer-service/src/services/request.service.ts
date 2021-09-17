@@ -58,8 +58,10 @@ export class RequestService {
       );
       logger.info('Client initialized successfully in RequestService');
       return client;
-    } catch (error) {
-      logger.info('Error while initializing RequestService client', { error });
+    } catch (error: any) {
+      logger.error('Error while initializing RequestService client', {
+        error: { message: error.message },
+      });
       throw error;
     }
   }
