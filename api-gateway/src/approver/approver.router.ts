@@ -8,13 +8,13 @@ const ApproverRouter: Router = Router();
 ApproverRouter.get('/', ApproverValidator.isGetAllApproversValid, ApproverController.getAllApprovers);
 ApproverRouter.get('/displayname/:displayName', ApproverValidator.isGetSearchByDisplayNameValid, ApproverController.searchApproverByDisplayName);
 ApproverRouter.get('/domainuser/:domainUser',ApproverValidator.isGetSearchByDomainUserValid, ApproverController.searchApproverByDomainUser);
-ApproverRouter.get('/usertype/:entityId', ApproverValidator.isGetUserTypeValid, ApproverController.getUserType); 
+ApproverRouter.get('/usertype/:entityId', ApproverValidator.isGetUserTypeValid, ApproverController.getUserType); // TODO: change user connected
 
 // POST
 ApproverRouter.post('/', ApproverValidator.isAddApproverValid, ApproverController.addApprover); 
 
 // PUT
-ApproverRouter.put('/decision/:requestId', ApproverValidator.isUpdateApproverDecisionValid, ApproverController.updateApproverDecision);
+ApproverRouter.put('/decision/:requestId', ApproverValidator.isUpdateApproverDecisionValid, ApproverController.updateApproverDecision); // TODO: CHANGE
 
 // DELETE
 ApproverRouter.delete('/:id',ApproverValidator.isDeleteApproverValid, ApproverController.deleteApprover);
