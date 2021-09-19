@@ -45,21 +45,18 @@ import {
   DeleteOGReq,
   DisconectRoleFromEntityReq,
   DeleteReq,
-  GetAllRequestsReq
+  GetAllRequestsReq,
 } from '../interfaces/protoc/proto/requestService';
-import { requestsClient } from "./requests.service"
-
+import { requestsClient, RequestsService } from './requests.service';
 
 export default class RequestsController {
-
   //GET
   static async getAllRequests(req: any, res: Response) {
     //only SECURITY Approvers can see all requests.
-    const getAllRequestsReq: GetAllRequestsReq =
-    {
+    const getAllRequestsReq: GetAllRequestsReq = {
       approvementStatus: req.params.approvementStatus,
       from: req.query.from,
-      to: req.query.to
+      to: req.query.to,
     };
 
     logger.info(`Call to getAllRequests in GTW`, {
@@ -89,28 +86,12 @@ export default class RequestsController {
   static async getRequestById(req: any, res: Response) {
     const getRequestByIdReq: GetRequestByIdReq = { id: req.params.id };
 
-    logger.info(`Call to getRequestById in GTW`, {
-      callRequest: getRequestByIdReq,
-    });
-
-    requestsClient.GetRequestById(
-      getRequestByIdReq,
-      (err: any, response: Request) => {
-        if (err) {
-          logger.error(`getRequestById ERROR in GTW`, {
-            err,
-            callRequest: getRequestByIdReq,
-          });
-          res.status(500).send(err.message);
-        }
-
-        logger.info(`getRequestById OK in GTW`, {
-          response: response,
-          callRequest: getRequestByIdReq,
-        });
-        res.send(response);
-      }
-    );
+    try {
+      const request = await RequestsService.getRequestById(getRequestByIdReq);
+      res.send(request);
+    } catch (error: any) {
+      res.status(500).send(error.message);
+    }
   }
 
   static async getRequestsByPerson(req: any, res: Response) {
@@ -119,174 +100,111 @@ export default class RequestsController {
       personType: req.query.personType,
       personInfoType: req.query.personInfoType,
       from: req.query.from,
-      to: req.query.to
+      to: req.query.to,
     };
 
-    logger.info(`Call to getRequestsByPerson in GTW`, {
-      callRequest: getRequestsByPersonReq,
-    });
-
-    requestsClient.GetRequestsByPerson(
-      getRequestsByPersonReq,
-      (err: any, response: RequestArray) => {
-        if (err) {
-          logger.error(`getRequestsByPerson ERROR in GTW`, {
-            err,
-            callRequest: getRequestsByPersonReq,
-          });
-          res.status(500).send(err.message);
-        }
-
-        logger.info(`getRequestsByPerson OK in GTW`, {
-          response: response,
-          callRequest: getRequestsByPersonReq,
-        });
-        res.send(response);
-      }
-    );
+    try {
+      const requests = await RequestsService.getRequestsByPerson(
+        getRequestsByPersonReq
+      );
+      res.send(requests);
+    } catch (error: any) {
+      res.status(500).send(error.message);
+    }
   }
 
   static async getRequestBySerialNumber(req: any, res: Response) {
-    const getRequestBySerialNumberReq: GetRequestBySerialNumberReq =
-      { serialNumber: req.params.serialNumber };
+    const getRequestBySerialNumberReq: GetRequestBySerialNumberReq = {
+      serialNumber: req.params.serialNumber,
+    };
 
-    logger.info(`Call to getRequestBySerialNumber in GTW`, {
-      callRequest: getRequestBySerialNumberReq,
-    });
-
-    requestsClient.GetRequestBySerialNumber(
-      getRequestBySerialNumberReq,
-      (err: any, response: RequestArray) => {
-        if (err) {
-          logger.error(`getRequestBySerialNumber ERROR in GTW`, {
-            err,
-            callRequest: getRequestBySerialNumberReq,
-          });
-          res.status(500).send(err.message);
-        }
-
-        logger.info(`getRequestBySerialNumber OK in GTW`, {
-          response: response,
-          callRequest: getRequestBySerialNumberReq,
-        });
-        res.send(response);
-      }
-    );
+    try {
+      const requests = await RequestsService.getRequestBySerialNumber(
+        getRequestBySerialNumberReq
+      );
+      res.send(requests);
+    } catch (error: any) {
+      res.status(500).send(error.message);
+    }
   }
 
   static async searchRequestsBySubmitterDisplayName(req: any, res: Response) {
     const searchRequestsBySubmitterDisplayNameReq: SearchRequestsByDisplayNameReq =
-      { displayName: req.params.displayName, from: req.query.from, to: req.query.to };
+      {
+        displayName: req.params.displayName,
+        from: req.query.from,
+        to: req.query.to,
+      };
 
-    logger.info(`Call to searchRequestsBySubmitterDisplayName in GTW`, {
-      callRequest: searchRequestsBySubmitterDisplayNameReq,
-    });
-
-    requestsClient.SearchRequestsBySubmitterDisplayName(
-      searchRequestsBySubmitterDisplayNameReq,
-      (err: any, response: Request) => {
-        if (err) {
-          logger.error(`searchRequestsBySubmitterDisplayName ERROR in GTW`, {
-            err,
-            callRequest: searchRequestsBySubmitterDisplayNameReq,
-          });
-          res.status(500).send(err.message);
-        }
-
-        logger.info(`searchRequestsBySubmitterDisplayName OK in GTW`, {
-          response: response,
-          callRequest: searchRequestsBySubmitterDisplayNameReq,
-        });
-        res.send(response);
-      }
-    );
+    try {
+      const requests =
+        await RequestsService.searchRequestsBySubmitterDisplayName(
+          searchRequestsBySubmitterDisplayNameReq
+        );
+      res.send(requests);
+    } catch (error: any) {
+      res.status(500).send(error.message);
+    }
   }
 
   static async searchRequestsByCommanderDisplayName(req: any, res: Response) {
     const searchRequestsByCommanderDisplayNameReq: SearchRequestsByDisplayNameReq =
-      { displayName: req.params.displayName, from: req.query.from, to: req.query.to };
+      {
+        displayName: req.params.displayName,
+        from: req.query.from,
+        to: req.query.to,
+      };
 
-    logger.info(`Call to searchRequestsByCommanderDisplayName in GTW`, {
-      callRequest: searchRequestsByCommanderDisplayNameReq,
-    });
-
-    requestsClient.SearchRequestsByCommanderDisplayName(
-      searchRequestsByCommanderDisplayNameReq,
-      (err: any, response: Request) => {
-        if (err) {
-          logger.error(`searchRequestsByCommanderDisplayName ERROR in GTW`, {
-            err,
-            callRequest: searchRequestsByCommanderDisplayNameReq,
-          });
-          res.status(500).send(err.message);
-        }
-
-        logger.info(`searchRequestsByCommanderDisplayName OK in GTW`, {
-          response: response,
-          callRequest: searchRequestsByCommanderDisplayNameReq,
-        });
-        res.send(response);
-      }
-    );
+    try {
+      const requests =
+        await RequestsService.searchRequestsByCommanderDisplayName(
+          searchRequestsByCommanderDisplayNameReq
+        );
+      res.send(requests);
+    } catch (error: any) {
+      res.status(500).send(error.message);
+    }
   }
 
   static async searchRequestsBySecurityDisplayName(req: any, res: Response) {
     const searchRequestsBySecurityDisplayNameReq: SearchRequestsByDisplayNameReq =
-      { displayName: req.params.displayName, from: req.query.from, to: req.query.to };
+      {
+        displayName: req.params.displayName,
+        from: req.query.from,
+        to: req.query.to,
+      };
 
-    logger.info(`Call to searchRequestsBySecurityDisplayName in GTW`, {
-      callRequest: searchRequestsBySecurityDisplayNameReq,
-    });
-
-    requestsClient.searchRequestsBySecurityDisplayName(
-      searchRequestsBySecurityDisplayNameReq,
-      (err: any, response: Request) => {
-        if (err) {
-          logger.error(`searchRequestsBySecurityDisplayName ERROR in GTW`, {
-            err,
-            callRequest: searchRequestsBySecurityDisplayNameReq,
-          });
-          res.status(500).send(err.message);
-        }
-
-        logger.info(`searchRequestsBySecurityDisplayName OK in GTW`, {
-          response: response,
-          callRequest: searchRequestsBySecurityDisplayNameReq,
-        });
-        res.send(response);
-      }
-    );
+    try {
+      const requests =
+        await RequestsService.searchRequestsBySecurityDisplayName(
+          searchRequestsBySecurityDisplayNameReq
+        );
+      res.send(requests);
+    } catch (error: any) {
+      res.status(500).send(error.message);
+    }
   }
 
   static async searchRequestsByApproverDisplayName(req: any, res: Response) {
     const searchRequestsByApproverDisplayNameReq: SearchRequestsByDisplayNameReq =
-      { displayName: req.params.displayName, from: req.query.from, to: req.query.to };
+      {
+        displayName: req.params.displayName,
+        from: req.query.from,
+        to: req.query.to,
+      };
 
-    logger.info(`Call to searchRequestsByApproverDisplayName in GTW`, {
-      callRequest: searchRequestsByApproverDisplayNameReq,
-    });
-
-    requestsClient.SearchRequestsByApproverDisplayName(
-      searchRequestsByApproverDisplayNameReq,
-      (err: any, response: Request) => {
-        if (err) {
-          logger.error(`searchRequestsByApproverDisplayName ERROR in GTW`, {
-            err,
-            callRequest: searchRequestsByApproverDisplayNameReq,
-          });
-          res.status(500).send(err.message);
-        }
-
-        logger.info(`searchRequestsByApproverDisplayName OK in GTW`, {
-          response: response,
-          callRequest: searchRequestsByApproverDisplayNameReq,
-        });
-        res.send(response);
-      }
-    );
+    try {
+      const requests =
+        await RequestsService.searchRequestsByApproverDisplayName(
+          searchRequestsByApproverDisplayNameReq
+        );
+      res.send(requests);
+    } catch (error: any) {
+      res.status(500).send(error.message);
+    }
   }
 
-  //PUT
+  // PUT
   static async updateADStatus(req: any, res: Response) {
     const retry: boolean = req.body.Retry;
     const status: boolean = req.body.Status;
@@ -302,7 +220,14 @@ export default class RequestsController {
 
         if (produceRes.success === true) {
           //if produce was successful update Kartoffel Status
-          await RequestsController.updateKartoffelStatus(req.body.RequestID);
+          try {
+            const request = await RequestsService.updateKartoffelStatus(
+              req.body.RequestID
+            );
+            res.status(200).send(request);
+          } catch (error: any) {
+            return res.status(500).send(error.message);
+          }
         }
       } else if (status === false) {
         stageStatus = StageStatus.STAGE_FAILED;
@@ -314,225 +239,91 @@ export default class RequestsController {
         message: req.body.ErrorID,
       };
 
-      logger.info(`Call to updateADStatus in GTW`, {
-        callRequest: updateADStatus,
-      });
-
-      requestsClient.UpdateADStatus(updateADStatus, (err: any, response: Request) => {
-        if (err) {
-          logger.error(`updateADStatus ERROR in GTW`, {
-            err,
-            callRequest: updateADStatus,
-          });
-          res.status(500).end(err.message);
-        }
-
-        logger.info(`updateADStatus OK in GTW`, {
-          response: response,
-          callRequest: updateADStatus,
-        });
-        res.status(200).send();
-      });
+      try {
+        const request = await RequestsService.updateADStatus(updateADStatus);
+        res.status(200).send(request);
+      } catch (error: any) {
+        res.status(500).send(error.message);
+      }
     } else {
-      await ProducerController.produceToADQueue(req.body.RequestID,res);
+      await ProducerController.produceToADQueue(req.body.RequestID, res);
     }
   }
 
-  static async updateKartoffelStatus(requestId: string) {
-    const updateKartoffelStatusReq: UpdateKartoffelStatusReq = {
-      requestId: requestId,
-      status: StageStatus.STAGE_IN_PROGRESS,
+  static async updateRequest(req: any, res: Response) {
+    const updateReq: UpdateReq = {
+      id: req.params.id,
+      requestProperties: req.body,
     };
 
-    logger.info(`Call to updateKartoffelStatus in GTW`, {
-      callRequest: updateKartoffelStatusReq,
-    });
-
-    return new Promise((resolve, reject) => {
-      requestsClient.UpdateKartoffelStatus(
-        {
-          requestId: requestId,
-          status: StageStatus.STAGE_IN_PROGRESS,
-        },
-        (err: any, response: Request) => {
-          if (err) {
-            logger.error(`updateKartoffelStatus ERROR in GTW`, {
-              err,
-              callRequest: updateKartoffelStatusReq,
-            });
-            resolve(err);
-          }
-
-          logger.info(`updateKartoffelStatus OK in GTW`, {
-            response: response,
-            callRequest: updateKartoffelStatusReq,
-          });
-          resolve(response);
-        }
-      );
-    });
-  }
-
-  static async updateRequest(req: any, res: Response) {
-    const updateReq: UpdateReq =
-      { id: req.params.id, requestProperties: req.body };
-
-    logger.info(`Call to updateRequest in GTW`, {
-      callRequest: { id: req.params.id },
-    });
-
-    requestsClient.UpdateRequest(
-      updateReq,
-      (err: any, response: Request) => {
-        if (err) {
-          logger.error(`updateRequest ERROR in GTW`, {
-            err,
-            callRequest: { id: req.params.id },
-          });
-
-          res.status(500).send(err.message);
-        }
-
-        logger.info(`updateRequest OK in GTW`, {
-          response: response,
-          callRequest: { id: req.params.id },
-        });
-        res.send(response);
-      }
-    );
+    try {
+      const request = await RequestsService.updateRequest(updateReq);
+      res.status(200).send(request);
+    } catch (error: any) {
+      res.status(500).send(error.message);
+    }
   }
 
   static async updateCommanders(req: any, res: Response) {
-    const updateCommandersReq: UpdateApproversReq =
-      { id: req.params.id, approvers: req.body.approvers };
+    const updateCommandersReq: UpdateApproversReq = {
+      id: req.params.id,
+      approvers: req.body.approvers,
+    };
 
-    logger.info(`Call to updateCommanders in GTW`, {
-      callRequest: updateCommandersReq,
-    });
-
-    requestsClient.UpdateCommanders(
-      updateCommandersReq,
-      (err: any, response: Request) => {
-        if (err) {
-          logger.error(`updateCommanders ERROR in GTW`, {
-            err,
-            callRequest: updateCommandersReq,
-          });
-
-          res.status(500).send(err.message);
-        }
-
-        logger.info(`updateCommanders OK in GTW`, {
-          response: response,
-          callRequest: updateCommandersReq,
-        });
-        res.send(response);
-      }
-    );
+    try {
+      const request = await RequestsService.updateCommanders(
+        updateCommandersReq
+      );
+      res.status(200).send(request);
+    } catch (error: any) {
+      res.status(500).send(error.message);
+    }
   }
 
   static async updateSecurityApprovers(req: any, res: Response) {
-    const updateSecurityApproversReq: UpdateApproversReq =
-      { id: req.params.id, approvers: req.body.approvers };
+    const updateSecurityApproversReq: UpdateApproversReq = {
+      id: req.params.id,
+      approvers: req.body.approvers,
+    };
 
-    logger.info(`Call to updateSecurityApprovers in GTW`, {
-      callRequest: updateSecurityApproversReq,
-    });
-
-    requestsClient.UpdateSecurityApprovers(
-      updateSecurityApproversReq,
-      (err: any, response: Request) => {
-        if (err) {
-          logger.error(`updateSecurityApprovers ERROR in GTW`, {
-            err,
-            callRequest: updateSecurityApproversReq,
-          });
-
-          res.status(500).send(err.message);
-        }
-
-        logger.info(`updateSecurityApprovers OK in GTW`, {
-          response: response,
-          callRequest: updateSecurityApproversReq,
-        });
-        res.send(response);
-      }
-    );
+    try {
+      const request = await RequestsService.updateSecurityApprovers(
+        updateSecurityApproversReq
+      );
+      res.status(200).send(request);
+    } catch (error: any) {
+      res.status(500).send(error.message);
+    }
   }
 
   static async updateApproverDecision(req: any, res: Response) {
     const updateApproverDecisionReq: UpdateApproverDecisionReq = {
       id: req.params.id,
       approverDecision: req.body.approverDecision, //TODO
-      approverType: req.body.approverType,  //TODO
+      approverType: req.body.approverType, //TODO
     };
 
     logger.info(`Call to updateApproverDecision in GTW`, {
       callRequest: updateApproverDecisionReq,
     });
 
-
-    requestsClient.UpdateApproverDecision(
-      updateApproverDecisionReq,
-      (err: any, response: Request) => {
-        if (err) {
-          logger.error(`updateSecurityApprovers ERROR in GTW`, {
-            err,
-            callRequest: updateApproverDecisionReq,
-          });
-
-          res.status(500).send(err.message);
-        }
-
-        logger.info(`updateSecurityApprovers OK in GTW`, {
-          response: response,
-          callRequest: updateApproverDecisionReq,
-        });
-
-      }
-    );
-
-    const canPushToQueueRes = (await RequestsController.canPushToADQueue(
-      req.params.id
-    )) as CanPushToQueueRes;
-
-    if (canPushToQueueRes.canPushToQueue === true) {
-      await ProducerController.produceToADQueue(req.params.id,res);
-    }
-
-    res.status(200).send();
-  }
-
-  static async canPushToADQueue(requestId: string) {
-    const canPushToADQueueReq: CanPushToQueueReq =
-      { id: requestId };
-
-    logger.info(`Call to CanPushToADQueue in GTW`, {
-      callRequest: canPushToADQueueReq,
-    });
-
-    return new Promise((resolve, reject) => {
-      requestsClient.CanPushToADQueue(
-        canPushToADQueueReq,
-        (err: any, response: CanPushToQueueRes) => {
-          if (err) {
-            logger.error(`CanPushToADQueue ERROR in GTW`, {
-              err,
-              callRequest: canPushToADQueueReq,
-            });
-            resolve({
-              canPushToQueue: false, //defalut in case of an error
-            });
-          }
-
-          logger.info(`CanPushToADQueue OK in GTW`, {
-            response: response,
-            callRequest: canPushToADQueueReq,
-          });
-          resolve(response);
-        }
+    try {
+      const request = await RequestsService.updateApproverDecision(
+        updateApproverDecisionReq
       );
-    });
+
+      const canPushToQueueRes = await RequestsService.canPushToADQueue({
+        id: req.params.id,
+      });
+
+      if (canPushToQueueRes.canPushToQueue) {
+        await ProducerController.produceToADQueue(req.params.id, res);
+      }
+
+      res.status(200).send(request);
+    } catch (error: any) {
+      res.status(500).send(error.message);
+    }
   }
 
   static async createRoleRequest(req: any, res: Response) {
@@ -547,34 +338,20 @@ export default class RequestsController {
       personalNumber: req.user.personalNumber,
     };
 
-    const createRoleReq: CreateRoleReq =
-    {
+    const createRoleReq: CreateRoleReq = {
       submittedBy: submittedBy,
-      ...req.body
+      ...req.body,
     };
 
-
-
-    requestsClient.CreateRoleRequest(
-      createRoleReq,
-      (err: any, response: CreateRoleRes) => {
-        if (err) {
-          logger.error(`createRoleRequest ERROR in GTW`, {
-            err,
-            callRequest: { submittedBy: req.user.id },
-          });
-          res.status(500).send(err.message);
-        }
-
-        logger.info(`createRoleRequest OK in GTW`, {
-          response: response,
-          callRequest: { submittedBy: req.user.id },
-        });
-        res.send(response);
-      }
-    );
+    try {
+      const createRole = await RequestsService.createRoleRequest(createRoleReq);
+      res.status(200).send(createRole);
+    } catch (error: any) {
+      res.status(500).send(error.message);
+    }
   }
 
+  // TODO: continue change and add to service
   static async assignRoleToEntityRequest(req: any, res: Response) {
     logger.info(`Call to assignRoleToEntityRequest in GTW`, {
       callRequest: { submittedBy: req.user.id },
@@ -587,10 +364,9 @@ export default class RequestsController {
       personalNumber: req.user.personalNumber,
     };
 
-    const assignRoleToEntityReq: AssignRoleToEntityReq =
-    {
+    const assignRoleToEntityReq: AssignRoleToEntityReq = {
       submittedBy: submittedBy,
-      ...req.body
+      ...req.body,
     };
 
     requestsClient.AssignRoleToEntityRequest(
@@ -625,10 +401,9 @@ export default class RequestsController {
       personalNumber: req.user.personalNumber,
     };
 
-    const createOGReq: CreateOGReq =
-    {
+    const createOGReq: CreateOGReq = {
       submittedBy: submittedBy,
-      ...req.body
+      ...req.body,
     };
 
     requestsClient.CreateOGRequest(
@@ -663,10 +438,9 @@ export default class RequestsController {
       personalNumber: req.user.personalNumber,
     };
 
-    const createNewApproverReq: CreateNewApproverReq =
-    {
+    const createNewApproverReq: CreateNewApproverReq = {
       submittedBy: submittedBy,
-      ...req.body
+      ...req.body,
     };
 
     requestsClient.CreateNewApproverRequest(
@@ -701,10 +475,9 @@ export default class RequestsController {
       personalNumber: req.user.personalNumber,
     };
 
-    const createEntityReq: CreateEntityReq =
-    {
+    const createEntityReq: CreateEntityReq = {
       submittedBy: submittedBy,
-      ...req.body
+      ...req.body,
     };
 
     requestsClient.CreateEntityRequest(
@@ -739,10 +512,9 @@ export default class RequestsController {
       personalNumber: req.user.personalNumber,
     };
 
-    const renameOGReq: RenameOGReq =
-    {
+    const renameOGReq: RenameOGReq = {
       submittedBy: submittedBy,
-      ...req.body
+      ...req.body,
     };
 
     requestsClient.RenameOGRequest(
@@ -777,10 +549,9 @@ export default class RequestsController {
       personalNumber: req.user.personalNumber,
     };
 
-    const renameRoleReq: RenameRoleReq =
-    {
+    const renameRoleReq: RenameRoleReq = {
       submittedBy: submittedBy,
-      ...req.body
+      ...req.body,
     };
 
     requestsClient.RenameRoleRequest(
@@ -815,10 +586,9 @@ export default class RequestsController {
       personalNumber: req.user.personalNumber,
     };
 
-    const editEntityReq: EditEntityReq =
-    {
+    const editEntityReq: EditEntityReq = {
       submittedBy: submittedBy,
-      ...req.body
+      ...req.body,
     };
 
     requestsClient.EditEntityRequest(
@@ -853,10 +623,9 @@ export default class RequestsController {
       personalNumber: req.user.personalNumber,
     };
 
-    const deleteRoleReq: DeleteRoleReq =
-    {
+    const deleteRoleReq: DeleteRoleReq = {
       submittedBy: submittedBy,
-      ...req.body
+      ...req.body,
     };
 
     requestsClient.DeleteRoleRequest(
@@ -891,10 +660,9 @@ export default class RequestsController {
       personalNumber: req.user.personalNumber,
     };
 
-    const deleteOGReq: DeleteOGReq =
-    {
+    const deleteOGReq: DeleteOGReq = {
       submittedBy: submittedBy,
-      ...req.body
+      ...req.body,
     };
 
     requestsClient.DeleteOGRequest(
@@ -929,10 +697,9 @@ export default class RequestsController {
       personalNumber: req.user.personalNumber,
     };
 
-    const disconectRoleFromEntityReq: DisconectRoleFromEntityReq =
-    {
+    const disconectRoleFromEntityReq: DisconectRoleFromEntityReq = {
       submittedBy: submittedBy,
-      ...req.body
+      ...req.body,
     };
 
     requestsClient.DisconectRoleFromEntityRequest(
@@ -955,13 +722,11 @@ export default class RequestsController {
     );
   }
 
-
   static async deleteRequest(req: any, res: Response) {
-    const deleteReq: DeleteReq =
-      { id: req.params.id };
+    const deleteReq: DeleteReq = { id: req.params.id };
 
     logger.info(`Call to deleteRequest in GTW`, {
-      callRequest: deleteReq
+      callRequest: deleteReq,
     });
 
     requestsClient.DeleteRequest(
@@ -970,14 +735,14 @@ export default class RequestsController {
         if (err) {
           logger.error(`deleteRequest ERROR in GTW`, {
             err,
-            callRequest: deleteReq
+            callRequest: deleteReq,
           });
           res.status(500).send(err.message);
         }
 
         logger.info(`deleteRequest OK in GTW`, {
           response: response,
-          callRequest: deleteReq
+          callRequest: deleteReq,
         });
         res.send(response);
       }
