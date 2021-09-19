@@ -1,4 +1,8 @@
-import { ApprovementStatus } from '../interfaces/protoc/proto/requestService';
+import { UserType } from '../interfaces/protoc/proto/approverService';
+import {
+  PersonTypeInRequest, PersonInfoType, RequestStatus
+  , Decision, StageStatus,ApproverType,ApprovementStatus
+} from '../interfaces/protoc/proto/requestService';
 
 const Joi = require('joi');
 Joi.objectId = require('joi-objectid')(Joi);
@@ -6,11 +10,14 @@ Joi.objectId = require('joi-objectid')(Joi);
 // GET
 export const getAllRequestsSchema = Joi.object({
   body: {},
-  params: {},
+  params: {
+    approvementStatus: Joi.string()
+    .valid(...Object.keys(ApprovementStatus))
+    .required()
+  },
   query: {
     from: Joi.number().default(0),
     to: Joi.number().default(100),
-    status: Joi.string().valid(...Object.keys(ApprovementStatus)),
   },
 });
 
@@ -22,30 +29,18 @@ export const getRequestByIdSchema = Joi.object({
   query: {},
 });
 
-export const getMyRequestsSchema = Joi.object({
-  body: {},
-  params: {},
-  query: {
-    from: Joi.number().default(0),
-    to: Joi.number().default(100),
-  },
-});
-
-export const getRequestsByCommanderSchema = Joi.object({
-  body: {},
-  params: {},
-  query: {
-    from: Joi.number().default(0),
-    to: Joi.number().default(100),
-  },
-});
-
-export const getRequestsSubmittedBySchema = Joi.object({
+export const getRequestsByPersonSchema = Joi.object({
   body: {},
   params: {
-    id: Joi.objectId().required(),
+    id: Joi.string().required(),
   },
   query: {
+    personType: Joi.string()
+      .valid(...Object.keys(PersonTypeInRequest))
+      .required(),
+    personInfoType: Joi.string()
+      .valid(...Object.keys(PersonInfoType))
+      .required(),
     from: Joi.number().default(0),
     to: Joi.number().default(100),
   },
@@ -59,18 +54,563 @@ export const getRequestBySerialNumberSchema = Joi.object({
   query: {},
 });
 
-// export const getRequestsBySubmitterIdentifierSchema = Joi.object({
-//   body: {},
-//   params: {
-//     serialNumber: Joi.string().required(),
-//   },
-//   query: {},
-// });
+export const SearchRequestsByDisplayNameSchema = Joi.object({
+  body: {},
+  params: {
+    displayName: Joi.string().required(),
+  },
+  query: {
+    from: Joi.number().default(0),
+    to: Joi.number().default(100),
+  },
+});
 
-export const searchRequestsBySubmitterDisplayNameSchema = Joi.object({
-    body: {},
-    params: {
-      serialNumber: Joi.string().required(),
-    },
-    query: {},
-  });
+
+
+
+// PUT
+export const updateADStatusSchema = Joi.object({
+  body: {
+    Retry: Joi.boolean().required(),
+    Status: Joi.boolean().required(),
+    RequestID: Joi.string().required(),
+    ErrorID: Joi.string().required(),
+  },
+  params: {},
+  query: {},
+});
+
+export const entityMinObj = Joi.object({
+  id: Joi.objectId().required(),
+  displayName: Joi.string().required(),
+  identityCard: Joi.string().required(),
+  personalNumber: Joi.string().required()
+});
+
+const ApproverDecisionObj = Joi.object({
+  approver: entityMinObj.required(),
+  decision: Joi.string()
+    .valid(...Object.keys(Decision))
+    .required(),
+  reason: Joi.string(),
+  date: Joi.number().unsafe()
+});
+
+const kartoffelStatusObj = Joi.object({
+  status: Joi.string()
+    .valid(...Object.keys(StageStatus))
+    .required(),
+  message: Joi.string().required(),
+  createdId: Joi.string(),
+  failedRetries: Joi.number().unsafe().required()
+});
+
+const ADStatusObj = Joi.object({
+  status: Joi.string()
+    .valid(...Object.keys(StageStatus))
+    .required(),
+  message: Joi.string().required(),
+  failedRetries: Joi.number().unsafe().required()
+});
+
+const KartoffelParamsObj = Joi.object({
+  //TODO
+});
+
+const ADParamsObj = Joi.object({
+  //TODO
+});
+
+export const updateRequestSchema = Joi.object({
+  body: {
+    requestProperties: Joi.object({
+      submittedBy: entityMinObj,
+      status: Joi.string()
+        .valid(...Object.keys(RequestStatus)),
+      commanderDecision: ApproverDecisionObj,
+      securityDecision: ApproverDecisionObj,
+      superSecurityDecision: ApproverDecisionObj,
+      kartoffelStatus: kartoffelStatusObj,
+      adStatus: ADStatusObj,
+      kartoffelParams: kartoffelStatusObj,
+      adParams: ADParamsObj,
+      due: Joi.number().unsafe(),
+      commanders: Joi.array().items(entityMinObj).required(),
+      securityApprovers: Joi.array().items(entityMinObj).required(),
+      superSecurityApprovers: Joi.array().items(entityMinObj).required()
+    })
+  },
+  params: {
+    id: Joi.objectId().required()
+  },
+  query: {},
+});
+
+
+export const UpdateApproversSchema = Joi.object({
+  body: {
+    approvers: Joi.array().items(entityMinObj).required()
+  },
+  params: {
+    id: Joi.objectId().required()
+  },
+  query: {},
+});
+
+export const updateApproverDecisionSchema = Joi.object({
+  body: {
+    approverDecision: ApproverDecisionObj,
+    approverType: Joi.string()
+      .valid(...Object.keys(PersonTypeInRequest))
+      .required(),
+  },
+  params: {
+    id: Joi.objectId().required()
+  },
+  query: {},
+});
+
+
+
+// POST
+
+const createRoleKartoffelParamsObj = Joi.object({
+  //for role
+  jobTitle: Joi.string().required(), //name of the role
+  directGroup: Joi.string().required(), //groupId of direct father
+  roleId: Joi.string(), //T154514... generated automatically by tea-service if not given
+  clearance: Joi.string().required(), //clearance of the role
+  akaUnit: Joi.string(),
+
+  //forDigitalIdentity
+  type: Joi.string().required(), //always domainUser
+  source: Joi.string().required(), //always oneTree
+  uniqueId: Joi.string(), //T154514... generated automatically by tea-service if not given
+  mail: Joi.string(), //T154514... generated automatically by tea-service if not given
+  isRoleAttachable: Joi.boolean().required() //true, if the role is unoccupied
+});
+
+const createRoleADParamsObj = Joi.object({
+  samAccountName: Joi.string().required(),  //T154514... generated automatically by tea-service if not given
+  ouDisplayName: Joi.string().required(), // Role's full hierarchy
+  jobTitle: Joi.string().required() //name of the role
+});
+
+
+export const createRoleSchema = Joi.object({
+  body: {
+    submittedBy:entityMinObj.required(),
+    status: Joi.string()
+      .valid(...Object.keys(RequestStatus)),
+    commanderDecision: ApproverDecisionObj,
+    securityDecision: ApproverDecisionObj,
+    superSecurityDecision: ApproverDecisionObj,
+    commanders: Joi.array().items(entityMinObj),
+    securityApprovers: Joi.array().items(entityMinObj),
+    superSecurityApprovers: Joi.array().items(entityMinObj),
+    kartoffelStatus: kartoffelStatusObj,
+    adStatus: ADStatusObj,
+    kartoffelParams: createRoleKartoffelParamsObj.required(),
+    adParams: createRoleADParamsObj.required(),
+    comments: Joi.string(),
+    approversComments: Joi.string(),
+    due: Joi.number().unsafe()
+  },
+  params: {},
+  query: {},
+});
+
+
+
+
+const assignRoleToEntityKartoffelParamsObj = Joi.object({
+  id: Joi.string().required(),
+  uniqueId: Joi.string().required()
+});
+
+const assignRoleToEntityADParamsObj = Joi.object({
+  oldSAMAccountName: Joi.string().required(),
+  newSAMAccountName: Joi.string().required(),
+  upn: Joi.string().required(),
+  firstName: Joi.string().required(),
+  lastName: Joi.string().required(),
+  fullName: Joi.string().required(),
+  rank: Joi.string().required(),
+  roleSerialCode: Joi.string().required()
+});
+
+export const assignRoleToEntitySchema = Joi.object({
+  body: {
+    submittedBy:entityMinObj.required(),
+    status: Joi.string()
+      .valid(...Object.keys(RequestStatus)),
+    commanderDecision: ApproverDecisionObj,
+    securityDecision: ApproverDecisionObj,
+    superSecurityDecision: ApproverDecisionObj,
+    commanders: Joi.array().items(entityMinObj),
+    securityApprovers: Joi.array().items(entityMinObj),
+    superSecurityApprovers: Joi.array().items(entityMinObj),
+    kartoffelStatus: kartoffelStatusObj,
+    adStatus: ADStatusObj,
+    kartoffelParams: assignRoleToEntityKartoffelParamsObj.required(),
+    adParams: assignRoleToEntityADParamsObj.required(),
+    comments: Joi.string(),
+    approversComments: Joi.string(),
+    due: Joi.number().unsafe()
+  },
+  params: {},
+  query: {},
+});
+
+
+
+const createOGKartoffelParamsObj = Joi.object({
+  name: Joi.string().required(),
+  parent: Joi.string().required(),
+  source: Joi.string().required()
+});
+
+const createOGADParamsObj = Joi.object({
+  ouDisplayName: Joi.string().required(),
+  ouName: Joi.string().required(),
+  name: Joi.string().required()
+});
+
+export const createOGSchema = Joi.object({
+  body: {
+    submittedBy:entityMinObj.required(),
+    status: Joi.string()
+      .valid(...Object.keys(RequestStatus)),
+    commanderDecision: ApproverDecisionObj,
+    securityDecision: ApproverDecisionObj,
+    superSecurityDecision: ApproverDecisionObj,
+    commanders: Joi.array().items(entityMinObj),
+    securityApprovers: Joi.array().items(entityMinObj),
+    superSecurityApprovers: Joi.array().items(entityMinObj),
+    kartoffelStatus: kartoffelStatusObj,
+    adStatus: ADStatusObj,
+    kartoffelParams: createOGKartoffelParamsObj.required(),
+    adParams: createOGADParamsObj.required(),
+    comments: Joi.string(),
+    approversComments: Joi.string(),
+    due: Joi.number().unsafe()
+  },
+  params: {},
+  query: {},
+});
+
+
+
+const additionalParamsObj = Joi.object({
+  entityId: Joi.string().required(),
+  displayName: Joi.string().required(),
+  domainUsers: Joi.array().items(Joi.string()),
+  type:Joi.string()
+  .valid(...Object.keys(ApproverType))
+  .required()
+});
+
+export const createNewApproverSchema = Joi.object({
+  body: {
+    submittedBy:entityMinObj.required(),
+    status: Joi.string()
+      .valid(...Object.keys(RequestStatus)),
+    commanderDecision: ApproverDecisionObj,
+    securityDecision: ApproverDecisionObj,
+    superSecurityDecision: ApproverDecisionObj,
+    commanders: Joi.array().items(entityMinObj),
+    securityApprovers: Joi.array().items(entityMinObj),
+    superSecurityApprovers: Joi.array().items(entityMinObj),
+    additionalParams:additionalParamsObj,
+    comments: Joi.string(),
+    approversComments: Joi.string(),
+    due: Joi.number().unsafe()
+  },
+  params: {},
+  query: {},
+});
+
+
+
+
+const createEntityKartoffelParamsObj = Joi.object({
+  firstName: Joi.string().required(),
+  lastName: Joi.string().required(),
+  identityCard: Joi.string().required(),
+  personalNumber: Joi.string().required(),
+  serviceType: Joi.string().required(),
+  phone: Joi.array().items(Joi.string()),
+  mobilePhone: Joi.array().items(Joi.string()),
+  address: Joi.string().required(),
+  clearance: Joi.string().required(),
+  sex: Joi.string().required(),
+  birthdate: Joi.number().unsafe().required(),
+  entityType: Joi.string().required()
+});
+const createEntityADParamsObj = Joi.object({
+  //NO PARAMETERS NEEDED
+});
+
+export const createEntitySchema = Joi.object({
+  body: {
+    submittedBy:entityMinObj.required(),
+    status: Joi.string()
+      .valid(...Object.keys(RequestStatus)),
+    commanderDecision: ApproverDecisionObj,
+    securityDecision: ApproverDecisionObj,
+    superSecurityDecision: ApproverDecisionObj,
+    commanders: Joi.array().items(entityMinObj),
+    securityApprovers: Joi.array().items(entityMinObj),
+    superSecurityApprovers: Joi.array().items(entityMinObj),
+    kartoffelStatus: kartoffelStatusObj,
+    adStatus: ADStatusObj,
+    kartoffelParams: createEntityKartoffelParamsObj.required(),
+    adParams: createEntityADParamsObj.required(),
+    comments: Joi.string(),
+    approversComments: Joi.string(),
+    due: Joi.number().unsafe()
+  },
+  params: {},
+  query: {},
+});
+
+
+
+
+const renameOGKartoffelParamsObj = Joi.object({
+  id: Joi.string().required(),
+  name: Joi.string().required()
+});
+
+const renameOGADParamsObj = Joi.object({
+  ouDisplayName: Joi.string().required(),
+  oldOuName: Joi.string().required(),
+  newOuName: Joi.string().required()
+});
+
+export const renameOGSchema = Joi.object({
+  body: {
+    submittedBy:entityMinObj.required(),
+    status: Joi.string()
+      .valid(...Object.keys(RequestStatus)),
+    commanderDecision: ApproverDecisionObj,
+    securityDecision: ApproverDecisionObj,
+    superSecurityDecision: ApproverDecisionObj,
+    commanders: Joi.array().items(entityMinObj),
+    securityApprovers: Joi.array().items(entityMinObj),
+    superSecurityApprovers: Joi.array().items(entityMinObj),
+    kartoffelStatus: kartoffelStatusObj,
+    adStatus: ADStatusObj,
+    kartoffelParams: renameOGKartoffelParamsObj.required(),
+    adParams: renameOGADParamsObj.required(),
+    comments: Joi.string(),
+    approversComments: Joi.string(),
+    due: Joi.number().unsafe()
+  },
+  params: {},
+  query: {},
+});
+
+
+
+
+
+const renameRoleKartoffelParamsObj = Joi.object({
+  jobTitle: Joi.string().required(),
+  roleId: Joi.string().required()
+});
+
+const renameRoleADParamsObj = Joi.object({
+  samAccountName: Joi.string().required(),
+  jobTitle: Joi.string().required()
+});
+
+export const renameRoleSchema = Joi.object({
+  body: {
+    submittedBy:entityMinObj.required(),
+    status: Joi.string()
+      .valid(...Object.keys(RequestStatus)),
+    commanderDecision: ApproverDecisionObj,
+    securityDecision: ApproverDecisionObj,
+    superSecurityDecision: ApproverDecisionObj,
+    commanders: Joi.array().items(entityMinObj),
+    securityApprovers: Joi.array().items(entityMinObj),
+    superSecurityApprovers: Joi.array().items(entityMinObj),
+    kartoffelStatus: kartoffelStatusObj,
+    adStatus: ADStatusObj,
+    kartoffelParams: renameRoleKartoffelParamsObj.required(),
+    adParams: renameRoleADParamsObj.required(),
+    comments: Joi.string(),
+    approversComments: Joi.string(),
+    due: Joi.number().unsafe()
+  },
+  params: {},
+  query: {},
+});
+
+
+
+
+const editEntityKartoffelParamsObj = Joi.object({
+  id: Joi.string().required(),
+  firstName: Joi.string().required(),
+  lastName: Joi.string().required(),
+  identityCard: Joi.string().required(),
+  personalNumber: Joi.string().required(),
+  serviceType: Joi.string().required(),
+  phone: Joi.array().items(Joi.string()),
+  mobilePhone: Joi.array().items(Joi.string()),
+  address: Joi.string().required(),
+  clearance: Joi.string().required(),
+  sex: Joi.string().required(),
+  birthdate: Joi.number().unsafe().required(),
+  entityType: Joi.string().required()
+});
+
+const editEntityADParamsObj = Joi.object({
+  samAccountName: Joi.string().required(),
+  firstName: Joi.string().required(),
+  lastName: Joi.string().required(),
+  fullName: Joi.string().required()
+});
+
+export const editEntitySchema = Joi.object({
+  body: {
+    submittedBy:entityMinObj.required(),
+    status: Joi.string()
+      .valid(...Object.keys(RequestStatus)),
+    commanderDecision: ApproverDecisionObj,
+    securityDecision: ApproverDecisionObj,
+    superSecurityDecision: ApproverDecisionObj,
+    commanders: Joi.array().items(entityMinObj),
+    securityApprovers: Joi.array().items(entityMinObj),
+    superSecurityApprovers: Joi.array().items(entityMinObj),
+    kartoffelStatus: kartoffelStatusObj,
+    adStatus: ADStatusObj,
+    kartoffelParams: editEntityKartoffelParamsObj.required(),
+    adParams: editEntityADParamsObj.required(),
+    comments: Joi.string(),
+    approversComments: Joi.string(),
+    due: Joi.number().unsafe()
+  },
+  params: {},
+  query: {},
+});
+
+
+
+const deleteRoleKartoffelParamsObj = Joi.object({
+  roleId: Joi.string().required(),
+  uniqueId: Joi.string().required()
+});
+
+const deleteRoleADParamsObj = Joi.object({
+  samAccountName: Joi.string().required()
+});
+
+export const deleteRoleSchema = Joi.object({
+  body: {
+    submittedBy:entityMinObj.required(),
+    status: Joi.string()
+      .valid(...Object.keys(RequestStatus)),
+    commanderDecision: ApproverDecisionObj,
+    securityDecision: ApproverDecisionObj,
+    superSecurityDecision: ApproverDecisionObj,
+    commanders: Joi.array().items(entityMinObj),
+    securityApprovers: Joi.array().items(entityMinObj),
+    superSecurityApprovers: Joi.array().items(entityMinObj),
+    kartoffelStatus: kartoffelStatusObj,
+    adStatus: ADStatusObj,
+    kartoffelParams: deleteRoleKartoffelParamsObj.required(),
+    adParams: deleteRoleADParamsObj.required(),
+    comments: Joi.string(),
+    approversComments: Joi.string(),
+    due: Joi.number().unsafe()
+  },
+  params: {},
+  query: {},
+});
+
+
+
+
+const deleteOGKartoffelParamsObj = Joi.object({
+  id: Joi.string().required(),
+});
+
+const deleteOGADParamsObj = Joi.object({
+  ouDisplayName: Joi.string().required(),
+  ouName: Joi.string().required(),
+  name: Joi.string().required()
+});
+
+export const deleteOGSchema = Joi.object({
+  body: {
+    submittedBy:entityMinObj.required(),
+    status: Joi.string()
+      .valid(...Object.keys(RequestStatus)),
+    commanderDecision: ApproverDecisionObj,
+    securityDecision: ApproverDecisionObj,
+    superSecurityDecision: ApproverDecisionObj,
+    commanders: Joi.array().items(entityMinObj),
+    securityApprovers: Joi.array().items(entityMinObj),
+    superSecurityApprovers: Joi.array().items(entityMinObj),
+    kartoffelStatus: kartoffelStatusObj,
+    adStatus: ADStatusObj,
+    kartoffelParams: deleteOGKartoffelParamsObj.required(),
+    adParams: deleteOGADParamsObj.required(),
+    comments: Joi.string(),
+    approversComments: Joi.string(),
+    due: Joi.number().unsafe()
+  },
+  params: {},
+  query: {},
+});
+
+
+
+
+
+const disconectRoleFromEntityRequestKartoffelParamsObj = Joi.object({
+  id: Joi.string().required(),
+  uniqueId: Joi.string().required()
+});
+
+const disconectRoleFromEntityRequestADParamsObj = Joi.object({
+  samAccountName: Joi.string().required()
+});
+
+export const disconectRoleFromEntitySchema = Joi.object({
+  body: {
+    submittedBy:entityMinObj.required(),
+    status: Joi.string()
+      .valid(...Object.keys(RequestStatus)),
+    commanderDecision: ApproverDecisionObj,
+    securityDecision: ApproverDecisionObj,
+    superSecurityDecision: ApproverDecisionObj,
+    commanders: Joi.array().items(entityMinObj),
+    securityApprovers: Joi.array().items(entityMinObj),
+    superSecurityApprovers: Joi.array().items(entityMinObj),
+    kartoffelStatus: kartoffelStatusObj,
+    adStatus: ADStatusObj,
+    kartoffelParams: disconectRoleFromEntityRequestKartoffelParamsObj.required(),
+    adParams: disconectRoleFromEntityRequestADParamsObj.required(),
+    comments: Joi.string(),
+    approversComments: Joi.string(),
+    due: Joi.number().unsafe()
+  },
+  params: {},
+  query: {},
+});
+
+
+
+// DELETE
+
+export const deleteRequestSchema = Joi.object({
+  body: {},
+  params: {
+    id: Joi.objectId().required()
+  },
+  query: {},
+});
