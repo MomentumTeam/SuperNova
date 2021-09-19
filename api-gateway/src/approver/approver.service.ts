@@ -11,9 +11,11 @@ import {
     GetUserTypeReq,
     GetUserTypeRes,
     SearchByDisplayNameReq,
-    SearchByDomainUserReq,
-    UpdateApproverDecisionReq,
+    SearchByDomainUserReq
 } from '../interfaces/protoc/proto/approverService';
+import {
+   UpdateApproverDecisionReq
+} from '../interfaces/protoc/proto/requestService';
 import { logger } from '../utils/logger/logger';
 
 const PROTO_PATH = __dirname.includes('dist')
