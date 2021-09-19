@@ -1,9 +1,9 @@
 /* eslint-disable */
-import Long from 'long';
-import _m0 from 'protobufjs/minimal';
-import { Request, UpdateApproverDecisionReq } from './requestService';
+import Long from "long";
+import _m0 from "protobufjs/minimal";
+import { Request, UpdateApproverDecisionReq } from "./requestService";
 
-export const protobufPackage = 'ApproverService';
+export const protobufPackage = "ApproverService";
 
 export enum RequestStatus {
   SUBMITTED = 0,
@@ -17,22 +17,22 @@ export enum RequestStatus {
 export function requestStatusFromJSON(object: any): RequestStatus {
   switch (object) {
     case 0:
-    case 'SUBMITTED':
+    case "SUBMITTED":
       return RequestStatus.SUBMITTED;
     case 1:
-    case 'DECLINED':
+    case "DECLINED":
       return RequestStatus.DECLINED;
     case 2:
-    case 'IN_PROGRESS':
+    case "IN_PROGRESS":
       return RequestStatus.IN_PROGRESS;
     case 3:
-    case 'DONE':
+    case "DONE":
       return RequestStatus.DONE;
     case 4:
-    case 'FAILED':
+    case "FAILED":
       return RequestStatus.FAILED;
     case -1:
-    case 'UNRECOGNIZED':
+    case "UNRECOGNIZED":
     default:
       return RequestStatus.UNRECOGNIZED;
   }
@@ -41,17 +41,17 @@ export function requestStatusFromJSON(object: any): RequestStatus {
 export function requestStatusToJSON(object: RequestStatus): string {
   switch (object) {
     case RequestStatus.SUBMITTED:
-      return 'SUBMITTED';
+      return "SUBMITTED";
     case RequestStatus.DECLINED:
-      return 'DECLINED';
+      return "DECLINED";
     case RequestStatus.IN_PROGRESS:
-      return 'IN_PROGRESS';
+      return "IN_PROGRESS";
     case RequestStatus.DONE:
-      return 'DONE';
+      return "DONE";
     case RequestStatus.FAILED:
-      return 'FAILED';
+      return "FAILED";
     default:
-      return 'UNKNOWN';
+      return "UNKNOWN";
   }
 }
 
@@ -69,28 +69,28 @@ export enum UserType {
 export function userTypeFromJSON(object: any): UserType {
   switch (object) {
     case 0:
-    case 'UNKNOWN':
+    case "UNKNOWN":
       return UserType.UNKNOWN;
     case 1:
-    case 'SECURITY':
+    case "SECURITY":
       return UserType.SECURITY;
     case 2:
-    case 'SUPER_SECURITY':
+    case "SUPER_SECURITY":
       return UserType.SUPER_SECURITY;
     case 3:
-    case 'COMMANDER':
+    case "COMMANDER":
       return UserType.COMMANDER;
     case 4:
-    case 'SOLDIER':
+    case "SOLDIER":
       return UserType.SOLDIER;
     case 5:
-    case 'ADMIN':
+    case "ADMIN":
       return UserType.ADMIN;
     case 6:
-    case 'BULK':
+    case "BULK":
       return UserType.BULK;
     case -1:
-    case 'UNRECOGNIZED':
+    case "UNRECOGNIZED":
     default:
       return UserType.UNRECOGNIZED;
   }
@@ -99,21 +99,21 @@ export function userTypeFromJSON(object: any): UserType {
 export function userTypeToJSON(object: UserType): string {
   switch (object) {
     case UserType.UNKNOWN:
-      return 'UNKNOWN';
+      return "UNKNOWN";
     case UserType.SECURITY:
-      return 'SECURITY';
+      return "SECURITY";
     case UserType.SUPER_SECURITY:
-      return 'SUPER_SECURITY';
+      return "SUPER_SECURITY";
     case UserType.COMMANDER:
-      return 'COMMANDER';
+      return "COMMANDER";
     case UserType.SOLDIER:
-      return 'SOLDIER';
+      return "SOLDIER";
     case UserType.ADMIN:
-      return 'ADMIN';
+      return "ADMIN";
     case UserType.BULK:
-      return 'BULK';
+      return "BULK";
     default:
-      return 'UNKNOWN';
+      return "UNKNOWN";
   }
 }
 
@@ -180,14 +180,14 @@ export interface Approver {
   id: string;
 }
 
-const baseSyncApproverReq: object = { approverId: '' };
+const baseSyncApproverReq: object = { approverId: "" };
 
 export const SyncApproverReq = {
   encode(
     message: SyncApproverReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.approverId !== '') {
+    if (message.approverId !== "") {
       writer.uint32(10).string(message.approverId);
     }
     return writer;
@@ -216,7 +216,7 @@ export const SyncApproverReq = {
     if (object.approverId !== undefined && object.approverId !== null) {
       message.approverId = String(object.approverId);
     } else {
-      message.approverId = '';
+      message.approverId = "";
     }
     return message;
   },
@@ -232,20 +232,20 @@ export const SyncApproverReq = {
     if (object.approverId !== undefined && object.approverId !== null) {
       message.approverId = object.approverId;
     } else {
-      message.approverId = '';
+      message.approverId = "";
     }
     return message;
   },
 };
 
-const baseDeleteApproverReq: object = { approverId: '' };
+const baseDeleteApproverReq: object = { approverId: "" };
 
 export const DeleteApproverReq = {
   encode(
     message: DeleteApproverReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.approverId !== '') {
+    if (message.approverId !== "") {
       writer.uint32(10).string(message.approverId);
     }
     return writer;
@@ -274,7 +274,7 @@ export const DeleteApproverReq = {
     if (object.approverId !== undefined && object.approverId !== null) {
       message.approverId = String(object.approverId);
     } else {
-      message.approverId = '';
+      message.approverId = "";
     }
     return message;
   },
@@ -290,13 +290,13 @@ export const DeleteApproverReq = {
     if (object.approverId !== undefined && object.approverId !== null) {
       message.approverId = object.approverId;
     } else {
-      message.approverId = '';
+      message.approverId = "";
     }
     return message;
   },
 };
 
-const baseApproverIdArray: object = { approverIds: '' };
+const baseApproverIdArray: object = { approverIds: "" };
 
 export const ApproverIdArray = {
   encode(
@@ -480,7 +480,7 @@ export const SuccessMessage = {
 };
 
 const baseSearchByDisplayNameReq: object = {
-  displayName: '',
+  displayName: "",
   type: 0,
   from: 0,
   to: 0,
@@ -491,7 +491,7 @@ export const SearchByDisplayNameReq = {
     message: SearchByDisplayNameReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.displayName !== '') {
+    if (message.displayName !== "") {
       writer.uint32(10).string(message.displayName);
     }
     if (message.type !== 0) {
@@ -541,7 +541,7 @@ export const SearchByDisplayNameReq = {
     if (object.displayName !== undefined && object.displayName !== null) {
       message.displayName = String(object.displayName);
     } else {
-      message.displayName = '';
+      message.displayName = "";
     }
     if (object.type !== undefined && object.type !== null) {
       message.type = userTypeFromJSON(object.type);
@@ -578,7 +578,7 @@ export const SearchByDisplayNameReq = {
     if (object.displayName !== undefined && object.displayName !== null) {
       message.displayName = object.displayName;
     } else {
-      message.displayName = '';
+      message.displayName = "";
     }
     if (object.type !== undefined && object.type !== null) {
       message.type = object.type;
@@ -599,14 +599,14 @@ export const SearchByDisplayNameReq = {
   },
 };
 
-const baseSearchByDomainUserReq: object = { domainUser: '', type: 0 };
+const baseSearchByDomainUserReq: object = { domainUser: "", type: 0 };
 
 export const SearchByDomainUserReq = {
   encode(
     message: SearchByDomainUserReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.domainUser !== '') {
+    if (message.domainUser !== "") {
       writer.uint32(10).string(message.domainUser);
     }
     if (message.type !== 0) {
@@ -644,7 +644,7 @@ export const SearchByDomainUserReq = {
     if (object.domainUser !== undefined && object.domainUser !== null) {
       message.domainUser = String(object.domainUser);
     } else {
-      message.domainUser = '';
+      message.domainUser = "";
     }
     if (object.type !== undefined && object.type !== null) {
       message.type = userTypeFromJSON(object.type);
@@ -668,7 +668,7 @@ export const SearchByDomainUserReq = {
     if (object.domainUser !== undefined && object.domainUser !== null) {
       message.domainUser = object.domainUser;
     } else {
-      message.domainUser = '';
+      message.domainUser = "";
     }
     if (object.type !== undefined && object.type !== null) {
       message.type = object.type;
@@ -746,14 +746,14 @@ export const ApproverArray = {
   },
 };
 
-const baseGetUserTypeReq: object = { entityId: '' };
+const baseGetUserTypeReq: object = { entityId: "" };
 
 export const GetUserTypeReq = {
   encode(
     message: GetUserTypeReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.entityId !== '') {
+    if (message.entityId !== "") {
       writer.uint32(10).string(message.entityId);
     }
     return writer;
@@ -782,7 +782,7 @@ export const GetUserTypeReq = {
     if (object.entityId !== undefined && object.entityId !== null) {
       message.entityId = String(object.entityId);
     } else {
-      message.entityId = '';
+      message.entityId = "";
     }
     return message;
   },
@@ -798,20 +798,20 @@ export const GetUserTypeReq = {
     if (object.entityId !== undefined && object.entityId !== null) {
       message.entityId = object.entityId;
     } else {
-      message.entityId = '';
+      message.entityId = "";
     }
     return message;
   },
 };
 
-const baseGetUserTypeRes: object = { entityId: '', type: 0 };
+const baseGetUserTypeRes: object = { entityId: "", type: 0 };
 
 export const GetUserTypeRes = {
   encode(
     message: GetUserTypeRes,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.entityId !== '') {
+    if (message.entityId !== "") {
       writer.uint32(10).string(message.entityId);
     }
     writer.uint32(18).fork();
@@ -857,7 +857,7 @@ export const GetUserTypeRes = {
     if (object.entityId !== undefined && object.entityId !== null) {
       message.entityId = String(object.entityId);
     } else {
-      message.entityId = '';
+      message.entityId = "";
     }
     if (object.type !== undefined && object.type !== null) {
       for (const e of object.type) {
@@ -884,7 +884,7 @@ export const GetUserTypeRes = {
     if (object.entityId !== undefined && object.entityId !== null) {
       message.entityId = object.entityId;
     } else {
-      message.entityId = '';
+      message.entityId = "";
     }
     if (object.type !== undefined && object.type !== null) {
       for (const e of object.type) {
@@ -896,10 +896,10 @@ export const GetUserTypeRes = {
 };
 
 const baseAddApproverReq: object = {
-  entityId: '',
-  displayName: '',
-  domainUsers: '',
-  akaUnit: '',
+  entityId: "",
+  displayName: "",
+  domainUsers: "",
+  akaUnit: "",
   type: 0,
 };
 
@@ -908,16 +908,16 @@ export const AddApproverReq = {
     message: AddApproverReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.entityId !== '') {
+    if (message.entityId !== "") {
       writer.uint32(10).string(message.entityId);
     }
-    if (message.displayName !== '') {
+    if (message.displayName !== "") {
       writer.uint32(18).string(message.displayName);
     }
     for (const v of message.domainUsers) {
       writer.uint32(26).string(v!);
     }
-    if (message.akaUnit !== '') {
+    if (message.akaUnit !== "") {
       writer.uint32(34).string(message.akaUnit);
     }
     if (message.type !== 0) {
@@ -963,12 +963,12 @@ export const AddApproverReq = {
     if (object.entityId !== undefined && object.entityId !== null) {
       message.entityId = String(object.entityId);
     } else {
-      message.entityId = '';
+      message.entityId = "";
     }
     if (object.displayName !== undefined && object.displayName !== null) {
       message.displayName = String(object.displayName);
     } else {
-      message.displayName = '';
+      message.displayName = "";
     }
     if (object.domainUsers !== undefined && object.domainUsers !== null) {
       for (const e of object.domainUsers) {
@@ -978,7 +978,7 @@ export const AddApproverReq = {
     if (object.akaUnit !== undefined && object.akaUnit !== null) {
       message.akaUnit = String(object.akaUnit);
     } else {
-      message.akaUnit = '';
+      message.akaUnit = "";
     }
     if (object.type !== undefined && object.type !== null) {
       message.type = userTypeFromJSON(object.type);
@@ -1009,12 +1009,12 @@ export const AddApproverReq = {
     if (object.entityId !== undefined && object.entityId !== null) {
       message.entityId = object.entityId;
     } else {
-      message.entityId = '';
+      message.entityId = "";
     }
     if (object.displayName !== undefined && object.displayName !== null) {
       message.displayName = object.displayName;
     } else {
-      message.displayName = '';
+      message.displayName = "";
     }
     if (object.domainUsers !== undefined && object.domainUsers !== null) {
       for (const e of object.domainUsers) {
@@ -1024,7 +1024,7 @@ export const AddApproverReq = {
     if (object.akaUnit !== undefined && object.akaUnit !== null) {
       message.akaUnit = object.akaUnit;
     } else {
-      message.akaUnit = '';
+      message.akaUnit = "";
     }
     if (object.type !== undefined && object.type !== null) {
       message.type = object.type;
@@ -1036,12 +1036,12 @@ export const AddApproverReq = {
 };
 
 const baseApprover: object = {
-  entityId: '',
-  displayName: '',
-  domainUsers: '',
+  entityId: "",
+  displayName: "",
+  domainUsers: "",
   type: 0,
-  akaUnit: '',
-  id: '',
+  akaUnit: "",
+  id: "",
 };
 
 export const Approver = {
@@ -1049,10 +1049,10 @@ export const Approver = {
     message: Approver,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.entityId !== '') {
+    if (message.entityId !== "") {
       writer.uint32(10).string(message.entityId);
     }
-    if (message.displayName !== '') {
+    if (message.displayName !== "") {
       writer.uint32(18).string(message.displayName);
     }
     for (const v of message.domainUsers) {
@@ -1061,10 +1061,10 @@ export const Approver = {
     if (message.type !== 0) {
       writer.uint32(32).int32(message.type);
     }
-    if (message.akaUnit !== '') {
+    if (message.akaUnit !== "") {
       writer.uint32(42).string(message.akaUnit);
     }
-    if (message.id !== '') {
+    if (message.id !== "") {
       writer.uint32(50).string(message.id);
     }
     return writer;
@@ -1110,12 +1110,12 @@ export const Approver = {
     if (object.entityId !== undefined && object.entityId !== null) {
       message.entityId = String(object.entityId);
     } else {
-      message.entityId = '';
+      message.entityId = "";
     }
     if (object.displayName !== undefined && object.displayName !== null) {
       message.displayName = String(object.displayName);
     } else {
-      message.displayName = '';
+      message.displayName = "";
     }
     if (object.domainUsers !== undefined && object.domainUsers !== null) {
       for (const e of object.domainUsers) {
@@ -1130,12 +1130,12 @@ export const Approver = {
     if (object.akaUnit !== undefined && object.akaUnit !== null) {
       message.akaUnit = String(object.akaUnit);
     } else {
-      message.akaUnit = '';
+      message.akaUnit = "";
     }
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = '';
+      message.id = "";
     }
     return message;
   },
@@ -1162,12 +1162,12 @@ export const Approver = {
     if (object.entityId !== undefined && object.entityId !== null) {
       message.entityId = object.entityId;
     } else {
-      message.entityId = '';
+      message.entityId = "";
     }
     if (object.displayName !== undefined && object.displayName !== null) {
       message.displayName = object.displayName;
     } else {
-      message.displayName = '';
+      message.displayName = "";
     }
     if (object.domainUsers !== undefined && object.domainUsers !== null) {
       for (const e of object.domainUsers) {
@@ -1182,12 +1182,12 @@ export const Approver = {
     if (object.akaUnit !== undefined && object.akaUnit !== null) {
       message.akaUnit = object.akaUnit;
     } else {
-      message.akaUnit = '';
+      message.akaUnit = "";
     }
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = '';
+      message.id = "";
     }
     return message;
   },
@@ -1228,8 +1228,8 @@ export class ApproverServiceClientImpl implements ApproverService {
   AddApprover(request: AddApproverReq): Promise<Approver> {
     const data = AddApproverReq.encode(request).finish();
     const promise = this.rpc.request(
-      'ApproverService.ApproverService',
-      'AddApprover',
+      "ApproverService.ApproverService",
+      "AddApprover",
       data
     );
     return promise.then((data) => Approver.decode(new _m0.Reader(data)));
@@ -1238,8 +1238,8 @@ export class ApproverServiceClientImpl implements ApproverService {
   GetUserType(request: GetUserTypeReq): Promise<GetUserTypeRes> {
     const data = GetUserTypeReq.encode(request).finish();
     const promise = this.rpc.request(
-      'ApproverService.ApproverService',
-      'GetUserType',
+      "ApproverService.ApproverService",
+      "GetUserType",
       data
     );
     return promise.then((data) => GetUserTypeRes.decode(new _m0.Reader(data)));
@@ -1250,8 +1250,8 @@ export class ApproverServiceClientImpl implements ApproverService {
   ): Promise<ApproverArray> {
     const data = SearchByDisplayNameReq.encode(request).finish();
     const promise = this.rpc.request(
-      'ApproverService.ApproverService',
-      'SearchApproverByDisplayName',
+      "ApproverService.ApproverService",
+      "SearchApproverByDisplayName",
       data
     );
     return promise.then((data) => ApproverArray.decode(new _m0.Reader(data)));
@@ -1262,8 +1262,8 @@ export class ApproverServiceClientImpl implements ApproverService {
   ): Promise<ApproverArray> {
     const data = SearchByDomainUserReq.encode(request).finish();
     const promise = this.rpc.request(
-      'ApproverService.ApproverService',
-      'SearchApproverByDomainUser',
+      "ApproverService.ApproverService",
+      "SearchApproverByDomainUser",
       data
     );
     return promise.then((data) => ApproverArray.decode(new _m0.Reader(data)));
@@ -1272,8 +1272,8 @@ export class ApproverServiceClientImpl implements ApproverService {
   UpdateApproverDecision(request: UpdateApproverDecisionReq): Promise<Request> {
     const data = UpdateApproverDecisionReq.encode(request).finish();
     const promise = this.rpc.request(
-      'ApproverService.ApproverService',
-      'UpdateApproverDecision',
+      "ApproverService.ApproverService",
+      "UpdateApproverDecision",
       data
     );
     return promise.then((data) => Request.decode(new _m0.Reader(data)));
@@ -1282,8 +1282,8 @@ export class ApproverServiceClientImpl implements ApproverService {
   GetAllApprovers(request: GetAllApproversReq): Promise<ApproverArray> {
     const data = GetAllApproversReq.encode(request).finish();
     const promise = this.rpc.request(
-      'ApproverService.ApproverService',
-      'GetAllApprovers',
+      "ApproverService.ApproverService",
+      "GetAllApprovers",
       data
     );
     return promise.then((data) => ApproverArray.decode(new _m0.Reader(data)));
@@ -1292,8 +1292,8 @@ export class ApproverServiceClientImpl implements ApproverService {
   GetAllApproverIds(request: GetAllApproversReq): Promise<ApproverIdArray> {
     const data = GetAllApproversReq.encode(request).finish();
     const promise = this.rpc.request(
-      'ApproverService.ApproverService',
-      'GetAllApproverIds',
+      "ApproverService.ApproverService",
+      "GetAllApproverIds",
       data
     );
     return promise.then((data) => ApproverIdArray.decode(new _m0.Reader(data)));
@@ -1302,8 +1302,8 @@ export class ApproverServiceClientImpl implements ApproverService {
   SyncApprover(request: SyncApproverReq): Promise<ApproverArray> {
     const data = SyncApproverReq.encode(request).finish();
     const promise = this.rpc.request(
-      'ApproverService.ApproverService',
-      'SyncApprover',
+      "ApproverService.ApproverService",
+      "SyncApprover",
       data
     );
     return promise.then((data) => ApproverArray.decode(new _m0.Reader(data)));
@@ -1312,8 +1312,8 @@ export class ApproverServiceClientImpl implements ApproverService {
   DeleteApprover(request: DeleteApproverReq): Promise<SuccessMessage> {
     const data = DeleteApproverReq.encode(request).finish();
     const promise = this.rpc.request(
-      'ApproverService.ApproverService',
-      'DeleteApprover',
+      "ApproverService.ApproverService",
+      "DeleteApprover",
       data
     );
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));

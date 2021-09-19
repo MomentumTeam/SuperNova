@@ -4,7 +4,6 @@ import RequestsRouter from './requests/requests.router';
 import NotificationRouter from './notifications/notifications.router';
 import ApproverRouter from './approver/approver.router';
 import { config } from './config';
-// import ProducerRouter from './producer/producer.router';
 
 const mainRouter = Router();
 
@@ -16,7 +15,5 @@ mainRouter.use('/approvers', ApproverRouter);
 mainRouter.use('/notifications', NotificationRouter);
 mainRouter.use('/kartoffel', KartoffelRouter);
 mainRouter.use('/requests', RequestsRouter);
-
-// mainRouter.use('/producer', ProducerRouter);
 
 export default mainRouter;
