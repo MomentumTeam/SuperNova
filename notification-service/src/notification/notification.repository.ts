@@ -55,6 +55,11 @@ export class NotificationRepository {
       try {
         let promises: Promise<Notification>[] = [];
         if (createNotificationsReq.request) {
+          if (createNotificationsReq.request.isPartOfBulk) {
+            throw new Error(
+              'Do not create notifications for requests which are parts of bulk!'
+            );
+          }
           const createNotificationRequests: CreateCustomNotificationReq[] =
             generateNotifications(
               createNotificationsReq.type,

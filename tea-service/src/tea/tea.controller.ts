@@ -25,7 +25,7 @@ export async function retrieveTeaByUnit(
       request: call.request,
     });
     callback(null, teaMessage);
-  } catch (error) {
+  } catch (error: any) {
     logger.error('retrieveTeaByUnit ERROR', {
       error: { message: error.message },
       request: call.request,
@@ -55,7 +55,7 @@ export async function retrieveUPNByEntity(
       request: call.request,
     });
     callback(null, upnMessage);
-  } catch (error) {
+  } catch (error: any) {
     logger.error('retrieveUPNByEntity ERROR', {
       error: { message: error.message },
       request: call.request,
@@ -85,7 +85,7 @@ export async function retrieveUPNByEntityId(
       request: call.request,
     });
     callback(null, upn);
-  } catch (error) {
+  } catch (error: any) {
     logger.error('RetrieveUPNByEntityId ERROR', {
       error: { message: error.message },
       request: call.request,
@@ -115,7 +115,7 @@ export async function retrieveTeaAndUPNByEntity(
       request: call.request,
     });
     callback(null, teaAndUpn);
-  } catch (error) {
+  } catch (error: any) {
     logger.error('retrieveTeaAndUPNByEntity ERROR', {
       error: { message: error.message },
       request: call.request,
@@ -147,7 +147,7 @@ export async function retrieveTeaAndUPNByEntityId(
       request: call.request,
     });
     callback(null, teaAndUpn);
-  } catch (error) {
+  } catch (error: any) {
     logger.error('retrieveTeaAndUPNByEntityId ERROR', {
       error: { message: error.message },
       request: call.request,
@@ -177,7 +177,7 @@ export async function reportTeaSuccess(
       request: call.request,
     });
     callback(null, successMessage);
-  } catch (error) {
+  } catch (error: any) {
     logger.error('reportTeaSuccess ERROR', {
       error: { message: error.message },
       request: call.request,
@@ -204,7 +204,7 @@ export async function reportTeaFail(call: any, callback: any): Promise<void> {
       request: call.request,
     });
     callback(null, successMessage);
-  } catch (error) {
+  } catch (error: any) {
     logger.error('reportTeaFail ERROR', {
       error: { message: error.message },
       request: call.request,
@@ -229,7 +229,7 @@ export async function getUnit(call: any, callback: any): Promise<void> {
       request: call.request,
     });
     callback(null, unit);
-  } catch (error) {
+  } catch (error: any) {
     logger.error('getUnit ERROR', {
       error: { message: error.message },
       request: call.request,
@@ -254,7 +254,7 @@ export async function addUnit(call: any, callback: any): Promise<void> {
       request: call.request,
     });
     callback(null, unit);
-  } catch (error) {
+  } catch (error: any) {
     logger.error('addUnit ERROR', {
       error: { message: error.message },
       request: call.request,
@@ -279,7 +279,7 @@ export async function updateUnit(call: any, callback: any): Promise<void> {
       request: call.request,
     });
     callback(null, unit);
-  } catch (error) {
+  } catch (error: any) {
     logger.error('updateUnit ERROR', {
       error: { message: error.message },
       request: call.request,
@@ -306,7 +306,7 @@ export async function deleteUnit(call: any, callback: any): Promise<void> {
       request: call.request,
     });
     callback(null, successMessage);
-  } catch (error) {
+  } catch (error: any) {
     logger.error('deleteUnit ERROR', {
       error: { message: error.message },
       request: call.request,

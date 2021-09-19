@@ -39,8 +39,10 @@ export class Server {
             `Error while downloading Spike public key, statusCode: ${response.status}`
           );
         }
-      } catch (err) {
-        logger.error(`Error while downloading Spike public key`, { err: err });
+      } catch (error: any) {
+        logger.error(`Error while downloading Spike public key`, {
+          error: { message: error.message },
+        });
       }
     }
     this.spikeKey = fs.readFileSync(C.localSpikePublicKeyFullPath);
@@ -63,9 +65,11 @@ export class Server {
         grpc.loadPackageDefinition(packageDefinition);
       const spikeServiceDescriptor: any = protoDescriptor.Spike;
       return spikeServiceDescriptor;
-    } catch (err) {
-      logger.error(`Error while loading the proto file`, { err: err });
-      throw err;
+    } catch (error: any) {
+      logger.error(`Error while loading the proto file`, {
+        error: { message: error.message },
+      });
+      throw error;
     }
   }
 
@@ -77,7 +81,7 @@ export class Server {
         GetSpikeToken: getSpikeToken,
       });
       logger.info(`Grpc services were successfully added to the server`);
-    } catch (error) {
+    } catch (error: any) {
       logger.error(`Error while initializing the server: ${error.message}`);
     }
   }

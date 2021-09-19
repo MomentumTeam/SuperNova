@@ -110,6 +110,7 @@ dist
 .vscode/
 *.vscode/
 *.pem
+~*
 
 data
 

@@ -102,6 +102,15 @@ export function turnObjectIdsToStrings(document: any): void {
     document.kartoffelProperties.id =
       document.kartoffelProperties.id.toString();
   }
+
+  if (document.bulkRequestId) {
+    document.bulkRequestId = document.bulkRequestId.toString();
+  }
+  if (document.requestIds) {
+    document.requestIds = document.requestIds.map((requestObjectId: any) =>
+      requestObjectId.toString()
+    );
+  }
   cleanUnderscoreFields(document);
   cleanNullFields(document);
 }

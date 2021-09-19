@@ -5,6 +5,8 @@ import {
   approverTypeToJSON,
   Decision,
   decisionToJSON,
+  ErrorType,
+  errorTypeToJSON,
   RequestStatus,
   requestStatusToJSON,
   RequestType,
@@ -98,6 +100,48 @@ const RequestSchema = new Schema(
       },
     },
     securityDecision: {
+      type: {
+        approver: {
+          type: {
+            id: { type: mongoose.Schema.Types.ObjectId, default: null },
+            displayName: { type: String, default: '' },
+            identityCard: { type: String, default: '' },
+            personalNumber: { type: String, default: '' },
+          },
+          default: {
+            id: null,
+            displayName: '',
+            identityCard: '',
+            personalNumber: '',
+          },
+        },
+        reason: {
+          type: String,
+          default: '',
+        },
+        date: {
+          type: Number,
+          default: () => new Date().getTime(),
+        },
+        decision: {
+          type: String,
+          enum: Decision,
+          defualt: decisionToJSON(Decision.DECISION_UNKNOWN),
+        },
+      },
+      default: {
+        approver: {
+          id: null,
+          displayName: '',
+          identityCard: '',
+          personalNumber: '',
+        },
+        reason: '',
+        date: () => new Date().getTime(),
+        decision: decisionToJSON(Decision.DECISION_UNKNOWN),
+      },
+    },
+    superSecurityDecision: {
       type: {
         approver: {
           type: {
@@ -238,6 +282,7 @@ const RequestSchema = new Schema(
       entityType: { type: String, default: null },
       unit: { type: String, default: null },
       needDisconnect: { type: Boolean, default: false },
+      roleEntityType: { type: String, default: null },
     },
     adParams: {
       ouDisplayName: { type: String, default: null },
@@ -268,6 +313,22 @@ const RequestSchema = new Schema(
         default: approverTypeToJSON(ApproverType.COMMANDER),
       },
     },
+    isPartOfBulk: { type: Boolean, default: false },
+    bulkRequestId: { type: mongoose.Schema.Types.ObjectId, default: null },
+    requestIds: [mongoose.Schema.Types.ObjectId],
+    rowNumber: { type: String, default: '' },
+    rowErrors: [
+      {
+        rowNumber: { type: String, default: '' },
+        error: { type: String, default: '' },
+        errorType: {
+          type: String,
+          enum: ErrorType,
+          default: errorTypeToJSON(ErrorType.UNKNOWN_STAGE),
+        },
+      },
+    ],
+    excelFilePath: { type: String, default: '' },
   },
   { strict: false }
 );

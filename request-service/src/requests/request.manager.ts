@@ -25,6 +25,8 @@ import {
   UpdateKartoffelStatusReq,
   IsRequestApprovedRes,
   IsRequestApprovedReq,
+  PushErrorReq,
+  SyncBulkRequestReq,
 } from '../interfaces/protoc/proto/requestService';
 import { RequestRepository } from './request.repository';
 export class RequestManager {
@@ -261,6 +263,22 @@ export class RequestManager {
       return await this.requestRepository.getRequestBySerialNumber(
         getRequestBySerialNumberReq
       );
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async pushError(pushErrorReq: PushErrorReq) {
+    try {
+      return await this.requestRepository.pushError(pushErrorReq);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async syncBulkRequest(syncBulkRequestReq: SyncBulkRequestReq) {
+    try {
+      return await this.requestRepository.syncBulkRequest(syncBulkRequestReq);
     } catch (error) {
       throw error;
     }

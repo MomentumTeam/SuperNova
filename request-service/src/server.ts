@@ -24,6 +24,8 @@ import {
   updateApproverDecision,
   isRequestApproved,
   updateSuperSecurityApprovers,
+  syncBulkRequest,
+  pushError,
 } from './requests/request.controller';
 import {
   PersonTypeInRequest,
@@ -83,6 +85,15 @@ export class Server {
         DisconectRoleFromEntityRequest: createRequestFuncByType(
           RequestType.DISCONNECT_ROLE
         ),
+        ChangeRoleHierarchyRequest: createRequestFuncByType(
+          RequestType.CHANGE_ROLE_HIERARCHY
+        ),
+        CreateRoleBulkRequest: createRequestFuncByType(
+          RequestType.CREATE_ROLE_BULK
+        ),
+        ChangeRoleHierarchyBulkRequest: createRequestFuncByType(
+          RequestType.CHANGE_ROLE_HIERARCHY_BULK
+        ),
         GetRequestsByPerson: getRequestsByPerson,
         GetRequestById: getRequestById,
         UpdateRequest: updateRequest,
@@ -118,10 +129,14 @@ export class Server {
         UpdateSecurityApprovers: updateSecurityApprovers,
         UpdateSuperSecurityApprovers: updateSuperSecurityApprovers,
         IsRequestApproved: isRequestApproved,
+        SyncBulkRequest: syncBulkRequest,
+        PushError: pushError,
       });
       logger.info(`Grpc services were successfully added to the server`);
-    } catch (error) {
-      logger.error(`Error while initializing the server`, { error: error });
+    } catch (error: any) {
+      logger.error(`Error while initializing the server`, {
+        error: { message: error.message },
+      });
       throw error;
     }
   }

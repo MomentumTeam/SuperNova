@@ -34,6 +34,12 @@ import {
   stageStatusToJSON,
   ApprovementStatus,
   approvementStatusFromJSON,
+  PushErrorReq,
+  errorTypeToJSON,
+  ErrorType,
+  requestTypeFromJSON,
+  requestStatusFromJSON,
+  SyncBulkRequestReq,
 } from '../interfaces/protoc/proto/requestService';
 import { createNotifications } from '../services/notificationHelper';
 import * as C from '../config';
@@ -259,6 +265,7 @@ export class RequestRepository {
           );
         }
       }
+
       return updatedRequest;
     } catch (error) {
       throw error;
@@ -435,6 +442,14 @@ export class RequestRepository {
         {
           due: { $lte: due },
           status: requestStatusToJSON(RequestStatus.IN_PROGRESS),
+          $and: [
+            { type: { $ne: requestTypeToJSON(RequestType.CREATE_ROLE_BULK) } },
+            {
+              type: {
+                $ne: requestTypeToJSON(RequestType.CHANGE_ROLE_HIERARCHY_BULK),
+              },
+            },
+          ],
         },
         true
       );
@@ -453,6 +468,14 @@ export class RequestRepository {
         {
           due: { $lte: due },
           status: requestStatusToJSON(RequestStatus.IN_PROGRESS),
+          $and: [
+            { type: { $ne: requestTypeToJSON(RequestType.CREATE_ROLE_BULK) } },
+            {
+              type: {
+                $ne: requestTypeToJSON(RequestType.CHANGE_ROLE_HIERARCHY_BULK),
+              },
+            },
+          ],
         },
         false
       );
@@ -468,25 +491,26 @@ export class RequestRepository {
   ): Promise<RequestArray> {
     //TODO Check how to search on specific fields
     try {
-      let query: any = {};
+      let query: any = {
+        $and: [
+          { type: { $ne: requestTypeToJSON(RequestType.CREATE_ROLE_BULK) } },
+          {
+            type: {
+              $ne: requestTypeToJSON(RequestType.CHANGE_ROLE_HIERARCHY_BULK),
+            },
+          },
+        ],
+      };
       const displayName = searchRequestsByDisplayNameReq.displayName;
       if (personType === PersonTypeInRequest.SUBMITTER) {
-        query = {
-          $text: { $search: displayName },
-        };
+        query['$text'] = { $search: displayName };
       } else if (personType === PersonTypeInRequest.COMMANDER_APPROVER) {
-        query = {
-          $text: { $search: displayName },
-        };
+        query['$text'] = { $search: displayName };
       } else if (personType === PersonTypeInRequest.SECURITY_APPROVER) {
-        query = {
-          $text: { $search: displayName },
-        };
+        query['$text'] = { $search: displayName };
       } else {
         //approver
-        query = {
-          $text: { $search: displayName },
-        };
+        query['$text'] = { $search: displayName };
       }
       const requestArray = await this.getRequestsByQuery(
         query,
@@ -579,6 +603,38 @@ export class RequestRepository {
       if (documentAfter) {
         const documentObj = documentAfter.toObject();
         turnObjectIdsToStrings(documentObj);
+        // if bulk
+        const requestType: RequestType =
+          typeof documentObj.type === typeof ''
+            ? requestTypeFromJSON(documentObj.type)
+            : documentObj.type;
+        if (
+          requestType === RequestType.CREATE_ROLE_BULK ||
+          (requestType === RequestType.CHANGE_ROLE_HIERARCHY_BULK &&
+            (requestUpdate.commanderDecision ||
+              requestUpdate.securityDecision ||
+              requestUpdate.superSecurityDecision))
+        ) {
+          const requestIds: string[] = documentObj.requestIds;
+          await RequestModel.updateMany(
+            { bulkRequestId: updateReq.id },
+            { $set: requestUpdate }
+          );
+        } else if (
+          documentObj.isPartOfBulk &&
+          (requestUpdate['kartoffelStatus.status'] ||
+            requestUpdate['kartoffelStatus.failedRetries'] ||
+            requestUpdate['adStatus.status'] ||
+            requestUpdate['adStatus.failedRetries'] ||
+            requestUpdate.kartoffelStatus ||
+            requestUpdate.adStatus ||
+            requestUpdate.status)
+        ) {
+          // IF PART OF BULK
+          const bulkRequestId = documentObj.bulkRequestId;
+          await this.syncBulkRequest({ id: bulkRequestId });
+        }
+
         return documentObj as Request;
       } else {
         throw new Error(`A request with {_id: ${updateReq.id}} was not found!`);
@@ -780,6 +836,18 @@ export class RequestRepository {
         request.needSecurityDecision = false;
         request.needSuperSecurityDecision = false;
         break;
+      case RequestType.CHANGE_ROLE_HIERARCHY:
+        request.needSecurityDecision = true;
+        request.needSuperSecurityDecision = false;
+        break;
+      case RequestType.CREATE_ROLE_BULK:
+        request.needSecurityDecision = false;
+        request.needSuperSecurityDecision = false;
+        break;
+      case RequestType.CHANGE_ROLE_HIERARCHY_BULK:
+        request.needSecurityDecision = true;
+        request.needSuperSecurityDecision = false;
+        break;
 
       case RequestType.ADD_APPROVER:
         const approverType: ApproverType = approverTypeFromJSON(
@@ -814,7 +882,8 @@ export class RequestRepository {
         typeof getAllRequestsReq.approvementStatus === typeof ''
           ? approvementStatusFromJSON(getAllRequestsReq.approvementStatus)
           : getAllRequestsReq.approvementStatus;
-      const query = getApprovementQuery(approvementStatus);
+      const query: any = getApprovementQuery(approvementStatus);
+      query.isPartOfBulk = false;
       const requestArray = await this.getRequestsByQuery(
         query,
         true,
@@ -915,7 +984,7 @@ export class RequestRepository {
     personInfoType: PersonInfoType
   ) {
     try {
-      let query = {};
+      let query: any = {};
       getRequestsByPersonReq.approvementStatus =
         getRequestsByPersonReq.approvementStatus
           ? getRequestsByPersonReq.approvementStatus
@@ -937,6 +1006,7 @@ export class RequestRepository {
           approvementStatus
         );
       }
+      query.isPartOfBulk = false;
       const totalCount = await RequestModel.count(query);
       const requests: any = await RequestModel.find(
         query,
@@ -959,6 +1029,87 @@ export class RequestRepository {
         };
       } else {
         return { requests: [], totalCount: 0 };
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async pushError(pushErrorReq: PushErrorReq): Promise<Request> {
+    try {
+      let errorType: any = pushErrorReq.errorType
+        ? pushErrorReq.errorType
+        : errorTypeToJSON(ErrorType.UNKNOWN_STAGE);
+      errorType =
+        typeof errorType === typeof '' ? errorType : errorTypeToJSON(errorType);
+      const document: any = await RequestModel.findOne({
+        _id: pushErrorReq.id,
+      });
+      if (!document) {
+        throw new Error(
+          `A request with {_id: ${pushErrorReq.id}} was not found!`
+        );
+      } else {
+        if (!document.rowErrors) {
+          document.rowErrors = [];
+        }
+        document.rowErrors.push({
+          rowNumber: pushErrorReq.rowNumber,
+          error: pushErrorReq.error,
+          errorType: errorType,
+        });
+        await document.save();
+        const documentObj = document.toObject();
+        turnObjectIdsToStrings(documentObj);
+        return documentObj as Request;
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async syncBulkRequest(
+    syncBulkRequestReq: SyncBulkRequestReq
+  ): Promise<Request> {
+    try {
+      let allDone = true;
+      let newStatus: any = undefined;
+      const documents: any = await RequestModel.find({
+        bulkRequestId: syncBulkRequestReq.id,
+      });
+      if (documents) {
+        let smallRequests: any = [];
+        for (let i = 0; i < documents.length; i++) {
+          const requestObj: any = documents[i].toObject();
+          turnObjectIdsToStrings(requestObj);
+          smallRequests.push(requestObj);
+        }
+        for (let smallRequest of smallRequests) {
+          const smallRequestStatus =
+            typeof smallRequest.status === typeof ''
+              ? requestStatusFromJSON(smallRequest.status)
+              : smallRequest.status;
+          if (smallRequestStatus !== RequestStatus.DONE) {
+            allDone = false;
+          }
+          if (smallRequestStatus === RequestStatus.FAILED) {
+            newStatus = RequestStatus.FAILED;
+            break;
+          }
+        }
+        if (allDone) {
+          newStatus = RequestStatus.DONE;
+        }
+        const requestProperties: any = newStatus
+          ? { status: requestStatusToJSON(newStatus) }
+          : {};
+        const updatedBulkRequest = await this.updateRequest({
+          id: syncBulkRequestReq.id,
+          requestProperties: requestProperties,
+        });
+        return updatedBulkRequest;
+      } else {
+        throw new Error(`No bulk request with id=${syncBulkRequestReq.id}`);
       }
     } catch (error) {
       throw error;
