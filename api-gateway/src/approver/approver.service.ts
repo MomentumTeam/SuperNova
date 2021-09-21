@@ -3,15 +3,15 @@ import * as grpc from 'grpc';
 import * as protoLoader from '@grpc/proto-loader';
 import { config } from '../config';
 import {
-  AddApproverReq,
-  Approver,
-  ApproverArray,
-  DeleteApproverReq,
-  GetAllApproversReq,
-  GetUserTypeReq,
-  GetUserTypeRes,
-  SearchByDisplayNameReq,
-  SearchByDomainUserReq,
+    AddApproverReq,
+    Approver,
+    ApproverArray,
+    DeleteApproverReq,
+    GetAllApproversReq,
+    GetUserTypeReq,
+    GetUserTypeRes,
+    SearchByDisplayNameReq,
+    SearchByDomainUserReq
 } from '../interfaces/protoc/proto/approverService';
 import { logger } from '../utils/logger/logger';
 import { UpdateApproverDecisionReq } from '../interfaces/protoc/proto/requestService';
