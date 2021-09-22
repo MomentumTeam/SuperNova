@@ -13,7 +13,7 @@ import {
   canPushToKartoffelQueue,
   canPushToADQueue,
   getRequestBySerialNumber,
-  searchRequestsByDisplayNameFuncByPersonType,
+  searchRequestsByDisplayName,
   incrementKartoffelRetries,
   incrementADRetries,
   getRequestsInProgressByDue,
@@ -102,23 +102,7 @@ export class Server {
         DeleteRequest: deleteRequest,
         GetAllRequests: getAllRequests,
         GetRequestBySerialNumber: getRequestBySerialNumber,
-        SearchRequestsByDisplayName: searchRequestsByDisplayNameFuncByPersonType,
-        SearchRequestsBySubmitterDisplayName:
-          searchRequestsByDisplayNameFuncByPersonType(
-            PersonTypeInRequest.SUBMITTER
-          ),
-        SearchRequestsByCommanderDisplayName:
-          searchRequestsByDisplayNameFuncByPersonType(
-            PersonTypeInRequest.COMMANDER_APPROVER
-          ),
-        SearchRequestsBySecurityDisplayName:
-          searchRequestsByDisplayNameFuncByPersonType(
-            PersonTypeInRequest.SECURITY_APPROVER
-          ),
-        SearchRequestsByApproverDisplayName:
-          searchRequestsByDisplayNameFuncByPersonType(
-            PersonTypeInRequest.APPROVER
-          ),
+        SearchRequestsByDisplayName: searchRequestsByDisplayName,
         CanPushToKartoffelQueue: canPushToKartoffelQueue,
         CanPushToADQueue: canPushToADQueue,
         IncrementKartoffelRetries: incrementKartoffelRetries,

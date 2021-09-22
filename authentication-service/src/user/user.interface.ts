@@ -1,5 +1,3 @@
-import { UserType } from '../interfaces/protoc/proto/approverService';
-
 export interface IUser {
     id: string;
     name?: Name;
@@ -10,7 +8,8 @@ export interface IUser {
     mail: string;
     hierarchy?: string[];
     hierarchyFlat?: string;
-    types?: UserType[];
+    personalNumber: string;
+    types?: string[];
 }
 
 export interface Name {

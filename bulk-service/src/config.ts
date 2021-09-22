@@ -5,8 +5,7 @@ export const port =
   process.env.NODE_ENV === 'production'
     ? '8080'
     : process.env.BS_PORT || '8087';
-export const folderPath =
-  process.env.BS_FOLDER_PATH || findPath('excelFilesExample');
+export const folderPath = process.env.BS_FOLDER_PATH || findPath('excelFiles');
 export const requestServiceUrl = process.env.BS_RS_URL || '0.0.0.0:8081';
 
 export const hebEntityTypeToKartoffelLang: any = {

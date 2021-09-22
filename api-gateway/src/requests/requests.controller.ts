@@ -28,41 +28,26 @@ import {
   DeleteReq,
   GetAllRequestsReq,
 } from '../interfaces/protoc/proto/requestService';
-import { requestsClient, RequestsService } from './requests.service';
+import { RequestsService } from './requests.service';
 import { AuthenticationError } from '../utils/errors/userErrors';
+import { KartoffelService } from '../kartoffel/kartoffel.service';
 
 export default class RequestsController {
   //GET
   static async getAllRequests(req: any, res: Response) {
-    //only SECURITY Approvers can see all requests.
     const getAllRequestsReq: GetAllRequestsReq = {
       approvementStatus: req.params.approvementStatus,
       from: req.query.from,
       to: req.query.to,
     };
 
-    logger.info(`Call to getAllRequests in GTW`, {
-      callRequest: getAllRequestsReq,
-    });
-
-    requestsClient.GetAllRequests(
-      getAllRequestsReq,
-      (err: any, response: RequestArray) => {
-        if (err) {
-          logger.error(`getAllRequests ERROR in GTW`, {
-            err,
-            callRequest: getAllRequestsReq,
-          });
-          res.status(500).send(err.message);
-        }
-
-        logger.info(`getAllRequests OK in GTW`, {
-          response: response,
-          callRequest: getAllRequestsReq,
-        });
-        res.send(response);
-      }
-    );
+    try {
+      const requests = await RequestsService.getAllRequests(getAllRequestsReq);
+      res.send(requests);
+    } catch (error: any) {
+      const statusCode = error.code ? error.code : 500;
+      res.status(statusCode).send(error.message);
+    }
   }
 
   static async getRequestById(req: any, res: Response) {
@@ -72,7 +57,8 @@ export default class RequestsController {
       const request = await RequestsService.getRequestById(getRequestByIdReq);
       res.send(request);
     } catch (error: any) {
-      res.status(500).send(error.message);
+      const statusCode = error.code ? error.code : 500;
+      res.status(statusCode).send(error.message);
     }
   }
 
@@ -91,7 +77,9 @@ export default class RequestsController {
       );
       res.send(requests);
     } catch (error: any) {
-      res.status(500).send(error.message);
+      // TODO : ask barak if we need to return the service's error or always 500
+      const statusCode = error.code ? error.code : 500;
+      res.status(statusCode).send(error.message);
     }
   }
 
@@ -106,83 +94,27 @@ export default class RequestsController {
       );
       res.send(requests);
     } catch (error: any) {
-      res.status(500).send(error.message);
+      const statusCode = error.code ? error.code : 500;
+      res.status(statusCode).send(error.message);
     }
   }
 
-  static async searchRequestsBySubmitterDisplayName(req: any, res: Response) {
-    const searchRequestsBySubmitterDisplayNameReq: SearchRequestsByDisplayNameReq =
-      {
-        displayName: req.params.displayName,
-        from: req.query.from,
-        to: req.query.to,
-      };
+  static async searchRequestsByDisplayName(req: any, res: Response) {
+    const searchRequestsByDisplayNameReq: SearchRequestsByDisplayNameReq = {
+      displayName: req.params.displayName,
+      personType: req.params.personType,
+      from: req.query.from,
+      to: req.query.to,
+    };
 
     try {
-      const requests =
-        await RequestsService.searchRequestsBySubmitterDisplayName(
-          searchRequestsBySubmitterDisplayNameReq
-        );
+      const requests = await RequestsService.searchRequestsByDisplayName(
+        searchRequestsByDisplayNameReq
+      );
       res.send(requests);
     } catch (error: any) {
-      res.status(500).send(error.message);
-    }
-  }
-
-  static async searchRequestsByCommanderDisplayName(req: any, res: Response) {
-    const searchRequestsByCommanderDisplayNameReq: SearchRequestsByDisplayNameReq =
-      {
-        displayName: req.params.displayName,
-        from: req.query.from,
-        to: req.query.to,
-      };
-
-    try {
-      const requests =
-        await RequestsService.searchRequestsByCommanderDisplayName(
-          searchRequestsByCommanderDisplayNameReq
-        );
-      res.send(requests);
-    } catch (error: any) {
-      res.status(500).send(error.message);
-    }
-  }
-
-  static async searchRequestsBySecurityDisplayName(req: any, res: Response) {
-    const searchRequestsBySecurityDisplayNameReq: SearchRequestsByDisplayNameReq =
-      {
-        displayName: req.params.displayName,
-        from: req.query.from,
-        to: req.query.to,
-      };
-
-    try {
-      const requests =
-        await RequestsService.searchRequestsBySecurityDisplayName(
-          searchRequestsBySecurityDisplayNameReq
-        );
-      res.send(requests);
-    } catch (error: any) {
-      res.status(500).send(error.message);
-    }
-  }
-
-  static async searchRequestsByApproverDisplayName(req: any, res: Response) {
-    const searchRequestsByApproverDisplayNameReq: SearchRequestsByDisplayNameReq =
-      {
-        displayName: req.params.displayName,
-        from: req.query.from,
-        to: req.query.to,
-      };
-
-    try {
-      const requests =
-        await RequestsService.searchRequestsByApproverDisplayName(
-          searchRequestsByApproverDisplayNameReq
-        );
-      res.send(requests);
-    } catch (error: any) {
-      res.status(500).send(error.message);
+      const statusCode = error.code ? error.code : 500;
+      res.status(statusCode).send(error.message);
     }
   }
 
@@ -208,7 +140,8 @@ export default class RequestsController {
             );
             res.status(200).send(request);
           } catch (error: any) {
-            return res.status(500).send(error.message);
+            const statusCode = error.code ? error.code : 500;
+            return res.status(statusCode).send(error.message);
           }
         }
       } else if (status === false) {
@@ -225,7 +158,8 @@ export default class RequestsController {
         const request = await RequestsService.updateADStatus(updateADStatus);
         res.status(200).send(request);
       } catch (error: any) {
-        res.status(500).send(error.message);
+        const statusCode = error.code ? error.code : 500;
+        res.status(statusCode).send(error.message);
       }
     } else {
       await ProducerController.produceToADQueue(req.body.RequestID, res);
@@ -242,7 +176,8 @@ export default class RequestsController {
       const request = await RequestsService.updateRequest(updateReq);
       res.status(200).send(request);
     } catch (error: any) {
-      res.status(500).send(error.message);
+      const statusCode = error.code ? error.code : 500;
+      res.status(statusCode).send(error.message);
     }
   }
 
@@ -258,7 +193,8 @@ export default class RequestsController {
       );
       res.status(200).send(request);
     } catch (error: any) {
-      res.status(500).send(error.message);
+      const statusCode = error.code ? error.code : 500;
+      res.status(statusCode).send(error.message);
     }
   }
 
@@ -274,7 +210,8 @@ export default class RequestsController {
       );
       res.status(200).send(request);
     } catch (error: any) {
-      res.status(500).send(error.message);
+      const statusCode = error.code ? error.code : 500;
+      res.status(statusCode).send(error.message);
     }
   }
 
@@ -304,7 +241,8 @@ export default class RequestsController {
 
       res.status(200).send(request);
     } catch (error: any) {
-      res.status(500).send(error.message);
+      const statusCode = error.code ? error.code : 500;
+      res.status(statusCode).send(error.message);
     }
   }
 
@@ -314,6 +252,10 @@ export default class RequestsController {
     logger.info(`Call to createRoleRequest in GTW`, {
       callRequest: { submittedBy: req.user.id },
     });
+
+    // TODO: ask liora and barak about identity card, why we need all this fields? it is just make the request very complicated
+    // if we do want this, we need to add kartoffel fields to authentication.
+    // see example - https://gitlab.com/yesodot/selenium/censorship-systems/common/blue-authenticator/-/tree/develop
 
     const submittedBy: EntityMin = {
       id: req.user.id,
@@ -331,7 +273,8 @@ export default class RequestsController {
       const createRole = await RequestsService.createRoleRequest(createRoleReq);
       res.status(200).send(createRole);
     } catch (error: any) {
-      res.status(500).send(error.message);
+      const statusCode = error.code ? error.code : 500;
+      res.status(statusCode).send(error.message);
     }
   }
 
@@ -349,10 +292,13 @@ export default class RequestsController {
     };
 
     try {
-        const assignRole = await RequestsService.assignRoleToEntityRequest(assignRoleToEntityReq);
-        res.status(200).send(assignRole);
+      const assignRole = await RequestsService.assignRoleToEntityRequest(
+        assignRoleToEntityReq
+      );
+      res.status(200).send(assignRole);
     } catch (error: any) {
-        res.status(500).send(error.message);
+      const statusCode = error.code ? error.code : 500;
+      res.status(statusCode).send(error.message);
     }
   }
 
@@ -370,10 +316,11 @@ export default class RequestsController {
     };
 
     try {
-        const createOGres = await RequestsService.createOGRequest(createOGReq);
-        res.status(200).send(createOGres);
+      const createOGres = await RequestsService.createOGRequest(createOGReq);
+      res.status(200).send(createOGres);
     } catch (error: any) {
-        res.status(500).send(error.message);
+      const statusCode = error.code ? error.code : 500;
+      res.status(statusCode).send(error.message);
     }
   }
 
@@ -391,10 +338,13 @@ export default class RequestsController {
     };
 
     try {
-        const newApprover = await RequestsService.createNewApproverRequest(createNewApproverReq);
-        res.status(200).send(newApprover);
+      const newApprover = await RequestsService.createNewApproverRequest(
+        createNewApproverReq
+      );
+      res.status(200).send(newApprover);
     } catch (error: any) {
-        res.status(500).send(error.message);
+      const statusCode = error.code ? error.code : 500;
+      res.status(statusCode).send(error.message);
     }
   }
 
@@ -411,12 +361,13 @@ export default class RequestsController {
       ...req.body,
     };
 
-   try {
-       const entity = await RequestsService.createEntityRequest(createEntityReq);
-       res.status(200).send(entity);
-   } catch (error: any) {
-       res.status(500).send(error.message);
-   }
+    try {
+      const entity = await RequestsService.createEntityRequest(createEntityReq);
+      res.status(200).send(entity);
+    } catch (error: any) {
+      const statusCode = error.code ? error.code : 500;
+      res.status(statusCode).send(error.message);
+    }
   }
 
   static async renameOGRequest(req: any, res: Response) {
@@ -433,10 +384,11 @@ export default class RequestsController {
     };
 
     try {
-        const og = await RequestsService.renameOGRequest(renameOGReq);
-        res.status(200).send(og);
+      const og = await RequestsService.renameOGRequest(renameOGReq);
+      res.status(200).send(og);
     } catch (error: any) {
-        res.status(500).send(error.message);
+      const statusCode = error.code ? error.code : 500;
+      res.status(statusCode).send(error.message);
     }
   }
 
@@ -454,10 +406,11 @@ export default class RequestsController {
     };
 
     try {
-        const entity = await RequestsService.renameRoleRequest(renameRoleReq);
-        res.status(200).send(entity);
+      const entity = await RequestsService.renameRoleRequest(renameRoleReq);
+      res.status(200).send(entity);
     } catch (error: any) {
-        res.status(500).send(error.message);
+      const statusCode = error.code ? error.code : 500;
+      res.status(statusCode).send(error.message);
     }
   }
 
@@ -475,10 +428,11 @@ export default class RequestsController {
     };
 
     try {
-        const entity = await RequestsService.editEntityRequest(editEntityReq);
-        res.status(200).send(entity);
+      const entity = await RequestsService.editEntityRequest(editEntityReq);
+      res.status(200).send(entity);
     } catch (error: any) {
-        res.status(500).send(error.message);
+      const statusCode = error.code ? error.code : 500;
+      res.status(statusCode).send(error.message);
     }
   }
 
@@ -499,12 +453,15 @@ export default class RequestsController {
       ...req.body,
     };
 
-     try {
-         const deletedRole = await RequestsService.deleteRoleRequest(deleteRoleReq);
-         res.status(200).send(deletedRole);
-     } catch (error: any) {
-         res.status(500).send(error.message);
-     }
+    try {
+      const deletedRole = await RequestsService.deleteRoleRequest(
+        deleteRoleReq
+      );
+      res.status(200).send(deletedRole);
+    } catch (error: any) {
+      const statusCode = error.code ? error.code : 500;
+      res.status(statusCode).send(error.message);
+    }
   }
 
   static async deleteOGRequest(req: any, res: Response) {
@@ -524,19 +481,27 @@ export default class RequestsController {
       ...req.body,
     };
 
-   try {
-       const deletedOG = await RequestsService.deleteOGRequest(deleteOGReq);
-       res.status(200).send(deletedOG);
-   } catch (error: any) {
-       res.status(500).send(error.message);
-   }
+    try {
+      const deletedOG = await RequestsService.deleteOGRequest(deleteOGReq);
+      res.status(200).send(deletedOG);
+    } catch (error: any) {
+      const statusCode = error.code ? error.code : 500;
+      res.status(statusCode).send(error.message);
+    }
   }
 
   static async disconectRoleFromEntityRequest(req: any, res: Response) {
+    if (!req.user && !req.user.id) throw new AuthenticationError();
+
     logger.info(`Call to disconectRoleFromEntityRequest in GTW`, {
       callRequest: { submittedBy: req.user.id },
     });
 
+    try {
+      const kUser = await KartoffelService.getEntityById({ id: req.user.id });
+    } catch (error) {
+      logger;
+    }
     const submittedBy: EntityMin = {
       id: req.user.id,
       displayName: req.user.displayName,
@@ -549,12 +514,16 @@ export default class RequestsController {
       ...req.body,
     };
 
-     try {
-         const disconectRole = await RequestsService.disconectRoleFromEntityRequest(disconectRoleFromEntityReq);
-         res.status(200).send(disconectRole);
-     } catch (error: any) {
-         res.status(500).send(error.message);
-     }
+    try {
+      const disconectRole =
+        await RequestsService.disconectRoleFromEntityRequest(
+          disconectRoleFromEntityReq
+        );
+      res.status(200).send(disconectRole);
+    } catch (error: any) {
+      const statusCode = error.code ? error.code : 500;
+      res.status(statusCode).send(error.message);
+    }
   }
 
   static async deleteRequest(req: any, res: Response) {
@@ -565,10 +534,11 @@ export default class RequestsController {
     });
 
     try {
-        const msg = await RequestsService.deleteRequest(deleteReq);
-        res.status(200).send(msg);
+      const msg = await RequestsService.deleteRequest(deleteReq);
+      res.status(200).send(msg);
     } catch (error: any) {
-        res.status(500).send(error.message);
+      const statusCode = error.code ? error.code : 500;
+      res.status(statusCode).send(error.message);
     }
   }
 }
