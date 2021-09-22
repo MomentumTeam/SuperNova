@@ -14,7 +14,8 @@ import {
   unknownErrorHandler,
 } from './utils/errors/errorHandler';
 import { ShragaAuthenticationHandler } from './authentication/authentication.handler';
-import { ShragaAuthenticationRouter } from './authentication/routers/shraga.authentication.router';
+import { ShragaAuthenticationRouter } from './authentication/authentication.router';
+import { HealthRouter } from './utils/health/health.router';
 
 export class Server {
   public app: express.Application;
@@ -32,6 +33,7 @@ export class Server {
     this.initializeOtherRoutes();
     this.initializeStaticFolder();
     this.server = http.createServer(this.app);
+    
     this.server.listen(config.server.port, () => {
       logger.info(
         `Auth-service Server running in ${
@@ -108,12 +110,6 @@ export class Server {
   }
 
   private initializeOtherRoutes() {
-    this.app.all('/health/live', (_, res) => {
-      res.status(200).send('OK');
-    });
-
-    this.app.all('/health/ready', (_, res) => {
-      res.status(200).send('OK');
-    });
+    this.app.use(HealthRouter);
   }
 }

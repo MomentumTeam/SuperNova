@@ -1,38 +1,19 @@
 import { Response } from 'express';
 import { logger } from '../utils/logger/logger';
 import ProducerController from '../producer/producer.controller';
-import {
-  GetAllApproversReq,
-  SearchByDisplayNameReq,
-  UserType,
-  userTypeFromJSON,
-} from '../interfaces/protoc/proto/approverService';
 import { SuccessMessage } from '../interfaces/protoc/proto/producerService';
 import {
-  Request,
   RequestArray,
-  CreateOGRes,
-  CreateRoleRes,
-  CreateEntityRes,
-  AssignRoleToEntityRes,
-  RenameOGRes,
-  EditEntityRes,
-  DeleteOGRes,
-  DeleteRoleRes,
-  DisconectRoleFromEntityRes,
   StageStatus,
   EntityMin,
-  CanPushToQueueRes,
   GetRequestByIdReq,
   GetRequestsByPersonReq,
   GetRequestBySerialNumberReq,
   SearchRequestsByDisplayNameReq,
   UpdateADStatusReq,
-  UpdateKartoffelStatusReq,
   UpdateReq,
   UpdateApproversReq,
   UpdateApproverDecisionReq,
-  CanPushToQueueReq,
   CreateRoleReq,
   AssignRoleToEntityReq,
   CreateOGReq,
@@ -48,6 +29,7 @@ import {
   GetAllRequestsReq,
 } from '../interfaces/protoc/proto/requestService';
 import { requestsClient, RequestsService } from './requests.service';
+import { AuthenticationError } from '../utils/errors/userErrors';
 
 export default class RequestsController {
   //GET
@@ -327,6 +309,8 @@ export default class RequestsController {
   }
 
   static async createRoleRequest(req: any, res: Response) {
+    if (!req.user && !req.user.id) throw new AuthenticationError();
+
     logger.info(`Call to createRoleRequest in GTW`, {
       callRequest: { submittedBy: req.user.id },
     });
@@ -351,12 +335,7 @@ export default class RequestsController {
     }
   }
 
-  // TODO: continue change and add to service
   static async assignRoleToEntityRequest(req: any, res: Response) {
-    logger.info(`Call to assignRoleToEntityRequest in GTW`, {
-      callRequest: { submittedBy: req.user.id },
-    });
-
     const submittedBy: EntityMin = {
       id: req.user.id,
       displayName: req.user.displayName,
@@ -369,31 +348,15 @@ export default class RequestsController {
       ...req.body,
     };
 
-    requestsClient.AssignRoleToEntityRequest(
-      assignRoleToEntityReq,
-      (err: any, response: AssignRoleToEntityRes) => {
-        if (err) {
-          logger.error(`assignRoleToEntityRequest ERROR in GTW`, {
-            err,
-            callRequest: { submittedBy: req.user.id },
-          });
-          res.status(500).send(err.message);
-        }
-
-        logger.info(`assignRoleToEntityRequest OK in GTW`, {
-          response: response,
-          callRequest: { submittedBy: req.user.id },
-        });
-        res.send(response);
-      }
-    );
+    try {
+        const assignRole = await RequestsService.assignRoleToEntityRequest(assignRoleToEntityReq);
+        res.status(200).send(assignRole);
+    } catch (error: any) {
+        res.status(500).send(error.message);
+    }
   }
 
   static async createOGRequest(req: any, res: Response) {
-    logger.info(`Call to createOGRequest in GTW`, {
-      callRequest: { submittedBy: req.user.id },
-    });
-
     const submittedBy: EntityMin = {
       id: req.user.id,
       displayName: req.user.displayName,
@@ -406,31 +369,15 @@ export default class RequestsController {
       ...req.body,
     };
 
-    requestsClient.CreateOGRequest(
-      createOGReq,
-      (err: any, response: CreateOGRes) => {
-        if (err) {
-          logger.error(`createOGRequest ERROR in GTW`, {
-            err,
-            callRequest: { submittedBy: req.user.id },
-          });
-          res.status(500).send(err.message);
-        }
-
-        logger.info(`createOGRequest OK in GTW`, {
-          response: response,
-          callRequest: { submittedBy: req.user.id },
-        });
-        res.send(response);
-      }
-    );
+    try {
+        const createOGres = await RequestsService.createOGRequest(createOGReq);
+        res.status(200).send(createOGres);
+    } catch (error: any) {
+        res.status(500).send(error.message);
+    }
   }
 
   static async createNewApproverRequest(req: any, res: Response) {
-    logger.info(`Call to createNewApproverRequest in GTW`, {
-      callRequest: { submittedBy: req.user.id },
-    });
-
     const submittedBy: EntityMin = {
       id: req.user.id,
       displayName: req.user.displayName,
@@ -443,31 +390,15 @@ export default class RequestsController {
       ...req.body,
     };
 
-    requestsClient.CreateNewApproverRequest(
-      createNewApproverReq,
-      (err: any, response: CreateOGRes) => {
-        if (err) {
-          logger.error(`createNewApproverRequest ERROR in GTW`, {
-            err,
-            callRequest: { submittedBy: req.user.id },
-          });
-          res.status(500).send(err.message);
-        }
-
-        logger.info(`createNewApproverRequest OK in GTW`, {
-          response: response,
-          callRequest: { submittedBy: req.user.id },
-        });
-        res.send(response);
-      }
-    );
+    try {
+        const newApprover = await RequestsService.createNewApproverRequest(createNewApproverReq);
+        res.status(200).send(newApprover);
+    } catch (error: any) {
+        res.status(500).send(error.message);
+    }
   }
 
   static async createEntityRequest(req: any, res: Response) {
-    logger.info(`Call to createEntityRequest in GTW`, {
-      callRequest: { submittedBy: req.user.id },
-    });
-
     const submittedBy: EntityMin = {
       id: req.user.id,
       displayName: req.user.displayName,
@@ -480,31 +411,15 @@ export default class RequestsController {
       ...req.body,
     };
 
-    requestsClient.CreateEntityRequest(
-      createEntityReq,
-      (err: any, response: CreateEntityRes) => {
-        if (err) {
-          logger.error(`createEntityRequest ERROR in GTW`, {
-            err,
-            callRequest: { submittedBy: req.user.id },
-          });
-          res.status(500).send(err.message);
-        }
-
-        logger.info(`createEntityRequest OK in GTW`, {
-          response: response,
-          callRequest: { submittedBy: req.user.id },
-        });
-        res.send(response);
-      }
-    );
+   try {
+       const entity = await RequestsService.createEntityRequest(createEntityReq);
+       res.status(200).send(entity);
+   } catch (error: any) {
+       res.status(500).send(error.message);
+   }
   }
 
   static async renameOGRequest(req: any, res: Response) {
-    logger.info(`Call to renameOGRequest in GTW`, {
-      callRequest: { submittedBy: req.user.id },
-    });
-
     const submittedBy: EntityMin = {
       id: req.user.id,
       displayName: req.user.displayName,
@@ -517,31 +432,15 @@ export default class RequestsController {
       ...req.body,
     };
 
-    requestsClient.RenameOGRequest(
-      renameOGReq,
-      (err: any, response: RenameOGRes) => {
-        if (err) {
-          logger.error(`renameOGRequest ERROR in GTW`, {
-            err,
-            callRequest: { submittedBy: req.user.id },
-          });
-          res.status(500).send(err.message);
-        }
-
-        logger.info(`renameOGRequest OK in GTW`, {
-          response: response,
-          callRequest: { submittedBy: req.user.id },
-        });
-        res.send(response);
-      }
-    );
+    try {
+        const og = await RequestsService.renameOGRequest(renameOGReq);
+        res.status(200).send(og);
+    } catch (error: any) {
+        res.status(500).send(error.message);
+    }
   }
 
   static async renameRoleRequest(req: any, res: Response) {
-    logger.info(`Call to renameRoleRequest in GTW`, {
-      callRequest: { submittedBy: req.user.id },
-    });
-
     const submittedBy: EntityMin = {
       id: req.user.id,
       displayName: req.user.displayName,
@@ -554,31 +453,15 @@ export default class RequestsController {
       ...req.body,
     };
 
-    requestsClient.RenameRoleRequest(
-      renameRoleReq,
-      (err: any, response: EditEntityRes) => {
-        if (err) {
-          logger.error(`renameRoleRequest ERROR in GTW`, {
-            err,
-            callRequest: { submittedBy: req.user.id },
-          });
-          res.status(500).send(err.message);
-        }
-
-        logger.info(`renameRoleRequest OK in GTW`, {
-          response: response,
-          callRequest: { submittedBy: req.user.id },
-        });
-        res.send(response);
-      }
-    );
+    try {
+        const entity = await RequestsService.renameRoleRequest(renameRoleReq);
+        res.status(200).send(entity);
+    } catch (error: any) {
+        res.status(500).send(error.message);
+    }
   }
 
   static async editEntityRequest(req: any, res: Response) {
-    logger.info(`Call to editEntityRequest in GTW`, {
-      callRequest: { submittedBy: req.user.id },
-    });
-
     const submittedBy: EntityMin = {
       id: req.user.id,
       displayName: req.user.displayName,
@@ -591,24 +474,12 @@ export default class RequestsController {
       ...req.body,
     };
 
-    requestsClient.EditEntityRequest(
-      editEntityReq,
-      (err: any, response: EditEntityRes) => {
-        if (err) {
-          logger.error(`editEntityRequest ERROR in GTW`, {
-            err,
-            callRequest: { submittedBy: req.user.id },
-          });
-          res.status(500).send(err.message);
-        }
-
-        logger.info(`editEntityRequest OK in GTW`, {
-          response: response,
-          callRequest: { submittedBy: req.user.id },
-        });
-        res.send(response);
-      }
-    );
+    try {
+        const entity = await RequestsService.editEntityRequest(editEntityReq);
+        res.status(200).send(entity);
+    } catch (error: any) {
+        res.status(500).send(error.message);
+    }
   }
 
   static async deleteRoleRequest(req: any, res: Response) {
@@ -628,24 +499,12 @@ export default class RequestsController {
       ...req.body,
     };
 
-    requestsClient.DeleteRoleRequest(
-      deleteRoleReq,
-      (err: any, response: DeleteRoleRes) => {
-        if (err) {
-          logger.error(`deleteRoleRequest ERROR in GTW`, {
-            err,
-            callRequest: { submittedBy: req.user.id },
-          });
-          res.status(500).send(err.message);
-        }
-
-        logger.info(`deleteRoleRequest OK in GTW`, {
-          response: response,
-          callRequest: { submittedBy: req.user.id },
-        });
-        res.send(response);
-      }
-    );
+     try {
+         const deletedRole = await RequestsService.deleteRoleRequest(deleteRoleReq);
+         res.status(200).send(deletedRole);
+     } catch (error: any) {
+         res.status(500).send(error.message);
+     }
   }
 
   static async deleteOGRequest(req: any, res: Response) {
@@ -665,24 +524,12 @@ export default class RequestsController {
       ...req.body,
     };
 
-    requestsClient.DeleteOGRequest(
-      deleteOGReq,
-      (err: any, response: DeleteOGRes) => {
-        if (err) {
-          logger.error(`deleteOGRequest ERROR in GTW`, {
-            err,
-            callRequest: { submittedBy: req.user.id },
-          });
-          res.status(500).send(err.message);
-        }
-
-        logger.info(`deleteOGRequest OK in GTW`, {
-          response: response,
-          callRequest: { submittedBy: req.user.id },
-        });
-        res.send(response);
-      }
-    );
+   try {
+       const deletedOG = await RequestsService.deleteOGRequest(deleteOGReq);
+       res.status(200).send(deletedOG);
+   } catch (error: any) {
+       res.status(500).send(error.message);
+   }
   }
 
   static async disconectRoleFromEntityRequest(req: any, res: Response) {
@@ -702,24 +549,12 @@ export default class RequestsController {
       ...req.body,
     };
 
-    requestsClient.DisconectRoleFromEntityRequest(
-      disconectRoleFromEntityReq,
-      (err: any, response: DisconectRoleFromEntityRes) => {
-        if (err) {
-          logger.error(`disconectRoleFromEntityRequest ERROR in GTW`, {
-            err,
-            callRequest: { submittedBy: req.user.id },
-          });
-          res.status(500).send(err.message);
-        }
-
-        logger.info(`disconectRoleFromEntityRequest OK in GTW`, {
-          response: response,
-          callRequest: { submittedBy: req.user.id },
-        });
-        res.send(response);
-      }
-    );
+     try {
+         const disconectRole = await RequestsService.disconectRoleFromEntityRequest(disconectRoleFromEntityReq);
+         res.status(200).send(disconectRole);
+     } catch (error: any) {
+         res.status(500).send(error.message);
+     }
   }
 
   static async deleteRequest(req: any, res: Response) {
@@ -729,23 +564,11 @@ export default class RequestsController {
       callRequest: deleteReq,
     });
 
-    requestsClient.DeleteRequest(
-      deleteReq,
-      (err: any, response: SuccessMessage) => {
-        if (err) {
-          logger.error(`deleteRequest ERROR in GTW`, {
-            err,
-            callRequest: deleteReq,
-          });
-          res.status(500).send(err.message);
-        }
-
-        logger.info(`deleteRequest OK in GTW`, {
-          response: response,
-          callRequest: deleteReq,
-        });
-        res.send(response);
-      }
-    );
+    try {
+        const msg = await RequestsService.deleteRequest(deleteReq);
+        res.status(200).send(msg);
+    } catch (error: any) {
+        res.status(500).send(error.message);
+    }
   }
 }

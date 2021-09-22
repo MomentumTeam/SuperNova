@@ -9,6 +9,8 @@ RequestsRouter.get('/:id',RequestValidator.isGetRequestByIdValid, RequestsContro
 RequestsRouter.get('/all/:approvementStatus', RequestValidator.isGetAllRequestsValid,RequestsController.getAllRequests);
 RequestsRouter.get('/person/:id',RequestValidator.isGetRequestsByPersonValid, RequestsController.getRequestsByPerson);
 RequestsRouter.get('/serialNumber/:serialNumber',RequestValidator.isGetRequestBySerialNumberValid, RequestsController.getRequestBySerialNumber);
+
+// TODO: chage it to one route with personType
 RequestsRouter.get('/submitterDisplayName/:displayName',RequestValidator.isSearchRequestsByDisplayNameValid, RequestsController.searchRequestsBySubmitterDisplayName);
 RequestsRouter.get('/commanderDisaplyName/:displayName',RequestValidator.isSearchRequestsByDisplayNameValid, RequestsController.searchRequestsByCommanderDisplayName);
 RequestsRouter.get('/secuirtyDisplayName/:displayName',RequestValidator.isSearchRequestsByDisplayNameValid, RequestsController.searchRequestsBySecurityDisplayName);
@@ -32,11 +34,11 @@ RequestsRouter.post('/entityRequest',RequestValidator.isCreateEntityValid, Reque
 RequestsRouter.post('/renameOGRequest',RequestValidator.isRenameOGValid, RequestsController.renameOGRequest);
 RequestsRouter.post('/renameRoleRequest',RequestValidator.isRenameRoleValid, RequestsController.renameRoleRequest);
 RequestsRouter.post('/editEntityRequest',RequestValidator.isEditEntityValid, RequestsController.editEntityRequest);
-RequestsRouter.post('/deleteRoleRequest',RequestValidator.isDeleteRoleValid, RequestsController.deleteRoleRequest);
-RequestsRouter.post('/deleteOGRequest',RequestValidator.isDeleteOGValid, RequestsController.deleteOGRequest);
 RequestsRouter.post('/disconectRoleFromEntityRequest',RequestValidator.isDisconectRoleFromEntityValid, RequestsController.disconectRoleFromEntityRequest);
 
 //DELETE
+RequestsRouter.post('/deleteRoleRequest',RequestValidator.isDeleteRoleValid, RequestsController.deleteRoleRequest);
+RequestsRouter.post('/deleteOGRequest',RequestValidator.isDeleteOGValid, RequestsController.deleteOGRequest);
 RequestsRouter.delete('/:id',RequestValidator.isDeleteRequestValid, RequestsController.deleteRequest);
 
 

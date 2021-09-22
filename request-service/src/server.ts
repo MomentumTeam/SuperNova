@@ -102,6 +102,7 @@ export class Server {
         DeleteRequest: deleteRequest,
         GetAllRequests: getAllRequests,
         GetRequestBySerialNumber: getRequestBySerialNumber,
+        SearchRequestsByDisplayName: searchRequestsByDisplayNameFuncByPersonType,
         SearchRequestsBySubmitterDisplayName:
           searchRequestsByDisplayNameFuncByPersonType(
             PersonTypeInRequest.SUBMITTER
