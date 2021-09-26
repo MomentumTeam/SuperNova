@@ -7,6 +7,7 @@ import {
   NotificationIdArray,
 } from '../interfaces/protoc/proto/notificationService';
 import { AuthenticationError } from '../utils/errors/userErrors';
+import { statusCodeHandler } from '../utils/errors/errorHandlers';
 
 export default class NotificationController {
   // GET
@@ -30,7 +31,7 @@ export default class NotificationController {
       );
       res.send(notifications);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -48,7 +49,7 @@ export default class NotificationController {
       const response = await NotificationService.markAsRead(markAsReadReq);
       res.send(response);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -63,7 +64,7 @@ export default class NotificationController {
       );
       res.send(response);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }

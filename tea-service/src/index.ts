@@ -11,14 +11,17 @@ import { Server } from './server';
 import { logger } from './logger';
 import * as C from './config';
 import { initUnits } from './utils/initUnits';
+import { connectMongo } from './mongoose';
 async function main(): Promise<void> {
   try {
-    if (C.needInit) {
-      await initUnits();
-    }
     const server: Server = new Server();
     await server.startServer();
+    await connectMongo();
 
+    if (C.needInit) {
+        await initUnits();
+    }
+    
     logger.info('tea-service started successfully');
   } catch (error: any) {
     logger.error(`Error while trying to start tea-service: ${error.message}`);

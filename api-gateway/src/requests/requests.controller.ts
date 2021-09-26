@@ -31,6 +31,7 @@ import {
 import { RequestsService } from './requests.service';
 import { AuthenticationError } from '../utils/errors/userErrors';
 import { KartoffelService } from '../kartoffel/kartoffel.service';
+import { statusCodeHandler } from '../utils/errors/errorHandlers';
 
 export default class RequestsController {
   //GET
@@ -45,7 +46,7 @@ export default class RequestsController {
       const requests = await RequestsService.getAllRequests(getAllRequestsReq);
       res.send(requests);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -57,7 +58,7 @@ export default class RequestsController {
       const request = await RequestsService.getRequestById(getRequestByIdReq);
       res.send(request);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -78,7 +79,7 @@ export default class RequestsController {
       res.send(requests);
     } catch (error: any) {
       // TODO : ask barak if we need to return the service's error or always 500
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -94,7 +95,7 @@ export default class RequestsController {
       );
       res.send(requests);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -113,7 +114,7 @@ export default class RequestsController {
       );
       res.send(requests);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -140,7 +141,7 @@ export default class RequestsController {
             );
             res.status(200).send(request);
           } catch (error: any) {
-            const statusCode = error.code ? error.code : 500;
+            const statusCode = statusCodeHandler(error);
             return res.status(statusCode).send(error.message);
           }
         }
@@ -158,7 +159,7 @@ export default class RequestsController {
         const request = await RequestsService.updateADStatus(updateADStatus);
         res.status(200).send(request);
       } catch (error: any) {
-        const statusCode = error.code ? error.code : 500;
+        const statusCode = statusCodeHandler(error);
         res.status(statusCode).send(error.message);
       }
     } else {
@@ -176,7 +177,7 @@ export default class RequestsController {
       const request = await RequestsService.updateRequest(updateReq);
       res.status(200).send(request);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -193,7 +194,7 @@ export default class RequestsController {
       );
       res.status(200).send(request);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -210,7 +211,7 @@ export default class RequestsController {
       );
       res.status(200).send(request);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -241,7 +242,7 @@ export default class RequestsController {
 
       res.status(200).send(request);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -273,7 +274,7 @@ export default class RequestsController {
       const createRole = await RequestsService.createRoleRequest(createRoleReq);
       res.status(200).send(createRole);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -297,7 +298,7 @@ export default class RequestsController {
       );
       res.status(200).send(assignRole);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -319,7 +320,7 @@ export default class RequestsController {
       const createOGres = await RequestsService.createOGRequest(createOGReq);
       res.status(200).send(createOGres);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -343,7 +344,7 @@ export default class RequestsController {
       );
       res.status(200).send(newApprover);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -365,7 +366,7 @@ export default class RequestsController {
       const entity = await RequestsService.createEntityRequest(createEntityReq);
       res.status(200).send(entity);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -387,7 +388,7 @@ export default class RequestsController {
       const og = await RequestsService.renameOGRequest(renameOGReq);
       res.status(200).send(og);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -409,7 +410,7 @@ export default class RequestsController {
       const entity = await RequestsService.renameRoleRequest(renameRoleReq);
       res.status(200).send(entity);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -431,7 +432,7 @@ export default class RequestsController {
       const entity = await RequestsService.editEntityRequest(editEntityReq);
       res.status(200).send(entity);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -459,7 +460,7 @@ export default class RequestsController {
       );
       res.status(200).send(deletedRole);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -485,7 +486,7 @@ export default class RequestsController {
       const deletedOG = await RequestsService.deleteOGRequest(deleteOGReq);
       res.status(200).send(deletedOG);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -521,7 +522,7 @@ export default class RequestsController {
         );
       res.status(200).send(disconectRole);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -537,7 +538,7 @@ export default class RequestsController {
       const msg = await RequestsService.deleteRequest(deleteReq);
       res.status(200).send(msg);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }

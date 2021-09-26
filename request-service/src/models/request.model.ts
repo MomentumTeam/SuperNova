@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { connection } from '../mongoose';
 import {
   ApproverType,
   approverTypeToJSON,
@@ -17,7 +16,7 @@ import {
 const { Schema } = mongoose;
 import autoIncrement from 'mongoose-auto-increment';
 
-autoIncrement.initialize(connection);
+autoIncrement.initialize(mongoose.connection);
 
 const RequestSchema = new Schema(
   {
@@ -363,8 +362,4 @@ RequestSchema.index({
   'superSecurityApprovers.displayName': 'text',
 });
 
-export const RequestModel = connection.model(
-  'Request',
-  RequestSchema,
-  'requests'
-);
+export const RequestModel = mongoose.model('Request', RequestSchema, 'requests');

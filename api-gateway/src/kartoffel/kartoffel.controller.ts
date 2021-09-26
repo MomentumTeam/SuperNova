@@ -13,6 +13,7 @@ import {
   GetRoleByRoleIdRequest,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { AuthenticationError } from '../utils/errors/userErrors';
+import { statusCodeHandler } from '../utils/errors/errorHandlers';
 
 export default class KartoffelController {
   // Entities
@@ -28,7 +29,7 @@ export default class KartoffelController {
       const entity = await KartoffelService.getEntityById(getMyUserReq);
       res.send(entity);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -45,7 +46,7 @@ export default class KartoffelController {
       );
       res.send(entity);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -62,7 +63,7 @@ export default class KartoffelController {
       );
       res.send(userImage);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -76,7 +77,7 @@ export default class KartoffelController {
       );
       res.send(entities);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -92,7 +93,7 @@ export default class KartoffelController {
       );
       res.send(entity);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -108,7 +109,7 @@ export default class KartoffelController {
       );
       res.send(entity);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -122,7 +123,7 @@ export default class KartoffelController {
       );
       res.send(entities);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -136,7 +137,7 @@ export default class KartoffelController {
       );
       res.send(entities);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -150,7 +151,7 @@ export default class KartoffelController {
       const entity = await KartoffelService.getEntityByDI(getEntityByDI);
       res.send(entity);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -164,7 +165,7 @@ export default class KartoffelController {
       const OGarray = await KartoffelService.searchOG(searchOGReq);
       res.send(OGarray);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -176,7 +177,7 @@ export default class KartoffelController {
       const children = await KartoffelService.getOGChildren(getOGChildrenReq);
       res.send(children);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -188,7 +189,7 @@ export default class KartoffelController {
       const tree = await KartoffelService.getOGTree(getOGTreeReq);
       res.send(tree);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -200,7 +201,7 @@ export default class KartoffelController {
       const OGarray = await KartoffelService.getAllOGs(getAllOGsReq);
       res.send(OGarray);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -212,7 +213,7 @@ export default class KartoffelController {
       const og = await KartoffelService.getOGById(getOGByIdReq);
       res.send(og);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -228,7 +229,7 @@ export default class KartoffelController {
       );
       res.send(og);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -243,7 +244,7 @@ export default class KartoffelController {
       const role = await KartoffelService.getRoleById(getRoleByIdReq);
       res.send(role);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -255,7 +256,7 @@ export default class KartoffelController {
       const roles = await KartoffelService.getRolesUnderOG(getRolesUnderOGReq);
       res.send(roles);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -267,7 +268,7 @@ export default class KartoffelController {
       const roles = await KartoffelService.getAllRoles(getAllRolesReq);
       res.send(roles);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }

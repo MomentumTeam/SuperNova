@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { connection } from '../mongoose';
 const { Schema } = mongoose;
 
 export const UnitSchema = new Schema(
@@ -41,4 +40,4 @@ export const UnitSchema = new Schema(
   { strict: false }
 );
 
-export const UnitModel = connection.model('Unit', UnitSchema, 'units');
+export const UnitModel = mongoose.model('Unit', UnitSchema, 'units');

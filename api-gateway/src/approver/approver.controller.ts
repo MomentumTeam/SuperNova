@@ -16,6 +16,7 @@ import {
 } from '../interfaces/protoc/proto/kartoffelService';
 import { UpdateApproverDecisionReq } from '../interfaces/protoc/proto/requestService';
 import { AuthenticationError } from '../utils/errors/userErrors';
+import { statusCodeHandler } from '../utils/errors/errorHandlers';
 export default class ApproverController {
   // GET
   static async getAllApprovers(req: any, res: Response) {
@@ -29,7 +30,7 @@ export default class ApproverController {
       );
       res.send(approvers);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -48,7 +49,7 @@ export default class ApproverController {
       );
       res.send(approvers);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -65,7 +66,7 @@ export default class ApproverController {
       );
       res.send(approvers);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -81,7 +82,7 @@ export default class ApproverController {
       const userType = await ApproverService.getUserType(getUserTypeReq);
       res.send(userType);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -100,7 +101,7 @@ export default class ApproverController {
       const getUserReq: GetEntityByIdRequest = { id: req.user.id };
       entity = await KartoffelService.getEntityById(getUserReq);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
       return;
     }
@@ -120,7 +121,7 @@ export default class ApproverController {
       const approver = await ApproverService.addApprover(addApproverReq);
       res.send(approver);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -139,7 +140,7 @@ export default class ApproverController {
       );
       res.send(descision);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
@@ -154,7 +155,7 @@ export default class ApproverController {
       const approver = await ApproverService.deleteApprover(deleteApproverReq);
       res.send(approver);
     } catch (error: any) {
-      const statusCode = error.code ? error.code : 500;
+      const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
   }
