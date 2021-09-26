@@ -3,7 +3,6 @@ import {
   NotificationType,
   OwnerType,
 } from '../interfaces/protoc/proto/notificationService';
-import { connection } from '../mongoose';
 const { Schema } = mongoose;
 
 export const NotificationSchema = new Schema(
@@ -41,7 +40,7 @@ export const NotificationSchema = new Schema(
   { strict: false }
 );
 
-export const NotificationModel = connection.model(
+export const NotificationModel = mongoose.model(
   'Notification',
   NotificationSchema,
   'notifications'

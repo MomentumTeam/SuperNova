@@ -11,6 +11,8 @@ export const port =
 
 export const mongoUrl =
   process.env.NS_MONGO_URL || 'mongodb://127.0.0.1:27017/supernova';
+export const mongoConnectionRetries = process.env.MONGO_RECONNECT_ATTEMPTS || '5';
+export const mongoReconnectTimeout = process.env.MONGO_RECONNECT_TIMEOUT || '2000';
 
 export const requestTypeToHebrew = {
   [requestTypeToJSON(RequestType.CREATE_OG)]: 'יצירת היררכיה',

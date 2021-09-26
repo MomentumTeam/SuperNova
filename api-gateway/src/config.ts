@@ -12,6 +12,10 @@ export const config = {
         producer: env.get('GATEWAY_PS_URL').default('0.0.0.0:8083').asString(),
         notification: env.get('GATEWAY_NS_URL').default('0.0.0.0:8084').asString(),
         approver: env.get('GATEWAY_APS_URL').default('0.0.0.0:8085').asString(),
+        bulk: env.get('GATEWAY_BS_URL').default('0.0.0.0:8087').asString(),
+    },
+    files: {
+        path: env.get('GATEWAY_BS_FOLDER_PATH').default('../bulk-files/').asString(),
     },
     authentication: {
         token: env.get('GATEWAY_TOKEN').default('sp-token').asString(),

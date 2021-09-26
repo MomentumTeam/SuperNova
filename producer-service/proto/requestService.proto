@@ -43,12 +43,7 @@ service RequestService {
     rpc PushError(PushErrorReq) returns (Request){}
     rpc SyncBulkRequest(SyncBulkRequestReq) returns (Request){}
 
-    rpc SearchRequestsBySubmitterDisplayName(SearchRequestsByDisplayNameReq) returns (RequestArray) {}
-    rpc SearchRequestsByCommanderDisplayName(SearchRequestsByDisplayNameReq) returns (RequestArray) {}
-    rpc SearchRequestsBySecurityDisplayName(SearchRequestsByDisplayNameReq) returns (RequestArray) {}
-    rpc SearchRequestsByApproverDisplayName(SearchRequestsByDisplayNameReq) returns (RequestArray) {}
-
-
+    rpc SearchRequestsByDisplayName(SearchRequestsByDisplayNameReq) returns (RequestArray) {}
 }
 
 // ---------------------------------------------LEGO Requests------------------------------------------------------------
@@ -1028,12 +1023,12 @@ message GetRequestByIdReq{
 }
 
 
-// SearchRequestsBySubmitterDisplayName,SearchRequestsByCommanderDisplayName,
-// SearchRequestsBySecurityDisplayNamer,SearchRequestsByApproverDisplayName
+// SearchRequestsByDisplayNameReq
 message SearchRequestsByDisplayNameReq{
     string displayName = 1;
-    int32 from = 2;
-    int32 to = 3;
+    PersonTypeInRequest personType = 2;
+    int32 from = 3;
+    int32 to = 4;
 }
 
 

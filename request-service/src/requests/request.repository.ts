@@ -486,8 +486,7 @@ export class RequestRepository {
   }
 
   async searchRequestsByDisplayName(
-    searchRequestsByDisplayNameReq: SearchRequestsByDisplayNameReq,
-    personType: PersonTypeInRequest
+    searchRequestsByDisplayNameReq: SearchRequestsByDisplayNameReq
   ): Promise<RequestArray> {
     //TODO Check how to search on specific fields
     try {
@@ -501,7 +500,8 @@ export class RequestRepository {
           },
         ],
       };
-      const displayName = searchRequestsByDisplayNameReq.displayName;
+      const { displayName, personType } = searchRequestsByDisplayNameReq;
+
       if (personType === PersonTypeInRequest.SUBMITTER) {
         query['$text'] = { $search: displayName };
       } else if (personType === PersonTypeInRequest.COMMANDER_APPROVER) {

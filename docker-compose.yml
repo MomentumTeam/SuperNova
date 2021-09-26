@@ -17,9 +17,9 @@ services:
   #   depends_on:
   #     - elasticsearch
 
-  mongodb:
-    image: mongo
-    container_name: mongodb
+  mongo:
+    image: mongo:latest
+    container_name: mongo
     environment:
       - PUID=1000
       - PGID=1000
@@ -64,10 +64,10 @@ services:
     ports:
       - '8081:8080'
     depends_on:
-      - mongodb
+      - mongo
       - notification-service
     environment:
-      - RS_MONGO_URL=mongodb://mongodb:27017/supernova
+      - RS_MONGO_URL=mongodb://mongo:27017/supernova
       - RS_NS_URL=notification-service:8080
       - RS_TS_URL=tea-service:8080
 
@@ -110,7 +110,7 @@ services:
     ports:
       - '8084:8080'
     environment:
-      - NS_MONGO_URL=mongodb://mongodb:27017/supernova
+      - NS_MONGO_URL=mongodb://mongo:27017/supernova
 
   approver-service:
     image: approver-service
@@ -123,7 +123,7 @@ services:
       - request-service
       - kartoffel-service
     environment:
-      - APS_MONGO_URL=mongodb://mongodb:27017/supernova
+      - APS_MONGO_URL=mongodb://mongo:27017/supernova
       - APS_KS_URL=kartoffel-service:8080
       - APS_RS_URL=request-service:8080
 
@@ -135,7 +135,7 @@ services:
     ports:
       - '8086:8080'
     environment:
-      - TS_MONGO_URL=mongodb://mongodb:27017/supernova
+      - TS_MONGO_URL=mongodb://mongo:27017/supernova
       - TS_KS_URL=kartoffel-service:8080
 
   bulk-service:
@@ -144,7 +144,7 @@ services:
     env_file:
       - ./supernova.env
     volumes:
-      - ./bulk-service/src/excelFilesExample:/excelFiles
+      - bulk-files:/usr/src/app/bulk-files
     ports:
       - '8087:8080'
     depends_on:
@@ -152,7 +152,7 @@ services:
       - tea-service
     environment:
       - BS_RS_URL=request-service:8080
-      - BS_FOLDER_PATH=/excelFiles
+      - BS_FOLDER_PATH=/usr/src/app/bulk-files
 
   execution-script:
     image: execution-script
@@ -168,7 +168,7 @@ services:
       - EXS_EVERY_HOUR=1
 
   whiteListSync-script:
-    image: whiteListSync-script
+    image: whitelistsync-script
     build: ./whiteListSync-script/
     env_file:
       - ./supernova.env
@@ -195,6 +195,8 @@ services:
     build: ./api-gateway/
     env_file:
       - ./supernova.env
+    volumes:
+    - bulk-files:/usr/src/app/bulk-files
     ports:
       - '2000:8080'
     depends_on:
@@ -206,8 +208,15 @@ services:
       - notification-service
       - approver-service
       - tea-service
+      - bulk-service
     environment:
       - GATEWAY_KS_URL=kartoffel-service:8080
       - GATEWAY_RS_URL=request-service:8080
       - GATEWAY_PS_URL=producer-service:8080
       - GATEWAY_AS_URL=http://localhost:9000
+      - GATEWAY_BS_URL=bulk-service:8080
+      - GATEWAY_APS_URL=approver-service:8080
+      - GATEWAY_BS_FOLDER_PATH=/usr/src/app/bulk-files
+
+volumes:
+  bulk-files:

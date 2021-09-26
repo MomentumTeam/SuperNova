@@ -169,7 +169,7 @@ export class ApproverRepository {
       });
       let response: GetUserTypeRes;
       if (approvers) {
-        let type: any = approvers.map((approver) => {
+        let type: any = approvers.map((approver: any) => {
           const document: any = approver.toObject();
           turnObjectIdsToStrings(document);
 

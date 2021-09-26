@@ -30,6 +30,9 @@ WORKDIR /usr/src/app
 
 COPY --chown=node:node ./package*.json ./
 
+RUN mkdir bulk-files/
+RUN   chown node:node bulk-files/
+
 RUN npm ci --production && npm cache clean --force
 
 COPY --from=builder --chown=node:node /app/dist .

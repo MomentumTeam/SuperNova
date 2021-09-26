@@ -1,6 +1,11 @@
 import express from 'express';
 import { ServerError, UserError } from './errorTypes';
 import { logger } from '../logger/logger';
+const statusCodes = require('http').STATUS_CODES;
+
+export const statusCodeHandler = (error: any) => {
+    return error.code &&  error.code in statusCodes ? error.code : 500;
+}
 
 export const userErrorHandler = (
   error: Error,
