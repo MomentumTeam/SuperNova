@@ -42,7 +42,6 @@ const changeRoleHierarchyBulkADParamsObj = Joi.object({
 
 export const createRoleBulkRequestSchema = Joi.object({
   body: {
-    submittedBy: entityMinObj.required(), // TODO: maybe send only id and then call kartoffel for the other params?
     status: Joi.string().valid(...Object.keys(RequestStatus)),
     commanderDecision: ApproverDecisionObj,
     securityDecision: ApproverDecisionObj,
@@ -68,7 +67,6 @@ export const createRoleBulkRequestSchema = Joi.object({
 // PUT
 export const changeRoleHierarchyBulkRequestSchema = Joi.object({
   body: {
-    submittedBy: entityMinObj.required(),
     status: Joi.string().valid(...Object.keys(RequestStatus)),
     commanderDecision: ApproverDecisionObj,
     securityDecision: ApproverDecisionObj,

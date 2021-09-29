@@ -8,7 +8,6 @@ const ApproverRouter: Router = Router();
 ApproverRouter.get('/', ApproverValidator.isGetAllApproversValid, ApproverController.getAllApprovers);
 ApproverRouter.get('/displayname/:displayName', ApproverValidator.isGetSearchByDisplayNameValid, ApproverController.searchApproverByDisplayName);
 ApproverRouter.get('/domainuser/:domainUser',ApproverValidator.isGetSearchByDomainUserValid, ApproverController.searchApproverByDomainUser);
-ApproverRouter.get('/usertype', ApproverValidator.isGetUserTypeValid, ApproverController.getUserType);
 
 // POST
 ApproverRouter.post('/', ApproverValidator.isAddApproverValid, ApproverController.addApprover); 

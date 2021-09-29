@@ -6,7 +6,7 @@ export class PermissionHandler {
     if (!req.user) throw new AuthenticationError();
     const user = req.user as any;
 
-    if (user.types.includes('SECURITY')) return next();
+    if (user.types.includes('SECURITY') || user.types.includes('SUPER_SECURITY')) return next();
 
     next(
       new NotPermittedError('User is not authorized to perform this action')
