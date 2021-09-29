@@ -12,7 +12,6 @@ COPY --chown=node:node ./tsconfig.json ./
 # copy source code to /app/src folder
 COPY . .
 # RUN rm -rf /app/proto && git clone https://github.com/MomentumTeam/SuperNovaProto.git /app/proto
-
 RUN npm i && npm cache clean --force
 RUN npm run build
 
@@ -24,10 +23,11 @@ WORKDIR /usr/src/app
 COPY --chown=node:node ./package*.json ./
 
 RUN npm ci --production && npm cache clean --force
-
 COPY --from=builder --chown=node:node /app/dist .
-
 COPY --from=builder --chown=node:node /app/proto proto
+
+RUN mkdir bulk-files/
+RUN   chown node:node bulk-files/
 
 USER node
 

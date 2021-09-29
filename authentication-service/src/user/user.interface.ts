@@ -8,6 +8,8 @@ export interface IUser {
     mail: string;
     hierarchy?: string[];
     hierarchyFlat?: string;
+    personalNumber: string;
+    types?: string[];
 }
 
 export interface Name {

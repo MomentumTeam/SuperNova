@@ -9,11 +9,14 @@ if (process.env.NODE_ENV !== 'production') {
 
 import { Server } from './server';
 import { logger } from './logger';
+import { connectMongo } from './mongoose';
 
 async function main() {
   try {
     const server: Server = new Server();
     await server.startServer();
+    await connectMongo();
+
     logger.info(`request-service started successfully`);
   } catch (error: any) {
     logger.error(

@@ -5,6 +5,7 @@ import { NextFunction, Request, Response } from 'express';
 const validTokenMock = () => {
     const user = {
         id: '613fd3abca55fb8bc7f1bd1f',
+        types: ['COMMANDER','SUPER_SECURITY', 'SECURITY']
     };
 
     return `Bearer ${sign(user, config.authentication.secret)}`;
