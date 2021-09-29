@@ -15,7 +15,7 @@ export class ProducerRepository {
       return new Promise((resolve, reject) => {
         try {
           this.shmuelUtils
-            .shmuelPost(`${C.queueApi}/kartoffelQueue`, message)
+            .shmuelPost(`${C.queueApi}/kartoffel`, message)
             .then(() => {
               resolve(true);
             })
@@ -35,7 +35,7 @@ export class ProducerRepository {
       return new Promise((resolve, reject) => {
         try {
           this.shmuelUtils
-            .shmuelPost(`${C.queueApi}/adQueue`, message)
+            .shmuelPost(`${C.queueApi}/orch`, message)
             .then(() => {
               resolve(true);
             })
