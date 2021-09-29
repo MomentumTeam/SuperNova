@@ -1,6 +1,6 @@
 import kafka from 'kafka-node';
 import { findPath } from './utils/path';
-import { requestProcessor } from './requestsProcessor';
+import { requestProcessor } from './consumer/consumer.processor';
 import { logger } from './utils/logger';
 import { config } from './config';
 

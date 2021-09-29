@@ -1,4 +1,4 @@
-import KartoffelService from './services/kartoffelService';
+import KartoffelService from '../services/kartoffelService';
 import {
   ConnectRoleAndDIRequest,
   CreateEntityRequest,
@@ -14,8 +14,8 @@ import {
   RenameOGRequest,
   UpdateEntityRequest,
   DisconnectRoleAndDIRequest,
-} from './interfaces/protoc/proto/kartoffelService';
-import { logger } from './utils/logger';
+} from '../interfaces/protoc/proto/kartoffelService';
+import { logger } from '../utils/logger';
 
 export const createOG = async (createOGRequest: CreateOGRequest) => {
   logger.info('createOG request received.');

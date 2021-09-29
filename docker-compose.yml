@@ -192,7 +192,7 @@ services:
     environment:
       - AS_SHRAGA_URL=https://shraga-prod.northeurope.cloudapp.azure.com
       - AS_CLIENT_ENDPOINT=http://localhost:3000
-      - AS_USERS_RPC_ENDPOINT=kartoffel-service:8080
+      - AS_KARTOFFEL_RPC_ENDPOINT=kartoffel-service:8080
       
   api-gateway:
     image: api-gateway
@@ -221,6 +221,7 @@ services:
       - GATEWAY_BS_URL=bulk-service:8080
       - GATEWAY_APS_URL=approver-service:8080
       - GATEWAY_BS_FOLDER_PATH=/usr/src/app/bulk-files
+      - GATEWAY_AUTHENTICATION_REQUIRED=true
 
   # Kafka GUI
   kouncil:

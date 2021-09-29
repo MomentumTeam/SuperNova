@@ -23,10 +23,3 @@ export const config = {
         request: process.env.KC_RS_URL || '0.0.0.0:8081',
     },
 }; 
-
-// 
-// // CONSUMER CONFIGURATION
-// const consumerPayloads = [{
-//     topic: process.env.KC_KAFKA_CONSUMER_TOPIC || 'requests',
-//     partition: 0
-// }];

@@ -21,6 +21,6 @@ export const config = {
         token: env.get('GATEWAY_TOKEN').default('sp-token').asString(),
         secret: env.get('GATEWAY_SECRET_KEY').default('superNova').asString(),
         authServiceUrl: env.get('GATEWAY_AS_URL').default('0.0.0.0:9000').asString(),
-        required: env.get('GATEWAY_AUTHENTICATION_REQUIRED').default(0).asBool(),
+        required: env.get('GATEWAY_AUTHENTICATION_REQUIRED').default(1).asBool(),
     },
 };
