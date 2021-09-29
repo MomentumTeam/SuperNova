@@ -15,7 +15,7 @@ import {
   UpdateEntityRequest,
   DisconnectRoleAndDIRequest,
 } from './interfaces/protoc/proto/kartoffelService';
-import { logger } from './logger';
+import { logger } from './utils/logger';
 
 export const createOG = async (createOGRequest: CreateOGRequest) => {
   logger.info('createOG request received.');

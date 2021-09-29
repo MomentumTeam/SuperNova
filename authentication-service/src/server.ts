@@ -13,8 +13,8 @@ import {
     serverErrorHandler,
     unknownErrorHandler,
 } from './utils/errors/errorHandler';
-import { ShragaAuthenticationHandler } from './authentication/authentication.handler';
-import { ShragaAuthenticationRouter } from './authentication/authentication.router';
+import { ShragaAuthenticationHandler } from './auth/auth.handler';
+import { ShragaAuthenticationRouter } from './auth/auth.router';
 import { HealthRouter } from './utils/health/health.router';
 
 export class Server {
