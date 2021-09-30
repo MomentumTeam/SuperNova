@@ -279,4 +279,28 @@ export async function renameRole(call: any, callback: any): Promise<void> {
       null
     );
   }
+
+  export async function changeRoleHierarchy(call: any, callback: any): Promise<void> {
+  try {
+    logger.info(`Call to changeRoleHierarchy`, { callRequest: call.request });
+    const role: Role = await rolesManager.changeRoleHierarchy(call.request);
+    logger.info(`changeRoleHierarchy OK`, {
+      callRequest: call.request,
+      response: { success: true },
+    });
+    callback(null, { success: true });
+  } catch (error: any) {
+    logger.error(`changeRoleHierarchy ERROR`, {
+      callRequest: call.request,
+      error: { message: error.message },
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
 }
