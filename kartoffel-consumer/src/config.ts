@@ -6,20 +6,17 @@ export const config = {
         options: {
             connection: {
                 retries: 10,
-            }
-        }
+            },
+        },
     },
     consumer: {
-        payloads: [
-            {
-                topic: process.env.KC_KAFKA_CONSUMER_TOPIC || 'requests',
-                partition: 0
-            }
-        ],
-        options: { autoCommit: true, fromOffset: true },
+        topic: process.env.KC_KAFKA_CONSUMER_TOPIC || 'requests',
+        partition: 0,
+        options: { autoCommit: false },
     },
     endpoints: {
         kartoffel: process.env.KC_KS_URL || '0.0.0.0:8082',
         request: process.env.KC_RS_URL || '0.0.0.0:8081',
+        tea: process.env.KC_TS_URL || '0.0.0.0:8086',
     },
 }; 

@@ -21,13 +21,30 @@ const connectToKafka = async () => {
   return client;
 };
 
+const offsetInit = async (client: kafka.KafkaClient, consumer: kafka.Consumer) => {
+  const offset = new kafka.Offset(client);
+
+  offset.fetchLatestOffsets([config.consumer.topic], (error, offsets) => {
+    if (error) {
+      logger.error('error in getting lastest offset', error);
+    } else {
+      const latestOffset = offsets[config.consumer.topic][0];
+      logger.info(`Kafka consumer latest offset: ${latestOffset}`)
+      consumer.setOffset(config.consumer.topic, 0, latestOffset);
+    }
+  });
+}
+
 // Consumer init
 const startConsumer = async (client: kafka.KafkaClient) => {
-  let consumer = new kafka.Consumer(
+  const consumer = new kafka.Consumer(
     client,
-    config.consumer.payloads,
+    [{topic: config.consumer.topic, partition: config.consumer.partition}],
     config.consumer.options
   );
+
+  // set offset
+  offsetInit(client, consumer);
 
   consumer.on('error', function (err) {
     logger.error('Kafka Error: Consumer - ' + err);
@@ -41,6 +58,7 @@ const startConsumer = async (client: kafka.KafkaClient) => {
     logger.info('Received message from kafka -', incomingRequest);
     try {
       requestProcessor(incomingRequest);
+      consumer.commit((err, data) => console.log(err, data));
     } catch (err) {
       logger.error(err);
     }

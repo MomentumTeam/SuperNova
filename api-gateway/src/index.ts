@@ -1,3 +1,12 @@
+import {config} from "./config";
+const apm = require('elastic-apm-node').start({
+  secretToken: '',
+  serviceName: 'API-GATEWAY',
+  serverUrl: config.endpoints.apm,
+  environment: process.env.NODE_ENV,
+  cloudProvider: "none",
+});
+
 import { Server } from './server';
 import { logger } from './utils/logger/logger';
 

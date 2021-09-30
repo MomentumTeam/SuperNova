@@ -13,6 +13,7 @@ export const config = {
         notification: env.get('GATEWAY_NS_URL').default('0.0.0.0:8084').asString(),
         approver: env.get('GATEWAY_APS_URL').default('0.0.0.0:8085').asString(),
         bulk: env.get('GATEWAY_BS_URL').default('0.0.0.0:8087').asString(),
+        apm : env.get('GATEWAY_APM_URL').default('http://52.169.23.32:8200').asString(),
     },
     files: {
         path: env.get('GATEWAY_BS_FOLDER_PATH').default('../bulk-files/').asString(),
@@ -23,4 +24,5 @@ export const config = {
         authServiceUrl: env.get('GATEWAY_AS_URL').default('0.0.0.0:9000').asString(),
         required: env.get('GATEWAY_AUTHENTICATION_REQUIRED').default(1).asBool(),
     },
+
 };
