@@ -49,7 +49,7 @@ service Kartoffel {
     rpc DisconnectRoleAndDI(DisconnectRoleAndDIRequest) returns (SuccessMessage){}
     rpc DeleteRole(DeleteRoleRequest) returns (SuccessMessage){} 
     rpc RenameRole(RenameRoleRequest) returns (SuccessMessage){}
-
+    rpc ChangeRoleHierarchy(ChangeRoleHierarchyRequest) returns (SuccessMessage){}
 }
 
 message GetAllOGsRequest{
@@ -348,6 +348,12 @@ message GetEntitiesUnderOGRequest{
     bool direct = 2;
     int32 page = 3;
     int32 pageSize = 4;
+}
+
+// ChangeRoleHierarchy
+message ChangeRoleHierarchyRequest{
+    string roleId = 1;
+    string groupId = 2;
 }
 
 //SuccessMessage
