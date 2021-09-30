@@ -1,6 +1,6 @@
 import RequestService from '../services/requestService';
 import { fromStringToObject } from '../utils/fromStringToObject';
-import { StageStatus } from './interfaces/protoc/proto/requestService';
+import { StageStatus } from '../interfaces/protoc/proto/requestService';
 import {
   createOG,
   createEntity,

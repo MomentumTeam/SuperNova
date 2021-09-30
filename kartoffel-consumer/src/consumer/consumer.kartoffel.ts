@@ -16,7 +16,7 @@ import {
   DisconnectRoleAndDIRequest,
   DeleteEntityRequest,
   ChangeRoleOGRequest,
-} from './interfaces/protoc/proto/kartoffelService';
+} from '../interfaces/protoc/proto/kartoffelService';
 import { logger } from '../utils/logger';
 
 export const createOG = async (createOGRequest: CreateOGRequest) => {

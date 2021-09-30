@@ -39,7 +39,7 @@ import {
   DisconnectRoleAndDIRequest,
   DeleteEntityRequest,
   ChangeRoleOGRequest,
-} from '../consumer/interfaces/protoc/proto/kartoffelService';
+} from '../interfaces/protoc/proto/kartoffelService';
 import { findPath } from '../utils/path';
 
 const PROTO_PATH = `${findPath('proto')}/kartoffelService.proto`;
