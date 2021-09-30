@@ -14,6 +14,7 @@ import { swaggerDocument } from './swagger';
 import { addMockToken } from './utils/auth/user.mock';
 import { Authenticator } from './utils/auth/auth';
 
+
 export class Server {
   private static _instance: Server;
   public app: express.Application;
