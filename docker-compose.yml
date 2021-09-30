@@ -212,7 +212,7 @@ services:
   kouncil:
     image: consdata/kouncil:latest
     ports:
-      - '4002:8080'
+      - "4001:8080"
     environment:
       bootstrapServers: 'kafka:29092'
     depends_on:

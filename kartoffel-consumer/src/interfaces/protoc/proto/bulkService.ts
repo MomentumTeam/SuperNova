@@ -1,14 +1,14 @@
 /* eslint-disable */
-import Long from 'long';
-import _m0 from 'protobufjs/minimal';
+import Long from "long";
+import _m0 from "protobufjs/minimal";
 import {
   CreateRoleBulkRes,
   ChangeRoleHierarchyBulkRes,
   CreateRoleBulkReq,
   ChangeRoleHierarchyBulkReq,
-} from './requestService';
+} from "./requestService";
 
-export const protobufPackage = 'BulkService';
+export const protobufPackage = "BulkService";
 
 export interface BulkService {
   CreateRoleBulkRequest(request: CreateRoleBulkReq): Promise<CreateRoleBulkRes>;
@@ -30,8 +30,8 @@ export class BulkServiceClientImpl implements BulkService {
   ): Promise<CreateRoleBulkRes> {
     const data = CreateRoleBulkReq.encode(request).finish();
     const promise = this.rpc.request(
-      'BulkService.BulkService',
-      'CreateRoleBulkRequest',
+      "BulkService.BulkService",
+      "CreateRoleBulkRequest",
       data
     );
     return promise.then((data) =>
@@ -44,8 +44,8 @@ export class BulkServiceClientImpl implements BulkService {
   ): Promise<ChangeRoleHierarchyBulkRes> {
     const data = ChangeRoleHierarchyBulkReq.encode(request).finish();
     const promise = this.rpc.request(
-      'BulkService.BulkService',
-      'ChangeRoleHierarchyBulkRequest',
+      "BulkService.BulkService",
+      "ChangeRoleHierarchyBulkRequest",
       data
     );
     return promise.then((data) =>

@@ -49,7 +49,7 @@ service Kartoffel {
     rpc DisconnectRoleAndDI(DisconnectRoleAndDIRequest) returns (SuccessMessage){}
     rpc DeleteRole(DeleteRoleRequest) returns (SuccessMessage){} 
     rpc RenameRole(RenameRoleRequest) returns (SuccessMessage){}
-
+    rpc ChangeRoleOG(ChangeRoleOGRequest) returns (SuccessMessage){}
 }
 
 message GetAllOGsRequest{

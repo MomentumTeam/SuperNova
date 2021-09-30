@@ -62,6 +62,7 @@ export class AuthenticationHandler {
         const userToken = jwt.sign(userInformation, config.authentication.secret);
         const constRedirectURI = req.user.RelayState || config.clientEndpoint;
 
+        logger.info('successful handle user');
         res.cookie(config.authentication.token, userToken, { maxAge: exp });
         res.redirect(`${constRedirectURI}`);
     }

@@ -6293,6 +6293,7 @@ export interface Kartoffel {
   ): Promise<SuccessMessage>;
   DeleteRole(request: DeleteRoleRequest): Promise<SuccessMessage>;
   RenameRole(request: RenameRoleRequest): Promise<SuccessMessage>;
+  ChangeRoleOG(request: ChangeRoleOGRequest): Promise<SuccessMessage>;
 }
 
 export class KartoffelClientImpl implements Kartoffel {
@@ -6337,6 +6338,7 @@ export class KartoffelClientImpl implements Kartoffel {
     this.DisconnectRoleAndDI = this.DisconnectRoleAndDI.bind(this);
     this.DeleteRole = this.DeleteRole.bind(this);
     this.RenameRole = this.RenameRole.bind(this);
+    this.ChangeRoleOG = this.ChangeRoleOG.bind(this);
   }
   CreateEntity(request: CreateEntityRequest): Promise<Entity> {
     const data = CreateEntityRequest.encode(request).finish();
@@ -6685,6 +6687,16 @@ export class KartoffelClientImpl implements Kartoffel {
   RenameRole(request: RenameRoleRequest): Promise<SuccessMessage> {
     const data = RenameRoleRequest.encode(request).finish();
     const promise = this.rpc.request("Kartoffel.Kartoffel", "RenameRole", data);
+    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
+  }
+
+  ChangeRoleOG(request: ChangeRoleOGRequest): Promise<SuccessMessage> {
+    const data = ChangeRoleOGRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "ChangeRoleOG",
+      data
+    );
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 }

@@ -1,6 +1,7 @@
 import { IUser } from './kartoffel.interface';
 import { config } from '../config';
 import { logger } from '../logger';
+import { GetEntityByIdRequest } from '../interfaces/protoc/proto/kartoffelService';
 
 const grpc = require('grpc');
 const protoLoader = require('@grpc/proto-loader');
@@ -26,12 +27,13 @@ export class UsersRpc {
         callRequest: { id: id },
     });
 
+    const getEntityByIdRequest: GetEntityByIdRequest = { id, withPicture: false };
     return new Promise((resolve, reject) => {
-      kartoffelClient.GetEntityById({ id }, (err: any, res: any) => {
+      kartoffelClient.GetEntityById(getEntityByIdRequest, (err: any, res: any) => {
           if (err) {
               logger.error(`getEntityById ERROR in AS`, {
                   err,
-                  callRequest: { id: id },
+                  callRequest: getEntityByIdRequest,
               });
               reject(err);
               return;
@@ -39,7 +41,7 @@ export class UsersRpc {
 
           logger.info(`getEntityById OK in AS`, {
               response: res,
-              callRequest: { id: id },
+              callRequest: getEntityByIdRequest,
           });
 
           resolve(res);
