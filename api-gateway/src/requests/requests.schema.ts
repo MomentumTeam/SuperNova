@@ -60,17 +60,17 @@ export const getRequestBySerialNumberSchema = Joi.object({
 });
 
 export const SearchRequestsByDisplayNameSchema = Joi.object({
-  body: {},
-  params: {
-    displayName: Joi.string().required(),
-    personType: Joi.string()
-      .valid(...Object.keys(PersonTypeInRequest))
-      .required(),
-  },
-  query: {
-    from: Joi.number().default(0),
-    to: Joi.number().default(100),
-  },
+    body: {},
+    params: {
+        displayName: Joi.string().required(),
+    },
+    query: {
+        personType: Joi.string()
+            .valid(...Object.keys(PersonTypeInRequest))
+            .required(),
+        from: Joi.number().default(0),
+        to: Joi.number().default(100),
+    },
 });
 
 // PUT

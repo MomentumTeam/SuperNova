@@ -1,6 +1,6 @@
-import { fromStringToObject } from './utils/fromStringToObject';
-import RequestService from './services/requestService';
-import { StageStatus } from './interfaces/protoc/proto/requestService';
+import { fromStringToObject } from '../utils/fromStringToObject';
+import RequestService from '../services/requestService';
+import { StageStatus } from '../interfaces/protoc/proto/requestService';
 import {
   createOG,
   createEntity,
@@ -12,14 +12,14 @@ import {
   renameOG,
   updateEntity,
   disconnectRoleAndDI,
-} from './requestsToKartoffel';
-// 1. Parse the message into object with structure:
+} from './consumer.kartoffel';
+
+// requestProcessor - Parse a message into object with structure:
 // {
 //   type (enum RequestType (from requestService))
 //   requestId (string)
 //   data: (look at producer service for data by each type)
 // }
-
 export const requestProcessor = async (incomingRequest: any) => {
   const requestObject = fromStringToObject(incomingRequest.value.toString());
   let createdObjectId = undefined;

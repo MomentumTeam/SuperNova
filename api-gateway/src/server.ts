@@ -68,7 +68,7 @@ export class Server {
 
 
     this.app.get('/auth/login', (req, res) => {
-      res.redirect(`http://${config.authentication.authServiceUrl}/auth/login`);
+      res.redirect(`${config.authentication.authServiceUrl}/auth/login`);
     });
 
     this.app.use('/api', mainRouter);

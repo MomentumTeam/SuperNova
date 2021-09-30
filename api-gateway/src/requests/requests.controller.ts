@@ -103,7 +103,7 @@ export default class RequestsController {
   static async searchRequestsByDisplayName(req: any, res: Response) {
     const searchRequestsByDisplayNameReq: SearchRequestsByDisplayNameReq = {
       displayName: req.params.displayName,
-      personType: req.params.personType,
+      personType: req.query.personType,
       from: req.query.from,
       to: req.query.to,
     };
@@ -253,10 +253,6 @@ export default class RequestsController {
     logger.info(`Call to createRoleRequest in GTW`, {
       callRequest: { submittedBy: req.user.id },
     });
-
-    // TODO: ask liora and barak about identity card, why we need all this fields? it is just make the request very complicated
-    // if we do want this, we need to add kartoffel fields to authentication.
-    // see example - https://gitlab.com/yesodot/selenium/censorship-systems/common/blue-authenticator/-/tree/develop
 
     const submittedBy: EntityMin = {
       id: req.user.id,

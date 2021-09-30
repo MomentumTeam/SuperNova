@@ -1,7 +1,6 @@
 import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
-import path from 'path';
-import * as config from '../config';
+import { config } from '../config';
 import {
   EntityArray,
   Entity,
@@ -58,7 +57,7 @@ const protoDescriptor: any =
   grpc.loadPackageDefinition(packageDefinition).Kartoffel;
 
 const kartoffelClient: any = new protoDescriptor.Kartoffel(
-  config.kartoffelServiceUrl,
+  config.endpoints.kartoffel,
   grpc.credentials.createInsecure()
 );
 
