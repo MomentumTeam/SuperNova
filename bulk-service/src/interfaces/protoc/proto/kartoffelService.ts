@@ -314,12 +314,6 @@ export interface GetEntitiesUnderOGRequest {
   pageSize: number;
 }
 
-/** ChangeRoleHierarchy */
-export interface ChangeRoleHierarchyRequest {
-  roleId: string;
-  groupId: string;
-}
-
 /** SuccessMessage */
 export interface SuccessMessage {
   success: boolean;
@@ -4912,92 +4906,6 @@ export const GetEntitiesUnderOGRequest = {
   },
 };
 
-const baseChangeRoleHierarchyRequest: object = { roleId: "", groupId: "" };
-
-export const ChangeRoleHierarchyRequest = {
-  encode(
-    message: ChangeRoleHierarchyRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.roleId !== "") {
-      writer.uint32(10).string(message.roleId);
-    }
-    if (message.groupId !== "") {
-      writer.uint32(18).string(message.groupId);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): ChangeRoleHierarchyRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseChangeRoleHierarchyRequest,
-    } as ChangeRoleHierarchyRequest;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.roleId = reader.string();
-          break;
-        case 2:
-          message.groupId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): ChangeRoleHierarchyRequest {
-    const message = {
-      ...baseChangeRoleHierarchyRequest,
-    } as ChangeRoleHierarchyRequest;
-    if (object.roleId !== undefined && object.roleId !== null) {
-      message.roleId = String(object.roleId);
-    } else {
-      message.roleId = "";
-    }
-    if (object.groupId !== undefined && object.groupId !== null) {
-      message.groupId = String(object.groupId);
-    } else {
-      message.groupId = "";
-    }
-    return message;
-  },
-
-  toJSON(message: ChangeRoleHierarchyRequest): unknown {
-    const obj: any = {};
-    message.roleId !== undefined && (obj.roleId = message.roleId);
-    message.groupId !== undefined && (obj.groupId = message.groupId);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<ChangeRoleHierarchyRequest>
-  ): ChangeRoleHierarchyRequest {
-    const message = {
-      ...baseChangeRoleHierarchyRequest,
-    } as ChangeRoleHierarchyRequest;
-    if (object.roleId !== undefined && object.roleId !== null) {
-      message.roleId = object.roleId;
-    } else {
-      message.roleId = "";
-    }
-    if (object.groupId !== undefined && object.groupId !== null) {
-      message.groupId = object.groupId;
-    } else {
-      message.groupId = "";
-    }
-    return message;
-  },
-};
-
 const baseSuccessMessage: object = { success: false };
 
 export const SuccessMessage = {
@@ -6385,9 +6293,7 @@ export interface Kartoffel {
   ): Promise<SuccessMessage>;
   DeleteRole(request: DeleteRoleRequest): Promise<SuccessMessage>;
   RenameRole(request: RenameRoleRequest): Promise<SuccessMessage>;
-  ChangeRoleHierarchy(
-    request: ChangeRoleHierarchyRequest
-  ): Promise<SuccessMessage>;
+  ChangeRoleOG(request: ChangeRoleOGRequest): Promise<SuccessMessage>;
 }
 
 export class KartoffelClientImpl implements Kartoffel {
@@ -6432,7 +6338,7 @@ export class KartoffelClientImpl implements Kartoffel {
     this.DisconnectRoleAndDI = this.DisconnectRoleAndDI.bind(this);
     this.DeleteRole = this.DeleteRole.bind(this);
     this.RenameRole = this.RenameRole.bind(this);
-    this.ChangeRoleHierarchy = this.ChangeRoleHierarchy.bind(this);
+    this.ChangeRoleOG = this.ChangeRoleOG.bind(this);
   }
   CreateEntity(request: CreateEntityRequest): Promise<Entity> {
     const data = CreateEntityRequest.encode(request).finish();
@@ -6784,13 +6690,11 @@ export class KartoffelClientImpl implements Kartoffel {
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
-  ChangeRoleHierarchy(
-    request: ChangeRoleHierarchyRequest
-  ): Promise<SuccessMessage> {
-    const data = ChangeRoleHierarchyRequest.encode(request).finish();
+  ChangeRoleOG(request: ChangeRoleOGRequest): Promise<SuccessMessage> {
+    const data = ChangeRoleOGRequest.encode(request).finish();
     const promise = this.rpc.request(
       "Kartoffel.Kartoffel",
-      "ChangeRoleHierarchy",
+      "ChangeRoleOG",
       data
     );
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
