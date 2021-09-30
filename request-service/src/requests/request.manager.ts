@@ -179,13 +179,11 @@ export class RequestManager {
   }
 
   async searchRequestsByDisplayName(
-    searchRequestsByDisplayName: SearchRequestsByDisplayNameReq,
-    personType: PersonTypeInRequest
+    searchRequestsByDisplayName: SearchRequestsByDisplayNameReq
   ): Promise<RequestArray> {
     try {
       return (await this.requestRepository.searchRequestsByDisplayName(
-        searchRequestsByDisplayName,
-        personType
+        searchRequestsByDisplayName
       )) as RequestArray;
     } catch (error) {
       throw error;

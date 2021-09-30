@@ -42,7 +42,7 @@ async function main() {
       .then((values) => {
         logger.info(`Promises were finished successfully`);
       })
-      .catch((error) => {
+      .catch((error: any) => {
         logger.error(`Promises sync failed`, {
           error: { message: error.message },
         });

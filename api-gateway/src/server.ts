@@ -59,16 +59,23 @@ export class Server {
       return res.send('alive');
     });
 
-    this.app.use('/api', mainRouter);
     this.app.use(
       '/api-docs',
       swaggerUi.serve,
       swaggerUi.setup(swaggerDocument)
     );
 
+
+    this.app.get('/auth/login', (req, res) => {
+      res.redirect(`${config.authentication.authServiceUrl}/auth/login`);
+    });
+
+    this.app.use('/api', mainRouter);
+    
     this.app.use('*', (req, res) => {
       res.status(404).send('Invalid Route');
     });
+    
   }
 
   private initializeErrorHandling() {

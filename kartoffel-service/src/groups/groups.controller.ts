@@ -86,7 +86,7 @@ export async function getOGTree(call: any, callback: any): Promise<void> {
   } catch (error: any) {
     logger.error(`getOGTree ERROR`, {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
 
     callback(

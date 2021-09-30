@@ -22,12 +22,12 @@ export class RequestService {
   async getRequestById(req: GetRequestByIdReq): Promise<Request> {
     logger.info('getRequestById in RequestService', { req });
     return new Promise((resolve, reject) => {
-      this.client.GetRequestById(req, (err: any, res: any) => {
-        if (err) {
+      this.client.GetRequestById(req, (error: any, res: any) => {
+        if (error) {
           logger.error('getRequestById in RequestService ERROR', {
-            error: err.message,
+            error: { message: error.message },
           });
-          reject(err);
+          reject(error);
         } else {
           logger.info('getRequestById in RequestService OK', {
             'req.id': req.id,
@@ -58,8 +58,10 @@ export class RequestService {
       );
       logger.info('Client initialized successfully in RequestService');
       return client;
-    } catch (error) {
-      logger.info('Error while initializing RequestService client', { error });
+    } catch (error: any) {
+      logger.error('Error while initializing RequestService client', {
+        error: { message: error.message },
+      });
       throw error;
     }
   }

@@ -17,10 +17,10 @@ export async function markAllAsRead(call: any, callback: any): Promise<void> {
       successMessage,
     });
     callback(null, successMessage);
-  } catch (error) {
+  } catch (error: any) {
     logger.error('markAllAsRead ERROR', {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {
@@ -49,10 +49,10 @@ export async function createNotifications(
       notifications,
     });
     callback(null, notifications);
-  } catch (error) {
+  } catch (error: any) {
     logger.error('createNotifications ERROR', {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {
@@ -81,10 +81,10 @@ export async function createCustomNotification(
       notification,
     });
     callback(null, notification);
-  } catch (error) {
+  } catch (error: any) {
     logger.error('createCustomNotification ERROR', {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {
@@ -105,10 +105,10 @@ export async function markAsRead(call: any, callback: any): Promise<void> {
       notifications,
     });
     callback(null, notifications);
-  } catch (error) {
+  } catch (error: any) {
     logger.error('markAsRead ERROR', {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {
@@ -137,10 +137,10 @@ export async function getNotificationsByOwnerId(
       notifications,
     });
     callback(null, notifications);
-  } catch (error) {
+  } catch (error: any) {
     logger.error('getNotificationsByOwnerId ERROR', {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {

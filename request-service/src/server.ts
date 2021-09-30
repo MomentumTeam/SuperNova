@@ -13,7 +13,7 @@ import {
   canPushToKartoffelQueue,
   canPushToADQueue,
   getRequestBySerialNumber,
-  searchRequestsByDisplayNameFuncByPersonType,
+  searchRequestsByDisplayName,
   incrementKartoffelRetries,
   incrementADRetries,
   getRequestsInProgressByDue,
@@ -102,22 +102,7 @@ export class Server {
         DeleteRequest: deleteRequest,
         GetAllRequests: getAllRequests,
         GetRequestBySerialNumber: getRequestBySerialNumber,
-        SearchRequestsBySubmitterDisplayName:
-          searchRequestsByDisplayNameFuncByPersonType(
-            PersonTypeInRequest.SUBMITTER
-          ),
-        SearchRequestsByCommanderDisplayName:
-          searchRequestsByDisplayNameFuncByPersonType(
-            PersonTypeInRequest.COMMANDER_APPROVER
-          ),
-        SearchRequestsBySecurityDisplayName:
-          searchRequestsByDisplayNameFuncByPersonType(
-            PersonTypeInRequest.SECURITY_APPROVER
-          ),
-        SearchRequestsByApproverDisplayName:
-          searchRequestsByDisplayNameFuncByPersonType(
-            PersonTypeInRequest.APPROVER
-          ),
+        SearchRequestsByDisplayName: searchRequestsByDisplayName,
         CanPushToKartoffelQueue: canPushToKartoffelQueue,
         CanPushToADQueue: canPushToADQueue,
         IncrementKartoffelRetries: incrementKartoffelRetries,
@@ -133,8 +118,10 @@ export class Server {
         PushError: pushError,
       });
       logger.info(`Grpc services were successfully added to the server`);
-    } catch (error) {
-      logger.error(`Error while initializing the server`, { error: error });
+    } catch (error: any) {
+      logger.error(`Error while initializing the server`, {
+        error: { message: error.message },
+      });
       throw error;
     }
   }

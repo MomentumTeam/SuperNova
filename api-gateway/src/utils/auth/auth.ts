@@ -27,7 +27,7 @@ export class Authenticator {
   }
 
   public static middleware(req: Request, res: Response, next: NextFunction) {
-    if (req.path === '/isAlive' || req.path === '/api-docs') return next();
+    if (req.path === '/isAlive' || req.path === '/auth/login' || `/${req.path.split('/')[1]}` === '/api-docs') return next();
     return passport.authenticate('jwt', { session: false })(req, res, next);
   }
 }

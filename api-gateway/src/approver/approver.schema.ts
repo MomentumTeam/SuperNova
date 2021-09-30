@@ -39,13 +39,6 @@ export const getSearchByDomainUser = Joi.object({
   },
 });
 
-export const getUserTypeSchema = Joi.object({
-  body: {},
-  params: {
-    entityId: Joi.objectId().required(),
-  },
-  query: {},
-});
 
 // POST
 export const addApproverSchema = Joi.object({
@@ -62,14 +55,14 @@ export const addApproverSchema = Joi.object({
 // PUT
 export const updateApproverDecisionSchema = Joi.object({
   body: {
-    approverId: Joi.objectId().required(),
+    approverId: Joi.objectId().required(), // connected user
     descision: Joi.string()
       .valid(...Object.keys(RequestStatus))
       .required(),
     reason: Joi.string().required(),
     type: Joi.string()
     .valid(...Object.keys(ApproverType))
-    .required(),
+    .required(), // talk with barak about sending connected user's array
   },
   params: {
     requestId: Joi.objectId().required()

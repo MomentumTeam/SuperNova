@@ -486,8 +486,7 @@ export class RequestRepository {
   }
 
   async searchRequestsByDisplayName(
-    searchRequestsByDisplayNameReq: SearchRequestsByDisplayNameReq,
-    personType: PersonTypeInRequest
+    searchRequestsByDisplayNameReq: SearchRequestsByDisplayNameReq
   ): Promise<RequestArray> {
     //TODO Check how to search on specific fields
     try {
@@ -501,7 +500,8 @@ export class RequestRepository {
           },
         ],
       };
-      const displayName = searchRequestsByDisplayNameReq.displayName;
+      const { displayName, personType } = searchRequestsByDisplayNameReq;
+
       if (personType === PersonTypeInRequest.SUBMITTER) {
         query['$text'] = { $search: displayName };
       } else if (personType === PersonTypeInRequest.COMMANDER_APPROVER) {
@@ -524,62 +524,11 @@ export class RequestRepository {
     }
   }
 
-  // async getRequestsByIdentifier(
-  //   getRequestsByIdentifierReq: GetRequestsByIdentifierReq,
-  //   personType: PersonTypeInRequest
-  // ): Promise<RequestArray> {
-  //   try {
-  //     let query: any = {};
-  //     const identifier = getRequestsByIdentifierReq.identifier;
-  //     if (personType === PersonTypeInRequest.SUBMITTER) {
-  //       query = {
-  //         $or: [
-  //           { 'submittedBy.personalNumber': identifier },
-  //           { 'submittedBy.identityCard': identifier },
-  //         ],
-  //       };
-  //     } else if (personType === PersonTypeInRequest.COMMANDER_APPROVER) {
-  //       query = {
-  //         $or: [
-  //           { 'commanders.personalNumber': identifier },
-  //           { 'commanders.identityCard': identifier },
-  //         ],
-  //       };
-  //     } else if (personType === PersonTypeInRequest.SECURITY_APPROVER) {
-  //       query = {
-  //         $or: [
-  //           { 'securityApprovers.personalNumber': identifier },
-  //           { 'securityApprovers.identityCard': identifier },
-  //         ],
-  //       };
-  //     } else {
-  //       //approver
-  //       query = {
-  //         $or: [
-  //           { 'submittedBy.personalNumber': identifier },
-  //           { 'submittedBy.identityCard': identifier },
-  //           { 'commanders.personalNumber': identifier },
-  //           { 'commanders.identityCard': identifier },
-  //           { 'securityApprovers.personalNumber': identifier },
-  //           { 'securityApprovers.identityCard': identifier },
-  //         ],
-  //       };
-  //     }
-  //     const requestArray = await this.getRequestsByQuery(
-  //       query,
-  //       true,
-  //       getRequestsByIdentifierReq.from,
-  //       getRequestsByIdentifierReq.to
-  //     );
-  //     return requestArray;
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
-
   async deleteRequest(deleteReq: DeleteReq): Promise<SuccessMessage> {
     try {
-      await RequestModel.deleteOne({ _id: deleteReq.id });
+      await RequestModel.deleteMany({
+        $or: [{ _id: deleteReq.id }, { bulkRequestId: deleteReq.id }],
+      });
       const res: SuccessMessage = {
         success: true,
         message: `Request ${deleteReq.id} was deleted successfully`,
