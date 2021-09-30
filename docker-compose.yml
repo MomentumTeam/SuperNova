@@ -1,22 +1,5 @@
 version: '3.8'
 services:
-  # elasticsearch:
-  #   image: docker.elastic.co/elasticsearch/elasticsearch:7.13.2
-  #   container_name: elasticsearch
-  #   ports:
-  #     - 9200:9200
-
-  # kibana:
-  #   image: docker.elastic.co/kibana/kibana:7.13.2
-  #   container_name: kibana
-  #   ports:
-  #     - 5601:5601
-  #   environment:
-  #     ELASTICSEARCH_URL: http://elasticsearch:9200
-  #     ELASTICSEARCH_HOSTS: '["http://elasticsearch:9200"]'
-  #   depends_on:
-  #     - elasticsearch
-
   mongo:
     image: mongo:latest
     container_name: mongo
@@ -193,7 +176,7 @@ services:
       - AS_SHRAGA_URL=https://shraga-prod.northeurope.cloudapp.azure.com
       - AS_CLIENT_ENDPOINT=http://localhost:3000
       - AS_KARTOFFEL_RPC_ENDPOINT=kartoffel-service:8080
-      
+
   api-gateway:
     image: api-gateway
     build: ./api-gateway/
@@ -213,6 +196,7 @@ services:
       - approver-service
       - tea-service
       - bulk-service
+      - apm-server
     environment:
       - GATEWAY_KS_URL=kartoffel-service:8080
       - GATEWAY_RS_URL=request-service:8080
@@ -222,30 +206,94 @@ services:
       - GATEWAY_APS_URL=approver-service:8080
       - GATEWAY_BS_FOLDER_PATH=/usr/src/app/bulk-files
       - GATEWAY_AUTHENTICATION_REQUIRED=true
+      - GATEWAY_APM_URL=http://apm-server:8200
 
   # Kafka GUI
   kouncil:
     image: consdata/kouncil:latest
     ports:
-      - "4002:8080"
+      - '4002:8080'
     environment:
-      bootstrapServers: "kafka:29092"
+      bootstrapServers: 'kafka:29092'
     depends_on:
-      - "kafka"
+      - 'kafka'
   kafka:
     image: obsidiandynamics/kafka
     container_name: kafka
     ports:
-      - "2181:2181"
-      - "9092:9092"
+      - '2181:2181'
+      - '9092:9092'
     environment:
-      KAFKA_LISTENERS: "INTERNAL://:29092,EXTERNAL://:9092"
-      KAFKA_ADVERTISED_LISTENERS: "INTERNAL://kafka:29092,EXTERNAL://localhost:9092"
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT"
-      KAFKA_INTER_BROKER_LISTENER_NAME: "INTERNAL"
-      KAFKA_ZOOKEEPER_SESSION_TIMEOUT: "6000"
-      KAFKA_RESTART_ATTEMPTS: "10"
-      KAFKA_RESTART_DELAY: "5"
-      ZOOKEEPER_AUTOPURGE_PURGE_INTERVAL: "0"
+      KAFKA_LISTENERS: 'INTERNAL://:29092,EXTERNAL://:9092'
+      KAFKA_ADVERTISED_LISTENERS: 'INTERNAL://kafka:29092,EXTERNAL://localhost:9092'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'INTERNAL'
+      KAFKA_ZOOKEEPER_SESSION_TIMEOUT: '6000'
+      KAFKA_RESTART_ATTEMPTS: '10'
+      KAFKA_RESTART_DELAY: '5'
+      ZOOKEEPER_AUTOPURGE_PURGE_INTERVAL: '0'
+
+  apm-server:
+    image: docker.elastic.co/apm/apm-server:7.15.0
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+      kibana:
+        condition: service_healthy
+    cap_add: ['CHOWN', 'DAC_OVERRIDE', 'SETGID', 'SETUID']
+    cap_drop: ['ALL']
+    ports:
+      - 8200:8200
+    command: >
+      apm-server -e
+        -E apm-server.rum.enabled=true
+        -E setup.kibana.host=kibana:5601
+        -E setup.template.settings.index.number_of_replicas=0
+        -E apm-server.kibana.enabled=true
+        -E apm-server.kibana.host=kibana:5601
+        -E output.elasticsearch.hosts=["elasticsearch:9200"]
+    healthcheck:
+      interval: 10s
+      retries: 12
+      test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:8200/
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.15.0
+    environment:
+      - bootstrap.memory_lock=true
+      - cluster.name=docker-cluster
+      - cluster.routing.allocation.disk.threshold_enabled=false
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-XX:UseAVX=2 -Xms1g -Xmx1g
+    ulimits:
+      memlock:
+        hard: -1
+        soft: -1
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    healthcheck:
+      interval: 20s
+      retries: 10
+      test: curl -s http://localhost:9200/_cluster/health | grep -vq '"status":"red"'
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.15.0
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    ports:
+      - 5601:5601
+    healthcheck:
+      interval: 10s
+      retries: 20
+      test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:5601/api/status
+
 volumes:
   bulk-files:
+  esdata:
+    driver: local
