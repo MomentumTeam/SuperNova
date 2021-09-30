@@ -196,7 +196,7 @@ services:
     env_file:
       - ./supernova.env
     volumes:
-    - bulk-files:/usr/src/app/bulk-files
+      - bulk-files:/usr/src/app/bulk-files
     ports:
       - '2000:8080'
     depends_on:
