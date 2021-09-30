@@ -304,7 +304,7 @@ const RequestSchema = new Schema(
     additionalParams: {
       entityId: { type: String, default: null },
       displayName: { type: String, default: null },
-      domainUsers: { type: String, default: null },
+      domainUsers: [String],
       akaUnit: { type: String, default: null },
       type: {
         type: String,

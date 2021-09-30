@@ -6,6 +6,7 @@ import { logger } from '../logger';
 import {
   RequestIdArray,
   CanPushToQueueRes,
+  RequestArray,
 } from '../interfaces/protoc/proto/requestService';
 
 //requestClient
@@ -32,6 +33,30 @@ const requestClient: any = new rsProtoDescriptor.RequestService(
 );
 
 export default class RequestService {
+
+  static async getRequestsInProgress(): Promise<RequestArray> {
+    logger.info(`Call to getRequestsInProgress in EXS`);
+
+    return new Promise((resolve, reject) => {
+      requestClient.GetRequestsInProgressByDue(
+        { due: Date.now() },
+        (error: any, response: RequestArray) => {
+          if (error) {
+            logger.error(`getRequestsInProgress ERROR in EXS`, {
+              error: { message: error.message },
+            });
+            reject(error);
+          }
+
+          logger.info(`getRequestsInProgress OK in EXS`, {
+            response: response,
+          });
+          resolve(response);
+        }
+      );
+    });
+  }
+
   static async getRequestIdsInProgress(): Promise<RequestIdArray> {
     logger.info(`Call to getRequestIdsInProgress in EXS`);
 
@@ -104,4 +129,5 @@ export default class RequestService {
       );
     });
   }
+
 }

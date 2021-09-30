@@ -25,7 +25,7 @@ const psProtoDescriptor: any =
   grpc.loadPackageDefinition(psPackageDefinition).Producer;
 
 const producerClient: any = new psProtoDescriptor.Producer(
-  config.producerUrl,
+  config.producerServicUrl,
   grpc.credentials.createInsecure()
 );
 
