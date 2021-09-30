@@ -154,20 +154,6 @@ export class RolesRepository {
     }
   }
 
-    async changeRoleHierarchy(
-    changeRoleHierarchy: ChangeRoleHierarchyRequest
-  ): Promise<Role> {
-    if (C.useFaker) {
-      return this.kartoffelFaker.randomRole();
-    } else {
-      const data: Role = await this.kartoffelUtils.kartoffelPatch(
-          `${C.kartoffelUrl}/api/roles/${changeRoleHierarchy.roleId}/moveToGroup`,
-          changeRoleHierarchy
-      );
-      return data;
-    }
-  }
-
   async changeRoleOG(changeRoleOGRequest: ChangeRoleOGRequest): Promise<Role> {
     if (C.useFaker) {
       return this.kartoffelFaker.randomRole();

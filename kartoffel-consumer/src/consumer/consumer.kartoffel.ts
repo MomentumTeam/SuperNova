@@ -15,7 +15,8 @@ import {
   UpdateEntityRequest,
   DisconnectRoleAndDIRequest,
   DeleteEntityRequest,
-} from '../interfaces/protoc/proto/kartoffelService';
+  ChangeRoleOGRequest,
+} from './interfaces/protoc/proto/kartoffelService';
 import { logger } from '../utils/logger';
 
 export const createOG = async (createOGRequest: CreateOGRequest) => {
@@ -141,7 +142,7 @@ export const deleteRole = async (deleteRoleRequest: DeleteRoleRequest) => {
 export const deleteEntity = async (deleteEntityRequest: DeleteEntityRequest) => {
     logger.info('deleteEntity request received');
     const successMessage: SuccessMessage = await KartoffelService.deleteEntity(deleteEntityRequest);
-    logger.info('Successfuly deleted role', successMessage);
+    logger.info('Successfuly deleted entity', successMessage);
 };
 
 export const renameRole = async (renameRoleRequest: RenameRoleRequest) => {
@@ -189,14 +190,13 @@ export const disconnectRoleAndDI = async (
   logger.info('Successfuly disconnected role from DI', successMessage);
 };
 
-// TODO:
-// export const changeRoleHierarchy = async (changeRoleHierarchyRequest: DisconnectRoleAndDIRequest) => {
-//     logger.info('disconnectRoleAndDI request received');
-//     const { roleId, uniqueId } = disconnectRoleAndDIRequest;
-//     const successMessage: SuccessMessage = await KartoffelService.disconnectRoleAndDI({
-//         roleId: roleId,
-//         uniqueId: uniqueId,
-//     });
-//     logger.info('Successfuly disconnected role from DI', successMessage);
-// };
+export const changeRoleOG = async (createRoleOGRequest: ChangeRoleOGRequest) => {
+    logger.info('changeRoleOG request received');
+    const { roleId, groupId } = createRoleOGRequest;
+    const successMessage: SuccessMessage = await KartoffelService.changeRoleOG({
+        roleId: roleId,
+        groupId: groupId,
+    });
+    logger.info('Successfuly changeRoleOG from DI', successMessage);
+};
 

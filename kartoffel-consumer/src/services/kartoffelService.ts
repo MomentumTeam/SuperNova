@@ -38,7 +38,8 @@ import {
   UpdateEntityRequest,
   DisconnectRoleAndDIRequest,
   DeleteEntityRequest,
-} from '../interfaces/protoc/proto/kartoffelService';
+  ChangeRoleOGRequest,
+} from '../consumer/interfaces/protoc/proto/kartoffelService';
 import { findPath } from '../utils/path';
 
 const PROTO_PATH = `${findPath('proto')}/kartoffelService.proto`;
@@ -518,6 +519,19 @@ export default class KartoffelService {
           }
         }
       );
+    });
+  }
+
+   static async changeRoleOG(changeRoleOG: ChangeRoleOGRequest): Promise<SuccessMessage> {
+    console.log('changeRoleOG');
+    return new Promise((resolve, reject) => {
+      kartoffelClient.ChangeRoleOG(changeRoleOG, (err: any, message: SuccessMessage) => {
+          if (err) {
+              throw reject(err);
+          } else {
+              return resolve(message);
+          }
+      });
     });
   }
 }

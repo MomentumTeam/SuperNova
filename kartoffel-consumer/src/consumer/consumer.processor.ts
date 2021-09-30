@@ -1,6 +1,6 @@
 import RequestService from '../services/requestService';
 import { fromStringToObject } from '../utils/fromStringToObject';
-import { StageStatus } from '../interfaces/protoc/proto/requestService';
+import { StageStatus } from './interfaces/protoc/proto/requestService';
 import {
   createOG,
   createEntity,
@@ -13,6 +13,7 @@ import {
   updateEntity,
   disconnectRoleAndDI,
   deleteEntity,
+  changeRoleOG,
 } from './consumer.kartoffel';
 import { logger } from '../utils/logger';
 
@@ -82,8 +83,7 @@ export const requestProcessor = async (incomingRequest: any) => {
             break;
         }
         case 'CHANGE_ROLE_HIERARCHY': {
-          // TODO: where this function? 
-            // await changeRoleHierarchy(requestObject.data);
+            await changeRoleOG(requestObject.data);
             break;
         }
         default: {

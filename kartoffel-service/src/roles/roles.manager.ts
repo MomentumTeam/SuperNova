@@ -78,8 +78,4 @@ export class RolesManager {
   async changeRoleOG(changeRoleOGRequest: ChangeRoleOGRequest): Promise<Role> {
     return await this.rolesRepository.changeRoleOG(changeRoleOGRequest);
   }
-
-  async changeRoleHierarchy(changeRoleHierarchyRequest: ChangeRoleHierarchyRequest): Promise<Role> {
-    return await this.rolesRepository.changeRoleHierarchy(changeRoleHierarchyRequest);
-  }
 }
