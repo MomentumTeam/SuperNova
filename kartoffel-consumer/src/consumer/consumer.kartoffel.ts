@@ -58,12 +58,13 @@ export const createRole = async (data: any) => {
 
   logger.info('Successfuly created Role', newRole);
 
-  const successMessage: SuccessMessage =
+  const successMessageKartoffel: SuccessMessage =
     await KartoffelService.connectRoleAndDI({
       id: newRole.roleId,
       uniqueId: newDI.uniqueId,
     });
-  logger.info('Successfuly connected role and DI', successMessage);
+  logger.info('Successfuly connected role and DI', successMessageKartoffel);
+  
   return newRole.roleId;
 };
 

@@ -63,7 +63,7 @@ export class AuthenticationHandler {
         const constRedirectURI = req.user.RelayState || config.clientEndpoint;
 
         logger.info('successful handle user');
-        res.cookie(config.authentication.token, userToken, { maxAge: exp }).send('ok');
+        res.cookie(config.authentication.token, userToken, { maxAge: exp });
         res.redirect(`${constRedirectURI}`);
     }
 

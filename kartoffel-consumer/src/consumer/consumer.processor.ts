@@ -16,6 +16,8 @@ import {
   changeRoleOG,
 } from './consumer.kartoffel';
 import { logger } from '../utils/logger';
+import { SuccessMessage } from '../interfaces/protoc/proto/teaService';
+import TeaService from '../services/teaService';
 
 /**
  * requestProcessor - parse a message into an object and handle the request
@@ -99,6 +101,11 @@ export const requestProcessor = async (incomingRequest: any) => {
           status: StageStatus.STAGE_DONE,
           createdId: createdObjectId,
         });
+
+        if (requestObject.type === 'CREATE_ROLE') {
+           const successMessageTea: SuccessMessage = await TeaService.reportTeaSuccess({ tea: createdObjectId });
+           logger.info('Successfuly tea report', successMessageTea);
+        }
       } else {
         RequestService.UpdateKartoffelStatus({
           requestId: requestObject.id,
@@ -111,5 +118,10 @@ export const requestProcessor = async (incomingRequest: any) => {
   } catch (error) {
     console.log(error);
     RequestService.IncrementKartoffelRetries({ id: requestObject.id });
+
+    if (requestObject.type === 'CREATE_ROLE' && createdObjectId != undefined) {
+        const successMessageTea: SuccessMessage = await TeaService.reportTeaFail({ tea: createdObjectId });
+        logger.info('fail tea report: ', successMessageTea);
+    }
   }
 };
