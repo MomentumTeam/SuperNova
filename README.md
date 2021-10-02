@@ -10,8 +10,10 @@ To run with docker, just run:
 
 docker-compose up
 
-1. you can put in comment *-script, kafka and elastic related images.
+1. You can put in comment *-script, kafka and elastic related images.
 2. It is better if you run docker-compose up -d mongo redis before running the rest.
+3. Verify that supernova.env is good for your environment.
+4. When running any service on windows, run "npm run start_windows".
 
 # Requirements
 
