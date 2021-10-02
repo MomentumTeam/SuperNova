@@ -10,8 +10,8 @@ To run with docker, just run:
 
 docker-compose up
 
-(you can put in comment *-script, kafka and elastic related images)
-
+1. you can put in comment *-script, kafka and elastic related images.
+2. It is better if you run docker-compose up -d mongo redis before running the rest.
 
 # Requirements
 
