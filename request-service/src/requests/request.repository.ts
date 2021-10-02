@@ -40,6 +40,8 @@ import {
   requestTypeFromJSON,
   requestStatusFromJSON,
   SyncBulkRequestReq,
+  personInfoTypeFromJSON,
+  personTypeInRequestFromJSON,
 } from '../interfaces/protoc/proto/requestService';
 import { createNotifications } from '../services/notificationHelper';
 import * as C from '../config';
@@ -490,6 +492,23 @@ export class RequestRepository {
   ): Promise<RequestArray> {
     //TODO Check how to search on specific fields
     try {
+      searchRequestsByDisplayNameReq.personType =
+        typeof searchRequestsByDisplayNameReq.personType === typeof ''
+          ? personTypeInRequestFromJSON(
+              searchRequestsByDisplayNameReq.personType
+            )
+          : searchRequestsByDisplayNameReq.personType;
+      searchRequestsByDisplayNameReq.searcherType =
+        searchRequestsByDisplayNameReq.searcherType
+          ? searchRequestsByDisplayNameReq.searcherType
+          : PersonTypeInRequest.SUBMITTER;
+      searchRequestsByDisplayNameReq.searcherType =
+        typeof searchRequestsByDisplayNameReq.searcherType === typeof ''
+          ? personTypeInRequestFromJSON(
+              searchRequestsByDisplayNameReq.searcherType
+            )
+          : searchRequestsByDisplayNameReq.searcherType;
+
       let query: any = {
         $and: [
           { type: { $ne: requestTypeToJSON(RequestType.CREATE_ROLE_BULK) } },
@@ -500,7 +519,36 @@ export class RequestRepository {
           },
         ],
       };
-      const { displayName, personType } = searchRequestsByDisplayNameReq;
+
+      if (searchRequestsByDisplayNameReq.searcherId) {
+        let searcherQuery = {};
+        if (
+          searchRequestsByDisplayNameReq.searcherType ===
+          PersonTypeInRequest.SUBMITTER
+        ) {
+          searcherQuery = {
+            'submittedBy.id': searchRequestsByDisplayNameReq.searcherId,
+          };
+        } else {
+          //APPROVER
+          searcherQuery = {
+            $or: [
+              { 'commanders.id': searchRequestsByDisplayNameReq.searcherId },
+              {
+                'securityApprovers.id':
+                  searchRequestsByDisplayNameReq.searcherId,
+              },
+              {
+                'superSecurityApprovers.id':
+                  searchRequestsByDisplayNameReq.searcherId,
+              },
+            ],
+          };
+        }
+        query['$and'].push(searcherQuery);
+      }
+
+      let { displayName, personType } = searchRequestsByDisplayNameReq;
 
       if (personType === PersonTypeInRequest.SUBMITTER) {
         query['$text'] = { $search: displayName };
