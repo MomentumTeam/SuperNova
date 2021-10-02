@@ -5,6 +5,7 @@ import {
 import {
   Request,
   RequestType,
+  requestTypeFromJSON,
 } from '../interfaces/protoc/proto/requestService';
 import { logger } from '../logger';
 import { RequestService } from '../services/request.service';
@@ -29,21 +30,56 @@ export class RequestManager {
       const request: Request = await this.requestService.getRequestById({
         id: produceRequest.id,
       });
-      const message = generateKartoffelQueueMessage(request);
-      logger.info(
-        'produceToKartoffelQueue received request successfully and generated queue message',
-        {
-          produceRequest,
-          message,
-        }
-      );
-      await this.producerRepository.pushIntoKartoffelQueue(message);
-      const response = {
-        success: true,
-        message: 'Message pushed to Kartoffel queue successfully',
-      };
+      const requestType: RequestType =
+        typeof request.type === typeof ''
+          ? requestTypeFromJSON(request.type)
+          : request.type;
 
-      return response;
+      if (
+        requestType === RequestType.CREATE_ROLE_BULK ||
+        requestType === RequestType.CHANGE_ROLE_HIERARCHY_BULK
+      ) {
+        const requestIds = request.requestIds;
+        const promises = requestIds.map((requestId) => {
+          return new Promise((resolve, reject) => {
+            this.produceToKartoffelQueue({ id: requestId })
+              .then(() => {
+                resolve(true);
+              })
+              .catch(() => reject(false));
+          });
+        });
+        try {
+          await Promise.all(promises);
+          return {
+            success: true,
+            message:
+              'All sub-requests of bulk request were pushed into kartoffel queue successfully',
+          };
+        } catch (bulkError) {
+          return {
+            success: false,
+            message: 'One or more message were not pushed successfully',
+          };
+        }
+      } else {
+        const message = generateKartoffelQueueMessage(request);
+        logger.info(
+          'produceToKartoffelQueue received request successfully and generated queue message',
+          {
+            produceRequest,
+            message,
+            messageStr: JSON.stringify(message),
+          }
+        );
+        await this.producerRepository.pushIntoKartoffelQueue(message);
+        const response = {
+          success: true,
+          message: 'Message pushed to Kartoffel queue successfully',
+        };
+
+        return response;
+      }
     } catch (error) {
       throw error;
     }
@@ -56,21 +92,55 @@ export class RequestManager {
       const request: Request = await this.requestService.getRequestById({
         id: produceRequest.id,
       });
-      const message = generateADQueueMessage(request);
-      logger.info(
-        'produceToADQueue received request successfully and generated queue message',
-        {
-          produceRequest,
-          message,
+      const requestType: RequestType =
+        typeof request.type === typeof ''
+          ? requestTypeFromJSON(request.type)
+          : request.type;
+      if (
+        requestType === RequestType.CREATE_ROLE_BULK ||
+        requestType === RequestType.CHANGE_ROLE_HIERARCHY_BULK
+      ) {
+        const requestIds = request.requestIds;
+        const promises = requestIds.map((requestId) => {
+          return new Promise((resolve, reject) => {
+            this.produceToADQueue({ id: requestId })
+              .then(() => {
+                resolve(true);
+              })
+              .catch(() => reject(false));
+          });
+        });
+        try {
+          await Promise.all(promises);
+          return {
+            success: true,
+            message:
+              'All sub-requests of bulk request were pushed into AD queue successfully',
+          };
+        } catch (bulkError) {
+          return {
+            success: false,
+            message: 'One or more message were not pushed successfully',
+          };
         }
-      );
-      await this.producerRepository.pushIntoADQueue(message);
-      const response = {
-        success: true,
-        message: 'Message pushed to AD queue successfully',
-      };
+      } else {
+        const message = generateADQueueMessage(request);
+        logger.info(
+          'produceToADQueue received request successfully and generated queue message',
+          {
+            produceRequest,
+            message,
+            messageStr: JSON.stringify(message),
+          }
+        );
+        await this.producerRepository.pushIntoADQueue(message);
+        const response = {
+          success: true,
+          message: 'Message pushed to AD queue successfully',
+        };
 
-      return response;
+        return response;
+      }
     } catch (error) {
       throw error;
     }

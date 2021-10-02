@@ -7,6 +7,7 @@ import {
   Request,
   RequestReq,
   RequestType,
+  requestTypeFromJSON,
 } from '../interfaces/protoc/proto/requestService';
 import { findPath } from '../utils/path';
 import { logger } from '../logger';
@@ -32,7 +33,7 @@ export class RequestService {
           logger.info('getRequestById in RequestService OK', {
             'req.id': req.id,
           });
-          res.type = RequestType[res.type];
+          res.type = requestTypeFromJSON(res.type);
           resolve(res as Request);
         }
       });
