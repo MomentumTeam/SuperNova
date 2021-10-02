@@ -10,6 +10,8 @@ To run with docker, just run:
 
 docker-compose up
 
+(you can put in comment *-script, kafka and elastic related images)
+
 
 # Requirements
 
