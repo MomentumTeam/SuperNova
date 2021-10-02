@@ -193,7 +193,8 @@ export class RequestService {
 
       const client: any = new protoDescriptor.RequestService(
         C.requestServiceUrl,
-        grpc.credentials.createInsecure()
+        grpc.credentials.createInsecure(),
+        { 'grpc.keepalive_timeout_ms': 5000 }
       );
       return client;
     } catch (error) {
