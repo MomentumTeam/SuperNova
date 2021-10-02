@@ -27,51 +27,66 @@ const protoDescriptor: any =
 
 const requestClient: any = new protoDescriptor.RequestService(
   config.endpoints.request,
-  grpc.credentials.createInsecure()
+  grpc.credentials.createInsecure(),
+  { 'grpc.keepalive_timeout_ms': 5000 }
 );
 
 export default class RequestService {
-  static async UpdateKartoffelStatus(updateKartoffelStatusReq: UpdateKartoffelStatusReq): Promise<Request> {
-    logger.info(`Call to UpdateKartoffelStatus in KC`, updateKartoffelStatusReq);
+  static async UpdateKartoffelStatus(
+    updateKartoffelStatusReq: UpdateKartoffelStatusReq
+  ): Promise<Request> {
+    logger.info(
+      `Call to UpdateKartoffelStatus in KC`,
+      updateKartoffelStatusReq
+    );
     return new Promise((resolve, reject) => {
-      requestClient.UpdateKartoffelStatus(updateKartoffelStatusReq, (err: any, response: Request) => {
-        if (err) {
-          logger.error(`updateKartoffelStatus ERROR in KC`, {
+      requestClient.UpdateKartoffelStatus(
+        updateKartoffelStatusReq,
+        (err: any, response: Request) => {
+          if (err) {
+            logger.error(`updateKartoffelStatus ERROR in KC`, {
               err,
               callRequest: updateKartoffelStatusReq,
-          });
-          reject(err);
-        } else {
-
-           logger.info(`updateKartoffelStatus OK in KC`, {
-               response: response,
-               callRequest: updateKartoffelStatusReq,
-           });
-          resolve(response);
+            });
+            reject(err);
+          } else {
+            logger.info(`updateKartoffelStatus OK in KC`, {
+              response: response,
+              callRequest: updateKartoffelStatusReq,
+            });
+            resolve(response);
+          }
         }
-      });
+      );
     });
   }
 
-  static async IncrementKartoffelRetries(incrementKartoffelRetries: IncrementRetriesReq): Promise<Request> {
-    logger.info(`Call to IncrementKartoffelRetries in KC`, incrementKartoffelRetries);
+  static async IncrementKartoffelRetries(
+    incrementKartoffelRetries: IncrementRetriesReq
+  ): Promise<Request> {
+    logger.info(
+      `Call to IncrementKartoffelRetries in KC`,
+      incrementKartoffelRetries
+    );
     return new Promise((resolve, reject) => {
-      requestClient.IncrementKartoffelRetries(IncrementRetriesReq, (err: any, response: Request) => {
-        if (err) {
-           logger.error(`IncrementKartoffelRetries ERROR in KC`, {
-               err,
-               callRequest: incrementKartoffelRetries,
-           });
-          reject(err);
-        } else {
-
-           logger.info(`updateKartoffelStatus OK in KC`, {
-               response: response,
-               callRequest: IncrementRetriesReq,
-           });
-          resolve(response);
+      requestClient.IncrementKartoffelRetries(
+        IncrementRetriesReq,
+        (err: any, response: Request) => {
+          if (err) {
+            logger.error(`IncrementKartoffelRetries ERROR in KC`, {
+              err,
+              callRequest: incrementKartoffelRetries,
+            });
+            reject(err);
+          } else {
+            logger.info(`updateKartoffelStatus OK in KC`, {
+              response: response,
+              callRequest: IncrementRetriesReq,
+            });
+            resolve(response);
+          }
         }
-      });
+      );
     });
   }
 }

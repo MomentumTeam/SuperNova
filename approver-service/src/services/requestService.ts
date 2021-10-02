@@ -27,7 +27,8 @@ const protoDescriptor: any =
 
 const requestClient: any = new protoDescriptor.RequestService(
   config.requestServiceUrl,
-  grpc.credentials.createInsecure()
+  grpc.credentials.createInsecure(),
+  { 'grpc.keepalive_timeout_ms': 5000 }
 );
 
 export default class RequestService {

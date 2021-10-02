@@ -64,7 +64,8 @@ const protoDescriptor: any =
 
 export const requestsClient: any = new protoDescriptor.RequestService(
   config.endpoints.request,
-  grpc.credentials.createInsecure()
+  grpc.credentials.createInsecure(),
+  { 'grpc.keepalive_timeout_ms': 5000 }
 );
 
 export class RequestsService {

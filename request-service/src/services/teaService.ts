@@ -27,7 +27,8 @@ const protoDescriptor: any = grpc.loadPackageDefinition(packageDefinition).Tea;
 
 const notificationClient: any = new protoDescriptor.Tea(
   config.teaServiceUrl,
-  grpc.credentials.createInsecure()
+  grpc.credentials.createInsecure(),
+  { 'grpc.keepalive_timeout_ms': 5000 }
 );
 
 export default class TeaService {

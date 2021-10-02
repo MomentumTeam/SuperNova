@@ -21,7 +21,8 @@ const protoDescriptor: any =
 
 const client: any = new protoDescriptor.Spike(
   C.spikeServiceUrl,
-  grpc.credentials.createInsecure()
+  grpc.credentials.createInsecure(),
+  { 'grpc.keepalive_timeout_ms': 5000 }
 );
 
 export class SpikeService {

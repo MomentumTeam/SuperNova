@@ -163,6 +163,18 @@ services:
       - WLS_HOUR=10
       - WLS_MINUTE=0
 
+  population-script:
+    image: population-script
+    build: ./population-script/
+    env_file:
+      - ./supernova.env
+    depends_on:
+      - request-service
+    environment:
+      - POS_RS_URL=request-service:8080
+      - POS_ENTITY_IDS=aaaaaaaaaaaaaaaaaaaaaaaa,bbbbbbbbbbbbbbbbbbbbbbbb
+      - POS_GENERATE_COUNT=50
+
   authentication-service:
     image: authentication-service
     build: ./authentication-service/
@@ -212,7 +224,7 @@ services:
   kouncil:
     image: consdata/kouncil:latest
     ports:
-      - "4001:8080"
+      - '4001:8080'
     environment:
       bootstrapServers: 'kafka:29092'
     depends_on:

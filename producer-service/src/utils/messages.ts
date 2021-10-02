@@ -105,6 +105,11 @@ export function generateKartoffelQueueMessage(request: Request): any {
         id: kartoffelParams.id,
       };
       break;
+    case RequestType.CHANGE_ROLE_HIERARCHY:
+      message.data = {
+        //TODO
+      };
+      break;
     default:
       message.data = {};
       break;
@@ -115,7 +120,7 @@ export function generateKartoffelQueueMessage(request: Request): any {
 export function generateADQueueMessage(request: Request): any {
   const message: any = {
     id: request.id,
-    type: requestTypeToJSON(request.type),
+    type: C.shmuelRequestTypes[requestTypeToJSON(request.type)],
     source: C.oldDomain,
   };
   const adParams: any = request.adParams;
@@ -186,7 +191,7 @@ export function generateADQueueMessage(request: Request): any {
       message.data = {};
       break;
     default:
-      //DELETE_ENTITY, CREATE_ENTITY
+      //DELETE_ENTITY, CREATE_ENTITY NEVER GONNA ENTER THIS
       message.data = {};
       break;
   }

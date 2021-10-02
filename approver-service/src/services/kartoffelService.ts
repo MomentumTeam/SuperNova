@@ -30,7 +30,8 @@ const protoDescriptor: any =
 
 const kartoffelClient: any = new protoDescriptor.Kartoffel(
   config.kartoffelServiceUrl,
-  grpc.credentials.createInsecure()
+  grpc.credentials.createInsecure(),
+  { 'grpc.keepalive_timeout_ms': 5000 }
 );
 
 export default class KartoffelService {
@@ -46,13 +47,13 @@ export default class KartoffelService {
               searchEntitiesByFullName,
               error: { message: error.message },
             });
-            throw reject(error);
+            reject(error);
           } else {
             logger.info('searchEntitiesByFullName in KartoffelService', {
               searchEntitiesByFullName,
               entityArray,
             });
-            return resolve(entityArray);
+            resolve(entityArray);
           }
         }
       );

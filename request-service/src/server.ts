@@ -82,6 +82,7 @@ export class Server {
         EditEntityRequest: createRequestFuncByType(RequestType.EDIT_ENTITY),
         DeleteOGRequest: createRequestFuncByType(RequestType.DELETE_OG),
         DeleteRoleRequest: createRequestFuncByType(RequestType.DELETE_ROLE),
+        DeleteEntityRequest: createRequestFuncByType(RequestType.DELETE_ENTITY),
         DisconectRoleFromEntityRequest: createRequestFuncByType(
           RequestType.DISCONNECT_ROLE
         ),
