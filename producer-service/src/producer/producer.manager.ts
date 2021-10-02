@@ -6,6 +6,7 @@ import {
   Request,
   RequestType,
   requestTypeFromJSON,
+  StageStatus,
 } from '../interfaces/protoc/proto/requestService';
 import { logger } from '../logger';
 import { RequestService } from '../services/request.service';
@@ -73,6 +74,11 @@ export class RequestManager {
           }
         );
         await this.producerRepository.pushIntoKartoffelQueue(message);
+        await this.requestService.updateKartoffelStatus({
+          requestId: produceRequest.id,
+          status: StageStatus.STAGE_IN_PROGRESS,
+          message: `Pushed into kartoffel queue at ${new Date().toString()}`,
+        });
         const response = {
           success: true,
           message: 'Message pushed to Kartoffel queue successfully',
@@ -134,6 +140,11 @@ export class RequestManager {
           }
         );
         await this.producerRepository.pushIntoADQueue(message);
+        await this.requestService.updateADStatus({
+          requestId: produceRequest.id,
+          status: StageStatus.STAGE_IN_PROGRESS,
+          message: `Pushed into AD queue at ${new Date().toString()}`,
+        });
         const response = {
           success: true,
           message: 'Message pushed to AD queue successfully',

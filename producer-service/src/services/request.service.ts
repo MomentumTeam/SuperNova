@@ -8,6 +8,8 @@ import {
   RequestReq,
   RequestType,
   requestTypeFromJSON,
+  UpdateADStatusReq,
+  UpdateKartoffelStatusReq,
 } from '../interfaces/protoc/proto/requestService';
 import { findPath } from '../utils/path';
 import { logger } from '../logger';
@@ -32,6 +34,46 @@ export class RequestService {
         } else {
           logger.info('getRequestById in RequestService OK', {
             'req.id': req.id,
+          });
+          res.type = requestTypeFromJSON(res.type);
+          resolve(res as Request);
+        }
+      });
+    });
+  }
+
+  async updateKartoffelStatus(req: UpdateKartoffelStatusReq): Promise<Request> {
+    logger.info('updateKartoffelStatus in RequestService', { req });
+    return new Promise((resolve, reject) => {
+      this.client.UpdateKartoffelStatus(req, (error: any, res: any) => {
+        if (error) {
+          logger.error('updateKartoffelStatus in RequestService ERROR', {
+            error: { message: error.message },
+          });
+          reject(error);
+        } else {
+          logger.info('updateKartoffelStatus in RequestService OK', {
+            'req.requestId': req.requestId,
+          });
+          res.type = requestTypeFromJSON(res.type);
+          resolve(res as Request);
+        }
+      });
+    });
+  }
+
+  async updateADStatus(req: UpdateADStatusReq): Promise<Request> {
+    logger.info('updateADStatus in RequestService', { req });
+    return new Promise((resolve, reject) => {
+      this.client.UpdateADStatus(req, (error: any, res: any) => {
+        if (error) {
+          logger.error('updateADStatus in RequestService ERROR', {
+            error: { message: error.message },
+          });
+          reject(error);
+        } else {
+          logger.info('updateADStatus in RequestService OK', {
+            'req.requestId': req.requestId,
           });
           res.type = requestTypeFromJSON(res.type);
           resolve(res as Request);
