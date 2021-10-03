@@ -13,6 +13,10 @@ import {
   GetRoleByDIRequest,
   GetRolesByHierarchyRequest,
   ChangeRoleOGRequest,
+  IsJobTitleAlreadyTakenReq,
+  IsJobTitleAlreadyTakenRes,
+  IsRoleAlreadyTakenReq,
+  IsRoleAlreadyTakenRes,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { KartoffelFaker } from '../mock/kartoffel.faker';
 import { KartoffelUtils } from '../utils/kartoffel.utils';
@@ -73,6 +77,50 @@ export class RolesRepository {
       return this.kartoffelUtils.kartoffelDelete(
         `${C.kartoffelUrl}/api/roles/${deleteRoleRequest.roleId}`
       );
+    }
+  }
+
+  async isRoleAlreadyTaken(
+    isRoleAlreadyTakenRequest: IsRoleAlreadyTakenReq
+  ): Promise<IsRoleAlreadyTakenRes> {
+    if (C.useFaker) {
+      const isRoleAlradyTaken = Math.random() < 0.5;
+      return { isRoleAlreadyTaken: isRoleAlradyTaken };
+    } else {
+      try {
+        const entity = await this.kartoffelUtils.kartoffelGet(
+          `${C.kartoffelUrl}/api/entities/role/${isRoleAlreadyTakenRequest.roleId}`,
+          { expanded: true }
+        );
+        if (entity) {
+          return { isRoleAlreadyTaken: true };
+        } else {
+          return { isRoleAlreadyTaken: false };
+        }
+      } catch (error) {
+        if (error.response.status === 404) {
+          return { isRoleAlreadyTaken: false };
+        } else {
+          throw error;
+        }
+      }
+    }
+  }
+
+  async isJobTitleAlreadyTaken(
+    isJobTitleAlreadyTakenRequest: IsJobTitleAlreadyTakenReq
+  ): Promise<IsJobTitleAlreadyTakenRes> {
+    if (C.useFaker) {
+      const isJobTitleAlreadyTaken = Math.random() < 0.5;
+      let res: any = { isJobTitleAlreadyTaken: isJobTitleAlreadyTaken };
+      res.suggestions = ['Programmer 1', 'Programmer 2', 'Programmer 3'];
+      return res as IsJobTitleAlreadyTakenRes;
+    } else {
+      //TODO
+      const isJobTitleAlreadyTaken = Math.random() < 0.5;
+      let res: any = { isJobTitleAlreadyTaken: isJobTitleAlreadyTaken };
+      res.suggestions = ['Programmer 1', 'Programmer 2', 'Programmer 3'];
+      return res as IsJobTitleAlreadyTakenRes;
     }
   }
 

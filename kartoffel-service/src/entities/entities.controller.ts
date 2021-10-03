@@ -222,6 +222,37 @@ export async function getEntityByIdentifier(
   }
 }
 
+export async function searchCommandersByFullName(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    logger.info(`Call to searchCommandersByFullName`, {
+      callRequest: call.request,
+    });
+    const entityArray: EntityArray =
+      await entitiesManager.searchCommandersByFullName(call.request);
+    logger.info(`searchCommandersByFullName OK`, {
+      callRequest: call.request,
+      response: entityArray,
+    });
+    callback(null, entityArray);
+  } catch (error: any) {
+    logger.error(`searchCommandersByFullName ERROR`, {
+      callRequest: call.request,
+      error: { message: error.message },
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
 export async function searchEntitiesByFullName(
   call: any,
   callback: any

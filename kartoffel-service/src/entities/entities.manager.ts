@@ -13,6 +13,7 @@ import {
   GetEntityByRoleIdRequest,
   GetPictureByEntityIdRequest,
   Image,
+  SearchCommandersByFullNameRequest,
   SearchEntitiesByFullNameRequest,
   SuccessMessage,
   UpdateEntityRequest,
@@ -104,6 +105,18 @@ export class EntitiesManager {
     try {
       return await this.entitiesRepository.getEntityByIdentifier(
         getEntityByIndetifierRequest
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async searchCommandersByFullName(
+    searchCommandersByFullNameRequest: SearchCommandersByFullNameRequest
+  ): Promise<EntityArray> {
+    try {
+      return await this.entitiesRepository.searchCommandersByFullName(
+        searchCommandersByFullNameRequest
       );
     } catch (error) {
       throw error;

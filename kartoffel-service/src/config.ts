@@ -25,4 +25,10 @@ export const spikeTokenRefreshInHours = process.env.KS_SPIKE_TOKEN_REFRESH_HOURS
   ? parseInt(process.env.KS_SPIKE_TOKEN_REFRESH_HOURS)
   : 24;
 
-export const kartoffelTreeDepth = process.env.KS_TREE_DEPTH ? parseInt(process.env.KS_TREE_DEPTH) : 3;
+export const kartoffelTreeDepth = process.env.KS_TREE_DEPTH
+  ? parseInt(process.env.KS_TREE_DEPTH)
+  : 3;
+
+export const commanderRanks = process.env.KS_COMMANDER_RANKS
+  ? process.env.KS_COMMANDER_RANKS.split(',')
+  : ['aaa', 'bbb', 'ccc'];
