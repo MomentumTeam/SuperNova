@@ -4,6 +4,29 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "Kartoffel";
 
+export interface IsRoleAlreadyTakenReq {
+  roleId: string;
+}
+
+export interface IsRoleAlreadyTakenRes {
+  isRoleAlreadyTaken: boolean;
+}
+
+export interface IsJobTitleAlreadyTakenReq {
+  jobTitle: string;
+  directGroup: string;
+}
+
+export interface IsJobTitleAlreadyTakenRes {
+  isJobTitleAlreadyTaken: boolean;
+  suggestions: string[];
+}
+
+export interface SearchCommandersByFullNameRequest {
+  fullName: string;
+  source?: string | undefined;
+}
+
 export interface GetAllOGsRequest {
   source: string;
   akaUnit: string;
@@ -387,6 +410,415 @@ export interface DigitalIdentity {
   isRoleAttachable: boolean;
   role: Role | undefined;
 }
+
+const baseIsRoleAlreadyTakenReq: object = { roleId: "" };
+
+export const IsRoleAlreadyTakenReq = {
+  encode(
+    message: IsRoleAlreadyTakenReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.roleId !== "") {
+      writer.uint32(10).string(message.roleId);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): IsRoleAlreadyTakenReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseIsRoleAlreadyTakenReq } as IsRoleAlreadyTakenReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.roleId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): IsRoleAlreadyTakenReq {
+    const message = { ...baseIsRoleAlreadyTakenReq } as IsRoleAlreadyTakenReq;
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = String(object.roleId);
+    } else {
+      message.roleId = "";
+    }
+    return message;
+  },
+
+  toJSON(message: IsRoleAlreadyTakenReq): unknown {
+    const obj: any = {};
+    message.roleId !== undefined && (obj.roleId = message.roleId);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<IsRoleAlreadyTakenReq>
+  ): IsRoleAlreadyTakenReq {
+    const message = { ...baseIsRoleAlreadyTakenReq } as IsRoleAlreadyTakenReq;
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = object.roleId;
+    } else {
+      message.roleId = "";
+    }
+    return message;
+  },
+};
+
+const baseIsRoleAlreadyTakenRes: object = { isRoleAlreadyTaken: false };
+
+export const IsRoleAlreadyTakenRes = {
+  encode(
+    message: IsRoleAlreadyTakenRes,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.isRoleAlreadyTaken === true) {
+      writer.uint32(8).bool(message.isRoleAlreadyTaken);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): IsRoleAlreadyTakenRes {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseIsRoleAlreadyTakenRes } as IsRoleAlreadyTakenRes;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.isRoleAlreadyTaken = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): IsRoleAlreadyTakenRes {
+    const message = { ...baseIsRoleAlreadyTakenRes } as IsRoleAlreadyTakenRes;
+    if (
+      object.isRoleAlreadyTaken !== undefined &&
+      object.isRoleAlreadyTaken !== null
+    ) {
+      message.isRoleAlreadyTaken = Boolean(object.isRoleAlreadyTaken);
+    } else {
+      message.isRoleAlreadyTaken = false;
+    }
+    return message;
+  },
+
+  toJSON(message: IsRoleAlreadyTakenRes): unknown {
+    const obj: any = {};
+    message.isRoleAlreadyTaken !== undefined &&
+      (obj.isRoleAlreadyTaken = message.isRoleAlreadyTaken);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<IsRoleAlreadyTakenRes>
+  ): IsRoleAlreadyTakenRes {
+    const message = { ...baseIsRoleAlreadyTakenRes } as IsRoleAlreadyTakenRes;
+    if (
+      object.isRoleAlreadyTaken !== undefined &&
+      object.isRoleAlreadyTaken !== null
+    ) {
+      message.isRoleAlreadyTaken = object.isRoleAlreadyTaken;
+    } else {
+      message.isRoleAlreadyTaken = false;
+    }
+    return message;
+  },
+};
+
+const baseIsJobTitleAlreadyTakenReq: object = { jobTitle: "", directGroup: "" };
+
+export const IsJobTitleAlreadyTakenReq = {
+  encode(
+    message: IsJobTitleAlreadyTakenReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.jobTitle !== "") {
+      writer.uint32(10).string(message.jobTitle);
+    }
+    if (message.directGroup !== "") {
+      writer.uint32(18).string(message.directGroup);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): IsJobTitleAlreadyTakenReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseIsJobTitleAlreadyTakenReq,
+    } as IsJobTitleAlreadyTakenReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.jobTitle = reader.string();
+          break;
+        case 2:
+          message.directGroup = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): IsJobTitleAlreadyTakenReq {
+    const message = {
+      ...baseIsJobTitleAlreadyTakenReq,
+    } as IsJobTitleAlreadyTakenReq;
+    if (object.jobTitle !== undefined && object.jobTitle !== null) {
+      message.jobTitle = String(object.jobTitle);
+    } else {
+      message.jobTitle = "";
+    }
+    if (object.directGroup !== undefined && object.directGroup !== null) {
+      message.directGroup = String(object.directGroup);
+    } else {
+      message.directGroup = "";
+    }
+    return message;
+  },
+
+  toJSON(message: IsJobTitleAlreadyTakenReq): unknown {
+    const obj: any = {};
+    message.jobTitle !== undefined && (obj.jobTitle = message.jobTitle);
+    message.directGroup !== undefined &&
+      (obj.directGroup = message.directGroup);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<IsJobTitleAlreadyTakenReq>
+  ): IsJobTitleAlreadyTakenReq {
+    const message = {
+      ...baseIsJobTitleAlreadyTakenReq,
+    } as IsJobTitleAlreadyTakenReq;
+    if (object.jobTitle !== undefined && object.jobTitle !== null) {
+      message.jobTitle = object.jobTitle;
+    } else {
+      message.jobTitle = "";
+    }
+    if (object.directGroup !== undefined && object.directGroup !== null) {
+      message.directGroup = object.directGroup;
+    } else {
+      message.directGroup = "";
+    }
+    return message;
+  },
+};
+
+const baseIsJobTitleAlreadyTakenRes: object = {
+  isJobTitleAlreadyTaken: false,
+  suggestions: "",
+};
+
+export const IsJobTitleAlreadyTakenRes = {
+  encode(
+    message: IsJobTitleAlreadyTakenRes,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.isJobTitleAlreadyTaken === true) {
+      writer.uint32(8).bool(message.isJobTitleAlreadyTaken);
+    }
+    for (const v of message.suggestions) {
+      writer.uint32(18).string(v!);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): IsJobTitleAlreadyTakenRes {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseIsJobTitleAlreadyTakenRes,
+    } as IsJobTitleAlreadyTakenRes;
+    message.suggestions = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.isJobTitleAlreadyTaken = reader.bool();
+          break;
+        case 2:
+          message.suggestions.push(reader.string());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): IsJobTitleAlreadyTakenRes {
+    const message = {
+      ...baseIsJobTitleAlreadyTakenRes,
+    } as IsJobTitleAlreadyTakenRes;
+    message.suggestions = [];
+    if (
+      object.isJobTitleAlreadyTaken !== undefined &&
+      object.isJobTitleAlreadyTaken !== null
+    ) {
+      message.isJobTitleAlreadyTaken = Boolean(object.isJobTitleAlreadyTaken);
+    } else {
+      message.isJobTitleAlreadyTaken = false;
+    }
+    if (object.suggestions !== undefined && object.suggestions !== null) {
+      for (const e of object.suggestions) {
+        message.suggestions.push(String(e));
+      }
+    }
+    return message;
+  },
+
+  toJSON(message: IsJobTitleAlreadyTakenRes): unknown {
+    const obj: any = {};
+    message.isJobTitleAlreadyTaken !== undefined &&
+      (obj.isJobTitleAlreadyTaken = message.isJobTitleAlreadyTaken);
+    if (message.suggestions) {
+      obj.suggestions = message.suggestions.map((e) => e);
+    } else {
+      obj.suggestions = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<IsJobTitleAlreadyTakenRes>
+  ): IsJobTitleAlreadyTakenRes {
+    const message = {
+      ...baseIsJobTitleAlreadyTakenRes,
+    } as IsJobTitleAlreadyTakenRes;
+    message.suggestions = [];
+    if (
+      object.isJobTitleAlreadyTaken !== undefined &&
+      object.isJobTitleAlreadyTaken !== null
+    ) {
+      message.isJobTitleAlreadyTaken = object.isJobTitleAlreadyTaken;
+    } else {
+      message.isJobTitleAlreadyTaken = false;
+    }
+    if (object.suggestions !== undefined && object.suggestions !== null) {
+      for (const e of object.suggestions) {
+        message.suggestions.push(e);
+      }
+    }
+    return message;
+  },
+};
+
+const baseSearchCommandersByFullNameRequest: object = { fullName: "" };
+
+export const SearchCommandersByFullNameRequest = {
+  encode(
+    message: SearchCommandersByFullNameRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.fullName !== "") {
+      writer.uint32(10).string(message.fullName);
+    }
+    if (message.source !== undefined) {
+      writer.uint32(18).string(message.source);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): SearchCommandersByFullNameRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseSearchCommandersByFullNameRequest,
+    } as SearchCommandersByFullNameRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.fullName = reader.string();
+          break;
+        case 2:
+          message.source = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SearchCommandersByFullNameRequest {
+    const message = {
+      ...baseSearchCommandersByFullNameRequest,
+    } as SearchCommandersByFullNameRequest;
+    if (object.fullName !== undefined && object.fullName !== null) {
+      message.fullName = String(object.fullName);
+    } else {
+      message.fullName = "";
+    }
+    if (object.source !== undefined && object.source !== null) {
+      message.source = String(object.source);
+    } else {
+      message.source = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: SearchCommandersByFullNameRequest): unknown {
+    const obj: any = {};
+    message.fullName !== undefined && (obj.fullName = message.fullName);
+    message.source !== undefined && (obj.source = message.source);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<SearchCommandersByFullNameRequest>
+  ): SearchCommandersByFullNameRequest {
+    const message = {
+      ...baseSearchCommandersByFullNameRequest,
+    } as SearchCommandersByFullNameRequest;
+    if (object.fullName !== undefined && object.fullName !== null) {
+      message.fullName = object.fullName;
+    } else {
+      message.fullName = "";
+    }
+    if (object.source !== undefined && object.source !== null) {
+      message.source = object.source;
+    } else {
+      message.source = undefined;
+    }
+    return message;
+  },
+};
 
 const baseGetAllOGsRequest: object = {
   source: "",
@@ -6260,6 +6692,9 @@ export interface Kartoffel {
   DisconnectDIFromEntity(
     request: DisconnectDIFromEntityRequest
   ): Promise<SuccessMessage>;
+  SearchCommandersByFullName(
+    request: SearchCommandersByFullNameRequest
+  ): Promise<EntityArray>;
   /** Groups */
   CreateOG(request: CreateOGRequest): Promise<OrganizationGroup>;
   GetAllOGs(request: GetAllOGsRequest): Promise<OGArray>;
@@ -6295,6 +6730,12 @@ export interface Kartoffel {
   DeleteRole(request: DeleteRoleRequest): Promise<SuccessMessage>;
   RenameRole(request: RenameRoleRequest): Promise<SuccessMessage>;
   ChangeRoleOG(request: ChangeRoleOGRequest): Promise<SuccessMessage>;
+  IsRoleAlreadyTaken(
+    request: IsRoleAlreadyTakenReq
+  ): Promise<IsRoleAlreadyTakenRes>;
+  IsJobTitleAlreadyTaken(
+    request: IsJobTitleAlreadyTakenReq
+  ): Promise<IsJobTitleAlreadyTakenRes>;
 }
 
 export class KartoffelClientImpl implements Kartoffel {
@@ -6314,6 +6755,8 @@ export class KartoffelClientImpl implements Kartoffel {
     this.UpdateEntity = this.UpdateEntity.bind(this);
     this.ConnectEntityAndDI = this.ConnectEntityAndDI.bind(this);
     this.DisconnectDIFromEntity = this.DisconnectDIFromEntity.bind(this);
+    this.SearchCommandersByFullName =
+      this.SearchCommandersByFullName.bind(this);
     this.CreateOG = this.CreateOG.bind(this);
     this.GetAllOGs = this.GetAllOGs.bind(this);
     this.GetOGByHierarchyName = this.GetOGByHierarchyName.bind(this);
@@ -6340,6 +6783,8 @@ export class KartoffelClientImpl implements Kartoffel {
     this.DeleteRole = this.DeleteRole.bind(this);
     this.RenameRole = this.RenameRole.bind(this);
     this.ChangeRoleOG = this.ChangeRoleOG.bind(this);
+    this.IsRoleAlreadyTaken = this.IsRoleAlreadyTaken.bind(this);
+    this.IsJobTitleAlreadyTaken = this.IsJobTitleAlreadyTaken.bind(this);
   }
   CreateEntity(request: CreateEntityRequest): Promise<Entity> {
     const data = CreateEntityRequest.encode(request).finish();
@@ -6479,6 +6924,18 @@ export class KartoffelClientImpl implements Kartoffel {
       data
     );
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
+  }
+
+  SearchCommandersByFullName(
+    request: SearchCommandersByFullNameRequest
+  ): Promise<EntityArray> {
+    const data = SearchCommandersByFullNameRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "SearchCommandersByFullName",
+      data
+    );
+    return promise.then((data) => EntityArray.decode(new _m0.Reader(data)));
   }
 
   CreateOG(request: CreateOGRequest): Promise<OrganizationGroup> {
@@ -6699,6 +7156,34 @@ export class KartoffelClientImpl implements Kartoffel {
       data
     );
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
+  }
+
+  IsRoleAlreadyTaken(
+    request: IsRoleAlreadyTakenReq
+  ): Promise<IsRoleAlreadyTakenRes> {
+    const data = IsRoleAlreadyTakenReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "IsRoleAlreadyTaken",
+      data
+    );
+    return promise.then((data) =>
+      IsRoleAlreadyTakenRes.decode(new _m0.Reader(data))
+    );
+  }
+
+  IsJobTitleAlreadyTaken(
+    request: IsJobTitleAlreadyTakenReq
+  ): Promise<IsJobTitleAlreadyTakenRes> {
+    const data = IsJobTitleAlreadyTakenReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "IsJobTitleAlreadyTaken",
+      data
+    );
+    return promise.then((data) =>
+      IsJobTitleAlreadyTakenRes.decode(new _m0.Reader(data))
+    );
   }
 }
 

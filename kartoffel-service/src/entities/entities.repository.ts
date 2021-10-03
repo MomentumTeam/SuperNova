@@ -19,6 +19,7 @@ import {
   UpdateEntityRequest,
   DisconnectDIFromEntityRequest,
   GetEntityByIdentifierRequest,
+  SearchCommandersByFullNameRequest,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { cleanUnderscoreFields } from '../utils/json.utils';
 
@@ -191,6 +192,33 @@ export class EntitiesRepository {
           { expanded: true }
         );
         return data as Entity;
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async searchCommandersByFullName(
+    searchCommandersByFullNameRequest: SearchCommandersByFullNameRequest
+  ): Promise<EntityArray> {
+    try {
+      if (C.useFaker) {
+        const entityArray: EntityArray =
+          await this.kartoffelFaker.randomEntityArray(false);
+        return entityArray;
+      } else {
+        cleanUnderscoreFields(searchCommandersByFullNameRequest);
+        let url = `${C.kartoffelUrl}/api/entities/search?fullName=${searchCommandersByFullNameRequest.fullName}`;
+        for (let rank of C.commanderRanks) {
+          url = url + `&rank=${rank}`;
+        }
+        if (searchCommandersByFullNameRequest.source) {
+          url = url + `&source=${searchCommandersByFullNameRequest.source}`;
+        } else {
+          url = url + `&source=oneTree`;
+        }
+        const data = await this.kartoffelUtils.kartoffelGet(url);
+        return { entities: data as Entity[] };
       }
     } catch (error) {
       throw error;

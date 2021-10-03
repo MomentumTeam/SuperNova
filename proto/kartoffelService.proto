@@ -18,6 +18,7 @@ service Kartoffel {
     rpc UpdateEntity(UpdateEntityRequest) returns (Entity){}
     rpc ConnectEntityAndDI(ConnectEntityAndDIRequest) returns (SuccessMessage){}
     rpc DisconnectDIFromEntity(DisconnectDIFromEntityRequest) returns (SuccessMessage){}
+    rpc SearchCommandersByFullName(SearchCommandersByFullNameRequest) returns (EntityArray){}
     
     //Groups
     rpc CreateOG(CreateOGRequest) returns (OrganizationGroup){}        
@@ -50,6 +51,31 @@ service Kartoffel {
     rpc DeleteRole(DeleteRoleRequest) returns (SuccessMessage){} 
     rpc RenameRole(RenameRoleRequest) returns (SuccessMessage){}
     rpc ChangeRoleOG(ChangeRoleOGRequest) returns (SuccessMessage){}
+    rpc IsRoleAlreadyTaken(IsRoleAlreadyTakenReq) returns (IsRoleAlreadyTakenRes){}
+    rpc IsJobTitleAlreadyTaken(IsJobTitleAlreadyTakenReq) returns (IsJobTitleAlreadyTakenRes){}
+}
+
+message IsRoleAlreadyTakenReq{
+    string roleId = 1;
+}
+
+message IsRoleAlreadyTakenRes{
+    bool isRoleAlreadyTaken = 1;
+}
+
+message IsJobTitleAlreadyTakenReq{
+    string jobTitle = 1;
+    string directGroup = 2;
+}
+
+message IsJobTitleAlreadyTakenRes{
+    bool isJobTitleAlreadyTaken = 1;
+    repeated string suggestions = 2;
+}
+
+message SearchCommandersByFullNameRequest{
+    string fullName = 1;
+    optional string source = 2;
 }
 
 message GetAllOGsRequest{
