@@ -168,12 +168,12 @@ message SearchEntitiesByFullNameRequest{
 }
 
 message GetOGTreeRequest{
-    string rootId = 1;
+    string directGroupId = 1;
 }
 
 message OGTree{
     string id = 1;
-    string name = 2;
+    string label = 2;
     repeated OGTree children = 3;
 }
 
