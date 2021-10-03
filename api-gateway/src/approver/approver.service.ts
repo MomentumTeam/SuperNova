@@ -14,7 +14,10 @@ import {
   SearchByDomainUserReq,
 } from '../interfaces/protoc/proto/approverService';
 import { logger } from '../utils/logger/logger';
-import { UpdateApproverDecisionReq } from '../interfaces/protoc/proto/requestService';
+import {
+  Request,
+  UpdateApproverDecisionReq,
+} from '../interfaces/protoc/proto/requestService';
 
 const PROTO_PATH = __dirname.includes('dist')
   ? path.join(__dirname, '../../../proto/approverService.proto')
@@ -178,7 +181,7 @@ export class ApproverService {
 
   static async updateApproverDecision(
     updateApproverDecisionReq: UpdateApproverDecisionReq
-  ) {
+  ): Promise<Request> {
     logger.info(
       `Call to updateApproverDecision in GTW`,
       updateApproverDecisionReq
@@ -187,7 +190,7 @@ export class ApproverService {
     return new Promise((resolve, reject) => {
       approverClient.UpdateApproverDecision(
         updateApproverDecisionReq,
-        (err: any, response: ApproverArray) => {
+        (err: any, response: Request) => {
           if (err) {
             logger.error(`updateApproverDecision ERROR in GTW`, {
               err,

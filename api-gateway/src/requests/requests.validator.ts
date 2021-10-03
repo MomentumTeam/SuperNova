@@ -21,7 +21,9 @@ import {
     deleteRoleSchema,
     deleteOGSchema,
     disconectRoleFromEntitySchema,
-    deleteRequestSchema
+    deleteRequestSchema,
+    changeRoleHierarchyReqSchema,
+    deleteEntitySchema
 } from './requests.schema';
 
 export class RequestValidator {
@@ -73,7 +75,10 @@ export class RequestValidator {
         next();
     }
 
-    
+    static isChangeRoleHierarchyRequestValid(req: Request, res: Response, next: NextFunction) {
+        transformRequest(req, validateObject(req, changeRoleHierarchyReqSchema, { allowUnknown: true }));
+        next();
+    }
 
     // POST
     static isCreateRoleValid(req: Request, res: Response, next: NextFunction) {
@@ -123,6 +128,11 @@ export class RequestValidator {
 
     static isDeleteOGValid(req: Request, res: Response, next: NextFunction) {
         transformRequest(req, validateObject(req, deleteOGSchema, { allowUnknown: true }));
+        next();
+    }
+
+    static isDeleteEntityValid(req: Request, res: Response, next: NextFunction) {
+        transformRequest(req, validateObject(req, deleteEntitySchema, { allowUnknown: true }));
         next();
     }
 

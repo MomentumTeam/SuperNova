@@ -1024,7 +1024,7 @@ export interface ChangeRoleHierarchyReq {
   approversComments?: string | undefined;
   due?: number | undefined;
   isPartOfBulk: boolean;
-  bulkRequestId: string;
+  bulkRequestId?: string | undefined;
   rowNumber?: string | undefined;
 }
 
@@ -14405,10 +14405,7 @@ export const DisconectRoleFromEntityRes = {
   },
 };
 
-const baseChangeRoleHierarchyReq: object = {
-  isPartOfBulk: false,
-  bulkRequestId: "",
-};
+const baseChangeRoleHierarchyReq: object = { isPartOfBulk: false };
 
 export const ChangeRoleHierarchyReq = {
   encode(
@@ -14481,7 +14478,7 @@ export const ChangeRoleHierarchyReq = {
     if (message.isPartOfBulk === true) {
       writer.uint32(128).bool(message.isPartOfBulk);
     }
-    if (message.bulkRequestId !== "") {
+    if (message.bulkRequestId !== undefined) {
       writer.uint32(138).string(message.bulkRequestId);
     }
     if (message.rowNumber !== undefined) {
@@ -14709,7 +14706,7 @@ export const ChangeRoleHierarchyReq = {
     if (object.bulkRequestId !== undefined && object.bulkRequestId !== null) {
       message.bulkRequestId = String(object.bulkRequestId);
     } else {
-      message.bulkRequestId = "";
+      message.bulkRequestId = undefined;
     }
     if (object.rowNumber !== undefined && object.rowNumber !== null) {
       message.rowNumber = String(object.rowNumber);
@@ -14917,7 +14914,7 @@ export const ChangeRoleHierarchyReq = {
     if (object.bulkRequestId !== undefined && object.bulkRequestId !== null) {
       message.bulkRequestId = object.bulkRequestId;
     } else {
-      message.bulkRequestId = "";
+      message.bulkRequestId = undefined;
     }
     if (object.rowNumber !== undefined && object.rowNumber !== null) {
       message.rowNumber = object.rowNumber;
@@ -26205,7 +26202,7 @@ export interface RequestService {
     request: CreateNewApproverReq
   ): Promise<CreateNewApproverRes>;
   RenameOGRequest(request: RenameOGReq): Promise<RenameOGRes>;
-  RenameRoleRequest(request: RenameRoleReq): Promise<EditEntityRes>;
+  RenameRoleRequest(request: RenameRoleReq): Promise<RenameRoleRes>;
   EditEntityRequest(request: EditEntityReq): Promise<EditEntityRes>;
   DeleteOGRequest(request: DeleteOGReq): Promise<DeleteOGRes>;
   DeleteRoleRequest(request: DeleteRoleReq): Promise<DeleteRoleRes>;
@@ -26362,14 +26359,14 @@ export class RequestServiceClientImpl implements RequestService {
     return promise.then((data) => RenameOGRes.decode(new _m0.Reader(data)));
   }
 
-  RenameRoleRequest(request: RenameRoleReq): Promise<EditEntityRes> {
+  RenameRoleRequest(request: RenameRoleReq): Promise<RenameRoleRes> {
     const data = RenameRoleReq.encode(request).finish();
     const promise = this.rpc.request(
       "RequestService.RequestService",
       "RenameRoleRequest",
       data
     );
-    return promise.then((data) => EditEntityRes.decode(new _m0.Reader(data)));
+    return promise.then((data) => RenameRoleRes.decode(new _m0.Reader(data)));
   }
 
   EditEntityRequest(request: EditEntityReq): Promise<EditEntityRes> {
