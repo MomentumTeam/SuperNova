@@ -27,6 +27,7 @@ import {
   DisconectRoleFromEntityReq,
   DeleteReq,
   GetAllRequestsReq,
+  DeleteEntityReq,
 } from '../interfaces/protoc/proto/requestService';
 import { RequestsService } from './requests.service';
 import { AuthenticationError } from '../utils/errors/userErrors';
@@ -101,9 +102,13 @@ export default class RequestsController {
   }
 
   static async searchRequestsByDisplayName(req: any, res: Response) {
+    if (!req.user && !req.user.id) throw new AuthenticationError();
+
     const searchRequestsByDisplayNameReq: SearchRequestsByDisplayNameReq = {
       displayName: req.params.displayName,
       personType: req.query.personType,
+      searcherType: req.query.searcherType,
+      searcherId: req.user.id,
       from: req.query.from,
       to: req.query.to,
     };
@@ -276,6 +281,8 @@ export default class RequestsController {
   }
 
   static async assignRoleToEntityRequest(req: any, res: Response) {
+    if (!req.user && !req.user.id) throw new AuthenticationError();
+
     const submittedBy: EntityMin = {
       id: req.user.id,
       displayName: req.user.displayName,
@@ -300,6 +307,8 @@ export default class RequestsController {
   }
 
   static async createOGRequest(req: any, res: Response) {
+    if (!req.user && !req.user.id) throw new AuthenticationError();
+
     const submittedBy: EntityMin = {
       id: req.user.id,
       displayName: req.user.displayName,
@@ -322,6 +331,8 @@ export default class RequestsController {
   }
 
   static async createNewApproverRequest(req: any, res: Response) {
+    if (!req.user && !req.user.id) throw new AuthenticationError();
+
     const submittedBy: EntityMin = {
       id: req.user.id,
       displayName: req.user.displayName,
@@ -346,6 +357,8 @@ export default class RequestsController {
   }
 
   static async createEntityRequest(req: any, res: Response) {
+    if (!req.user && !req.user.id) throw new AuthenticationError();
+
     const submittedBy: EntityMin = {
       id: req.user.id,
       displayName: req.user.displayName,
@@ -368,6 +381,8 @@ export default class RequestsController {
   }
 
   static async renameOGRequest(req: any, res: Response) {
+    if (!req.user && !req.user.id) throw new AuthenticationError();
+
     const submittedBy: EntityMin = {
       id: req.user.id,
       displayName: req.user.displayName,
@@ -390,6 +405,8 @@ export default class RequestsController {
   }
 
   static async renameRoleRequest(req: any, res: Response) {
+    if (!req.user && !req.user.id) throw new AuthenticationError();
+
     const submittedBy: EntityMin = {
       id: req.user.id,
       displayName: req.user.displayName,
@@ -412,6 +429,8 @@ export default class RequestsController {
   }
 
   static async editEntityRequest(req: any, res: Response) {
+    if (!req.user && !req.user.id) throw new AuthenticationError();
+
     const submittedBy: EntityMin = {
       id: req.user.id,
       displayName: req.user.displayName,
@@ -434,6 +453,8 @@ export default class RequestsController {
   }
 
   static async deleteRoleRequest(req: any, res: Response) {
+    if (!req.user && !req.user.id) throw new AuthenticationError();
+
     logger.info(`Call to deleteRoleRequest in GTW`, {
       callRequest: { submittedBy: req.user.id },
     });
@@ -462,6 +483,8 @@ export default class RequestsController {
   }
 
   static async deleteOGRequest(req: any, res: Response) {
+    if (!req.user && !req.user.id) throw new AuthenticationError();
+
     logger.info(`Call to deleteOGRequest in GTW`, {
       callRequest: { submittedBy: req.user.id },
     });
@@ -481,6 +504,36 @@ export default class RequestsController {
     try {
       const deletedOG = await RequestsService.deleteOGRequest(deleteOGReq);
       res.status(200).send(deletedOG);
+    } catch (error: any) {
+      const statusCode = statusCodeHandler(error);
+      res.status(statusCode).send(error.message);
+    }
+  }
+
+  static async deleteEntityRequest(req: any, res: Response) {
+    if (!req.user && !req.user.id) throw new AuthenticationError();
+
+    logger.info(`Call to deleteEntityRequest in GTW`, {
+      callRequest: { submittedBy: req.user.id },
+    });
+
+    const submittedBy: EntityMin = {
+      id: req.user.id,
+      displayName: req.user.displayName,
+      identityCard: req.user.identityCard,
+      personalNumber: req.user.personalNumber,
+    };
+
+    const deleteEntityReq: DeleteEntityReq = {
+      submittedBy: submittedBy,
+      ...req.body,
+    };
+
+    try {
+      const deletedEntity = await RequestsService.deleteEntityRequest(
+        deleteEntityReq
+      );
+      res.status(200).send(deletedEntity);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
@@ -533,6 +586,34 @@ export default class RequestsController {
     try {
       const msg = await RequestsService.deleteRequest(deleteReq);
       res.status(200).send(msg);
+    } catch (error: any) {
+      const statusCode = statusCodeHandler(error);
+      res.status(statusCode).send(error.message);
+    }
+  }
+
+  static async changeRoleHierarchyRequest(req: any, res: Response) {
+    if (!req.user && !req.user.id) throw new AuthenticationError();
+
+    logger.info(`Call to changeRoleHierarchyRequest in GTW`, {
+      callRequest: { submittedBy: req.user.id },
+    });
+
+    const submittedBy: EntityMin = {
+      id: req.user.id,
+      displayName: req.user.displayName,
+      identityCard: req.user.identityCard,
+      personalNumber: req.user.personalNumber,
+    };
+
+    const deleteOGReq: DeleteOGReq = {
+      submittedBy: submittedBy,
+      ...req.body,
+    };
+
+    try {
+      const deletedOG = await RequestsService.deleteOGRequest(deleteOGReq);
+      res.status(200).send(deletedOG);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);

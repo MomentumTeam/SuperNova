@@ -7,6 +7,8 @@ import {
   AssignRoleToEntityRes,
   CanPushToQueueReq,
   CanPushToQueueRes,
+  ChangeRoleHierarchyReq,
+  ChangeRoleHierarchyRes,
   CreateEntityRes,
   CreateNewApproverReq,
   CreateNewApproverRes,
@@ -14,6 +16,8 @@ import {
   CreateOGRes,
   CreateRoleReq,
   CreateRoleRes,
+  DeleteEntityReq,
+  DeleteEntityRes,
   DeleteOGReq,
   DeleteOGRes,
   DeleteReq,
@@ -569,11 +573,10 @@ export class RequestsService {
   static async renameRoleRequest(renameRoleReq: RenameRoleReq) {
     logger.info(`Call to renameRoleRequest in GTW`, renameRoleReq);
 
-    // TODO: check if the returned type should by renameRoleRes?
     return new Promise((resolve, reject) => {
       requestsClient.RenameRoleRequest(
         renameRoleReq,
-        (err: any, response: EditEntityRes) => {
+        (err: any, response: RenameRoleRes) => {
           if (err) {
             logger.error(`renameRoleRequest ERROR in GTW`, {
               err,
@@ -598,7 +601,7 @@ export class RequestsService {
     return new Promise((resolve, reject) => {
       requestsClient.EditEntityRequest(
         editEntityReq,
-        (err: any, response: RenameOGRes) => {
+        (err: any, response: EditEntityRes) => {
           if (err) {
             logger.error(`editEntityRequest ERROR in GTW`, {
               err,
@@ -610,6 +613,36 @@ export class RequestsService {
           logger.info(`editEntityRequest OK in GTW`, {
             response: response,
             callRequest: editEntityReq,
+          });
+          resolve(response);
+        }
+      );
+    });
+  }
+
+  static async changeRoleHierarchyRequest(
+    changeRoleHierarchyRequest: ChangeRoleHierarchyReq
+  ) {
+    logger.info(
+      `Call to changeRoleHierarchyRequest in GTW`,
+      changeRoleHierarchyRequest
+    );
+
+    return new Promise((resolve, reject) => {
+      requestsClient.ChangeRoleHierarchyRequest(
+        changeRoleHierarchyRequest,
+        (err: any, response: ChangeRoleHierarchyRes) => {
+          if (err) {
+            logger.error(`changeRoleHierarchyRequest ERROR in GTW`, {
+              err,
+              callRequest: changeRoleHierarchyRequest,
+            });
+            reject(err);
+          }
+
+          logger.info(`changeRoleHierarchyRequest OK in GTW`, {
+            response: response,
+            callRequest: changeRoleHierarchyRequest,
           });
           resolve(response);
         }
@@ -661,6 +694,31 @@ export class RequestsService {
           logger.info(`deleteOGRequest OK in GTW`, {
             response: response,
             callRequest: deleteOGReq,
+          });
+          resolve(response);
+        }
+      );
+    });
+  }
+
+  static async deleteEntityRequest(deleteEntityRequest: DeleteEntityReq) {
+    logger.info(`Call to deleteEntityRequest in GTW`, deleteEntityRequest);
+
+    return new Promise((resolve, reject) => {
+      requestsClient.DeleteEntityRequest(
+        deleteEntityRequest,
+        (err: any, response: DeleteEntityRes) => {
+          if (err) {
+            logger.error(`deleteEntityRequest ERROR in GTW`, {
+              err,
+              callRequest: deleteEntityRequest,
+            });
+            reject(err);
+          }
+
+          logger.info(`deleteEntityRequest OK in GTW`, {
+            response: response,
+            callRequest: deleteEntityRequest,
           });
           resolve(response);
         }

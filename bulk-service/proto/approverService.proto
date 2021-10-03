@@ -69,7 +69,7 @@ message AddApproverReq{
     string displayName = 2;
     repeated string domainUsers = 3;
     string akaUnit = 4;
-    UserType type = 5;
+    RequestService.ApproverType type = 5;
 }
 
 message Approver{

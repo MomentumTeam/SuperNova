@@ -1,4 +1,3 @@
-import { UserType } from '../interfaces/protoc/proto/approverService';
 import {
   PersonTypeInRequest,
   PersonInfoType,
@@ -60,17 +59,20 @@ export const getRequestBySerialNumberSchema = Joi.object({
 });
 
 export const SearchRequestsByDisplayNameSchema = Joi.object({
-    body: {},
-    params: {
-        displayName: Joi.string().required(),
-    },
-    query: {
-        personType: Joi.string()
-            .valid(...Object.keys(PersonTypeInRequest))
-            .required(),
-        from: Joi.number().default(0),
-        to: Joi.number().default(100),
-    },
+  body: {},
+  params: {
+    displayName: Joi.string().required(),
+  },
+  query: {
+    personType: Joi.string()
+      .valid(...Object.keys(PersonTypeInRequest))
+      .required(),
+    searcherType: Joi.string()
+      .valid(...Object.keys(PersonTypeInRequest))
+      .required(),
+    from: Joi.number().default(0),
+    to: Joi.number().default(100),
+  },
 });
 
 // PUT
@@ -421,7 +423,7 @@ const editEntityKartoffelParamsObj = Joi.object({
   id: Joi.string().required(),
   firstName: Joi.string().required(),
   lastName: Joi.string().required(),
-  identityCard: Joi.string().required(),
+  identityCard: Joi.string(),
   personalNumber: Joi.string().required(),
   serviceType: Joi.string().required(),
   phone: Joi.array().items(Joi.string()),
@@ -461,6 +463,43 @@ export const editEntitySchema = Joi.object({
   query: {},
 });
 
+const changeRoleHierarchyKartoffelParamsObj = Joi.object({
+  roleId: Joi.string().required(),
+  directGroup: Joi.string().required(),
+  jobTitle: Joi.string(),
+});
+
+const changeRoleHierarchyADParamsObj = Joi.object({
+  samAccountName: Joi.string(),
+  ouDisplayName: Joi.string(),
+  jobTitle: Joi.string(),
+});
+
+export const changeRoleHierarchyReqSchema = Joi.object({
+  body: {
+    status: Joi.string().valid(...Object.keys(RequestStatus)),
+    commanderDecision: ApproverDecisionObj,
+    securityDecision: ApproverDecisionObj,
+    superSecurityDecision: ApproverDecisionObj,
+    commanders: Joi.array().items(entityMinObj),
+    securityApprovers: Joi.array().items(entityMinObj),
+    superSecurityApprovers: Joi.array().items(entityMinObj),
+    kartoffelStatus: kartoffelStatusObj,
+    adStatus: ADStatusObj,
+    kartoffelParams: changeRoleHierarchyKartoffelParamsObj.required(),
+    adParams: changeRoleHierarchyADParamsObj.required(),
+    comments: Joi.string(),
+    approversComments: Joi.string(),
+    due: Joi.number().unsafe(),
+    isPartOfBulk: Joi.boolean().default(false),
+    bulkRequestId: Joi.string(),
+    rowNumber: Joi.string(),
+  },
+  params: {},
+  query: {},
+});
+
+// DELETE
 const deleteRoleKartoffelParamsObj = Joi.object({
   roleId: Joi.string().required(),
   uniqueId: Joi.string().required(),
@@ -522,6 +561,35 @@ export const deleteOGSchema = Joi.object({
   query: {},
 });
 
+const deleteEntityKartoffelParamsObj = Joi.object({
+  id: Joi.string().required(),
+});
+
+const deleteEntityADParamsObj = Joi.object({
+  //NO PARAMETERS NEEDED
+});
+
+export const deleteEntitySchema = Joi.object({
+  body: {
+    status: Joi.string().valid(...Object.keys(RequestStatus)),
+    commanderDecision: ApproverDecisionObj,
+    securityDecision: ApproverDecisionObj,
+    superSecurityDecision: ApproverDecisionObj,
+    commanders: Joi.array().items(entityMinObj),
+    securityApprovers: Joi.array().items(entityMinObj),
+    superSecurityApprovers: Joi.array().items(entityMinObj),
+    kartoffelStatus: kartoffelStatusObj,
+    adStatus: ADStatusObj,
+    kartoffelParams: deleteEntityKartoffelParamsObj.required(),
+    adParams: deleteEntityADParamsObj.required(),
+    comments: Joi.string(),
+    approversComments: Joi.string(),
+    due: Joi.number().unsafe(),
+  },
+  params: {},
+  query: {},
+});
+
 const disconectRoleFromEntityRequestKartoffelParamsObj = Joi.object({
   id: Joi.string().required(),
   uniqueId: Joi.string().required(),
@@ -552,8 +620,6 @@ export const disconectRoleFromEntitySchema = Joi.object({
   params: {},
   query: {},
 });
-
-// DELETE
 
 export const deleteRequestSchema = Joi.object({
   body: {},

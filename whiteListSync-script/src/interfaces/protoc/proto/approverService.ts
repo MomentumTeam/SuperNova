@@ -1,7 +1,13 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Request, UpdateApproverDecisionReq } from "./requestService";
+import {
+  ApproverType,
+  Request,
+  UpdateApproverDecisionReq,
+  approverTypeFromJSON,
+  approverTypeToJSON,
+} from "./requestService";
 
 export const protobufPackage = "ApproverService";
 
@@ -167,7 +173,7 @@ export interface AddApproverReq {
   displayName: string;
   domainUsers: string[];
   akaUnit: string;
-  type: UserType;
+  type: ApproverType;
 }
 
 export interface Approver {
@@ -981,7 +987,7 @@ export const AddApproverReq = {
       message.akaUnit = "";
     }
     if (object.type !== undefined && object.type !== null) {
-      message.type = userTypeFromJSON(object.type);
+      message.type = approverTypeFromJSON(object.type);
     } else {
       message.type = 0;
     }
@@ -999,7 +1005,7 @@ export const AddApproverReq = {
       obj.domainUsers = [];
     }
     message.akaUnit !== undefined && (obj.akaUnit = message.akaUnit);
-    message.type !== undefined && (obj.type = userTypeToJSON(message.type));
+    message.type !== undefined && (obj.type = approverTypeToJSON(message.type));
     return obj;
   },
 
