@@ -28,6 +28,7 @@ import {
   DeleteReq,
   GetAllRequestsReq,
   DeleteEntityReq,
+  ChangeRoleHierarchyReq,
 } from '../interfaces/protoc/proto/requestService';
 import { RequestsService } from './requests.service';
 import { AuthenticationError } from '../utils/errors/userErrors';
@@ -606,14 +607,14 @@ export default class RequestsController {
       personalNumber: req.user.personalNumber,
     };
 
-    const deleteOGReq: DeleteOGReq = {
+    const changeRoleHierarchyReq: ChangeRoleHierarchyReq = {
       submittedBy: submittedBy,
       ...req.body,
     };
 
     try {
-      const deletedOG = await RequestsService.deleteOGRequest(deleteOGReq);
-      res.status(200).send(deletedOG);
+      const request = await RequestsService.changeRoleHierarchyRequest(changeRoleHierarchyReq);
+      res.status(200).send(request);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
