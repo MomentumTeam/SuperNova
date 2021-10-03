@@ -61,68 +61,6 @@ export function requestStatusToJSON(object: RequestStatus): string {
   }
 }
 
-export enum UserType {
-  UNKNOWN = 0,
-  SECURITY = 1,
-  SUPER_SECURITY = 2,
-  COMMANDER = 3,
-  SOLDIER = 4,
-  ADMIN = 5,
-  BULK = 6,
-  UNRECOGNIZED = -1,
-}
-
-export function userTypeFromJSON(object: any): UserType {
-  switch (object) {
-    case 0:
-    case "UNKNOWN":
-      return UserType.UNKNOWN;
-    case 1:
-    case "SECURITY":
-      return UserType.SECURITY;
-    case 2:
-    case "SUPER_SECURITY":
-      return UserType.SUPER_SECURITY;
-    case 3:
-    case "COMMANDER":
-      return UserType.COMMANDER;
-    case 4:
-    case "SOLDIER":
-      return UserType.SOLDIER;
-    case 5:
-    case "ADMIN":
-      return UserType.ADMIN;
-    case 6:
-    case "BULK":
-      return UserType.BULK;
-    case -1:
-    case "UNRECOGNIZED":
-    default:
-      return UserType.UNRECOGNIZED;
-  }
-}
-
-export function userTypeToJSON(object: UserType): string {
-  switch (object) {
-    case UserType.UNKNOWN:
-      return "UNKNOWN";
-    case UserType.SECURITY:
-      return "SECURITY";
-    case UserType.SUPER_SECURITY:
-      return "SUPER_SECURITY";
-    case UserType.COMMANDER:
-      return "COMMANDER";
-    case UserType.SOLDIER:
-      return "SOLDIER";
-    case UserType.ADMIN:
-      return "ADMIN";
-    case UserType.BULK:
-      return "BULK";
-    default:
-      return "UNKNOWN";
-  }
-}
-
 export interface SyncApproverReq {
   approverId: string;
 }
@@ -136,7 +74,7 @@ export interface ApproverIdArray {
 }
 
 export interface GetAllApproversReq {
-  type: UserType | undefined;
+  type: ApproverType | undefined;
 }
 
 export interface SuccessMessage {
@@ -145,14 +83,14 @@ export interface SuccessMessage {
 
 export interface SearchByDisplayNameReq {
   displayName: string;
-  type: UserType;
+  type: ApproverType;
   from: number;
   to: number;
 }
 
 export interface SearchByDomainUserReq {
   domainUser: string;
-  type: UserType;
+  type: ApproverType;
 }
 
 export interface ApproverArray {
@@ -165,7 +103,7 @@ export interface GetUserTypeReq {
 
 export interface GetUserTypeRes {
   entityId: string;
-  type: UserType[];
+  type: ApproverType[];
 }
 
 export interface AddApproverReq {
@@ -181,7 +119,7 @@ export interface Approver {
   displayName: string;
   /** entity may have multiple emails */
   domainUsers: string[];
-  type: UserType;
+  type: ApproverType;
   akaUnit: string;
   id: string;
 }
@@ -401,7 +339,7 @@ export const GetAllApproversReq = {
   fromJSON(object: any): GetAllApproversReq {
     const message = { ...baseGetAllApproversReq } as GetAllApproversReq;
     if (object.type !== undefined && object.type !== null) {
-      message.type = userTypeFromJSON(object.type);
+      message.type = approverTypeFromJSON(object.type);
     } else {
       message.type = undefined;
     }
@@ -412,7 +350,9 @@ export const GetAllApproversReq = {
     const obj: any = {};
     message.type !== undefined &&
       (obj.type =
-        message.type !== undefined ? userTypeToJSON(message.type) : undefined);
+        message.type !== undefined
+          ? approverTypeToJSON(message.type)
+          : undefined);
     return obj;
   },
 
@@ -550,7 +490,7 @@ export const SearchByDisplayNameReq = {
       message.displayName = "";
     }
     if (object.type !== undefined && object.type !== null) {
-      message.type = userTypeFromJSON(object.type);
+      message.type = approverTypeFromJSON(object.type);
     } else {
       message.type = 0;
     }
@@ -571,7 +511,7 @@ export const SearchByDisplayNameReq = {
     const obj: any = {};
     message.displayName !== undefined &&
       (obj.displayName = message.displayName);
-    message.type !== undefined && (obj.type = userTypeToJSON(message.type));
+    message.type !== undefined && (obj.type = approverTypeToJSON(message.type));
     message.from !== undefined && (obj.from = message.from);
     message.to !== undefined && (obj.to = message.to);
     return obj;
@@ -653,7 +593,7 @@ export const SearchByDomainUserReq = {
       message.domainUser = "";
     }
     if (object.type !== undefined && object.type !== null) {
-      message.type = userTypeFromJSON(object.type);
+      message.type = approverTypeFromJSON(object.type);
     } else {
       message.type = 0;
     }
@@ -663,7 +603,7 @@ export const SearchByDomainUserReq = {
   toJSON(message: SearchByDomainUserReq): unknown {
     const obj: any = {};
     message.domainUser !== undefined && (obj.domainUser = message.domainUser);
-    message.type !== undefined && (obj.type = userTypeToJSON(message.type));
+    message.type !== undefined && (obj.type = approverTypeToJSON(message.type));
     return obj;
   },
 
@@ -867,7 +807,7 @@ export const GetUserTypeRes = {
     }
     if (object.type !== undefined && object.type !== null) {
       for (const e of object.type) {
-        message.type.push(userTypeFromJSON(e));
+        message.type.push(approverTypeFromJSON(e));
       }
     }
     return message;
@@ -877,7 +817,7 @@ export const GetUserTypeRes = {
     const obj: any = {};
     message.entityId !== undefined && (obj.entityId = message.entityId);
     if (message.type) {
-      obj.type = message.type.map((e) => userTypeToJSON(e));
+      obj.type = message.type.map((e) => approverTypeToJSON(e));
     } else {
       obj.type = [];
     }
@@ -1129,7 +1069,7 @@ export const Approver = {
       }
     }
     if (object.type !== undefined && object.type !== null) {
-      message.type = userTypeFromJSON(object.type);
+      message.type = approverTypeFromJSON(object.type);
     } else {
       message.type = 0;
     }
@@ -1156,7 +1096,7 @@ export const Approver = {
     } else {
       obj.domainUsers = [];
     }
-    message.type !== undefined && (obj.type = userTypeToJSON(message.type));
+    message.type !== undefined && (obj.type = approverTypeToJSON(message.type));
     message.akaUnit !== undefined && (obj.akaUnit = message.akaUnit);
     message.id !== undefined && (obj.id = message.id);
     return obj;

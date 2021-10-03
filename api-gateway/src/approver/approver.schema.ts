@@ -1,4 +1,4 @@
-import { RequestStatus, UserType } from '../interfaces/protoc/proto/approverService';
+import { RequestStatus } from '../interfaces/protoc/proto/approverService';
 import { ApproverType } from '../interfaces/protoc/proto/requestService';
 
 const Joi = require('joi');
@@ -9,7 +9,7 @@ export const getAllApproversSchema = Joi.object({
   body: {},
   params: {},
   query: {
-    type: Joi.string().valid(...Object.keys(UserType)),
+    type: Joi.string().valid(...Object.keys(ApproverType)),
   },
 });
 

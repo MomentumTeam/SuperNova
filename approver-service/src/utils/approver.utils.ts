@@ -1,14 +1,14 @@
-import {
-  Approver,
-  UserType,
-  userTypeFromJSON,
-} from '../interfaces/protoc/proto/approverService';
+import { Approver } from '../interfaces/protoc/proto/approverService';
 import {
   DigitalIdentity,
   Entity,
   EntityArray,
 } from '../interfaces/protoc/proto/kartoffelService';
 import * as C from '../config';
+import {
+  ApproverType,
+  approverTypeFromJSON,
+} from '../interfaces/protoc/proto/requestService';
 
 export function cleanUnderscoreFields(document: any): void {
   Object.keys(document).map((key) => {
@@ -30,7 +30,7 @@ export function turnObjectIdsToStrings(document: any): void {
 
   //type
   if (document.type) {
-    document.type = document.type as UserType;
+    document.type = document.type as ApproverType;
   }
 
   cleanUnderscoreFields(document);
@@ -54,9 +54,9 @@ export function getMongoApproverArray(approverMongoArray: any): Approver[] {
   }
 }
 
-export function approverTypeValidation(type: UserType): UserType {
-  type = userTypeFromJSON(type);
-  if (type === UserType.UNKNOWN || type === UserType.UNRECOGNIZED) {
+export function approverTypeValidation(type: ApproverType): ApproverType {
+  type = approverTypeFromJSON(type);
+  if (type === ApproverType.UNKNOWN || type === ApproverType.UNRECOGNIZED) {
     throw Error('unsupported type');
   }
 
@@ -65,7 +65,7 @@ export function approverTypeValidation(type: UserType): UserType {
 
 export function getApproverArrayByEntityArray(
   entityArray: EntityArray,
-  type: UserType
+  type: ApproverType
 ): Approver[] {
   try {
     return entityArray.entities.map((entity: Entity) => {

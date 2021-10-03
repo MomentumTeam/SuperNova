@@ -7,7 +7,6 @@ import {
   GetUserTypeReq,
   AddApproverReq,
   DeleteApproverReq,
-  UserType,
 } from '../interfaces/protoc/proto/approverService';
 import { ApproverService } from './approver.service';
 import { KartoffelService } from '../kartoffel/kartoffel.service';
