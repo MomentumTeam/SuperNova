@@ -17,3 +17,17 @@ export const spikeTokenRefreshInHours = process.env.PS_SPIKE_TOKEN_REFRESH_HOURS
   : 24;
 export const oldDomain = process.env.PS_OLD_DOMAIN || 'oldDomain';
 export const newDomain = process.env.PS_NEW_DOMAIN || 'newDomain';
+
+export const shmuelRequestTypes: any = {
+  CREATE_OG: 'CREATE_OG',
+  CREATE_ROLE: 'CREATE_ROLE',
+  ASSIGN_ROLE_TO_ENTITY: 'ASSIGN_ROLE_TO_ENTITY',
+  CREATE_ENTITY: 'CREATE_ENTITY',
+  RENAME_OG: 'RENAME_OG',
+  RENAME_ROLE: 'RENAME_ROLE',
+  EDIT_ENTITY: 'EDIT_ENTITY',
+  DELETE_OG: 'DELETE_OG',
+  DELETE_ENTITY: 'DELETE_ENTITY',
+  DISCONNECT_ROLE: 'DISCONNECT_ROLE',
+  CHANGE_ROLE_HIERARCHY: 'CHANGE_ROLE_HIERARCHY',
+};
