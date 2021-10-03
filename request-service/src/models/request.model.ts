@@ -362,4 +362,8 @@ RequestSchema.index({
   'superSecurityApprovers.displayName': 'text',
 });
 
-export const RequestModel = mongoose.model('Request', RequestSchema, 'requests');
+export const RequestModel = mongoose.model(
+  'Request',
+  RequestSchema,
+  'requests'
+);

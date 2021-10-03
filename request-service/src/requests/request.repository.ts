@@ -121,6 +121,7 @@ export class RequestRepository {
         due <= new Date().getTime() &&
         kartoffelFailedRetries <= C.maxQueueRetries &&
         kartoffelStatus != StageStatus.STAGE_FAILED &&
+        kartoffelStatus != StageStatus.STAGE_DONE &&
         kartoffelStatus != StageStatus.STAGE_IN_PROGRESS
       ) {
         return { canPushToQueue: true };
@@ -369,6 +370,7 @@ export class RequestRepository {
       if (
         kartoffelStatus === StageStatus.STAGE_DONE &&
         adStatus != StageStatus.STAGE_FAILED &&
+        adStatus != StageStatus.STAGE_DONE &&
         adStatus != StageStatus.STAGE_IN_PROGRESS &&
         adFailedRetries <= C.maxQueueRetries
       ) {

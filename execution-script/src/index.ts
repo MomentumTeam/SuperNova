@@ -49,7 +49,7 @@ async function execute() {
   const promises = requestsArray.requests.map(async (request: any) => {
     return new Promise((resolve, reject) => {
       if (request.type === RequestType.ADD_APPROVER) {
-        ApproverService.addApprover(request.additionalParams)
+        ApproverService.addApprover(request.id,request.additionalParams)
           .then(() => {
             resolve(true);
           })

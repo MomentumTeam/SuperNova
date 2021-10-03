@@ -6,8 +6,6 @@ import { logger } from '../logger';
 import RequestService from './requestService';
 import { SuccessMessage } from '../interfaces/protoc/proto/producerService';
 
-//producerClient
-
 const PS_PROTO_PATH = `${findPath('proto')}/producerService.proto`;
 
 const psPackageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(

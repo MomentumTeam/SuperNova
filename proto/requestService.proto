@@ -951,6 +951,7 @@ message UpdateReq{
     string id = 1;
     UpdateReqProperties requestProperties = 2;
 }
+
 message UpdateReqProperties{
     optional EntityMin submittedBy = 1;
     optional RequestStatus status = 2;
@@ -1316,9 +1317,13 @@ message Request{
 // ---------------------------------------------Enums------------------------------------------------------------
 
 enum ApproverType{
-    COMMANDER = 0;
+    UNKNOWN = 0;
     SECURITY = 1;
     SUPER_SECURITY = 2;
+    COMMANDER = 3;
+    SOLDIER = 4;
+    ADMIN = 5;
+    BULK = 6;
 }
 
 enum RequestType {

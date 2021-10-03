@@ -9,8 +9,6 @@ import {
   RequestArray,
 } from '../interfaces/protoc/proto/requestService';
 
-//requestClient
-
 const RS_PROTO_PATH = `${findPath('proto')}/requestService.proto`;
 
 const rsPackageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(
@@ -33,7 +31,6 @@ const requestClient: any = new rsProtoDescriptor.RequestService(
 );
 
 export default class RequestService {
-
   static async getRequestsInProgress(): Promise<RequestArray> {
     logger.info(`Call to getRequestsInProgress in EXS`);
 
@@ -130,4 +127,30 @@ export default class RequestService {
     });
   }
 
+  static async updateRequest(
+    id: string,
+    requestProperties: any
+  ): Promise<CanPushToQueueRes> {
+    logger.info(`Call to updateRequest in EXS`);
+
+    return new Promise((resolve, reject) => {
+      requestClient.UpdateRequest(
+        { id, requestProperties },
+        (error: any, response: CanPushToQueueRes) => {
+          if (error) {
+            logger.error(`updateRequest ERROR in EXS`, {
+              error: { message: error.message },
+              callRequest: { id: id },
+            });
+            reject(error);
+          }
+
+          logger.info(`updateRequest OK in EXS`, {
+            response: response,
+          });
+          resolve(response);
+        }
+      );
+    });
+  }
 }
