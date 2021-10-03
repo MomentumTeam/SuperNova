@@ -16,11 +16,25 @@ const schedule = require('node-schedule');
 
 async function main() {
   try {
-    // schedule.scheduleJob(
-    // `${config.minute} ${config.hour} * * *`,
-    // async function () {
-    //run script at midnight - 00:00
-    logger.info(`WhiteList-Script started successfully!`);
+    if (config.cronJob) {
+     schedule.scheduleJob(
+    `${config.minute} ${config.hour} * * *`,
+    async function () {
+    // run script at midnight - 00:00
+        execute();
+      });
+    } else {
+      execute();
+    }
+  } catch (error: any) {
+    logger.error(
+      `Error while trying to start WhiteList-Script: ${error.message}`
+    );
+  }
+}
+
+async function execute() {
+  logger.info(`WhiteList-Script started successfully!`);
 
     const approversArray = (await getAllApproverIds()) as ApproverIdArray;
 
@@ -47,14 +61,6 @@ async function main() {
           error: { message: error.message },
         });
       });
-
-    // }
-    // );
-  } catch (error: any) {
-    logger.error(
-      `Error while trying to start WhiteList-Script: ${error.message}`
-    );
-  }
 }
 
 main();

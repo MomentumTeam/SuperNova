@@ -164,6 +164,7 @@ services:
       - WLS_APS_URL=approver-service:8080
       - WLS_HOUR=10
       - WLS_MINUTE=0
+      - WLS_CRON_JOB=false
 
   authentication-service:
     image: authentication-service
