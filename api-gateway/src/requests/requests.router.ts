@@ -22,6 +22,7 @@ RequestsRouter.put('/approver/decision/:id',RequestValidator.isUpdateApproverDec
 RequestsRouter.put('/request/entity',RequestValidator.isEditEntityValid, RequestsController.editEntityRequest);
 RequestsRouter.put('/request/og/rename',RequestValidator.isRenameOGValid, RequestsController.renameOGRequest);
 RequestsRouter.put('/request/role/rename',RequestValidator.isRenameRoleValid, RequestsController.renameRoleRequest);
+RequestsRouter.put('/request/role/og',RequestValidator.isChangeRoleHierarchyRequestValid, RequestsController.changeRoleHierarchyRequest);
 RequestsRouter.put('/request/entity/role',RequestValidator.isAssignRoleToEntityValid, RequestsController.assignRoleToEntityRequest);
 
 //POST
@@ -32,6 +33,7 @@ RequestsRouter.post('/request/entity',RequestValidator.isCreateEntityValid, Requ
 
 //DELETE
 RequestsRouter.delete('/request/entity/role',RequestValidator.isDisconectRoleFromEntityValid, RequestsController.disconectRoleFromEntityRequest);
+RequestsRouter.delete('/request/entity',RequestValidator.isDeleteEntityValid, RequestsController.deleteEntityRequest);
 RequestsRouter.delete('/request/role',RequestValidator.isDeleteRoleValid, RequestsController.deleteRoleRequest);
 RequestsRouter.delete('/request/og',RequestValidator.isDeleteOGValid, RequestsController.deleteOGRequest);
 RequestsRouter.delete('/:id',RequestValidator.isDeleteRequestValid, RequestsController.deleteRequest);

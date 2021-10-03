@@ -14,9 +14,15 @@ import {
   Entity,
   GetEntityByIdRequest,
 } from '../interfaces/protoc/proto/kartoffelService';
-import { UpdateApproverDecisionReq } from '../interfaces/protoc/proto/requestService';
+import {
+  ApproverType,
+  RequestType,
+  UpdateApproverDecisionReq,
+} from '../interfaces/protoc/proto/requestService';
 import { AuthenticationError } from '../utils/errors/userErrors';
 import { statusCodeHandler } from '../utils/errors/errorHandlers';
+import { RequestsService } from '../requests/requests.service';
+import ProducerController from '../producer/producer.controller';
 export default class ApproverController {
   // GET
   static async getAllApprovers(req: any, res: Response) {
@@ -138,6 +144,25 @@ export default class ApproverController {
       const descision = await ApproverService.updateApproverDecision(
         updateApproverDecisionReq
       );
+
+      if (descision.type === RequestType.ADD_APPROVER) {
+        await ApproverService.addApprover({
+          entityId: descision.additionalParams?.entityId || '',
+          type: descision.additionalParams?.type || ApproverType.UNRECOGNIZED,
+          akaUnit: descision.additionalParams?.akaUnit || '',
+          displayName: descision.additionalParams?.displayName || '',
+          domainUsers: descision.additionalParams?.domainUsers || [],
+        });
+      } else {
+        const canPushToQueueRes = await RequestsService.canPushToADQueue({
+          id: req.params.id,
+        });
+
+        if (canPushToQueueRes.canPushToQueue) {
+          await ProducerController.produceToADQueue(req.params.id, res);
+        }
+      }
+
       res.send(descision);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);

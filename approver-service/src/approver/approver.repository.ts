@@ -11,15 +11,15 @@ import {
   SearchByDomainUserReq,
   SuccessMessage,
   SyncApproverReq,
-  UserType,
-  userTypeFromJSON,
-  userTypeToJSON,
 } from '../interfaces/protoc/proto/approverService';
 import {
   DigitalIdentity,
   Entity,
 } from '../interfaces/protoc/proto/kartoffelService';
 import {
+  ApproverType,
+  approverTypeFromJSON,
+  approverTypeToJSON,
   PersonTypeInRequest,
   personTypeInRequestFromJSON,
   Request,
@@ -85,7 +85,7 @@ export class ApproverRepository {
       let query = {};
       if (getAllApproversReq.type != undefined) {
         let type = approverTypeValidation(getAllApproversReq.type);
-        query = { type: userTypeToJSON(type) };
+        query = { type: approverTypeToJSON(type) };
       }
 
       const mongoApprovers: any = await ApproverModel.find(query);
@@ -188,12 +188,12 @@ export class ApproverRepository {
         if (hasCommanderRank(entity)) {
           response = {
             entityId: getUserTypeReq.entityId,
-            type: [UserType.COMMANDER],
+            type: [ApproverType.COMMANDER],
           };
         } else {
           response = {
             entityId: getUserTypeReq.entityId,
-            type: [UserType.SOLDIER],
+            type: [ApproverType.SOLDIER],
           };
         }
       }
@@ -234,7 +234,8 @@ export class ApproverRepository {
       });
 
       if (
-        userTypeFromJSON(searchByDisplayNameReq.type) === UserType.COMMANDER
+        approverTypeFromJSON(searchByDisplayNameReq.type) ===
+        ApproverType.COMMANDER
       ) {
         try {
           const kartoffelEntities =

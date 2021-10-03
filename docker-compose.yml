@@ -119,7 +119,6 @@ services:
     ports:
       - '8086:8080'
     environment:
-      - TS_MONGO_URL=mongodb://mongo:27017/supernova
       - TS_KS_URL=kartoffel-service:8080
 
   bulk-service:
@@ -138,6 +137,23 @@ services:
       - BS_RS_URL=request-service:8080
       - BS_FOLDER_PATH=/usr/src/app/bulk-files
 
+  kartoffel-consumer:
+    image: kartoffel-consumer
+    build: ./kartoffel-consumer/
+    env_file:
+      - ./supernova.env
+    ports:
+      - '8088:8080'
+    depends_on:
+      - request-service
+      - kartoffel-service
+      - tea-service
+    environment:
+      - KC_RS_URL=request-service:8080
+      - KC_TS_URL=tea-service:8080
+      - KC_KAFKA_HOST=kafka
+      - KC_KAFKA_PORT=29092
+
   execution-script:
     image: execution-script
     build: ./execution-script/
@@ -149,7 +165,9 @@ services:
     environment:
       - EXS_RS_URL=request-service:8080
       - EXS_PS_URL=producer-service:8080
+      - EXS_APS_URL=approver-service:8080
       - EXS_EVERY_HOUR=1
+      - EXS_CRON_JOB=false
 
   whiteListSync-script:
     image: whitelistsync-script
@@ -162,6 +180,7 @@ services:
       - WLS_APS_URL=approver-service:8080
       - WLS_HOUR=10
       - WLS_MINUTE=0
+      - WLS_CRON_JOB=false
 
   population-script:
     image: population-script
@@ -184,10 +203,12 @@ services:
       - '9000:8080'
     depends_on:
       - kartoffel-service
+      - approver-service
     environment:
       - AS_SHRAGA_URL=https://shraga-prod.northeurope.cloudapp.azure.com
       - AS_CLIENT_ENDPOINT=http://localhost:3000
       - AS_KARTOFFEL_RPC_ENDPOINT=kartoffel-service:8080
+      - AS_APS_URL=approver-service:8080
 
   api-gateway:
     image: api-gateway
