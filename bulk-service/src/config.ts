@@ -17,9 +17,7 @@ export const hebEntityTypeToKartoffelLang: any = {
 };
 
 export const hebClearanceToKartoffelLang: any = {
-  '1': '1',
-  '2': '2',
-  '3': '3',
-  '4': '4',
-  '5': '5',
+  אדום: 'red',
+  סגול: 'purple',
+  כחול: 'blue',
 };
