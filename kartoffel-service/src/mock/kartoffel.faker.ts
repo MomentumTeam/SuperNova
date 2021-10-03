@@ -149,7 +149,7 @@ export class KartoffelFaker {
     for (let i = 0; i < childrenCount; i++) {
       children.push({
         id: mongoose.Types.ObjectId().toString(),
-        name: faker.name.firstName(),
+        label: faker.name.firstName(),
         children: this.randomChildrenAray(layers - 1),
       });
     }
@@ -159,7 +159,7 @@ export class KartoffelFaker {
   randomOGTree(): OGTree {
     return {
       id: mongoose.Types.ObjectId().toString(),
-      name: faker.name.firstName(),
+      label: faker.name.firstName(),
       children: this.randomChildrenAray(2),
     };
   }
