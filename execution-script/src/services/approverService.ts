@@ -44,6 +44,15 @@ export default class ApproverService {
             logger.error(`addApprover ERROR in EXS`, {
               error: { message: error.message },
             });
+            RequestService.updateRequest(requestId, {
+              status: RequestStatus.FAILED,
+            })
+              .then((request) => {
+                reject(error);
+              })
+              .catch((error) => {
+                reject(error);
+              });
             reject(error);
           } else {
             logger.info(`addApprover OK in EXS`, {
