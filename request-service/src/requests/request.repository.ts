@@ -358,6 +358,7 @@ export class RequestRepository {
         kartoffelFailedRetries <= C.maxQueueRetries &&
         kartoffelStatus !== StageStatus.STAGE_FAILED &&
         kartoffelStatus !== StageStatus.STAGE_IN_PROGRESS &&
+        kartoffelStatus !== StageStatus.STAGE_DONE &&
         requestStatus !== RequestStatus.FAILED
       ) {
         return { canPushToQueue: true };
@@ -396,6 +397,7 @@ export class RequestRepository {
       if (
         adStatus !== StageStatus.STAGE_FAILED &&
         adStatus !== StageStatus.STAGE_IN_PROGRESS &&
+        adStatus !== StageStatus.STAGE_DONE &&
         adFailedRetries <= C.maxQueueRetries &&
         requestStatus !== RequestStatus.FAILED &&
         isRequestApprovedRes.isRequestApproved &&
