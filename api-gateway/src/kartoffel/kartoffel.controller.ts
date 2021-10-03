@@ -183,7 +183,7 @@ export default class KartoffelController {
   }
 
   static async getOGTree(req: Request, res: Response) {
-    const getOGTreeReq: GetOGTreeRequest = { rootId: req.params.rootId };
+    const getOGTreeReq: GetOGTreeRequest = { directGroupId: req.params.id };
 
     try {
       const tree = await KartoffelService.getOGTree(getOGTreeReq);

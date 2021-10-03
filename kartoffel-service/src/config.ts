@@ -24,3 +24,5 @@ export const kartoffelAudience =
 export const spikeTokenRefreshInHours = process.env.KS_SPIKE_TOKEN_REFRESH_HOURS
   ? parseInt(process.env.KS_SPIKE_TOKEN_REFRESH_HOURS)
   : 24;
+
+export const kartoffelTreeDepth = process.env.KS_TREE_DEPTH ? parseInt(process.env.KS_TREE_DEPTH) : 3;

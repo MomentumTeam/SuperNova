@@ -120,12 +120,12 @@ export interface SearchEntitiesByFullNameRequest {
 }
 
 export interface GetOGTreeRequest {
-  rootId: string;
+  directGroupId: string;
 }
 
 export interface OGTree {
   id: string;
-  name: string;
+  label: string;
   children: OGTree[];
 }
 
@@ -2281,15 +2281,15 @@ export const SearchEntitiesByFullNameRequest = {
   },
 };
 
-const baseGetOGTreeRequest: object = { rootId: "" };
+const baseGetOGTreeRequest: object = { directGroupId: "" };
 
 export const GetOGTreeRequest = {
   encode(
     message: GetOGTreeRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.rootId !== "") {
-      writer.uint32(10).string(message.rootId);
+    if (message.directGroupId !== "") {
+      writer.uint32(10).string(message.directGroupId);
     }
     return writer;
   },
@@ -2302,7 +2302,7 @@ export const GetOGTreeRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.rootId = reader.string();
+          message.directGroupId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -2314,32 +2314,33 @@ export const GetOGTreeRequest = {
 
   fromJSON(object: any): GetOGTreeRequest {
     const message = { ...baseGetOGTreeRequest } as GetOGTreeRequest;
-    if (object.rootId !== undefined && object.rootId !== null) {
-      message.rootId = String(object.rootId);
+    if (object.directGroupId !== undefined && object.directGroupId !== null) {
+      message.directGroupId = String(object.directGroupId);
     } else {
-      message.rootId = "";
+      message.directGroupId = "";
     }
     return message;
   },
 
   toJSON(message: GetOGTreeRequest): unknown {
     const obj: any = {};
-    message.rootId !== undefined && (obj.rootId = message.rootId);
+    message.directGroupId !== undefined &&
+      (obj.directGroupId = message.directGroupId);
     return obj;
   },
 
   fromPartial(object: DeepPartial<GetOGTreeRequest>): GetOGTreeRequest {
     const message = { ...baseGetOGTreeRequest } as GetOGTreeRequest;
-    if (object.rootId !== undefined && object.rootId !== null) {
-      message.rootId = object.rootId;
+    if (object.directGroupId !== undefined && object.directGroupId !== null) {
+      message.directGroupId = object.directGroupId;
     } else {
-      message.rootId = "";
+      message.directGroupId = "";
     }
     return message;
   },
 };
 
-const baseOGTree: object = { id: "", name: "" };
+const baseOGTree: object = { id: "", label: "" };
 
 export const OGTree = {
   encode(
@@ -2349,8 +2350,8 @@ export const OGTree = {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
-    if (message.name !== "") {
-      writer.uint32(18).string(message.name);
+    if (message.label !== "") {
+      writer.uint32(18).string(message.label);
     }
     for (const v of message.children) {
       OGTree.encode(v!, writer.uint32(26).fork()).ldelim();
@@ -2370,7 +2371,7 @@ export const OGTree = {
           message.id = reader.string();
           break;
         case 2:
-          message.name = reader.string();
+          message.label = reader.string();
           break;
         case 3:
           message.children.push(OGTree.decode(reader, reader.uint32()));
@@ -2391,10 +2392,10 @@ export const OGTree = {
     } else {
       message.id = "";
     }
-    if (object.name !== undefined && object.name !== null) {
-      message.name = String(object.name);
+    if (object.label !== undefined && object.label !== null) {
+      message.label = String(object.label);
     } else {
-      message.name = "";
+      message.label = "";
     }
     if (object.children !== undefined && object.children !== null) {
       for (const e of object.children) {
@@ -2407,7 +2408,7 @@ export const OGTree = {
   toJSON(message: OGTree): unknown {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
-    message.name !== undefined && (obj.name = message.name);
+    message.label !== undefined && (obj.label = message.label);
     if (message.children) {
       obj.children = message.children.map((e) =>
         e ? OGTree.toJSON(e) : undefined
@@ -2426,10 +2427,10 @@ export const OGTree = {
     } else {
       message.id = "";
     }
-    if (object.name !== undefined && object.name !== null) {
-      message.name = object.name;
+    if (object.label !== undefined && object.label !== null) {
+      message.label = object.label;
     } else {
-      message.name = "";
+      message.label = "";
     }
     if (object.children !== undefined && object.children !== null) {
       for (const e of object.children) {
