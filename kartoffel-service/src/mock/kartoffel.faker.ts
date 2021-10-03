@@ -86,7 +86,7 @@ export class KartoffelFaker {
       roleId: faker.internet.email(),
       jobTitle: faker.name.jobTitle(),
       digitalIdentityUniqueId: faker.internet.email(),
-      directGroup: faker.datatype.uuid(),
+      directGroup: mongoose.Types.ObjectId().toString(),
       hierarchy: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
       hierarchyIds: [],
       source: 'oneTree',
