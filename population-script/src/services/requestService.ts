@@ -17,6 +17,8 @@ import {
   DeleteRoleReq,
   DisconectRoleFromEntityReq,
   CreateNewApproverReq,
+  DeleteEntityReq,
+  ChangeRoleHierarchyReq,
 } from '../interfaces/protoc/proto/requestService';
 import { findPath } from '../utils/path';
 
@@ -43,6 +45,32 @@ export class RequestService {
   async createRoleRequest(req: CreateRoleReq): Promise<Request> {
     return new Promise((resolve, reject) => {
       this.client.CreateRoleRequest(req, (err: any, res: any) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(res as Request);
+        }
+      });
+    });
+  }
+
+  async deleteEntityRequest(req: DeleteEntityReq): Promise<Request> {
+    return new Promise((resolve, reject) => {
+      this.client.DeleteEntityRequest(req, (err: any, res: any) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(res as Request);
+        }
+      });
+    });
+  }
+
+  async changeRoleHierarchyRequest(
+    req: ChangeRoleHierarchyReq
+  ): Promise<Request> {
+    return new Promise((resolve, reject) => {
+      this.client.ChangeRoleHierarchyRequest(req, (err: any, res: any) => {
         if (err) {
           reject(err);
         } else {
@@ -193,7 +221,8 @@ export class RequestService {
 
       const client: any = new protoDescriptor.RequestService(
         C.requestServiceUrl,
-        grpc.credentials.createInsecure()
+        grpc.credentials.createInsecure(),
+        { 'grpc.keepalive_timeout_ms': 5000 }
       );
       return client;
     } catch (error) {

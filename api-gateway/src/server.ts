@@ -14,6 +14,7 @@ import { swaggerDocument } from './swagger';
 import { addMockToken } from './utils/auth/user.mock';
 import { Authenticator } from './utils/auth/auth';
 
+
 export class Server {
   private static _instance: Server;
   public app: express.Application;
@@ -67,7 +68,7 @@ export class Server {
 
 
     this.app.get('/auth/login', (req, res) => {
-      res.redirect(`http://${config.authentication.authServiceUrl}/auth/login`);
+      res.redirect(`${config.authentication.authServiceUrl}/auth/login`);
     });
 
     this.app.use('/api', mainRouter);

@@ -26,7 +26,8 @@ const protoDescriptor: any =
 
 const producerClient: any = new protoDescriptor.Producer(
   config.endpoints.producer,
-  grpc.credentials.createInsecure()
+  grpc.credentials.createInsecure(),
+  { 'grpc.keepalive_timeout_ms': 5000 }
 );
 
 export default class ProducerController {
@@ -57,7 +58,7 @@ export default class ProducerController {
     });
   }
 
-  static async produceToADQueue(requestId: string,res:Response) {
+  static async produceToADQueue(requestId: string, res: Response) {
     logger.info(`Call to produceToADQueue in GTW`, {
       callRequest: { id: requestId },
     });

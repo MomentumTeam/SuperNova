@@ -14,3 +14,4 @@ cp -r ./protocOutput/* ../tea-service/src/interfaces/protoc/proto
 cp -r ./protocOutput/* ../spike-service/src/interfaces/protoc/proto
 cp -r ./protocOutput/* ../bulk-service/src/interfaces/protoc/proto
 cp -r ./protocOutput/* ../authentication-service/src/interfaces/protoc/proto
+cp -r ./protocOutput/* ../kartoffel-consumer/src/interfaces/protoc/proto

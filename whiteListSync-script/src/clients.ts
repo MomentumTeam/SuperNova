@@ -21,5 +21,6 @@ const apsProtoDescriptor: any =
 
 export const approverClient: any = new apsProtoDescriptor.ApproverService(
   config.approverServiceUrl,
-  grpc.credentials.createInsecure()
+  grpc.credentials.createInsecure(),
+  { 'grpc.keepalive_timeout_ms': 5000 }
 );

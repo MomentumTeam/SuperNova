@@ -217,7 +217,7 @@ export function requestStatusToJSON(object: RequestStatus): string {
 export enum StageStatus {
   STAGE_UNKNOWN = 0,
   STAGE_WAITING_FOR_PUSH = 1,
-  STAGE_WAITING_FOR_KARTOFFEL = 2,
+  STAGE_WAITING_FOR_AD = 2,
   STAGE_NEED_RETRY = 3,
   STAGE_IN_PROGRESS = 4,
   STAGE_DONE = 5,
@@ -234,8 +234,8 @@ export function stageStatusFromJSON(object: any): StageStatus {
     case "STAGE_WAITING_FOR_PUSH":
       return StageStatus.STAGE_WAITING_FOR_PUSH;
     case 2:
-    case "STAGE_WAITING_FOR_KARTOFFEL":
-      return StageStatus.STAGE_WAITING_FOR_KARTOFFEL;
+    case "STAGE_WAITING_FOR_AD":
+      return StageStatus.STAGE_WAITING_FOR_AD;
     case 3:
     case "STAGE_NEED_RETRY":
       return StageStatus.STAGE_NEED_RETRY;
@@ -261,8 +261,8 @@ export function stageStatusToJSON(object: StageStatus): string {
       return "STAGE_UNKNOWN";
     case StageStatus.STAGE_WAITING_FOR_PUSH:
       return "STAGE_WAITING_FOR_PUSH";
-    case StageStatus.STAGE_WAITING_FOR_KARTOFFEL:
-      return "STAGE_WAITING_FOR_KARTOFFEL";
+    case StageStatus.STAGE_WAITING_FOR_AD:
+      return "STAGE_WAITING_FOR_AD";
     case StageStatus.STAGE_NEED_RETRY:
       return "STAGE_NEED_RETRY";
     case StageStatus.STAGE_IN_PROGRESS:
@@ -1436,12 +1436,12 @@ export interface GetRequestByIdReq {
   id: string;
 }
 
-/**
- * SearchRequestsBySubmitterDisplayName,SearchRequestsByCommanderDisplayName,
- * SearchRequestsBySecurityDisplayNamer,SearchRequestsByApproverDisplayName
- */
+/** SearchRequestsByDisplayNameReq */
 export interface SearchRequestsByDisplayNameReq {
   displayName: string;
+  personType: PersonTypeInRequest;
+  searcherId?: string | undefined;
+  searcherType?: PersonTypeInRequest | undefined;
   from: number;
   to: number;
 }
@@ -22351,6 +22351,7 @@ export const GetRequestByIdReq = {
 
 const baseSearchRequestsByDisplayNameReq: object = {
   displayName: "",
+  personType: 0,
   from: 0,
   to: 0,
 };
@@ -22363,11 +22364,20 @@ export const SearchRequestsByDisplayNameReq = {
     if (message.displayName !== "") {
       writer.uint32(10).string(message.displayName);
     }
+    if (message.personType !== 0) {
+      writer.uint32(16).int32(message.personType);
+    }
+    if (message.searcherId !== undefined) {
+      writer.uint32(26).string(message.searcherId);
+    }
+    if (message.searcherType !== undefined) {
+      writer.uint32(32).int32(message.searcherType);
+    }
     if (message.from !== 0) {
-      writer.uint32(16).int32(message.from);
+      writer.uint32(40).int32(message.from);
     }
     if (message.to !== 0) {
-      writer.uint32(24).int32(message.to);
+      writer.uint32(48).int32(message.to);
     }
     return writer;
   },
@@ -22388,9 +22398,18 @@ export const SearchRequestsByDisplayNameReq = {
           message.displayName = reader.string();
           break;
         case 2:
-          message.from = reader.int32();
+          message.personType = reader.int32() as any;
           break;
         case 3:
+          message.searcherId = reader.string();
+          break;
+        case 4:
+          message.searcherType = reader.int32() as any;
+          break;
+        case 5:
+          message.from = reader.int32();
+          break;
+        case 6:
           message.to = reader.int32();
           break;
         default:
@@ -22410,6 +22429,21 @@ export const SearchRequestsByDisplayNameReq = {
     } else {
       message.displayName = "";
     }
+    if (object.personType !== undefined && object.personType !== null) {
+      message.personType = personTypeInRequestFromJSON(object.personType);
+    } else {
+      message.personType = 0;
+    }
+    if (object.searcherId !== undefined && object.searcherId !== null) {
+      message.searcherId = String(object.searcherId);
+    } else {
+      message.searcherId = undefined;
+    }
+    if (object.searcherType !== undefined && object.searcherType !== null) {
+      message.searcherType = personTypeInRequestFromJSON(object.searcherType);
+    } else {
+      message.searcherType = undefined;
+    }
     if (object.from !== undefined && object.from !== null) {
       message.from = Number(object.from);
     } else {
@@ -22427,6 +22461,14 @@ export const SearchRequestsByDisplayNameReq = {
     const obj: any = {};
     message.displayName !== undefined &&
       (obj.displayName = message.displayName);
+    message.personType !== undefined &&
+      (obj.personType = personTypeInRequestToJSON(message.personType));
+    message.searcherId !== undefined && (obj.searcherId = message.searcherId);
+    message.searcherType !== undefined &&
+      (obj.searcherType =
+        message.searcherType !== undefined
+          ? personTypeInRequestToJSON(message.searcherType)
+          : undefined);
     message.from !== undefined && (obj.from = message.from);
     message.to !== undefined && (obj.to = message.to);
     return obj;
@@ -22442,6 +22484,21 @@ export const SearchRequestsByDisplayNameReq = {
       message.displayName = object.displayName;
     } else {
       message.displayName = "";
+    }
+    if (object.personType !== undefined && object.personType !== null) {
+      message.personType = object.personType;
+    } else {
+      message.personType = 0;
+    }
+    if (object.searcherId !== undefined && object.searcherId !== null) {
+      message.searcherId = object.searcherId;
+    } else {
+      message.searcherId = undefined;
+    }
+    if (object.searcherType !== undefined && object.searcherType !== null) {
+      message.searcherType = object.searcherType;
+    } else {
+      message.searcherType = undefined;
     }
     if (object.from !== undefined && object.from !== null) {
       message.from = object.from;
@@ -26197,16 +26254,7 @@ export interface RequestService {
   ): Promise<RequestIdArray>;
   PushError(request: PushErrorReq): Promise<Request>;
   SyncBulkRequest(request: SyncBulkRequestReq): Promise<Request>;
-  SearchRequestsBySubmitterDisplayName(
-    request: SearchRequestsByDisplayNameReq
-  ): Promise<RequestArray>;
-  SearchRequestsByCommanderDisplayName(
-    request: SearchRequestsByDisplayNameReq
-  ): Promise<RequestArray>;
-  SearchRequestsBySecurityDisplayName(
-    request: SearchRequestsByDisplayNameReq
-  ): Promise<RequestArray>;
-  SearchRequestsByApproverDisplayName(
+  SearchRequestsByDisplayName(
     request: SearchRequestsByDisplayNameReq
   ): Promise<RequestArray>;
 }
@@ -26257,14 +26305,8 @@ export class RequestServiceClientImpl implements RequestService {
       this.GetRequestIdsInProgressByDue.bind(this);
     this.PushError = this.PushError.bind(this);
     this.SyncBulkRequest = this.SyncBulkRequest.bind(this);
-    this.SearchRequestsBySubmitterDisplayName =
-      this.SearchRequestsBySubmitterDisplayName.bind(this);
-    this.SearchRequestsByCommanderDisplayName =
-      this.SearchRequestsByCommanderDisplayName.bind(this);
-    this.SearchRequestsBySecurityDisplayName =
-      this.SearchRequestsBySecurityDisplayName.bind(this);
-    this.SearchRequestsByApproverDisplayName =
-      this.SearchRequestsByApproverDisplayName.bind(this);
+    this.SearchRequestsByDisplayName =
+      this.SearchRequestsByDisplayName.bind(this);
   }
   CreateRoleRequest(request: CreateRoleReq): Promise<CreateRoleRes> {
     const data = CreateRoleReq.encode(request).finish();
@@ -26666,49 +26708,13 @@ export class RequestServiceClientImpl implements RequestService {
     return promise.then((data) => Request.decode(new _m0.Reader(data)));
   }
 
-  SearchRequestsBySubmitterDisplayName(
+  SearchRequestsByDisplayName(
     request: SearchRequestsByDisplayNameReq
   ): Promise<RequestArray> {
     const data = SearchRequestsByDisplayNameReq.encode(request).finish();
     const promise = this.rpc.request(
       "RequestService.RequestService",
-      "SearchRequestsBySubmitterDisplayName",
-      data
-    );
-    return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
-  }
-
-  SearchRequestsByCommanderDisplayName(
-    request: SearchRequestsByDisplayNameReq
-  ): Promise<RequestArray> {
-    const data = SearchRequestsByDisplayNameReq.encode(request).finish();
-    const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "SearchRequestsByCommanderDisplayName",
-      data
-    );
-    return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
-  }
-
-  SearchRequestsBySecurityDisplayName(
-    request: SearchRequestsByDisplayNameReq
-  ): Promise<RequestArray> {
-    const data = SearchRequestsByDisplayNameReq.encode(request).finish();
-    const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "SearchRequestsBySecurityDisplayName",
-      data
-    );
-    return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
-  }
-
-  SearchRequestsByApproverDisplayName(
-    request: SearchRequestsByDisplayNameReq
-  ): Promise<RequestArray> {
-    const data = SearchRequestsByDisplayNameReq.encode(request).finish();
-    const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "SearchRequestsByApproverDisplayName",
+      "SearchRequestsByDisplayName",
       data
     );
     return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));

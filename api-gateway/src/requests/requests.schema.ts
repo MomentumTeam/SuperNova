@@ -60,17 +60,17 @@ export const getRequestBySerialNumberSchema = Joi.object({
 });
 
 export const SearchRequestsByDisplayNameSchema = Joi.object({
-  body: {},
-  params: {
-    displayName: Joi.string().required(),
-    personType: Joi.string()
-      .valid(...Object.keys(PersonTypeInRequest))
-      .required(),
-  },
-  query: {
-    from: Joi.number().default(0),
-    to: Joi.number().default(100),
-  },
+    body: {},
+    params: {
+        displayName: Joi.string().required(),
+    },
+    query: {
+        personType: Joi.string()
+            .valid(...Object.keys(PersonTypeInRequest))
+            .required(),
+        from: Joi.number().default(0),
+        to: Joi.number().default(100),
+    },
 });
 
 // PUT
@@ -199,7 +199,6 @@ const createRoleADParamsObj = Joi.object({
 
 export const createRoleSchema = Joi.object({
   body: {
-    submittedBy: entityMinObj.required(),
     status: Joi.string().valid(...Object.keys(RequestStatus)),
     commanderDecision: ApproverDecisionObj,
     securityDecision: ApproverDecisionObj,
@@ -237,7 +236,6 @@ const assignRoleToEntityADParamsObj = Joi.object({
 
 export const assignRoleToEntitySchema = Joi.object({
   body: {
-    submittedBy: entityMinObj.required(),
     status: Joi.string().valid(...Object.keys(RequestStatus)),
     commanderDecision: ApproverDecisionObj,
     securityDecision: ApproverDecisionObj,
@@ -271,7 +269,6 @@ const createOGADParamsObj = Joi.object({
 
 export const createOGSchema = Joi.object({
   body: {
-    submittedBy: entityMinObj.required(),
     status: Joi.string().valid(...Object.keys(RequestStatus)),
     commanderDecision: ApproverDecisionObj,
     securityDecision: ApproverDecisionObj,
@@ -302,7 +299,6 @@ const additionalParamsObj = Joi.object({
 
 export const createNewApproverSchema = Joi.object({
   body: {
-    submittedBy: entityMinObj.required(),
     status: Joi.string().valid(...Object.keys(RequestStatus)),
     commanderDecision: ApproverDecisionObj,
     securityDecision: ApproverDecisionObj,
@@ -339,7 +335,6 @@ const createEntityADParamsObj = Joi.object({
 
 export const createEntitySchema = Joi.object({
   body: {
-    submittedBy: entityMinObj.required(),
     status: Joi.string().valid(...Object.keys(RequestStatus)),
     commanderDecision: ApproverDecisionObj,
     securityDecision: ApproverDecisionObj,
@@ -372,7 +367,6 @@ const renameOGADParamsObj = Joi.object({
 
 export const renameOGSchema = Joi.object({
   body: {
-    submittedBy: entityMinObj.required(),
     status: Joi.string().valid(...Object.keys(RequestStatus)),
     commanderDecision: ApproverDecisionObj,
     securityDecision: ApproverDecisionObj,
@@ -404,7 +398,6 @@ const renameRoleADParamsObj = Joi.object({
 
 export const renameRoleSchema = Joi.object({
   body: {
-    submittedBy: entityMinObj.required(),
     status: Joi.string().valid(...Object.keys(RequestStatus)),
     commanderDecision: ApproverDecisionObj,
     securityDecision: ApproverDecisionObj,
@@ -449,7 +442,6 @@ const editEntityADParamsObj = Joi.object({
 
 export const editEntitySchema = Joi.object({
   body: {
-    submittedBy: entityMinObj.required(),
     status: Joi.string().valid(...Object.keys(RequestStatus)),
     commanderDecision: ApproverDecisionObj,
     securityDecision: ApproverDecisionObj,
@@ -480,7 +472,6 @@ const deleteRoleADParamsObj = Joi.object({
 
 export const deleteRoleSchema = Joi.object({
   body: {
-    submittedBy: entityMinObj.required(),
     status: Joi.string().valid(...Object.keys(RequestStatus)),
     commanderDecision: ApproverDecisionObj,
     securityDecision: ApproverDecisionObj,
@@ -512,7 +503,6 @@ const deleteOGADParamsObj = Joi.object({
 
 export const deleteOGSchema = Joi.object({
   body: {
-    submittedBy: entityMinObj.required(),
     status: Joi.string().valid(...Object.keys(RequestStatus)),
     commanderDecision: ApproverDecisionObj,
     securityDecision: ApproverDecisionObj,
@@ -543,7 +533,6 @@ const disconectRoleFromEntityRequestADParamsObj = Joi.object({
 
 export const disconectRoleFromEntitySchema = Joi.object({
   body: {
-    submittedBy: entityMinObj.required(),
     status: Joi.string().valid(...Object.keys(RequestStatus)),
     commanderDecision: ApproverDecisionObj,
     securityDecision: ApproverDecisionObj,

@@ -9,12 +9,8 @@ export const config = {
             ? process.env.AS_ALLOWED_ORIGINS.split(',')
             : ['http://localhost/'],
     },
-    users: {
-        endpoint: process.env.USERS_RPC_ENDPOINT || 'http://localhost:50051',
-        methods: {
-            GET_USER_BY_ID: 'getUserById',
-            CREATE_USER: 'createUser',
-        },
+    kartoffel: {
+        endpoint: process.env.AS_KARTOFFEL_RPC_ENDPOINT || '0.0.0.0:8082',
         defaultLastName: ' ',
     },
     approver: {
@@ -43,4 +39,5 @@ export const config = {
     },
     clientEndpoint: process.env.AS_CLIENT_ENDPOINT || 'http://localhost:3000',
     support: process.env.AS_UNAUTHORIZED_SUPPORT_URL || 'https://open.rocket.chat',
+    defaultUserTypes: ['SOLDIER']
 };

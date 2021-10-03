@@ -304,7 +304,7 @@ const RequestSchema = new Schema(
     additionalParams: {
       entityId: { type: String, default: null },
       displayName: { type: String, default: null },
-      domainUsers: { type: String, default: null },
+      domainUsers: { type: [String], default: [] },
       akaUnit: { type: String, default: null },
       type: {
         type: String,
@@ -362,4 +362,8 @@ RequestSchema.index({
   'superSecurityApprovers.displayName': 'text',
 });
 
-export const RequestModel = mongoose.model('Request', RequestSchema, 'requests');
+export const RequestModel = mongoose.model(
+  'Request',
+  RequestSchema,
+  'requests'
+);

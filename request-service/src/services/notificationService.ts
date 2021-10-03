@@ -27,7 +27,8 @@ const protoDescriptor: any =
 
 const notificationClient: any = new protoDescriptor.NotificationService(
   config.notificationServiceUrl,
-  grpc.credentials.createInsecure()
+  grpc.credentials.createInsecure(),
+  { 'grpc.keepalive_timeout_ms': 5000 }
 );
 
 export default class NotificationService {

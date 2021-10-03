@@ -4,11 +4,13 @@ import {
   ApproverDecision,
   ApproverType,
   AssignRoleToEntityReq,
+  ChangeRoleHierarchyReq,
   CreateEntityReq,
   CreateNewApproverReq,
   CreateOGReq,
   CreateRoleReq,
   Decision,
+  DeleteEntityReq,
   DeleteOGReq,
   DeleteRoleReq,
   DisconectRoleFromEntityReq,
@@ -34,16 +36,18 @@ export class RequestFaker {
   generateBasicRequest(): any {
     const commanders = FakerHelper.randomEntityArray(this.entities);
     const securityApprovers = FakerHelper.randomEntityArray(this.entities);
+    const superSecurityApprovers = FakerHelper.randomEntityArray(this.entities);
 
     return {
       submittedBy: FakerHelper.randomEntityMin(this.entities),
       status: FakerHelper.randomEnumValue(RequestStatus),
-      commanderDecision: FakerHelper.randomApproverDecision(commanders),
-      securityDecision: FakerHelper.randomApproverDecision(securityApprovers),
-      superSecurityDecision:
-        FakerHelper.randomApproverDecision(securityApprovers),
+      // commanderDecision: FakerHelper.randomApproverDecision(commanders),
+      // securityDecision: FakerHelper.randomApproverDecision(securityApprovers),
+      // superSecurityDecision:
+      //   FakerHelper.randomApproverDecision(securityApprovers),
       commanders: commanders,
       securityApprovers: securityApprovers,
+      superSecurityApprovers: superSecurityApprovers,
       kartoffelStatus: FakerHelper.randomKartoffelStatus(),
       adStatus: FakerHelper.randomADStatus(),
       kartoffelParams: {},
@@ -51,6 +55,7 @@ export class RequestFaker {
       comments: faker.lorem.paragraph(),
       approversComments: faker.lorem.paragraph(),
       due: faker.datatype.datetime().getTime(),
+      isPartOfBulk: false,
     };
   }
 
@@ -224,5 +229,29 @@ export class RequestFaker {
     };
     request.adParams = { samAccountName: faker.internet.email() };
     return request as DisconectRoleFromEntityReq;
+  }
+
+  randomDeleteEntityRequest(): DeleteEntityReq {
+    let request: any = this.generateBasicRequest();
+    request.kartoffelParams = {
+      id: mongoose.Types.ObjectId().toString(),
+    };
+    request.adParams = {};
+    return request as DeleteEntityReq;
+  }
+
+  randomChangeRoleHierarchyRequest(): ChangeRoleHierarchyReq {
+    let request: any = this.generateBasicRequest();
+    request.kartoffelParams = {
+      roleId: faker.internet.email(),
+      directGroup: mongoose.Types.ObjectId().toString(),
+      jobTitle: faker.company.companyName(),
+    };
+    request.adParams = {
+      samAccountName: faker.internet.email(),
+      ouDisplayName: faker.company.companyName(),
+      jobTitle: faker.company.companyName(),
+    };
+    return request as ChangeRoleHierarchyReq;
   }
 }

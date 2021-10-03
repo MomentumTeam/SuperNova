@@ -236,21 +236,27 @@ export class ApproverRepository {
       if (
         userTypeFromJSON(searchByDisplayNameReq.type) === UserType.COMMANDER
       ) {
-        const kartoffelEntities =
-          await KartoffelService.searchEntitiesByFullName({
-            fullName: searchByDisplayNameReq.displayName,
-          });
-        logger.info('searchApproverByDisplayName kartoffelResults', {
-          kartoffelEntities,
-          searchByDisplayNameReq,
-        });
-
-        approversResult.push(
-          ...getApproverArrayByEntityArray(
+        try {
+          const kartoffelEntities =
+            await KartoffelService.searchEntitiesByFullName({
+              fullName: searchByDisplayNameReq.displayName,
+            });
+          logger.info('searchApproverByDisplayName kartoffelResults', {
             kartoffelEntities,
-            searchByDisplayNameReq.type
-          )
-        );
+            searchByDisplayNameReq,
+          });
+
+          approversResult.push(
+            ...getApproverArrayByEntityArray(
+              kartoffelEntities,
+              searchByDisplayNameReq.type
+            )
+          );
+        } catch (kartoffelError: any) {
+          logger.error('searchApproverByDisplayName KartoffelError', {
+            error: { message: kartoffelError.message },
+          });
+        }
       }
 
       const uniqueApproversResult = [

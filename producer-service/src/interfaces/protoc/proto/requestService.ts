@@ -217,7 +217,7 @@ export function requestStatusToJSON(object: RequestStatus): string {
 export enum StageStatus {
   STAGE_UNKNOWN = 0,
   STAGE_WAITING_FOR_PUSH = 1,
-  STAGE_WAITING_FOR_KARTOFFEL = 2,
+  STAGE_WAITING_FOR_AD = 2,
   STAGE_NEED_RETRY = 3,
   STAGE_IN_PROGRESS = 4,
   STAGE_DONE = 5,
@@ -234,8 +234,8 @@ export function stageStatusFromJSON(object: any): StageStatus {
     case "STAGE_WAITING_FOR_PUSH":
       return StageStatus.STAGE_WAITING_FOR_PUSH;
     case 2:
-    case "STAGE_WAITING_FOR_KARTOFFEL":
-      return StageStatus.STAGE_WAITING_FOR_KARTOFFEL;
+    case "STAGE_WAITING_FOR_AD":
+      return StageStatus.STAGE_WAITING_FOR_AD;
     case 3:
     case "STAGE_NEED_RETRY":
       return StageStatus.STAGE_NEED_RETRY;
@@ -261,8 +261,8 @@ export function stageStatusToJSON(object: StageStatus): string {
       return "STAGE_UNKNOWN";
     case StageStatus.STAGE_WAITING_FOR_PUSH:
       return "STAGE_WAITING_FOR_PUSH";
-    case StageStatus.STAGE_WAITING_FOR_KARTOFFEL:
-      return "STAGE_WAITING_FOR_KARTOFFEL";
+    case StageStatus.STAGE_WAITING_FOR_AD:
+      return "STAGE_WAITING_FOR_AD";
     case StageStatus.STAGE_NEED_RETRY:
       return "STAGE_NEED_RETRY";
     case StageStatus.STAGE_IN_PROGRESS:
@@ -1440,6 +1440,8 @@ export interface GetRequestByIdReq {
 export interface SearchRequestsByDisplayNameReq {
   displayName: string;
   personType: PersonTypeInRequest;
+  searcherId?: string | undefined;
+  searcherType?: PersonTypeInRequest | undefined;
   from: number;
   to: number;
 }
@@ -22365,11 +22367,17 @@ export const SearchRequestsByDisplayNameReq = {
     if (message.personType !== 0) {
       writer.uint32(16).int32(message.personType);
     }
+    if (message.searcherId !== undefined) {
+      writer.uint32(26).string(message.searcherId);
+    }
+    if (message.searcherType !== undefined) {
+      writer.uint32(32).int32(message.searcherType);
+    }
     if (message.from !== 0) {
-      writer.uint32(24).int32(message.from);
+      writer.uint32(40).int32(message.from);
     }
     if (message.to !== 0) {
-      writer.uint32(32).int32(message.to);
+      writer.uint32(48).int32(message.to);
     }
     return writer;
   },
@@ -22393,9 +22401,15 @@ export const SearchRequestsByDisplayNameReq = {
           message.personType = reader.int32() as any;
           break;
         case 3:
-          message.from = reader.int32();
+          message.searcherId = reader.string();
           break;
         case 4:
+          message.searcherType = reader.int32() as any;
+          break;
+        case 5:
+          message.from = reader.int32();
+          break;
+        case 6:
           message.to = reader.int32();
           break;
         default:
@@ -22420,6 +22434,16 @@ export const SearchRequestsByDisplayNameReq = {
     } else {
       message.personType = 0;
     }
+    if (object.searcherId !== undefined && object.searcherId !== null) {
+      message.searcherId = String(object.searcherId);
+    } else {
+      message.searcherId = undefined;
+    }
+    if (object.searcherType !== undefined && object.searcherType !== null) {
+      message.searcherType = personTypeInRequestFromJSON(object.searcherType);
+    } else {
+      message.searcherType = undefined;
+    }
     if (object.from !== undefined && object.from !== null) {
       message.from = Number(object.from);
     } else {
@@ -22439,6 +22463,12 @@ export const SearchRequestsByDisplayNameReq = {
       (obj.displayName = message.displayName);
     message.personType !== undefined &&
       (obj.personType = personTypeInRequestToJSON(message.personType));
+    message.searcherId !== undefined && (obj.searcherId = message.searcherId);
+    message.searcherType !== undefined &&
+      (obj.searcherType =
+        message.searcherType !== undefined
+          ? personTypeInRequestToJSON(message.searcherType)
+          : undefined);
     message.from !== undefined && (obj.from = message.from);
     message.to !== undefined && (obj.to = message.to);
     return obj;
@@ -22459,6 +22489,16 @@ export const SearchRequestsByDisplayNameReq = {
       message.personType = object.personType;
     } else {
       message.personType = 0;
+    }
+    if (object.searcherId !== undefined && object.searcherId !== null) {
+      message.searcherId = object.searcherId;
+    } else {
+      message.searcherId = undefined;
+    }
+    if (object.searcherType !== undefined && object.searcherType !== null) {
+      message.searcherType = object.searcherType;
+    } else {
+      message.searcherType = undefined;
     }
     if (object.from !== undefined && object.from !== null) {
       message.from = object.from;
