@@ -248,6 +248,7 @@ export class EntitiesRepository {
         const entity: Entity = await this.kartoffelFaker.randomEntity(
           withPicture
         );
+        entity.id = getEntityByIdRequest.id;
         return entity;
       } else {
         const data = await this.kartoffelUtils.kartoffelGet(
