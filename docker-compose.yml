@@ -119,7 +119,6 @@ services:
     ports:
       - '8086:8080'
     environment:
-      - TS_MONGO_URL=mongodb://mongo:27017/supernova
       - TS_KS_URL=kartoffel-service:8080
 
   bulk-service:
@@ -137,6 +136,23 @@ services:
     environment:
       - BS_RS_URL=request-service:8080
       - BS_FOLDER_PATH=/usr/src/app/bulk-files
+
+  kartoffel-consumer:
+    image: kartoffel-consumer
+    build: ./kartoffel-consumer/
+    env_file:
+      - ./supernova.env
+    ports:
+      - '8088:8080'
+    depends_on:
+      - request-service
+      - kartoffel-service
+      - tea-service
+    environment:
+      - KC_RS_URL=request-service:8080
+      - KC_TS_URL=tea-service:8080
+      - KC_KAFKA_HOST=kafka
+      - KC_KAFKA_PORT=29092
 
   execution-script:
     image: execution-script
@@ -187,10 +203,12 @@ services:
       - '9000:8080'
     depends_on:
       - kartoffel-service
+      - approver-service
     environment:
       - AS_SHRAGA_URL=https://shraga-prod.northeurope.cloudapp.azure.com
       - AS_CLIENT_ENDPOINT=http://localhost:3000
       - AS_KARTOFFEL_RPC_ENDPOINT=kartoffel-service:8080
+      - AS_APS_URL=approver-service:8080
 
   api-gateway:
     image: api-gateway
