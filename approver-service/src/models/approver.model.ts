@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import { UserType } from '../interfaces/protoc/proto/approverService';
+import { ApproverType } from '../interfaces/protoc/proto/requestService';
 const { Schema } = mongoose;
 
 export const ApproverSchema = new Schema(
@@ -7,7 +7,7 @@ export const ApproverSchema = new Schema(
         entityId: { type: mongoose.Schema.Types.ObjectId, required: true },
         displayName: { type: String, required: true },
         domainUsers: { type: [String], default: [] },
-        type: { type: String, enum: UserType, default: UserType.SOLDIER },
+        type: { type: String, enum: ApproverType, default: ApproverType.SOLDIER },
         akaUnit: { type: String, required: true },
     },
     { strict: false }

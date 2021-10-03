@@ -14,7 +14,7 @@ export const config = {
         defaultLastName: ' ',
     },
     approver: {
-        endpoint: process.env.GATEWAY_APS_URL || '0.0.0.0:8085',
+        endpoint: process.env.AS_APS_URL || '0.0.0.0:8085',
     },
     authentication: {
         required: true,
