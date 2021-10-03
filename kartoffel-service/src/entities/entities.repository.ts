@@ -245,7 +245,7 @@ export class EntitiesRepository {
           ? getEntityByIdRequest.withPicture
           : false;
       if (C.useFaker) {
-        const entity: Entity = await this.kartoffelFaker.randomEntity(
+        let entity: Entity = await this.kartoffelFaker.randomEntity(
           withPicture
         );
         entity.id = getEntityByIdRequest.id;
