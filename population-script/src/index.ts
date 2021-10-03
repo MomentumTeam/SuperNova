@@ -1,3 +1,11 @@
+import { findPath } from './utils/path';
+if (process.env.NODE_ENV !== 'production') {
+  const ENV_PATH = `${findPath('supernova.env')}`;
+  require('dotenv').config({
+    path: ENV_PATH,
+  });
+}
+
 import * as C from './config';
 import { RequestType } from './interfaces/protoc/proto/requestService';
 import { RequestFaker } from './requestFaker';
@@ -67,8 +75,18 @@ async function main(): Promise<void> {
             requestFaker.randomDisconectRoleFromEntityRequest()
           );
           break;
+        case RequestType.DELETE_ENTITY:
+          await requestService.deleteEntityRequest(
+            requestFaker.randomDeleteEntityRequest()
+          );
+          break;
+        case RequestType.CHANGE_ROLE_HIERARCHY:
+          await requestService.changeRoleHierarchyRequest(
+            requestFaker.randomChangeRoleHierarchyRequest()
+          );
+          break;
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log(error.message);
     }
   }

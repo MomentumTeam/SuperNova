@@ -23,8 +23,9 @@ const psProtoDescriptor: any =
   grpc.loadPackageDefinition(psPackageDefinition).Producer;
 
 const producerClient: any = new psProtoDescriptor.Producer(
-  config.producerServicUrl,
-  grpc.credentials.createInsecure()
+  config.producerServiceUrl,
+  grpc.credentials.createInsecure(),
+  { 'grpc.keepalive_timeout_ms': 5000 }
 );
 
 export default class ProducerService {

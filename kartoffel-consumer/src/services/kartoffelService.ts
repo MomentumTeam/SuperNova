@@ -60,7 +60,8 @@ const protoDescriptor: any =
 
 const kartoffelClient: any = new protoDescriptor.Kartoffel(
   config.endpoints.kartoffel,
-  grpc.credentials.createInsecure()
+  grpc.credentials.createInsecure(),
+  { 'grpc.keepalive_timeout_ms': 5000 }
 );
 
 export default class KartoffelService {
@@ -522,16 +523,21 @@ export default class KartoffelService {
     });
   }
 
-   static async changeRoleOG(changeRoleOG: ChangeRoleOGRequest): Promise<SuccessMessage> {
+  static async changeRoleOG(
+    changeRoleOG: ChangeRoleOGRequest
+  ): Promise<SuccessMessage> {
     console.log('changeRoleOG');
     return new Promise((resolve, reject) => {
-      kartoffelClient.ChangeRoleOG(changeRoleOG, (err: any, message: SuccessMessage) => {
+      kartoffelClient.ChangeRoleOG(
+        changeRoleOG,
+        (err: any, message: SuccessMessage) => {
           if (err) {
-              throw reject(err);
+            throw reject(err);
           } else {
-              return resolve(message);
+            return resolve(message);
           }
-      });
+        }
+      );
     });
   }
 }
