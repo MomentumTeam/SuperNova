@@ -1,10 +1,5 @@
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 import { findPath } from './utils/path';
-import { logger } from './logger';
-import RequestService from './services/requestService';
-import ProducerService from './services/producerService';
-
-// const schedule = require('node-schedule');
 
 if (process.env.NODE_ENV !== 'production') {
   const ENV_PATH = `${findPath('supernova.env')}`;
@@ -13,43 +8,75 @@ if (process.env.NODE_ENV !== 'production') {
   });
 }
 
+import { logger } from './logger';
+import RequestService from './services/requestService';
+import ProducerService from './services/producerService';
+import ApproverService from './services/approverService';
+import * as config from './config';
+import {
+  Request,
+  RequestType,
+  requestTypeFromJSON,
+} from './interfaces/protoc/proto/requestService';
+const schedule = require('node-schedule');
+
 async function main() {
   try {
-    // schedule.scheduleJob(`* */${config.everyHour} * * *`, async function () {
-    //run script every x hour
+    if (config.cronJob) {
+      schedule.scheduleJob(`* */${config.everyHour} * * *`, async function () {
+        //run script every x hour
+        execute();
+      });
+    } else {
+      execute();
+    }
+  } catch (error: any) {
+    logger.error(
+      `Error while trying to start Execution-Script: ${error.message}`
+    );
+  }
+}
 
-    logger.info(`Execution-Script started successfully!`);
+async function execute() {
+  logger.info(`Execution-Script started successfully!`);
 
-    const requestsArray = await RequestService.getRequestIdsInProgress();
+  let requestsArray: any = await RequestService.getRequestsInProgress();
 
-    const promises = requestsArray.requestIds.map(async (requestId: string) => {
-      return new Promise((resolve, reject) => {
-        ProducerService.executeRequest(requestId)
+  requestsArray.requests.forEach((request: Request) => {
+    request.type = requestTypeFromJSON(request.type);
+  });
+
+  const promises = requestsArray.requests.map(async (request: any) => {
+    return new Promise((resolve, reject) => {
+      if (request.type === RequestType.ADD_APPROVER) {
+        ApproverService.addApprover(request.id,request.additionalParams)
           .then(() => {
             resolve(true);
           })
           .catch((error) => {
             reject(error);
           });
+      } else {
+        ProducerService.executeRequest(request.id)
+          .then(() => {
+            resolve(true);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      }
+    });
+  });
+
+  Promise.all(promises)
+    .then((values) => {
+      logger.info(`Promises were finished successfully`);
+    })
+    .catch((error) => {
+      logger.error(`Promises exection failed`, {
+        error: { message: error.message },
       });
     });
-
-    Promise.all(promises)
-      .then((values) => {
-        logger.info(`Promises were finished successfully`);
-      })
-      .catch((error) => {
-        logger.error(`Promises exection failed`, {
-          error: { message: error.message },
-        });
-      });
-
-    // });
-  } catch (error: any) {
-    logger.error(
-      `Error while trying to start Execution-Script: ${error.message}`
-    );
-  }
 }
 
 main();

@@ -6,9 +6,8 @@ import { logger } from '../logger';
 import {
   RequestIdArray,
   CanPushToQueueRes,
+  RequestArray,
 } from '../interfaces/protoc/proto/requestService';
-
-//requestClient
 
 const RS_PROTO_PATH = `${findPath('proto')}/requestService.proto`;
 
@@ -33,6 +32,29 @@ const requestClient: any = new rsProtoDescriptor.RequestService(
 );
 
 export default class RequestService {
+  static async getRequestsInProgress(): Promise<RequestArray> {
+    logger.info(`Call to getRequestsInProgress in EXS`);
+
+    return new Promise((resolve, reject) => {
+      requestClient.GetRequestsInProgressByDue(
+        { due: Date.now() },
+        (error: any, response: RequestArray) => {
+          if (error) {
+            logger.error(`getRequestsInProgress ERROR in EXS`, {
+              error: { message: error.message },
+            });
+            reject(error);
+          }
+
+          logger.info(`getRequestsInProgress OK in EXS`, {
+            response: response,
+          });
+          resolve(response);
+        }
+      );
+    });
+  }
+
   static async getRequestIdsInProgress(): Promise<RequestIdArray> {
     logger.info(`Call to getRequestIdsInProgress in EXS`);
 
@@ -98,6 +120,33 @@ export default class RequestService {
           }
 
           logger.info(`CanPushToADQueue OK in EXS`, {
+            response: response,
+          });
+          resolve(response);
+        }
+      );
+    });
+  }
+
+  static async updateRequest(
+    id: string,
+    requestProperties: any
+  ): Promise<CanPushToQueueRes> {
+    logger.info(`Call to updateRequest in EXS`);
+
+    return new Promise((resolve, reject) => {
+      requestClient.UpdateRequest(
+        { id, requestProperties },
+        (error: any, response: CanPushToQueueRes) => {
+          if (error) {
+            logger.error(`updateRequest ERROR in EXS`, {
+              error: { message: error.message },
+              callRequest: { id: id },
+            });
+            reject(error);
+          }
+
+          logger.info(`updateRequest OK in EXS`, {
             response: response,
           });
           resolve(response);
