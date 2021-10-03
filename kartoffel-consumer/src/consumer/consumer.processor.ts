@@ -21,77 +21,82 @@ import TeaService from '../services/teaService';
 
 /**
  * requestProcessor - parse a message into an object and handle the request
- * 
- * type:incomingRequest- 
- * @param {enum RequestType (from requestService)} type 
+ *
+ * type:incomingRequest-
+ * @param {enum RequestType (from requestService)} type
  * @param {string} id
  * @param {string} source
  * @param {look at producer service for data by each type} data
  */
 export const requestProcessor = async (incomingRequest: any) => {
-  const requestObject = fromStringToObject(incomingRequest.value.toString());
-  logger.info(
-      'got a request in requestProcessor', {
-        incomingRequest: incomingRequest, 
-        requestObject: requestObject
-      }
-  );
   let createdObjectId = undefined;
   let validReq = true;
+  let requestObject = undefined;
+
   try {
-    switch (requestObject.type) {
+    requestObject = fromStringToObject(incomingRequest.value.toString());
+    logger.info('got a request in requestProcessor', {
+      incomingRequest: incomingRequest,
+      requestObject: requestObject,
+    });
+
+    if (requestObject && requestObject.type) {
+      switch (requestObject.type) {
         case 'CREATE_OG': {
-            createdObjectId = await createOG(requestObject.data);
-            break;
+          createdObjectId = await createOG(requestObject.data);
+          break;
         }
         case 'CREATE_ROLE': {
-            createdObjectId = await createRole(requestObject.data);
-            break;
+          createdObjectId = await createRole(requestObject.data);
+          break;
         }
         case 'ASSIGN_ROLE_TO_ENTITY': {
-            await assignRoleToEntity(requestObject.data);
-            break;
+          await assignRoleToEntity(requestObject.data);
+          break;
         }
         case 'CREATE_ENTITY': {
-            createdObjectId = await createEntity(requestObject.data);
-            break;
+          createdObjectId = await createEntity(requestObject.data);
+          break;
         }
         case 'RENAME_OG': {
-            await renameOG(requestObject.data);
-            break;
+          await renameOG(requestObject.data);
+          break;
         }
         case 'RENAME_ROLE': {
-            await renameRole(requestObject.data);
-            break;
+          await renameRole(requestObject.data);
+          break;
         }
         case 'EDIT_ENTITY': {
-            await updateEntity(requestObject.data);
-            break;
+          await updateEntity(requestObject.data);
+          break;
         }
         case 'DELETE_OG': {
-            await deleteOG(requestObject.data);
-            break;
+          await deleteOG(requestObject.data);
+          break;
         }
         case 'DELETE_ROLE': {
-            await deleteRole(requestObject.data);
-            break;
+          await deleteRole(requestObject.data);
+          break;
         }
         case 'DELETE_ENTITY': {
-            await deleteEntity(requestObject.data);
-            break;
+          await deleteEntity(requestObject.data);
+          break;
         }
         case 'DISCONNECT_ROLE': {
-            await disconnectRoleAndDI(requestObject.data);
-            break;
+          await disconnectRoleAndDI(requestObject.data);
+          break;
         }
         case 'CHANGE_ROLE_HIERARCHY': {
-            await changeRoleOG(requestObject.data);
-            break;
+          await changeRoleOG(requestObject.data);
+          break;
         }
         default: {
           validReq = false;
           break;
         }
+      }
+    } else {
+      validReq = false;
     }
 
     if (validReq) {
@@ -103,8 +108,11 @@ export const requestProcessor = async (incomingRequest: any) => {
         });
 
         if (requestObject.type === 'CREATE_ROLE') {
-           const successMessageTea: SuccessMessage = await TeaService.reportTeaSuccess({ tea: createdObjectId });
-           logger.info('Successfuly tea report', successMessageTea);
+          const successMessageTea: SuccessMessage =
+            await TeaService.reportTeaSuccess({
+              tea: createdObjectId,
+            });
+          logger.info('Successfuly tea report', successMessageTea);
         }
       } else {
         RequestService.UpdateKartoffelStatus({
@@ -113,15 +121,22 @@ export const requestProcessor = async (incomingRequest: any) => {
         });
       }
     } else {
-      console.log('got unsupported message: ', incomingRequest)
+      logger.error('got unsupported message: ', incomingRequest);
     }
   } catch (error) {
-    console.log(error);
-    RequestService.IncrementKartoffelRetries({ id: requestObject.id });
+    logger.error(error);
 
-    if (requestObject.type === 'CREATE_ROLE' && createdObjectId != undefined) {
-        const successMessageTea: SuccessMessage = await TeaService.reportTeaFail({ tea: createdObjectId });
+    if (requestObject && requestObject.id) {
+      RequestService.IncrementKartoffelRetries({ id: requestObject.id });
+
+      if (
+        requestObject.type === 'CREATE_ROLE' &&
+        createdObjectId != undefined
+      ) {
+        const successMessageTea: SuccessMessage =
+          await TeaService.reportTeaFail({ tea: createdObjectId });
         logger.info('fail tea report: ', successMessageTea);
+      }
     }
   }
 };

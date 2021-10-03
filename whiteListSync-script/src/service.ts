@@ -3,7 +3,6 @@ import { approverClient } from './clients';
 import {
   ApproverIdArray,
   Approver,
-  UserType,
 } from './interfaces/protoc/proto/approverService';
 
 export function getAllApproverIds(): Promise<ApproverIdArray> {

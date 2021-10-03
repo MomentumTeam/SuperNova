@@ -17,20 +17,23 @@ export async function parseExcelFile(
       rows = rows.map((row: any, index: any) => {
         return {
           rowNumber: index + 2,
-          roleEntityType: C.hebEntityTypeToKartoffelLang[row[0]],
+          roleEntityType: C.hebEntityTypeToKartoffelLang[row[2]],
           clearance: C.hebClearanceToKartoffelLang[row[1]],
-          jobTitle: row[2],
+          jobTitle: row[0],
         };
       });
     } else {
       //CHANGE_ROLE_HIERARCHY_BULK
       rows = rows.map((row: any, index: any) => {
-        return {
+        let res: any = {
           rowNumber: index + 2,
-          newJobTitle: row[0],
           currentJobTitle: row[1],
-          roleId: row[2],
+          roleId: row[0],
         };
+        if (row[2] != null && row[2] != undefined) {
+          res.newJobTitle = row[2];
+        }
+        return res;
       });
     }
 
@@ -49,8 +52,8 @@ export function isTableFull(rows: any, type: RequestType) {
     for (let j in rows[i]) {
       const illegalCell: boolean =
         type === RequestType.CREATE_ROLE_BULK
-          ? !rows[i][j]
-          : j !== '0' && !rows[i][j];
+          ? !rows[i][j] || rows[i][j] == null
+          : j !== '2' && (!rows[i][j] || rows[i][j] == null);
       if (illegalCell) {
         return false;
       }
@@ -66,7 +69,7 @@ export function containsLegalValues(rows: any, type: RequestType) {
     );
     const hebClearances: string[] = Object.keys(C.hebClearanceToKartoffelLang);
     for (let i in rows) {
-      const hebEntityType = rows[i][0].toString();
+      const hebEntityType = rows[i][2].toString();
       const hebClearance = rows[i][1].toString();
       if (
         hebEntityTypes.indexOf(hebEntityType) === -1 ||
@@ -78,7 +81,7 @@ export function containsLegalValues(rows: any, type: RequestType) {
     return true;
   } else {
     for (let i in rows) {
-      const email = rows[i][2].toString();
+      const email = rows[i][0].toString();
       if (!EmailValidator.validate(email)) {
         return false;
       }

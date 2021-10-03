@@ -2,6 +2,8 @@ import * as grpc from 'grpc';
 import * as protoLoader from '@grpc/proto-loader';
 import * as config from '../config';
 import {
+  CanPushToQueueReq,
+  CanPushToQueueRes,
   Request,
   UpdateApproverDecisionReq,
   UpdateReq,
@@ -69,6 +71,31 @@ export default class RequestService {
           } else {
             logger.info('updateApproverDecision in RequestService', {
               updateApproverDecisionReq,
+              request,
+            });
+            resolve(request);
+          }
+        }
+      );
+    });
+  }
+
+  static async canPushToADQueue(
+    canPushToADQueueReq: CanPushToQueueReq
+  ): Promise<CanPushToQueueRes> {
+    return new Promise((resolve, reject) => {
+      requestClient.CanPushToADQueue(
+        canPushToADQueueReq,
+        (error: any, request: CanPushToQueueRes) => {
+          if (error) {
+            logger.error('CanPushToADQueue in RequestService ERROR', {
+              canPushToADQueueReq,
+              error: { message: error.message },
+            });
+            reject(error);
+          } else {
+            logger.info('CanPushToADQueue in RequestService', {
+              canPushToADQueueReq,
               request,
             });
             resolve(request);

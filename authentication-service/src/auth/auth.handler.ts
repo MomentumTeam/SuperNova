@@ -7,9 +7,9 @@ import { Application, Response, Request } from 'express';
 import { IUser } from '../kartoffel/kartoffel.interface';
 import { NotFoundError } from '../utils/errors/user.error';
 import { ApproverService } from '../approver/approver.service';
-import { UserType } from '../interfaces/protoc/proto/approverService';
 import { IShragaUser } from './auth.interface';
 import { UsersRpc } from '../kartoffel/kartoffel.rpc';
+import { ApproverType } from '../interfaces/protoc/proto/requestService';
 
 const ShragaStrategy = require('passport-shraga').Strategy;
 
@@ -77,7 +77,7 @@ export class AuthenticationHandler {
 
             userWithType.types =
                 userResponse.type.length > 0
-                    ? userResponse.type.map((type) => UserType[type])
+                    ? userResponse.type.map((type) => ApproverType[type])
                     : config.defaultUserTypes;
         
             logger.info('addUserType OK in AS', { user: user });

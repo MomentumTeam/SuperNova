@@ -40,6 +40,7 @@ import {
   DeleteEntityRequest,
   ChangeRoleOGRequest,
 } from '../interfaces/protoc/proto/kartoffelService';
+import { logger } from '../utils/logger';
 import { findPath } from '../utils/path';
 
 const PROTO_PATH = `${findPath('proto')}/kartoffelService.proto`;
@@ -66,7 +67,7 @@ const kartoffelClient: any = new protoDescriptor.Kartoffel(
 
 export default class KartoffelService {
   static async searchOG(searchOGRequest: SearchOGRequest): Promise<OGArray> {
-    console.log('searchOG');
+    logger.info('searchOG');
     return new Promise((resolve, reject) => {
       kartoffelClient.SearchOG(
         searchOGRequest,
@@ -84,7 +85,7 @@ export default class KartoffelService {
   static async createOG(
     createOGRequest: CreateOGRequest
   ): Promise<OrganizationGroup> {
-    console.log('CreateOG');
+    logger.info('CreateOG');
     return new Promise((resolve, reject) => {
       kartoffelClient.CreateOG(
         createOGRequest,
@@ -102,7 +103,7 @@ export default class KartoffelService {
   static async createDI(
     createDIRequest: CreateDIRequest
   ): Promise<DigitalIdentity> {
-    console.log('CreateDI');
+    logger.info('CreateDI');
     return new Promise((resolve, reject) => {
       kartoffelClient.CreateDI(
         createDIRequest,
@@ -118,7 +119,7 @@ export default class KartoffelService {
   }
 
   static async createRole(createRoleRequest: CreateRoleRequest): Promise<Role> {
-    console.log('CreateRole');
+    logger.info('CreateRole');
     return new Promise((resolve, reject) => {
       kartoffelClient.CreateRole(createRoleRequest, (err: any, role: Role) => {
         if (err) {
@@ -133,7 +134,7 @@ export default class KartoffelService {
   static async renameRole(
     renameRoleRequest: RenameRoleRequest
   ): Promise<SuccessMessage> {
-    console.log('RenameRole');
+    logger.info('RenameRole');
     return new Promise((resolve, reject) => {
       kartoffelClient.RenameRole(
         renameRoleRequest,
@@ -151,7 +152,7 @@ export default class KartoffelService {
   static async renameOG(
     renameOGRequest: RenameOGRequest
   ): Promise<SuccessMessage> {
-    console.log('RenameOG');
+    logger.info('RenameOG');
     return new Promise((resolve, reject) => {
       kartoffelClient.RenameOG(
         renameOGRequest,
@@ -169,7 +170,7 @@ export default class KartoffelService {
   static async updateEntity(
     updateEntityRequest: UpdateEntityRequest
   ): Promise<SuccessMessage> {
-    console.log('UpdateEntity');
+    logger.info('UpdateEntity');
     return new Promise((resolve, reject) => {
       kartoffelClient.UpdateEntity(
         updateEntityRequest,
@@ -187,7 +188,7 @@ export default class KartoffelService {
   static async connectRoleAndDI(
     connectRoleAndDIRequest: ConnectRoleAndDIRequest
   ): Promise<SuccessMessage> {
-    console.log('ConnectRoleAndDI');
+    logger.info('ConnectRoleAndDI');
     return new Promise((resolve, reject) => {
       kartoffelClient.ConnectRoleAndDI(
         connectRoleAndDIRequest,
@@ -205,7 +206,7 @@ export default class KartoffelService {
   static async disconnectRoleAndDI(
     disconnectRoleAndDIRequest: DisconnectRoleAndDIRequest
   ): Promise<SuccessMessage> {
-    console.log('ConnectRoleAndDI');
+    logger.info('ConnectRoleAndDI');
     return new Promise((resolve, reject) => {
       kartoffelClient.ConnectRoleAndDI(
         disconnectRoleAndDIRequest,
@@ -223,7 +224,7 @@ export default class KartoffelService {
   static async getRoleByRoleId(
     getRoleByRoleIdRequest: GetRoleByRoleIdRequest
   ): Promise<Role> {
-    console.log('GetRoleByRoleId');
+    logger.info('GetRoleByRoleId');
     return new Promise((resolve, reject) => {
       kartoffelClient.GetRoleByRoleId(
         getRoleByRoleIdRequest,
@@ -241,7 +242,7 @@ export default class KartoffelService {
   static async getRolesUnderOG(
     getRolesUnderOGRequest: GetRolesUnderOGRequest
   ): Promise<RoleArray> {
-    console.log('GetRolesUnderOG');
+    logger.info('GetRolesUnderOG');
     return new Promise((resolve, reject) => {
       kartoffelClient.GetRolesUnderOG(
         getRolesUnderOGRequest,
@@ -259,7 +260,7 @@ export default class KartoffelService {
   static async connectEntityAndDI(
     connectEntityAndDIRequest: ConnectEntityAndDIRequest
   ): Promise<SuccessMessage> {
-    console.log('connectEntityAndDI');
+    logger.info('connectEntityAndDI');
     return new Promise((resolve, reject) => {
       kartoffelClient.ConnectEntityAndDI(
         connectEntityAndDIRequest,
@@ -277,7 +278,7 @@ export default class KartoffelService {
   static async createEntity(
     createEntityRequest: CreateEntityRequest
   ): Promise<Entity> {
-    console.log('CreateEntity');
+    logger.info('CreateEntity');
     return new Promise((resolve, reject) => {
       kartoffelClient.CreateEntity(
         createEntityRequest,
@@ -295,7 +296,7 @@ export default class KartoffelService {
   static async disconnectDIFromEntity(
     disconnectDIFromEntityRequest: DisconnectDIFromEntityRequest
   ): Promise<SuccessMessage> {
-    console.log('DisconnectDIFromEntity');
+    logger.info('DisconnectDIFromEntity');
     return new Promise((resolve, reject) => {
       kartoffelClient.DisconnectDIFromEntity(
         DisconnectDIFromEntityRequest,
@@ -313,7 +314,7 @@ export default class KartoffelService {
   static async getEntityByRoleId(
     getEntityByRoleIdRequest: GetEntityByRoleIdRequest
   ): Promise<Entity> {
-    console.log('getEntityByRoleId');
+    logger.info('getEntityByRoleId');
     return new Promise((resolve, reject) => {
       kartoffelClient.GetEntityByRoleId(
         getEntityByRoleIdRequest,
@@ -331,7 +332,7 @@ export default class KartoffelService {
   static async getEntityById(
     getEntityByIdRequest: GetEntityByIdRequest
   ): Promise<Entity> {
-    console.log('getEntityById');
+    logger.info('getEntityById');
     return new Promise((resolve, reject) => {
       kartoffelClient.GetEntityById(
         getEntityByIdRequest,
@@ -348,7 +349,7 @@ export default class KartoffelService {
   static async deleteOG(
     deleteOGRequest: DeleteOGRequest
   ): Promise<SuccessMessage> {
-    console.log('DeleteOG');
+    logger.info('DeleteOG');
     return new Promise((resolve, reject) => {
       kartoffelClient.DeleteOG(
         deleteOGRequest,
@@ -366,7 +367,7 @@ export default class KartoffelService {
   static async getChildrenOfOG(
     getChildrenOfOGRequest: GetChildrenOfOGRequest
   ): Promise<OGArray> {
-    console.log('GetChildrenOfOG');
+    logger.info('GetChildrenOfOG');
     return new Promise((resolve, reject) => {
       kartoffelClient.GetChildrenOfOG(
         getChildrenOfOGRequest,
@@ -384,7 +385,7 @@ export default class KartoffelService {
   static async deleteRole(
     deleteRoleRequest: DeleteRoleRequest
   ): Promise<SuccessMessage> {
-    console.log('DeleteRole');
+    logger.info('DeleteRole');
     return new Promise((resolve, reject) => {
       kartoffelClient.DeleteRole(
         deleteRoleRequest,
@@ -402,7 +403,7 @@ export default class KartoffelService {
   static async deleteEntity(
     deleteEntityRequest: DeleteEntityRequest
   ): Promise<SuccessMessage> {
-    console.log('deleteEntity');
+    logger.info('deleteEntity');
     return new Promise((resolve, reject) => {
       kartoffelClient.DeleteEntity(
         deleteEntityRequest,
@@ -420,7 +421,7 @@ export default class KartoffelService {
   static async deleteDI(
     deleteDIRequest: DeleteDIRequest
   ): Promise<SuccessMessage> {
-    console.log('DeleteDI');
+    logger.info('DeleteDI');
     return new Promise((resolve, reject) => {
       kartoffelClient.DeleteDI(
         deleteDIRequest,
@@ -436,7 +437,7 @@ export default class KartoffelService {
   }
 
   static async getOGTree(getOGTreeRequest: GetOGTreeRequest): Promise<OGTree> {
-    console.log('GetOGTree');
+    logger.info('GetOGTree');
     return new Promise((resolve, reject) => {
       kartoffelClient.GetOGTree(
         getOGTreeRequest,
@@ -454,7 +455,7 @@ export default class KartoffelService {
   static async getEntityByIdNumber(
     getEntityByIdNumberRequest: GetEntityByIdentifierRequest
   ): Promise<Entity> {
-    console.log('GetEntityByIdNumber');
+    logger.info('GetEntityByIdNumber');
     return new Promise((resolve, reject) => {
       kartoffelClient.GetEntityByIdNumber(
         getEntityByIdNumberRequest,
@@ -472,7 +473,7 @@ export default class KartoffelService {
   static async getEntitiesUnderOG(
     getEntitiesUnderOGRequest: GetEntitiesUnderOGRequest
   ): Promise<EntityArray> {
-    console.log('GetEntitiesUnderOG');
+    logger.info('GetEntitiesUnderOG');
     return new Promise((resolve, reject) => {
       kartoffelClient.GetEntitiesUnderOG(
         getEntitiesUnderOGRequest,
@@ -490,7 +491,7 @@ export default class KartoffelService {
   static async getEntityByDigitalIdentity(
     getEntityByDIRequest: GetEntityByDIRequest
   ): Promise<Entity> {
-    console.log('GetEntityByDigitalIdentity');
+    logger.info('GetEntityByDigitalIdentity');
     return new Promise((resolve, reject) => {
       kartoffelClient.GetEntityByDigitalIdentity(
         getEntityByDIRequest,
@@ -508,7 +509,7 @@ export default class KartoffelService {
   static async getPictureByEntityId(
     getPictureByEntityIdRequest: GetPictureByEntityIdRequest
   ): Promise<Image> {
-    console.log('GetPictureByEntityId');
+    logger.info('GetPictureByEntityId');
     return new Promise((resolve, reject) => {
       kartoffelClient.GetPictureByEntityId(
         getPictureByEntityIdRequest,
@@ -526,7 +527,7 @@ export default class KartoffelService {
   static async changeRoleOG(
     changeRoleOG: ChangeRoleOGRequest
   ): Promise<SuccessMessage> {
-    console.log('changeRoleOG');
+    logger.info('changeRoleOG');
     return new Promise((resolve, reject) => {
       kartoffelClient.ChangeRoleOG(
         changeRoleOG,
