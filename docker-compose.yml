@@ -240,7 +240,8 @@ services:
       - GATEWAY_BS_FOLDER_PATH=/usr/src/app/bulk-files
       - GATEWAY_AUTHENTICATION_REQUIRED=true
       - GATEWAY_APM_URL=http://apm-server:8200
-
+      - GATEWAY_TS_URL=tea-service:8080
+      
   # Kafka GUI
   kouncil:
     image: consdata/kouncil:latest

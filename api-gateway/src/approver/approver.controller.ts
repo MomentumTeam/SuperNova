@@ -15,22 +15,20 @@ import {
   GetEntityByIdRequest,
 } from '../interfaces/protoc/proto/kartoffelService';
 import {
+  ApproverDecision,
   ApproverType,
   Decision,
-  decisionFromJSON,
-  decisionToJSON,
-  Request,
+  EntityMin,
   RequestStatus,
-  requestStatusToJSON,
   RequestType,
   requestTypeFromJSON,
-  requestTypeToJSON,
   UpdateApproverDecisionReq,
 } from '../interfaces/protoc/proto/requestService';
 import { AuthenticationError } from '../utils/errors/userErrors';
 import { statusCodeHandler } from '../utils/errors/errorHandlers';
 import { RequestsService } from '../requests/requests.service';
 import ProducerController from '../producer/producer.controller';
+import TeaService from '../tea/tea.service';
 export default class ApproverController {
   // GET
   static async getAllApprovers(req: any, res: Response) {
@@ -142,20 +140,36 @@ export default class ApproverController {
 
   // PUT
   static async updateApproverDecision(req: any, res: Response) {
+    // Get the current approver
+    if (!req.user && !req.user.id) throw new AuthenticationError();
+
+    const approver: EntityMin = {
+      id: req.user.id,
+      displayName: req.user.displayName,
+      identityCard: req.user.identityCard,
+      personalNumber: req.user.personalNumber,
+    };
+
+    const { decision, reason, date } = req.body.decision;
+    // build approver decision object
+    const approverDecision: ApproverDecision = {
+      decision,
+      reason,
+      date,
+      approver,
+    };
+
+    // build updateApproverDecisionReq
     const updateApproverDecisionReq: UpdateApproverDecisionReq = {
       id: req.params.requestId,
-      approverDecision: req.body.approverDecision,
+      approverDecision: approverDecision,
       approverType: req.params.type,
     };
 
     try {
-      const request = await ApproverService.updateApproverDecision(
-        updateApproverDecisionReq
-      );
-      const requestType =
-        typeof request.type === typeof ''
-          ? requestTypeFromJSON(request.type)
-          : request.type;
+      const request = await ApproverService.updateApproverDecision(updateApproverDecisionReq);
+      const requestType = typeof request.type === typeof '' ? requestTypeFromJSON(request.type) : request.type;
+
       if (requestType === RequestType.ADD_APPROVER) {
         try {
           await ApproverService.addApprover({
@@ -186,6 +200,13 @@ export default class ApproverController {
 
         if (canPushToQueueRes.canPushToQueue) {
           await ProducerController.produceToADQueue(req.params.id, res);
+        }
+
+        if (
+          requestType === RequestType.CREATE_ROLE &&
+          updateApproverDecisionReq.approverDecision?.decision === Decision.DENIED
+        ) {
+          await TeaService.reportTeaFail({tea: request.id});
         }
       }
       res.send(request);
