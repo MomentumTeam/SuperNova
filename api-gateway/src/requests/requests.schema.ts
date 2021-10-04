@@ -228,7 +228,7 @@ const assignRoleToEntityKartoffelParamsObj = Joi.object({
 const assignRoleToEntityADParamsObj = Joi.object({
   oldSAMAccountName: Joi.string().required(),
   newSAMAccountName: Joi.string().required(),
-  upn: Joi.string().required(),
+  upn: Joi.string(),
   firstName: Joi.string().required(),
   lastName: Joi.string().required(),
   fullName: Joi.string().required(),
