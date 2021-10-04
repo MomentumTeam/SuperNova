@@ -1,9 +1,18 @@
 import {
   Domain,
+  ReportTeaReq,
   RetrieveByEntityIdReq,
   RetrieveTeaByUnitReq,
 } from '../interfaces/protoc/proto/teaService';
 import TeaService from './teaService';
+
+export async function reportTeaFail(tea: string) {
+  let reportTeaReq: ReportTeaReq = {
+    tea: tea,
+  };
+  const successMessage = await TeaService.reportTeaFail(reportTeaReq);
+  return successMessage.success;
+}
 
 export async function retrieveTeaByUnit(unit: string) {
   let retrieveTeaByUnitReq: RetrieveTeaByUnitReq = {

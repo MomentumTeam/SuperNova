@@ -16,7 +16,15 @@ import {
 } from '../interfaces/protoc/proto/kartoffelService';
 import {
   ApproverType,
+  Decision,
+  decisionFromJSON,
+  decisionToJSON,
+  Request,
+  RequestStatus,
+  requestStatusToJSON,
   RequestType,
+  requestTypeFromJSON,
+  requestTypeToJSON,
   UpdateApproverDecisionReq,
 } from '../interfaces/protoc/proto/requestService';
 import { AuthenticationError } from '../utils/errors/userErrors';
@@ -141,18 +149,36 @@ export default class ApproverController {
     };
 
     try {
-      const descision = await ApproverService.updateApproverDecision(
+      const request = await ApproverService.updateApproverDecision(
         updateApproverDecisionReq
       );
-
-      if (descision.type === RequestType.ADD_APPROVER) {
-        await ApproverService.addApprover({
-          entityId: descision.additionalParams?.entityId || '',
-          type: descision.additionalParams?.type || ApproverType.UNRECOGNIZED,
-          akaUnit: descision.additionalParams?.akaUnit || '',
-          displayName: descision.additionalParams?.displayName || '',
-          domainUsers: descision.additionalParams?.domainUsers || [],
-        });
+      const requestType =
+        typeof request.type === typeof ''
+          ? requestTypeFromJSON(request.type)
+          : request.type;
+      if (requestType === RequestType.ADD_APPROVER) {
+        try {
+          await ApproverService.addApprover({
+            entityId: request.additionalParams?.entityId || '',
+            type: request.additionalParams?.type || ApproverType.UNRECOGNIZED,
+            akaUnit: request.additionalParams?.akaUnit || '',
+            displayName: request.additionalParams?.displayName || '',
+            domainUsers: request.additionalParams?.domainUsers || [],
+          });
+          await RequestsService.updateRequest({
+            id: request.id,
+            requestProperties: {
+              status: RequestStatus.DONE,
+            },
+          } as any);
+        } catch (addApproverError: any) {
+          await RequestsService.updateRequest({
+            id: request.id,
+            requestProperties: {
+              status: RequestStatus.FAILED,
+            },
+          } as any);
+        }
       } else {
         const canPushToQueueRes = await RequestsService.canPushToADQueue({
           id: req.params.id,
@@ -162,8 +188,7 @@ export default class ApproverController {
           await ProducerController.produceToADQueue(req.params.id, res);
         }
       }
-
-      res.send(descision);
+      res.send(request);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);

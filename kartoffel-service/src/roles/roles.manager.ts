@@ -56,9 +56,7 @@ export class RolesManager {
   async getRolesUnderOG(
     getRolesUnderOGRequest: GetRolesUnderOGRequest
   ): Promise<RoleArray> {
-    return await this.rolesRepository.getRolesUnderOGRequest(
-      getRolesUnderOGRequest
-    );
+    return await this.rolesRepository.getRolesUnderOG(getRolesUnderOGRequest);
   }
 
   async renameRole(RenameRoleRequest: RenameRoleRequest): Promise<Role> {

@@ -3,9 +3,11 @@ import * as protoLoader from '@grpc/proto-loader';
 import * as config from '../config';
 import { findPath } from '../utils/path';
 import {
+  ReportTeaReq,
   RetrieveByEntityIdReq,
   RetrieveByEntityReq,
   RetrieveTeaByUnitReq,
+  SuccessMessage,
   TeaMessage,
   UPNMessage,
 } from '../interfaces/protoc/proto/teaService';
@@ -32,6 +34,24 @@ const notificationClient: any = new protoDescriptor.Tea(
 );
 
 export default class TeaService {
+  static async reportTeaFail(
+    reportTeaReq: ReportTeaReq
+  ): Promise<SuccessMessage> {
+    console.log('reportTeaFail');
+    return new Promise((resolve, reject) => {
+      notificationClient.ReportTeaFail(
+        reportTeaReq,
+        (err: any, successMessage: SuccessMessage) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(successMessage);
+          }
+        }
+      );
+    });
+  }
+
   static async retrieveTeaByUnit(
     retrieveTeaByUnitReq: RetrieveTeaByUnitReq
   ): Promise<TeaMessage> {

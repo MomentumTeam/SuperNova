@@ -57,6 +57,7 @@ import {
   getIdQuery,
 } from '../utils/query';
 import {
+  reportTeaFail,
   retrieveTeaByUnit,
   retrieveUPNByEntityId,
 } from '../services/teaHelper';
@@ -210,6 +211,19 @@ export class RequestRepository {
           id: updateDecisionReq.id,
           requestProperties: requestProperties,
         });
+
+        const requestType =
+          typeof updatedRequest.type === typeof ''
+            ? requestTypeFromJSON(updatedRequest.type)
+            : updatedRequest.type;
+        if (
+          newRequestStatus === RequestStatus.DECLINED &&
+          requestType === RequestType.CREATE_ROLE
+        ) {
+          if (updatedRequest.kartoffelParams?.roleId) {
+            await reportTeaFail(updatedRequest.kartoffelParams?.roleId);
+          }
+        }
       }
 
       if (decision === Decision.APPROVED) {
