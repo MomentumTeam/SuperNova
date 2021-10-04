@@ -70,6 +70,8 @@ message AddApproverReq{
     repeated string domainUsers = 3;
     string akaUnit = 4;
     RequestService.ApproverType type = 5;
+    optional string personalNumber = 6;
+    optional string identityCard = 7;
 }
 
 message Approver{
@@ -79,6 +81,8 @@ message Approver{
     RequestService.ApproverType type = 4;
     string akaUnit = 5;
     string id = 6;
+    string personalNumber = 7;
+    string identityCard = 8;
 }
 
 enum RequestStatus{

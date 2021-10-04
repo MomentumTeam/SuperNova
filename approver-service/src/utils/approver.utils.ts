@@ -78,6 +78,8 @@ export function getApproverArrayByEntityArray(
         type: type,
         akaUnit: entity.akaUnit,
         id: entity.id,
+        personalNumber: entity.personalNumber,
+        identityCard: entity.identityCard,
       };
     });
   } catch (error) {

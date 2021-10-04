@@ -1048,7 +1048,7 @@ export interface ChangeRoleHierarchyReq {
   approversComments?: string | undefined;
   due?: number | undefined;
   isPartOfBulk: boolean;
-  bulkRequestId?: string | undefined;
+  bulkRequestId: string;
   rowNumber?: string | undefined;
 }
 
@@ -1261,6 +1261,8 @@ export interface AdditionalParams {
   domainUsers: string[];
   akaUnit: string;
   type: ApproverType;
+  personalNumber?: string | undefined;
+  identityCard?: string | undefined;
 }
 
 /** 5.RenameOGRequest */
@@ -14429,7 +14431,10 @@ export const DisconectRoleFromEntityRes = {
   },
 };
 
-const baseChangeRoleHierarchyReq: object = { isPartOfBulk: false };
+const baseChangeRoleHierarchyReq: object = {
+  isPartOfBulk: false,
+  bulkRequestId: "",
+};
 
 export const ChangeRoleHierarchyReq = {
   encode(
@@ -14502,7 +14507,7 @@ export const ChangeRoleHierarchyReq = {
     if (message.isPartOfBulk === true) {
       writer.uint32(128).bool(message.isPartOfBulk);
     }
-    if (message.bulkRequestId !== undefined) {
+    if (message.bulkRequestId !== "") {
       writer.uint32(138).string(message.bulkRequestId);
     }
     if (message.rowNumber !== undefined) {
@@ -14730,7 +14735,7 @@ export const ChangeRoleHierarchyReq = {
     if (object.bulkRequestId !== undefined && object.bulkRequestId !== null) {
       message.bulkRequestId = String(object.bulkRequestId);
     } else {
-      message.bulkRequestId = undefined;
+      message.bulkRequestId = "";
     }
     if (object.rowNumber !== undefined && object.rowNumber !== null) {
       message.rowNumber = String(object.rowNumber);
@@ -14938,7 +14943,7 @@ export const ChangeRoleHierarchyReq = {
     if (object.bulkRequestId !== undefined && object.bulkRequestId !== null) {
       message.bulkRequestId = object.bulkRequestId;
     } else {
-      message.bulkRequestId = undefined;
+      message.bulkRequestId = "";
     }
     if (object.rowNumber !== undefined && object.rowNumber !== null) {
       message.rowNumber = object.rowNumber;
@@ -18987,6 +18992,12 @@ export const AdditionalParams = {
     if (message.type !== 0) {
       writer.uint32(40).int32(message.type);
     }
+    if (message.personalNumber !== undefined) {
+      writer.uint32(50).string(message.personalNumber);
+    }
+    if (message.identityCard !== undefined) {
+      writer.uint32(58).string(message.identityCard);
+    }
     return writer;
   },
 
@@ -19012,6 +19023,12 @@ export const AdditionalParams = {
           break;
         case 5:
           message.type = reader.int32() as any;
+          break;
+        case 6:
+          message.personalNumber = reader.string();
+          break;
+        case 7:
+          message.identityCard = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -19049,6 +19066,16 @@ export const AdditionalParams = {
     } else {
       message.type = 0;
     }
+    if (object.personalNumber !== undefined && object.personalNumber !== null) {
+      message.personalNumber = String(object.personalNumber);
+    } else {
+      message.personalNumber = undefined;
+    }
+    if (object.identityCard !== undefined && object.identityCard !== null) {
+      message.identityCard = String(object.identityCard);
+    } else {
+      message.identityCard = undefined;
+    }
     return message;
   },
 
@@ -19064,6 +19091,10 @@ export const AdditionalParams = {
     }
     message.akaUnit !== undefined && (obj.akaUnit = message.akaUnit);
     message.type !== undefined && (obj.type = approverTypeToJSON(message.type));
+    message.personalNumber !== undefined &&
+      (obj.personalNumber = message.personalNumber);
+    message.identityCard !== undefined &&
+      (obj.identityCard = message.identityCard);
     return obj;
   },
 
@@ -19094,6 +19125,16 @@ export const AdditionalParams = {
       message.type = object.type;
     } else {
       message.type = 0;
+    }
+    if (object.personalNumber !== undefined && object.personalNumber !== null) {
+      message.personalNumber = object.personalNumber;
+    } else {
+      message.personalNumber = undefined;
+    }
+    if (object.identityCard !== undefined && object.identityCard !== null) {
+      message.identityCard = object.identityCard;
+    } else {
+      message.identityCard = undefined;
     }
     return message;
   },
@@ -26226,7 +26267,7 @@ export interface RequestService {
     request: CreateNewApproverReq
   ): Promise<CreateNewApproverRes>;
   RenameOGRequest(request: RenameOGReq): Promise<RenameOGRes>;
-  RenameRoleRequest(request: RenameRoleReq): Promise<RenameRoleRes>;
+  RenameRoleRequest(request: RenameRoleReq): Promise<EditEntityRes>;
   EditEntityRequest(request: EditEntityReq): Promise<EditEntityRes>;
   DeleteOGRequest(request: DeleteOGReq): Promise<DeleteOGRes>;
   DeleteRoleRequest(request: DeleteRoleReq): Promise<DeleteRoleRes>;
@@ -26383,14 +26424,14 @@ export class RequestServiceClientImpl implements RequestService {
     return promise.then((data) => RenameOGRes.decode(new _m0.Reader(data)));
   }
 
-  RenameRoleRequest(request: RenameRoleReq): Promise<RenameRoleRes> {
+  RenameRoleRequest(request: RenameRoleReq): Promise<EditEntityRes> {
     const data = RenameRoleReq.encode(request).finish();
     const promise = this.rpc.request(
       "RequestService.RequestService",
       "RenameRoleRequest",
       data
     );
-    return promise.then((data) => RenameRoleRes.decode(new _m0.Reader(data)));
+    return promise.then((data) => EditEntityRes.decode(new _m0.Reader(data)));
   }
 
   EditEntityRequest(request: EditEntityReq): Promise<EditEntityRes> {

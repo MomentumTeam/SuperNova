@@ -134,6 +134,8 @@ export class ApproverRepository {
         displayName: entity.displayName,
         domainUsers: domainUsers,
         akaUnit: entity.akaUnit,
+        personalNumber: entity.personalNumber,
+        identityCard: entity.identityCard,
       };
       const result: any = await ApproverModel.updateMany(
         { entityId: syncApproverReq.approverId },
@@ -239,7 +241,7 @@ export class ApproverRepository {
       ) {
         try {
           const kartoffelEntities =
-            await KartoffelService.searchEntitiesByFullName({
+            await KartoffelService.searchCommandersByFullName({
               fullName: searchByDisplayNameReq.displayName,
             });
           logger.info('searchApproverByDisplayName kartoffelResults', {

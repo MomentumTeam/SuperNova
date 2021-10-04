@@ -60,6 +60,34 @@ export default class KartoffelService {
     });
   }
 
+  static async searchCommandersByFullName(
+    searchCommandersByFullName: SearchEntitiesByFullNameRequest
+  ): Promise<EntityArray> {
+    return new Promise((resolve, reject) => {
+      kartoffelClient.SearchCommandersByFullName(
+        searchCommandersByFullName,
+        (error: any, entityArray: EntityArray) => {
+          if (error) {
+            logger.error(
+              'searchCommandersByFullName in KartoffelService ERROR',
+              {
+                searchCommandersByFullName,
+                error: { message: error.message },
+              }
+            );
+            reject(error);
+          } else {
+            logger.info('searchCommandersByFullName in KartoffelService', {
+              searchCommandersByFullName,
+              entityArray,
+            });
+            resolve(entityArray);
+          }
+        }
+      );
+    });
+  }
+
   static async getEntityByRoleId(
     getEntityByRoleId: GetEntityByRoleIdRequest
   ): Promise<Entity> {

@@ -818,6 +818,8 @@ message AdditionalParams{
     repeated string domainUsers = 3;
     string akaUnit = 4;
     ApproverType type = 5;
+    optional string personalNumber = 6;
+    optional string identityCard = 7;
 }
 
 //5.RenameOGRequest
@@ -1318,9 +1320,13 @@ message Request{
 // ---------------------------------------------Enums------------------------------------------------------------
 
 enum ApproverType{
-    COMMANDER = 0;
+    UNKNOWN = 0;
     SECURITY = 1;
     SUPER_SECURITY = 2;
+    COMMANDER = 3;
+    SOLDIER = 4;
+    ADMIN = 5;
+    BULK = 6;
 }
 
 enum RequestType {
