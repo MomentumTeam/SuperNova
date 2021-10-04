@@ -112,6 +112,8 @@ export interface AddApproverReq {
   domainUsers: string[];
   akaUnit: string;
   type: ApproverType;
+  personalNumber?: string | undefined;
+  identityCard?: string | undefined;
 }
 
 export interface Approver {
@@ -122,6 +124,8 @@ export interface Approver {
   type: ApproverType;
   akaUnit: string;
   id: string;
+  personalNumber: string;
+  identityCard: string;
 }
 
 const baseSyncApproverReq: object = { approverId: "" };
@@ -869,6 +873,12 @@ export const AddApproverReq = {
     if (message.type !== 0) {
       writer.uint32(40).int32(message.type);
     }
+    if (message.personalNumber !== undefined) {
+      writer.uint32(50).string(message.personalNumber);
+    }
+    if (message.identityCard !== undefined) {
+      writer.uint32(58).string(message.identityCard);
+    }
     return writer;
   },
 
@@ -894,6 +904,12 @@ export const AddApproverReq = {
           break;
         case 5:
           message.type = reader.int32() as any;
+          break;
+        case 6:
+          message.personalNumber = reader.string();
+          break;
+        case 7:
+          message.identityCard = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -931,6 +947,16 @@ export const AddApproverReq = {
     } else {
       message.type = 0;
     }
+    if (object.personalNumber !== undefined && object.personalNumber !== null) {
+      message.personalNumber = String(object.personalNumber);
+    } else {
+      message.personalNumber = undefined;
+    }
+    if (object.identityCard !== undefined && object.identityCard !== null) {
+      message.identityCard = String(object.identityCard);
+    } else {
+      message.identityCard = undefined;
+    }
     return message;
   },
 
@@ -946,6 +972,10 @@ export const AddApproverReq = {
     }
     message.akaUnit !== undefined && (obj.akaUnit = message.akaUnit);
     message.type !== undefined && (obj.type = approverTypeToJSON(message.type));
+    message.personalNumber !== undefined &&
+      (obj.personalNumber = message.personalNumber);
+    message.identityCard !== undefined &&
+      (obj.identityCard = message.identityCard);
     return obj;
   },
 
@@ -977,6 +1007,16 @@ export const AddApproverReq = {
     } else {
       message.type = 0;
     }
+    if (object.personalNumber !== undefined && object.personalNumber !== null) {
+      message.personalNumber = object.personalNumber;
+    } else {
+      message.personalNumber = undefined;
+    }
+    if (object.identityCard !== undefined && object.identityCard !== null) {
+      message.identityCard = object.identityCard;
+    } else {
+      message.identityCard = undefined;
+    }
     return message;
   },
 };
@@ -988,6 +1028,8 @@ const baseApprover: object = {
   type: 0,
   akaUnit: "",
   id: "",
+  personalNumber: "",
+  identityCard: "",
 };
 
 export const Approver = {
@@ -1012,6 +1054,12 @@ export const Approver = {
     }
     if (message.id !== "") {
       writer.uint32(50).string(message.id);
+    }
+    if (message.personalNumber !== "") {
+      writer.uint32(58).string(message.personalNumber);
+    }
+    if (message.identityCard !== "") {
+      writer.uint32(66).string(message.identityCard);
     }
     return writer;
   },
@@ -1041,6 +1089,12 @@ export const Approver = {
           break;
         case 6:
           message.id = reader.string();
+          break;
+        case 7:
+          message.personalNumber = reader.string();
+          break;
+        case 8:
+          message.identityCard = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -1083,6 +1137,16 @@ export const Approver = {
     } else {
       message.id = "";
     }
+    if (object.personalNumber !== undefined && object.personalNumber !== null) {
+      message.personalNumber = String(object.personalNumber);
+    } else {
+      message.personalNumber = "";
+    }
+    if (object.identityCard !== undefined && object.identityCard !== null) {
+      message.identityCard = String(object.identityCard);
+    } else {
+      message.identityCard = "";
+    }
     return message;
   },
 
@@ -1099,6 +1163,10 @@ export const Approver = {
     message.type !== undefined && (obj.type = approverTypeToJSON(message.type));
     message.akaUnit !== undefined && (obj.akaUnit = message.akaUnit);
     message.id !== undefined && (obj.id = message.id);
+    message.personalNumber !== undefined &&
+      (obj.personalNumber = message.personalNumber);
+    message.identityCard !== undefined &&
+      (obj.identityCard = message.identityCard);
     return obj;
   },
 
@@ -1134,6 +1202,16 @@ export const Approver = {
       message.id = object.id;
     } else {
       message.id = "";
+    }
+    if (object.personalNumber !== undefined && object.personalNumber !== null) {
+      message.personalNumber = object.personalNumber;
+    } else {
+      message.personalNumber = "";
+    }
+    if (object.identityCard !== undefined && object.identityCard !== null) {
+      message.identityCard = object.identityCard;
+    } else {
+      message.identityCard = "";
     }
     return message;
   },

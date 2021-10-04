@@ -311,6 +311,8 @@ const RequestSchema = new Schema(
         enum: ApproverType,
         default: approverTypeToJSON(ApproverType.COMMANDER),
       },
+      personalNumber: { type: String, default: null },
+      identityCard: { type: String, default: null },
     },
     isPartOfBulk: { type: Boolean, default: false },
     bulkRequestId: { type: mongoose.Schema.Types.ObjectId, default: null },
