@@ -22,6 +22,10 @@ import {
   GetRoleByRoleIdRequest,
   GetRolesUnderOGRequest,
   Image,
+  IsJobTitleAlreadyTakenReq,
+  IsJobTitleAlreadyTakenRes,
+  IsRoleAlreadyTakenReq,
+  IsRoleAlreadyTakenRes,
   OGArray,
   OGTree,
   OrganizationGroup,
@@ -486,6 +490,53 @@ export class KartoffelService {
           logger.info(`getAllRoles OK in GTW`, {
             response: response,
             callRequest: getAllRolesReq,
+          });
+          resolve(response);
+        }
+      );
+    });
+  }
+
+   static async isRoleAlreadyTaken(isRoleAlreadyTakenReq: IsRoleAlreadyTakenReq) {
+    logger.info(`Call to isRoleAlreadyTaken in GTW`, isRoleAlreadyTakenReq);
+
+    return new Promise((resolve, reject) => {
+      kartoffelClient.IsRoleAlreadyTaken(isRoleAlreadyTakenReq, (err: any, response: IsRoleAlreadyTakenRes) => {
+        if (err) {
+          logger.error(`isRoleAlreadyTaken ERROR in GTW`, {
+            err,
+            callRequest: isRoleAlreadyTakenReq,
+          });
+          reject(err);
+        }
+
+        logger.info(`isRoleAlreadyTaken OK in GTW`, {
+          response: response,
+          callRequest: isRoleAlreadyTakenReq,
+        });
+        resolve(response);
+      });
+    });
+  }
+
+   static async isJobTitleAlreadyTaken(isJobTitleAlreadyTakenReq: IsJobTitleAlreadyTakenReq) {
+    logger.info(`Call to isJobTitleAlreadyTaken in GTW`, isJobTitleAlreadyTakenReq);
+
+    return new Promise((resolve, reject) => {
+      kartoffelClient.IsJobTitleAlreadyTaken(
+        isJobTitleAlreadyTakenReq,
+        (err: any, response: IsJobTitleAlreadyTakenRes) => {
+          if (err) {
+            logger.error(`isJobTitleAlreadyTaken ERROR in GTW`, {
+              err,
+              callRequest: isJobTitleAlreadyTakenReq,
+            });
+            reject(err);
+          }
+
+          logger.info(`isJobTitleAlreadyTaken OK in GTW`, {
+            response: response,
+            callRequest: isJobTitleAlreadyTakenReq,
           });
           resolve(response);
         }

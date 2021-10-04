@@ -156,3 +156,22 @@ export const GetRolesUnderOGSchema = Joi.object({
   },
   query: {},
 });
+
+export const IsRoleAlreadyTakenSchema = Joi.object({
+  body: {},
+  params: {
+    roleId: Joi.string().required(),
+  },
+  query: {},
+});
+
+export const IsJobTitleAlreadyTakenSchema = Joi.object({
+  body: {},
+  params: {
+  },
+  query: {
+    jobTitle: Joi.string().required(),
+    directGroup: Joi.string().required(),
+  },
+});
+
