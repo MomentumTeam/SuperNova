@@ -21,6 +21,7 @@ import {
 import { KartoffelFaker } from '../mock/kartoffel.faker';
 import { KartoffelUtils } from '../utils/kartoffel.utils';
 import * as C from '../config';
+import { getSuggestions, jobTitleExists } from '../utils/jobTitles.utils';
 
 export class RolesRepository {
   private kartoffelFaker: KartoffelFaker;
@@ -56,7 +57,7 @@ export class RolesRepository {
     }
   }
 
-  async getRolesUnderOGRequest(
+  async getRolesUnderOG(
     getRolesUnderOGRequest: GetRolesUnderOGRequest
   ): Promise<RoleArray> {
     if (C.useFaker) {
@@ -116,11 +117,21 @@ export class RolesRepository {
       res.suggestions = ['Programmer 1', 'Programmer 2', 'Programmer 3'];
       return res as IsJobTitleAlreadyTakenRes;
     } else {
-      //TODO
-      const isJobTitleAlreadyTaken = Math.random() < 0.5;
-      let res: any = { isJobTitleAlreadyTaken: isJobTitleAlreadyTaken };
-      res.suggestions = ['Programmer 1', 'Programmer 2', 'Programmer 3'];
-      return res as IsJobTitleAlreadyTakenRes;
+      let roleArray: RoleArray = await this.getRolesUnderOG({
+        groupId: isJobTitleAlreadyTakenRequest.directGroup,
+        direct: true,
+        page: 1,
+        pageSize: 200,
+      });
+      const jobTitle = isJobTitleAlreadyTakenRequest.jobTitle;
+      if (!jobTitleExists(roleArray, jobTitle)) {
+        return { isJobTitleAlreadyTaken: false, suggestions: [] };
+      } else {
+        return {
+          isJobTitleAlreadyTaken: true,
+          suggestions: getSuggestions(roleArray, jobTitle),
+        };
+      }
     }
   }
 
