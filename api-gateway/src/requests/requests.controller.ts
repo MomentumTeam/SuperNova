@@ -3,7 +3,6 @@ import { logger } from '../utils/logger/logger';
 import ProducerController from '../producer/producer.controller';
 import { SuccessMessage } from '../interfaces/protoc/proto/producerService';
 import {
-  RequestArray,
   StageStatus,
   EntityMin,
   GetRequestByIdReq,
@@ -34,6 +33,7 @@ import { RequestsService } from './requests.service';
 import { AuthenticationError } from '../utils/errors/userErrors';
 import { KartoffelService } from '../kartoffel/kartoffel.service';
 import { statusCodeHandler } from '../utils/errors/errorHandlers';
+import { approveUserRequest } from './requests.utils';
 
 export default class RequestsController {
   //GET
@@ -226,7 +226,7 @@ export default class RequestsController {
     const updateApproverDecisionReq: UpdateApproverDecisionReq = {
       id: req.params.id,
       approverDecision: req.body.approverDecision, //TODO
-      approverType: req.body.approverType, //TODO
+      approverType: req.body.approverType, // ASK : liora if she returns person in type request
     };
 
     logger.info(`Call to updateApproverDecision in GTW`, {
@@ -273,7 +273,9 @@ export default class RequestsController {
     };
 
     try {
-      const createRole = await RequestsService.createRoleRequest(createRoleReq);
+      const request: any = await approveUserRequest(req, createRoleReq);
+      const createRole = await RequestsService.createRoleRequest(request);
+      
       res.status(200).send(createRole);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -297,9 +299,9 @@ export default class RequestsController {
     };
 
     try {
-      const assignRole = await RequestsService.assignRoleToEntityRequest(
-        assignRoleToEntityReq
-      );
+      const request: any = await approveUserRequest(req, assignRoleToEntityReq);
+      const assignRole = await RequestsService.assignRoleToEntityRequest(request);
+    
       res.status(200).send(assignRole);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -323,7 +325,9 @@ export default class RequestsController {
     };
 
     try {
-      const createOGres = await RequestsService.createOGRequest(createOGReq);
+      const request: any = await approveUserRequest(req, createOGReq);
+      const createOGres = await RequestsService.createOGRequest(request);
+      
       res.status(200).send(createOGres);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -347,9 +351,9 @@ export default class RequestsController {
     };
 
     try {
-      const newApprover = await RequestsService.createNewApproverRequest(
-        createNewApproverReq
-      );
+      const request: any = await approveUserRequest(req, createNewApproverReq);
+      const newApprover = await RequestsService.createNewApproverRequest(request);
+      
       res.status(200).send(newApprover);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -373,7 +377,9 @@ export default class RequestsController {
     };
 
     try {
-      const entity = await RequestsService.createEntityRequest(createEntityReq);
+      const request: any = await approveUserRequest(req, createEntityReq);
+      const entity = await RequestsService.createEntityRequest(request);
+      
       res.status(200).send(entity);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -397,7 +403,9 @@ export default class RequestsController {
     };
 
     try {
-      const og = await RequestsService.renameOGRequest(renameOGReq);
+      const request: any = await approveUserRequest(req, renameOGReq);
+      const og = await RequestsService.renameOGRequest(request);
+      
       res.status(200).send(og);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -421,7 +429,9 @@ export default class RequestsController {
     };
 
     try {
-      const entity = await RequestsService.renameRoleRequest(renameRoleReq);
+      const request: any = await approveUserRequest(req, renameRoleReq);
+      const entity = await RequestsService.renameRoleRequest(request);
+      
       res.status(200).send(entity);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -445,7 +455,9 @@ export default class RequestsController {
     };
 
     try {
-      const entity = await RequestsService.editEntityRequest(editEntityReq);
+      const request: any = await approveUserRequest(req, editEntityReq);
+      const entity = await RequestsService.editEntityRequest(request);
+      
       res.status(200).send(entity);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -473,9 +485,11 @@ export default class RequestsController {
     };
 
     try {
+      const request: any = await approveUserRequest(req, deleteRoleReq);
       const deletedRole = await RequestsService.deleteRoleRequest(
-        deleteRoleReq
+        request
       );
+    
       res.status(200).send(deletedRole);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -503,7 +517,9 @@ export default class RequestsController {
     };
 
     try {
-      const deletedOG = await RequestsService.deleteOGRequest(deleteOGReq);
+      const request: any = await approveUserRequest(req, deleteOGReq);
+      const deletedOG = await RequestsService.deleteOGRequest(request);
+      
       res.status(200).send(deletedOG);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -531,9 +547,9 @@ export default class RequestsController {
     };
 
     try {
-      const deletedEntity = await RequestsService.deleteEntityRequest(
-        deleteEntityReq
-      );
+      const request: any = await approveUserRequest(req, deleteEntityReq);
+      const deletedEntity = await RequestsService.deleteEntityRequest(request);
+      
       res.status(200).send(deletedEntity);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -566,10 +582,9 @@ export default class RequestsController {
     };
 
     try {
-      const disconectRole =
-        await RequestsService.disconectRoleFromEntityRequest(
-          disconectRoleFromEntityReq
-        );
+      const request: any = await approveUserRequest(req, disconectRoleFromEntityReq);
+      const disconectRole = await RequestsService.disconectRoleFromEntityRequest(request);
+    
       res.status(200).send(disconectRole);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -613,8 +628,10 @@ export default class RequestsController {
     };
 
     try {
-      const request = await RequestsService.changeRoleHierarchyRequest(changeRoleHierarchyReq);
-      res.status(200).send(request);
+      const request: any = await approveUserRequest(req, changeRoleHierarchyReq);
+      const roleHierarchy = await RequestsService.changeRoleHierarchyRequest(request);
+    
+      res.status(200).send(roleHierarchy);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);

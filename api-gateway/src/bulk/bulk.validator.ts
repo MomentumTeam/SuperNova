@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { transformRequest, validateObject } from '../utils/validations/validations';
-import { changeRoleHierarchyBulkRequestSchema, createRoleBulkRequestSchema} from './bulk.schema';
+import { changeRoleHierarchyBulkRequestSchema, createRoleBulkRequestSchema, getBulkRequestExampleSchema} from './bulk.schema';
 
 export class BulkValidator {
     // POST
@@ -18,4 +18,11 @@ export class BulkValidator {
         transformRequest(req, validateObject(req, changeRoleHierarchyBulkRequestSchema, { allowUnknown: true }));
         next();
     }
+
+    // GET
+    static isGetBulkRequestExampleValid(req: Request, res: Response, next: NextFunction) {
+        transformRequest(req, validateObject(req, getBulkRequestExampleSchema, { allowUnknown: true }));
+        next();
+    }
+
 }

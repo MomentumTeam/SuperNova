@@ -352,7 +352,7 @@ export class RequestsService {
 
   static async updateApproverDecision(
     updateApproverDecisionReq: UpdateApproverDecisionReq
-  ) {
+  ): Promise<Request> {
     logger.info(
       `Call to updateApproverDecision in GTW`,
       updateApproverDecisionReq
@@ -410,7 +410,7 @@ export class RequestsService {
   }
 
   // POST
-  static async createRoleRequest(createRoleReq: CreateRoleReq) {
+  static async createRoleRequest(createRoleReq: CreateRoleReq): Promise<CreateRoleRes> {
     logger.info(`Call to createRoleRequest in GTW`, createRoleReq);
 
     return new Promise((resolve, reject) => {

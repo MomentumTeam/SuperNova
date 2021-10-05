@@ -3,10 +3,7 @@ import * as protoLoader from '@grpc/proto-loader';
 import * as C from './config';
 import { logger } from './logger';
 import { findPath } from './utils/path';
-import {
-  changeRoleHierarchyBulkRequest,
-  createRoleBulkRequest,
-} from './bulk/bulk.controller';
+import { changeRoleHierarchyBulkRequest, createRoleBulkRequest, getBulkRequestExample } from './bulk/bulk.controller';
 
 const PROTO_PATH = `${findPath('proto')}/bulkService.proto`;
 
@@ -19,16 +16,14 @@ export class Server {
 
   private getProtoDescriptor() {
     try {
-      const packageDefinition: protoLoader.PackageDefinition =
-        protoLoader.loadSync(PROTO_PATH, {
-          keepCase: true,
-          longs: String,
-          enums: String,
-          // defaults: true,
-          oneofs: true,
-        });
-      const protoDescriptor: grpc.GrpcObject =
-        grpc.loadPackageDefinition(packageDefinition);
+      const packageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(PROTO_PATH, {
+        keepCase: true,
+        longs: String,
+        enums: String,
+        // defaults: true,
+        oneofs: true,
+      });
+      const protoDescriptor: grpc.GrpcObject = grpc.loadPackageDefinition(packageDefinition);
       const bulkServiceDescriptor: any = protoDescriptor.BulkService;
       return bulkServiceDescriptor;
     } catch (error: any) {
@@ -46,6 +41,7 @@ export class Server {
       this.server.addService(bulkServiceDescriptor.BulkService.service, {
         CreateRoleBulkRequest: createRoleBulkRequest,
         ChangeRoleHierarchyBulkRequest: changeRoleHierarchyBulkRequest,
+        GetBulkRequestExample: getBulkRequestExample,
       });
       logger.info(`Grpc services were successfully added to the server`);
     } catch (error: any) {
@@ -55,22 +51,18 @@ export class Server {
 
   async startServer(): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.server.bindAsync(
-        `${C.host}:${C.port}`,
-        grpc.ServerCredentials.createInsecure(),
-        (bindError) => {
-          if (bindError) {
-            reject(bindError);
-          } else {
-            try {
-              this.server.start();
-              resolve();
-            } catch (startError) {
-              reject(startError);
-            }
+      this.server.bindAsync(`${C.host}:${C.port}`, grpc.ServerCredentials.createInsecure(), (bindError) => {
+        if (bindError) {
+          reject(bindError);
+        } else {
+          try {
+            this.server.start();
+            resolve();
+          } catch (startError) {
+            reject(startError);
           }
         }
-      );
+      });
     });
   }
 }
