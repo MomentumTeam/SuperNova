@@ -79,21 +79,25 @@ export class RequestRepository {
         createRequestReq.kartoffelParams.uniqueId = tea;
         createRequestReq.kartoffelParams.mail = tea;
         createRequestReq.adParams.samAccountName = tea;
-      } else if (
-        type === RequestType.ASSIGN_ROLE_TO_ENTITY &&
-        !createRequestReq.adParams.upn
-      ) {
+      } else if (type === RequestType.ASSIGN_ROLE_TO_ENTITY) {
         createRequestReq.adParams.upn = await retrieveUPNByEntityId(
           createRequestReq.kartoffelParams.id
         );
       } else if (
         type === RequestType.CREATE_ENTITY ||
-        type === RequestType.DELETE_ENTITY
+        type === RequestType.DELETE_ENTITY ||
+        type === RequestType.DELETE_OG
       ) {
-        // NO NEED FOR AD UPDATE
+        // CASES WITH NO NEED FOR AD UPDATE
         createRequestReq.adStatus = {
           status: stageStatusToJSON(StageStatus.STAGE_DONE),
           message: 'No need for AD update in this case',
+          failedRetries: 0,
+        };
+
+        createRequestReq.kartoffelStatus = {
+          status: stageStatusToJSON(StageStatus.STAGE_WAITING_FOR_AD),
+          message: 'Waiting for push, request type does not require AD update',
           failedRetries: 0,
         };
       }
@@ -103,6 +107,17 @@ export class RequestRepository {
       const createdCreateRequest = await request.save();
       const document = createdCreateRequest.toObject();
       turnObjectIdsToStrings(document);
+      const isRequestApproved = await this.isRequestApproved({
+        id: document.id,
+      });
+      if (isRequestApproved.isRequestApproved) {
+        await this.updateRequest({
+          id: document.id,
+          requestProperties: {
+            status: requestStatusToJSON(RequestStatus.IN_PROGRESS),
+          },
+        });
+      }
       await createNotifications(NotificationType.REQUEST_SUBMITTED, document);
       return document as Request;
     } catch (error) {
@@ -195,27 +210,36 @@ export class RequestRepository {
         }
       }
 
+      const requestType =
+        typeof updatedRequest.type === typeof ''
+          ? requestTypeFromJSON(updatedRequest.type)
+          : updatedRequest.type;
+
       if (newRequestStatus) {
         let requestProperties: any = {
           status: requestStatusToJSON(newRequestStatus),
         };
         if (newRequestStatus === RequestStatus.IN_PROGRESS) {
-          requestProperties['kartoffelStatus.status'] = stageStatusToJSON(
-            StageStatus.STAGE_WAITING_FOR_AD
-          );
-          requestProperties['adStatus.status'] = stageStatusToJSON(
-            StageStatus.STAGE_WAITING_FOR_PUSH
-          );
+          let adStatus = StageStatus.STAGE_WAITING_FOR_PUSH;
+          let kartoffelStatus = StageStatus.STAGE_WAITING_FOR_AD;
+          if (
+            requestType === RequestType.CREATE_ENTITY ||
+            requestType === RequestType.DELETE_ENTITY ||
+            requestType === RequestType.DELETE_OG
+          ) {
+            // NO NEED FOR AD PUSH
+            adStatus = StageStatus.STAGE_DONE;
+            kartoffelStatus = StageStatus.STAGE_WAITING_FOR_PUSH;
+          }
+          requestProperties['adStatus.status'] = stageStatusToJSON(adStatus);
+          requestProperties['kartoffelStatus.status'] =
+            stageStatusToJSON(kartoffelStatus);
         }
         updatedRequest = await this.updateRequest({
           id: updateDecisionReq.id,
           requestProperties: requestProperties,
         });
 
-        const requestType =
-          typeof updatedRequest.type === typeof ''
-            ? requestTypeFromJSON(updatedRequest.type)
-            : updatedRequest.type;
         if (
           newRequestStatus === RequestStatus.DECLINED &&
           requestType === RequestType.CREATE_ROLE

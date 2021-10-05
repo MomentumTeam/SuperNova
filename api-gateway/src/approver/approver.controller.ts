@@ -127,7 +127,7 @@ export default class ApproverController {
       domainUsers: entity.digitalIdentities.map(
         (digitalIdentity) => digitalIdentity.uniqueId
       ),
-      directGroup: entity.directGroup || ""
+      directGroup: req.body.directGroup,
     };
 
     try {
@@ -184,7 +184,7 @@ export default class ApproverController {
             akaUnit: request.additionalParams?.akaUnit || '',
             displayName: request.additionalParams?.displayName || '',
             domainUsers: request.additionalParams?.domainUsers || [],
-            directGroup: request.additionalParams?.directGroup || ""
+            directGroup: request.additionalParams?.directGroup || '',
           });
           await RequestsService.updateRequest({
             id: request.id,
