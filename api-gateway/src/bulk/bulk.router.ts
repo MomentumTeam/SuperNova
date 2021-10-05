@@ -13,4 +13,7 @@ BulkRouter.post('/request/role', BulkValidator.isCreateRoleBulkRequestValid, Bul
 // PUT
 BulkRouter.put('/request/role/hierarchy', BulkValidator.isChangeRoleHierarchyBulkRequestValid, BulkController.changeRoleHierarchyBulkRequest);
 
+// GET
+BulkRouter.get('/request/example', BulkValidator.isGetBulkRequestExampleValid, BulkController.getBulkRequestExample);
+
 export default BulkRouter;

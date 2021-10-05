@@ -8,16 +8,15 @@ RUN apk add --no-cache git ca-certificates
 # copy configs to /app folder
 COPY --chown=node:node ./package*.json ./
 COPY --chown=node:node ./tsconfig.json ./
-
-
-
-# copy source code to /app/src folder
+COPY  --chown=node:node ./src/excelFilesExample ./excelFilesExample
 COPY . .
+# copy source code to /app/src folder
 # RUN rm -rf /app/proto && git clone https://github.com/MomentumTeam/SuperNovaProto.git /app/proto
 
 RUN npm i && npm cache clean --force
 RUN npm run build
 
+#------------------------------------------------
 FROM node:14.17.5-alpine3.14
 
 RUN GRPC_HEALTH_PROBE_VERSION=v0.4.4 && \
@@ -29,9 +28,7 @@ RUN mkdir -p /usr/src/app && chown -R node:node /usr/src/app
 WORKDIR /usr/src/app
 
 COPY --chown=node:node ./package*.json ./
-
-RUN mkdir bulk-files/
-RUN   chown node:node bulk-files/
+COPY --chown=node:node ./src/excelFilesExample bulk-files
 
 RUN npm ci --production && npm cache clean --force
 
