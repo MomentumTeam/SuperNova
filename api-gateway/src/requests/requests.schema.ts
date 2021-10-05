@@ -294,6 +294,9 @@ const additionalParamsObj = Joi.object({
   entityId: Joi.string().required(),
   displayName: Joi.string().required(),
   domainUsers: Joi.array().items(Joi.string()),
+  akaUnit: Joi.string().required(),
+  personalNumber: Joi.string().default(''),
+  identityCard: Joi.string().default(''),
   type: Joi.string()
     .valid(...Object.keys(ApproverType))
     .required(),
