@@ -31,4 +31,9 @@ export const config = {
       .asString(),
     required: env.get('GATEWAY_AUTHENTICATION_REQUIRED').default(0).asBool(),
   },
+  spike: {
+    audienceId: env.get('GATEWAY_SPIKE_AUDIENCE_ID').default('audience').asString(),
+    publicKeyPath: env.get('GATEWAY_SPIKE_PUBLIC_KEY_FULL_PATH').default('publickey.pem').asString(),
+    writeScopeName: env.get('GATEWAY_WRITE_SCOPR_NAME').default('write').asString()
+  }
 };
