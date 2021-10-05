@@ -11,6 +11,7 @@ export const ApproverSchema = new Schema(
     identityCard: { type: String, default: '' },
     type: { type: String, enum: ApproverType, default: ApproverType.SOLDIER },
     akaUnit: { type: String, required: true },
+    directGroup: { type: String, default: '' },
   },
   { strict: false }
 );
