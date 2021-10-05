@@ -14,20 +14,38 @@ export const config = {
     approver: env.get('GATEWAY_APS_URL').default('0.0.0.0:8085').asString(),
     tea: env.get('GATEWAY_TS_URL').default('0.0.0.0:8086').asString(),
     bulk: env.get('GATEWAY_BS_URL').default('0.0.0.0:8087').asString(),
-    apm: env.get('GATEWAY_APM_URL').default('http://52.169.23.32:8200').asString(),
+    apm: env
+      .get('GATEWAY_APM_URL')
+      .default('http://52.169.23.32:8200')
+      .asString(),
   },
   files: {
-    path: env.get('GATEWAY_BS_FOLDER_PATH').default('../bulk-service/src/excelFilesExample').asString(),
+    path: env
+      .get('GATEWAY_BS_FOLDER_PATH')
+      .default('../bulk-service/src/excelFilesExample')
+      .asString(),
   },
   authentication: {
     token: env.get('GATEWAY_TOKEN').default('sp-token').asString(),
     secret: env.get('GATEWAY_SECRET_KEY').default('superNova').asString(),
-    authServiceUrl: env.get('GATEWAY_AS_URL').default('http://localhost:9000').asString(),
+    authServiceUrl: env
+      .get('GATEWAY_AS_URL')
+      .default('http://localhost:9000')
+      .asString(),
     required: env.get('GATEWAY_AUTHENTICATION_REQUIRED').default(0).asBool(),
   },
   spike: {
-    audienceId: env.get('GATEWAY_SPIKE_AUDIENCE_ID').default('audience').asString(),
-    publicKeyPath: env.get('GATEWAY_SPIKE_PUBLIC_KEY_FULL_PATH').default('publickey.pem').asString(),
-    writeScopeName: env.get('GATEWAY_WRITE_SCOPR_NAME').default('write').asString()
-  }
+    audienceId: env
+      .get('GATEWAY_SPIKE_AUDIENCE_ID')
+      .default('audience')
+      .asString(),
+    publicKeyPath: env
+      .get('GATEWAY_SPIKE_PUBLIC_KEY_FULL_PATH')
+      .default('publickey.pem')
+      .asString(),
+    writeScopeName: env
+      .get('GATEWAY_WRITE_SCOPE_NAME')
+      .default('write')
+      .asString(),
+  },
 };
