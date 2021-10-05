@@ -44,7 +44,7 @@ export class KartoffelFaker {
       createdAt: faker.datatype.datetime().toString(),
       updatedAt: faker.datatype.datetime().toString(),
       isRoleAttachable: true,
-      role: undefined,
+      role: this.randomRole(),
     };
     return digitalIdentity;
   }
