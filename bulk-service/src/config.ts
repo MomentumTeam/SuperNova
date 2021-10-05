@@ -19,6 +19,6 @@ export const hebClearanceToKartoffelLang: any = {
 };
 
 export const exampleFiles = {
-  changeRoleHierarchyRequest: process.env.BS_FILE_CRH || 'changeRoleHierarchyBulkExample.xlsx',
-  createRoleRequest: process.env.BS_FILE_CR || 'createRoleBulkExample.xlsx',
+  changeRoleHierarchyRequest: process.env.BS_FILE_CRH || 'changeRoleHierarchyBulk.xlsx',
+  createRoleRequest: process.env.BS_FILE_CR || 'createRoleBulk.xlsx',
 };
