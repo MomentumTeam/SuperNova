@@ -1263,6 +1263,7 @@ export interface AdditionalParams {
   type: ApproverType;
   personalNumber?: string | undefined;
   identityCard?: string | undefined;
+  directGroup: string;
 }
 
 /** 5.RenameOGRequest */
@@ -18970,6 +18971,7 @@ const baseAdditionalParams: object = {
   domainUsers: "",
   akaUnit: "",
   type: 0,
+  directGroup: "",
 };
 
 export const AdditionalParams = {
@@ -18997,6 +18999,9 @@ export const AdditionalParams = {
     }
     if (message.identityCard !== undefined) {
       writer.uint32(58).string(message.identityCard);
+    }
+    if (message.directGroup !== "") {
+      writer.uint32(66).string(message.directGroup);
     }
     return writer;
   },
@@ -19029,6 +19034,9 @@ export const AdditionalParams = {
           break;
         case 7:
           message.identityCard = reader.string();
+          break;
+        case 8:
+          message.directGroup = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -19076,6 +19084,11 @@ export const AdditionalParams = {
     } else {
       message.identityCard = undefined;
     }
+    if (object.directGroup !== undefined && object.directGroup !== null) {
+      message.directGroup = String(object.directGroup);
+    } else {
+      message.directGroup = "";
+    }
     return message;
   },
 
@@ -19095,6 +19108,8 @@ export const AdditionalParams = {
       (obj.personalNumber = message.personalNumber);
     message.identityCard !== undefined &&
       (obj.identityCard = message.identityCard);
+    message.directGroup !== undefined &&
+      (obj.directGroup = message.directGroup);
     return obj;
   },
 
@@ -19135,6 +19150,11 @@ export const AdditionalParams = {
       message.identityCard = object.identityCard;
     } else {
       message.identityCard = undefined;
+    }
+    if (object.directGroup !== undefined && object.directGroup !== null) {
+      message.directGroup = object.directGroup;
+    } else {
+      message.directGroup = "";
     }
     return message;
   },

@@ -114,6 +114,7 @@ export interface AddApproverReq {
   type: ApproverType;
   personalNumber?: string | undefined;
   identityCard?: string | undefined;
+  directGroup: string;
 }
 
 export interface Approver {
@@ -126,6 +127,7 @@ export interface Approver {
   id: string;
   personalNumber: string;
   identityCard: string;
+  directGroup: string;
 }
 
 const baseSyncApproverReq: object = { approverId: "" };
@@ -851,6 +853,7 @@ const baseAddApproverReq: object = {
   domainUsers: "",
   akaUnit: "",
   type: 0,
+  directGroup: "",
 };
 
 export const AddApproverReq = {
@@ -878,6 +881,9 @@ export const AddApproverReq = {
     }
     if (message.identityCard !== undefined) {
       writer.uint32(58).string(message.identityCard);
+    }
+    if (message.directGroup !== "") {
+      writer.uint32(66).string(message.directGroup);
     }
     return writer;
   },
@@ -910,6 +916,9 @@ export const AddApproverReq = {
           break;
         case 7:
           message.identityCard = reader.string();
+          break;
+        case 8:
+          message.directGroup = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -957,6 +966,11 @@ export const AddApproverReq = {
     } else {
       message.identityCard = undefined;
     }
+    if (object.directGroup !== undefined && object.directGroup !== null) {
+      message.directGroup = String(object.directGroup);
+    } else {
+      message.directGroup = "";
+    }
     return message;
   },
 
@@ -976,6 +990,8 @@ export const AddApproverReq = {
       (obj.personalNumber = message.personalNumber);
     message.identityCard !== undefined &&
       (obj.identityCard = message.identityCard);
+    message.directGroup !== undefined &&
+      (obj.directGroup = message.directGroup);
     return obj;
   },
 
@@ -1017,6 +1033,11 @@ export const AddApproverReq = {
     } else {
       message.identityCard = undefined;
     }
+    if (object.directGroup !== undefined && object.directGroup !== null) {
+      message.directGroup = object.directGroup;
+    } else {
+      message.directGroup = "";
+    }
     return message;
   },
 };
@@ -1030,6 +1051,7 @@ const baseApprover: object = {
   id: "",
   personalNumber: "",
   identityCard: "",
+  directGroup: "",
 };
 
 export const Approver = {
@@ -1060,6 +1082,9 @@ export const Approver = {
     }
     if (message.identityCard !== "") {
       writer.uint32(66).string(message.identityCard);
+    }
+    if (message.directGroup !== "") {
+      writer.uint32(74).string(message.directGroup);
     }
     return writer;
   },
@@ -1095,6 +1120,9 @@ export const Approver = {
           break;
         case 8:
           message.identityCard = reader.string();
+          break;
+        case 9:
+          message.directGroup = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -1147,6 +1175,11 @@ export const Approver = {
     } else {
       message.identityCard = "";
     }
+    if (object.directGroup !== undefined && object.directGroup !== null) {
+      message.directGroup = String(object.directGroup);
+    } else {
+      message.directGroup = "";
+    }
     return message;
   },
 
@@ -1167,6 +1200,8 @@ export const Approver = {
       (obj.personalNumber = message.personalNumber);
     message.identityCard !== undefined &&
       (obj.identityCard = message.identityCard);
+    message.directGroup !== undefined &&
+      (obj.directGroup = message.directGroup);
     return obj;
   },
 
@@ -1212,6 +1247,11 @@ export const Approver = {
       message.identityCard = object.identityCard;
     } else {
       message.identityCard = "";
+    }
+    if (object.directGroup !== undefined && object.directGroup !== null) {
+      message.directGroup = object.directGroup;
+    } else {
+      message.directGroup = "";
     }
     return message;
   },

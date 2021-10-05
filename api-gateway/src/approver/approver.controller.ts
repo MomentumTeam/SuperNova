@@ -127,6 +127,7 @@ export default class ApproverController {
       domainUsers: entity.digitalIdentities.map(
         (digitalIdentity) => digitalIdentity.uniqueId
       ),
+      directGroup: req.body.directGroup,
     };
 
     try {
@@ -167,8 +168,13 @@ export default class ApproverController {
     };
 
     try {
-      const request = await ApproverService.updateApproverDecision(updateApproverDecisionReq);
-      const requestType = typeof request.type === typeof '' ? requestTypeFromJSON(request.type) : request.type;
+      const request = await ApproverService.updateApproverDecision(
+        updateApproverDecisionReq
+      );
+      const requestType =
+        typeof request.type === typeof ''
+          ? requestTypeFromJSON(request.type)
+          : request.type;
 
       if (requestType === RequestType.ADD_APPROVER) {
         try {
@@ -178,6 +184,7 @@ export default class ApproverController {
             akaUnit: request.additionalParams?.akaUnit || '',
             displayName: request.additionalParams?.displayName || '',
             domainUsers: request.additionalParams?.domainUsers || [],
+            directGroup: request.additionalParams?.directGroup || '',
           });
           await RequestsService.updateRequest({
             id: request.id,
@@ -200,13 +207,6 @@ export default class ApproverController {
 
         if (canPushToQueueRes.canPushToQueue) {
           await ProducerController.produceToADQueue(req.params.id, res);
-        }
-
-        if (
-          requestType === RequestType.CREATE_ROLE &&
-          updateApproverDecisionReq.approverDecision?.decision === Decision.DENIED
-        ) {
-          await TeaService.reportTeaFail({tea: request.id});
         }
       }
       res.send(request);

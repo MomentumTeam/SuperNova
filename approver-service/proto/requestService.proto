@@ -820,6 +820,7 @@ message AdditionalParams{
     ApproverType type = 5;
     optional string personalNumber = 6;
     optional string identityCard = 7;
+    string directGroup = 8;
 }
 
 //5.RenameOGRequest
