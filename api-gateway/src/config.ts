@@ -17,18 +17,12 @@ export const config = {
     apm: env.get('GATEWAY_APM_URL').default('http://52.169.23.32:8200').asString(),
   },
   files: {
-    path: env
-      .get('GATEWAY_BS_FOLDER_PATH')
-      .default('../bulk-files/')
-      .asString(),
+    path: env.get('GATEWAY_BS_FOLDER_PATH').default('../bulk-service/src/excelFilesExample').asString(),
   },
   authentication: {
     token: env.get('GATEWAY_TOKEN').default('sp-token').asString(),
     secret: env.get('GATEWAY_SECRET_KEY').default('superNova').asString(),
-    authServiceUrl: env
-      .get('GATEWAY_AS_URL')
-      .default('http://localhost:9000')
-      .asString(),
+    authServiceUrl: env.get('GATEWAY_AS_URL').default('http://localhost:9000').asString(),
     required: env.get('GATEWAY_AUTHENTICATION_REQUIRED').default(0).asBool(),
   },
 };

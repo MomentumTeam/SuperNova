@@ -9,64 +9,53 @@ import {
   CreateRoleBulkReq,
   CreateRoleBulkRes,
 } from '../interfaces/protoc/proto/requestService';
+import { GetBulkRequestExampleReq, GetBulkRequestExampleRes } from '../interfaces/protoc/proto/bulkService';
 
 const PROTO_PATH = __dirname.includes('dist')
   ? path.join(__dirname, '../../../proto/bulkService.proto')
   : path.join(__dirname, '../../proto/bulkService.proto');
 
-const packageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(
-  PROTO_PATH,
-  {
-    keepCase: true,
-    longs: String,
-    enums: String,
-    defaults: true,
-    oneofs: true,
-  }
-);
+const packageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(PROTO_PATH, {
+  keepCase: true,
+  longs: String,
+  enums: String,
+  defaults: true,
+  oneofs: true,
+});
 
-const protoDescriptor: any =
-  grpc.loadPackageDefinition(packageDefinition).BulkService;
+const protoDescriptor: any = grpc.loadPackageDefinition(packageDefinition).BulkService;
 
-const bulkClient: any = new protoDescriptor.BulkService(
-  config.endpoints.bulk,
-  grpc.credentials.createInsecure(),
-  { 'grpc.keepalive_timeout_ms': 5000 }
-);
+const bulkClient: any = new protoDescriptor.BulkService(config.endpoints.bulk, grpc.credentials.createInsecure(), {
+  'grpc.keepalive_timeout_ms': 5000,
+});
 
 export class BulkService {
+  // POST
   static async createRoleBulkRequest(createRoleBulkReq: CreateRoleBulkReq) {
     logger.info(`Call to createRoleBulkRequest in GTW`, createRoleBulkReq);
 
     return new Promise((resolve, reject) => {
-      bulkClient.CreateRoleBulkRequest(
-        createRoleBulkReq,
-        (err: any, response: CreateRoleBulkRes) => {
-          if (err) {
-            logger.error(`createRoleBulkRequest ERROR in GTW`, {
-              err,
-              callRequest: createRoleBulkReq,
-            });
-            reject(err);
-          }
-
-          logger.info(`createRoleBulkRequest OK in GTW`, {
-            response: response,
+      bulkClient.CreateRoleBulkRequest(createRoleBulkReq, (err: any, response: CreateRoleBulkRes) => {
+        if (err) {
+          logger.error(`createRoleBulkRequest ERROR in GTW`, {
+            err,
             callRequest: createRoleBulkReq,
           });
-          resolve(response);
+          reject(err);
         }
-      );
+
+        logger.info(`createRoleBulkRequest OK in GTW`, {
+          response: response,
+          callRequest: createRoleBulkReq,
+        });
+        resolve(response);
+      });
     });
   }
 
-  static async changeRoleHierarchyBulkRequest(
-    changeRoleHierarchyBulkReq: ChangeRoleHierarchyBulkReq
-  ) {
-    logger.info(
-      `Call to changeRoleHierarchyBulkRequest in GTW`,
-      changeRoleHierarchyBulkReq
-    );
+  // PUT
+  static async changeRoleHierarchyBulkRequest(changeRoleHierarchyBulkReq: ChangeRoleHierarchyBulkReq) {
+    logger.info(`Call to changeRoleHierarchyBulkRequest in GTW`, changeRoleHierarchyBulkReq);
 
     return new Promise((resolve, reject) => {
       bulkClient.ChangeRoleHierarchyBulkRequest(
@@ -87,6 +76,31 @@ export class BulkService {
           resolve(response);
         }
       );
+    });
+  }
+
+  // GET
+  static async getBulkRequestExample(
+    getBulkRequestExampleReq: GetBulkRequestExampleReq
+  ): Promise<GetBulkRequestExampleRes> {
+    logger.info(`Call to getBulkRequestExample in GTW`, getBulkRequestExampleReq);
+
+    return new Promise((resolve, reject) => {
+      bulkClient.GetBulkRequestExample(getBulkRequestExampleReq, (err: any, response: GetBulkRequestExampleRes) => {
+        if (err) {
+          logger.error(`getBulkRequestExample ERROR in GTW`, {
+            err,
+            callRequest: getBulkRequestExampleReq,
+          });
+          reject(err);
+        }
+
+        logger.info(`getBulkRequestExample OK in GTW`, {
+          response: response,
+          callRequest: getBulkRequestExampleReq,
+        });
+        resolve(response);
+      });
     });
   }
 }

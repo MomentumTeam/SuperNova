@@ -1,3 +1,4 @@
+import { GetBulkRequestExampleReq, GetBulkRequestExampleRes } from '../interfaces/protoc/proto/bulkService';
 import {
   ChangeRoleHierarchyBulkReq,
   ChangeRoleHierarchyBulkRes,
@@ -31,6 +32,18 @@ export class BulkManager {
       return (await this.BulkRepository.changeRoleHierarchyBulkRequest(
         changeRoleHierarchyBulkReq
       )) as ChangeRoleHierarchyBulkRes;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getBulkRequestExample(
+    getBulkRequestExampleReq: GetBulkRequestExampleReq
+  ): Promise<GetBulkRequestExampleRes> {
+    try {
+      return (await this.BulkRepository.getBulkRequestExample(
+        getBulkRequestExampleReq
+      )) as GetBulkRequestExampleRes;
     } catch (error) {
       throw error;
     }

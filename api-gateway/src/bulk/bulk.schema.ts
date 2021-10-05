@@ -1,13 +1,6 @@
-import {
-  ErrorType,
-  RequestStatus,
-} from '../interfaces/protoc/proto/requestService';
-import {
-  ADStatusObj,
-  ApproverDecisionObj,
-  entityMinObj,
-  kartoffelStatusObj,
-} from '../requests/requests.schema';
+import { BulkType } from '../interfaces/protoc/proto/bulkService';
+import { ErrorType, RequestStatus } from '../interfaces/protoc/proto/requestService';
+import { ADStatusObj, ApproverDecisionObj, entityMinObj, kartoffelStatusObj } from '../requests/requests.schema';
 
 const Joi = require('joi');
 Joi.objectId = require('joi-objectid')(Joi);
@@ -84,4 +77,15 @@ export const changeRoleHierarchyBulkRequestSchema = Joi.object({
   },
   params: {},
   query: {},
+});
+
+// GET
+export const getBulkRequestExampleSchema = Joi.object({
+  body: {},
+  params: {},
+  query: {
+    bulkType: Joi.string()
+      .valid(...Object.keys(BulkType))
+      .required(),
+  },
 });
