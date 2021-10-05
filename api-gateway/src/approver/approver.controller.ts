@@ -167,8 +167,13 @@ export default class ApproverController {
     };
 
     try {
-      const request = await ApproverService.updateApproverDecision(updateApproverDecisionReq);
-      const requestType = typeof request.type === typeof '' ? requestTypeFromJSON(request.type) : request.type;
+      const request = await ApproverService.updateApproverDecision(
+        updateApproverDecisionReq
+      );
+      const requestType =
+        typeof request.type === typeof ''
+          ? requestTypeFromJSON(request.type)
+          : request.type;
 
       if (requestType === RequestType.ADD_APPROVER) {
         try {
@@ -200,13 +205,6 @@ export default class ApproverController {
 
         if (canPushToQueueRes.canPushToQueue) {
           await ProducerController.produceToADQueue(req.params.id, res);
-        }
-
-        if (
-          requestType === RequestType.CREATE_ROLE &&
-          updateApproverDecisionReq.approverDecision?.decision === Decision.DENIED
-        ) {
-          await TeaService.reportTeaFail({tea: request.id});
         }
       }
       res.send(request);
