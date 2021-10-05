@@ -94,7 +94,7 @@ export class EntitiesRepository {
     try {
       if (C.useFaker) {
         const entityArray: EntityArray =
-          await this.kartoffelFaker.randomEntityArray(false);
+          await this.kartoffelFaker.randomEntityArray(false, getEntitiesUnderOGRequest.pageSize);
         return entityArray;
       } else {
         getEntitiesUnderOGRequest.page = getEntitiesUnderOGRequest.page
@@ -148,7 +148,7 @@ export class EntitiesRepository {
     try {
       if (C.useFaker) {
         const entityArray: EntityArray =
-          await this.kartoffelFaker.randomEntityArray(false);
+          await this.kartoffelFaker.randomEntityArray(false, getEntitiesByHierarchyRequest.pageSize);
         return entityArray;
       } else {
         cleanUnderscoreFields(getEntitiesByHierarchyRequest);

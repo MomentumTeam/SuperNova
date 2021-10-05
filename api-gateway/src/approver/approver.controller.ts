@@ -28,7 +28,7 @@ import { AuthenticationError } from '../utils/errors/userErrors';
 import { statusCodeHandler } from '../utils/errors/errorHandlers';
 import { RequestsService } from '../requests/requests.service';
 import ProducerController from '../producer/producer.controller';
-import TeaService from '../tea/tea.service';
+
 export default class ApproverController {
   // GET
   static async getAllApprovers(req: any, res: Response) {

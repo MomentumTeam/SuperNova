@@ -49,11 +49,13 @@ export class KartoffelFaker {
     return digitalIdentity;
   }
 
-  randomDiArray(): DigitalIdentities {
-    const length = faker.datatype.number({
+  randomDiArray(pageSize?: number): DigitalIdentities {
+    let length = faker.datatype.number({
       min: 1,
       max: 10,
     });
+    if (pageSize) length = pageSize;
+
     let DigitalIdentities = [];
     for (let i = 0; i < length; i++) {
       DigitalIdentities.push(this.randomDI());
@@ -98,21 +100,15 @@ export class KartoffelFaker {
   }
   async randomEntity(needPicture: boolean): Promise<Entity> {
     try {
-      const picture: Image = needPicture
-        ? await this.randomPicture()
-        : { image: 'pictureUrl' };
+      const picture: Image = needPicture ? await this.randomPicture() : { image: 'pictureUrl' };
       const entity: Entity = {
         id: mongoose.Types.ObjectId().toString(),
         displayName: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
         directGroup: mongoose.Types.ObjectId().toString(),
         hierarchy: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
         entityType: 'soldier',
-        identityCard: faker.datatype
-          .number({ min: 100000, max: 999999 })
-          .toString(),
-        personalNumber: faker.datatype
-          .number({ min: 100000000, max: 999999999 })
-          .toString(),
+        identityCard: faker.datatype.number({ min: 100000, max: 999999 }).toString(),
+        personalNumber: faker.datatype.number({ min: 100000000, max: 999999999 }).toString(),
         serviceType: 'מילואים',
         firstName: faker.name.firstName(),
         lastName: faker.name.lastName(),
@@ -164,11 +160,14 @@ export class KartoffelFaker {
     };
   }
 
-  randomOGArray(): OGArray {
-    const length = faker.datatype.number({
+  randomOGArray(pageSize?: number): OGArray {
+    let length = faker.datatype.number({
       min: 1,
       max: 10,
     });
+
+    if (pageSize) length = pageSize;
+
     let ogArray = [];
     for (let i = 0; i < length; i++) {
       ogArray.push(this.randomOG());
@@ -178,11 +177,13 @@ export class KartoffelFaker {
     };
   }
 
-  randomRoleArray(): RoleArray {
-    const length = faker.datatype.number({
+  randomRoleArray(pageSize?: number): RoleArray {
+    let length = faker.datatype.number({
       min: 1,
       max: 10,
     });
+    if (pageSize) length = pageSize;
+
     let roleArray = [];
     for (let i = 0; i < length; i++) {
       roleArray.push(this.randomRole());
@@ -190,12 +191,14 @@ export class KartoffelFaker {
     return { roles: roleArray };
   }
 
-  async randomEntityArray(needPicture: boolean): Promise<EntityArray> {
+  async randomEntityArray(needPicture: boolean, pageSize?: number): Promise<EntityArray> {
     try {
-      const length = faker.datatype.number({
+      let length = faker.datatype.number({
         min: 1,
         max: 10,
       });
+      if (pageSize) length = pageSize;
+
       let entityArray = [];
       for (let i = 0; i < length; i++) {
         let entity: Entity = await this.randomEntity(needPicture);

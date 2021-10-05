@@ -60,7 +60,7 @@ export class GroupsRepository {
   async getAllOGs(getAllOGsRequest: GetAllOGsRequest): Promise<OGArray> {
     try {
       if (C.useFaker) {
-        const ogArray: OGArray = this.kartoffelFaker.randomOGArray();
+        const ogArray: OGArray = this.kartoffelFaker.randomOGArray(getAllOGsRequest.pageSize);
         return ogArray;
       } else {
         const res = await this.kartoffelUtils.kartoffelGet(
@@ -167,7 +167,7 @@ export class GroupsRepository {
   ): Promise<OGArray> {
     try {
       if (C.useFaker) {
-        const ogChildern: OGArray = this.kartoffelFaker.randomOGArray();
+        const ogChildern: OGArray = this.kartoffelFaker.randomOGArray(getChildrenOfOGRequest.pageSize);
         return ogChildern;
       } else {
         const res = await this.kartoffelUtils.kartoffelGet(
