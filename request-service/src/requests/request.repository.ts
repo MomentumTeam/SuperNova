@@ -158,6 +158,7 @@ export class RequestRepository {
         id: updateDecisionReq.id,
         requestProperties: {},
       };
+
       let approverField;
       switch (approverType) {
         case PersonTypeInRequest.COMMANDER_APPROVER:
@@ -166,98 +167,92 @@ export class RequestRepository {
         case PersonTypeInRequest.SECURITY_APPROVER:
           approverField = 'securityDecision';
           break;
-        default:
-          // PersonTypeInRequest.SUPER_SECURITY_APPROVER
+        case PersonTypeInRequest.APPROVER:
+        case PersonTypeInRequest.SUPER_SECURITY_APPROVER:
           approverField = 'superSecurityDecision';
+        default:
           break;
       }
-      updateQuery.requestProperties[approverField] =
-        updateDecisionReq.approverDecision;
-      let updatedRequest = await this.updateRequest(updateQuery);
 
-      let approvingNotificationType: any = undefined,
-        requestStatusNotificationType: any = undefined;
-      let newRequestStatus: any = undefined;
-      let decision =
-        typeof updateDecisionReq.approverDecision?.decision === typeof ''
-          ? decisionFromJSON(updateDecisionReq.approverDecision?.decision)
-          : updateDecisionReq.approverDecision?.decision;
-
-      if (decision === Decision.DENIED) {
-        newRequestStatus = RequestStatus.DECLINED;
-      } else {
-        const isRequestApprovedObj = await this.isRequestApproved({
-          id: updateDecisionReq.id,
-        });
-        const requestApproved = isRequestApprovedObj.isRequestApproved;
-        if (requestApproved) {
-          newRequestStatus = RequestStatus.IN_PROGRESS;
+      if (approverField) {
+        // Update request
+        updateQuery.requestProperties[approverField] = updateDecisionReq.approverDecision;
+        let updatedRequest = await this.updateRequest(updateQuery);
+  
+        // Get decision
+        let decision = typeof updateDecisionReq.approverDecision?.decision === typeof ''?
+         decisionFromJSON(updateDecisionReq.approverDecision?.decision)
+        : updateDecisionReq.approverDecision?.decision;
+        
+        let newRequestStatus: any = undefined;
+        if (decision === Decision.DENIED) {
+          newRequestStatus = RequestStatus.DECLINED;
+        } 
+        else {
+          // Check if request approved
+          const isRequestApprovedObj = await this.isRequestApproved({id: updateDecisionReq.id});
+          if (isRequestApprovedObj.isRequestApproved) newRequestStatus = RequestStatus.IN_PROGRESS;
         }
-      }
+  
+        if (newRequestStatus) {
+          let requestProperties: any = {status: requestStatusToJSON(newRequestStatus)};
 
-      if (newRequestStatus) {
-        let requestProperties: any = {
-          status: requestStatusToJSON(newRequestStatus),
-        };
-        if (newRequestStatus === RequestStatus.IN_PROGRESS) {
-          requestProperties['kartoffelStatus.status'] = stageStatusToJSON(
-            StageStatus.STAGE_WAITING_FOR_AD
-          );
-          requestProperties['adStatus.status'] = stageStatusToJSON(
-            StageStatus.STAGE_WAITING_FOR_PUSH
-          );
-        }
-        updatedRequest = await this.updateRequest({
-          id: updateDecisionReq.id,
-          requestProperties: requestProperties,
-        });
+          if (newRequestStatus === RequestStatus.IN_PROGRESS) {
+            requestProperties['kartoffelStatus.status'] = stageStatusToJSON(StageStatus.STAGE_WAITING_FOR_AD);
+            requestProperties['adStatus.status'] = stageStatusToJSON(StageStatus.STAGE_WAITING_FOR_PUSH);
+          }
+          
+          // Update request
+          updatedRequest = await this.updateRequest({id: updateDecisionReq.id, requestProperties: requestProperties});
+  
+          const requestType = typeof updatedRequest.type === typeof ''
+              ? requestTypeFromJSON(updatedRequest.type)
+              : updatedRequest.type;
 
-        const requestType =
-          typeof updatedRequest.type === typeof ''
-            ? requestTypeFromJSON(updatedRequest.type)
-            : updatedRequest.type;
-        if (
-          newRequestStatus === RequestStatus.DECLINED &&
-          requestType === RequestType.CREATE_ROLE
-        ) {
-          if (updatedRequest.kartoffelParams?.roleId) {
-            await reportTeaFail(updatedRequest.kartoffelParams?.roleId);
+          if (newRequestStatus === RequestStatus.DECLINED && requestType === RequestType.CREATE_ROLE) {
+            if (updatedRequest.kartoffelParams?.roleId) await reportTeaFail(updatedRequest.kartoffelParams?.roleId);
           }
         }
-      }
+  
+        // Create notification 
+        let approvingNotificationType: any = undefined, requestStatusNotificationType: any = undefined;
 
-      if (decision === Decision.APPROVED) {
-        if (approverType === PersonTypeInRequest.COMMANDER_APPROVER) {
-          approvingNotificationType = NotificationType.REQUEST_APPROVED_1;
-        } else if (approverType === PersonTypeInRequest.SECURITY_APPROVER) {
-          approvingNotificationType = NotificationType.REQUEST_APPROVED_2;
-        } else {
-          approvingNotificationType = NotificationType.REQUEST_APPROVED_3;
+        // Get notification type
+        if (decision === Decision.APPROVED) {
+          if (approverType === PersonTypeInRequest.COMMANDER_APPROVER) {
+            approvingNotificationType = NotificationType.REQUEST_APPROVED_1;
+          } else if (approverType === PersonTypeInRequest.SECURITY_APPROVER) {
+            approvingNotificationType = NotificationType.REQUEST_APPROVED_2;
+          } else {
+            approvingNotificationType = NotificationType.REQUEST_APPROVED_3;
+          }
+        } else if (decision === Decision.DENIED) {
+          if (approverType === PersonTypeInRequest.COMMANDER_APPROVER) {
+            approvingNotificationType = NotificationType.REQUEST_DECLINED_1;
+          } else if (approverType === PersonTypeInRequest.SECURITY_APPROVER) {
+            approvingNotificationType = NotificationType.REQUEST_DECLINED_2;
+          } else {
+            approvingNotificationType = NotificationType.REQUEST_DECLINED_3;
+          }
         }
-      } else if (decision === Decision.DENIED) {
-        if (approverType === PersonTypeInRequest.COMMANDER_APPROVER) {
-          approvingNotificationType = NotificationType.REQUEST_DECLINED_1;
-        } else if (approverType === PersonTypeInRequest.SECURITY_APPROVER) {
-          approvingNotificationType = NotificationType.REQUEST_DECLINED_2;
-        } else {
-          approvingNotificationType = NotificationType.REQUEST_DECLINED_3;
-        }
-      }
-      if (approvingNotificationType) {
-        await createNotifications(approvingNotificationType, updatedRequest);
-        if (newRequestStatus) {
-          requestStatusNotificationType =
-            newRequestStatus === RequestStatus.IN_PROGRESS
-              ? NotificationType.REQUEST_IN_PROGRESS
-              : NotificationType.REQUEST_DECLINED;
-          await createNotifications(
-            requestStatusNotificationType,
-            updatedRequest
-          );
-        }
-      }
 
-      return updatedRequest;
+        // Send notification
+        if (approvingNotificationType) {
+          await createNotifications(approvingNotificationType, updatedRequest);
+          if (newRequestStatus) {
+            requestStatusNotificationType =
+              newRequestStatus === RequestStatus.IN_PROGRESS
+                ? NotificationType.REQUEST_IN_PROGRESS
+                : NotificationType.REQUEST_DECLINED;
+            await createNotifications(requestStatusNotificationType, updatedRequest);
+          }
+        }
+  
+        return updatedRequest;
+
+      } else {
+        throw new Error('user has no permission');
+      }
     } catch (error) {
       throw error;
     }
