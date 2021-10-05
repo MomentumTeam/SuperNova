@@ -29,6 +29,9 @@ COPY --from=builder --chown=node:node /app/proto proto
 RUN mkdir bulk-files/
 RUN   chown node:node bulk-files/
 
+RUN mkdir spike-utils/
+RUN   chown node:node spike-utils/
+
 USER node
 
 EXPOSE 8080
