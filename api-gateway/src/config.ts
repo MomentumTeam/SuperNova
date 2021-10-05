@@ -7,16 +7,14 @@ export const config = {
     name: 'api-gatway',
   },
   endpoints: {
-    kartoffel: env.get('GATEWAY_KS_URL').default('0.0.0.0:8082').asString(),
     request: env.get('GATEWAY_RS_URL').default('0.0.0.0:8081').asString(),
+    kartoffel: env.get('GATEWAY_KS_URL').default('0.0.0.0:8082').asString(),
     producer: env.get('GATEWAY_PS_URL').default('0.0.0.0:8083').asString(),
     notification: env.get('GATEWAY_NS_URL').default('0.0.0.0:8084').asString(),
     approver: env.get('GATEWAY_APS_URL').default('0.0.0.0:8085').asString(),
+    tea: env.get('GATEWAY_TS_URL').default('0.0.0.0:8086').asString(),
     bulk: env.get('GATEWAY_BS_URL').default('0.0.0.0:8087').asString(),
-    apm: env
-      .get('GATEWAY_APM_URL')
-      .default('http://52.169.23.32:8200')
-      .asString(),
+    apm: env.get('GATEWAY_APM_URL').default('http://52.169.23.32:8200').asString(),
   },
   files: {
     path: env
@@ -31,6 +29,6 @@ export const config = {
       .get('GATEWAY_AS_URL')
       .default('http://localhost:9000')
       .asString(),
-    required: env.get('GATEWAY_AUTHENTICATION_REQUIRED').default(1).asBool(),
+    required: env.get('GATEWAY_AUTHENTICATION_REQUIRED').default(0).asBool(),
   },
 };

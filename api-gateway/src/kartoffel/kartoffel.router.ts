@@ -10,11 +10,7 @@ KartoffelRouter.get('/entities/me/picture', KartoffelController.getPictureByEnti
 KartoffelRouter.get('/entities/search', KartoffelValidator.isSearchEntitiesByFullNameValid, KartoffelController.searchEntitiesByFullName);
 KartoffelRouter.get('/entities/search/:id', KartoffelValidator.isGetEntityByMongoIdValid, KartoffelController.getEntityByMongoId);
 KartoffelRouter.get('/entities/identifier/:identifier', KartoffelValidator.isGetEntityByIdentifierValid, KartoffelController.getEntityByIdentifier);
-KartoffelRouter.get(
-    '/entities/role/:roleId',
-    KartoffelValidator.isGetEntityByRoleIdValid,
-    KartoffelController.getEntityByRoleId
-);
+KartoffelRouter.get('/entities/role/:roleId',KartoffelValidator.isGetEntityByRoleIdValid,KartoffelController.getEntityByRoleId);
 KartoffelRouter.get('/entities/groups/:id', KartoffelValidator.isGetEntitiesUnderOGValid, KartoffelController.getEntitiesUnderOG);
 KartoffelRouter.get('/entities/hierarchy/:hierarchy',KartoffelValidator.isGetEntitiesByHierarchyValid, KartoffelController.getEntitiesByHierarchy);
 KartoffelRouter.get('/entities/di/:uniqueId',KartoffelValidator.isGetEntityByDIRequestValid, KartoffelController.getEntityByDI);
@@ -31,5 +27,7 @@ KartoffelRouter.get('/groups/:id/tree', KartoffelValidator.isGetOGTreeValid, Kar
 KartoffelRouter.get('/roles', KartoffelValidator.isGetAllRolesValid, KartoffelController.getAllRoles);
 KartoffelRouter.get('/roles/:roleId', KartoffelValidator.isGetRoleByIdValid, KartoffelController.getRoleById);
 KartoffelRouter.get('/roles/group/:id', KartoffelValidator.isGetRolesUnderOGdValid, KartoffelController.getRolesUnderOG);
+KartoffelRouter.get('/roles/:roleId/taken',KartoffelValidator.isRoleAlreadyTakenValid,KartoffelController.isRoleAlreadyTaken);
+KartoffelRouter.get('/roles/job/taken',KartoffelValidator.isJobTitleAlreadyTakenValid,KartoffelController.isJobTitleAlreadyTaken);
 
 export default KartoffelRouter;

@@ -11,6 +11,7 @@ import {
   GetOGByIdRequest,
   GetOGByHierarchyNameRequest,
   GetRoleByRoleIdRequest,
+  IsRoleAlreadyTakenReq,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { AuthenticationError } from '../utils/errors/userErrors';
 import { statusCodeHandler } from '../utils/errors/errorHandlers';
@@ -267,6 +268,35 @@ export default class KartoffelController {
     try {
       const roles = await KartoffelService.getAllRoles(getAllRolesReq);
       res.send(roles);
+    } catch (error: any) {
+      const statusCode = statusCodeHandler(error);
+      res.status(statusCode).send(error.message);
+    }
+  }
+
+  static async isRoleAlreadyTaken(req: Request, res: Response) {
+    const isRoleAlreadyTakenReq: IsRoleAlreadyTakenReq = {
+      roleId: req.params.roleId,
+    };
+
+    try {
+      const response = await KartoffelService.isRoleAlreadyTaken(isRoleAlreadyTakenReq);
+      res.send(response);
+    } catch (error: any) {
+      const statusCode = statusCodeHandler(error);
+      res.status(statusCode).send(error.message);
+    }
+  }
+
+  static async isJobTitleAlreadyTaken(req: Request, res: Response) {
+    const isJobTitleAlreadyTakenReq: any = {
+      jobTitle: req.query.jobTitle,
+      directGroup: req.query.directGroup
+    };
+    
+    try {
+      const response = await KartoffelService.isJobTitleAlreadyTaken(isJobTitleAlreadyTakenReq);
+      res.send(response);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
