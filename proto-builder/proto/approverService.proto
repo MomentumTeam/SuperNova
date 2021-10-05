@@ -72,6 +72,7 @@ message AddApproverReq{
     RequestService.ApproverType type = 5;
     optional string personalNumber = 6;
     optional string identityCard = 7;
+    string directGroup = 8;
 }
 
 message Approver{
@@ -83,6 +84,7 @@ message Approver{
     string id = 6;
     string personalNumber = 7;
     string identityCard = 8;
+    string directGroup = 9;
 }
 
 enum RequestStatus{

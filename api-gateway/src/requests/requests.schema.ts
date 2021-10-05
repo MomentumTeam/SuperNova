@@ -300,8 +300,7 @@ const additionalParamsObj = Joi.object({
   type: Joi.string()
     .valid(...Object.keys(ApproverType))
     .required(),
-  personalNumber: Joi.string().default(''),
-  identityCard: Joi.string().default(''),
+  directGroup: Joi.string().default(''),
 });
 
 export const createNewApproverSchema = Joi.object({

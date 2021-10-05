@@ -313,6 +313,7 @@ const RequestSchema = new Schema(
       },
       personalNumber: { type: String, default: null },
       identityCard: { type: String, default: null },
+      directGroup: { type: String, default: null },
     },
     isPartOfBulk: { type: Boolean, default: false },
     bulkRequestId: { type: mongoose.Schema.Types.ObjectId, default: null },

@@ -136,6 +136,7 @@ export class ApproverRepository {
         akaUnit: entity.akaUnit,
         personalNumber: entity.personalNumber,
         identityCard: entity.identityCard,
+        directGroup: entity.directGroup,
       };
       const result: any = await ApproverModel.updateMany(
         { entityId: syncApproverReq.approverId },
