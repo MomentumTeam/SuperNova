@@ -1,3 +1,10 @@
+import { exampleFiles } from '../config';
+import {
+  BulkType,
+  bulkTypeFromJSON,
+  GetBulkRequestExampleReq,
+  GetBulkRequestExampleRes,
+} from '../interfaces/protoc/proto/bulkService';
 import {
   ChangeRoleHierarchyBulkReq,
   ChangeRoleHierarchyBulkRes,
@@ -16,26 +23,17 @@ export class BulkRepository {
     this.requestService = new RequestService();
   }
 
-  async createRoleBulkRequest(
-    createRoleBulkReq: CreateRoleBulkReq
-  ): Promise<CreateRoleBulkRes> {
+  async createRoleBulkRequest(createRoleBulkReq: CreateRoleBulkReq): Promise<CreateRoleBulkRes> {
     return new Promise(async (createRoleBulkResolve, createRoleBulkReject) => {
       let bulkRequestId: any = undefined;
       try {
-        const bulkRequest: Request =
-          await this.requestService.createRoleBulkRequest(createRoleBulkReq);
+        const bulkRequest: Request = await this.requestService.createRoleBulkRequest(createRoleBulkReq);
         bulkRequestId = bulkRequest.id;
 
-        const rows = await parseExcelFile(
-          createRoleBulkReq.excelFilePath,
-          RequestType.CREATE_ROLE_BULK
-        );
+        const rows = await parseExcelFile(createRoleBulkReq.excelFilePath, RequestType.CREATE_ROLE_BULK);
         const promises: Promise<any>[] = rows.map((row: any) => {
           return new Promise((resolve, reject) => {
-            let createRoleRequestReq: any = Object.assign(
-              {},
-              createRoleBulkReq
-            );
+            let createRoleRequestReq: any = Object.assign({}, createRoleBulkReq);
             createRoleRequestReq = {
               ...createRoleRequestReq,
             };
@@ -69,11 +67,10 @@ export class BulkRepository {
         Promise.all(promises)
           .then(async (values) => {
             const requestIds = values.map((value) => value.id);
-            const updatedBulkRequest: CreateRoleBulkRes =
-              await this.requestService.updateRequest({
-                id: bulkRequestId,
-                requestProperties: { requestIds: requestIds },
-              });
+            const updatedBulkRequest: CreateRoleBulkRes = await this.requestService.updateRequest({
+              id: bulkRequestId,
+              requestProperties: { requestIds: requestIds },
+            });
             createRoleBulkResolve(updatedBulkRequest);
           })
           .catch(async (error) => {
@@ -95,10 +92,9 @@ export class BulkRepository {
     return new Promise(async (createRoleBulkResolve, createRoleBulkReject) => {
       let bulkRequestId: any = undefined;
       try {
-        const bulkRequest: Request =
-          await this.requestService.changeRoleHierarchyBulkRequest(
-            changeRoleHierarchyBulkReq
-          );
+        const bulkRequest: Request = await this.requestService.changeRoleHierarchyBulkRequest(
+          changeRoleHierarchyBulkReq
+        );
         bulkRequestId = bulkRequest.id;
 
         const rows = await parseExcelFile(
@@ -107,10 +103,7 @@ export class BulkRepository {
         );
         const promises: Promise<any>[] = rows.map((row: any) => {
           return new Promise((resolve, reject) => {
-            let changeRoleHierarchyRequestReq: any = Object.assign(
-              {},
-              changeRoleHierarchyBulkReq
-            );
+            let changeRoleHierarchyRequestReq: any = Object.assign({}, changeRoleHierarchyBulkReq);
             changeRoleHierarchyRequestReq = {
               ...changeRoleHierarchyRequestReq,
             };
@@ -128,8 +121,7 @@ export class BulkRepository {
               samAccountName: row.roleId,
             };
             if (row.newJobTitle) {
-              changeRoleHierarchyRequestReq.kartoffelParams.jobTitle =
-                row.newJobTitle;
+              changeRoleHierarchyRequestReq.kartoffelParams.jobTitle = row.newJobTitle;
               changeRoleHierarchyRequestReq.adParams.jobTitle = row.newJobTitle;
             }
             changeRoleHierarchyRequestReq.isPartOfBulk = true;
@@ -146,11 +138,10 @@ export class BulkRepository {
         Promise.all(promises)
           .then(async (values) => {
             const requestIds = values.map((value) => value.id);
-            const updatedBulkRequest: ChangeRoleHierarchyBulkRes =
-              await this.requestService.updateRequest({
-                id: bulkRequestId,
-                requestProperties: { requestIds: requestIds },
-              });
+            const updatedBulkRequest: ChangeRoleHierarchyBulkRes = await this.requestService.updateRequest({
+              id: bulkRequestId,
+              requestProperties: { requestIds: requestIds },
+            });
             createRoleBulkResolve(updatedBulkRequest);
           })
           .catch(async (error) => {
@@ -162,6 +153,36 @@ export class BulkRepository {
           await this.requestService.deleteRequest({ id: bulkRequestId });
         }
         createRoleBulkReject(error);
+      }
+    });
+  }
+
+  async getBulkRequestExample(getBulkRequestExampleReq: GetBulkRequestExampleReq): Promise<GetBulkRequestExampleRes> {
+    return new Promise(async (getBulkRequestExampleResolve, getBulkRequestExampleReject) => {
+      try {
+        let filename;
+        const type = bulkTypeFromJSON(getBulkRequestExampleReq.bulkType);
+        switch (type) {
+          case BulkType.CHANGE_ROLE_HIERARCHY_REQUEST:
+            filename = exampleFiles.changeRoleHierarchyRequest;
+            break;
+          case BulkType.CREATE_ROLE_REQUEST:
+            filename = exampleFiles.createRoleRequest;
+            break;
+          default:
+            break;
+        }
+
+        if (filename) {
+          const getBulkRequestExampleRes: GetBulkRequestExampleRes = {
+            bulkFileName: filename,
+          };
+          getBulkRequestExampleResolve(getBulkRequestExampleRes);
+        } else {
+          throw new Error('file name not found');
+        }
+      } catch (error) {
+        getBulkRequestExampleReject(error);
       }
     });
   }
