@@ -20,7 +20,7 @@ export const config = {
         required: true,
         token: process.env.AS_TOKEN || 'sp-token',
         secret: process.env.AS_SECRET_KEY || 'superNova', // TODO: Don't use static value in production! remove from source control!
-        daysExpires: +(process.env.AS_TOKEN_DAYS_EXPIRES || 30),
+        expiresIn: process.env.EXPIRES_IN || '5h',
         profileExtractor: {
             id: process.env.AS_PROFILE_EXTRACTOR_ID || 'id',
             mail: process.env.AS_PROFILE_EXTRACTOR_MAIL || 'mail',
@@ -39,5 +39,5 @@ export const config = {
     },
     clientEndpoint: process.env.AS_CLIENT_ENDPOINT || 'http://localhost:3000',
     support: process.env.AS_UNAUTHORIZED_SUPPORT_URL || 'https://open.rocket.chat',
-    defaultUserTypes: ['SOLDIER']
+    defaultUserTypes: ['COMMANDER']
 };

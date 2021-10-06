@@ -32,7 +32,7 @@ export const config = {
       .get('GATEWAY_AS_URL')
       .default('http://localhost:9000')
       .asString(),
-    required: env.get('GATEWAY_AUTHENTICATION_REQUIRED').default(0).asBool(),
+    required: env.get('GATEWAY_AUTHENTICATION_REQUIRED').default(1).asBool(),
   },
   spike: {
     audienceId: env
