@@ -5,7 +5,7 @@ replicaCount: 1
 
 images:
   PullSecrets: []
-  repository: https://portal.azure.com/#@greendreamteam.onmicrosoft.com/resource/subscriptions/e0cc7faf-3760-4b0c-a9df-fecf8d900589/resourceGroups/Momentum/providers/Microsoft.ContainerRegistry/registries/momentumAcr/repository/api-gateway
+  repository: momentumacr.azurecr.io/api-gateway
   tag: "latest"
 service:
 configmap:
