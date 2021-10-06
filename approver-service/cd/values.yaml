@@ -1,0 +1,14 @@
+name: "approver-service"
+# If you want to overide the full name you can include the 'fullnameOverride' value
+#fullname:
+replicaCount: 1
+
+images:
+  PullSecrets:
+    name: momentumacr
+  repository: momentumacr.azurecr.io/approver-service
+-----: "latest"
+service:
+configmap:
+  configmaps:  
+  mame: momentum-configmap
