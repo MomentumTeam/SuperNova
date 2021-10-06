@@ -17,7 +17,7 @@ export function PassportHandler(): void {
   passport.deserializeUser(deserialize);
 
   passport.use(
-    new ShragaStrategy(config.authentication, async (user: any, done: any) => {
+    new ShragaStrategy(config.authentication.shraga, async (user: any, done: any) => {
       done(null, user);
     })
   );

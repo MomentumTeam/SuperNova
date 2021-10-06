@@ -13,7 +13,12 @@ import { ApproverType } from '../interfaces/protoc/proto/requestService';
 
 export class AuthenticationHandler {
     static async handleUser(req: Request, res: Response) {
-        const { user } = req;
+        console.log('handle user')
+        const millisecondsExpires = config.authentication.daysExpires * (1000 * 60 * 60 * 24);
+        const iat = Math.floor(Date.now() / 1000);
+        const exp = iat + millisecondsExpires;
+
+        const user = { ...req.user, iat, exp };
         
         // Get shragaUser
         let shragaUser: IShragaUser = JSON.parse(JSON.stringify(user));
@@ -28,16 +33,18 @@ export class AuthenticationHandler {
             userWithType.genesisId = kartoffelUser.id;
             
             userInformation = { ...userWithType };
+            const userToken = jwt.sign(userInformation, config.authentication.secret, {
+              expiresIn: exp,
+            });
+            const constRedirectURI = req.user.RelayState || config.clientEndpoint;
+    
+            logger.info('successful handle user');
+            res.cookie(config.authentication.token, userToken);
+            return res.redirect(constRedirectURI);
         } catch (error) {
             return res.redirect('/auth/unauthorized');
         }
 
-        const userToken = jwt.sign(userInformation, config.authentication.secret, {expiresIn: config.authentication.expiresIn});
-        const constRedirectURI = req.user.RelayState || config.clientEndpoint;
-
-        logger.info('successful handle user');
-        res.cookie(config.authentication.token, userToken);
-        return res.redirect(constRedirectURI);
     }
 
     static async addUserType(user: IUser) {

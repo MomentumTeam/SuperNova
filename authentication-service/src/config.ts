@@ -20,7 +20,7 @@ export const config = {
         required: true,
         token: process.env.AS_TOKEN || 'sp-token',
         secret: process.env.AS_SECRET_KEY || 'superNova', // TODO: Don't use static value in production! remove from source control!
-        expiresIn: process.env.EXPIRES_IN || '5h',
+        daysExpires: +(process.env.AS_TOKEN_DAYS_EXPIRES || 1),
         profileExtractor: {
             id: process.env.AS_PROFILE_EXTRACTOR_ID || 'id',
             mail: process.env.AS_PROFILE_EXTRACTOR_MAIL || 'mail',
