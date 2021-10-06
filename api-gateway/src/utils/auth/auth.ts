@@ -16,7 +16,7 @@ export class Authenticator {
   ];
 
   private static isPubliclyAvailablePath(req:Request): boolean {
-    return this.publiclyAvailablePaths.filter(path => req.path.indexOf(path) > -1).length > 0
+    return Authenticator.publiclyAvailablePaths.filter(path => req.path.indexOf(path) > -1).length > 0
   };
 
   private static spikeProtectedPaths: string[] = [
@@ -24,7 +24,7 @@ export class Authenticator {
   ];
 
   private static isSpikeProtectedPath(req:Request): boolean {
-    return this.spikeProtectedPaths.filter(path => req.path.indexOf(path) > -1).length > 0
+    return Authenticator.spikeProtectedPaths.filter(path => req.path.indexOf(path) > -1).length > 0
   };
 
   public static initialize(verifyCallback?: passportJwt.VerifiedCallback) {
@@ -45,8 +45,8 @@ export class Authenticator {
   }
 
   public static middleware(req: Request, res: Response, next: NextFunction) {
-    if (this.isPubliclyAvailablePath(req)) return next();
+    if (Authenticator.isPubliclyAvailablePath(req)) return next();
 
-    return this.isSpikeProtectedPath(req) ? validateSpikeWriteScope : passport.authenticate('jwt', { session: false })(req, res, next);
+    return Authenticator.isSpikeProtectedPath(req) ? validateSpikeWriteScope : passport.authenticate('jwt', { session: false })(req, res, next);
   }
 }
