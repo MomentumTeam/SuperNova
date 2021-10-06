@@ -322,6 +322,9 @@ export interface GetChildrenOfOGRequest {
   direct: boolean;
 }
 
+/** GetChildrenOfRootOG */
+export interface GetChildrenOfRootOGRequest {}
+
 /** DeleteDI */
 export interface DeleteDIRequest {
   /** uniqueId of DI (taken from the role) */
@@ -5156,6 +5159,58 @@ export const GetChildrenOfOGRequest = {
   },
 };
 
+const baseGetChildrenOfRootOGRequest: object = {};
+
+export const GetChildrenOfRootOGRequest = {
+  encode(
+    _: GetChildrenOfRootOGRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GetChildrenOfRootOGRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseGetChildrenOfRootOGRequest,
+    } as GetChildrenOfRootOGRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): GetChildrenOfRootOGRequest {
+    const message = {
+      ...baseGetChildrenOfRootOGRequest,
+    } as GetChildrenOfRootOGRequest;
+    return message;
+  },
+
+  toJSON(_: GetChildrenOfRootOGRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<GetChildrenOfRootOGRequest>
+  ): GetChildrenOfRootOGRequest {
+    const message = {
+      ...baseGetChildrenOfRootOGRequest,
+    } as GetChildrenOfRootOGRequest;
+    return message;
+  },
+};
+
 const baseDeleteDIRequest: object = { id: "" };
 
 export const DeleteDIRequest = {
@@ -6703,6 +6758,7 @@ export interface Kartoffel {
   ): Promise<OrganizationGroup>;
   SearchOG(request: SearchOGRequest): Promise<OGArray>;
   GetChildrenOfOG(request: GetChildrenOfOGRequest): Promise<OGArray>;
+  GetChildrenOfRootOG(request: GetChildrenOfRootOGRequest): Promise<OGArray>;
   GetOGById(request: GetOGByIdRequest): Promise<OrganizationGroup>;
   GetOGTree(request: GetOGTreeRequest): Promise<OGTree>;
   DeleteOG(request: DeleteOGRequest): Promise<SuccessMessage>;
@@ -6762,6 +6818,7 @@ export class KartoffelClientImpl implements Kartoffel {
     this.GetOGByHierarchyName = this.GetOGByHierarchyName.bind(this);
     this.SearchOG = this.SearchOG.bind(this);
     this.GetChildrenOfOG = this.GetChildrenOfOG.bind(this);
+    this.GetChildrenOfRootOG = this.GetChildrenOfRootOG.bind(this);
     this.GetOGById = this.GetOGById.bind(this);
     this.GetOGTree = this.GetOGTree.bind(this);
     this.DeleteOG = this.DeleteOG.bind(this);
@@ -6977,6 +7034,16 @@ export class KartoffelClientImpl implements Kartoffel {
     const promise = this.rpc.request(
       "Kartoffel.Kartoffel",
       "GetChildrenOfOG",
+      data
+    );
+    return promise.then((data) => OGArray.decode(new _m0.Reader(data)));
+  }
+
+  GetChildrenOfRootOG(request: GetChildrenOfRootOGRequest): Promise<OGArray> {
+    const data = GetChildrenOfRootOGRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "GetChildrenOfRootOG",
       data
     );
     return promise.then((data) => OGArray.decode(new _m0.Reader(data)));

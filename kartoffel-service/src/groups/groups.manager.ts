@@ -101,6 +101,14 @@ export class GroupsManager {
     }
   }
 
+  async getChildrenOfRootOG(): Promise<OGArray> {
+    try {
+      return await this.groupsRepository.getChildrenOfRootOG();
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async updateOGParent(
     updateOGParentRequest: UpdateOGParentRequest
   ): Promise<SuccessMessage> {

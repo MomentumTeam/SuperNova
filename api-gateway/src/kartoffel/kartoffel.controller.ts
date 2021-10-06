@@ -171,6 +171,18 @@ export default class KartoffelController {
     }
   }
 
+  static async getOGRootChildren(req: Request, res: Response) {
+    const getOGRootChildrenReq: any = { ...req.params, ...req.query };
+
+    try {
+      const children = await KartoffelService.getOGRootChildren(getOGRootChildrenReq);
+      res.send(children);
+    } catch (error: any) {
+      const statusCode = statusCodeHandler(error);
+      res.status(statusCode).send(error.message);
+    }
+  }
+
   static async getOGChildren(req: Request, res: Response) {
     const getOGChildrenReq: any = { ...req.params, ...req.query };
 
