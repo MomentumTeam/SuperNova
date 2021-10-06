@@ -18,6 +18,9 @@ export const useFaker = process.env.KS_USE_FAKER
   ? process.env.KS_USE_FAKER === 'true'
   : false;
 
+export const kartoffelRootID =
+  process.env.KS_ROOT_ID || '611b5c58a7a257532f054a4b';
+
 export const kartoffelAudience =
   process.env.KS_KARTOFFEL_AUDIENCE || 'kartoffel';
 

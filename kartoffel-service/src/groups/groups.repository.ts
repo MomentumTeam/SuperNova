@@ -181,6 +181,23 @@ export class GroupsRepository {
     }
   }
 
+  async getChildrenOfRootOG(): Promise<OGArray> {
+    try {
+      if (C.useFaker) {
+        const ogChildern: OGArray = this.kartoffelFaker.randomOGArray();
+        return ogChildern;
+      } else {
+        const res = await this.kartoffelUtils.kartoffelGet(
+          `${C.kartoffelUrl}/api/groups/${C.kartoffelRootID}/children`,
+          { direct: true }
+        );
+        return res as OGArray;
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+  
   async updateOGParent(
     updateOGParentRequest: UpdateOGParentRequest
   ): Promise<SuccessMessage> {

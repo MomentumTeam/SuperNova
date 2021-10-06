@@ -20,6 +20,7 @@ KartoffelRouter.get('/groups', KartoffelValidator.isGetAllOGsValid, KartoffelCon
 KartoffelRouter.get('/groups/search', KartoffelValidator.isSearchOGValid, KartoffelController.searchOG);
 KartoffelRouter.get('/groups/search/:id', KartoffelValidator.isGetOGByIdValid, KartoffelController.getOGById);
 KartoffelRouter.get('/groups/:hierarchy/hierarchy',KartoffelValidator.isGetOGByHierarchyNameValid, KartoffelController.getOGByHierarchyName);
+KartoffelRouter.get('/groups/children', KartoffelController.getOGRootChildren);
 KartoffelRouter.get('/groups/:id/children', KartoffelValidator.isGetOGChildrenValid, KartoffelController.getOGChildren);
 KartoffelRouter.get('/groups/:id/tree', KartoffelValidator.isGetOGTreeValid, KartoffelController.getOGTree);
 
