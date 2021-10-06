@@ -194,7 +194,7 @@ const createRoleKartoffelParamsObj = Joi.object({
 });
 
 const createRoleADParamsObj = Joi.object({
-  samAccountName: Joi.string().required(), //T154514... generated automatically by tea-service if not given
+  samAccountName: Joi.string(), //T154514... generated automatically by tea-service if not given
   ouDisplayName: Joi.string().required(), // Role's full hierarchy
   jobTitle: Joi.string().required(), //name of the role
 });
