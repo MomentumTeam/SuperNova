@@ -35,7 +35,7 @@ export class RolesRepository {
     getAllRolesRequest: GetAllRolesRequest
   ): Promise<RoleArray> {
     if (C.useFaker) {
-      return this.kartoffelFaker.randomRoleArray();
+      return this.kartoffelFaker.randomRoleArray(getAllRolesRequest.pageSize);
     } else {
       const roles: RoleArray = await this.kartoffelUtils.kartoffelGet(
         `${C.kartoffelUrl}/api/roles`,
@@ -61,7 +61,7 @@ export class RolesRepository {
     getRolesUnderOGRequest: GetRolesUnderOGRequest
   ): Promise<RoleArray> {
     if (C.useFaker) {
-      return this.kartoffelFaker.randomRoleArray();
+      return this.kartoffelFaker.randomRoleArray(getRolesUnderOGRequest.pageSize);
     } else {
       const roles: Role[] = await this.kartoffelUtils.kartoffelGet(
         `${C.kartoffelUrl}/api/roles/group/${getRolesUnderOGRequest.groupId}`,

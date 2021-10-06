@@ -54,6 +54,9 @@ export class AuthenticationHandler {
         try {
             const kartoffelUser: IUser = await UsersRpc.getEntityById(shragaUser.genesisId);
             const userWithType = await AuthenticationHandler.addUserType(kartoffelUser);
+            userWithType.id = shragaUser.id;
+            userWithType.genesisId = kartoffelUser.id;
+            
             userInformation = { ...userWithType };
         } catch (error) {
             return res.redirect('/auth/unauthorized');

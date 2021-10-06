@@ -28,7 +28,7 @@ export class DiRepository {
     try {
       if (C.useFaker) {
         const digitalIdentities: DigitalIdentities =
-          await this.kartoffelFaker.randomDiArray();
+          await this.kartoffelFaker.randomDiArray(getAllDIsRequest.pageSize);
         return digitalIdentities;
       } else {
         const res = await this.kartoffelUtils.kartoffelGet(

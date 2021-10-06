@@ -41,7 +41,7 @@ export const config = {
       .asString(),
     publicKeyPath: env
       .get('GATEWAY_SPIKE_PUBLIC_KEY_FULL_PATH')
-      .default('publickey.pem')
+      .default('../spike-service/src/utils/publickey.pem')
       .asString(),
     writeScopeName: env
       .get('GATEWAY_WRITE_SCOPE_NAME')
