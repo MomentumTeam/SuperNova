@@ -10,4 +10,5 @@ images:
   tag: "latest"
 service:
 configmap:
-  configmaps: []
+  configmaps:  
+  mame: momentum-configmap
