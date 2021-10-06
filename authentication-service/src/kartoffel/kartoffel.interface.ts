@@ -41,4 +41,5 @@ export interface IUser {
     picture?: string;
     goalUserID?: string;
     types?: string[];
+    genesisId?: string;
 }
