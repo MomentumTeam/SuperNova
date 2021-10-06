@@ -1,4 +1,4 @@
-name: "producter-servise"
+name: "producer-service"
 # If you want to overide the full name you can include the 'fullnameOverride' value
 #fullname:
 replicaCount: 1
@@ -6,7 +6,7 @@ replicaCount: 1
 images:
   PullSecrets:
     name: momentumacr
-  repository: momentumacr.azurecr.io/producter-servise
+  repository: momentumacr.azurecr.io/producer-service
   tag: "latest"
 service:
 configmap:

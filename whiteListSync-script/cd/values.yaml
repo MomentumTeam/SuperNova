@@ -6,7 +6,7 @@ replicaCount: 1
 images:
   PullSecrets:
     name: momentumacr
-  repository: momentumacr.azurecr.io/whiteListSync-script
+  repository: momentumacr.azurecr.io/whitelistsync-script
   tag: "latest"
 service:
 configmap:
