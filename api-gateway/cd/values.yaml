@@ -4,7 +4,8 @@ name: "api-gateway"
 replicaCount: 1
 
 images:
-  PullSecrets: []
+  PullSecrets:
+    name: momentumacr
   repository: momentumacr.azurecr.io/api-gateway
   tag: "latest"
 service:
