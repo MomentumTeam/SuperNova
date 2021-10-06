@@ -1,4 +1,4 @@
-name: "whiteListSync-script"
+name: "whitelistsync-script"
 # If you want to overide the full name you can include the 'fullnameOverride' value
 #fullname:
 replicaCount: 1

@@ -9,7 +9,7 @@ repositories:
   
 releases:
 - name: extention-script
-  namespac: momentum
+  namespace: momentum
   chart: yesodot/common
   version: {{ requiredEnv "COMMON_VERSION" | default "0.5.1" }}
   values:
