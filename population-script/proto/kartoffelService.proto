@@ -26,6 +26,7 @@ service Kartoffel {
     rpc GetOGByHierarchyName(GetOGByHierarchyNameRequest) returns (OrganizationGroup){}   
     rpc SearchOG(SearchOGRequest) returns (OGArray) {}          
     rpc GetChildrenOfOG(GetChildrenOfOGRequest) returns (OGArray){}
+    rpc GetChildrenOfRootOG(GetChildrenOfRootOGRequest) returns (OGArray){}
     rpc GetOGById(GetOGByIdRequest) returns (OrganizationGroup){}   
     rpc GetOGTree(GetOGTreeRequest) returns (OGTree){}
     rpc DeleteOG(DeleteOGRequest) returns (SuccessMessage){}            
@@ -361,6 +362,11 @@ message GetChildrenOfOGRequest{
     int32 page = 2;
     int32 pageSize = 3;
     bool direct = 4;
+}
+
+// GetChildrenOfRootOG
+message GetChildrenOfRootOGRequest{
+
 }
 
 // DeleteDI

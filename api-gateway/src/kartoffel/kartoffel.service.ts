@@ -9,6 +9,7 @@ import {
   GetAllOGsRequest,
   GetAllRolesRequest,
   GetChildrenOfOGRequest,
+  GetChildrenOfRootOGRequest,
   GetEntitiesByHierarchyRequest,
   GetEntitiesUnderOGRequest,
   GetEntityByDIRequest,
@@ -297,6 +298,31 @@ export class KartoffelService {
         });
         resolve(response);
       });
+    });
+  }
+
+  static async getOGRootChildren(getOGRootChildrenReq: GetChildrenOfRootOGRequest) {
+    logger.info(`Call to getOGRootChildren in GTW`, getOGRootChildrenReq);
+
+    return new Promise((resolve, reject) => {
+      kartoffelClient.GetChildrenOfRootOG(
+        getOGRootChildrenReq,
+        (err: any, response: OGArray) => {
+          if (err) {
+            logger.error(`getOGChildren ERROR in GTW`, {
+              err,
+              callRequest: getOGRootChildrenReq,
+            });
+            reject(err);
+          }
+
+          logger.info(`getOGChildren OK in GTW`, {
+            response: response,
+            callRequest: getOGRootChildrenReq,
+          });
+          resolve(response);
+        }
+      );
     });
   }
 

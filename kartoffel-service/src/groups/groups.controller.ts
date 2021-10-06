@@ -242,6 +242,33 @@ export async function getChildrenOfOG(call: any, callback: any): Promise<void> {
   }
 }
 
+export async function getChildrenOfRootOG(call: any, callback: any): Promise<void> {
+  try {
+    logger.info(`Call to getChildrenOfRootOG`, {
+      callRequest: call.request,
+    });
+    const rooOGChildern: OGArray = await groupsManager.getChildrenOfRootOG();
+    logger.info(`getChildrenOfRootOG OK`, {
+      callRequest: call.request,
+      response: rooOGChildern,
+    });
+    callback(null, rooOGChildern);
+  } catch (error: any) {
+    logger.error(`getChildrenOfRootOG ERROR`, {
+      callRequest: call.request,
+      error: { message: error.message },
+    });
+    callback(
+      {
+        code: 400,
+        error: { message: error.message },
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
 export async function updateOGParent(call: any, callback: any): Promise<void> {
   try {
     logger.info(`Call to updateOGParent`, {
