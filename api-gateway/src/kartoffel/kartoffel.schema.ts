@@ -144,7 +144,7 @@ export const getAllRolesSchema = Joi.object({
 export const GetRoleByIdSchema = Joi.object({
   body: {},
   params: {
-    id: Joi.string().required(),
+    roleId: Joi.string().required(),
   },
   query: {},
 });
