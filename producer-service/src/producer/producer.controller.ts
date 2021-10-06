@@ -19,7 +19,7 @@ export async function produceToKartoffelQueue(
       successMessage,
     });
     callback(null, successMessage);
-  } catch (error) {
+  } catch (error: any) {
     logger.error('produceToKartoffelQueue ERROR', {
       callRequest: call.request,
       error: { message: error.message },
@@ -50,7 +50,7 @@ export async function produceToADQueue(
       successMessage,
     });
     callback(null, successMessage);
-  } catch (error) {
+  } catch (error: any) {
     logger.error('produceToADQueue ERROR', {
       callRequest: call.request,
       error: { message: error.message },

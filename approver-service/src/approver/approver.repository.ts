@@ -11,15 +11,15 @@ import {
   SearchByDomainUserReq,
   SuccessMessage,
   SyncApproverReq,
-  UserType,
-  userTypeFromJSON,
-  userTypeToJSON,
 } from '../interfaces/protoc/proto/approverService';
 import {
   DigitalIdentity,
   Entity,
 } from '../interfaces/protoc/proto/kartoffelService';
 import {
+  ApproverType,
+  approverTypeFromJSON,
+  approverTypeToJSON,
   PersonTypeInRequest,
   personTypeInRequestFromJSON,
   Request,
@@ -50,8 +50,11 @@ export class ApproverRepository {
 
       logger.info('addApprover', { document, addApproverReq });
       return document as Approver;
-    } catch (error) {
-      logger.error('addApprover ERROR', { error, addApproverReq });
+    } catch (error: any) {
+      logger.error('addApprover ERROR', {
+        error: { message: error.message },
+        addApproverReq,
+      });
       throw error;
     }
   }
@@ -66,8 +69,11 @@ export class ApproverRepository {
       });
       logger.info('deleteApprover', { deleteApproverReq });
       return { success: true };
-    } catch (error) {
-      logger.error('deleteApprover ERROR', { deleteApproverReq, error });
+    } catch (error: any) {
+      logger.error('deleteApprover ERROR', {
+        deleteApproverReq,
+        error: { message: error.message },
+      });
       throw error;
     }
   }
@@ -79,14 +85,17 @@ export class ApproverRepository {
       let query = {};
       if (getAllApproversReq.type != undefined) {
         let type = approverTypeValidation(getAllApproversReq.type);
-        query = { type: userTypeToJSON(type) };
+        query = { type: approverTypeToJSON(type) };
       }
 
       const mongoApprovers: any = await ApproverModel.find(query);
       logger.info('getAllApprovers', { getAllApproversReq });
       return { approvers: getMongoApproverArray(mongoApprovers) };
-    } catch (error) {
-      logger.error('getAllApprovers ERROR', { error, getAllApproversReq });
+    } catch (error: any) {
+      logger.error('getAllApprovers ERROR', {
+        error: { message: error.message },
+        getAllApproversReq,
+      });
       throw error;
     }
   }
@@ -99,8 +108,11 @@ export class ApproverRepository {
       approverIds = approverIds.map((approverId: any) => approverId.toString());
       logger.info('getAllApproverIds', { approverIds, getAllApproverIdsReq });
       return { approverIds: approverIds };
-    } catch (error) {
-      logger.error('getAllApproverIds ERROR', { error, getAllApproverIdsReq });
+    } catch (error: any) {
+      logger.error('getAllApproverIds ERROR', {
+        error: { message: error.message },
+        getAllApproverIdsReq,
+      });
       throw error;
     }
   }
@@ -122,6 +134,9 @@ export class ApproverRepository {
         displayName: entity.displayName,
         domainUsers: domainUsers,
         akaUnit: entity.akaUnit,
+        personalNumber: entity.personalNumber,
+        identityCard: entity.identityCard,
+        directGroup: entity.directGroup,
       };
       const result: any = await ApproverModel.updateMany(
         { entityId: syncApproverReq.approverId },
@@ -139,10 +154,10 @@ export class ApproverRepository {
         approvers,
       });
       return { approvers: approvers } as ApproverArray;
-    } catch (error) {
+    } catch (error: any) {
       logger.error('syncApprover ERROR', {
         syncApproverReq,
-        error,
+        error: { message: error.message },
       });
       throw error;
     }
@@ -157,7 +172,7 @@ export class ApproverRepository {
       });
       let response: GetUserTypeRes;
       if (approvers) {
-        let type: any = approvers.map((approver) => {
+        let type: any = approvers.map((approver: any) => {
           const document: any = approver.toObject();
           turnObjectIdsToStrings(document);
 
@@ -176,19 +191,22 @@ export class ApproverRepository {
         if (hasCommanderRank(entity)) {
           response = {
             entityId: getUserTypeReq.entityId,
-            type: [UserType.COMMANDER],
+            type: [ApproverType.COMMANDER],
           };
         } else {
           response = {
             entityId: getUserTypeReq.entityId,
-            type: [UserType.SOLDIER],
+            type: [ApproverType.SOLDIER],
           };
         }
       }
       logger.info('getUserType', { getUserTypeReq, response });
       return response;
-    } catch (error) {
-      logger.error('getUserType ERROR', { getUserTypeReq, error });
+    } catch (error: any) {
+      logger.error('getUserType ERROR', {
+        getUserTypeReq,
+        error: { message: error.message },
+      });
       throw error;
     }
   }
@@ -219,23 +237,30 @@ export class ApproverRepository {
       });
 
       if (
-        userTypeFromJSON(searchByDisplayNameReq.type) === UserType.COMMANDER
+        approverTypeFromJSON(searchByDisplayNameReq.type) ===
+        ApproverType.COMMANDER
       ) {
-        const kartoffelEntities =
-          await KartoffelService.searchEntitiesByFullName({
-            fullName: searchByDisplayNameReq.displayName,
-          });
-        logger.info('searchApproverByDisplayName kartoffelResults', {
-          kartoffelEntities,
-          searchByDisplayNameReq,
-        });
-
-        approversResult.push(
-          ...getApproverArrayByEntityArray(
+        try {
+          const kartoffelEntities =
+            await KartoffelService.searchCommandersByFullName({
+              fullName: searchByDisplayNameReq.displayName,
+            });
+          logger.info('searchApproverByDisplayName kartoffelResults', {
             kartoffelEntities,
-            searchByDisplayNameReq.type
-          )
-        );
+            searchByDisplayNameReq,
+          });
+
+          approversResult.push(
+            ...getApproverArrayByEntityArray(
+              kartoffelEntities,
+              searchByDisplayNameReq.type
+            )
+          );
+        } catch (kartoffelError: any) {
+          logger.error('searchApproverByDisplayName KartoffelError', {
+            error: { message: kartoffelError.message },
+          });
+        }
       }
 
       const uniqueApproversResult = [
@@ -248,9 +273,9 @@ export class ApproverRepository {
         searchByDisplayNameReq,
       });
       return { approvers: uniqueApproversResult };
-    } catch (error) {
+    } catch (error: any) {
       logger.error('searchApproverByDisplayName ERROR', {
-        error,
+        error: { message: error.message },
         searchByDisplayNameReq,
       });
       throw error;
@@ -293,10 +318,10 @@ export class ApproverRepository {
         response,
       });
       return response;
-    } catch (error) {
+    } catch (error: any) {
       logger.error('searchApproverByDomainUser ERROR', {
         searchByDomainUserReq,
-        error,
+        error: { message: error.message },
       });
       throw error;
     }
@@ -325,10 +350,10 @@ export class ApproverRepository {
           updateApproverDecisionReq
         );
       }
-    } catch (error) {
+    } catch (error: any) {
       logger.error('updateApproverDecision ERROR', {
         updateApproverDecisionReq,
-        error,
+        error: { message: error.message },
       });
       throw error;
     }

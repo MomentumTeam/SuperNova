@@ -1,0 +1,24 @@
+syntax = "proto3";
+import "requestService.proto"; 
+
+package BulkService;
+
+service BulkService {
+    rpc CreateRoleBulkRequest(RequestService.CreateRoleBulkReq) returns (RequestService.CreateRoleBulkRes){}
+    rpc ChangeRoleHierarchyBulkRequest(RequestService.ChangeRoleHierarchyBulkReq) returns (RequestService.ChangeRoleHierarchyBulkRes){}
+
+    rpc GetBulkRequestExample(GetBulkRequestExampleReq) returns (GetBulkRequestExampleRes){}
+}
+
+message GetBulkRequestExampleReq {
+    BulkType bulkType = 1;
+}
+
+enum BulkType{
+    CREATE_ROLE_REQUEST = 0;
+    CHANGE_ROLE_HIERARCHY_REQUEST = 1;
+}
+
+message GetBulkRequestExampleRes {
+    string bulkFileName = 1;
+}

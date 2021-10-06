@@ -18,6 +18,7 @@ service Kartoffel {
     rpc UpdateEntity(UpdateEntityRequest) returns (Entity){}
     rpc ConnectEntityAndDI(ConnectEntityAndDIRequest) returns (SuccessMessage){}
     rpc DisconnectDIFromEntity(DisconnectDIFromEntityRequest) returns (SuccessMessage){}
+    rpc SearchCommandersByFullName(SearchCommandersByFullNameRequest) returns (EntityArray){}
     
     //Groups
     rpc CreateOG(CreateOGRequest) returns (OrganizationGroup){}        
@@ -25,6 +26,7 @@ service Kartoffel {
     rpc GetOGByHierarchyName(GetOGByHierarchyNameRequest) returns (OrganizationGroup){}   
     rpc SearchOG(SearchOGRequest) returns (OGArray) {}          
     rpc GetChildrenOfOG(GetChildrenOfOGRequest) returns (OGArray){}
+    rpc GetChildrenOfRootOG(GetChildrenOfRootOGRequest) returns (OGArray){}
     rpc GetOGById(GetOGByIdRequest) returns (OrganizationGroup){}   
     rpc GetOGTree(GetOGTreeRequest) returns (OGTree){}
     rpc DeleteOG(DeleteOGRequest) returns (SuccessMessage){}            
@@ -49,7 +51,32 @@ service Kartoffel {
     rpc DisconnectRoleAndDI(DisconnectRoleAndDIRequest) returns (SuccessMessage){}
     rpc DeleteRole(DeleteRoleRequest) returns (SuccessMessage){} 
     rpc RenameRole(RenameRoleRequest) returns (SuccessMessage){}
+    rpc ChangeRoleOG(ChangeRoleOGRequest) returns (SuccessMessage){}
+    rpc IsRoleAlreadyTaken(IsRoleAlreadyTakenReq) returns (IsRoleAlreadyTakenRes){}
+    rpc IsJobTitleAlreadyTaken(IsJobTitleAlreadyTakenReq) returns (IsJobTitleAlreadyTakenRes){}
+}
 
+message IsRoleAlreadyTakenReq{
+    string roleId = 1;
+}
+
+message IsRoleAlreadyTakenRes{
+    bool isRoleAlreadyTaken = 1;
+}
+
+message IsJobTitleAlreadyTakenReq{
+    string jobTitle = 1;
+    string directGroup = 2;
+}
+
+message IsJobTitleAlreadyTakenRes{
+    bool isJobTitleAlreadyTaken = 1;
+    repeated string suggestions = 2;
+}
+
+message SearchCommandersByFullNameRequest{
+    string fullName = 1;
+    optional string source = 2;
 }
 
 message GetAllOGsRequest{
@@ -168,12 +195,12 @@ message SearchEntitiesByFullNameRequest{
 }
 
 message GetOGTreeRequest{
-    string rootId = 1;
+    string directGroupId = 1;
 }
 
 message OGTree{
     string id = 1;
-    string name = 2;
+    string label = 2;
     repeated OGTree children = 3;
 }
 
@@ -335,6 +362,11 @@ message GetChildrenOfOGRequest{
     int32 page = 2;
     int32 pageSize = 3;
     bool direct = 4;
+}
+
+// GetChildrenOfRootOG
+message GetChildrenOfRootOGRequest{
+
 }
 
 // DeleteDI

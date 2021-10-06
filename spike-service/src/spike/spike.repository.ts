@@ -25,9 +25,11 @@ export class SpikeRepository {
         audience: getSpikeTokenRequest.audience,
       });
       return token;
-    } catch (err) {
-      logger.error(`Error while requesting Spike token`, { err: err });
-      throw err;
+    } catch (error: any) {
+      logger.error(`Error while requesting Spike token`, {
+        error: { message: error.message },
+      });
+      throw error;
     }
   }
 }

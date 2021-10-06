@@ -2,6 +2,8 @@ import * as grpc from 'grpc';
 import * as protoLoader from '@grpc/proto-loader';
 import * as config from '../config';
 import {
+  CanPushToQueueReq,
+  CanPushToQueueRes,
   Request,
   UpdateApproverDecisionReq,
   UpdateReq,
@@ -27,19 +29,20 @@ const protoDescriptor: any =
 
 const requestClient: any = new protoDescriptor.RequestService(
   config.requestServiceUrl,
-  grpc.credentials.createInsecure()
+  grpc.credentials.createInsecure(),
+  { 'grpc.keepalive_timeout_ms': 5000 }
 );
 
 export default class RequestService {
   static async updateRequest(updateReq: UpdateReq): Promise<Request> {
     return new Promise((resolve, reject) => {
-      requestClient.UpdateRequest(updateReq, (err: any, request: Request) => {
-        if (err) {
+      requestClient.UpdateRequest(updateReq, (error: any, request: Request) => {
+        if (error) {
           logger.error('updateRequest in RequestService ERROR', {
             updateReq,
-            err,
+            error: { message: error.message },
           });
-          reject(err);
+          reject(error);
         } else {
           logger.info('updateRequest in RequestService', {
             updateReq,
@@ -58,16 +61,41 @@ export default class RequestService {
     return new Promise((resolve, reject) => {
       requestClient.UpdateApproverDecision(
         updateApproverDecisionReq,
-        (err: any, request: Request) => {
-          if (err) {
+        (error: any, request: Request) => {
+          if (error) {
             logger.error('updateApproverDecision in RequestService ERROR', {
               updateApproverDecisionReq,
-              err,
+              error: { message: error.message },
             });
-            reject(err);
+            reject(error);
           } else {
             logger.info('updateApproverDecision in RequestService', {
               updateApproverDecisionReq,
+              request,
+            });
+            resolve(request);
+          }
+        }
+      );
+    });
+  }
+
+  static async canPushToADQueue(
+    canPushToADQueueReq: CanPushToQueueReq
+  ): Promise<CanPushToQueueRes> {
+    return new Promise((resolve, reject) => {
+      requestClient.CanPushToADQueue(
+        canPushToADQueueReq,
+        (error: any, request: CanPushToQueueRes) => {
+          if (error) {
+            logger.error('CanPushToADQueue in RequestService ERROR', {
+              canPushToADQueueReq,
+              error: { message: error.message },
+            });
+            reject(error);
+          } else {
+            logger.info('CanPushToADQueue in RequestService', {
+              canPushToADQueueReq,
               request,
             });
             resolve(request);

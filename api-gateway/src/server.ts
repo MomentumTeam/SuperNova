@@ -14,6 +14,7 @@ import { swaggerDocument } from './swagger';
 import { addMockToken } from './utils/auth/user.mock';
 import { Authenticator } from './utils/auth/auth';
 
+
 export class Server {
   private static _instance: Server;
   public app: express.Application;
@@ -59,16 +60,23 @@ export class Server {
       return res.send('alive');
     });
 
-    this.app.use('/api', mainRouter);
     this.app.use(
       '/api-docs',
       swaggerUi.serve,
       swaggerUi.setup(swaggerDocument)
     );
 
+
+    this.app.get('/auth/login', (req, res) => {
+      res.redirect(`${config.authentication.authServiceUrl}/auth/login`);
+    });
+
+    this.app.use('/api', mainRouter);
+    
     this.app.use('*', (req, res) => {
       res.status(404).send('Invalid Route');
     });
+    
   }
 
   private initializeErrorHandling() {

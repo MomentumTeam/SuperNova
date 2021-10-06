@@ -16,6 +16,7 @@ import {
   getEntityByIdentifier,
   getEntityByRoleId,
   getPictureByEntityId,
+  searchCommandersByFullName,
   searchEntitiesByFullName,
   updateEntity,
 } from './entities/entities.controller';
@@ -27,6 +28,7 @@ import {
   deleteOG,
   getOGById,
   getChildrenOfOG,
+  getChildrenOfRootOG,
   updateOGParent,
   renameOG,
   getOGTree,
@@ -52,6 +54,8 @@ import {
   getAllRoles,
   getRolesByHierarchy,
   changeRoleOG,
+  isJobTitleAlreadyTaken,
+  isRoleAlreadyTaken,
 } from './roles/roles.controller';
 
 const PROTO_PATH = `${findPath('proto')}/kartoffelService.proto`;
@@ -110,6 +114,7 @@ export class Server {
         GetPictureByEntityId: getPictureByEntityId,
         ConnectEntityAndDI: connectEntityAndDI,
         UpdateEntity: updateEntity,
+        SearchCommandersByFullName: searchCommandersByFullName,
 
         //groups
         GetAllOGs: getAllOGs,
@@ -119,6 +124,7 @@ export class Server {
         DeleteOG: deleteOG,
         GetOGById: getOGById,
         GetChildrenOfOG: getChildrenOfOG,
+        GetChildrenOfRootOG: getChildrenOfRootOG,
         UpdateOGParent: updateOGParent,
         RenameOG: renameOG,
         GetOGTree: getOGTree,
@@ -143,6 +149,8 @@ export class Server {
         RenameRole: renameRole,
         GetRolesByHierarchy: getRolesByHierarchy,
         ChangeRoleOG: changeRoleOG,
+        IsRoleAlreadyTaken: isRoleAlreadyTaken,
+        IsJobTitleAlreadyTaken: isJobTitleAlreadyTaken,
       });
       logger.info(`Grpc services were successfully added to the server`);
     } catch (error: any) {

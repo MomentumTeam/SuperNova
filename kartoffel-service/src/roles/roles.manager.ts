@@ -12,6 +12,10 @@ import {
   GetAllRolesRequest,
   GetRolesByHierarchyRequest,
   ChangeRoleOGRequest,
+  IsJobTitleAlreadyTakenReq,
+  IsJobTitleAlreadyTakenRes,
+  IsRoleAlreadyTakenReq,
+  IsRoleAlreadyTakenRes,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { KartoffelFaker } from '../mock/kartoffel.faker';
 import { KartoffelUtils } from '../utils/kartoffel.utils';
@@ -52,13 +56,35 @@ export class RolesManager {
   async getRolesUnderOG(
     getRolesUnderOGRequest: GetRolesUnderOGRequest
   ): Promise<RoleArray> {
-    return await this.rolesRepository.getRolesUnderOGRequest(
-      getRolesUnderOGRequest
-    );
+    return await this.rolesRepository.getRolesUnderOG(getRolesUnderOGRequest);
   }
 
   async renameRole(RenameRoleRequest: RenameRoleRequest): Promise<Role> {
     return await this.rolesRepository.renameRole(RenameRoleRequest);
+  }
+
+  async isJobTitleAlreadyTaken(
+    isJobTitleAlreadyTakenRequest: IsJobTitleAlreadyTakenReq
+  ): Promise<IsJobTitleAlreadyTakenRes> {
+    try {
+      return await this.rolesRepository.isJobTitleAlreadyTaken(
+        isJobTitleAlreadyTakenRequest
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async isRoleAlreadyTaken(
+    isRoleAlreadyTakenRequest: IsRoleAlreadyTakenReq
+  ): Promise<IsRoleAlreadyTakenRes> {
+    try {
+      return await this.rolesRepository.isRoleAlreadyTaken(
+        isRoleAlreadyTakenRequest
+      );
+    } catch (error) {
+      throw error;
+    }
   }
 
   async disconnectRoleAndDI(

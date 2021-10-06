@@ -1,5 +1,4 @@
-import { RequestStatus, UserType } from '../interfaces/protoc/proto/approverService';
-import { ApproverType } from '../interfaces/protoc/proto/requestService';
+import { ApproverType, Decision, PersonTypeInRequest } from '../interfaces/protoc/proto/requestService';
 
 const Joi = require('joi');
 Joi.objectId = require('joi-objectid')(Joi);
@@ -9,7 +8,7 @@ export const getAllApproversSchema = Joi.object({
   body: {},
   params: {},
   query: {
-    type: Joi.string().valid(...Object.keys(UserType)),
+    type: Joi.string().valid(...Object.keys(ApproverType)),
   },
 });
 
@@ -39,13 +38,6 @@ export const getSearchByDomainUser = Joi.object({
   },
 });
 
-export const getUserTypeSchema = Joi.object({
-  body: {},
-  params: {
-    entityId: Joi.objectId().required(),
-  },
-  query: {},
-});
 
 // POST
 export const addApproverSchema = Joi.object({
@@ -60,19 +52,23 @@ export const addApproverSchema = Joi.object({
 });
 
 // PUT
+export const approverDecisionObj = Joi.object({
+  decision: Joi.string()
+    .valid(...Object.keys(Decision))
+    .required(),
+  reason: Joi.string(),
+  date: Joi.date(),
+});
+
 export const updateApproverDecisionSchema = Joi.object({
   body: {
-    approverId: Joi.objectId().required(),
-    descision: Joi.string()
-      .valid(...Object.keys(RequestStatus))
-      .required(),
-    reason: Joi.string().required(),
+    decision: approverDecisionObj.required(),
     type: Joi.string()
-    .valid(...Object.keys(ApproverType))
-    .required(),
+      .valid(...Object.keys(PersonTypeInRequest))
+      .required(),
   },
   params: {
-    requestId: Joi.objectId().required()
+    requestId: Joi.objectId().required(),
   },
   query: {},
 });

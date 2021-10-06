@@ -1,16 +1,23 @@
+import {config} from "./config";
+const apm = require('elastic-apm-node').start({
+  secretToken: '',
+  serviceName: 'API-GATEWAY',
+  serverUrl: config.endpoints.apm,
+  environment: process.env.NODE_ENV,
+  cloudProvider: "none",
+});
+
 import { Server } from './server';
 import { logger } from './utils/logger/logger';
 
 process.on('uncaughtException', (err: Error) => {
   console.error('Unhandled Exception', err.stack);
   logger.error('Unhandled Exception', err.stack || 'Unhandled Exception');
-  process.exit(1);
 });
 
 process.on('unhandledRejection', (err) => {
   console.error('Unhandled Rejection', err);
   logger.error('Unhandled Rejection', 'Unhandled Rejection');
-  process.exit(1);
 });
 
 (async () => {

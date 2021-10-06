@@ -143,45 +143,33 @@ export async function updateApproverDecision(call: any, callback: any) {
   }
 }
 
-export function searchRequestsByDisplayNameFuncByPersonType(
-  personType: PersonTypeInRequest
-) {
-  const func = async function searchRequestsByDisplayName(
-    call: any,
-    callback: any
-  ): Promise<void> {
-    try {
-      logger.info(`Call to searchRequestsByDisplayName`, {
-        personType: personType,
-        callRequest: call.request,
-      });
-      const response = await requestManager.searchRequestsByDisplayName(
-        call.request as SearchRequestsByDisplayNameReq,
-        personType
-      );
-      logger.info(`searchRequestsByDisplayName OK`, {
-        callRequest: call.request,
-        personType: personType,
-        response: response,
-      });
-      callback(null, response);
-    } catch (error: any) {
-      logger.error(`searchRequestsByDisplayName ERROR`, {
-        callRequest: call.request,
-        personType: personType,
-        error: { message: error.message },
-      });
-      callback(
-        {
-          code: 400,
-          message: error.message,
-          status: grpc.status.CANCELLED,
-        },
-        null
-      );
-    }
-  };
-  return func;
+export async function searchRequestsByDisplayName(call: any, callback: any) {
+  try {
+    logger.info(`Call to searchRequestsByDisplayName`, {
+      callRequest: call.request,
+    });
+    const response = await requestManager.searchRequestsByDisplayName(
+      call.request as SearchRequestsByDisplayNameReq
+    );
+    logger.info(`searchRequestsByDisplayName OK`, {
+      callRequest: call.request,
+      response: response,
+    });
+    callback(null, response);
+  } catch (error: any) {
+    logger.error(`searchRequestsByDisplayName ERROR`, {
+      callRequest: call.request,
+      error: { message: error.message },
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
 }
 
 export async function canPushToADQueue(
@@ -533,7 +521,7 @@ export async function getRequestsInProgressByDue(
   } catch (error: any) {
     logger.error(`getRequestsInProgressByDue ERROR`, {
       callRequest: call.request,
-      error: error.message,
+      error: { message: error.message },
     });
     callback(
       {

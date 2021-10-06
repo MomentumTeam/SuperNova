@@ -110,7 +110,10 @@ dist
 .vscode/
 *.vscode/
 *.pem
+~*
 
 data
 
 SuperNovaProto
+bulk-files
+.metals

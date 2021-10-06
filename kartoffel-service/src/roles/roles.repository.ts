@@ -13,10 +13,15 @@ import {
   GetRoleByDIRequest,
   GetRolesByHierarchyRequest,
   ChangeRoleOGRequest,
+  IsJobTitleAlreadyTakenReq,
+  IsJobTitleAlreadyTakenRes,
+  IsRoleAlreadyTakenReq,
+  IsRoleAlreadyTakenRes,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { KartoffelFaker } from '../mock/kartoffel.faker';
 import { KartoffelUtils } from '../utils/kartoffel.utils';
 import * as C from '../config';
+import { getSuggestions, jobTitleExists } from '../utils/jobTitles.utils';
 
 export class RolesRepository {
   private kartoffelFaker: KartoffelFaker;
@@ -30,7 +35,7 @@ export class RolesRepository {
     getAllRolesRequest: GetAllRolesRequest
   ): Promise<RoleArray> {
     if (C.useFaker) {
-      return this.kartoffelFaker.randomRoleArray();
+      return this.kartoffelFaker.randomRoleArray(getAllRolesRequest.pageSize);
     } else {
       const roles: RoleArray = await this.kartoffelUtils.kartoffelGet(
         `${C.kartoffelUrl}/api/roles`,
@@ -52,11 +57,11 @@ export class RolesRepository {
     }
   }
 
-  async getRolesUnderOGRequest(
+  async getRolesUnderOG(
     getRolesUnderOGRequest: GetRolesUnderOGRequest
   ): Promise<RoleArray> {
     if (C.useFaker) {
-      return this.kartoffelFaker.randomRoleArray();
+      return this.kartoffelFaker.randomRoleArray(getRolesUnderOGRequest.pageSize);
     } else {
       const roles: Role[] = await this.kartoffelUtils.kartoffelGet(
         `${C.kartoffelUrl}/api/roles/group/${getRolesUnderOGRequest.groupId}`,
@@ -73,6 +78,60 @@ export class RolesRepository {
       return this.kartoffelUtils.kartoffelDelete(
         `${C.kartoffelUrl}/api/roles/${deleteRoleRequest.roleId}`
       );
+    }
+  }
+
+  async isRoleAlreadyTaken(
+    isRoleAlreadyTakenRequest: IsRoleAlreadyTakenReq
+  ): Promise<IsRoleAlreadyTakenRes> {
+    if (C.useFaker) {
+      const isRoleAlradyTaken = Math.random() < 0.5;
+      return { isRoleAlreadyTaken: isRoleAlradyTaken };
+    } else {
+      try {
+        const entity = await this.kartoffelUtils.kartoffelGet(
+          `${C.kartoffelUrl}/api/entities/role/${isRoleAlreadyTakenRequest.roleId}`,
+          { expanded: true }
+        );
+        if (entity) {
+          return { isRoleAlreadyTaken: true };
+        } else {
+          return { isRoleAlreadyTaken: false };
+        }
+      } catch (error) {
+        if (error.response.status === 404) {
+          return { isRoleAlreadyTaken: false };
+        } else {
+          throw error;
+        }
+      }
+    }
+  }
+
+  async isJobTitleAlreadyTaken(
+    isJobTitleAlreadyTakenRequest: IsJobTitleAlreadyTakenReq
+  ): Promise<IsJobTitleAlreadyTakenRes> {
+    if (C.useFaker) {
+      const isJobTitleAlreadyTaken = Math.random() < 0.5;
+      let res: any = { isJobTitleAlreadyTaken: isJobTitleAlreadyTaken };
+      res.suggestions = ['Programmer 1', 'Programmer 2', 'Programmer 3'];
+      return res as IsJobTitleAlreadyTakenRes;
+    } else {
+      let roleArray: RoleArray = await this.getRolesUnderOG({
+        groupId: isJobTitleAlreadyTakenRequest.directGroup,
+        direct: true,
+        page: 1,
+        pageSize: 200,
+      });
+      const jobTitle = isJobTitleAlreadyTakenRequest.jobTitle;
+      if (!jobTitleExists(roleArray, jobTitle)) {
+        return { isJobTitleAlreadyTaken: false, suggestions: [] };
+      } else {
+        return {
+          isJobTitleAlreadyTaken: true,
+          suggestions: getSuggestions(roleArray, jobTitle),
+        };
+      }
     }
   }
 

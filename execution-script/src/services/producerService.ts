@@ -6,8 +6,6 @@ import { logger } from '../logger';
 import RequestService from './requestService';
 import { SuccessMessage } from '../interfaces/protoc/proto/producerService';
 
-//producerClient
-
 const PS_PROTO_PATH = `${findPath('proto')}/producerService.proto`;
 
 const psPackageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(
@@ -25,8 +23,9 @@ const psProtoDescriptor: any =
   grpc.loadPackageDefinition(psPackageDefinition).Producer;
 
 const producerClient: any = new psProtoDescriptor.Producer(
-  config.producerUrl,
-  grpc.credentials.createInsecure()
+  config.producerServiceUrl,
+  grpc.credentials.createInsecure(),
+  { 'grpc.keepalive_timeout_ms': 5000 }
 );
 
 export default class ProducerService {

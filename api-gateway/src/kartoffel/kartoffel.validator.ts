@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { transformRequest, validateObject } from '../utils/validations/validations';
-import { getEntitiesByHierarchySchema, getEntitiesUnderOGSchema, getEntityByDIRequestSchema, getEntityByIdentifierSchema, getEntityByMongoIdSchema, getEntityByRoleIdSchema, searchEntitiesByFullNameSchema } from './kartoffel.schema';
+import { getAllOGsSchema, getAllRolesSchema, getEntitiesByHierarchySchema, getEntitiesUnderOGSchema, getEntityByDIRequestSchema, getEntityByIdentifierSchema, getEntityByMongoIdSchema, getEntityByRoleIdSchema, GetOGByHierarchyNameSchema, GetOGByIdSchema, GetOGChildrenSchema, GetOGTreeSchema, GetRoleByIdSchema, GetRolesUnderOGSchema, IsJobTitleAlreadyTakenSchema, IsRoleAlreadyTakenSchema, searchEntitiesByFullNameSchema, searchOGSchema } from './kartoffel.schema';
 export class KartoffelValidator {
     // Entities
     static isGetEntityByMongoIdValid(req: Request, res: Response, next: NextFunction) {
@@ -38,6 +38,60 @@ export class KartoffelValidator {
         next();
     }
 
-    // TODO: Groups
-    // TODO: Role
+    // Groups
+    static isGetAllOGsValid(req: Request, res: Response, next: NextFunction) {
+        transformRequest(req, validateObject(req, getAllOGsSchema, { allowUnknown: true }));
+        next();
+    }
+
+    static isSearchOGValid(req: Request, res: Response, next: NextFunction) {
+        transformRequest(req, validateObject(req, searchOGSchema, { allowUnknown: true }));
+        next();
+    }
+
+    static isGetOGByIdValid(req: Request, res: Response, next: NextFunction) {
+        transformRequest(req, validateObject(req, GetOGByIdSchema, { allowUnknown: true }));
+        next();
+    }
+
+    static isGetOGByHierarchyNameValid(req: Request, res: Response, next: NextFunction) {
+        transformRequest(req, validateObject(req, GetOGByHierarchyNameSchema, { allowUnknown: true }));
+        next();
+    }
+
+    static isGetOGChildrenValid(req: Request, res: Response, next: NextFunction) {
+        transformRequest(req, validateObject(req, GetOGChildrenSchema, { allowUnknown: true }));
+        next();
+    }
+
+    static isGetOGTreeValid(req: Request, res: Response, next: NextFunction) {
+        transformRequest(req, validateObject(req, GetOGTreeSchema, { allowUnknown: true }));
+        next();
+    }
+
+    // Role
+    static isGetAllRolesValid(req: Request, res: Response, next: NextFunction) {
+        transformRequest(req, validateObject(req, getAllRolesSchema, { allowUnknown: true }));
+        next();
+    }
+
+    static isGetRoleByIdValid(req: Request, res: Response, next: NextFunction) {
+        transformRequest(req, validateObject(req, GetRoleByIdSchema, { allowUnknown: true }));
+        next();
+    }
+
+    static isGetRolesUnderOGdValid(req: Request, res: Response, next: NextFunction) {
+        transformRequest(req, validateObject(req, GetRolesUnderOGSchema, { allowUnknown: true }));
+        next();
+    }
+
+    static isRoleAlreadyTakenValid(req: Request, res: Response, next: NextFunction) {
+        transformRequest(req, validateObject(req, IsRoleAlreadyTakenSchema, { allowUnknown: true }));
+        next();
+    }
+
+       static isJobTitleAlreadyTakenValid(req: Request, res: Response, next: NextFunction) {
+        transformRequest(req, validateObject(req, IsJobTitleAlreadyTakenSchema, { allowUnknown: true }));
+        next();
+    }
 }

@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { transformRequest, validateObject } from '../utils/validations/validations';
-import { addApproverSchema, deleteApproverSchema, getAllApproversSchema, getSearchByDisplayName, getSearchByDomainUser, getUserTypeSchema, updateApproverDecisionSchema } from './approver.schema';
+import { addApproverSchema, deleteApproverSchema, getAllApproversSchema, getSearchByDisplayName, getSearchByDomainUser, updateApproverDecisionSchema } from './approver.schema';
 
 export class ApproverValidator {
   // GET
@@ -16,11 +16,6 @@ export class ApproverValidator {
 
   static isGetSearchByDomainUserValid(req: Request, res: Response, next: NextFunction) {
     transformRequest(req, validateObject(req, getSearchByDomainUser, { allowUnknown: true }));
-    next();
-  }
-
-  static isGetUserTypeValid(req: Request, res: Response, next: NextFunction) {
-    transformRequest(req, validateObject(req, getUserTypeSchema, { allowUnknown: true }));
     next();
   }
 

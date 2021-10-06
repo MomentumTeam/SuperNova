@@ -41,8 +41,10 @@ export class Server {
       const approverServiceDescriptor: any = protoDescriptor.ApproverService;
       logger.info(`Proto file ${PROTO_PATH} was loaded successfully`);
       return approverServiceDescriptor;
-    } catch (error) {
-      logger.error(`Error while loading the proto file`, { error: error });
+    } catch (error: any) {
+      logger.error(`Error while loading the proto file`, {
+        error: { message: error.message },
+      });
       throw error;
     }
   }
@@ -66,8 +68,10 @@ export class Server {
         }
       );
       logger.info(`Grpc services were successfully added to the server`);
-    } catch (error) {
-      logger.error(`Error while initializing the server`, { error: error });
+    } catch (error: any) {
+      logger.error(`Error while initializing the server`, {
+        error: { message: error.message },
+      });
       throw error;
     }
   }

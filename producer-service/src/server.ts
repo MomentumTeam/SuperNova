@@ -48,8 +48,10 @@ export class Server {
         ProduceToADQueue: produceToADQueue,
       });
       logger.info(`Grpc services were successfully added to the server`);
-    } catch (error) {
-      logger.error(`Error while initializing the server`, { error: error });
+    } catch (error: any) {
+      logger.error(`Error while initializing the server`, {
+        error: { message: error.message },
+      });
       throw error;
     }
   }

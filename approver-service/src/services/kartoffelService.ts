@@ -30,7 +30,8 @@ const protoDescriptor: any =
 
 const kartoffelClient: any = new protoDescriptor.Kartoffel(
   config.kartoffelServiceUrl,
-  grpc.credentials.createInsecure()
+  grpc.credentials.createInsecure(),
+  { 'grpc.keepalive_timeout_ms': 5000 }
 );
 
 export default class KartoffelService {
@@ -40,19 +41,47 @@ export default class KartoffelService {
     return new Promise((resolve, reject) => {
       kartoffelClient.SearchEntitiesByFullName(
         searchEntitiesByFullName,
-        (err: any, entityArray: EntityArray) => {
-          if (err) {
+        (error: any, entityArray: EntityArray) => {
+          if (error) {
             logger.error('searchEntitiesByFullName in KartoffelService ERROR', {
               searchEntitiesByFullName,
-              err,
+              error: { message: error.message },
             });
-            throw reject(err);
+            reject(error);
           } else {
             logger.info('searchEntitiesByFullName in KartoffelService', {
               searchEntitiesByFullName,
               entityArray,
             });
-            return resolve(entityArray);
+            resolve(entityArray);
+          }
+        }
+      );
+    });
+  }
+
+  static async searchCommandersByFullName(
+    searchCommandersByFullName: SearchEntitiesByFullNameRequest
+  ): Promise<EntityArray> {
+    return new Promise((resolve, reject) => {
+      kartoffelClient.SearchCommandersByFullName(
+        searchCommandersByFullName,
+        (error: any, entityArray: EntityArray) => {
+          if (error) {
+            logger.error(
+              'searchCommandersByFullName in KartoffelService ERROR',
+              {
+                searchCommandersByFullName,
+                error: { message: error.message },
+              }
+            );
+            reject(error);
+          } else {
+            logger.info('searchCommandersByFullName in KartoffelService', {
+              searchCommandersByFullName,
+              entityArray,
+            });
+            resolve(entityArray);
           }
         }
       );
@@ -65,13 +94,13 @@ export default class KartoffelService {
     return new Promise((resolve, reject) => {
       kartoffelClient.GetEntityByRoleId(
         getEntityByRoleId,
-        (err: any, entity: Entity) => {
-          if (err) {
+        (error: any, entity: Entity) => {
+          if (error) {
             logger.error('getEntityByRoleId in KartoffelService ERROR', {
               getEntityByRoleId,
-              err,
+              error: { message: error.message },
             });
-            reject(err);
+            reject(error);
           } else {
             logger.info('getEntityByRoleId in KartoffelService', {
               getEntityByRoleId,
@@ -90,13 +119,13 @@ export default class KartoffelService {
     return new Promise((resolve, reject) => {
       kartoffelClient.GetEntityById(
         getEntityById,
-        (err: any, entity: Entity) => {
-          if (err) {
+        (error: any, entity: Entity) => {
+          if (error) {
             logger.error('getEntityById in KartoffelService ERROR', {
               getEntityById,
-              err,
+              error: { message: error.message },
             });
-            reject(err);
+            reject(error);
           } else {
             logger.info('getEntityById in KartoffelService', {
               getEntityById,

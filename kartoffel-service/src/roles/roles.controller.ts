@@ -1,5 +1,7 @@
 import * as grpc from 'grpc';
 import {
+  IsJobTitleAlreadyTakenRes,
+  IsRoleAlreadyTakenRes,
   Role,
   RoleArray,
   SuccessMessage,
@@ -29,12 +31,75 @@ export async function getAllRoles(call: any, callback: any): Promise<void> {
   } catch (error: any) {
     logger.error(`getAllRoles ERROR`, {
       callRequest: call.request,
-      error: { error: { message: error.message } },
+      error: { message: error.message },
     });
     callback(
       {
         code: 400,
-        error: { message: error.message },
+        error: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function isJobTitleAlreadyTaken(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    logger.info(`Call to isJobTitleAlreadyTaken`, {
+      callRequest: call.request,
+    });
+    const res: IsJobTitleAlreadyTakenRes =
+      await rolesManager.isJobTitleAlreadyTaken(call.request);
+    logger.info(`isJobTitleAlreadyTaken OK`, {
+      callRequest: call.request,
+      res: res,
+    });
+    callback(null, res);
+  } catch (error: any) {
+    logger.error(`isJobTitleAlreadyTaken ERROR`, {
+      callRequest: call.request,
+      error: { message: error.message },
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function isRoleAlreadyTaken(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    logger.info(`Call to isRoleAlreadyTaken`, {
+      callRequest: call.request,
+    });
+    const res: IsRoleAlreadyTakenRes = await rolesManager.isRoleAlreadyTaken(
+      call.request
+    );
+    logger.info(`isRoleAlreadyTaken OK`, {
+      callRequest: call.request,
+      res: res,
+    });
+    callback(null, res);
+  } catch (error: any) {
+    logger.error(`isRoleAlreadyTaken ERROR`, {
+      callRequest: call.request,
+      error: { message: error.message },
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
         status: grpc.status.CANCELLED,
       },
       null

@@ -1,50 +1,42 @@
 import { Router } from 'express';
+import { PermissionHandler } from '../utils/auth/permissions';
 import RequestsController from './requests.controller';
+import {RequestValidator} from './requests.validator';
 
 const RequestsRouter: Router = Router();
 
+// GET
+RequestsRouter.get('/:id',RequestValidator.isGetRequestByIdValid, RequestsController.getRequestById); 
+RequestsRouter.get('/person/:id',RequestValidator.isGetRequestsByPersonValid, RequestsController.getRequestsByPerson);
+RequestsRouter.get('/status/:approvementStatus', PermissionHandler.securityUser, RequestValidator.isGetAllRequestsValid,RequestsController.getAllRequests);
+RequestsRouter.get('/serialNumber/:serialNumber',RequestValidator.isGetRequestBySerialNumberValid, RequestsController.getRequestBySerialNumber);
+RequestsRouter.get('/displayName/:displayName',RequestValidator.isSearchRequestsByDisplayNameValid, RequestsController.searchRequestsByDisplayName);
 
-RequestsRouter.get('/', RequestsController.getAllRequests);
-RequestsRouter.get('/:id', RequestsController.getRequestById);
-RequestsRouter.get('/myRequests', RequestsController.getMyRequests);
-RequestsRouter.get('/requestsByCommander', RequestsController.getRequestsByCommander);
-RequestsRouter.get('/submittedBy/:id', RequestsController.getRequestsSubmittedBy);
-RequestsRouter.get('/serialNumber/:serialNumber', RequestsController.getRequestBySerialNumber);
-RequestsRouter.get('/submitterIdentifier/:identifier', RequestsController.getRequestsBySubmitterIdentifier);
-RequestsRouter.get('/commanderIdentifier/:identifier', RequestsController.getRequestsByCommanderIdentifier);
-RequestsRouter.get('/secuirtyIdentifier/:identifier', RequestsController.getRequestsBySecurityIdentifier);
-RequestsRouter.get('/approverIdentifier/:identifier', RequestsController.getRequestsByApproverIdentifier);
-RequestsRouter.get('/submitterDisplayName/:displayName', RequestsController.searchRequestsBySubmitterDisplayName);
-RequestsRouter.get('/commanderDisaplyName/:displayName', RequestsController.searchRequestsByCommanderDisplayName);
-RequestsRouter.get('/secuirtyDisplayName/:displayName', RequestsController.searchRequestsBySecurityDisplayName);
-RequestsRouter.get('/approverDisplayName/:displayName', RequestsController.searchRequestsByApproverDisplayName);
+// PUT
+RequestsRouter.put('/:id',RequestValidator.isUpdateRequestValid, RequestsController.updateRequest);
+RequestsRouter.put('/adStatus',RequestValidator.isUpdateADStatusValid, RequestsController.updateADStatus);
+RequestsRouter.put('/approver/commanders/:id',RequestValidator.isUpdateApproversValid, RequestsController.updateCommanders);
+RequestsRouter.put('/approver/security/:id',RequestValidator.isUpdateApproversValid, RequestsController.updateSecurityApprovers);
+RequestsRouter.put('/approver/decision/:id',RequestValidator.isUpdateApproverDecision, RequestsController.updateApproverDecision);
 
+RequestsRouter.put('/request/entity',RequestValidator.isEditEntityValid, RequestsController.editEntityRequest);
+RequestsRouter.put('/request/og/rename',RequestValidator.isRenameOGValid, RequestsController.renameOGRequest);
+RequestsRouter.put('/request/role/rename',RequestValidator.isRenameRoleValid, RequestsController.renameRoleRequest);
+RequestsRouter.put('/request/role/og',RequestValidator.isChangeRoleHierarchyRequestValid, RequestsController.changeRoleHierarchyRequest);
+RequestsRouter.put('/request/entity/role',RequestValidator.isAssignRoleToEntityValid, RequestsController.assignRoleToEntityRequest);
 
+// POST
+RequestsRouter.post('/request/role',RequestValidator.isCreateRoleValid, RequestsController.createRoleRequest);
+RequestsRouter.post('/request/og',RequestValidator.isCreateOGValid, RequestsController.createOGRequest);
+RequestsRouter.post('/request/approver',RequestValidator.isCreateNewApproverValid, RequestsController.createNewApproverRequest);
+RequestsRouter.post('/request/entity',RequestValidator.isCreateEntityValid, RequestsController.createEntityRequest);
 
-RequestsRouter.put('/adStatus', RequestsController.updateADStatus);
-RequestsRouter.put('/:id', RequestsController.updateRequest);
-RequestsRouter.put('/commanders/:id', RequestsController.updateCommanders);
-RequestsRouter.put('/securityApprovers/:id', RequestsController.updateSecurityApprovers);
-//TODO(barak)- in requestService make one generic function for updateApproverDecision.
-RequestsRouter.put('/approverDecision/:id', RequestsController.updateApproverDecision);
-
-
-
-RequestsRouter.post('/roleRequest', RequestsController.createRoleRequest);
-RequestsRouter.post('/assignRoleToEntityRequest', RequestsController.assignRoleToEntityRequest);
-RequestsRouter.post('/ogRequest', RequestsController.createOGRequest);
-RequestsRouter.post('/newApproverRequest', RequestsController.createNewApproverRequest);
-RequestsRouter.post('/entityRequest', RequestsController.createEntityRequest);
-RequestsRouter.post('/renameOGRequest', RequestsController.renameOGRequest);
-RequestsRouter.post('/renameRoleRequest', RequestsController.renameRoleRequest);
-RequestsRouter.post('/editEntityRequest', RequestsController.editEntityRequest);
-RequestsRouter.post('/deleteRoleRequest', RequestsController.deleteRoleRequest);
-RequestsRouter.post('/deleteOGRequest', RequestsController.deleteOGRequest);
-RequestsRouter.post('/disconectRoleFromEntityRequest', RequestsController.disconectRoleFromEntityRequest);
-
-
-
-RequestsRouter.delete('/deleteRequest', RequestsController.deleteRequest);
+// DELETE
+RequestsRouter.delete('/request/entity/role',RequestValidator.isDisconectRoleFromEntityValid, RequestsController.disconectRoleFromEntityRequest);
+RequestsRouter.delete('/request/entity',RequestValidator.isDeleteEntityValid, RequestsController.deleteEntityRequest);
+RequestsRouter.delete('/request/role',RequestValidator.isDeleteRoleValid, RequestsController.deleteRoleRequest);
+RequestsRouter.delete('/request/og',RequestValidator.isDeleteOGValid, RequestsController.deleteOGRequest);
+RequestsRouter.delete('/:id',RequestValidator.isDeleteRequestValid, RequestsController.deleteRequest);
 
 
 export default RequestsRouter;

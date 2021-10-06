@@ -2,6 +2,7 @@ import { KartoffelFaker } from '../mock/kartoffel.faker';
 import { KartoffelUtils } from '../utils/kartoffel.utils';
 import * as C from '../config';
 import {
+  Entity,
   OGArray,
   SearchOGRequest,
   OrganizationGroup,
@@ -31,8 +32,25 @@ export class GroupsRepository {
       if (C.useFaker) {
         return this.kartoffelFaker.randomOGTree();
       } else {
-        //TODO
-        return this.kartoffelFaker.randomOGTree();
+        const organizationGroup: OrganizationGroup = await this.getOGById({ id: getOGTreeRequest.directGroupId });
+        let treeDepth =
+          organizationGroup.ancestors.length < C.kartoffelTreeDepth
+            ? organizationGroup.ancestors.length
+            : C.kartoffelTreeDepth;
+
+        const rootTree: OrganizationGroup =
+          treeDepth === 0
+            ? organizationGroup
+            : await this.getOGById({ id: organizationGroup.ancestors[treeDepth - 1] });
+
+        return await this.getTree(
+          treeDepth,
+          [
+            organizationGroup.id,
+            ...organizationGroup.ancestors.slice(0, treeDepth - 1),
+          ],
+          rootTree
+        );
       }
     } catch (error) {
       throw error;
@@ -42,7 +60,7 @@ export class GroupsRepository {
   async getAllOGs(getAllOGsRequest: GetAllOGsRequest): Promise<OGArray> {
     try {
       if (C.useFaker) {
-        const ogArray: OGArray = this.kartoffelFaker.randomOGArray();
+        const ogArray: OGArray = this.kartoffelFaker.randomOGArray(getAllOGsRequest.pageSize);
         return ogArray;
       } else {
         const res = await this.kartoffelUtils.kartoffelGet(
@@ -149,7 +167,7 @@ export class GroupsRepository {
   ): Promise<OGArray> {
     try {
       if (C.useFaker) {
-        const ogChildern: OGArray = this.kartoffelFaker.randomOGArray();
+        const ogChildern: OGArray = this.kartoffelFaker.randomOGArray(getChildrenOfOGRequest.pageSize);
         return ogChildern;
       } else {
         const res = await this.kartoffelUtils.kartoffelGet(
@@ -163,6 +181,23 @@ export class GroupsRepository {
     }
   }
 
+  async getChildrenOfRootOG(): Promise<OGArray> {
+    try {
+      if (C.useFaker) {
+        const ogChildern: OGArray = this.kartoffelFaker.randomOGArray();
+        return ogChildern;
+      } else {
+        const res = await this.kartoffelUtils.kartoffelGet(
+          `${C.kartoffelUrl}/api/groups/${C.kartoffelRootID}/children`,
+          { direct: true }
+        );
+        return res as OGArray;
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+  
   async updateOGParent(
     updateOGParentRequest: UpdateOGParentRequest
   ): Promise<SuccessMessage> {
@@ -196,6 +231,39 @@ export class GroupsRepository {
       }
     } catch (error) {
       throw error;
+    }
+  }
+
+  async getTree(
+    currentDepth: number,
+    groupsToQuery: Array<String>,
+    currentChild: OrganizationGroup
+  ): Promise<OGTree> {
+    if (!groupsToQuery.includes(currentChild.id)) {
+      return { id: currentChild.id, label: currentChild.name, children: [] };
+    } else {
+      if (currentDepth <= 0) {
+        const members: Entity[] = await this.kartoffelUtils.kartoffelGet( // TODO: use existed api
+          `${C.kartoffelUrl}/api/entities/group/${currentChild.id}?direct=true&expanded=false&page=1`
+        );
+        const childrenInTree: OGTree[] = members.map((member) => {
+          return { id: member.id, label: member.jobTitle, children: [] };
+        });
+        return { id: currentChild.id, label: currentChild.name, children: childrenInTree };
+      } else {
+        const OGchildren: OrganizationGroup[] = (await this.getChildrenOfOG({ direct: true, id: currentChild.id, page: 1, pageSize: 100000 })).groups;
+
+        const childrenInTree: OGTree[] = await Promise.all(
+          OGchildren.map(async (ogChild) => {
+            return await this.getTree(
+              currentDepth--,
+              groupsToQuery,
+              ogChild
+            );
+          })
+        );
+        return { id: currentChild.id, label: currentChild.name, children: childrenInTree };
+      }
     }
   }
 }

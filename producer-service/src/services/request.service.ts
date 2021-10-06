@@ -7,6 +7,9 @@ import {
   Request,
   RequestReq,
   RequestType,
+  requestTypeFromJSON,
+  UpdateADStatusReq,
+  UpdateKartoffelStatusReq,
 } from '../interfaces/protoc/proto/requestService';
 import { findPath } from '../utils/path';
 import { logger } from '../logger';
@@ -22,17 +25,57 @@ export class RequestService {
   async getRequestById(req: GetRequestByIdReq): Promise<Request> {
     logger.info('getRequestById in RequestService', { req });
     return new Promise((resolve, reject) => {
-      this.client.GetRequestById(req, (err: any, res: any) => {
-        if (err) {
+      this.client.GetRequestById(req, (error: any, res: any) => {
+        if (error) {
           logger.error('getRequestById in RequestService ERROR', {
-            error: err.message,
+            error: { message: error.message },
           });
-          reject(err);
+          reject(error);
         } else {
           logger.info('getRequestById in RequestService OK', {
             'req.id': req.id,
           });
-          res.type = RequestType[res.type];
+          res.type = requestTypeFromJSON(res.type);
+          resolve(res as Request);
+        }
+      });
+    });
+  }
+
+  async updateKartoffelStatus(req: UpdateKartoffelStatusReq): Promise<Request> {
+    logger.info('updateKartoffelStatus in RequestService', { req });
+    return new Promise((resolve, reject) => {
+      this.client.UpdateKartoffelStatus(req, (error: any, res: any) => {
+        if (error) {
+          logger.error('updateKartoffelStatus in RequestService ERROR', {
+            error: { message: error.message },
+          });
+          reject(error);
+        } else {
+          logger.info('updateKartoffelStatus in RequestService OK', {
+            'req.requestId': req.requestId,
+          });
+          res.type = requestTypeFromJSON(res.type);
+          resolve(res as Request);
+        }
+      });
+    });
+  }
+
+  async updateADStatus(req: UpdateADStatusReq): Promise<Request> {
+    logger.info('updateADStatus in RequestService', { req });
+    return new Promise((resolve, reject) => {
+      this.client.UpdateADStatus(req, (error: any, res: any) => {
+        if (error) {
+          logger.error('updateADStatus in RequestService ERROR', {
+            error: { message: error.message },
+          });
+          reject(error);
+        } else {
+          logger.info('updateADStatus in RequestService OK', {
+            'req.requestId': req.requestId,
+          });
+          res.type = requestTypeFromJSON(res.type);
           resolve(res as Request);
         }
       });
@@ -54,12 +97,15 @@ export class RequestService {
 
       const client: any = new protoDescriptor.RequestService(
         C.requestServiceUrl,
-        grpc.credentials.createInsecure()
+        grpc.credentials.createInsecure(),
+        { 'grpc.keepalive_timeout_ms': 5000 }
       );
       logger.info('Client initialized successfully in RequestService');
       return client;
-    } catch (error) {
-      logger.info('Error while initializing RequestService client', { error });
+    } catch (error: any) {
+      logger.error('Error while initializing RequestService client', {
+        error: { message: error.message },
+      });
       throw error;
     }
   }

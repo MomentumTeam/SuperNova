@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { connection } from '../mongoose';
 import {
   ApproverType,
   approverTypeToJSON,
@@ -17,7 +16,7 @@ import {
 const { Schema } = mongoose;
 import autoIncrement from 'mongoose-auto-increment';
 
-autoIncrement.initialize(connection);
+autoIncrement.initialize(mongoose.connection);
 
 const RequestSchema = new Schema(
   {
@@ -282,6 +281,7 @@ const RequestSchema = new Schema(
       entityType: { type: String, default: null },
       unit: { type: String, default: null },
       needDisconnect: { type: Boolean, default: false },
+      roleEntityType: { type: String, default: null },
     },
     adParams: {
       ouDisplayName: { type: String, default: null },
@@ -304,13 +304,16 @@ const RequestSchema = new Schema(
     additionalParams: {
       entityId: { type: String, default: null },
       displayName: { type: String, default: null },
-      domainUsers: { type: String, default: null },
+      domainUsers: { type: [String], default: [] },
       akaUnit: { type: String, default: null },
       type: {
         type: String,
         enum: ApproverType,
         default: approverTypeToJSON(ApproverType.COMMANDER),
       },
+      personalNumber: { type: String, default: null },
+      identityCard: { type: String, default: null },
+      directGroup: { type: String, default: null },
     },
     isPartOfBulk: { type: Boolean, default: false },
     bulkRequestId: { type: mongoose.Schema.Types.ObjectId, default: null },
@@ -362,7 +365,7 @@ RequestSchema.index({
   'superSecurityApprovers.displayName': 'text',
 });
 
-export const RequestModel = connection.model(
+export const RequestModel = mongoose.model(
   'Request',
   RequestSchema,
   'requests'

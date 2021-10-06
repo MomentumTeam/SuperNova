@@ -9,7 +9,9 @@ cp -r ./proto ./notification-service/
 cp -r ./proto ./producer-service/
 cp -r ./proto ./request-service/
 cp -r ./proto ./tea-service/
+cp -r ./proto ./bulk-service/
 cp -r ./proto ./spike-service/
 cp -r ./proto ./kartoffel-consumer/
+cp -r ./proto ./authentication-service/
 
 cp -r ./proto ./proto-builder/

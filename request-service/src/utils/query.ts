@@ -102,8 +102,19 @@ export function getApprovementQuery(approvementStatus: ApprovementStatus) {
       return {};
     case ApprovementStatus.SECURITY_APPROVE:
       return {
-        needSecurityDecision: true,
-        'commanderDecision.decision': decisionToJSON(Decision.APPROVED),
+        $and: [
+          { needSecurityDecision: true },
+          {
+            $or: [
+              {
+                'commanderDecision.decision': decisionToJSON(Decision.APPROVED),
+              },
+              {
+                'securityDecision.decision': decisionToJSON(Decision.APPROVED),
+              },
+            ],
+          },
+        ],
       };
     case ApprovementStatus.SUPER_SECURITY_APPROVE:
       return {
@@ -117,6 +128,10 @@ export function getApprovementQuery(approvementStatus: ApprovementStatus) {
             needSuperSecurityDecision: true,
             needSecurityDecision: false,
             'commanderDecision.decision': decisionToJSON(Decision.APPROVED),
+          },
+          {
+            needSuperSecurityDecision: true,
+            'superSecurityDecision.decision': decisionToJSON(Decision.APPROVED),
           },
         ],
       };
