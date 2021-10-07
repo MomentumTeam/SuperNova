@@ -28,7 +28,7 @@ KartoffelRouter.get('/groups/:id/tree', KartoffelValidator.isGetOGTreeValid, Kar
 KartoffelRouter.get('/roles', KartoffelValidator.isGetAllRolesValid, KartoffelController.getAllRoles);
 KartoffelRouter.get('/roles/:roleId', KartoffelValidator.isGetRoleByIdValid, KartoffelController.getRoleById);
 KartoffelRouter.get('/roles/group/:id', KartoffelValidator.isGetRolesUnderOGdValid, KartoffelController.getRolesUnderOG);
-KartoffelRouter.get('/roles/:roleId/taken',KartoffelValidator.isRoleAlreadyTakenValid,KartoffelController.isRoleAlreadyTaken);
 KartoffelRouter.get('/roles/job/taken',KartoffelValidator.isJobTitleAlreadyTakenValid,KartoffelController.isJobTitleAlreadyTaken);
+KartoffelRouter.get('/roles/:roleId/taken',KartoffelValidator.isRoleAlreadyTakenValid,KartoffelController.isRoleAlreadyTaken);
 
 export default KartoffelRouter;
