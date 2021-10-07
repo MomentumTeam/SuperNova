@@ -5,7 +5,7 @@ import { config } from "../config";
 const ShragaStrategy = require("passport-shraga").Strategy;
 
 function serialize(user: { id: string }, done: (err?: Error, id?: string) => void): void {
-  done(undefined, jwt.sign({ ...user }, config.authentication.secret));
+  done(undefined, jwt.sign({ ...user }, config.authentication.token));
 }
 
 function deserialize(token: string, done: (err?: Error, id?: any) => void): void {

@@ -6,7 +6,7 @@
     "scripts": {
         "build": "npm run build:tsc",
         "build:tsc": "tsc",
-        "dev": "set NODE_ENV='development' && ts-node ./src/index.ts",
+        "dev": "set NODE_ENV=development && ts-node ./src/index.ts",
         "start": "npm run build && node ./dist/index.js",
         "test:lint": "npm run tslint && npm test",
         "test": "cross-env NODE_ENV=test mocha --recursive -r ts-node/register src/**/*.spec.ts --exit",

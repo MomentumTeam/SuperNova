@@ -1,14 +1,18 @@
 import * as express from 'express';
 import path from 'path';
-import { ShragaAuthenticationRouter } from './auth/auth.router';
+import { AuthRouter } from './auth/auth.router';
 
 const Router = express.Router();
 
-Router.use('/auth', ShragaAuthenticationRouter);
+Router.use('/auth', AuthRouter);
 Router.use('/401', express.static(path.resolve('./401')));
 
-Router.get('/isAlive', (_req: express.Request, res: express.Response) => {
+Router.use('/isAlive', (req, res) => {
   res.status(200).send('OK');
+});
+
+Router.use((req, res) => {
+  res.status(404).send('invalid route');
 });
 
 export { Router };

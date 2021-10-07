@@ -16,7 +16,7 @@ export interface IUser {
     id: string;
     displayName: string;
     identityCard: string;
-    digitalIdentities: IDigitalIdentity[];
+    // digitalIdentities: IDigitalIdentity[];
     hierarchy: string;
     directGroup: string | Types.ObjectId;
     entityType: string;
@@ -38,7 +38,6 @@ export interface IUser {
     birthDate?: Date;
     updatedAt?: Date;
     createdAt?: Date;
-    picture?: string;
     goalUserID?: string;
     types?: string[];
     genesisId?: string;

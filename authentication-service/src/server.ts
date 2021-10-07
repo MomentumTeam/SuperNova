@@ -1,6 +1,5 @@
 import express from 'express';
 import http from 'http';
-import bodyParser from 'body-parser';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import session from 'express-session';
@@ -13,7 +12,7 @@ import {
     serverErrorHandler,
     unknownErrorHandler,
 } from './utils/errors/errorHandler';
-import { PassportHandler } from './passport/passpot.handler';
+import { PassportHandler } from './passport/passport.handler';
 import { Router } from './router';
 
 export class Server {
@@ -52,16 +51,16 @@ export class Server {
   private configureMiddlewares() {
     this.app.use(helmet());
     this.app.use(this.setHeaders);
-    this.app.use(bodyParser.json());
-    this.app.use(bodyParser.urlencoded({ extended: true }));
-    this.app.use(cookieParser());
+    this.app.use(express.json());
+    this.app.use(express.urlencoded({ extended: true }));
     if (process.env.NODE_ENV === "development") {
       this.app.use(morgan("dev"));
     }
+    this.app.use(cookieParser());
 
     this.app.use(
       session({
-        secret: config.authentication.secret,
+        secret: config.authentication.sessionSecret,
         resave: false,
         saveUninitialized: true,
       })
@@ -74,7 +73,7 @@ export class Server {
     this.app.use(unknownErrorHandler);
   }
 
-  private initializeShragaAuthenticator(): void {
+  private initializeShragaAuthenticator() {
     this.app.use(passport.initialize());
     this.app.use(passport.session());
     PassportHandler();

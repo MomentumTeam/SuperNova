@@ -3,15 +3,10 @@ import { Router } from 'express';
 import { AuthenticationHandler } from './auth.handler';
 import { wrapAsync } from '../utils/wrapper';
 
-const ShragaAuthenticationRouter = Router();
+const AuthRouter = Router();
 
-ShragaAuthenticationRouter.get('/login', passport.authenticate('shraga'));
-ShragaAuthenticationRouter.post(
-  '/callback',
-  passport.authenticate('shraga'),
-  wrapAsync(AuthenticationHandler.handleUser)
-);
-ShragaAuthenticationRouter.get('/unauthorized', AuthenticationHandler.sendUnauthorized);
-ShragaAuthenticationRouter.get('/support', AuthenticationHandler.getSupportURL);
+AuthRouter.get('/login', passport.authenticate('shraga'));
+AuthRouter.post('/callback', passport.authenticate('shraga'), wrapAsync(AuthenticationHandler.createTokenAndRedirect));
+AuthRouter.get('/unauthorized', AuthenticationHandler.sendUnauthorized);
 
-export { ShragaAuthenticationRouter };
+export { AuthRouter };
