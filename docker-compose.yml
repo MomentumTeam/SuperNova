@@ -81,7 +81,7 @@ services:
       - request-service
       - spike-service
     environment:
-      - PS_QUEUE_API_URL=https://www.google.com
+      - PS_QUEUE_API_URL=http://20.199.120.227:3000
       - PS_RS_URL=request-service:8080
       - PS_DEV_MODE=true
       - PS_SS_URL=spike-service:8080
