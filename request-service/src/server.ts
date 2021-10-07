@@ -26,6 +26,7 @@ import {
   updateSuperSecurityApprovers,
   syncBulkRequest,
   pushError,
+  getRequestsUnderBulk,
 } from './requests/request.controller';
 import {
   PersonTypeInRequest,
@@ -117,6 +118,7 @@ export class Server {
         IsRequestApproved: isRequestApproved,
         SyncBulkRequest: syncBulkRequest,
         PushError: pushError,
+        GetRequestsUnderBulk: getRequestsUnderBulk,
       });
       logger.info(`Grpc services were successfully added to the server`);
     } catch (error: any) {

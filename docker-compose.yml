@@ -123,6 +123,7 @@ services:
       - '8086:8080'
     environment:
       - TS_KS_URL=kartoffel-service:8080
+      - TS_MONGO_URL=mongodb://mongo:27017/supernova
 
   bulk-service:
     image: bulk-service

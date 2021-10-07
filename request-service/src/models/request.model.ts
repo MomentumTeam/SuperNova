@@ -282,6 +282,8 @@ const RequestSchema = new Schema(
       unit: { type: String, default: null },
       needDisconnect: { type: Boolean, default: false },
       roleEntityType: { type: String, default: null },
+      currentJobTitle: { type: String, default: null },
+      newJobTitle: { type: String, default: null },
     },
     adParams: {
       ouDisplayName: { type: String, default: null },

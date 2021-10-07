@@ -27,6 +27,7 @@ import {
   IsRequestApprovedReq,
   PushErrorReq,
   SyncBulkRequestReq,
+  GetRequestsUnderBulkReq,
 } from '../interfaces/protoc/proto/requestService';
 import { RequestRepository } from './request.repository';
 export class RequestManager {
@@ -68,6 +69,18 @@ export class RequestManager {
       return (await this.requestRepository.incrementKartoffelRetries(
         incrementRetriesReq
       )) as Request;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getRequestsUnderBulk(
+    getRequestsUnderBulkReq: GetRequestsUnderBulkReq
+  ): Promise<RequestArray> {
+    try {
+      return (await this.requestRepository.getRequestsUnderBulk(
+        getRequestsUnderBulkReq
+      )) as RequestArray;
     } catch (error) {
       throw error;
     }
