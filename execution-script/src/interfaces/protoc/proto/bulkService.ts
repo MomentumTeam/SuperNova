@@ -2,6 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import {
+  Request,
   CreateRoleBulkRes,
   ChangeRoleHierarchyBulkRes,
   CreateRoleBulkReq,
@@ -48,6 +49,36 @@ export interface GetBulkRequestExampleReq {
 
 export interface GetBulkRequestExampleRes {
   bulkFileName: string;
+}
+
+export interface GetBulkRequestByIdReq {
+  id: string;
+}
+
+export interface DetailedCreateRoleBulkRequest {
+  request: Request | undefined;
+  rows: CreateRoleRow[];
+}
+
+export interface DetailedChangeRoleHierarchyBulkRequest {
+  request: Request | undefined;
+  rows: ChangeRoleHierarchyRow[];
+}
+
+export interface CreateRoleRow {
+  id: string;
+  jobTitle: string;
+  clearance: string;
+  roleEntityType: string;
+  rowNumber: string;
+}
+
+export interface ChangeRoleHierarchyRow {
+  id: string;
+  roleId: string;
+  currentJobTitle: string;
+  newJobTitle: string;
+  rowNumber: string;
 }
 
 const baseGetBulkRequestExampleReq: object = { bulkType: 0 };
@@ -190,6 +221,545 @@ export const GetBulkRequestExampleRes = {
   },
 };
 
+const baseGetBulkRequestByIdReq: object = { id: "" };
+
+export const GetBulkRequestByIdReq = {
+  encode(
+    message: GetBulkRequestByIdReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GetBulkRequestByIdReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseGetBulkRequestByIdReq } as GetBulkRequestByIdReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetBulkRequestByIdReq {
+    const message = { ...baseGetBulkRequestByIdReq } as GetBulkRequestByIdReq;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+
+  toJSON(message: GetBulkRequestByIdReq): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<GetBulkRequestByIdReq>
+  ): GetBulkRequestByIdReq {
+    const message = { ...baseGetBulkRequestByIdReq } as GetBulkRequestByIdReq;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+};
+
+const baseDetailedCreateRoleBulkRequest: object = {};
+
+export const DetailedCreateRoleBulkRequest = {
+  encode(
+    message: DetailedCreateRoleBulkRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.request !== undefined) {
+      Request.encode(message.request, writer.uint32(10).fork()).ldelim();
+    }
+    for (const v of message.rows) {
+      CreateRoleRow.encode(v!, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): DetailedCreateRoleBulkRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseDetailedCreateRoleBulkRequest,
+    } as DetailedCreateRoleBulkRequest;
+    message.rows = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.request = Request.decode(reader, reader.uint32());
+          break;
+        case 2:
+          message.rows.push(CreateRoleRow.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DetailedCreateRoleBulkRequest {
+    const message = {
+      ...baseDetailedCreateRoleBulkRequest,
+    } as DetailedCreateRoleBulkRequest;
+    message.rows = [];
+    if (object.request !== undefined && object.request !== null) {
+      message.request = Request.fromJSON(object.request);
+    } else {
+      message.request = undefined;
+    }
+    if (object.rows !== undefined && object.rows !== null) {
+      for (const e of object.rows) {
+        message.rows.push(CreateRoleRow.fromJSON(e));
+      }
+    }
+    return message;
+  },
+
+  toJSON(message: DetailedCreateRoleBulkRequest): unknown {
+    const obj: any = {};
+    message.request !== undefined &&
+      (obj.request = message.request
+        ? Request.toJSON(message.request)
+        : undefined);
+    if (message.rows) {
+      obj.rows = message.rows.map((e) =>
+        e ? CreateRoleRow.toJSON(e) : undefined
+      );
+    } else {
+      obj.rows = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<DetailedCreateRoleBulkRequest>
+  ): DetailedCreateRoleBulkRequest {
+    const message = {
+      ...baseDetailedCreateRoleBulkRequest,
+    } as DetailedCreateRoleBulkRequest;
+    message.rows = [];
+    if (object.request !== undefined && object.request !== null) {
+      message.request = Request.fromPartial(object.request);
+    } else {
+      message.request = undefined;
+    }
+    if (object.rows !== undefined && object.rows !== null) {
+      for (const e of object.rows) {
+        message.rows.push(CreateRoleRow.fromPartial(e));
+      }
+    }
+    return message;
+  },
+};
+
+const baseDetailedChangeRoleHierarchyBulkRequest: object = {};
+
+export const DetailedChangeRoleHierarchyBulkRequest = {
+  encode(
+    message: DetailedChangeRoleHierarchyBulkRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.request !== undefined) {
+      Request.encode(message.request, writer.uint32(10).fork()).ldelim();
+    }
+    for (const v of message.rows) {
+      ChangeRoleHierarchyRow.encode(v!, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): DetailedChangeRoleHierarchyBulkRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseDetailedChangeRoleHierarchyBulkRequest,
+    } as DetailedChangeRoleHierarchyBulkRequest;
+    message.rows = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.request = Request.decode(reader, reader.uint32());
+          break;
+        case 2:
+          message.rows.push(
+            ChangeRoleHierarchyRow.decode(reader, reader.uint32())
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DetailedChangeRoleHierarchyBulkRequest {
+    const message = {
+      ...baseDetailedChangeRoleHierarchyBulkRequest,
+    } as DetailedChangeRoleHierarchyBulkRequest;
+    message.rows = [];
+    if (object.request !== undefined && object.request !== null) {
+      message.request = Request.fromJSON(object.request);
+    } else {
+      message.request = undefined;
+    }
+    if (object.rows !== undefined && object.rows !== null) {
+      for (const e of object.rows) {
+        message.rows.push(ChangeRoleHierarchyRow.fromJSON(e));
+      }
+    }
+    return message;
+  },
+
+  toJSON(message: DetailedChangeRoleHierarchyBulkRequest): unknown {
+    const obj: any = {};
+    message.request !== undefined &&
+      (obj.request = message.request
+        ? Request.toJSON(message.request)
+        : undefined);
+    if (message.rows) {
+      obj.rows = message.rows.map((e) =>
+        e ? ChangeRoleHierarchyRow.toJSON(e) : undefined
+      );
+    } else {
+      obj.rows = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<DetailedChangeRoleHierarchyBulkRequest>
+  ): DetailedChangeRoleHierarchyBulkRequest {
+    const message = {
+      ...baseDetailedChangeRoleHierarchyBulkRequest,
+    } as DetailedChangeRoleHierarchyBulkRequest;
+    message.rows = [];
+    if (object.request !== undefined && object.request !== null) {
+      message.request = Request.fromPartial(object.request);
+    } else {
+      message.request = undefined;
+    }
+    if (object.rows !== undefined && object.rows !== null) {
+      for (const e of object.rows) {
+        message.rows.push(ChangeRoleHierarchyRow.fromPartial(e));
+      }
+    }
+    return message;
+  },
+};
+
+const baseCreateRoleRow: object = {
+  id: "",
+  jobTitle: "",
+  clearance: "",
+  roleEntityType: "",
+  rowNumber: "",
+};
+
+export const CreateRoleRow = {
+  encode(
+    message: CreateRoleRow,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.jobTitle !== "") {
+      writer.uint32(18).string(message.jobTitle);
+    }
+    if (message.clearance !== "") {
+      writer.uint32(26).string(message.clearance);
+    }
+    if (message.roleEntityType !== "") {
+      writer.uint32(34).string(message.roleEntityType);
+    }
+    if (message.rowNumber !== "") {
+      writer.uint32(42).string(message.rowNumber);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): CreateRoleRow {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseCreateRoleRow } as CreateRoleRow;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        case 2:
+          message.jobTitle = reader.string();
+          break;
+        case 3:
+          message.clearance = reader.string();
+          break;
+        case 4:
+          message.roleEntityType = reader.string();
+          break;
+        case 5:
+          message.rowNumber = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CreateRoleRow {
+    const message = { ...baseCreateRoleRow } as CreateRoleRow;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    if (object.jobTitle !== undefined && object.jobTitle !== null) {
+      message.jobTitle = String(object.jobTitle);
+    } else {
+      message.jobTitle = "";
+    }
+    if (object.clearance !== undefined && object.clearance !== null) {
+      message.clearance = String(object.clearance);
+    } else {
+      message.clearance = "";
+    }
+    if (object.roleEntityType !== undefined && object.roleEntityType !== null) {
+      message.roleEntityType = String(object.roleEntityType);
+    } else {
+      message.roleEntityType = "";
+    }
+    if (object.rowNumber !== undefined && object.rowNumber !== null) {
+      message.rowNumber = String(object.rowNumber);
+    } else {
+      message.rowNumber = "";
+    }
+    return message;
+  },
+
+  toJSON(message: CreateRoleRow): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    message.jobTitle !== undefined && (obj.jobTitle = message.jobTitle);
+    message.clearance !== undefined && (obj.clearance = message.clearance);
+    message.roleEntityType !== undefined &&
+      (obj.roleEntityType = message.roleEntityType);
+    message.rowNumber !== undefined && (obj.rowNumber = message.rowNumber);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<CreateRoleRow>): CreateRoleRow {
+    const message = { ...baseCreateRoleRow } as CreateRoleRow;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    if (object.jobTitle !== undefined && object.jobTitle !== null) {
+      message.jobTitle = object.jobTitle;
+    } else {
+      message.jobTitle = "";
+    }
+    if (object.clearance !== undefined && object.clearance !== null) {
+      message.clearance = object.clearance;
+    } else {
+      message.clearance = "";
+    }
+    if (object.roleEntityType !== undefined && object.roleEntityType !== null) {
+      message.roleEntityType = object.roleEntityType;
+    } else {
+      message.roleEntityType = "";
+    }
+    if (object.rowNumber !== undefined && object.rowNumber !== null) {
+      message.rowNumber = object.rowNumber;
+    } else {
+      message.rowNumber = "";
+    }
+    return message;
+  },
+};
+
+const baseChangeRoleHierarchyRow: object = {
+  id: "",
+  roleId: "",
+  currentJobTitle: "",
+  newJobTitle: "",
+  rowNumber: "",
+};
+
+export const ChangeRoleHierarchyRow = {
+  encode(
+    message: ChangeRoleHierarchyRow,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.roleId !== "") {
+      writer.uint32(18).string(message.roleId);
+    }
+    if (message.currentJobTitle !== "") {
+      writer.uint32(26).string(message.currentJobTitle);
+    }
+    if (message.newJobTitle !== "") {
+      writer.uint32(34).string(message.newJobTitle);
+    }
+    if (message.rowNumber !== "") {
+      writer.uint32(42).string(message.rowNumber);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): ChangeRoleHierarchyRow {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseChangeRoleHierarchyRow } as ChangeRoleHierarchyRow;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        case 2:
+          message.roleId = reader.string();
+          break;
+        case 3:
+          message.currentJobTitle = reader.string();
+          break;
+        case 4:
+          message.newJobTitle = reader.string();
+          break;
+        case 5:
+          message.rowNumber = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ChangeRoleHierarchyRow {
+    const message = { ...baseChangeRoleHierarchyRow } as ChangeRoleHierarchyRow;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = String(object.roleId);
+    } else {
+      message.roleId = "";
+    }
+    if (
+      object.currentJobTitle !== undefined &&
+      object.currentJobTitle !== null
+    ) {
+      message.currentJobTitle = String(object.currentJobTitle);
+    } else {
+      message.currentJobTitle = "";
+    }
+    if (object.newJobTitle !== undefined && object.newJobTitle !== null) {
+      message.newJobTitle = String(object.newJobTitle);
+    } else {
+      message.newJobTitle = "";
+    }
+    if (object.rowNumber !== undefined && object.rowNumber !== null) {
+      message.rowNumber = String(object.rowNumber);
+    } else {
+      message.rowNumber = "";
+    }
+    return message;
+  },
+
+  toJSON(message: ChangeRoleHierarchyRow): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    message.roleId !== undefined && (obj.roleId = message.roleId);
+    message.currentJobTitle !== undefined &&
+      (obj.currentJobTitle = message.currentJobTitle);
+    message.newJobTitle !== undefined &&
+      (obj.newJobTitle = message.newJobTitle);
+    message.rowNumber !== undefined && (obj.rowNumber = message.rowNumber);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<ChangeRoleHierarchyRow>
+  ): ChangeRoleHierarchyRow {
+    const message = { ...baseChangeRoleHierarchyRow } as ChangeRoleHierarchyRow;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = object.roleId;
+    } else {
+      message.roleId = "";
+    }
+    if (
+      object.currentJobTitle !== undefined &&
+      object.currentJobTitle !== null
+    ) {
+      message.currentJobTitle = object.currentJobTitle;
+    } else {
+      message.currentJobTitle = "";
+    }
+    if (object.newJobTitle !== undefined && object.newJobTitle !== null) {
+      message.newJobTitle = object.newJobTitle;
+    } else {
+      message.newJobTitle = "";
+    }
+    if (object.rowNumber !== undefined && object.rowNumber !== null) {
+      message.rowNumber = object.rowNumber;
+    } else {
+      message.rowNumber = "";
+    }
+    return message;
+  },
+};
+
 export interface BulkService {
   CreateRoleBulkRequest(request: CreateRoleBulkReq): Promise<CreateRoleBulkRes>;
   ChangeRoleHierarchyBulkRequest(
@@ -198,6 +768,12 @@ export interface BulkService {
   GetBulkRequestExample(
     request: GetBulkRequestExampleReq
   ): Promise<GetBulkRequestExampleRes>;
+  GetCreateRoleBulkRequestById(
+    request: GetBulkRequestByIdReq
+  ): Promise<DetailedCreateRoleBulkRequest>;
+  GetChangeRoleHierarchyBulkRequestById(
+    request: GetBulkRequestByIdReq
+  ): Promise<DetailedChangeRoleHierarchyBulkRequest>;
 }
 
 export class BulkServiceClientImpl implements BulkService {
@@ -208,6 +784,10 @@ export class BulkServiceClientImpl implements BulkService {
     this.ChangeRoleHierarchyBulkRequest =
       this.ChangeRoleHierarchyBulkRequest.bind(this);
     this.GetBulkRequestExample = this.GetBulkRequestExample.bind(this);
+    this.GetCreateRoleBulkRequestById =
+      this.GetCreateRoleBulkRequestById.bind(this);
+    this.GetChangeRoleHierarchyBulkRequestById =
+      this.GetChangeRoleHierarchyBulkRequestById.bind(this);
   }
   CreateRoleBulkRequest(
     request: CreateRoleBulkReq
@@ -248,6 +828,34 @@ export class BulkServiceClientImpl implements BulkService {
     );
     return promise.then((data) =>
       GetBulkRequestExampleRes.decode(new _m0.Reader(data))
+    );
+  }
+
+  GetCreateRoleBulkRequestById(
+    request: GetBulkRequestByIdReq
+  ): Promise<DetailedCreateRoleBulkRequest> {
+    const data = GetBulkRequestByIdReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "BulkService.BulkService",
+      "GetCreateRoleBulkRequestById",
+      data
+    );
+    return promise.then((data) =>
+      DetailedCreateRoleBulkRequest.decode(new _m0.Reader(data))
+    );
+  }
+
+  GetChangeRoleHierarchyBulkRequestById(
+    request: GetBulkRequestByIdReq
+  ): Promise<DetailedChangeRoleHierarchyBulkRequest> {
+    const data = GetBulkRequestByIdReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "BulkService.BulkService",
+      "GetChangeRoleHierarchyBulkRequestById",
+      data
+    );
+    return promise.then((data) =>
+      DetailedChangeRoleHierarchyBulkRequest.decode(new _m0.Reader(data))
     );
   }
 }

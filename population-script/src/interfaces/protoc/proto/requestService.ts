@@ -1374,13 +1374,14 @@ export interface DisconectRoleFromEntityADParams {
 export interface ChangeRoleHierarchyKartoffelParams {
   roleId: string;
   directGroup: string;
-  jobTitle?: string | undefined;
+  currentJobTitle: string;
+  newJobTitle?: string | undefined;
 }
 
 export interface ChangeRoleHierarchyADParams {
   samAccountName?: string | undefined;
   ouDisplayName?: string | undefined;
-  jobTitle?: string | undefined;
+  newJobTitle?: string | undefined;
 }
 
 export interface SyncBulkRequestReq {
@@ -1521,6 +1522,10 @@ export interface PushErrorReq {
   errorType: ErrorType;
 }
 
+export interface GetRequestsUnderBulkReq {
+  id: string;
+}
+
 /** ---------------------------------------------Other Objects------------------------------------------------------------ */
 export interface RequestIdArray {
   requestIds: string[];
@@ -1606,6 +1611,8 @@ export interface KartoffelParams {
   birthdate?: number | undefined;
   entityType?: string | undefined;
   roleEntityType?: string | undefined;
+  currentJobTitle?: string | undefined;
+  newJobTitle?: string | undefined;
 }
 
 export interface ADParams {
@@ -20828,6 +20835,7 @@ export const DisconectRoleFromEntityADParams = {
 const baseChangeRoleHierarchyKartoffelParams: object = {
   roleId: "",
   directGroup: "",
+  currentJobTitle: "",
 };
 
 export const ChangeRoleHierarchyKartoffelParams = {
@@ -20841,8 +20849,11 @@ export const ChangeRoleHierarchyKartoffelParams = {
     if (message.directGroup !== "") {
       writer.uint32(18).string(message.directGroup);
     }
-    if (message.jobTitle !== undefined) {
-      writer.uint32(26).string(message.jobTitle);
+    if (message.currentJobTitle !== "") {
+      writer.uint32(26).string(message.currentJobTitle);
+    }
+    if (message.newJobTitle !== undefined) {
+      writer.uint32(34).string(message.newJobTitle);
     }
     return writer;
   },
@@ -20866,7 +20877,10 @@ export const ChangeRoleHierarchyKartoffelParams = {
           message.directGroup = reader.string();
           break;
         case 3:
-          message.jobTitle = reader.string();
+          message.currentJobTitle = reader.string();
+          break;
+        case 4:
+          message.newJobTitle = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -20890,10 +20904,18 @@ export const ChangeRoleHierarchyKartoffelParams = {
     } else {
       message.directGroup = "";
     }
-    if (object.jobTitle !== undefined && object.jobTitle !== null) {
-      message.jobTitle = String(object.jobTitle);
+    if (
+      object.currentJobTitle !== undefined &&
+      object.currentJobTitle !== null
+    ) {
+      message.currentJobTitle = String(object.currentJobTitle);
     } else {
-      message.jobTitle = undefined;
+      message.currentJobTitle = "";
+    }
+    if (object.newJobTitle !== undefined && object.newJobTitle !== null) {
+      message.newJobTitle = String(object.newJobTitle);
+    } else {
+      message.newJobTitle = undefined;
     }
     return message;
   },
@@ -20903,7 +20925,10 @@ export const ChangeRoleHierarchyKartoffelParams = {
     message.roleId !== undefined && (obj.roleId = message.roleId);
     message.directGroup !== undefined &&
       (obj.directGroup = message.directGroup);
-    message.jobTitle !== undefined && (obj.jobTitle = message.jobTitle);
+    message.currentJobTitle !== undefined &&
+      (obj.currentJobTitle = message.currentJobTitle);
+    message.newJobTitle !== undefined &&
+      (obj.newJobTitle = message.newJobTitle);
     return obj;
   },
 
@@ -20923,10 +20948,18 @@ export const ChangeRoleHierarchyKartoffelParams = {
     } else {
       message.directGroup = "";
     }
-    if (object.jobTitle !== undefined && object.jobTitle !== null) {
-      message.jobTitle = object.jobTitle;
+    if (
+      object.currentJobTitle !== undefined &&
+      object.currentJobTitle !== null
+    ) {
+      message.currentJobTitle = object.currentJobTitle;
     } else {
-      message.jobTitle = undefined;
+      message.currentJobTitle = "";
+    }
+    if (object.newJobTitle !== undefined && object.newJobTitle !== null) {
+      message.newJobTitle = object.newJobTitle;
+    } else {
+      message.newJobTitle = undefined;
     }
     return message;
   },
@@ -20945,8 +20978,8 @@ export const ChangeRoleHierarchyADParams = {
     if (message.ouDisplayName !== undefined) {
       writer.uint32(18).string(message.ouDisplayName);
     }
-    if (message.jobTitle !== undefined) {
-      writer.uint32(26).string(message.jobTitle);
+    if (message.newJobTitle !== undefined) {
+      writer.uint32(26).string(message.newJobTitle);
     }
     return writer;
   },
@@ -20970,7 +21003,7 @@ export const ChangeRoleHierarchyADParams = {
           message.ouDisplayName = reader.string();
           break;
         case 3:
-          message.jobTitle = reader.string();
+          message.newJobTitle = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -20994,10 +21027,10 @@ export const ChangeRoleHierarchyADParams = {
     } else {
       message.ouDisplayName = undefined;
     }
-    if (object.jobTitle !== undefined && object.jobTitle !== null) {
-      message.jobTitle = String(object.jobTitle);
+    if (object.newJobTitle !== undefined && object.newJobTitle !== null) {
+      message.newJobTitle = String(object.newJobTitle);
     } else {
-      message.jobTitle = undefined;
+      message.newJobTitle = undefined;
     }
     return message;
   },
@@ -21008,7 +21041,8 @@ export const ChangeRoleHierarchyADParams = {
       (obj.samAccountName = message.samAccountName);
     message.ouDisplayName !== undefined &&
       (obj.ouDisplayName = message.ouDisplayName);
-    message.jobTitle !== undefined && (obj.jobTitle = message.jobTitle);
+    message.newJobTitle !== undefined &&
+      (obj.newJobTitle = message.newJobTitle);
     return obj;
   },
 
@@ -21028,10 +21062,10 @@ export const ChangeRoleHierarchyADParams = {
     } else {
       message.ouDisplayName = undefined;
     }
-    if (object.jobTitle !== undefined && object.jobTitle !== null) {
-      message.jobTitle = object.jobTitle;
+    if (object.newJobTitle !== undefined && object.newJobTitle !== null) {
+      message.newJobTitle = object.newJobTitle;
     } else {
-      message.jobTitle = undefined;
+      message.newJobTitle = undefined;
     }
     return message;
   },
@@ -23291,6 +23325,75 @@ export const PushErrorReq = {
   },
 };
 
+const baseGetRequestsUnderBulkReq: object = { id: "" };
+
+export const GetRequestsUnderBulkReq = {
+  encode(
+    message: GetRequestsUnderBulkReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GetRequestsUnderBulkReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseGetRequestsUnderBulkReq,
+    } as GetRequestsUnderBulkReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetRequestsUnderBulkReq {
+    const message = {
+      ...baseGetRequestsUnderBulkReq,
+    } as GetRequestsUnderBulkReq;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+
+  toJSON(message: GetRequestsUnderBulkReq): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<GetRequestsUnderBulkReq>
+  ): GetRequestsUnderBulkReq {
+    const message = {
+      ...baseGetRequestsUnderBulkReq,
+    } as GetRequestsUnderBulkReq;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+};
+
 const baseRequestIdArray: object = { requestIds: "", count: 0 };
 
 export const RequestIdArray = {
@@ -24153,6 +24256,12 @@ export const KartoffelParams = {
     if (message.roleEntityType !== undefined) {
       writer.uint32(210).string(message.roleEntityType);
     }
+    if (message.currentJobTitle !== undefined) {
+      writer.uint32(218).string(message.currentJobTitle);
+    }
+    if (message.newJobTitle !== undefined) {
+      writer.uint32(226).string(message.newJobTitle);
+    }
     return writer;
   },
 
@@ -24242,6 +24351,12 @@ export const KartoffelParams = {
           break;
         case 26:
           message.roleEntityType = reader.string();
+          break;
+        case 27:
+          message.currentJobTitle = reader.string();
+          break;
+        case 28:
+          message.newJobTitle = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -24388,6 +24503,19 @@ export const KartoffelParams = {
     } else {
       message.roleEntityType = undefined;
     }
+    if (
+      object.currentJobTitle !== undefined &&
+      object.currentJobTitle !== null
+    ) {
+      message.currentJobTitle = String(object.currentJobTitle);
+    } else {
+      message.currentJobTitle = undefined;
+    }
+    if (object.newJobTitle !== undefined && object.newJobTitle !== null) {
+      message.newJobTitle = String(object.newJobTitle);
+    } else {
+      message.newJobTitle = undefined;
+    }
     return message;
   },
 
@@ -24434,6 +24562,10 @@ export const KartoffelParams = {
     message.entityType !== undefined && (obj.entityType = message.entityType);
     message.roleEntityType !== undefined &&
       (obj.roleEntityType = message.roleEntityType);
+    message.currentJobTitle !== undefined &&
+      (obj.currentJobTitle = message.currentJobTitle);
+    message.newJobTitle !== undefined &&
+      (obj.newJobTitle = message.newJobTitle);
     return obj;
   },
 
@@ -24573,6 +24705,19 @@ export const KartoffelParams = {
       message.roleEntityType = object.roleEntityType;
     } else {
       message.roleEntityType = undefined;
+    }
+    if (
+      object.currentJobTitle !== undefined &&
+      object.currentJobTitle !== null
+    ) {
+      message.currentJobTitle = object.currentJobTitle;
+    } else {
+      message.currentJobTitle = undefined;
+    }
+    if (object.newJobTitle !== undefined && object.newJobTitle !== null) {
+      message.newJobTitle = object.newJobTitle;
+    } else {
+      message.newJobTitle = undefined;
     }
     return message;
   },
@@ -26315,6 +26460,7 @@ export interface RequestService {
   ): Promise<Request>;
   GetAllRequests(request: GetAllRequestsReq): Promise<RequestArray>;
   GetRequestById(request: GetRequestByIdReq): Promise<Request>;
+  GetRequestsUnderBulk(request: GetRequestsUnderBulkReq): Promise<RequestArray>;
   UpdateApproverDecision(request: UpdateApproverDecisionReq): Promise<Request>;
   IsRequestApproved(
     request: IsRequestApprovedReq
@@ -26371,6 +26517,7 @@ export class RequestServiceClientImpl implements RequestService {
     this.GetRequestBySerialNumber = this.GetRequestBySerialNumber.bind(this);
     this.GetAllRequests = this.GetAllRequests.bind(this);
     this.GetRequestById = this.GetRequestById.bind(this);
+    this.GetRequestsUnderBulk = this.GetRequestsUnderBulk.bind(this);
     this.UpdateApproverDecision = this.UpdateApproverDecision.bind(this);
     this.IsRequestApproved = this.IsRequestApproved.bind(this);
     this.CanPushToKartoffelQueue = this.CanPushToKartoffelQueue.bind(this);
@@ -26644,6 +26791,18 @@ export class RequestServiceClientImpl implements RequestService {
       data
     );
     return promise.then((data) => Request.decode(new _m0.Reader(data)));
+  }
+
+  GetRequestsUnderBulk(
+    request: GetRequestsUnderBulkReq
+  ): Promise<RequestArray> {
+    const data = GetRequestsUnderBulkReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "GetRequestsUnderBulk",
+      data
+    );
+    return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
   }
 
   UpdateApproverDecision(request: UpdateApproverDecisionReq): Promise<Request> {

@@ -8,8 +8,10 @@ import {
   CreateRoleReq,
   GetRequestByIdReq,
   Request,
+  RequestArray,
   RequestReq,
   RequestType,
+  SuccessMessage,
   UpdateReq,
 } from '../interfaces/protoc/proto/requestService';
 import { findPath } from '../utils/path';
@@ -21,6 +23,45 @@ export class RequestService {
   client: any;
   constructor() {
     this.client = this.initClient();
+  }
+
+  async getRequestById(req: any): Promise<any> {
+    logger.info('getRequestById in RequestService', { req });
+    return new Promise((resolve, reject) => {
+      this.client.GetRequestById(req, (error: any, res: any) => {
+        if (error) {
+          logger.error('getRequestById in RequestService ERROR', {
+            error: { message: error.message },
+          });
+          reject(error);
+        } else {
+          logger.info('getRequestById in RequestService OK', {
+            res,
+          });
+          res.type = RequestType[res.type];
+          resolve(res as Request);
+        }
+      });
+    });
+  }
+
+  async getRequestsUnderBulk(req: any): Promise<any> {
+    logger.info('getRequestsUnderBulk in RequestService', { req });
+    return new Promise((resolve, reject) => {
+      this.client.GetRequestsUnderBulk(req, (error: any, res: any) => {
+        if (error) {
+          logger.error('getRequestsUnderBulk in RequestService ERROR', {
+            error: { message: error.message },
+          });
+          reject(error);
+        } else {
+          logger.info('getRequestsUnderBulk in RequestService OK', {
+            res,
+          });
+          resolve(res as RequestArray);
+        }
+      });
+    });
   }
 
   async updateRequest(req: any): Promise<any> {
@@ -43,7 +84,7 @@ export class RequestService {
     });
   }
 
-  async deleteRequest(req: any): Promise<Request> {
+  async deleteRequest(req: any): Promise<SuccessMessage> {
     logger.info('deleteRequest in RequestService', { req });
     return new Promise((resolve, reject) => {
       this.client.DeleteRequest(req, (error: any, res: any) => {
@@ -56,8 +97,7 @@ export class RequestService {
           logger.info('deleteRequest in RequestService OK', {
             res,
           });
-          res.type = RequestType[res.type];
-          resolve(res as Request);
+          resolve(res as SuccessMessage);
         }
       });
     });

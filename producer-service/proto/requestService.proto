@@ -29,6 +29,7 @@ service RequestService {
     rpc GetRequestBySerialNumber(GetRequestBySerialNumberReq) returns (Request){}
     rpc GetAllRequests(GetAllRequestsReq) returns (RequestArray){}
     rpc GetRequestById(GetRequestByIdReq) returns (Request) {}
+    rpc GetRequestsUnderBulk(GetRequestsUnderBulkReq) returns (RequestArray){}
     rpc UpdateApproverDecision(UpdateApproverDecisionReq) returns (Request) {}
     rpc IsRequestApproved(IsRequestApprovedReq) returns (IsRequestApprovedRes){}
     rpc CanPushToKartoffelQueue(CanPushToQueueReq) returns (CanPushToQueueRes){}
@@ -933,13 +934,14 @@ message DisconectRoleFromEntityADParams{
 message ChangeRoleHierarchyKartoffelParams{
     string roleId = 1;
     string directGroup = 2;
-    optional string jobTitle = 3;
+    string currentJobTitle = 3;
+    optional string newJobTitle = 4;
 }
 
 message ChangeRoleHierarchyADParams{
     optional string samAccountName = 1;
     optional string ouDisplayName = 2;
-    optional string jobTitle = 3;
+    optional string newJobTitle = 3;
 }
 
 message SyncBulkRequestReq{
@@ -1085,6 +1087,10 @@ message PushErrorReq{
     ErrorType errorType = 4;
 }
 
+message GetRequestsUnderBulkReq{
+    string id = 1;
+}
+
 // ---------------------------------------------Other Objects------------------------------------------------------------
 message RequestIdArray{
     repeated string requestIds = 1;
@@ -1176,6 +1182,9 @@ message KartoffelParams{
     optional string entityType = 25;
 
     optional string roleEntityType = 26;
+
+    optional string currentJobTitle = 27;
+    optional string newJobTitle = 28;
     
 
     //RenameOG
