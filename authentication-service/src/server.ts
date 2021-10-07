@@ -1,11 +1,10 @@
 import express from 'express';
 import http from 'http';
-import bodyParser from 'body-parser';
-import path from 'path';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
+import passport from 'passport';
 import { config } from './config';
 import { logger } from './logger';
 import {
@@ -13,103 +12,70 @@ import {
     serverErrorHandler,
     unknownErrorHandler,
 } from './utils/errors/errorHandler';
-import { ShragaAuthenticationHandler } from './auth/auth.handler';
-import { ShragaAuthenticationRouter } from './auth/auth.router';
-import { HealthRouter } from './utils/health/health.router';
+import { PassportHandler } from './passport/passport.handler';
+import { Router } from './router';
 
 export class Server {
-    public app: express.Application;
-    private server: http.Server;
+  public app: express.Application;
+  private server: http.Server;
 
-    public static bootstrap(): Server {
-        return new Server();
+  public static bootstrap(): Server {
+    return new Server();
+  }
+
+  private constructor() {
+    this.app = express();
+    this.configureMiddlewares();
+    this.initializeShragaAuthenticator();
+    this.app.use(Router);
+    this.initializeErrorHandler();
+
+    this.server = http.createServer(this.app);
+    this.server.listen(config.server.port, () => {
+      logger.info(
+        `Auth-service Server running in ${process.env.NODE_ENV || 'development'} environment on port ${
+          config.server.port
+        }`
+      );
+    });
+  }
+
+  private setHeaders = (_req: express.Request, res: express.Response, next: express.NextFunction): void => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Authorization, Origin, X-Requested-With, Content-Type');
+    next();
+  };
+
+  private configureMiddlewares() {
+    this.app.use(helmet());
+    this.app.use(this.setHeaders);
+    this.app.use(express.json());
+    this.app.use(express.urlencoded({ extended: true }));
+    if (process.env.NODE_ENV === "development") {
+      this.app.use(morgan("dev"));
     }
+    this.app.use(cookieParser());
 
-    private constructor() {
-        this.app = express();
-        this.configureMiddlewares();
-        this.initializeErrorHandler();
-        this.initializeAuthenticator();
-        this.initializeOtherRoutes();
-        this.initializeStaticFolder();
-        this.server = http.createServer(this.app);
+    this.app.use(
+      session({
+        secret: config.authentication.sessionSecret,
+        resave: false,
+        saveUninitialized: true,
+      })
+    );
+  }
 
-        this.server.listen(config.server.port, () => {
-            logger.info(
-                `Auth-service Server running in ${
-                    process.env.NODE_ENV || 'development'
-                } environment on port ${config.server.port}`
-            );
-        });
-    }
+  private initializeErrorHandler() {
+    this.app.use(userErrorHandler);
+    this.app.use(serverErrorHandler);
+    this.app.use(unknownErrorHandler);
+  }
 
-    private configureMiddlewares() {
-        this.app.use(helmet());
-
-        this.app.use(function (
-            req: express.Request,
-            res: express.Response,
-            next: express.NextFunction
-        ) {
-            const origin = req.headers.origin as string;
-
-            if (config.cors.allowedOrigins.indexOf(origin) !== -1) {
-                res.setHeader('Access-Control-Allow-Origin', origin);
-            }
-            res.setHeader('Access-Control-Allow-Credentials', 'true');
-            res.setHeader(
-                'Access-Control-Allow-Methods',
-                'GET, POST, OPTIONS, PUT, PATCH, DELETE'
-            );
-            res.setHeader(
-                'Access-Control-Allow-Headers',
-                'Authorization, Origin, X-Requested-With, Content-Type'
-            );
-
-            if (req.method === 'OPTIONS') {
-                return res.status(200).end();
-            }
-
-            return next();
-        });
-
-        if (process.env.NODE_ENV === 'development') {
-            this.app.use(morgan('dev'));
-        }
-
-        this.app.use(bodyParser.json());
-        this.app.use(bodyParser.urlencoded({ extended: true }));
-        this.app.use(cookieParser());
-    }
-
-    private initializeErrorHandler() {
-        this.app.use(userErrorHandler);
-        this.app.use(serverErrorHandler);
-        this.app.use(unknownErrorHandler);
-    }
-
-    private initializeAuthenticator() {
-        this.initializeShragaAuthenticator();
-    }
-
-    private initializeShragaAuthenticator() {
-        this.app.use(
-            session({
-                secret: 'keyboard cat',
-                resave: false,
-                saveUninitialized: true,
-            })
-        );
-
-        ShragaAuthenticationHandler.initialize(this.app);
-        this.app.use('/auth/', ShragaAuthenticationRouter);
-    }
-
-    private initializeStaticFolder() {
-        this.app.use('/401', express.static(path.resolve('./401')));
-    }
-
-    private initializeOtherRoutes() {
-        this.app.use(HealthRouter);
-    }
+  private initializeShragaAuthenticator() {
+    this.app.use(passport.initialize());
+    this.app.use(passport.session());
+    PassportHandler();
+  }
 }

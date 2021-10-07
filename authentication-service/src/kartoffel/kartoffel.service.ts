@@ -1,4 +1,3 @@
-import { IUser } from './kartoffel.interface';
 import { config } from '../config';
 import { logger } from '../logger';
 import { GetEntityByIdRequest } from '../interfaces/protoc/proto/kartoffelService';
@@ -21,7 +20,7 @@ const kartoffelClient: any = new protoDescriptor.Kartoffel(
     grpc.credentials.createInsecure()
 );
 
-export class UsersRpc {
+export class KartoffelService {
   static async getEntityById(id: string): Promise<any> {
     logger.info(`Call to getEntityById in AS`, {
         callRequest: { id: id },
