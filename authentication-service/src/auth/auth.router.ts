@@ -1,12 +1,12 @@
 import passport from 'passport';
 import { Router } from 'express';
-import { ShragaAuthenticationHandler as AuthenticationHandler } from './auth.handler';
+import { AuthenticationHandler } from './auth.handler';
+import { wrapAsync } from '../utils/wrapper';
 
-const ShragaAuthenticationRouter = Router();
+const AuthRouter = Router();
 
-ShragaAuthenticationRouter.get('/login', AuthenticationHandler.authenticate());
-ShragaAuthenticationRouter.post('/callback', passport.authenticate('shraga', { failureRedirect: '/auth/unauthorized' }), AuthenticationHandler.handleUser);
-ShragaAuthenticationRouter.get('/unauthorized', AuthenticationHandler.sendUnauthorized);
-ShragaAuthenticationRouter.get('/support', AuthenticationHandler.getSupportURL);
+AuthRouter.get('/login', passport.authenticate('shraga'));
+AuthRouter.post('/callback', passport.authenticate('shraga'), wrapAsync(AuthenticationHandler.createTokenAndRedirect));
+AuthRouter.get('/unauthorized', AuthenticationHandler.sendUnauthorized);
 
-export { ShragaAuthenticationRouter };
+export { AuthRouter };
