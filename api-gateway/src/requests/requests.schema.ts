@@ -6,6 +6,7 @@ import {
   StageStatus,
   ApproverType,
   ApprovementStatus,
+  RequestType,
 } from '../interfaces/protoc/proto/requestService';
 
 const Joi = require('joi');
@@ -15,9 +16,7 @@ Joi.objectId = require('joi-objectid')(Joi);
 export const getAllRequestsSchema = Joi.object({
   body: {},
   params: {
-    approvementStatus: Joi.string()
-      .valid(...Object.keys(ApprovementStatus))
-      .required(),
+    approvementStatus: Joi.string().valid(...Object.keys(ApprovementStatus)),
   },
   query: {
     from: Joi.number().default(0),
@@ -44,7 +43,13 @@ export const getRequestsByPersonSchema = Joi.object({
       .required(),
     personInfoType: Joi.string()
       .valid(...Object.keys(PersonInfoType))
-      .required(),
+      .default('ID'),
+    approvementStatus: Joi.string()
+      .valid(...Object.keys(ApprovementStatus))
+      .default('ANY'),
+    displayName: Joi.string(),
+    status: Joi.string().valid(...Object.keys(RequestStatus)),
+    type: Joi.string().valid(...Object.keys(RequestType)),
     from: Joi.number().default(0),
     to: Joi.number().default(100),
   },

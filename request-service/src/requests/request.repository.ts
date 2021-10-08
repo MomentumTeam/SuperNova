@@ -6,7 +6,6 @@ import {
   Decision,
   decisionFromJSON,
   DeleteReq,
-  GetAllRequestsReq,
   GetRequestByIdReq,
   GetRequestBySerialNumberReq,
   GetRequestsByPersonReq,
@@ -23,7 +22,6 @@ import {
   requestStatusToJSON,
   RequestType,
   requestTypeToJSON,
-  SearchRequestsByDisplayNameReq,
   StageStatus,
   stageStatusFromJSON,
   SuccessMessage,
@@ -57,6 +55,7 @@ import {
   getApprovementQuery,
   getIdentifierQuery,
   getIdQuery,
+  getQuery,
 } from '../utils/query';
 import {
   reportTeaFail,
@@ -613,91 +612,6 @@ export class RequestRepository {
     }
   }
 
-  async searchRequestsByDisplayName(
-    searchRequestsByDisplayNameReq: SearchRequestsByDisplayNameReq
-  ): Promise<RequestArray> {
-    //TODO Check how to search on specific fields
-    try {
-      searchRequestsByDisplayNameReq.personType =
-        typeof searchRequestsByDisplayNameReq.personType === typeof ''
-          ? personTypeInRequestFromJSON(
-              searchRequestsByDisplayNameReq.personType
-            )
-          : searchRequestsByDisplayNameReq.personType;
-      searchRequestsByDisplayNameReq.searcherType =
-        searchRequestsByDisplayNameReq.searcherType
-          ? searchRequestsByDisplayNameReq.searcherType
-          : PersonTypeInRequest.SUBMITTER;
-      searchRequestsByDisplayNameReq.searcherType =
-        typeof searchRequestsByDisplayNameReq.searcherType === typeof ''
-          ? personTypeInRequestFromJSON(
-              searchRequestsByDisplayNameReq.searcherType
-            )
-          : searchRequestsByDisplayNameReq.searcherType;
-
-      let query: any = {
-        $and: [
-          { type: { $ne: requestTypeToJSON(RequestType.CREATE_ROLE_BULK) } },
-          {
-            type: {
-              $ne: requestTypeToJSON(RequestType.CHANGE_ROLE_HIERARCHY_BULK),
-            },
-          },
-        ],
-      };
-
-      if (searchRequestsByDisplayNameReq.searcherId) {
-        let searcherQuery = {};
-        if (
-          searchRequestsByDisplayNameReq.searcherType ===
-          PersonTypeInRequest.SUBMITTER
-        ) {
-          searcherQuery = {
-            'submittedBy.id': searchRequestsByDisplayNameReq.searcherId,
-          };
-        } else {
-          //APPROVER
-          searcherQuery = {
-            $or: [
-              { 'commanders.id': searchRequestsByDisplayNameReq.searcherId },
-              {
-                'securityApprovers.id':
-                  searchRequestsByDisplayNameReq.searcherId,
-              },
-              {
-                'superSecurityApprovers.id':
-                  searchRequestsByDisplayNameReq.searcherId,
-              },
-            ],
-          };
-        }
-        query['$and'].push(searcherQuery);
-      }
-
-      let { displayName, personType } = searchRequestsByDisplayNameReq;
-
-      if (personType === PersonTypeInRequest.SUBMITTER) {
-        query['$text'] = { $search: displayName };
-      } else if (personType === PersonTypeInRequest.COMMANDER_APPROVER) {
-        query['$text'] = { $search: displayName };
-      } else if (personType === PersonTypeInRequest.SECURITY_APPROVER) {
-        query['$text'] = { $search: displayName };
-      } else {
-        //approver
-        query['$text'] = { $search: displayName };
-      }
-      const requestArray = await this.getRequestsByQuery(
-        query,
-        true,
-        searchRequestsByDisplayNameReq.from,
-        searchRequestsByDisplayNameReq.to
-      );
-      return requestArray;
-    } catch (error) {
-      throw error;
-    }
-  }
-
   async deleteRequest(deleteReq: DeleteReq): Promise<SuccessMessage> {
     try {
       await RequestModel.deleteMany({
@@ -901,7 +815,7 @@ export class RequestRepository {
   setNeedApproversDecisionsValues(request: any, type: RequestType): void {
     switch (type) {
       case RequestType.CREATE_OG:
-        request.needSecurityDecision = false;
+        request.needSecurityDecision = true; //change to false
         request.needSuperSecurityDecision = false;
         break;
 
@@ -989,31 +903,6 @@ export class RequestRepository {
     }
   }
 
-  async getAllRequests(
-    getAllRequestsReq: GetAllRequestsReq
-  ): Promise<RequestArray> {
-    try {
-      getAllRequestsReq.approvementStatus = getAllRequestsReq.approvementStatus
-        ? getAllRequestsReq.approvementStatus
-        : ApprovementStatus.ANY;
-      const approvementStatus: ApprovementStatus =
-        typeof getAllRequestsReq.approvementStatus === typeof ''
-          ? approvementStatusFromJSON(getAllRequestsReq.approvementStatus)
-          : getAllRequestsReq.approvementStatus;
-      const query: any = getApprovementQuery(approvementStatus);
-      query.isPartOfBulk = false;
-      const requestArray = await this.getRequestsByQuery(
-        query,
-        true,
-        getAllRequestsReq.from,
-        getAllRequestsReq.to
-      );
-      return requestArray;
-    } catch (error) {
-      throw error;
-    }
-  }
-
   async getRequestBySerialNumber(
     getRequestBySerialNumberReq: GetRequestBySerialNumberReq
   ): Promise<Request> {
@@ -1096,13 +985,17 @@ export class RequestRepository {
     }
   }
 
-  async getRequestsByPerson(
-    getRequestsByPersonReq: GetRequestsByPersonReq,
-    personTypesInRequest: PersonTypeInRequest,
-    personInfoType: PersonInfoType
-  ) {
+  async getRequestsByPerson(getRequestsByPersonReq: GetRequestsByPersonReq) {
     try {
       let query: any = {};
+      const personTypeInRequest: PersonTypeInRequest =
+        typeof getRequestsByPersonReq.personType === typeof ''
+          ? personTypeInRequestFromJSON(getRequestsByPersonReq.personType)
+          : getRequestsByPersonReq.personType;
+      const personInfoType: PersonInfoType =
+        typeof getRequestsByPersonReq.personInfoType === typeof ''
+          ? personInfoTypeFromJSON(getRequestsByPersonReq.personInfoType)
+          : getRequestsByPersonReq.personInfoType;
       getRequestsByPersonReq.approvementStatus =
         getRequestsByPersonReq.approvementStatus
           ? getRequestsByPersonReq.approvementStatus
@@ -1111,20 +1004,38 @@ export class RequestRepository {
         typeof getRequestsByPersonReq.approvementStatus === typeof ''
           ? approvementStatusFromJSON(getRequestsByPersonReq.approvementStatus)
           : getRequestsByPersonReq.approvementStatus;
-      if (personInfoType === PersonInfoType.ID) {
-        query = getIdQuery(
-          getRequestsByPersonReq.id,
-          personTypesInRequest,
-          approvementStatus
-        );
-      } else {
-        query = getIdentifierQuery(
-          getRequestsByPersonReq.id,
-          personTypesInRequest,
-          approvementStatus
-        );
-      }
+      let userType: any[] = getRequestsByPersonReq.userType
+        ? getRequestsByPersonReq.userType
+        : [];
+      userType = userType.map((type) => {
+        return typeof type === typeof '' ? approverTypeFromJSON(type) : type;
+      });
+
+      query = getQuery(
+        getRequestsByPersonReq.id,
+        personInfoType,
+        personTypeInRequest,
+        approvementStatus,
+        userType
+      );
       query.isPartOfBulk = false;
+      if (getRequestsByPersonReq.status) {
+        const status =
+          typeof getRequestsByPersonReq.status === typeof ''
+            ? getRequestsByPersonReq.status
+            : requestStatusToJSON(getRequestsByPersonReq.status);
+        query.status = status;
+      }
+      if (getRequestsByPersonReq.type) {
+        const type =
+          typeof getRequestsByPersonReq.type === typeof ''
+            ? getRequestsByPersonReq.type
+            : requestTypeToJSON(getRequestsByPersonReq.type);
+        query.type = type;
+      }
+      if (getRequestsByPersonReq.displayName) {
+        query['$text'] = { $search: getRequestsByPersonReq.displayName };
+      }
       const totalCount = await RequestModel.count(query);
       const requests: any = await RequestModel.find(
         query,
