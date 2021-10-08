@@ -33,6 +33,7 @@ services:
       - redis
     volumes:
       - spike-utils:/usr/src/app/src/utils
+      - ./logs/spike-service:/logs
     environment:
       - SS_REDIS_HOST=redis
       - SS_REDIS_PORT=6379
@@ -52,6 +53,8 @@ services:
     depends_on:
       - mongo
       - notification-service
+    volumes:
+      - ./logs/request-service:/logs
     environment:
       - RS_MONGO_URL=mongodb://mongo:27017/supernova
       - RS_NS_URL=notification-service:8080
@@ -67,6 +70,8 @@ services:
       - '8082:8080'
     depends_on:
       - spike-service
+    volumes:
+      - ./logs/kartoffel-service:/logs
     environment:
       - KS_USE_FAKER=true
       - KS_SS_URL=spike-service:8080
@@ -83,6 +88,8 @@ services:
     depends_on:
       - request-service
       - spike-service
+    volumes:
+      - ./logs/producer-service:/logs
     environment:
       - PS_QUEUE_API_URL=http://20.199.120.227:3000
       - PS_RS_URL=request-service:8080
@@ -98,6 +105,8 @@ services:
     build: ./notification-service/
     env_file:
       - ./supernova.env
+    volumes:
+      - ./logs/notification-service:/logs
     ports:
       - '8084:8080'
     environment:
@@ -114,6 +123,8 @@ services:
     depends_on:
       - request-service
       - kartoffel-service
+    volumes:
+      - ./logs/approver-service:/logs
     environment:
       - APS_MONGO_URL=mongodb://mongo:27017/supernova
       - APS_KS_URL=kartoffel-service:8080
@@ -125,6 +136,8 @@ services:
     build: ./tea-service/
     env_file:
       - ./supernova.env
+    volumes:
+      - ./logs/tea-service:/logs
     ports:
       - '8086:8080'
     environment:
@@ -139,6 +152,7 @@ services:
       - ./supernova.env
     volumes:
       - bulk-files:/usr/src/app/bulk-files
+      - ./logs/bulk-service:/logs
     ports:
       - '8087:8080'
     depends_on:
@@ -160,6 +174,8 @@ services:
       - request-service
       - kartoffel-service
       - tea-service
+    volumes:
+      - ./logs/kartoffel-consumer:/logs
     environment:
       - KC_RS_URL=request-service:8080
       - KC_TS_URL=tea-service:8080
@@ -175,6 +191,8 @@ services:
     depends_on:
       - request-service
       - producer-service
+    volumes:
+      - ./logs/execution-script:/logs
     environment:
       - EXS_RS_URL=request-service:8080
       - EXS_PS_URL=producer-service:8080
@@ -190,6 +208,8 @@ services:
       - ./supernova.env
     depends_on:
       - approver-service
+    volumes:
+      - ./logs/whiteListSync-script:/logs
     environment:
       - WLS_APS_URL=approver-service:8080
       - WLS_HOUR=10
@@ -220,6 +240,8 @@ services:
     depends_on:
       - kartoffel-service
       - approver-service
+    volumes:
+      - ./logs/authentication-service:/logs
     environment:
       - AS_SHRAGA_URL=https://shraga-prod.northeurope.cloudapp.azure.com
       - AS_CLIENT_ENDPOINT=http://localhost:3000
@@ -235,6 +257,7 @@ services:
     volumes:
       - bulk-files:/usr/src/app/bulk-files
       - spike-utils:/usr/src/app/spike-utils
+      - ./logs/api-gateway:/logs
     ports:
       - '2000:8080'
     depends_on:
