@@ -29,6 +29,7 @@ service RequestService {
     rpc GetRequestBySerialNumber(GetRequestBySerialNumberReq) returns (Request){}
     rpc GetAllRequests(GetAllRequestsReq) returns (RequestArray){}
     rpc GetRequestById(GetRequestByIdReq) returns (Request) {}
+    rpc GetRequestsUnderBulk(GetRequestsUnderBulkReq) returns (RequestArray){}
     rpc UpdateApproverDecision(UpdateApproverDecisionReq) returns (Request) {}
     rpc IsRequestApproved(IsRequestApprovedReq) returns (IsRequestApprovedRes){}
     rpc CanPushToKartoffelQueue(CanPushToQueueReq) returns (CanPushToQueueRes){}
@@ -933,13 +934,14 @@ message DisconectRoleFromEntityADParams{
 message ChangeRoleHierarchyKartoffelParams{
     string roleId = 1;
     string directGroup = 2;
-    optional string jobTitle = 3;
+    string currentJobTitle = 3;
+    optional string newJobTitle = 4;
 }
 
 message ChangeRoleHierarchyADParams{
     optional string samAccountName = 1;
     optional string ouDisplayName = 2;
-    optional string jobTitle = 3;
+    optional string newJobTitle = 3;
 }
 
 message SyncBulkRequestReq{
@@ -1003,9 +1005,14 @@ message GetRequestsByPersonReq{
     string id = 1;
     PersonTypeInRequest personType = 2;
     PersonInfoType personInfoType = 3;
-    int32 from = 4;
-    int32 to = 5;
-    optional ApprovementStatus approvementStatus = 6;
+    repeated ApproverType userType = 4; //only for GET_ALL
+    int32 from = 5;
+    int32 to = 6;
+    optional ApprovementStatus approvementStatus = 7;
+    optional string displayName = 8;
+    optional RequestStatus status = 9;
+    optional RequestType type = 10;
+    
 }
 
 //GetRequestBySerialNumber
@@ -1083,6 +1090,10 @@ message PushErrorReq{
     string rowNumber = 2;
     string error = 3;
     ErrorType errorType = 4;
+}
+
+message GetRequestsUnderBulkReq{
+    string id = 1;
 }
 
 // ---------------------------------------------Other Objects------------------------------------------------------------
@@ -1176,6 +1187,9 @@ message KartoffelParams{
     optional string entityType = 25;
 
     optional string roleEntityType = 26;
+
+    optional string currentJobTitle = 27;
+    optional string newJobTitle = 28;
     
 
     //RenameOG
@@ -1380,6 +1394,7 @@ enum PersonTypeInRequest{
     SECURITY_APPROVER = 2;
     SUPER_SECURITY_APPROVER = 3;
     APPROVER = 4;
+    GET_ALL = 5;
 }
 
 enum PersonInfoType{
@@ -1392,6 +1407,7 @@ enum ApprovementStatus{
     SECURITY_APPROVE = 1;
     SUPER_SECURITY_APPROVE = 2;
     ANY = 3;
+    BY_USER_TYPE = 4;
 }
 
 enum ErrorType{

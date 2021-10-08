@@ -1,6 +1,14 @@
 import { BulkType } from '../interfaces/protoc/proto/bulkService';
-import { ErrorType, RequestStatus } from '../interfaces/protoc/proto/requestService';
-import { ADStatusObj, ApproverDecisionObj, entityMinObj, kartoffelStatusObj } from '../requests/requests.schema';
+import {
+  ErrorType,
+  RequestStatus,
+} from '../interfaces/protoc/proto/requestService';
+import {
+  ADStatusObj,
+  ApproverDecisionObj,
+  entityMinObj,
+  kartoffelStatusObj,
+} from '../requests/requests.schema';
 
 const Joi = require('joi');
 Joi.objectId = require('joi-objectid')(Joi);
@@ -87,5 +95,13 @@ export const getBulkRequestExampleSchema = Joi.object({
     bulkType: Joi.string()
       .valid(...Object.keys(BulkType))
       .required(),
+  },
+});
+
+export const getBulkRequestByIdReqSchema = Joi.object({
+  body: {},
+  params: {},
+  query: {
+    id: Joi.objectId().required(),
   },
 });

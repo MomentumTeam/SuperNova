@@ -1,4 +1,13 @@
 import * as env from 'env-var';
+import { findPath } from './utils/path';
+
+let spikePubKeyDefault;
+try {
+  spikePubKeyDefault = `${findPath('spike-service')}/src/utils/publickey.pem`;
+} catch (error: any) {
+  //docker
+  spikePubKeyDefault = '/usr/src/app/spike-utils/publickey.pem';
+}
 
 export const config = {
   server: {
@@ -32,7 +41,7 @@ export const config = {
       .get('GATEWAY_AS_URL')
       .default('http://localhost:9000')
       .asString(),
-    required: env.get('GATEWAY_AUTHENTICATION_REQUIRED').default(0).asBool(),
+    required: env.get('GATEWAY_AUTHENTICATION_REQUIRED').default(1).asBool(),
   },
   spike: {
     audienceId: env
@@ -41,11 +50,15 @@ export const config = {
       .asString(),
     publicKeyPath: env
       .get('GATEWAY_SPIKE_PUBLIC_KEY_FULL_PATH')
-      .default('../spike-service/src/utils/publickey.pem')
+      .default(spikePubKeyDefault)
       .asString(),
     writeScopeName: env
       .get('GATEWAY_WRITE_SCOPE_NAME')
       .default('write')
       .asString(),
+  },
+  logs: {
+    storeLogs: env.get('GLOBAL_STORE_LOGS').default('true').asBool(),
+    logPath: env.get('GATEWAY_LOG_PATH').default('./logs').asString(),
   },
 };

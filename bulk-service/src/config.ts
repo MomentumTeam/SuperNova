@@ -1,8 +1,12 @@
 import { findPath } from './utils/path';
 
 export const host = process.env.BS_HOST || '0.0.0.0';
-export const port = process.env.NODE_ENV === 'production' ? '8080' : process.env.BS_PORT || '8087';
-export const folderPath = process.env.BS_FOLDER_PATH || findPath('excelFilesExample');
+export const port =
+  process.env.NODE_ENV === 'production'
+    ? '8080'
+    : process.env.BS_PORT || '8087';
+export const folderPath =
+  process.env.BS_FOLDER_PATH || findPath('excelFilesExample');
 export const requestServiceUrl = process.env.BS_RS_URL || '0.0.0.0:8081';
 
 export const hebEntityTypeToKartoffelLang: any = {
@@ -18,7 +22,26 @@ export const hebClearanceToKartoffelLang: any = {
   כחול: 'blue',
 };
 
+export const kartoffelEntityTypeToHeb: any = {
+  soldier: 'חייל',
+  reserved: 'מילואים',
+  civilian: 'אזרח',
+  goalUser: 'תפקידן',
+};
+
+export const kartoffelClearanceToHeb: any = {
+  red: 'אדום',
+  purple: 'סגול',
+  blue: 'כחול',
+};
+
 export const exampleFiles = {
-  changeRoleHierarchyRequest: process.env.BS_FILE_CRH || 'changeRoleHierarchyBulk.xlsx',
+  changeRoleHierarchyRequest:
+    process.env.BS_FILE_CRH || 'changeRoleHierarchyBulk.xlsx',
   createRoleRequest: process.env.BS_FILE_CR || 'createRoleBulk.xlsx',
 };
+
+export const logPath = process.env.BS_LOG_PATH || './logs';
+export const storeLogs = process.env.GLOBAL_STORE_LOGS
+  ? process.env.GLOBAL_STORE_LOGS === 'true'
+  : false;

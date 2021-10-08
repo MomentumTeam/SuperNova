@@ -2,14 +2,11 @@ import {
   CanPushToQueueReq,
   CanPushToQueueRes,
   DeleteReq,
-  GetAllRequestsReq,
   GetRequestByIdReq,
   GetRequestBySerialNumberReq,
   GetRequestsByPersonReq,
   GetRequestsInProgressByDueReq,
   IncrementRetriesReq,
-  PersonInfoType,
-  personInfoTypeFromJSON,
   PersonTypeInRequest,
   personTypeInRequestFromJSON,
   Request,
@@ -17,7 +14,6 @@ import {
   RequestIdArray,
   RequestReq,
   RequestType,
-  SearchRequestsByDisplayNameReq,
   SuccessMessage,
   UpdateADStatusReq,
   UpdateApproversReq,
@@ -27,6 +23,7 @@ import {
   IsRequestApprovedReq,
   PushErrorReq,
   SyncBulkRequestReq,
+  GetRequestsUnderBulkReq,
 } from '../interfaces/protoc/proto/requestService';
 import { RequestRepository } from './request.repository';
 export class RequestManager {
@@ -68,6 +65,18 @@ export class RequestManager {
       return (await this.requestRepository.incrementKartoffelRetries(
         incrementRetriesReq
       )) as Request;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getRequestsUnderBulk(
+    getRequestsUnderBulkReq: GetRequestsUnderBulkReq
+  ): Promise<RequestArray> {
+    try {
+      return (await this.requestRepository.getRequestsUnderBulk(
+        getRequestsUnderBulkReq
+      )) as RequestArray;
     } catch (error) {
       throw error;
     }
@@ -178,33 +187,11 @@ export class RequestManager {
     }
   }
 
-  async searchRequestsByDisplayName(
-    searchRequestsByDisplayName: SearchRequestsByDisplayNameReq
-  ): Promise<RequestArray> {
-    try {
-      return (await this.requestRepository.searchRequestsByDisplayName(
-        searchRequestsByDisplayName
-      )) as RequestArray;
-    } catch (error) {
-      throw error;
-    }
-  }
-
   async deleteRequest(deleteRequestReq: DeleteReq): Promise<SuccessMessage> {
     try {
       return (await this.requestRepository.deleteRequest(
         deleteRequestReq
       )) as SuccessMessage;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async getAllRequests(
-    getAllRequestsReq: GetAllRequestsReq
-  ): Promise<RequestArray> {
-    try {
-      return await this.requestRepository.getAllRequests(getAllRequestsReq);
     } catch (error) {
       throw error;
     }
@@ -284,18 +271,8 @@ export class RequestManager {
 
   async getRequestsByPerson(getRequestsByPersonReq: GetRequestsByPersonReq) {
     try {
-      const personType: PersonTypeInRequest =
-        typeof getRequestsByPersonReq.personType === typeof ''
-          ? personTypeInRequestFromJSON(getRequestsByPersonReq.personType)
-          : getRequestsByPersonReq.personType;
-      const personInfoType: PersonInfoType =
-        typeof getRequestsByPersonReq.personInfoType === typeof ''
-          ? personInfoTypeFromJSON(getRequestsByPersonReq.personInfoType)
-          : getRequestsByPersonReq.personInfoType;
       return await this.requestRepository.getRequestsByPerson(
-        getRequestsByPersonReq,
-        personType,
-        personInfoType
+        getRequestsByPersonReq
       );
     } catch (error) {
       throw error;

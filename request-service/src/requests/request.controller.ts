@@ -2,18 +2,46 @@ import { RequestManager } from './request.manager';
 import * as grpc from 'grpc';
 import {
   IsRequestApprovedRes,
-  PersonTypeInRequest,
   Request,
   RequestReq,
   RequestType,
   requestTypeToJSON,
-  SearchRequestsByDisplayNameReq,
   SuccessMessage,
   UpdateApproverDecisionReq,
 } from '../interfaces/protoc/proto/requestService';
 import { logger } from '../logger';
 
 const requestManager: RequestManager = new RequestManager();
+
+export async function getRequestsUnderBulk(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    logger.info(`Call to getRequestsUnderBulk`, {
+      callRequest: call.request,
+    });
+    const response = await requestManager.getRequestsUnderBulk(call.request);
+    logger.info(`getRequestsUnderBulk OK`, {
+      callRequest: call.request,
+      response: response,
+    });
+    callback(null, response);
+  } catch (error: any) {
+    logger.error(`getRequestsUnderBulk ERROR`, {
+      callRequest: call.request,
+      error: { message: error.message },
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
 
 export function createRequestFuncByType(type: RequestType) {
   const func = async function createRequest(
@@ -129,35 +157,6 @@ export async function updateApproverDecision(call: any, callback: any) {
     callback(null, response);
   } catch (error: any) {
     logger.error(`updateApproverDecision ERROR`, {
-      callRequest: call.request,
-      error: { message: error.message },
-    });
-    callback(
-      {
-        code: 400,
-        message: error.message,
-        status: grpc.status.CANCELLED,
-      },
-      null
-    );
-  }
-}
-
-export async function searchRequestsByDisplayName(call: any, callback: any) {
-  try {
-    logger.info(`Call to searchRequestsByDisplayName`, {
-      callRequest: call.request,
-    });
-    const response = await requestManager.searchRequestsByDisplayName(
-      call.request as SearchRequestsByDisplayNameReq
-    );
-    logger.info(`searchRequestsByDisplayName OK`, {
-      callRequest: call.request,
-      response: response,
-    });
-    callback(null, response);
-  } catch (error: any) {
-    logger.error(`searchRequestsByDisplayName ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
     });
@@ -343,33 +342,6 @@ export async function deleteRequest(call: any, callback: any): Promise<void> {
     callback(null, deleteRequestResponse);
   } catch (error: any) {
     logger.error(`deleteRequest ERROR`, {
-      callRequest: call.request,
-      error: { message: error.message },
-    });
-    callback(
-      {
-        code: 400,
-        message: error.message,
-        status: grpc.status.CANCELLED,
-      },
-      null
-    );
-  }
-}
-
-export async function getAllRequests(call: any, callback: any): Promise<void> {
-  try {
-    logger.info(`Call to getAllRequests`, {
-      callRequest: call.request,
-    });
-    const requestsResponse = await requestManager.getAllRequests(call.request);
-    logger.info(`getAllRequests OK`, {
-      callRequest: call.request,
-      response: requestsResponse,
-    });
-    callback(null, requestsResponse);
-  } catch (error: any) {
-    logger.error(`getAllRequests ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
     });

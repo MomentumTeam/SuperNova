@@ -1,14 +1,15 @@
 import {
   ApprovementStatus,
+  ApproverType,
   Decision,
   decisionToJSON,
+  PersonInfoType,
   PersonTypeInRequest,
 } from '../interfaces/protoc/proto/requestService';
 
 export function getIdentifierQuery(
   id: string,
-  personTypeInRequest: PersonTypeInRequest,
-  approvementStatus: ApprovementStatus
+  personTypeInRequest: PersonTypeInRequest
 ) {
   let query: any = {};
   switch (personTypeInRequest) {
@@ -44,7 +45,7 @@ export function getIdentifierQuery(
         ],
       };
       break;
-    default:
+    case PersonTypeInRequest.APPROVER:
       //PersonTypeInRequest.APPROVER
       query = {
         $or: [
@@ -56,16 +57,17 @@ export function getIdentifierQuery(
           { 'superSecurityApprovers.personalNumber': id },
         ],
       };
+      break;
+    case PersonTypeInRequest.GET_ALL:
+      //PersonTypeInRequest.APPROVER
+      query = {};
+      break;
   }
-  const approvementQuery: any = getApprovementQuery(approvementStatus);
-  query = { ...approvementQuery, ...query };
-  return query;
 }
 
 export function getIdQuery(
   id: string,
-  personTypeInRequest: PersonTypeInRequest,
-  approvementStatus: ApprovementStatus
+  personTypeInRequest: PersonTypeInRequest
 ) {
   let query: any = {};
   switch (personTypeInRequest) {
@@ -81,7 +83,7 @@ export function getIdQuery(
     case PersonTypeInRequest.SUPER_SECURITY_APPROVER:
       query = { 'superSecurityApprovers.id': id };
       break;
-    default:
+    case PersonTypeInRequest.APPROVER:
       //PersonTypeInRequest.APPROVER
       query = {
         $or: [
@@ -90,13 +92,46 @@ export function getIdQuery(
           { 'superSecurityApprovers.id': id },
         ],
       };
+      break;
+    case PersonTypeInRequest.GET_ALL:
+      query = {};
+      break;
   }
-  const approvementQuery: any = getApprovementQuery(approvementStatus);
-  query = { ...approvementQuery, ...query };
   return query;
 }
 
-export function getApprovementQuery(approvementStatus: ApprovementStatus) {
+export function getQuery(
+  id: string,
+  personInfoType: PersonInfoType,
+  personTypeInRequest: PersonTypeInRequest,
+  approvementStatus: ApprovementStatus,
+  userType: ApproverType[]
+) {
+  try {
+    let query: any = {};
+    if (personTypeInRequest !== PersonTypeInRequest.GET_ALL) {
+      if (personInfoType === PersonInfoType.ID) {
+        query = getIdQuery(id, personTypeInRequest);
+      } else {
+        query = getIdentifierQuery(id, personTypeInRequest);
+      }
+    }
+
+    const approvementQuery: any = getApprovementQuery(
+      approvementStatus,
+      userType
+    );
+    query = { ...approvementQuery, ...query };
+    return query;
+  } catch (error: any) {
+    throw error;
+  }
+}
+
+export function getApprovementQuery(
+  approvementStatus: ApprovementStatus,
+  userType: ApproverType[]
+) {
   switch (approvementStatus) {
     case ApprovementStatus.COMMANDER_APPROVE:
       return {};
@@ -135,8 +170,34 @@ export function getApprovementQuery(approvementStatus: ApprovementStatus) {
           },
         ],
       };
-    default:
-      //ANY
+    case ApprovementStatus.ANY:
       return {};
+    default:
+      //BY_USER_TYPE
+      return getAnyApprovementQuery(userType);
+  }
+}
+
+export function getAnyApprovementQuery(userType: ApproverType[]) {
+  let or: any = [];
+  for (let type of userType) {
+    if (type === ApproverType.COMMANDER || type === ApproverType.ADMIN) {
+      or.push(
+        getApprovementQuery(ApprovementStatus.COMMANDER_APPROVE, userType)
+      );
+    } else if (type === ApproverType.SECURITY) {
+      or.push(
+        getApprovementQuery(ApprovementStatus.SECURITY_APPROVE, userType)
+      );
+    } else if (type === ApproverType.SUPER_SECURITY) {
+      or.push(
+        getApprovementQuery(ApprovementStatus.SUPER_SECURITY_APPROVE, userType)
+      );
+    }
+  }
+  if (!or || or.length === 0) {
+    return {};
+  } else {
+    return { $or: or };
   }
 }

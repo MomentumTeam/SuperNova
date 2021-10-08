@@ -6,7 +6,6 @@ import {
   Decision,
   decisionFromJSON,
   DeleteReq,
-  GetAllRequestsReq,
   GetRequestByIdReq,
   GetRequestBySerialNumberReq,
   GetRequestsByPersonReq,
@@ -23,7 +22,6 @@ import {
   requestStatusToJSON,
   RequestType,
   requestTypeToJSON,
-  SearchRequestsByDisplayNameReq,
   StageStatus,
   stageStatusFromJSON,
   SuccessMessage,
@@ -42,26 +40,50 @@ import {
   SyncBulkRequestReq,
   personInfoTypeFromJSON,
   personTypeInRequestFromJSON,
+  GetRequestsUnderBulkReq,
+  decisionToJSON,
 } from '../interfaces/protoc/proto/requestService';
 import { createNotifications } from '../services/notificationHelper';
 import * as C from '../config';
 import { RequestModel } from '../models/request.model';
-import { cleanUnderscoreFields, turnObjectIdsToStrings } from '../services/requestHelper';
+import {
+  cleanUnderscoreFields,
+  turnObjectIdsToStrings,
+} from '../services/requestHelper';
 import { NotificationType } from '../interfaces/protoc/proto/notificationService';
-import { getApprovementQuery, getIdentifierQuery, getIdQuery } from '../utils/query';
-import { reportTeaFail, retrieveTeaByUnit, retrieveUPNByEntityId } from '../services/teaHelper';
+import {
+  getApprovementQuery,
+  getIdentifierQuery,
+  getIdQuery,
+  getQuery,
+} from '../utils/query';
+import {
+  reportTeaFail,
+  retrieveTeaByUnit,
+  retrieveUPNByEntityId,
+} from '../services/teaHelper';
 
 export class RequestRepository {
-  async createRequest(createRequestReq: any, type: RequestType): Promise<Request> {
+  async createRequest(
+    createRequestReq: any,
+    type: RequestType
+  ): Promise<Request> {
     try {
-      if (type === RequestType.CREATE_ROLE && createRequestReq.kartoffelParams.unit) {
-        const tea = await retrieveTeaByUnit(createRequestReq.kartoffelParams.unit);
+      if (
+        type === RequestType.CREATE_ROLE &&
+        createRequestReq.kartoffelParams.unit
+      ) {
+        const tea = await retrieveTeaByUnit(
+          createRequestReq.kartoffelParams.unit
+        );
         createRequestReq.kartoffelParams.roleId = tea;
         createRequestReq.kartoffelParams.uniqueId = tea;
         createRequestReq.kartoffelParams.mail = tea;
         createRequestReq.adParams.samAccountName = tea;
       } else if (type === RequestType.ASSIGN_ROLE_TO_ENTITY) {
-        createRequestReq.adParams.upn = await retrieveUPNByEntityId(createRequestReq.kartoffelParams.id);
+        createRequestReq.adParams.upn = await retrieveUPNByEntityId(
+          createRequestReq.kartoffelParams.id
+        );
       } else if (
         type === RequestType.CREATE_ENTITY ||
         type === RequestType.DELETE_ENTITY ||
@@ -79,6 +101,31 @@ export class RequestRepository {
           message: 'Waiting for push, request type does not require AD update',
           failedRetries: 0,
         };
+      } else if (type === RequestType.EDIT_ENTITY) {
+        //automatically approved
+        const submittedById = createRequestReq.submittedBy.id;
+        const approverDecision = {
+          approver: createRequestReq.submittedBy
+            ? createRequestReq.submittedBy
+            : { id: '', displayName: '', personalNumber: '', identityCard: '' },
+          decision: decisionToJSON(Decision.APPROVED),
+        };
+        createRequestReq.commanderDecision = approverDecision;
+        createRequestReq.securityDecision = approverDecision;
+        createRequestReq.superSecurityDecision = approverDecision;
+        createRequestReq.adStatus = {
+          status: stageStatusToJSON(StageStatus.STAGE_WAITING_FOR_PUSH),
+          message: '',
+          failedRetries: 0,
+        };
+        createRequestReq.kartoffelStatus = {
+          status: stageStatusToJSON(StageStatus.STAGE_WAITING_FOR_AD),
+          message: '',
+          failedRetries: 0,
+        };
+        createRequestReq.status = requestStatusToJSON(
+          RequestStatus.IN_PROGRESS
+        );
       }
       const request: any = new RequestModel(createRequestReq);
       this.setNeedApproversDecisionsValues(request, type);
@@ -104,7 +151,9 @@ export class RequestRepository {
     }
   }
 
-  async isRequestApproved(isRequestApprovedReq: IsRequestApprovedReq): Promise<IsRequestApprovedRes> {
+  async isRequestApproved(
+    isRequestApprovedReq: IsRequestApprovedReq
+  ): Promise<IsRequestApprovedRes> {
     try {
       const request = await this.getRequestById({
         id: isRequestApprovedReq.id,
@@ -113,16 +162,24 @@ export class RequestRepository {
       const needSuperSecurityDecision = request.needSuperSecurityDecision;
       let commanderDecision: any = request.commanderDecision?.decision;
       commanderDecision =
-        typeof commanderDecision === typeof '' ? decisionFromJSON(commanderDecision) : commanderDecision;
+        typeof commanderDecision === typeof ''
+          ? decisionFromJSON(commanderDecision)
+          : commanderDecision;
       let securityDecision: any = request.securityDecision?.decision;
-      securityDecision = typeof securityDecision === typeof '' ? decisionFromJSON(securityDecision) : securityDecision;
+      securityDecision =
+        typeof securityDecision === typeof ''
+          ? decisionFromJSON(securityDecision)
+          : securityDecision;
       let superSecurityDecision: any = request.superSecurityDecision?.decision;
       superSecurityDecision =
-        typeof superSecurityDecision === typeof '' ? decisionFromJSON(superSecurityDecision) : superSecurityDecision;
+        typeof superSecurityDecision === typeof ''
+          ? decisionFromJSON(superSecurityDecision)
+          : superSecurityDecision;
       if (
         commanderDecision === Decision.APPROVED &&
         (!needSecurityDecision || securityDecision === Decision.APPROVED) &&
-        (!needSuperSecurityDecision || superSecurityDecision === Decision.APPROVED)
+        (!needSuperSecurityDecision ||
+          superSecurityDecision === Decision.APPROVED)
       ) {
         return { isRequestApproved: true };
       } else {
@@ -160,7 +217,8 @@ export class RequestRepository {
 
       if (approverField) {
         // Update request
-        updateQuery.requestProperties[approverField] = updateDecisionReq.approverDecision;
+        updateQuery.requestProperties[approverField] =
+          updateDecisionReq.approverDecision;
         let updatedRequest = await this.updateRequest(updateQuery);
 
         // Get decision
@@ -174,15 +232,22 @@ export class RequestRepository {
           newRequestStatus = RequestStatus.DECLINED;
         } else {
           // Check if request approved
-          const isRequestApprovedObj = await this.isRequestApproved({ id: updateDecisionReq.id });
-          if (isRequestApprovedObj.isRequestApproved) newRequestStatus = RequestStatus.IN_PROGRESS;
+          const isRequestApprovedObj = await this.isRequestApproved({
+            id: updateDecisionReq.id,
+          });
+          if (isRequestApprovedObj.isRequestApproved)
+            newRequestStatus = RequestStatus.IN_PROGRESS;
         }
 
         const requestType =
-          typeof updatedRequest.type === typeof '' ? requestTypeFromJSON(updatedRequest.type) : updatedRequest.type;
+          typeof updatedRequest.type === typeof ''
+            ? requestTypeFromJSON(updatedRequest.type)
+            : updatedRequest.type;
 
         if (newRequestStatus) {
-          let requestProperties: any = { status: requestStatusToJSON(newRequestStatus) };
+          let requestProperties: any = {
+            status: requestStatusToJSON(newRequestStatus),
+          };
 
           if (newRequestStatus === RequestStatus.IN_PROGRESS) {
             let adStatus = StageStatus.STAGE_WAITING_FOR_PUSH;
@@ -197,14 +262,22 @@ export class RequestRepository {
               kartoffelStatus = StageStatus.STAGE_WAITING_FOR_PUSH;
             }
             requestProperties['adStatus.status'] = stageStatusToJSON(adStatus);
-            requestProperties['kartoffelStatus.status'] = stageStatusToJSON(kartoffelStatus);
+            requestProperties['kartoffelStatus.status'] =
+              stageStatusToJSON(kartoffelStatus);
           }
 
           // Update request
-          updatedRequest = await this.updateRequest({ id: updateDecisionReq.id, requestProperties: requestProperties });
+          updatedRequest = await this.updateRequest({
+            id: updateDecisionReq.id,
+            requestProperties: requestProperties,
+          });
 
-          if (newRequestStatus === RequestStatus.DECLINED && requestType === RequestType.CREATE_ROLE) {
-            if (updatedRequest.kartoffelParams?.roleId) await reportTeaFail(updatedRequest.kartoffelParams?.roleId);
+          if (
+            newRequestStatus === RequestStatus.DECLINED &&
+            requestType === RequestType.CREATE_ROLE
+          ) {
+            if (updatedRequest.kartoffelParams?.roleId)
+              await reportTeaFail(updatedRequest.kartoffelParams?.roleId);
           }
         }
 
@@ -239,7 +312,10 @@ export class RequestRepository {
               newRequestStatus === RequestStatus.IN_PROGRESS
                 ? NotificationType.REQUEST_IN_PROGRESS
                 : NotificationType.REQUEST_DECLINED;
-            await createNotifications(requestStatusNotificationType, updatedRequest);
+            await createNotifications(
+              requestStatusNotificationType,
+              updatedRequest
+            );
           }
         }
 
@@ -252,9 +328,13 @@ export class RequestRepository {
     }
   }
 
-  async incrementKartoffelRetries(incrementRetriesReq: IncrementRetriesReq): Promise<Request> {
+  async incrementKartoffelRetries(
+    incrementRetriesReq: IncrementRetriesReq
+  ): Promise<Request> {
     try {
-      let request: Request = await this.getRequestById(incrementRetriesReq as GetRequestByIdReq);
+      let request: Request = await this.getRequestById(
+        incrementRetriesReq as GetRequestByIdReq
+      );
       let kartoffelStatus: any = request.kartoffelStatus;
       if (!kartoffelStatus) {
         kartoffelStatus = {
@@ -272,7 +352,9 @@ export class RequestRepository {
         properties.status = requestStatusToJSON(RequestStatus.FAILED);
       } else {
         kartoffelStatus.failedRetries = kartoffelStatus.failedRetries + 1;
-        kartoffelStatus.status = stageStatusToJSON(StageStatus.STAGE_NEED_RETRY);
+        kartoffelStatus.status = stageStatusToJSON(
+          StageStatus.STAGE_NEED_RETRY
+        );
       }
       properties.kartoffelStatus = kartoffelStatus;
 
@@ -287,9 +369,13 @@ export class RequestRepository {
     }
   }
 
-  async incrementADRetries(incrementRetriesReq: IncrementRetriesReq): Promise<Request> {
+  async incrementADRetries(
+    incrementRetriesReq: IncrementRetriesReq
+  ): Promise<Request> {
     try {
-      let request: Request = await this.getRequestById(incrementRetriesReq as GetRequestByIdReq);
+      let request: Request = await this.getRequestById(
+        incrementRetriesReq as GetRequestByIdReq
+      );
       let adStatus: any = request.adStatus;
       if (!adStatus) {
         adStatus = {
@@ -320,7 +406,9 @@ export class RequestRepository {
     }
   }
 
-  async canPushToKartoffelQueue(canPushToQueueReq: CanPushToQueueReq): Promise<CanPushToQueueRes> {
+  async canPushToKartoffelQueue(
+    canPushToQueueReq: CanPushToQueueReq
+  ): Promise<CanPushToQueueRes> {
     try {
       const request = await this.getRequestById({ id: canPushToQueueReq.id });
       let kartoffelFailedRetries = request.kartoffelStatus?.failedRetries;
@@ -328,12 +416,21 @@ export class RequestRepository {
         kartoffelFailedRetries = 0;
       }
       let kartoffelStatus: any = request.kartoffelStatus?.status;
-      kartoffelStatus = typeof kartoffelStatus === typeof '' ? stageStatusFromJSON(kartoffelStatus) : kartoffelStatus;
+      kartoffelStatus =
+        typeof kartoffelStatus === typeof ''
+          ? stageStatusFromJSON(kartoffelStatus)
+          : kartoffelStatus;
 
       let adStatus: any = request.adStatus?.status;
-      adStatus = typeof adStatus === typeof '' ? stageStatusFromJSON(adStatus) : adStatus;
+      adStatus =
+        typeof adStatus === typeof ''
+          ? stageStatusFromJSON(adStatus)
+          : adStatus;
       let requestStatus: any = request.status;
-      requestStatus = typeof requestStatus === typeof '' ? requestStatusFromJSON(requestStatus) : requestStatus;
+      requestStatus =
+        typeof requestStatus === typeof ''
+          ? requestStatusFromJSON(requestStatus)
+          : requestStatus;
 
       if (
         adStatus === StageStatus.STAGE_DONE &&
@@ -352,7 +449,9 @@ export class RequestRepository {
     }
   }
 
-  async canPushToADQueue(canPushToQueueReq: CanPushToQueueReq): Promise<CanPushToQueueRes> {
+  async canPushToADQueue(
+    canPushToQueueReq: CanPushToQueueReq
+  ): Promise<CanPushToQueueRes> {
     try {
       const request = await this.getRequestById({ id: canPushToQueueReq.id });
       const isRequestApprovedRes = await this.isRequestApproved({
@@ -360,13 +459,19 @@ export class RequestRepository {
       });
       const due = request.due;
       let adStatus: any = request.adStatus?.status;
-      adStatus = typeof adStatus === typeof '' ? stageStatusFromJSON(adStatus) : adStatus;
+      adStatus =
+        typeof adStatus === typeof ''
+          ? stageStatusFromJSON(adStatus)
+          : adStatus;
       let adFailedRetries = request.adStatus?.failedRetries;
       if (!adFailedRetries) {
         adFailedRetries = 0;
       }
       let requestStatus: any = request.status;
-      requestStatus = typeof requestStatus === typeof '' ? requestStatusFromJSON(requestStatus) : requestStatus;
+      requestStatus =
+        typeof requestStatus === typeof ''
+          ? requestStatusFromJSON(requestStatus)
+          : requestStatus;
 
       if (
         adStatus !== StageStatus.STAGE_FAILED &&
@@ -386,7 +491,12 @@ export class RequestRepository {
     }
   }
 
-  async getRequestsByQuery(query: any, expanded: boolean, from?: number, to?: number): Promise<any> {
+  async getRequestsByQuery(
+    query: any,
+    expanded: boolean,
+    from?: number,
+    to?: number
+  ): Promise<any> {
     try {
       const pagination =
         from && to
@@ -405,7 +515,9 @@ export class RequestRepository {
         requests = requests.map((requestId: any) => requestId.toString());
         return { requestIds: requests, count: totalCount };
       } else {
-        requests = await RequestModel.find(query, {}, pagination).sort([['updatedAt', -1]]);
+        requests = await RequestModel.find(query, {}, pagination).sort([
+          ['updatedAt', -1],
+        ]);
       }
 
       if (requests) {
@@ -426,6 +538,23 @@ export class RequestRepository {
           totalCount: 0,
         };
       }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getRequestsUnderBulk(
+    getRequestsUnderBulkReq: GetRequestsUnderBulkReq
+  ): Promise<RequestArray> {
+    try {
+      const bulkRequestId = getRequestsUnderBulkReq.id;
+      const requestArray = await this.getRequestsByQuery(
+        {
+          bulkRequestId: bulkRequestId,
+        },
+        true
+      );
+      return requestArray as RequestArray;
     } catch (error) {
       throw error;
     }
@@ -483,81 +612,6 @@ export class RequestRepository {
     }
   }
 
-  async searchRequestsByDisplayName(
-    searchRequestsByDisplayNameReq: SearchRequestsByDisplayNameReq
-  ): Promise<RequestArray> {
-    //TODO Check how to search on specific fields
-    try {
-      searchRequestsByDisplayNameReq.personType =
-        typeof searchRequestsByDisplayNameReq.personType === typeof ''
-          ? personTypeInRequestFromJSON(searchRequestsByDisplayNameReq.personType)
-          : searchRequestsByDisplayNameReq.personType;
-      searchRequestsByDisplayNameReq.searcherType = searchRequestsByDisplayNameReq.searcherType
-        ? searchRequestsByDisplayNameReq.searcherType
-        : PersonTypeInRequest.SUBMITTER;
-      searchRequestsByDisplayNameReq.searcherType =
-        typeof searchRequestsByDisplayNameReq.searcherType === typeof ''
-          ? personTypeInRequestFromJSON(searchRequestsByDisplayNameReq.searcherType)
-          : searchRequestsByDisplayNameReq.searcherType;
-
-      let query: any = {
-        $and: [
-          { type: { $ne: requestTypeToJSON(RequestType.CREATE_ROLE_BULK) } },
-          {
-            type: {
-              $ne: requestTypeToJSON(RequestType.CHANGE_ROLE_HIERARCHY_BULK),
-            },
-          },
-        ],
-      };
-
-      if (searchRequestsByDisplayNameReq.searcherId) {
-        let searcherQuery = {};
-        if (searchRequestsByDisplayNameReq.searcherType === PersonTypeInRequest.SUBMITTER) {
-          searcherQuery = {
-            'submittedBy.id': searchRequestsByDisplayNameReq.searcherId,
-          };
-        } else {
-          //APPROVER
-          searcherQuery = {
-            $or: [
-              { 'commanders.id': searchRequestsByDisplayNameReq.searcherId },
-              {
-                'securityApprovers.id': searchRequestsByDisplayNameReq.searcherId,
-              },
-              {
-                'superSecurityApprovers.id': searchRequestsByDisplayNameReq.searcherId,
-              },
-            ],
-          };
-        }
-        query['$and'].push(searcherQuery);
-      }
-
-      let { displayName, personType } = searchRequestsByDisplayNameReq;
-
-      if (personType === PersonTypeInRequest.SUBMITTER) {
-        query['$text'] = { $search: displayName };
-      } else if (personType === PersonTypeInRequest.COMMANDER_APPROVER) {
-        query['$text'] = { $search: displayName };
-      } else if (personType === PersonTypeInRequest.SECURITY_APPROVER) {
-        query['$text'] = { $search: displayName };
-      } else {
-        //approver
-        query['$text'] = { $search: displayName };
-      }
-      const requestArray = await this.getRequestsByQuery(
-        query,
-        true,
-        searchRequestsByDisplayNameReq.from,
-        searchRequestsByDisplayNameReq.to
-      );
-      return requestArray;
-    } catch (error) {
-      throw error;
-    }
-  }
-
   async deleteRequest(deleteReq: DeleteReq): Promise<SuccessMessage> {
     try {
       await RequestModel.deleteMany({
@@ -588,14 +642,21 @@ export class RequestRepository {
         turnObjectIdsToStrings(documentObj);
         // if bulk
         const requestType: RequestType =
-          typeof documentObj.type === typeof '' ? requestTypeFromJSON(documentObj.type) : documentObj.type;
+          typeof documentObj.type === typeof ''
+            ? requestTypeFromJSON(documentObj.type)
+            : documentObj.type;
         if (
           requestType === RequestType.CREATE_ROLE_BULK ||
           (requestType === RequestType.CHANGE_ROLE_HIERARCHY_BULK &&
-            (requestUpdate.commanderDecision || requestUpdate.securityDecision || requestUpdate.superSecurityDecision))
+            (requestUpdate.commanderDecision ||
+              requestUpdate.securityDecision ||
+              requestUpdate.superSecurityDecision))
         ) {
           const requestIds: string[] = documentObj.requestIds;
-          await RequestModel.updateMany({ bulkRequestId: updateReq.id }, { $set: requestUpdate });
+          await RequestModel.updateMany(
+            { bulkRequestId: updateReq.id },
+            { $set: requestUpdate }
+          );
         } else if (
           documentObj.isPartOfBulk &&
           (requestUpdate['kartoffelStatus.status'] ||
@@ -620,7 +681,9 @@ export class RequestRepository {
     }
   }
 
-  async updateKartoffelStatus(updateKartoffelStatusReq: UpdateKartoffelStatusReq): Promise<Request> {
+  async updateKartoffelStatus(
+    updateKartoffelStatusReq: UpdateKartoffelStatusReq
+  ): Promise<Request> {
     let requestStatus: any = RequestStatus.UNRECOGNIZED;
     let updatedRequest;
     try {
@@ -631,7 +694,8 @@ export class RequestRepository {
         'kartoffelStatus.createdId': updateKartoffelStatusReq.createdId,
       };
       if (updateKartoffelStatusReq.failedRetries) {
-        requestProperties['kartoffelStatus.failedRetries'] = updateKartoffelStatusReq.failedRetries;
+        requestProperties['kartoffelStatus.failedRetries'] =
+          updateKartoffelStatusReq.failedRetries;
       }
       let requestUpdate: any = {
         id: updateKartoffelStatusReq.requestId,
@@ -642,8 +706,14 @@ export class RequestRepository {
         typeof updatedRequest.kartoffelStatus?.status === typeof ''
           ? stageStatusFromJSON(updatedRequest.kartoffelStatus?.status)
           : updatedRequest.kartoffelStatus?.status;
-      if (kartoffelStatus === StageStatus.STAGE_DONE || kartoffelStatus === StageStatus.STAGE_FAILED) {
-        requestStatus = kartoffelStatus === StageStatus.STAGE_DONE ? RequestStatus.DONE : RequestStatus.FAILED;
+      if (
+        kartoffelStatus === StageStatus.STAGE_DONE ||
+        kartoffelStatus === StageStatus.STAGE_FAILED
+      ) {
+        requestStatus =
+          kartoffelStatus === StageStatus.STAGE_DONE
+            ? RequestStatus.DONE
+            : RequestStatus.FAILED;
         let properties: any = {
           status: requestStatusToJSON(requestStatus),
         };
@@ -654,7 +724,8 @@ export class RequestRepository {
       }
 
       if (
-        (kartoffelStatus === StageStatus.STAGE_DONE || kartoffelStatus === StageStatus.STAGE_FAILED) &&
+        (kartoffelStatus === StageStatus.STAGE_DONE ||
+          kartoffelStatus === StageStatus.STAGE_FAILED) &&
         updatedRequest.submittedBy
       ) {
         const stageNotificationType: NotificationType =
@@ -664,11 +735,14 @@ export class RequestRepository {
         await createNotifications(stageNotificationType, updatedRequest);
       }
       if (
-        (requestStatus === RequestStatus.DONE || requestStatus === RequestStatus.FAILED) &&
+        (requestStatus === RequestStatus.DONE ||
+          requestStatus === RequestStatus.FAILED) &&
         updatedRequest.submittedBy
       ) {
         const notificationType: NotificationType =
-          requestStatus === RequestStatus.DONE ? NotificationType.REQUEST_DONE : NotificationType.REQUEST_FAILED;
+          requestStatus === RequestStatus.DONE
+            ? NotificationType.REQUEST_DONE
+            : NotificationType.REQUEST_FAILED;
         await createNotifications(notificationType, updatedRequest);
       }
       return updatedRequest;
@@ -689,7 +763,8 @@ export class RequestRepository {
         },
       };
       if (updateADStatusReq.failedRetries) {
-        requestProperties.adStatus.failedRetries = updateADStatusReq.failedRetries;
+        requestProperties.adStatus.failedRetries =
+          updateADStatusReq.failedRetries;
       }
       let requestUpdate: any = {
         id: updateADStatusReq.requestId,
@@ -710,19 +785,25 @@ export class RequestRepository {
         });
       }
       if (
-        (adStatus === StageStatus.STAGE_DONE || adStatus === StageStatus.STAGE_FAILED) &&
+        (adStatus === StageStatus.STAGE_DONE ||
+          adStatus === StageStatus.STAGE_FAILED) &&
         updatedRequest.submittedBy
       ) {
         const stageNotificationType: NotificationType =
-          adStatus === StageStatus.STAGE_DONE ? NotificationType.AD_STAGE_DONE : NotificationType.AD_STAGE_FAILED;
+          adStatus === StageStatus.STAGE_DONE
+            ? NotificationType.AD_STAGE_DONE
+            : NotificationType.AD_STAGE_FAILED;
         await createNotifications(stageNotificationType, updatedRequest);
       }
       if (
-        (requestStatus === RequestStatus.DONE || requestStatus === RequestStatus.FAILED) &&
+        (requestStatus === RequestStatus.DONE ||
+          requestStatus === RequestStatus.FAILED) &&
         updatedRequest.submittedBy
       ) {
         const notificationType: NotificationType =
-          requestStatus === RequestStatus.DONE ? NotificationType.REQUEST_DONE : NotificationType.REQUEST_FAILED;
+          requestStatus === RequestStatus.DONE
+            ? NotificationType.REQUEST_DONE
+            : NotificationType.REQUEST_FAILED;
         await createNotifications(notificationType, updatedRequest);
       }
       return updatedRequest;
@@ -801,7 +882,9 @@ export class RequestRepository {
         break;
 
       case RequestType.ADD_APPROVER:
-        const approverType: ApproverType = approverTypeFromJSON(request.additionalParams.type);
+        const approverType: ApproverType = approverTypeFromJSON(
+          request.additionalParams.type
+        );
 
         switch (approverType) {
           case ApproverType.COMMANDER:
@@ -820,25 +903,9 @@ export class RequestRepository {
     }
   }
 
-  async getAllRequests(getAllRequestsReq: GetAllRequestsReq): Promise<RequestArray> {
-    try {
-      getAllRequestsReq.approvementStatus = getAllRequestsReq.approvementStatus
-        ? getAllRequestsReq.approvementStatus
-        : ApprovementStatus.ANY;
-      const approvementStatus: ApprovementStatus =
-        typeof getAllRequestsReq.approvementStatus === typeof ''
-          ? approvementStatusFromJSON(getAllRequestsReq.approvementStatus)
-          : getAllRequestsReq.approvementStatus;
-      const query: any = getApprovementQuery(approvementStatus);
-      query.isPartOfBulk = false;
-      const requestArray = await this.getRequestsByQuery(query, true, getAllRequestsReq.from, getAllRequestsReq.to);
-      return requestArray;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async getRequestBySerialNumber(getRequestBySerialNumberReq: GetRequestBySerialNumberReq): Promise<Request> {
+  async getRequestBySerialNumber(
+    getRequestBySerialNumberReq: GetRequestBySerialNumberReq
+  ): Promise<Request> {
     try {
       const request = await RequestModel.findOne({
         serialNumber: getRequestBySerialNumberReq.serialNumber,
@@ -848,7 +915,9 @@ export class RequestRepository {
         turnObjectIdsToStrings(document);
         return document as Request;
       } else {
-        throw new Error(`A request with {serialNumber: ${getRequestBySerialNumberReq.serialNumber}} was not found!`);
+        throw new Error(
+          `A request with {serialNumber: ${getRequestBySerialNumberReq.serialNumber}} was not found!`
+        );
       }
     } catch (error) {
       throw error;
@@ -863,14 +932,18 @@ export class RequestRepository {
         turnObjectIdsToStrings(document);
         return document as Request;
       } else {
-        throw new Error(`A request with {_id: ${getRequestByIdReq.id}} was not found!`);
+        throw new Error(
+          `A request with {_id: ${getRequestByIdReq.id}} was not found!`
+        );
       }
     } catch (error) {
       throw error;
     }
   }
 
-  async updateCommanders(updateApproversReq: UpdateApproversReq): Promise<Request> {
+  async updateCommanders(
+    updateApproversReq: UpdateApproversReq
+  ): Promise<Request> {
     try {
       const request: Request = await this.updateRequest({
         id: updateApproversReq.id,
@@ -882,7 +955,9 @@ export class RequestRepository {
     }
   }
 
-  async updateSuperSecurityApprovers(updateApproversReq: UpdateApproversReq): Promise<Request> {
+  async updateSuperSecurityApprovers(
+    updateApproversReq: UpdateApproversReq
+  ): Promise<Request> {
     try {
       const request: Request = await this.updateRequest({
         id: updateApproversReq.id,
@@ -896,7 +971,9 @@ export class RequestRepository {
     }
   }
 
-  async updateSecurityApprovers(updateApproversReq: UpdateApproversReq): Promise<Request> {
+  async updateSecurityApprovers(
+    updateApproversReq: UpdateApproversReq
+  ): Promise<Request> {
     try {
       const request: Request = await this.updateRequest({
         id: updateApproversReq.id,
@@ -908,26 +985,57 @@ export class RequestRepository {
     }
   }
 
-  async getRequestsByPerson(
-    getRequestsByPersonReq: GetRequestsByPersonReq,
-    personTypesInRequest: PersonTypeInRequest,
-    personInfoType: PersonInfoType
-  ) {
+  async getRequestsByPerson(getRequestsByPersonReq: GetRequestsByPersonReq) {
     try {
       let query: any = {};
-      getRequestsByPersonReq.approvementStatus = getRequestsByPersonReq.approvementStatus
-        ? getRequestsByPersonReq.approvementStatus
-        : ApprovementStatus.ANY;
+      const personTypeInRequest: PersonTypeInRequest =
+        typeof getRequestsByPersonReq.personType === typeof ''
+          ? personTypeInRequestFromJSON(getRequestsByPersonReq.personType)
+          : getRequestsByPersonReq.personType;
+      const personInfoType: PersonInfoType =
+        typeof getRequestsByPersonReq.personInfoType === typeof ''
+          ? personInfoTypeFromJSON(getRequestsByPersonReq.personInfoType)
+          : getRequestsByPersonReq.personInfoType;
+      getRequestsByPersonReq.approvementStatus =
+        getRequestsByPersonReq.approvementStatus
+          ? getRequestsByPersonReq.approvementStatus
+          : ApprovementStatus.ANY;
       const approvementStatus: ApprovementStatus =
         typeof getRequestsByPersonReq.approvementStatus === typeof ''
           ? approvementStatusFromJSON(getRequestsByPersonReq.approvementStatus)
           : getRequestsByPersonReq.approvementStatus;
-      if (personInfoType === PersonInfoType.ID) {
-        query = getIdQuery(getRequestsByPersonReq.id, personTypesInRequest, approvementStatus);
-      } else {
-        query = getIdentifierQuery(getRequestsByPersonReq.id, personTypesInRequest, approvementStatus);
-      }
+      let userType: any[] = getRequestsByPersonReq.userType
+        ? getRequestsByPersonReq.userType
+        : [];
+      userType = userType.map((type) => {
+        return typeof type === typeof '' ? approverTypeFromJSON(type) : type;
+      });
+
+      query = getQuery(
+        getRequestsByPersonReq.id,
+        personInfoType,
+        personTypeInRequest,
+        approvementStatus,
+        userType
+      );
       query.isPartOfBulk = false;
+      if (getRequestsByPersonReq.status) {
+        const status =
+          typeof getRequestsByPersonReq.status === typeof ''
+            ? getRequestsByPersonReq.status
+            : requestStatusToJSON(getRequestsByPersonReq.status);
+        query.status = status;
+      }
+      if (getRequestsByPersonReq.type) {
+        const type =
+          typeof getRequestsByPersonReq.type === typeof ''
+            ? getRequestsByPersonReq.type
+            : requestTypeToJSON(getRequestsByPersonReq.type);
+        query.type = type;
+      }
+      if (getRequestsByPersonReq.displayName) {
+        query['$text'] = { $search: getRequestsByPersonReq.displayName };
+      }
       const totalCount = await RequestModel.count(query);
       const requests: any = await RequestModel.find(
         query,
@@ -958,13 +1066,18 @@ export class RequestRepository {
 
   async pushError(pushErrorReq: PushErrorReq): Promise<Request> {
     try {
-      let errorType: any = pushErrorReq.errorType ? pushErrorReq.errorType : errorTypeToJSON(ErrorType.UNKNOWN_STAGE);
-      errorType = typeof errorType === typeof '' ? errorType : errorTypeToJSON(errorType);
+      let errorType: any = pushErrorReq.errorType
+        ? pushErrorReq.errorType
+        : errorTypeToJSON(ErrorType.UNKNOWN_STAGE);
+      errorType =
+        typeof errorType === typeof '' ? errorType : errorTypeToJSON(errorType);
       const document: any = await RequestModel.findOne({
         _id: pushErrorReq.id,
       });
       if (!document) {
-        throw new Error(`A request with {_id: ${pushErrorReq.id}} was not found!`);
+        throw new Error(
+          `A request with {_id: ${pushErrorReq.id}} was not found!`
+        );
       } else {
         if (!document.rowErrors) {
           document.rowErrors = [];
@@ -984,7 +1097,9 @@ export class RequestRepository {
     }
   }
 
-  async syncBulkRequest(syncBulkRequestReq: SyncBulkRequestReq): Promise<Request> {
+  async syncBulkRequest(
+    syncBulkRequestReq: SyncBulkRequestReq
+  ): Promise<Request> {
     try {
       let allDone = true;
       let newStatus: any = undefined;
@@ -1000,7 +1115,9 @@ export class RequestRepository {
         }
         for (let smallRequest of smallRequests) {
           const smallRequestStatus =
-            typeof smallRequest.status === typeof '' ? requestStatusFromJSON(smallRequest.status) : smallRequest.status;
+            typeof smallRequest.status === typeof ''
+              ? requestStatusFromJSON(smallRequest.status)
+              : smallRequest.status;
           if (smallRequestStatus !== RequestStatus.DONE) {
             allDone = false;
           }
@@ -1012,7 +1129,9 @@ export class RequestRepository {
         if (allDone) {
           newStatus = RequestStatus.DONE;
         }
-        const requestProperties: any = newStatus ? { status: requestStatusToJSON(newStatus) } : {};
+        const requestProperties: any = newStatus
+          ? { status: requestStatusToJSON(newStatus) }
+          : {};
         const updatedBulkRequest = await this.updateRequest({
           id: syncBulkRequestReq.id,
           requestProperties: requestProperties,

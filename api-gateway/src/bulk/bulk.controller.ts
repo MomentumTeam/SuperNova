@@ -1,12 +1,22 @@
 import { Response } from 'express';
 import { BulkService } from './bulk.service';
-import { AuthenticationError, InvalidBodyError } from '../utils/errors/userErrors';
-import { ChangeRoleHierarchyBulkReq, CreateRoleBulkReq, EntityMin } from '../interfaces/protoc/proto/requestService';
+import {
+  AuthenticationError,
+  InvalidBodyError,
+} from '../utils/errors/userErrors';
+import {
+  ChangeRoleHierarchyBulkReq,
+  CreateRoleBulkReq,
+  EntityMin,
+} from '../interfaces/protoc/proto/requestService';
 import { allowedFileFormats } from './bulk.interface';
 import { logger } from '../utils/logger/logger';
 import { config } from '../config';
 import { statusCodeHandler } from '../utils/errors/errorHandlers';
-import { GetBulkRequestExampleReq } from '../interfaces/protoc/proto/bulkService';
+import {
+  GetBulkRequestByIdReq,
+  GetBulkRequestExampleReq,
+} from '../interfaces/protoc/proto/bulkService';
 import { checkIfFileExist, ensureFileExists } from './bulk.utils';
 
 const uploadPath = config.files.path;
@@ -32,7 +42,10 @@ export default class BulkController {
       let num = 0;
       let fileName = filename;
       let fileUploadPath = `${uploadPath}/${fileName}`;
-      const filenamewithoutextension = fileName.substr(0, fileName.lastIndexOf('.'));
+      const filenamewithoutextension = fileName.substr(
+        0,
+        fileName.lastIndexOf('.')
+      );
       const extension = '.' + fileName.split('.').pop();
 
       while (checkIfFileExist(fileUploadPath)) {
@@ -45,7 +58,11 @@ export default class BulkController {
 
     const uploadFile = async (bulkFile: any) => {
       if (!allowedFileFormats.includes(bulkFile.mimetype)) {
-        throw new InvalidBodyError(`Not supported file types. supported only: ${JSON.stringify(allowedFileFormats)}`);
+        throw new InvalidBodyError(
+          `Not supported file types. supported only: ${JSON.stringify(
+            allowedFileFormats
+          )}`
+        );
       }
 
       bulkFile.name = generateFileName(bulkFile.name);
@@ -63,8 +80,12 @@ export default class BulkController {
         throw new InvalidBodyError('add files with "bulkFiles" field.');
       }
 
-      const files = Array.isArray(bulkFiles) ? [...[], ...bulkFiles] : [...[], bulkFiles];
-      const uploadFiles = await Promise.all(files.map((bulkFile: any) => uploadFile(bulkFile)));
+      const files = Array.isArray(bulkFiles)
+        ? [...[], ...bulkFiles]
+        : [...[], bulkFiles];
+      const uploadFiles = await Promise.all(
+        files.map((bulkFile: any) => uploadFile(bulkFile))
+      );
       res.status(200).send({ uploadFiles });
     } catch (error: any) {
       logger.error(error.message);
@@ -89,7 +110,9 @@ export default class BulkController {
     };
 
     try {
-      const roleBulk = await BulkService.createRoleBulkRequest(createRoleBulkReq);
+      const roleBulk = await BulkService.createRoleBulkRequest(
+        createRoleBulkReq
+      );
       res.send(roleBulk);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -114,7 +137,10 @@ export default class BulkController {
     };
 
     try {
-      const roleHierarchyBulk = await BulkService.changeRoleHierarchyBulkRequest(changeRoleHierarchyBulkReq);
+      const roleHierarchyBulk =
+        await BulkService.changeRoleHierarchyBulkRequest(
+          changeRoleHierarchyBulkReq
+        );
       res.send(roleHierarchyBulk);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -128,7 +154,9 @@ export default class BulkController {
       bulkType: req.query.bulkType,
     };
     try {
-      const fileName = await BulkService.getBulkRequestExample(getBulkRequestExampleReq);
+      const fileName = await BulkService.getBulkRequestExample(
+        getBulkRequestExampleReq
+      );
 
       if (fileName.bulkFileName) {
         const filePath = `${uploadPath}/${fileName.bulkFileName}`;
@@ -138,7 +166,45 @@ export default class BulkController {
         }
       }
 
-      res.status(404).send(`example file not found in path ${uploadPath}/${fileName.bulkFileName}`);
+      res
+        .status(404)
+        .send(
+          `example file not found in path ${uploadPath}/${fileName.bulkFileName}`
+        );
+    } catch (error: any) {
+      const statusCode = statusCodeHandler(error);
+      res.status(statusCode).send(error.message);
+    }
+  }
+
+  //GET
+  static async getCreateRoleBulkRequestById(req: any, res: Response) {
+    const getBulkRequestByIdReq: GetBulkRequestByIdReq = {
+      id: req.query.id,
+    };
+    try {
+      const detailedBulkRequest =
+        await BulkService.getCreateRoleBulkRequestById(getBulkRequestByIdReq);
+
+      res.send(detailedBulkRequest);
+    } catch (error: any) {
+      const statusCode = statusCodeHandler(error);
+      res.status(statusCode).send(error.message);
+    }
+  }
+
+  //GET
+  static async getChangeRoleHierarchyBulkRequestById(req: any, res: Response) {
+    const getBulkRequestByIdReq: GetBulkRequestByIdReq = {
+      id: req.query.id,
+    };
+    try {
+      const detailedBulkRequest =
+        await BulkService.getChangeRoleHierarchyBulkRequestById(
+          getBulkRequestByIdReq
+        );
+
+      res.send(detailedBulkRequest);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);

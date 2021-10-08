@@ -11,5 +11,12 @@ export const maxQueueRetries = process.env.RS_MAX_QUEUE_RETRIES
   : 5;
 export const notificationServiceUrl = process.env.RS_NS_URL || '0.0.0.0:8084';
 export const teaServiceUrl = process.env.RS_TS_URL || '0.0.0.0:8086';
-export const mongoConnectionRetries = process.env.MONGO_RECONNECT_ATTEMPTS || '5';
-export const mongoReconnectTimeout = process.env.MONGO_RECONNECT_TIMEOUT || '2000';
+export const mongoConnectionRetries =
+  process.env.MONGO_RECONNECT_ATTEMPTS || '5';
+export const mongoReconnectTimeout =
+  process.env.MONGO_RECONNECT_TIMEOUT || '2000';
+
+export const logPath = process.env.RS_LOG_PATH || './logs';
+export const storeLogs = process.env.GLOBAL_STORE_LOGS
+  ? process.env.GLOBAL_STORE_LOGS === 'true'
+  : false;

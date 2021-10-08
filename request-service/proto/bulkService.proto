@@ -8,6 +8,8 @@ service BulkService {
     rpc ChangeRoleHierarchyBulkRequest(RequestService.ChangeRoleHierarchyBulkReq) returns (RequestService.ChangeRoleHierarchyBulkRes){}
 
     rpc GetBulkRequestExample(GetBulkRequestExampleReq) returns (GetBulkRequestExampleRes){}
+    rpc GetCreateRoleBulkRequestById(GetBulkRequestByIdReq) returns (DetailedCreateRoleBulkRequest){}
+    rpc GetChangeRoleHierarchyBulkRequestById(GetBulkRequestByIdReq) returns (DetailedChangeRoleHierarchyBulkRequest){}
 }
 
 message GetBulkRequestExampleReq {
@@ -21,4 +23,35 @@ enum BulkType{
 
 message GetBulkRequestExampleRes {
     string bulkFileName = 1;
+}
+
+message GetBulkRequestByIdReq{
+    string id = 1;
+}
+
+message DetailedCreateRoleBulkRequest{
+    RequestService.Request request = 1;
+    repeated CreateRoleRow rows = 2;
+}
+
+message DetailedChangeRoleHierarchyBulkRequest{
+    RequestService.Request request = 1;
+    repeated ChangeRoleHierarchyRow rows = 2;
+}
+
+message CreateRoleRow{
+    string id = 1;
+    string jobTitle = 2;
+    string clearance = 3;
+    string roleEntityType = 4;
+    string rowNumber = 5;
+}
+
+message ChangeRoleHierarchyRow{
+    string id = 1;
+    string roleId = 2;
+    string currentJobTitle = 3;
+    string newJobTitle = 4;
+    string rowNumber = 5;
+
 }
