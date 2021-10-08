@@ -31,3 +31,8 @@ export const shmuelRequestTypes: any = {
   DISCONNECT_ROLE: 'DISCONNECT_ROLE',
   CHANGE_ROLE_HIERARCHY: 'CHANGE_ROLE_HIERARCHY',
 };
+
+export const logPath = process.env.PS_LOG_PATH || './logs';
+export const storeLogs = process.env.GLOBAL_STORE_LOGS
+  ? process.env.GLOBAL_STORE_LOGS === 'true'
+  : false;

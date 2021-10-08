@@ -815,7 +815,7 @@ export class RequestRepository {
   setNeedApproversDecisionsValues(request: any, type: RequestType): void {
     switch (type) {
       case RequestType.CREATE_OG:
-        request.needSecurityDecision = true; //change to false
+        request.needSecurityDecision = false;
         request.needSuperSecurityDecision = false;
         break;
 
