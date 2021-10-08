@@ -39,5 +39,12 @@ export const suffixesInNewDomain = process.env.TS_SUFFIXES_OLD_DOMAIN
   ? process.env.TS_SUFFIXES_OLD_DOMAIN.split(',')
   : ['newDomain.com', 'newDomain.com'];
 // export const oldDomainSuffixesArray
-export const mongoConnectionRetries = process.env.MONGO_RECONNECT_ATTEMPTS || '5';
-export const mongoReconnectTimeout = process.env.MONGO_RECONNECT_TIMEOUT || '2000';
+export const mongoConnectionRetries =
+  process.env.MONGO_RECONNECT_ATTEMPTS || '5';
+export const mongoReconnectTimeout =
+  process.env.MONGO_RECONNECT_TIMEOUT || '2000';
+
+export const logPath = process.env.TS_LOG_PATH || './logs';
+export const storeLogs = process.env.GLOBAL_STORE_LOGS
+  ? process.env.GLOBAL_STORE_LOGS === 'true'
+  : false;
