@@ -55,6 +55,27 @@ export const getRequestsByPersonSchema = Joi.object({
   },
 });
 
+export const getMyRequestsSchema = Joi.object({
+  body: {},
+  params: {},
+  query: {
+    personType: Joi.string()
+      .valid(...Object.keys(PersonTypeInRequest))
+      .required(),
+    personInfoType: Joi.string()
+      .valid(...Object.keys(PersonInfoType))
+      .default('ID'),
+    approvementStatus: Joi.string()
+      .valid(...Object.keys(ApprovementStatus))
+      .default('ANY'),
+    displayName: Joi.string(),
+    status: Joi.string().valid(...Object.keys(RequestStatus)),
+    type: Joi.string().valid(...Object.keys(RequestType)),
+    from: Joi.number().default(0),
+    to: Joi.number().default(100),
+  },
+});
+
 export const getRequestBySerialNumberSchema = Joi.object({
   body: {},
   params: {

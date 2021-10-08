@@ -16,6 +16,13 @@ RequestsRouter.get(
   RequestValidator.isGetRequestsByPersonValid,
   RequestsController.getRequestsByPerson
 );
+
+RequestsRouter.get(
+  '/my/',
+  RequestValidator.isGetRequestsByPersonValid,
+  RequestsController.getMyRequests
+);
+
 // RequestsRouter.get('/status/:approvementStatus', PermissionHandler.securityUser, RequestValidator.isGetAllRequestsValid,RequestsController.getAllRequests);
 RequestsRouter.get(
   '/serialNumber/:serialNumber',

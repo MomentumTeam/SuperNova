@@ -1,4 +1,5 @@
 import * as env from 'env-var';
+import { findPath } from './utils/path';
 
 export const config = {
   server: {
@@ -41,7 +42,7 @@ export const config = {
       .asString(),
     publicKeyPath: env
       .get('GATEWAY_SPIKE_PUBLIC_KEY_FULL_PATH')
-      .default('../spike-service/src/utils/publickey.pem')
+      .default(`${findPath('spike-service')}/src/utils/publickey.pem`)
       .asString(),
     writeScopeName: env
       .get('GATEWAY_WRITE_SCOPE_NAME')

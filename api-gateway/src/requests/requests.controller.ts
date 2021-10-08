@@ -65,6 +65,42 @@ export default class RequestsController {
     }
   }
 
+  static async getMyRequests(req: any, res: Response) {
+    const getRequestsByPersonReq: GetRequestsByPersonReq = {
+      id: req.user.id,
+      personType: req.query.personType,
+      personInfoType: req.query.personInfoType,
+      from: req.query.from,
+      to: req.query.to,
+      userType: req.user.types,
+    };
+
+    if (req.query.approvementStatus) {
+      getRequestsByPersonReq.approvementStatus =
+        getRequestsByPersonReq.approvementStatus;
+    }
+    if (req.query.displayName) {
+      getRequestsByPersonReq.displayName = getRequestsByPersonReq.displayName;
+    }
+    if (req.query.status) {
+      getRequestsByPersonReq.status = getRequestsByPersonReq.status;
+    }
+    if (req.query.type) {
+      getRequestsByPersonReq.type = getRequestsByPersonReq.type;
+    }
+
+    try {
+      const requests = await RequestsService.getRequestsByPerson(
+        getRequestsByPersonReq
+      );
+      res.send(requests);
+    } catch (error: any) {
+      // TODO : ask barak if we need to return the service's error or always 500
+      const statusCode = statusCodeHandler(error);
+      res.status(statusCode).send(error.message);
+    }
+  }
+
   static async getRequestsByPerson(req: any, res: Response) {
     const getRequestsByPersonReq: GetRequestsByPersonReq = {
       id: req.params.id,
