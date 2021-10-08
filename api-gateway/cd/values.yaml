@@ -8,7 +8,15 @@ images:
     name: momentumacr
   repository: momentumacr.azurecr.io/api-gateway
   tag: "latest"
+  
 service:
+
+volume:
+  mountPath: /dist/
+  secretName: azure-secret
+  shareName: momentum/utils
+
+
 configmap:
   configmaps:  
   mame: momentum-configmap
