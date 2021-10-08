@@ -43,6 +43,7 @@ import {
   personInfoTypeFromJSON,
   personTypeInRequestFromJSON,
   GetRequestsUnderBulkReq,
+  decisionToJSON,
 } from '../interfaces/protoc/proto/requestService';
 import { createNotifications } from '../services/notificationHelper';
 import * as C from '../config';
@@ -101,6 +102,31 @@ export class RequestRepository {
           message: 'Waiting for push, request type does not require AD update',
           failedRetries: 0,
         };
+      } else if (type === RequestType.EDIT_ENTITY) {
+        //automatically approved
+        const submittedById = createRequestReq.submittedBy.id;
+        const approverDecision = {
+          approver: createRequestReq.submittedBy
+            ? createRequestReq.submittedBy
+            : { id: '', displayName: '', personalNumber: '', identityCard: '' },
+          decision: decisionToJSON(Decision.APPROVED),
+        };
+        createRequestReq.commanderDecision = approverDecision;
+        createRequestReq.securityDecision = approverDecision;
+        createRequestReq.superSecurityDecision = approverDecision;
+        createRequestReq.adStatus = {
+          status: stageStatusToJSON(StageStatus.STAGE_WAITING_FOR_PUSH),
+          message: '',
+          failedRetries: 0,
+        };
+        createRequestReq.kartoffelStatus = {
+          status: stageStatusToJSON(StageStatus.STAGE_WAITING_FOR_AD),
+          message: '',
+          failedRetries: 0,
+        };
+        createRequestReq.status = requestStatusToJSON(
+          RequestStatus.IN_PROGRESS
+        );
       }
       const request: any = new RequestModel(createRequestReq);
       this.setNeedApproversDecisionsValues(request, type);

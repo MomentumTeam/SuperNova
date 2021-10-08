@@ -325,15 +325,15 @@ const createEntityKartoffelParamsObj = Joi.object({
   firstName: Joi.string().required(),
   lastName: Joi.string().required(),
   identityCard: Joi.string().required(),
-  personalNumber: Joi.string().required(),
-  serviceType: Joi.string().required(),
+  personalNumber: Joi.string(),
+  serviceType: Joi.string(),
   phone: Joi.array().items(Joi.string()),
   mobilePhone: Joi.array().items(Joi.string()),
-  address: Joi.string().required(),
+  address: Joi.string(),
   clearance: Joi.string().required(),
   sex: Joi.string().required(),
-  birthdate: Joi.number().unsafe().required(),
-  entityType: Joi.string().required(),
+  birthdate: Joi.number().unsafe(),
+  entityType: Joi.string(),
 });
 const createEntityADParamsObj = Joi.object({
   //NO PARAMETERS NEEDED
