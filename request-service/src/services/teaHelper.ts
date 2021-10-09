@@ -16,7 +16,7 @@ export async function reportTeaFail(tea: string) {
 
 export async function retrieveTeaByUnit(unit: string) {
   let retrieveTeaByUnitReq: RetrieveTeaByUnitReq = {
-    kartoffelId: unit,
+    id: unit,
   };
   const teaMessage = await TeaService.retrieveTeaByUnit(retrieveTeaByUnitReq);
   return teaMessage.tea;

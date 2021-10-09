@@ -17,7 +17,7 @@ export function generateKartoffelQueueMessage(request: Request): any {
       message.data = {
         name: kartoffelParams.name,
         parent: kartoffelParams.parent,
-        source: kartoffelParams.source,
+        source: kartoffelParams.source ? kartoffelParams.source : 'oneTree',
       };
       break;
     case RequestType.CREATE_ROLE:
@@ -27,8 +27,8 @@ export function generateKartoffelQueueMessage(request: Request): any {
         directGroup: kartoffelParams.directGroup,
         roleId: kartoffelParams.roleId,
         //for digitalIdentity
-        type: kartoffelParams.jobTitle,
-        source: kartoffelParams.source,
+        type: kartoffelParams.type ? kartoffelParams.type : 'domainUser',
+        source: kartoffelParams.source ? kartoffelParams.source : 'oneTree',
         uniqueId: kartoffelParams.uniqueId,
         mail: kartoffelParams.mail,
         isRoleAttachable: kartoffelParams.isRoleAttachable,
@@ -53,6 +53,7 @@ export function generateKartoffelQueueMessage(request: Request): any {
       message.data = {
         id: kartoffelParams.id,
         uniqueId: kartoffelParams.uniqueId,
+        needDisconnect: kartoffelParams.needDisconnect,
       };
       break;
     case RequestType.RENAME_OG:
@@ -107,12 +108,16 @@ export function generateKartoffelQueueMessage(request: Request): any {
       break;
     case RequestType.CHANGE_ROLE_HIERARCHY:
       message.data = {
-        //TODO
+        roleId: kartoffelParams.roleId,
+        directGroup: kartoffelParams.directGroup,
+        currentJobTitle: kartoffelParams.currentJobTitle,
       };
+      if (kartoffelParams.newJobTitle) {
+        message.data.newJobTitle = kartoffelParams.newJobTitle;
+      }
       break;
     default:
-      message.data = {};
-      break;
+      throw new Error('type not supported!');
   }
   return message;
 }
@@ -123,17 +128,22 @@ export function generateADQueueMessage(request: Request): any {
     type: C.shmuelRequestTypes[requestTypeToJSON(request.type)],
     source: C.oldDomain,
   };
+  if (
+    request.type === RequestType.ASSIGN_ROLE_TO_ENTITY &&
+    request.kartoffelParams?.needDisconnect
+  ) {
+    message.type = 'MoveRole';
+  }
   const adParams: any = request.adParams;
   switch (request.type) {
-    case RequestType.CREATE_OG: //Reviewed with Orin
+    case RequestType.CREATE_OG: //Reviewed with Orin, CreateOU
       message.data = {
         ouDName: adParams.ouDisplayName,
         ouName: adParams.ouName,
-        moveOuDName: adParams.ouDisplayName, //TODO put new name at the end
-        moveOuName: adParams.name,
+        newOuName: adParams.name,
       };
       break;
-    case RequestType.CREATE_ROLE: //reviewed with Orin
+    case RequestType.CREATE_ROLE: //reviewed with Orin, CreateRole
       message.data = {
         userID: adParams.samAccountName,
         ouName: adParams.ouDisplayName,
@@ -141,32 +151,47 @@ export function generateADQueueMessage(request: Request): any {
       };
       break;
     case RequestType.ASSIGN_ROLE_TO_ENTITY: //reviewed with Orin
-      message.data = {
-        samAccountName: adParams.oldSAMAccountName,
-        toSamAccountName: adParams.newSAMAccountName,
-        upn: adParams.upn,
-        firstName: adParams.firstName,
-        lastName: adParams.lastName,
-        fullName: adParams.fullName,
-        nickname: adParams.fullName,
-        rank: adParams.rank,
-        jobNumber: adParams.roleSerialCode,
-      };
+      if (request.kartoffelParams?.needDisconnect) {
+        //MoveRole
+        message.data = {
+          samAccountName: adParams.oldSAMAccountName,
+          toSamAccountName: adParams.newSAMAccountName,
+          upn: adParams.upn,
+          firstName: adParams.firstName,
+          lastName: adParams.lastName,
+          fullName: adParams.fullName,
+          nickname: adParams.fullName,
+          rank: adParams.rank,
+          jobNumber: adParams.roleSerialCode,
+        };
+      } else {
+        //ConnectNewRole
+        message.data = {
+          userID: adParams.newSAMAccountName,
+          UPN: adParams.upn,
+          firstName: adParams.firstName,
+          lastName: adParams.lastName,
+          fullName: adParams.fullName,
+          rank: adParams.rank,
+          ID: adParams.newSAMAccountName, //?
+          pdoName: adParams.roleSerialCode, //?
+        };
+      }
       break;
-    case RequestType.RENAME_OG: //Reviewed with Orin
+    case RequestType.RENAME_OG: //Reviewed with Orin, EditOU
       message.data = {
-        ouName: adParams.ouDisplayName,
+        ouDName: adParams.ouDisplayName,
         hierarchyOu: adParams.oldOuName,
         newOuName: adParams.newOuName,
       };
       break;
-    case RequestType.RENAME_ROLE: //Reviewed with Orin
+    case RequestType.RENAME_ROLE: //Reviewed with Orin, EditRoleName
       message.data = {
         userT: adParams.samAccountName,
         newRole: adParams.jobTitle,
       };
       break;
-    case RequestType.EDIT_ENTITY: //Reviewed with Orin
+    case RequestType.EDIT_ENTITY: //Reviewed with Orin, EditSpecialRole
       message.data = {
         samAccountName: adParams.samAccountName,
         firstName: adParams.firstName,
@@ -174,26 +199,27 @@ export function generateADQueueMessage(request: Request): any {
         fullName: adParams.fullName,
       };
       break;
-    case RequestType.DELETE_ROLE: // Reviewed with Orin
+    case RequestType.DELETE_ROLE: // Reviewed with Orin, PurgeRole
       message.data = {
         userT: adParams.samAccountName,
       };
       break;
-    case RequestType.DISCONNECT_ROLE: // Reviewed with Orin
+    case RequestType.DISCONNECT_ROLE: // Reviewed with Orin, DisconnectRole
       message.data = {
         userID: adParams.samAccountName,
       };
       break;
-    case RequestType.CHANGE_ROLE_HIERARCHY: // TODO
-      message.data = {};
-      break;
-    case RequestType.DELETE_OG: // TODO
-      message.data = {};
+    case RequestType.CHANGE_ROLE_HIERARCHY: // ChangeRole
+      message.data = {
+        userT: adParams.samAccountName,
+        ouDisplayName: adParams.ouDisplayName,
+      };
+      if (adParams.newJobTitle) {
+        message.data.newName = adParams.newJobTitle;
+      }
       break;
     default:
-      //DELETE_ENTITY, CREATE_ENTITY NEVER GONNA ENTER THIS
-      message.data = {};
-      break;
+      throw new Error('type not supported!');
   }
   return message;
 }

@@ -42,6 +42,7 @@ import {
   personTypeInRequestFromJSON,
   GetRequestsUnderBulkReq,
   decisionToJSON,
+  RowError,
 } from '../interfaces/protoc/proto/requestService';
 import { createNotifications } from '../services/notificationHelper';
 import * as C from '../config';
@@ -158,32 +159,41 @@ export class RequestRepository {
       const request = await this.getRequestById({
         id: isRequestApprovedReq.id,
       });
-      const needSecurityDecision = request.needSecurityDecision;
-      const needSuperSecurityDecision = request.needSuperSecurityDecision;
-      let commanderDecision: any = request.commanderDecision?.decision;
-      commanderDecision =
-        typeof commanderDecision === typeof ''
-          ? decisionFromJSON(commanderDecision)
-          : commanderDecision;
-      let securityDecision: any = request.securityDecision?.decision;
-      securityDecision =
-        typeof securityDecision === typeof ''
-          ? decisionFromJSON(securityDecision)
-          : securityDecision;
-      let superSecurityDecision: any = request.superSecurityDecision?.decision;
-      superSecurityDecision =
-        typeof superSecurityDecision === typeof ''
-          ? decisionFromJSON(superSecurityDecision)
-          : superSecurityDecision;
-      if (
-        commanderDecision === Decision.APPROVED &&
-        (!needSecurityDecision || securityDecision === Decision.APPROVED) &&
-        (!needSuperSecurityDecision ||
-          superSecurityDecision === Decision.APPROVED)
-      ) {
+      const requestType =
+        typeof request.type === typeof ''
+          ? requestTypeFromJSON(request.type)
+          : request.type;
+      if (requestType === RequestType.EDIT_ENTITY) {
         return { isRequestApproved: true };
       } else {
-        return { isRequestApproved: false };
+        const needSecurityDecision = request.needSecurityDecision;
+        const needSuperSecurityDecision = request.needSuperSecurityDecision;
+        let commanderDecision: any = request.commanderDecision?.decision;
+        commanderDecision =
+          typeof commanderDecision === typeof ''
+            ? decisionFromJSON(commanderDecision)
+            : commanderDecision;
+        let securityDecision: any = request.securityDecision?.decision;
+        securityDecision =
+          typeof securityDecision === typeof ''
+            ? decisionFromJSON(securityDecision)
+            : securityDecision;
+        let superSecurityDecision: any =
+          request.superSecurityDecision?.decision;
+        superSecurityDecision =
+          typeof superSecurityDecision === typeof ''
+            ? decisionFromJSON(superSecurityDecision)
+            : superSecurityDecision;
+        if (
+          commanderDecision === Decision.APPROVED &&
+          (!needSecurityDecision || securityDecision === Decision.APPROVED) &&
+          (!needSuperSecurityDecision ||
+            superSecurityDecision === Decision.APPROVED)
+        ) {
+          return { isRequestApproved: true };
+        } else {
+          return { isRequestApproved: false };
+        }
       }
     } catch (error) {
       throw error;
@@ -569,14 +579,14 @@ export class RequestRepository {
         {
           due: { $lte: due },
           status: requestStatusToJSON(RequestStatus.IN_PROGRESS),
-          $and: [
-            { type: { $ne: requestTypeToJSON(RequestType.CREATE_ROLE_BULK) } },
-            {
-              type: {
-                $ne: requestTypeToJSON(RequestType.CHANGE_ROLE_HIERARCHY_BULK),
-              },
-            },
-          ],
+          // $and: [
+          //   { type: { $ne: requestTypeToJSON(RequestType.CREATE_ROLE_BULK) } },
+          //   {
+          //     type: {
+          //       $ne: requestTypeToJSON(RequestType.CHANGE_ROLE_HIERARCHY_BULK),
+          //     },
+          //   },
+          // ],
         },
         true
       );
@@ -595,14 +605,14 @@ export class RequestRepository {
         {
           due: { $lte: due },
           status: requestStatusToJSON(RequestStatus.IN_PROGRESS),
-          $and: [
-            { type: { $ne: requestTypeToJSON(RequestType.CREATE_ROLE_BULK) } },
-            {
-              type: {
-                $ne: requestTypeToJSON(RequestType.CHANGE_ROLE_HIERARCHY_BULK),
-              },
-            },
-          ],
+          // $and: [
+          //   { type: { $ne: requestTypeToJSON(RequestType.CREATE_ROLE_BULK) } },
+          //   {
+          //     type: {
+          //       $ne: requestTypeToJSON(RequestType.CHANGE_ROLE_HIERARCHY_BULK),
+          //     },
+          //   },
+          // ],
         },
         false
       );
@@ -646,31 +656,33 @@ export class RequestRepository {
             ? requestTypeFromJSON(documentObj.type)
             : documentObj.type;
         if (
-          requestType === RequestType.CREATE_ROLE_BULK ||
-          (requestType === RequestType.CHANGE_ROLE_HIERARCHY_BULK &&
-            (requestUpdate.commanderDecision ||
-              requestUpdate.securityDecision ||
-              requestUpdate.superSecurityDecision))
+          (requestType === RequestType.CREATE_ROLE_BULK ||
+            requestType === RequestType.CHANGE_ROLE_HIERARCHY_BULK) &&
+          (requestUpdate.commanderDecision ||
+            requestUpdate.securityDecision ||
+            requestUpdate.superSecurityDecision)
         ) {
           const requestIds: string[] = documentObj.requestIds;
           await RequestModel.updateMany(
             { bulkRequestId: updateReq.id },
             { $set: requestUpdate }
           );
-        } else if (
-          documentObj.isPartOfBulk &&
-          (requestUpdate['kartoffelStatus.status'] ||
-            requestUpdate['kartoffelStatus.failedRetries'] ||
-            requestUpdate['adStatus.status'] ||
-            requestUpdate['adStatus.failedRetries'] ||
-            requestUpdate.kartoffelStatus ||
-            requestUpdate.adStatus ||
-            requestUpdate.status)
-        ) {
-          // IF PART OF BULK
-          const bulkRequestId = documentObj.bulkRequestId;
-          await this.syncBulkRequest({ id: bulkRequestId });
         }
+        // Moved to execution-script instead
+        // else if (
+        //   documentObj.isPartOfBulk &&
+        //   (requestUpdate['kartoffelStatus.status'] ||
+        //     requestUpdate['kartoffelStatus.failedRetries'] ||
+        //     requestUpdate['adStatus.status'] ||
+        //     requestUpdate['adStatus.failedRetries'] ||
+        //     requestUpdate.kartoffelStatus ||
+        //     requestUpdate.adStatus ||
+        //     requestUpdate.status)
+        // ) {
+        //   // IF PART OF BULK
+        //   const bulkRequestId = documentObj.bulkRequestId;
+        //   await this.syncBulkRequest({ id: bulkRequestId });
+        // }
 
         return documentObj as Request;
       } else {
@@ -1097,10 +1109,52 @@ export class RequestRepository {
     }
   }
 
+  getRowErrors(rowRequest: Request): RowError[] {
+    try {
+      let rowErrors: any = [];
+      let adStatus = StageStatus.STAGE_DONE;
+      let adMessage = '';
+      let kartoffelStatus = StageStatus.STAGE_DONE;
+      let kartoffelMessage = '';
+      if (rowRequest.adStatus) {
+        adStatus =
+          typeof rowRequest.adStatus.status === typeof ''
+            ? stageStatusFromJSON(rowRequest.adStatus.status)
+            : rowRequest.adStatus.status;
+        adMessage = rowRequest.adStatus.message;
+        if (adStatus === StageStatus.STAGE_FAILED) {
+          rowErrors.push({
+            rowNumber: rowRequest.rowNumber,
+            error: adMessage,
+            errorType: errorTypeToJSON(ErrorType.AD_ERROR),
+          });
+        }
+      }
+      if (rowRequest.kartoffelStatus) {
+        kartoffelStatus =
+          typeof rowRequest.kartoffelStatus.status === typeof ''
+            ? stageStatusFromJSON(rowRequest.kartoffelStatus.status)
+            : rowRequest.kartoffelStatus.status;
+        kartoffelMessage = rowRequest.kartoffelStatus.message;
+        if (kartoffelStatus === StageStatus.STAGE_FAILED) {
+          rowErrors.push({
+            rowNumber: rowRequest.rowNumber,
+            error: kartoffelMessage,
+            errorType: errorTypeToJSON(ErrorType.KARTOFFEL_ERROR),
+          });
+        }
+      }
+      return rowErrors;
+    } catch (error: any) {
+      throw error;
+    }
+  }
+
   async syncBulkRequest(
     syncBulkRequestReq: SyncBulkRequestReq
   ): Promise<Request> {
     try {
+      let rowErrors: any = [];
       let allDone = true;
       let newStatus: any = undefined;
       const documents: any = await RequestModel.find({
@@ -1123,14 +1177,14 @@ export class RequestRepository {
           }
           if (smallRequestStatus === RequestStatus.FAILED) {
             newStatus = RequestStatus.FAILED;
-            break;
+            rowErrors = [...rowErrors, ...this.getRowErrors(smallRequest)];
           }
         }
         if (allDone) {
           newStatus = RequestStatus.DONE;
         }
         const requestProperties: any = newStatus
-          ? { status: requestStatusToJSON(newStatus) }
+          ? { status: requestStatusToJSON(newStatus), rowErrors: rowErrors }
           : {};
         const updatedBulkRequest = await this.updateRequest({
           id: syncBulkRequestReq.id,

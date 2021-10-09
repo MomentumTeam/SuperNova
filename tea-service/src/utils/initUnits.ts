@@ -4,26 +4,27 @@ import { TeaRepository } from '../tea/tea.repository';
 const teaRepository: TeaRepository = new TeaRepository();
 export async function initUnits() {
   let i = 0;
-  for (let kartoffelId of C.kartoffelIdsInitArray) {
+  for (let id of C.idsInitArray) {
     try {
       let query: any = {
-        kartoffelId: kartoffelId,
+        id: id,
         name: C.unitNamesArray[i],
         prefix: C.prefixesInitArray[i],
         oldDomainSuffix: C.suffixesInOldDomain[i],
         newDomainSuffix: C.suffixesInNewDomain[i],
         currentCounter: C.countersInitArray[i],
+        hierarchy: C.unitHierarchiesArray[i],
       };
       if (C.initEmptyArrays) {
         query.teaInProgress = [];
         query.failedTea = [];
       }
       const unitAlreadyExists = await UnitModel.exists({
-        kartoffelId: kartoffelId,
+        id: id,
       });
       if (unitAlreadyExists) {
         await UnitModel.updateOne(
-          { kartoffelId: kartoffelId },
+          { id: id },
           {
             $set: query,
           }
