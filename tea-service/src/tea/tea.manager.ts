@@ -1,8 +1,11 @@
 import {
   AddUnitReq,
   DeleteUnitReq,
+  GetAllUnitsReq,
   GetUnitReq,
+  MinUnitArray,
   RetrieveTeaByUnitReq,
+  SearchUnitReq,
   SuccessMessage,
   TeaMessage,
   Unit,
@@ -13,7 +16,6 @@ import {
   ReportTeaReq,
   RetrieveByEntityIdReq,
   RetrieveByEntityReq,
-  TeaAndUPN,
 } from '../interfaces/protoc/proto/teaService';
 import { TeaRepository } from './tea.repository';
 
@@ -50,29 +52,6 @@ export class TeaManager {
     try {
       return await this.teaRepository.retrieveUPNByEntityId(
         retrieveUPNByEntityIdReq
-      );
-    } catch (error) {
-      throw error;
-    }
-  }
-  async retrieveTeaAndUPNByEntity(
-    retrieveTeaAndUPNByEntityReq: RetrieveByEntityReq
-  ): Promise<TeaAndUPN> {
-    try {
-      return await this.teaRepository.retrieveTeaAndUPNByEntity(
-        retrieveTeaAndUPNByEntityReq
-      );
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async retrieveTeaAndUPNByEntityId(
-    retrieveTeaAndUPNByEntityIdReq: RetrieveByEntityIdReq
-  ): Promise<TeaAndUPN> {
-    try {
-      return await this.teaRepository.retrieveTeaAndUPNByEntityId(
-        retrieveTeaAndUPNByEntityIdReq
       );
     } catch (error) {
       throw error;
@@ -122,6 +101,22 @@ export class TeaManager {
   async deleteUnit(deleteUnitReq: DeleteUnitReq): Promise<SuccessMessage> {
     try {
       return await this.teaRepository.deleteUnit(deleteUnitReq);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getAllUnits(getAllUnitsReq: GetAllUnitsReq): Promise<MinUnitArray> {
+    try {
+      return await this.teaRepository.getAllUnits(getAllUnitsReq);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async searchUnit(searchUnitReq: SearchUnitReq): Promise<MinUnitArray> {
+    try {
+      return await this.teaRepository.searchUnit(searchUnitReq);
     } catch (error) {
       throw error;
     }

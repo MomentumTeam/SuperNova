@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 
 export const UnitSchema = new Schema(
   {
-    kartoffelId: {
+    id: {
       type: String,
       default: '',
     },
@@ -35,9 +35,19 @@ export const UnitSchema = new Schema(
       type: [String],
       default: [],
     },
+    hierarchy: {
+      type: String,
+      default: '',
+    },
     createdAt: { type: Number, default: new Date().getTime() },
   },
   { strict: false }
 );
+
+UnitSchema.index({
+  hierarchy: 'text',
+  id: 'text',
+  name: 'text',
+});
 
 export const UnitModel = mongoose.model('Unit', UnitSchema, 'units');
