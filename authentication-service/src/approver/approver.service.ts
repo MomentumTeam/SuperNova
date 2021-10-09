@@ -3,12 +3,13 @@ import * as grpc from 'grpc';
 import * as protoLoader from '@grpc/proto-loader';
 import { config } from '../config';
 import {
-    GetUserTypeReq,
-    GetUserTypeRes,
+  GetUserTypeReq,
+  GetUserTypeRes,
 } from '../interfaces/protoc/proto/approverService';
 import { logger } from '../logger';
+import { findPath } from '../utils/path';
 
-const PROTO_PATH = `${__dirname}/../../proto/approverService.proto`;
+const PROTO_PATH = `${findPath('proto')}/approverService.proto`;
 
 const packageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(
   PROTO_PATH,
@@ -30,7 +31,9 @@ const approverClient: any = new protoDescriptor.ApproverService(
 );
 
 export class ApproverService {
-  static async getUserType(getUserTypeReq: GetUserTypeReq): Promise<GetUserTypeRes> {
+  static async getUserType(
+    getUserTypeReq: GetUserTypeReq
+  ): Promise<GetUserTypeRes> {
     logger.info(`Call to getUserTypeReq in AS`, getUserTypeReq);
 
     return new Promise((resolve, reject) => {

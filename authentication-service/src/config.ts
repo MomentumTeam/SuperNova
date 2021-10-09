@@ -1,4 +1,4 @@
-export const config = {
+export const config: any = {
   server: {
     port: +(process.env.AS_PORT || 9000),
     name: 'authentication-service',
