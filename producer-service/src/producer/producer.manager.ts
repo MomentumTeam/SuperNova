@@ -6,6 +6,7 @@ import {
   Request,
   RequestType,
   requestTypeFromJSON,
+  requestTypeToJSON,
   StageStatus,
 } from '../interfaces/protoc/proto/requestService';
 import { logger } from '../logger';
@@ -63,6 +64,21 @@ export class RequestManager {
             message: 'One or more message were not pushed successfully',
           };
         }
+      } else if (requestType === RequestType.ADD_APPROVER) {
+        await this.requestService.updateADStatus({
+          requestId: produceRequest.id,
+          status: StageStatus.STAGE_DONE,
+          message: `AD stage is not part of ADD_APPROVER request!`,
+        });
+        await this.requestService.updateKartoffelStatus({
+          requestId: produceRequest.id,
+          status: StageStatus.STAGE_DONE,
+          message: `Kartoffel stage is not part of ADD_APPROVER request!`,
+        });
+        return {
+          success: true,
+          message: 'ADD_APPROVER',
+        };
       } else {
         const message = generateKartoffelQueueMessage(request);
         logger.info(
@@ -129,6 +145,37 @@ export class RequestManager {
             message: 'One or more message were not pushed successfully',
           };
         }
+      } else if (requestType === RequestType.ADD_APPROVER) {
+        await this.requestService.updateADStatus({
+          requestId: produceRequest.id,
+          status: StageStatus.STAGE_DONE,
+          message: `AD stage is not part of ADD_APPROVER request!`,
+        });
+        await this.requestService.updateKartoffelStatus({
+          requestId: produceRequest.id,
+          status: StageStatus.STAGE_DONE,
+          message: `Kartoffel stage is not part of ADD_APPROVER request!`,
+        });
+        return {
+          success: true,
+          message: 'ADD_APPROVER',
+        };
+      } else if (
+        requestType === RequestType.CREATE_ENTITY ||
+        requestType === RequestType.DELETE_OG ||
+        requestType === RequestType.DELETE_ENTITY
+      ) {
+        await this.requestService.updateADStatus({
+          requestId: produceRequest.id,
+          status: StageStatus.STAGE_DONE,
+          message: `AD stage is not part of ${requestTypeToJSON(
+            requestType
+          )} request!`,
+        });
+        return {
+          success: true,
+          message: requestTypeToJSON(requestType),
+        };
       } else {
         const message = generateADQueueMessage(request);
         logger.info(
