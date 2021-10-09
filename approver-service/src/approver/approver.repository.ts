@@ -123,7 +123,7 @@ export class ApproverRepository {
         id: syncApproverReq.approverId,
       });
       const domainUsers = entity.digitalIdentities
-        ? entity.digitalIdentities.map((di: DigitalIdentity) => di.mail)
+        ? entity.digitalIdentities.map((di: DigitalIdentity) => di.uniqueId)
         : [];
       logger.info('syncApprover got entity successfully from Kartoffel', {
         entity,
