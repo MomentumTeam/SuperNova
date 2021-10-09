@@ -8,6 +8,7 @@ import {
   requestTypeFromJSON,
   requestTypeToJSON,
   StageStatus,
+  stageStatusFromJSON,
 } from '../interfaces/protoc/proto/requestService';
 import { logger } from '../logger';
 import { RequestService } from '../services/request.service';
@@ -32,6 +33,18 @@ export class RequestManager {
       const request: Request = await this.requestService.getRequestById({
         id: produceRequest.id,
       });
+      let kartoffelStatus = request.kartoffelStatus?.status;
+      kartoffelStatus =
+        typeof kartoffelStatus === typeof ''
+          ? stageStatusFromJSON(kartoffelStatus)
+          : kartoffelStatus;
+      if (
+        kartoffelStatus === StageStatus.STAGE_DONE ||
+        kartoffelStatus === StageStatus.STAGE_FAILED ||
+        kartoffelStatus === StageStatus.STAGE_IN_PROGRESS
+      ) {
+        return { success: true, message: 'No need' };
+      }
       const requestType: RequestType =
         typeof request.type === typeof ''
           ? requestTypeFromJSON(request.type)
@@ -114,6 +127,19 @@ export class RequestManager {
       const request: Request = await this.requestService.getRequestById({
         id: produceRequest.id,
       });
+      let adStatus = request.adStatus?.status;
+      adStatus =
+        typeof adStatus === typeof ''
+          ? stageStatusFromJSON(adStatus)
+          : adStatus;
+      if (
+        adStatus === StageStatus.STAGE_DONE ||
+        adStatus === StageStatus.STAGE_FAILED ||
+        adStatus === StageStatus.STAGE_IN_PROGRESS
+      ) {
+        return { success: true, message: 'No need' };
+      }
+
       const requestType: RequestType =
         typeof request.type === typeof ''
           ? requestTypeFromJSON(request.type)
