@@ -94,7 +94,10 @@ export class EntitiesRepository {
     try {
       if (C.useFaker) {
         const entityArray: EntityArray =
-          await this.kartoffelFaker.randomEntityArray(false, getEntitiesUnderOGRequest.pageSize);
+          await this.kartoffelFaker.randomEntityArray(
+            false,
+            getEntitiesUnderOGRequest.pageSize
+          );
         return entityArray;
       } else {
         getEntitiesUnderOGRequest.page = getEntitiesUnderOGRequest.page
@@ -148,7 +151,10 @@ export class EntitiesRepository {
     try {
       if (C.useFaker) {
         const entityArray: EntityArray =
-          await this.kartoffelFaker.randomEntityArray(false, getEntitiesByHierarchyRequest.pageSize);
+          await this.kartoffelFaker.randomEntityArray(
+            false,
+            getEntitiesByHierarchyRequest.pageSize
+          );
         return entityArray;
       } else {
         cleanUnderscoreFields(getEntitiesByHierarchyRequest);
@@ -361,7 +367,7 @@ export class EntitiesRepository {
         return { success: true };
       } else {
         const data = await this.kartoffelUtils.kartoffelPut(
-          `${C.kartoffelUrl}/api/entities/${connectEntityAndDIRequest.id}/sigitalIdentity/${connectEntityAndDIRequest.uniqueId}`,
+          `${C.kartoffelUrl}/api/entities/${connectEntityAndDIRequest.id}/digitalIdentity/${connectEntityAndDIRequest.uniqueId}`,
           {
             digitalIdentityUniqueId: connectEntityAndDIRequest.uniqueId,
           }
