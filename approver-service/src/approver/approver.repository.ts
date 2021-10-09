@@ -138,7 +138,7 @@ export class ApproverRepository {
         identityCard: entity.identityCard,
         directGroup: entity.directGroup,
       };
-      const result: any = await ApproverModel.updateMany(
+      await ApproverModel.updateMany(
         { entityId: syncApproverReq.approverId },
         { $set: updateParams }
       );
@@ -179,7 +179,14 @@ export class ApproverRepository {
           return document.type;
         });
         type = [...new Set(type)];
-
+        if (!type.includes(approverTypeToJSON(ApproverType.COMMANDER))) {
+          const entity = await KartoffelService.getEntityById({
+            id: getUserTypeReq.entityId,
+          });
+          if (hasCommanderRank(entity)) {
+            type.push(approverTypeToJSON(ApproverType.COMMANDER));
+          }
+        }
         response = {
           entityId: getUserTypeReq.entityId,
           type,
@@ -306,12 +313,22 @@ export class ApproverRepository {
         const entity: Entity = await KartoffelService.getEntityByRoleId({
           roleId: searchByDomainUserReq.domainUser,
         });
-        response = {
-          approvers: getApproverArrayByEntityArray(
-            { entities: [entity] },
-            searchByDomainUserReq.type
-          ),
-        };
+        const type =
+          typeof searchByDomainUserReq.type === typeof ''
+            ? approverTypeFromJSON(searchByDomainUserReq.type)
+            : searchByDomainUserReq.type;
+        if (type === ApproverType.COMMANDER && hasCommanderRank(entity)) {
+          response = {
+            approvers: getApproverArrayByEntityArray(
+              { entities: [entity] },
+              searchByDomainUserReq.type
+            ),
+          };
+        } else {
+          response = {
+            approvers: [],
+          };
+        }
       }
       logger.info('searchApproverByDomainUser', {
         searchByDomainUserReq,
