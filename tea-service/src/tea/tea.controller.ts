@@ -1,6 +1,6 @@
 import {
+  MinUnitArray,
   SuccessMessage,
-  TeaAndUPN,
   TeaMessage,
   Unit,
   UPNMessage,
@@ -101,68 +101,6 @@ export async function retrieveUPNByEntityId(
   }
 }
 
-export async function retrieveTeaAndUPNByEntity(
-  call: any,
-  callback: any
-): Promise<void> {
-  try {
-    logger.info('Call to retrieveTeaAndUPNByEntity', { request: call.request });
-    const teaAndUpn: TeaAndUPN = await teaManager.retrieveTeaAndUPNByEntity(
-      call.request
-    );
-    logger.info('retrieveTeaAndUPNByEntity OK', {
-      response: teaAndUpn,
-      request: call.request,
-    });
-    callback(null, teaAndUpn);
-  } catch (error: any) {
-    logger.error('retrieveTeaAndUPNByEntity ERROR', {
-      error: { message: error.message },
-      request: call.request,
-    });
-    callback(
-      {
-        code: 400,
-        message: error.message,
-        status: grpc.status.CANCELLED,
-      },
-      null
-    );
-  }
-}
-
-export async function retrieveTeaAndUPNByEntityId(
-  call: any,
-  callback: any
-): Promise<void> {
-  try {
-    logger.info('Call to retrieveTeaAndUPNByEntityId', {
-      request: call.request,
-    });
-    const teaAndUpn: TeaAndUPN = await teaManager.retrieveTeaAndUPNByEntityId(
-      call.request
-    );
-    logger.info('retrieveTeaAndUPNByEntityId OK', {
-      response: teaAndUpn,
-      request: call.request,
-    });
-    callback(null, teaAndUpn);
-  } catch (error: any) {
-    logger.error('retrieveTeaAndUPNByEntityId ERROR', {
-      error: { message: error.message },
-      request: call.request,
-    });
-    callback(
-      {
-        code: 400,
-        message: error.message,
-        status: grpc.status.CANCELLED,
-      },
-      null
-    );
-  }
-}
-
 export async function reportTeaSuccess(
   call: any,
   callback: any
@@ -206,6 +144,56 @@ export async function reportTeaFail(call: any, callback: any): Promise<void> {
     callback(null, successMessage);
   } catch (error: any) {
     logger.error('reportTeaFail ERROR', {
+      error: { message: error.message },
+      request: call.request,
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function getAllUnits(call: any, callback: any): Promise<void> {
+  try {
+    logger.info('Call to getAllUnits', { request: call.request });
+    const units: MinUnitArray = await teaManager.getAllUnits(call.request);
+    logger.info('getAllUnits OK', {
+      response: units,
+      request: call.request,
+    });
+    callback(null, units);
+  } catch (error: any) {
+    logger.error('getAllUnits ERROR', {
+      error: { message: error.message },
+      request: call.request,
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function searchUnit(call: any, callback: any): Promise<void> {
+  try {
+    logger.info('Call to searchUnit', { request: call.request });
+    const units: MinUnitArray = await teaManager.searchUnit(call.request);
+    logger.info('searchUnit OK', {
+      response: units,
+      request: call.request,
+    });
+    callback(null, units);
+  } catch (error: any) {
+    logger.error('searchUnit ERROR', {
       error: { message: error.message },
       request: call.request,
     });

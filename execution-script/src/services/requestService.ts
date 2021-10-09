@@ -7,6 +7,7 @@ import {
   RequestIdArray,
   CanPushToQueueRes,
   RequestArray,
+  Request,
 } from '../interfaces/protoc/proto/requestService';
 
 const RS_PROTO_PATH = `${findPath('proto')}/requestService.proto`;
@@ -96,6 +97,30 @@ export default class RequestService {
           }
 
           logger.info(`CanPushToKartoffelQueue OK in EXS`, {
+            response: response,
+          });
+          resolve(response);
+        }
+      );
+    });
+  }
+
+  static async syncBulkRequest(requestId: string): Promise<Request> {
+    logger.info(`Call to SyncBulkRequest in EXS`);
+
+    return new Promise((resolve, reject) => {
+      requestClient.SyncBulkRequest(
+        { id: requestId },
+        (error: any, response: Request) => {
+          if (error) {
+            logger.error(`SyncBulkRequest ERROR in EXS`, {
+              error: { message: error.message },
+              callRequest: { id: requestId },
+            });
+            reject(error);
+          }
+
+          logger.info(`SyncBulkRequest OK in EXS`, {
             response: response,
           });
           resolve(response);

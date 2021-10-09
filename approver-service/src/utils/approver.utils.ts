@@ -37,7 +37,7 @@ export function turnObjectIdsToStrings(document: any): void {
 }
 
 export function hasCommanderRank(entity: Entity): boolean {
-  return C.commanderRanks.indexOf(entity.rank) != -1;
+  return C.commanderRanks.indexOf(entity.rank) !== -1;
 }
 
 export function getMongoApproverArray(approverMongoArray: any): Approver[] {
