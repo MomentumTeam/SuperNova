@@ -60,7 +60,7 @@ export class GroupsRepository {
   async getAllOGs(getAllOGsRequest: GetAllOGsRequest): Promise<OGArray> {
     try {
       if (C.useFaker) {
-        const ogArray: OGArray = this.kartoffelFaker.randomOGArray(getAllOGsRequest.pageSize);
+        const ogArray: OGArray = await this.kartoffelFaker.randomOGArray(getAllOGsRequest.pageSize);
         return ogArray;
       } else {
         const res = await this.kartoffelUtils.kartoffelGet(
@@ -77,7 +77,7 @@ export class GroupsRepository {
   async createOG(createOGRequest: CreateOGRequest): Promise<OrganizationGroup> {
     try {
       if (C.useFaker) {
-        const newOG: OrganizationGroup = this.kartoffelFaker.randomOG();
+        const newOG: OrganizationGroup = await this.kartoffelFaker.randomOG();
         return newOG;
       } else {
         const res = await this.kartoffelUtils.kartoffelPost(
@@ -96,7 +96,7 @@ export class GroupsRepository {
   ): Promise<OrganizationGroup> {
     try {
       if (C.useFaker) {
-        const og: OrganizationGroup = this.kartoffelFaker.randomOG();
+        const og: OrganizationGroup = await this.kartoffelFaker.randomOG();
         return og;
       } else {
         const res = await this.kartoffelUtils.kartoffelGet(
@@ -148,7 +148,7 @@ export class GroupsRepository {
   ): Promise<OrganizationGroup> {
     try {
       if (C.useFaker) {
-        const og: OrganizationGroup = this.kartoffelFaker.randomOG();
+        const og: OrganizationGroup = await this.kartoffelFaker.randomOG();
         return og;
       } else {
         const res = await this.kartoffelUtils.kartoffelGet(
@@ -167,7 +167,7 @@ export class GroupsRepository {
   ): Promise<OGArray> {
     try {
       if (C.useFaker) {
-        const ogChildern: OGArray = this.kartoffelFaker.randomOGArray(getChildrenOfOGRequest.pageSize);
+        const ogChildern: OGArray = await this.kartoffelFaker.randomOGArray(getChildrenOfOGRequest.pageSize);
         return ogChildern;
       } else {
         const res = await this.kartoffelUtils.kartoffelGet(
@@ -184,7 +184,7 @@ export class GroupsRepository {
   async getChildrenOfRootOG(): Promise<OGArray> {
     try {
       if (C.useFaker) {
-        const ogChildern: OGArray = this.kartoffelFaker.randomOGArray();
+        const ogChildern: OGArray = await this.kartoffelFaker.randomOGArray();
         return ogChildern;
       } else {
         const res = await this.kartoffelUtils.kartoffelGet(

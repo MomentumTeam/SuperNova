@@ -1,6 +1,6 @@
-import faker from 'faker';
-import mongoose from 'mongoose';
-import axios from 'axios';
+import faker from "faker";
+import mongoose from "mongoose";
+import axios from "axios";
 import {
   OrganizationGroup,
   DigitalIdentity,
@@ -12,32 +12,50 @@ import {
   OGTree,
   Image,
   DigitalIdentities,
-} from '../interfaces/protoc/proto/kartoffelService';
+} from "../interfaces/protoc/proto/kartoffelService";
 
 export class KartoffelFaker {
   constructor() {}
 
-  randomOG(): OrganizationGroup {
+  async randomOG(): Promise<OrganizationGroup> {
     const organizationGroup: OrganizationGroup = {
       id: mongoose.Types.ObjectId().toString(),
       name: faker.company.companyName(),
-      source: 'oneTree',
+      source: "oneTree",
       ancestors: [mongoose.Types.ObjectId().toString()],
       hierarchy: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
-      status: 'active',
+      status: "active",
       isLeaf: true,
       createdAt: faker.datatype.datetime().toString(),
       updatedAt: faker.datatype.datetime().toString(),
       directEntities: [],
       directRoles: [],
     };
+
+    let roleLength = faker.datatype.number({
+      min: 1,
+      max: 10,
+    });
+    for (let i = 0; i < roleLength; i++) {
+      organizationGroup.directRoles.push(this.randomRole());
+    }
+
+    let entityLength = faker.datatype.number({
+      min: 1,
+      max: 10,
+    });
+    for (let i = 0; i < entityLength; i++) {
+      const entity = await this.randomEntity(false);
+      organizationGroup.directEntities.push(entity);
+    }
+
     return organizationGroup;
   }
 
   randomDI(): DigitalIdentity {
     const digitalIdentity: DigitalIdentity = {
-      type: 'domainUser',
-      source: 'oneTree',
+      type: "domainUser",
+      source: "oneTree",
       mail: faker.internet.email(),
       uniqueId: faker.internet.email(),
       entityId: mongoose.Types.ObjectId().toString(),
@@ -68,12 +86,12 @@ export class KartoffelFaker {
   async randomPicture(): Promise<Image> {
     return new Promise((resolve, reject) => {
       axios
-        .get('https://picsum.photos/200', {
-          responseType: 'arraybuffer',
+        .get("https://picsum.photos/200", {
+          responseType: "arraybuffer",
         })
         .then((res) => {
           const image: Image = {
-            image: Buffer.from(res.data).toString('base64'),
+            image: Buffer.from(res.data).toString("base64"),
           };
           resolve(image);
         })
@@ -91,38 +109,38 @@ export class KartoffelFaker {
       directGroup: mongoose.Types.ObjectId().toString(),
       hierarchy: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
       hierarchyIds: [],
-      source: 'oneTree',
+      source: "oneTree",
       createdAt: faker.datatype.datetime().toString(),
       updatedAt: faker.datatype.datetime().toString(),
-      clearance: '1',
+      clearance: "1",
     };
     return role;
   }
   async randomEntity(needPicture: boolean): Promise<Entity> {
     try {
-      const picture: Image = needPicture ? await this.randomPicture() : { image: 'pictureUrl' };
+      const picture: Image = needPicture ? await this.randomPicture() : { image: "pictureUrl" };
       const entity: Entity = {
         id: mongoose.Types.ObjectId().toString(),
         displayName: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
         directGroup: mongoose.Types.ObjectId().toString(),
         hierarchy: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
-        entityType: 'soldier',
+        entityType: "soldier",
         identityCard: faker.datatype.number({ min: 100000, max: 999999 }).toString(),
         personalNumber: faker.datatype.number({ min: 100000000, max: 999999999 }).toString(),
-        serviceType: 'מילואים',
+        serviceType: "מילואים",
         firstName: faker.name.firstName(),
         lastName: faker.name.lastName(),
         fullName: `${faker.name.firstName()} ${faker.name.lastName()}`,
         akaUnit: faker.company.companyName(),
         dischargeDay: faker.datatype.datetime().toString(),
-        rank: 'אזרח',
+        rank: "אזרח",
         mail: faker.internet.email(),
         jobTitle: faker.name.jobTitle(),
         phone: [faker.phone.phoneNumber()],
         mobilePhone: [faker.phone.phoneNumber()],
         address: `${faker.address.streetAddress()}, ${faker.address.country()}`,
-        clearance: '2',
-        sex: 'זכר',
+        clearance: "2",
+        sex: "זכר",
         birthDate: faker.datatype.datetime().toString(),
         createdAt: faker.datatype.datetime().toString(),
         updatedAt: faker.datatype.datetime().toString(),
@@ -160,7 +178,7 @@ export class KartoffelFaker {
     };
   }
 
-  randomOGArray(pageSize?: number): OGArray {
+  async randomOGArray(pageSize?: number): Promise<OGArray> {
     let length = faker.datatype.number({
       min: 1,
       max: 10,
@@ -170,7 +188,8 @@ export class KartoffelFaker {
 
     let ogArray = [];
     for (let i = 0; i < length; i++) {
-      ogArray.push(this.randomOG());
+      let ogGroup: OrganizationGroup = await this.randomOG();
+      ogArray.push(ogGroup);
     }
     return {
       groups: ogArray,
