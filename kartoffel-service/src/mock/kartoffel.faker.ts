@@ -118,6 +118,22 @@ export class KartoffelFaker {
   }
   async randomEntity(needPicture: boolean): Promise<Entity> {
     try {
+      const entityTypes = ["אזרח", "רסל", "טוראי"]
+       let entityNum = faker.datatype.number({
+         min: 0,
+         max: 2,
+       });
+      
+      let onlyCitizenFields = false;
+      if (entityTypes[entityNum] === "אזרח"){
+        onlyCitizenFields = true;
+      }
+      const clearanceTypes = ["3", "2", "1"];
+      let clearanceNum = faker.datatype.number({
+        min: 0,
+        max: 2,
+      });
+
       const picture: Image = needPicture ? await this.randomPicture() : { image: "pictureUrl" };
       const entity: Entity = {
         id: mongoose.Types.ObjectId().toString(),
@@ -133,13 +149,13 @@ export class KartoffelFaker {
         fullName: `${faker.name.firstName()} ${faker.name.lastName()}`,
         akaUnit: faker.company.companyName(),
         dischargeDay: faker.datatype.datetime().toString(),
-        rank: "אזרח",
+        rank: entityTypes[entityNum],
         mail: faker.internet.email(),
         jobTitle: faker.name.jobTitle(),
         phone: [faker.phone.phoneNumber()],
         mobilePhone: [faker.phone.phoneNumber()],
         address: `${faker.address.streetAddress()}, ${faker.address.country()}`,
-        clearance: "2",
+        clearance: clearanceTypes[clearanceNum],
         sex: "זכר",
         birthDate: faker.datatype.datetime().toString(),
         createdAt: faker.datatype.datetime().toString(),
