@@ -7,6 +7,9 @@ import {
   ApproverType,
   ApprovementStatus,
   RequestType,
+  personTypeInRequestToJSON,
+  personInfoTypeToJSON,
+  approvementStatusToJSON,
 } from '../interfaces/protoc/proto/requestService';
 
 const Joi = require('joi');
@@ -32,6 +35,27 @@ export const getRequestByIdSchema = Joi.object({
   query: {},
 });
 
+export const getRequestsSchema = Joi.object({
+  body: {},
+  params: {},
+  query: {
+    // personType: Joi.string()
+    //   .valid(...Object.keys(PersonTypeInRequest))
+    //   .default(personTypeInRequestToJSON(PersonTypeInRequest.APPROVER)),
+    // personInfoType: Joi.string()
+    //   .valid(...Object.keys(PersonInfoType))
+    //   .default(personInfoTypeToJSON(PersonInfoType.ID)),
+    // approvementStatus: Joi.string()
+    //   .valid(...Object.keys(ApprovementStatus))
+    //   .default(approvementStatusToJSON(ApprovementStatus.BY_USER_TYPE)),
+    displayName: Joi.string(),
+    status: Joi.string().valid(...Object.keys(RequestStatus)),
+    type: Joi.string().valid(...Object.keys(RequestType)),
+    from: Joi.number().default(1),
+    to: Joi.number().default(100),
+  },
+});
+
 export const getRequestsByPersonSchema = Joi.object({
   body: {},
   params: {
@@ -40,34 +64,13 @@ export const getRequestsByPersonSchema = Joi.object({
   query: {
     personType: Joi.string()
       .valid(...Object.keys(PersonTypeInRequest))
-      .required(),
+      .default(personTypeInRequestToJSON(PersonTypeInRequest.SUBMITTER)),
     personInfoType: Joi.string()
       .valid(...Object.keys(PersonInfoType))
-      .default('ID'),
+      .default(personInfoTypeToJSON(PersonInfoType.ID)),
     approvementStatus: Joi.string()
       .valid(...Object.keys(ApprovementStatus))
-      .default('ANY'),
-    displayName: Joi.string(),
-    status: Joi.string().valid(...Object.keys(RequestStatus)),
-    type: Joi.string().valid(...Object.keys(RequestType)),
-    from: Joi.number().default(0),
-    to: Joi.number().default(100),
-  },
-});
-
-export const getMyRequestsSchema = Joi.object({
-  body: {},
-  params: {},
-  query: {
-    personType: Joi.string()
-      .valid(...Object.keys(PersonTypeInRequest))
-      .required(),
-    personInfoType: Joi.string()
-      .valid(...Object.keys(PersonInfoType))
-      .default('ID'),
-    approvementStatus: Joi.string()
-      .valid(...Object.keys(ApprovementStatus))
-      .default('ANY'),
+      .default(approvementStatusToJSON(ApprovementStatus.ANY)),
     displayName: Joi.string(),
     status: Joi.string().valid(...Object.keys(RequestStatus)),
     type: Joi.string().valid(...Object.keys(RequestType)),

@@ -7,6 +7,24 @@ const RequestsRouter: Router = Router();
 
 // GET
 RequestsRouter.get(
+  '/my/',
+  RequestValidator.isGetRequestsValid,
+  RequestsController.getMyRequests
+);
+
+RequestsRouter.get(
+  '/approve/all',
+  RequestValidator.isGetRequestsValid,
+  RequestsController.getAllRequestsToApprove
+);
+
+RequestsRouter.get(
+  '/approve/my',
+  RequestValidator.isGetRequestsValid,
+  RequestsController.getMyRequestsToApprove
+);
+
+RequestsRouter.get(
   '/:id',
   RequestValidator.isGetRequestByIdValid,
   RequestsController.getRequestById
@@ -15,12 +33,6 @@ RequestsRouter.get(
   '/person/:id',
   RequestValidator.isGetRequestsByPersonValid,
   RequestsController.getRequestsByPerson
-);
-
-RequestsRouter.get(
-  '/my/',
-  RequestValidator.isGetRequestsByPersonValid,
-  RequestsController.getMyRequests
 );
 
 // RequestsRouter.get('/status/:approvementStatus', PermissionHandler.securityUser, RequestValidator.isGetAllRequestsValid,RequestsController.getAllRequests);
