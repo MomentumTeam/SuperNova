@@ -347,6 +347,9 @@ RequestSchema.plugin(autoIncrement.plugin, {
 RequestSchema.pre<any>('save', function (next) {
   const func: any = (object: any) => {
     object.updatedAt = new Date().getTime();
+    object.commanderDecision.date = new Date().getTime();
+    object.securityDecision.date = new Date().getTime();
+    object.superSecurityDecision.date = new Date().getTime();
   };
   func(this);
   return next();
