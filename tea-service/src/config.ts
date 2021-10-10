@@ -20,11 +20,15 @@ export const initEmptyArrays = process.env.TS_INIT_EMPTY_ARRAYS
   ? process.env.TS_INIT_EMPTY_ARRAYS === 'true'
   : true;
 
+export const unitHierarchiesArray = process.env.TS_INIT_UNIT_HIERARCHIES
+  ? process.env.TS_INIT_UNIT_HIERARCHIES.split(',')
+  : ['גוגל העולמית/גוגל', 'אמאזון העולמית/אמאזון'];
+
 export const unitNamesArray = process.env.TS_INIT_UNIT_NAMES
   ? process.env.TS_INIT_UNIT_NAMES.split(',')
-  : ['google', 'amazon'];
-export const kartoffelIdsInitArray = process.env.TS_INIT_KARTOFFEL_IDS
-  ? process.env.TS_INIT_KARTOFFEL_IDS.split(',')
+  : ['גוגל', 'אמאזון'];
+export const idsInitArray = process.env.TS_INIT_IDS
+  ? process.env.TS_INIT_IDS.split(',')
   : ['google', 'amazon'];
 export const prefixesInitArray = process.env.TS_INIT_PREFIXES
   ? process.env.TS_INIT_PREFIXES.split(',')
@@ -39,5 +43,12 @@ export const suffixesInNewDomain = process.env.TS_SUFFIXES_OLD_DOMAIN
   ? process.env.TS_SUFFIXES_OLD_DOMAIN.split(',')
   : ['newDomain.com', 'newDomain.com'];
 // export const oldDomainSuffixesArray
-export const mongoConnectionRetries = process.env.MONGO_RECONNECT_ATTEMPTS || '5';
-export const mongoReconnectTimeout = process.env.MONGO_RECONNECT_TIMEOUT || '2000';
+export const mongoConnectionRetries =
+  process.env.MONGO_RECONNECT_ATTEMPTS || '5';
+export const mongoReconnectTimeout =
+  process.env.MONGO_RECONNECT_TIMEOUT || '2000';
+
+export const logPath = process.env.TS_LOG_PATH || './logs';
+export const storeLogs = process.env.GLOBAL_STORE_LOGS
+  ? process.env.GLOBAL_STORE_LOGS === 'true'
+  : false;

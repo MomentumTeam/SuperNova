@@ -1,0 +1,22 @@
+name: "bulk-service"
+# If you want to overide the full name you can include the 'fullnameOverride' value
+#fullname:
+replicaCount: 1
+
+images:
+  PullSecrets:
+    name: momentumacr
+  repository: momentumacr.azurecr.io/bulk-service
+  tag: "latest"
+  
+service:
+
+volume:
+  mountPath: /usr/src/app/bulk-files
+  secretName: azure-secret
+  shareName: momentum/bulk-files
+
+
+configmap:
+  configmaps:  
+  name: momentum-configmap

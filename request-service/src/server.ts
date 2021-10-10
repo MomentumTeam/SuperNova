@@ -6,14 +6,12 @@ import {
   getRequestById,
   updateRequest,
   deleteRequest,
-  getAllRequests,
   createRequestFuncByType,
   updateKartoffelStatus,
   updateADStatus,
   canPushToKartoffelQueue,
   canPushToADQueue,
   getRequestBySerialNumber,
-  searchRequestsByDisplayName,
   incrementKartoffelRetries,
   incrementADRetries,
   getRequestsInProgressByDue,
@@ -28,10 +26,7 @@ import {
   pushError,
   getRequestsUnderBulk,
 } from './requests/request.controller';
-import {
-  PersonTypeInRequest,
-  RequestType,
-} from './interfaces/protoc/proto/requestService';
+import { RequestType } from './interfaces/protoc/proto/requestService';
 import { findPath } from './utils/path';
 import { addHealthService } from './health';
 
@@ -102,9 +97,7 @@ export class Server {
         UpdateKartoffelStatus: updateKartoffelStatus,
         UpdateADStatus: updateADStatus,
         DeleteRequest: deleteRequest,
-        GetAllRequests: getAllRequests,
         GetRequestBySerialNumber: getRequestBySerialNumber,
-        SearchRequestsByDisplayName: searchRequestsByDisplayName,
         CanPushToKartoffelQueue: canPushToKartoffelQueue,
         CanPushToADQueue: canPushToADQueue,
         IncrementKartoffelRetries: incrementKartoffelRetries,

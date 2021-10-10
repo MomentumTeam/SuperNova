@@ -5,7 +5,9 @@ export const config = {
     endpoint: process.env.AS_ENDPOINT || 'http://localhost:9000/auth',
   },
   cors: {
-    allowedOrigins: process.env.AS_ALLOWED_ORIGINS ? process.env.AS_ALLOWED_ORIGINS.split(',') : ['http://localhost/'],
+    allowedOrigins: process.env.AS_ALLOWED_ORIGINS
+      ? process.env.AS_ALLOWED_ORIGINS.split(',')
+      : ['http://localhost/'],
   },
   kartoffel: {
     endpoint: process.env.AS_KARTOFFEL_RPC_ENDPOINT || '0.0.0.0:8082',
@@ -29,15 +31,22 @@ export const config = {
     strategy: process.env.AS_STRATEGY || 'shraga',
     token: process.env.AS_TOKEN || 'sp-token',
     secret: process.env.AS_SECRET_KEY || 'superNova', // TODO: Don't use static value in production! remove from source control!
-    daysExpires: +(process.env.AS_TOKEN_DAYS_EXPIRES ||30),
+    daysExpires: +(process.env.AS_TOKEN_DAYS_EXPIRES || 30),
     shraga: {
       callbackURL: process.env.AUTH_CALLBACK_URL || '/auth/callback',
-      shragaURL: process.env.AS_SHRAGA_URL || 'https://shraga-prod.northeurope.cloudapp.azure.com',
+      shragaURL:
+        process.env.AS_SHRAGA_URL ||
+        'https://shraga-prod.northeurope.cloudapp.azure.com',
       useEnrichId: process.env.AS_SHRAGA_USE_ENRICH_ID || true,
     },
     unauthorized: './401/index.html',
   },
   clientEndpoint: process.env.AS_CLIENT_ENDPOINT || 'http://localhost:3000',
-  support: process.env.AS_UNAUTHORIZED_SUPPORT_URL || 'https://open.rocket.chat',
+  support:
+    process.env.AS_UNAUTHORIZED_SUPPORT_URL || 'https://open.rocket.chat',
   defaultUserTypes: ['COMMANDER'],
+  logPath: process.env.AS_LOG_PATH || './logs',
+  storeLogs: process.env.GLOBAL_STORE_LOGS
+    ? process.env.GLOBAL_STORE_LOGS === 'true'
+    : false,
 };

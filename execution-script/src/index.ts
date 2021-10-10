@@ -49,7 +49,18 @@ async function execute() {
   const promises = requestsArray.requests.map(async (request: any) => {
     return new Promise((resolve, reject) => {
       if (request.type === RequestType.ADD_APPROVER) {
-        ApproverService.addApprover(request.id,request.additionalParams)
+        ApproverService.addApprover(request.id, request.additionalParams)
+          .then(() => {
+            resolve(true);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      } else if (
+        request.type === RequestType.CREATE_ROLE_BULK ||
+        request.type === RequestType.CHANGE_ROLE_HIERARCHY_BULK
+      ) {
+        RequestService.syncBulkRequest(request.id)
           .then(() => {
             resolve(true);
           })

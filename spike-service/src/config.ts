@@ -61,3 +61,8 @@ export const shmuelSpikeOptions = {
   useRedis: useRedis,
   tokenRedisKeyName: 'shmuelSpikeToken',
 };
+
+export const logPath = process.env.SS_LOG_PATH || './logs';
+export const storeLogs = process.env.GLOBAL_STORE_LOGS
+  ? process.env.GLOBAL_STORE_LOGS === 'true'
+  : false;

@@ -11,8 +11,10 @@ export const port =
 
 export const mongoUrl =
   process.env.NS_MONGO_URL || 'mongodb://127.0.0.1:27017/supernova';
-export const mongoConnectionRetries = process.env.MONGO_RECONNECT_ATTEMPTS || '5';
-export const mongoReconnectTimeout = process.env.MONGO_RECONNECT_TIMEOUT || '2000';
+export const mongoConnectionRetries =
+  process.env.MONGO_RECONNECT_ATTEMPTS || '5';
+export const mongoReconnectTimeout =
+  process.env.MONGO_RECONNECT_TIMEOUT || '2000';
 
 export const requestTypeToHebrew = {
   [requestTypeToJSON(RequestType.CREATE_OG)]: 'יצירת היררכיה',
@@ -31,3 +33,8 @@ export const requestTypeToHebrew = {
   [requestTypeToJSON(RequestType.CHANGE_ROLE_HIERARCHY_BULK)]:
     'שינוי היררכיה מרובה',
 };
+
+export const logPath = process.env.NS_LOG_PATH || './logs';
+export const storeLogs = process.env.GLOBAL_STORE_LOGS
+  ? process.env.GLOBAL_STORE_LOGS === 'true'
+  : false;

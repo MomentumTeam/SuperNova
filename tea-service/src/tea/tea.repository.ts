@@ -1,28 +1,26 @@
 import {
-  TeaAndUPN,
   ReportTeaReq,
   GetUnitReq,
   Unit,
   SuccessMessage,
   UpdateUnitReq,
   DeleteUnitReq,
-  Domain,
   AddUnitReq,
-  domainToJSON,
-  domainFromJSON,
   EntityMin,
   RetrieveByEntityReq,
   RetrieveByEntityIdReq,
   UPNMessage,
   RetrieveTeaByUnitReq,
   TeaMessage,
+  GetAllUnitsReq,
+  MinUnitArray,
+  SearchUnitReq,
 } from '../interfaces/protoc/proto/teaService';
 import { UnitModel } from '../models/unit.model';
-import { getUnitKartoffelIdOfEntity } from '../utils/unit';
 import { getUPN } from '../utils/upn';
-import * as C from '../config';
 import { Entity } from '../interfaces/protoc/proto/kartoffelService';
 import KartoffelService from '../services/kartoffelService';
+import * as C from '../config';
 
 export class TeaRepository {
   zeroPad(num: any, places: any) {
@@ -33,14 +31,20 @@ export class TeaRepository {
     retrieveTeaByUnitReq: RetrieveTeaByUnitReq
   ): Promise<TeaMessage> {
     try {
-      const kartoffelId = retrieveTeaByUnitReq.kartoffelId;
+      let id = retrieveTeaByUnitReq.id;
+      const unitAlreadyExists = await UnitModel.exists({
+        id: id,
+      });
+      if (!unitAlreadyExists) {
+        id = C.generalUnitId;
+      }
       let tea;
       const documentBeforePop = await UnitModel.findOneAndUpdate(
-        { kartoffelId: kartoffelId },
+        { id: id },
         { $pop: { failedTea: -1 } }
       );
       if (!documentBeforePop) {
-        throw new Error(`Failed to get Unit with kartoffelId=${kartoffelId}`);
+        throw new Error(`Failed to get Unit with id=${id}`);
       }
       const unitBeforePop: any = documentBeforePop.toObject();
 
@@ -48,11 +52,11 @@ export class TeaRepository {
         tea = unitBeforePop.failedTea[0];
       } else {
         const documentAfterInc = await UnitModel.findOneAndUpdate(
-          { kartoffelId: kartoffelId },
+          { id: id },
           { $inc: { currentCounter: 1 } }
         );
         if (!documentAfterInc) {
-          throw new Error(`Failed to get Unit with kartoffelId=${kartoffelId}`);
+          throw new Error(`Failed to get Unit with id=${id}`);
         }
         const unitAfterInc: any = documentAfterInc.toObject();
         tea = `T${unitBeforePop.prefix}${this.zeroPad(
@@ -61,7 +65,7 @@ export class TeaRepository {
         )}@${unitAfterInc.oldDomainSuffix}`;
       }
       await UnitModel.updateOne(
-        { kartoffelId: kartoffelId },
+        { id: id },
         { $addToSet: { teaInProgress: tea } }
       );
       return { tea: tea };
@@ -101,73 +105,6 @@ export class TeaRepository {
     }
   }
 
-  async retrieveTeaAndUPNByEntity(
-    retrieveTeaAndUPNByEntityReq: RetrieveByEntityReq
-  ): Promise<TeaAndUPN> {
-    const domain =
-      typeof retrieveTeaAndUPNByEntityReq.domain == typeof ''
-        ? domainFromJSON(retrieveTeaAndUPNByEntityReq.domain.toString())
-        : retrieveTeaAndUPNByEntityReq.domain;
-    if (!retrieveTeaAndUPNByEntityReq.entity) {
-      throw new Error('Entity must be included in the request!');
-    }
-    let tea: string, upn: string, unitExists: boolean, kartoffelId: string;
-    try {
-      upn = getUPN(retrieveTeaAndUPNByEntityReq.entity);
-    } catch (error) {
-      throw error;
-    }
-    try {
-      kartoffelId = getUnitKartoffelIdOfEntity(
-        retrieveTeaAndUPNByEntityReq.entity
-      );
-      unitExists = await UnitModel.exists({
-        kartoffelId: kartoffelId,
-      });
-      if (!unitExists) {
-        kartoffelId = C.generalUnitId;
-      }
-    } catch (error) {
-      throw error;
-    }
-    if (domain === Domain.OLD) {
-      //oldDomain
-      try {
-        const teaMessage = await this.retrieveTeaByUnit({
-          kartoffelId: kartoffelId,
-        });
-        tea = teaMessage.tea;
-      } catch (error) {
-        throw error;
-      }
-    } else {
-      //newDomain
-      try {
-        const unit = await this.getUnit({ kartoffelId: kartoffelId });
-        tea = `${retrieveTeaAndUPNByEntityReq.entity.lastName}${retrieveTeaAndUPNByEntityReq.entity.firstName}@${unit.newDomainSuffix}`;
-      } catch (error) {
-        throw error;
-      }
-    }
-    return { tea: tea, upn: upn };
-  }
-
-  async retrieveTeaAndUPNByEntityId(
-    retrieveTeaAndUPNByEntityIdReq: RetrieveByEntityIdReq
-  ): Promise<TeaAndUPN> {
-    try {
-      const entity: Entity = await KartoffelService.getEntityById({
-        id: retrieveTeaAndUPNByEntityIdReq.entityId,
-      });
-      return await this.retrieveTeaAndUPNByEntity({
-        domain: retrieveTeaAndUPNByEntityIdReq.domain,
-        entity: entity as EntityMin,
-      });
-    } catch (error) {
-      throw error;
-    }
-  }
-
   async reportTeaSuccess(reportTeaReq: ReportTeaReq): Promise<SuccessMessage> {
     try {
       await UnitModel.updateOne(
@@ -179,10 +116,11 @@ export class TeaRepository {
         },
         {
           $pull: {
-            failedTea: reportTeaReq.tea,
             teaInProgress: reportTeaReq.tea,
+            failedTea: reportTeaReq.tea,
           },
-        }
+        },
+        { multi: true }
       );
       return { success: true };
     } catch (error) {
@@ -206,7 +144,8 @@ export class TeaRepository {
           $addToSet: {
             failedTea: reportTeaReq.tea,
           },
-        }
+        },
+        { multi: true }
       );
       return { success: true };
     } catch (error) {
@@ -217,14 +156,63 @@ export class TeaRepository {
   async getUnit(getUnitReq: GetUnitReq): Promise<Unit> {
     try {
       const document = await UnitModel.findOne({
-        kartoffelId: getUnitReq.kartoffelId,
+        id: getUnitReq.id,
       });
       if (!document) {
-        throw new Error(
-          `A Unit with kartoffelId=${getUnitReq.kartoffelId} does not exist!`
-        );
+        throw new Error(`A Unit with id=${getUnitReq.id} does not exist!`);
       } else {
         return document.toObject() as Unit;
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getAllUnits(getAllUnitsReq: GetAllUnitsReq): Promise<MinUnitArray> {
+    try {
+      const totalCount = await UnitModel.count({});
+      let units = [];
+      const documents = await UnitModel.find({});
+
+      if (!documents) {
+        throw new Error(`problem in getting all units!`);
+      } else {
+        for (let i = 0; i < documents.length; i++) {
+          const unit: any = documents[i].toObject();
+          units.push({
+            id: unit.id,
+            name: unit.name,
+            hierarchy: unit.hierarchy,
+          });
+        }
+        return { units: units, totalCount: totalCount };
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async searchUnit(searchUnitReq: SearchUnitReq): Promise<MinUnitArray> {
+    try {
+      const query: any = {
+        $text: { $search: searchUnitReq.nameAndHierarchy },
+      };
+      const totalCount = await UnitModel.count(query);
+      let units = [];
+      const documents = await UnitModel.find(query);
+
+      if (!documents) {
+        throw new Error(`problem in getting all units!`);
+      } else {
+        for (let i = 0; i < documents.length; i++) {
+          const unit: any = documents[i].toObject();
+          units.push({
+            id: unit.id,
+            name: unit.name,
+            hierarchy: unit.hierarchy,
+          });
+        }
+        return { units: units, totalCount: totalCount };
       }
     } catch (error) {
       throw error;
@@ -246,7 +234,7 @@ export class TeaRepository {
   async updateUnit(updateUnitReq: UpdateUnitReq): Promise<Unit> {
     try {
       const documentAfter: any = await UnitModel.findOneAndUpdate(
-        { kartoffelId: updateUnitReq.kartoffelId },
+        { id: updateUnitReq.id },
         { $set: updateUnitReq.unitProperties },
         { new: true }
       );
@@ -258,7 +246,7 @@ export class TeaRepository {
 
   async deleteUnit(deleteUnitReq: DeleteUnitReq): Promise<SuccessMessage> {
     try {
-      await UnitModel.deleteOne({ kartoffelId: deleteUnitReq.kartoffelId });
+      await UnitModel.deleteOne({ id: deleteUnitReq.id });
       return { success: true };
     } catch (error) {
       throw error;

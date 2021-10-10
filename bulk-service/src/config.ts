@@ -40,3 +40,8 @@ export const exampleFiles = {
     process.env.BS_FILE_CRH || 'changeRoleHierarchyBulk.xlsx',
   createRoleRequest: process.env.BS_FILE_CR || 'createRoleBulk.xlsx',
 };
+
+export const logPath = process.env.BS_LOG_PATH || './logs';
+export const storeLogs = process.env.GLOBAL_STORE_LOGS
+  ? process.env.GLOBAL_STORE_LOGS === 'true'
+  : false;

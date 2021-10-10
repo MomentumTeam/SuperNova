@@ -65,6 +65,42 @@ export default class RequestsController {
     }
   }
 
+  static async getMyRequests(req: any, res: Response) {
+    const getRequestsByPersonReq: GetRequestsByPersonReq = {
+      id: req.user.id,
+      personType: req.query.personType,
+      personInfoType: req.query.personInfoType,
+      from: req.query.from,
+      to: req.query.to,
+      userType: req.user.types,
+    };
+
+    if (req.query.approvementStatus) {
+      getRequestsByPersonReq.approvementStatus =
+        getRequestsByPersonReq.approvementStatus;
+    }
+    if (req.query.displayName) {
+      getRequestsByPersonReq.displayName = getRequestsByPersonReq.displayName;
+    }
+    if (req.query.status) {
+      getRequestsByPersonReq.status = getRequestsByPersonReq.status;
+    }
+    if (req.query.type) {
+      getRequestsByPersonReq.type = getRequestsByPersonReq.type;
+    }
+
+    try {
+      const requests = await RequestsService.getRequestsByPerson(
+        getRequestsByPersonReq
+      );
+      res.send(requests);
+    } catch (error: any) {
+      // TODO : ask barak if we need to return the service's error or always 500
+      const statusCode = statusCodeHandler(error);
+      res.status(statusCode).send(error.message);
+    }
+  }
+
   static async getRequestsByPerson(req: any, res: Response) {
     const getRequestsByPersonReq: GetRequestsByPersonReq = {
       id: req.params.id,
@@ -72,7 +108,22 @@ export default class RequestsController {
       personInfoType: req.query.personInfoType,
       from: req.query.from,
       to: req.query.to,
+      userType: req.user.types,
     };
+
+    if (req.query.approvementStatus) {
+      getRequestsByPersonReq.approvementStatus =
+        getRequestsByPersonReq.approvementStatus;
+    }
+    if (req.query.displayName) {
+      getRequestsByPersonReq.displayName = getRequestsByPersonReq.displayName;
+    }
+    if (req.query.status) {
+      getRequestsByPersonReq.status = getRequestsByPersonReq.status;
+    }
+    if (req.query.type) {
+      getRequestsByPersonReq.type = getRequestsByPersonReq.type;
+    }
 
     try {
       const requests = await RequestsService.getRequestsByPerson(
@@ -275,7 +326,7 @@ export default class RequestsController {
     try {
       const request: any = await approveUserRequest(req, createRoleReq);
       const createRole = await RequestsService.createRoleRequest(request);
-      
+
       res.status(200).send(createRole);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -300,8 +351,10 @@ export default class RequestsController {
 
     try {
       const request: any = await approveUserRequest(req, assignRoleToEntityReq);
-      const assignRole = await RequestsService.assignRoleToEntityRequest(request);
-    
+      const assignRole = await RequestsService.assignRoleToEntityRequest(
+        request
+      );
+
       res.status(200).send(assignRole);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -327,7 +380,7 @@ export default class RequestsController {
     try {
       const request: any = await approveUserRequest(req, createOGReq);
       const createOGres = await RequestsService.createOGRequest(request);
-      
+
       res.status(200).send(createOGres);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -352,8 +405,10 @@ export default class RequestsController {
 
     try {
       const request: any = await approveUserRequest(req, createNewApproverReq);
-      const newApprover = await RequestsService.createNewApproverRequest(request);
-      
+      const newApprover = await RequestsService.createNewApproverRequest(
+        request
+      );
+
       res.status(200).send(newApprover);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -379,7 +434,7 @@ export default class RequestsController {
     try {
       const request: any = await approveUserRequest(req, createEntityReq);
       const entity = await RequestsService.createEntityRequest(request);
-      
+
       res.status(200).send(entity);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -405,7 +460,7 @@ export default class RequestsController {
     try {
       const request: any = await approveUserRequest(req, renameOGReq);
       const og = await RequestsService.renameOGRequest(request);
-      
+
       res.status(200).send(og);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -431,7 +486,7 @@ export default class RequestsController {
     try {
       const request: any = await approveUserRequest(req, renameRoleReq);
       const entity = await RequestsService.renameRoleRequest(request);
-      
+
       res.status(200).send(entity);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -457,7 +512,7 @@ export default class RequestsController {
     try {
       const request: any = await approveUserRequest(req, editEntityReq);
       const entity = await RequestsService.editEntityRequest(request);
-      
+
       res.status(200).send(entity);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -486,10 +541,8 @@ export default class RequestsController {
 
     try {
       const request: any = await approveUserRequest(req, deleteRoleReq);
-      const deletedRole = await RequestsService.deleteRoleRequest(
-        request
-      );
-    
+      const deletedRole = await RequestsService.deleteRoleRequest(request);
+
       res.status(200).send(deletedRole);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -519,7 +572,7 @@ export default class RequestsController {
     try {
       const request: any = await approveUserRequest(req, deleteOGReq);
       const deletedOG = await RequestsService.deleteOGRequest(request);
-      
+
       res.status(200).send(deletedOG);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -549,7 +602,7 @@ export default class RequestsController {
     try {
       const request: any = await approveUserRequest(req, deleteEntityReq);
       const deletedEntity = await RequestsService.deleteEntityRequest(request);
-      
+
       res.status(200).send(deletedEntity);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -582,9 +635,13 @@ export default class RequestsController {
     };
 
     try {
-      const request: any = await approveUserRequest(req, disconectRoleFromEntityReq);
-      const disconectRole = await RequestsService.disconectRoleFromEntityRequest(request);
-    
+      const request: any = await approveUserRequest(
+        req,
+        disconectRoleFromEntityReq
+      );
+      const disconectRole =
+        await RequestsService.disconectRoleFromEntityRequest(request);
+
       res.status(200).send(disconectRole);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -628,9 +685,14 @@ export default class RequestsController {
     };
 
     try {
-      const request: any = await approveUserRequest(req, changeRoleHierarchyReq);
-      const roleHierarchy = await RequestsService.changeRoleHierarchyRequest(request);
-    
+      const request: any = await approveUserRequest(
+        req,
+        changeRoleHierarchyReq
+      );
+      const roleHierarchy = await RequestsService.changeRoleHierarchyRequest(
+        request
+      );
+
       res.status(200).send(roleHierarchy);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
