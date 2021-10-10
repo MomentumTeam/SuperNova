@@ -17,6 +17,7 @@ RUN npm run build
 
 # -----------------------------------------------------------------------
 FROM node:14.17.5-alpine3.14
+RUN mkdir -p /logs && chown -R node:node /logs
 RUN mkdir -p /usr/src/app && chown -R node:node /usr/src/app
 WORKDIR /usr/src/app
 COPY --chown=node:node ./package*.json ./

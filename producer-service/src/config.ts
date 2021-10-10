@@ -15,19 +15,22 @@ export const spikeServiceUrl = process.env.PS_SS_URL || '0.0.0.0:8080';
 export const spikeTokenRefreshInHours = process.env.PS_SPIKE_TOKEN_REFRESH_HOURS
   ? parseInt(process.env.PS_SPIKE_TOKEN_REFRESH_HOURS)
   : 24;
-export const oldDomain = process.env.PS_OLD_DOMAIN || 'oldDomain';
+export const oldDomain = process.env.PS_OLD_DOMAIN || 'ADHK';
 export const newDomain = process.env.PS_NEW_DOMAIN || 'newDomain';
 
 export const shmuelRequestTypes: any = {
-  CREATE_OG: 'CREATE_OG',
-  CREATE_ROLE: 'CREATE_ROLE',
-  ASSIGN_ROLE_TO_ENTITY: 'ASSIGN_ROLE_TO_ENTITY',
-  CREATE_ENTITY: 'CREATE_ENTITY',
-  RENAME_OG: 'RENAME_OG',
-  RENAME_ROLE: 'RENAME_ROLE',
-  EDIT_ENTITY: 'EDIT_ENTITY',
-  DELETE_OG: 'DELETE_OG',
-  DELETE_ENTITY: 'DELETE_ENTITY',
-  DISCONNECT_ROLE: 'DISCONNECT_ROLE',
-  CHANGE_ROLE_HIERARCHY: 'CHANGE_ROLE_HIERARCHY',
+  CREATE_OG: 'CreateOU',
+  CREATE_ROLE: 'CreateRole',
+  ASSIGN_ROLE_TO_ENTITY: 'ConnectNewRole',
+  RENAME_OG: 'EditOu',
+  RENAME_ROLE: 'EditRoleName',
+  EDIT_ENTITY: 'EditSpecialRole',
+  DISCONNECT_ROLE: 'DisconnectRole',
+  CHANGE_ROLE_HIERARCHY: 'ChangeRole',
+  DELETE_ROLE: 'PurgeRole',
 };
+
+export const logPath = process.env.PS_LOG_PATH || './logs';
+export const storeLogs = process.env.GLOBAL_STORE_LOGS
+  ? process.env.GLOBAL_STORE_LOGS === 'true'
+  : false;

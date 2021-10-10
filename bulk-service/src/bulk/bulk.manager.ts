@@ -1,4 +1,10 @@
-import { GetBulkRequestExampleReq, GetBulkRequestExampleRes } from '../interfaces/protoc/proto/bulkService';
+import {
+  DetailedChangeRoleHierarchyBulkRequest,
+  DetailedCreateRoleBulkRequest,
+  GetBulkRequestByIdReq,
+  GetBulkRequestExampleReq,
+  GetBulkRequestExampleRes,
+} from '../interfaces/protoc/proto/bulkService';
 import {
   ChangeRoleHierarchyBulkReq,
   ChangeRoleHierarchyBulkRes,
@@ -44,6 +50,30 @@ export class BulkManager {
       return (await this.BulkRepository.getBulkRequestExample(
         getBulkRequestExampleReq
       )) as GetBulkRequestExampleRes;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getCreateRoleBulkRequestById(
+    getCreateRoleBulkRequestByIdReq: GetBulkRequestByIdReq
+  ): Promise<DetailedCreateRoleBulkRequest> {
+    try {
+      return (await this.BulkRepository.getCreateRoleBulkRequestById(
+        getCreateRoleBulkRequestByIdReq
+      )) as DetailedCreateRoleBulkRequest;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getChangeRoleHierarchyBulkRequestById(
+    getChangeRoleHierarchyBulkRequestByIdReq: GetBulkRequestByIdReq
+  ): Promise<DetailedChangeRoleHierarchyBulkRequest> {
+    try {
+      return (await this.BulkRepository.getChangeRoleHierarchyBulkRequestById(
+        getChangeRoleHierarchyBulkRequestByIdReq
+      )) as DetailedChangeRoleHierarchyBulkRequest;
     } catch (error) {
       throw error;
     }

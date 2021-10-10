@@ -25,4 +25,8 @@ export const config = {
     request: process.env.KC_RS_URL || '0.0.0.0:8081',
     tea: process.env.KC_TS_URL || '0.0.0.0:8086',
   },
+  logPath: process.env.KC_LOG_PATH || './logs',
+  storeLogs: process.env.GLOBAL_STORE_LOGS
+    ? process.env.GLOBAL_STORE_LOGS === 'true'
+    : false,
 };

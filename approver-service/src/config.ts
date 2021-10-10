@@ -10,5 +10,12 @@ export const requestServiceUrl = process.env.APS_RS_URL || '0.0.0.0:8081';
 export const commanderRanks = process.env.APS_COMMANDER_RANKS
   ? process.env.APS_COMMANDER_RANKS.split(',')
   : ['aaa', 'bbb'];
-export const mongoConnectionRetries = process.env.MONGO_RECONNECT_ATTEMPTS || '5';
-export const mongoReconnectTimeout = process.env.MONGO_RECONNECT_TIMEOUT || '2000';
+export const mongoConnectionRetries =
+  process.env.MONGO_RECONNECT_ATTEMPTS || '5';
+export const mongoReconnectTimeout =
+  process.env.MONGO_RECONNECT_TIMEOUT || '2000';
+
+export const logPath = process.env.APS_LOG_PATH || './logs';
+export const storeLogs = process.env.GLOBAL_STORE_LOGS
+  ? process.env.GLOBAL_STORE_LOGS === 'true'
+  : false;

@@ -1,8 +1,8 @@
 /* eslint-disable */
-import Long from "long";
-import _m0 from "protobufjs/minimal";
+import Long from 'long';
+import _m0 from 'protobufjs/minimal';
 
-export const protobufPackage = "Tea";
+export const protobufPackage = 'Tea';
 
 export enum Domain {
   OLD = 0,
@@ -13,13 +13,13 @@ export enum Domain {
 export function domainFromJSON(object: any): Domain {
   switch (object) {
     case 0:
-    case "OLD":
+    case 'OLD':
       return Domain.OLD;
     case 1:
-    case "NEW":
+    case 'NEW':
       return Domain.NEW;
     case -1:
-    case "UNRECOGNIZED":
+    case 'UNRECOGNIZED':
     default:
       return Domain.UNRECOGNIZED;
   }
@@ -28,16 +28,33 @@ export function domainFromJSON(object: any): Domain {
 export function domainToJSON(object: Domain): string {
   switch (object) {
     case Domain.OLD:
-      return "OLD";
+      return 'OLD';
     case Domain.NEW:
-      return "NEW";
+      return 'NEW';
     default:
-      return "UNKNOWN";
+      return 'UNKNOWN';
   }
 }
 
+export interface SearchUnitReq {
+  nameAndHierarchy: string;
+}
+
+export interface GetAllUnitsReq {}
+
+export interface MinUnitArray {
+  units: UnitMin[];
+  totalCount: number;
+}
+
+export interface UnitMin {
+  id: string;
+  name: string;
+  hierarchy: string;
+}
+
 export interface RetrieveTeaByUnitReq {
-  kartoffelId: string;
+  id: string;
 }
 
 export interface TeaMessage {
@@ -49,20 +66,20 @@ export interface UPNMessage {
 }
 
 export interface UpdateUnitReq {
-  kartoffelId: string;
+  id: string;
   unitProperties: UnitProperties | undefined;
 }
 
 export interface DeleteUnitReq {
-  kartoffelId: string;
+  id: string;
 }
 
 export interface GetUnitReq {
-  kartoffelId: string;
+  id: string;
 }
 
 export interface AddUnitReq {
-  kartoffelId: string;
+  id: string;
   name: string;
   prefix: string;
   /** gmail.com, after @ */
@@ -70,10 +87,11 @@ export interface AddUnitReq {
   /** gmail.com, after @ */
   newDomainSuffix: string;
   currentCounter: number;
+  hierarchy: string;
 }
 
 export interface Unit {
-  kartoffelId: string;
+  id: string;
   name: string;
   /** 1234 */
   prefix: string;
@@ -85,10 +103,11 @@ export interface Unit {
   teaInProgress: string[];
   failedTea: string[];
   createdAt: number;
+  hierarchy: string;
 }
 
 export interface UnitProperties {
-  kartoffelId?: string | undefined;
+  id?: string | undefined;
   name?: string | undefined;
   prefix?: string | undefined;
   /** gmail.com, after @ */
@@ -98,6 +117,7 @@ export interface UnitProperties {
   currentCounter?: string | undefined;
   teaInProgress: string[];
   failedTea: string[];
+  hierarchy: string;
 }
 
 export interface ReportTeaReq {
@@ -118,11 +138,6 @@ export interface RetrieveByEntityIdReq {
   entityId: string;
 }
 
-export interface TeaAndUPN {
-  tea: string;
-  upn: string;
-}
-
 export interface EntityMin {
   entityType: string;
   akaUnit: string;
@@ -133,15 +148,295 @@ export interface EntityMin {
   lastName?: string | undefined;
 }
 
-const baseRetrieveTeaByUnitReq: object = { kartoffelId: "" };
+const baseSearchUnitReq: object = { nameAndHierarchy: '' };
+
+export const SearchUnitReq = {
+  encode(
+    message: SearchUnitReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.nameAndHierarchy !== '') {
+      writer.uint32(10).string(message.nameAndHierarchy);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SearchUnitReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseSearchUnitReq } as SearchUnitReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.nameAndHierarchy = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SearchUnitReq {
+    const message = { ...baseSearchUnitReq } as SearchUnitReq;
+    if (
+      object.nameAndHierarchy !== undefined &&
+      object.nameAndHierarchy !== null
+    ) {
+      message.nameAndHierarchy = String(object.nameAndHierarchy);
+    } else {
+      message.nameAndHierarchy = '';
+    }
+    return message;
+  },
+
+  toJSON(message: SearchUnitReq): unknown {
+    const obj: any = {};
+    message.nameAndHierarchy !== undefined &&
+      (obj.nameAndHierarchy = message.nameAndHierarchy);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<SearchUnitReq>): SearchUnitReq {
+    const message = { ...baseSearchUnitReq } as SearchUnitReq;
+    if (
+      object.nameAndHierarchy !== undefined &&
+      object.nameAndHierarchy !== null
+    ) {
+      message.nameAndHierarchy = object.nameAndHierarchy;
+    } else {
+      message.nameAndHierarchy = '';
+    }
+    return message;
+  },
+};
+
+const baseGetAllUnitsReq: object = {};
+
+export const GetAllUnitsReq = {
+  encode(
+    _: GetAllUnitsReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): GetAllUnitsReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseGetAllUnitsReq } as GetAllUnitsReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): GetAllUnitsReq {
+    const message = { ...baseGetAllUnitsReq } as GetAllUnitsReq;
+    return message;
+  },
+
+  toJSON(_: GetAllUnitsReq): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(_: DeepPartial<GetAllUnitsReq>): GetAllUnitsReq {
+    const message = { ...baseGetAllUnitsReq } as GetAllUnitsReq;
+    return message;
+  },
+};
+
+const baseMinUnitArray: object = { totalCount: 0 };
+
+export const MinUnitArray = {
+  encode(
+    message: MinUnitArray,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.units) {
+      UnitMin.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.totalCount !== 0) {
+      writer.uint32(16).int32(message.totalCount);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MinUnitArray {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMinUnitArray } as MinUnitArray;
+    message.units = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.units.push(UnitMin.decode(reader, reader.uint32()));
+          break;
+        case 2:
+          message.totalCount = reader.int32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MinUnitArray {
+    const message = { ...baseMinUnitArray } as MinUnitArray;
+    message.units = [];
+    if (object.units !== undefined && object.units !== null) {
+      for (const e of object.units) {
+        message.units.push(UnitMin.fromJSON(e));
+      }
+    }
+    if (object.totalCount !== undefined && object.totalCount !== null) {
+      message.totalCount = Number(object.totalCount);
+    } else {
+      message.totalCount = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: MinUnitArray): unknown {
+    const obj: any = {};
+    if (message.units) {
+      obj.units = message.units.map((e) => (e ? UnitMin.toJSON(e) : undefined));
+    } else {
+      obj.units = [];
+    }
+    message.totalCount !== undefined && (obj.totalCount = message.totalCount);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MinUnitArray>): MinUnitArray {
+    const message = { ...baseMinUnitArray } as MinUnitArray;
+    message.units = [];
+    if (object.units !== undefined && object.units !== null) {
+      for (const e of object.units) {
+        message.units.push(UnitMin.fromPartial(e));
+      }
+    }
+    if (object.totalCount !== undefined && object.totalCount !== null) {
+      message.totalCount = object.totalCount;
+    } else {
+      message.totalCount = 0;
+    }
+    return message;
+  },
+};
+
+const baseUnitMin: object = { id: '', name: '', hierarchy: '' };
+
+export const UnitMin = {
+  encode(
+    message: UnitMin,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== '') {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.name !== '') {
+      writer.uint32(18).string(message.name);
+    }
+    if (message.hierarchy !== '') {
+      writer.uint32(26).string(message.hierarchy);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UnitMin {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseUnitMin } as UnitMin;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        case 2:
+          message.name = reader.string();
+          break;
+        case 3:
+          message.hierarchy = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UnitMin {
+    const message = { ...baseUnitMin } as UnitMin;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = '';
+    }
+    if (object.name !== undefined && object.name !== null) {
+      message.name = String(object.name);
+    } else {
+      message.name = '';
+    }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = String(object.hierarchy);
+    } else {
+      message.hierarchy = '';
+    }
+    return message;
+  },
+
+  toJSON(message: UnitMin): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    message.name !== undefined && (obj.name = message.name);
+    message.hierarchy !== undefined && (obj.hierarchy = message.hierarchy);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<UnitMin>): UnitMin {
+    const message = { ...baseUnitMin } as UnitMin;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = '';
+    }
+    if (object.name !== undefined && object.name !== null) {
+      message.name = object.name;
+    } else {
+      message.name = '';
+    }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = object.hierarchy;
+    } else {
+      message.hierarchy = '';
+    }
+    return message;
+  },
+};
+
+const baseRetrieveTeaByUnitReq: object = { id: '' };
 
 export const RetrieveTeaByUnitReq = {
   encode(
     message: RetrieveTeaByUnitReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.kartoffelId !== "") {
-      writer.uint32(10).string(message.kartoffelId);
+    if (message.id !== '') {
+      writer.uint32(10).string(message.id);
     }
     return writer;
   },
@@ -157,7 +452,7 @@ export const RetrieveTeaByUnitReq = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.kartoffelId = reader.string();
+          message.id = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -169,40 +464,39 @@ export const RetrieveTeaByUnitReq = {
 
   fromJSON(object: any): RetrieveTeaByUnitReq {
     const message = { ...baseRetrieveTeaByUnitReq } as RetrieveTeaByUnitReq;
-    if (object.kartoffelId !== undefined && object.kartoffelId !== null) {
-      message.kartoffelId = String(object.kartoffelId);
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
     } else {
-      message.kartoffelId = "";
+      message.id = '';
     }
     return message;
   },
 
   toJSON(message: RetrieveTeaByUnitReq): unknown {
     const obj: any = {};
-    message.kartoffelId !== undefined &&
-      (obj.kartoffelId = message.kartoffelId);
+    message.id !== undefined && (obj.id = message.id);
     return obj;
   },
 
   fromPartial(object: DeepPartial<RetrieveTeaByUnitReq>): RetrieveTeaByUnitReq {
     const message = { ...baseRetrieveTeaByUnitReq } as RetrieveTeaByUnitReq;
-    if (object.kartoffelId !== undefined && object.kartoffelId !== null) {
-      message.kartoffelId = object.kartoffelId;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
     } else {
-      message.kartoffelId = "";
+      message.id = '';
     }
     return message;
   },
 };
 
-const baseTeaMessage: object = { tea: "" };
+const baseTeaMessage: object = { tea: '' };
 
 export const TeaMessage = {
   encode(
     message: TeaMessage,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.tea !== "") {
+    if (message.tea !== '') {
       writer.uint32(10).string(message.tea);
     }
     return writer;
@@ -231,7 +525,7 @@ export const TeaMessage = {
     if (object.tea !== undefined && object.tea !== null) {
       message.tea = String(object.tea);
     } else {
-      message.tea = "";
+      message.tea = '';
     }
     return message;
   },
@@ -247,20 +541,20 @@ export const TeaMessage = {
     if (object.tea !== undefined && object.tea !== null) {
       message.tea = object.tea;
     } else {
-      message.tea = "";
+      message.tea = '';
     }
     return message;
   },
 };
 
-const baseUPNMessage: object = { upn: "" };
+const baseUPNMessage: object = { upn: '' };
 
 export const UPNMessage = {
   encode(
     message: UPNMessage,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.upn !== "") {
+    if (message.upn !== '') {
       writer.uint32(10).string(message.upn);
     }
     return writer;
@@ -289,7 +583,7 @@ export const UPNMessage = {
     if (object.upn !== undefined && object.upn !== null) {
       message.upn = String(object.upn);
     } else {
-      message.upn = "";
+      message.upn = '';
     }
     return message;
   },
@@ -305,21 +599,21 @@ export const UPNMessage = {
     if (object.upn !== undefined && object.upn !== null) {
       message.upn = object.upn;
     } else {
-      message.upn = "";
+      message.upn = '';
     }
     return message;
   },
 };
 
-const baseUpdateUnitReq: object = { kartoffelId: "" };
+const baseUpdateUnitReq: object = { id: '' };
 
 export const UpdateUnitReq = {
   encode(
     message: UpdateUnitReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.kartoffelId !== "") {
-      writer.uint32(10).string(message.kartoffelId);
+    if (message.id !== '') {
+      writer.uint32(10).string(message.id);
     }
     if (message.unitProperties !== undefined) {
       UnitProperties.encode(
@@ -338,7 +632,7 @@ export const UpdateUnitReq = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.kartoffelId = reader.string();
+          message.id = reader.string();
           break;
         case 2:
           message.unitProperties = UnitProperties.decode(
@@ -356,10 +650,10 @@ export const UpdateUnitReq = {
 
   fromJSON(object: any): UpdateUnitReq {
     const message = { ...baseUpdateUnitReq } as UpdateUnitReq;
-    if (object.kartoffelId !== undefined && object.kartoffelId !== null) {
-      message.kartoffelId = String(object.kartoffelId);
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
     } else {
-      message.kartoffelId = "";
+      message.id = '';
     }
     if (object.unitProperties !== undefined && object.unitProperties !== null) {
       message.unitProperties = UnitProperties.fromJSON(object.unitProperties);
@@ -371,8 +665,7 @@ export const UpdateUnitReq = {
 
   toJSON(message: UpdateUnitReq): unknown {
     const obj: any = {};
-    message.kartoffelId !== undefined &&
-      (obj.kartoffelId = message.kartoffelId);
+    message.id !== undefined && (obj.id = message.id);
     message.unitProperties !== undefined &&
       (obj.unitProperties = message.unitProperties
         ? UnitProperties.toJSON(message.unitProperties)
@@ -382,10 +675,10 @@ export const UpdateUnitReq = {
 
   fromPartial(object: DeepPartial<UpdateUnitReq>): UpdateUnitReq {
     const message = { ...baseUpdateUnitReq } as UpdateUnitReq;
-    if (object.kartoffelId !== undefined && object.kartoffelId !== null) {
-      message.kartoffelId = object.kartoffelId;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
     } else {
-      message.kartoffelId = "";
+      message.id = '';
     }
     if (object.unitProperties !== undefined && object.unitProperties !== null) {
       message.unitProperties = UnitProperties.fromPartial(
@@ -398,15 +691,15 @@ export const UpdateUnitReq = {
   },
 };
 
-const baseDeleteUnitReq: object = { kartoffelId: "" };
+const baseDeleteUnitReq: object = { id: '' };
 
 export const DeleteUnitReq = {
   encode(
     message: DeleteUnitReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.kartoffelId !== "") {
-      writer.uint32(10).string(message.kartoffelId);
+    if (message.id !== '') {
+      writer.uint32(10).string(message.id);
     }
     return writer;
   },
@@ -419,7 +712,7 @@ export const DeleteUnitReq = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.kartoffelId = reader.string();
+          message.id = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -431,41 +724,40 @@ export const DeleteUnitReq = {
 
   fromJSON(object: any): DeleteUnitReq {
     const message = { ...baseDeleteUnitReq } as DeleteUnitReq;
-    if (object.kartoffelId !== undefined && object.kartoffelId !== null) {
-      message.kartoffelId = String(object.kartoffelId);
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
     } else {
-      message.kartoffelId = "";
+      message.id = '';
     }
     return message;
   },
 
   toJSON(message: DeleteUnitReq): unknown {
     const obj: any = {};
-    message.kartoffelId !== undefined &&
-      (obj.kartoffelId = message.kartoffelId);
+    message.id !== undefined && (obj.id = message.id);
     return obj;
   },
 
   fromPartial(object: DeepPartial<DeleteUnitReq>): DeleteUnitReq {
     const message = { ...baseDeleteUnitReq } as DeleteUnitReq;
-    if (object.kartoffelId !== undefined && object.kartoffelId !== null) {
-      message.kartoffelId = object.kartoffelId;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
     } else {
-      message.kartoffelId = "";
+      message.id = '';
     }
     return message;
   },
 };
 
-const baseGetUnitReq: object = { kartoffelId: "" };
+const baseGetUnitReq: object = { id: '' };
 
 export const GetUnitReq = {
   encode(
     message: GetUnitReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.kartoffelId !== "") {
-      writer.uint32(10).string(message.kartoffelId);
+    if (message.id !== '') {
+      writer.uint32(10).string(message.id);
     }
     return writer;
   },
@@ -478,7 +770,7 @@ export const GetUnitReq = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.kartoffelId = reader.string();
+          message.id = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -490,39 +782,39 @@ export const GetUnitReq = {
 
   fromJSON(object: any): GetUnitReq {
     const message = { ...baseGetUnitReq } as GetUnitReq;
-    if (object.kartoffelId !== undefined && object.kartoffelId !== null) {
-      message.kartoffelId = String(object.kartoffelId);
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
     } else {
-      message.kartoffelId = "";
+      message.id = '';
     }
     return message;
   },
 
   toJSON(message: GetUnitReq): unknown {
     const obj: any = {};
-    message.kartoffelId !== undefined &&
-      (obj.kartoffelId = message.kartoffelId);
+    message.id !== undefined && (obj.id = message.id);
     return obj;
   },
 
   fromPartial(object: DeepPartial<GetUnitReq>): GetUnitReq {
     const message = { ...baseGetUnitReq } as GetUnitReq;
-    if (object.kartoffelId !== undefined && object.kartoffelId !== null) {
-      message.kartoffelId = object.kartoffelId;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
     } else {
-      message.kartoffelId = "";
+      message.id = '';
     }
     return message;
   },
 };
 
 const baseAddUnitReq: object = {
-  kartoffelId: "",
-  name: "",
-  prefix: "",
-  oldDomainSuffix: "",
-  newDomainSuffix: "",
+  id: '',
+  name: '',
+  prefix: '',
+  oldDomainSuffix: '',
+  newDomainSuffix: '',
   currentCounter: 0,
+  hierarchy: '',
 };
 
 export const AddUnitReq = {
@@ -530,23 +822,26 @@ export const AddUnitReq = {
     message: AddUnitReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.kartoffelId !== "") {
-      writer.uint32(10).string(message.kartoffelId);
+    if (message.id !== '') {
+      writer.uint32(10).string(message.id);
     }
-    if (message.name !== "") {
+    if (message.name !== '') {
       writer.uint32(18).string(message.name);
     }
-    if (message.prefix !== "") {
+    if (message.prefix !== '') {
       writer.uint32(26).string(message.prefix);
     }
-    if (message.oldDomainSuffix !== "") {
+    if (message.oldDomainSuffix !== '') {
       writer.uint32(34).string(message.oldDomainSuffix);
     }
-    if (message.newDomainSuffix !== "") {
+    if (message.newDomainSuffix !== '') {
       writer.uint32(42).string(message.newDomainSuffix);
     }
     if (message.currentCounter !== 0) {
       writer.uint32(48).int32(message.currentCounter);
+    }
+    if (message.hierarchy !== '') {
+      writer.uint32(58).string(message.hierarchy);
     }
     return writer;
   },
@@ -559,7 +854,7 @@ export const AddUnitReq = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.kartoffelId = reader.string();
+          message.id = reader.string();
           break;
         case 2:
           message.name = reader.string();
@@ -576,6 +871,9 @@ export const AddUnitReq = {
         case 6:
           message.currentCounter = reader.int32();
           break;
+        case 7:
+          message.hierarchy = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -586,20 +884,20 @@ export const AddUnitReq = {
 
   fromJSON(object: any): AddUnitReq {
     const message = { ...baseAddUnitReq } as AddUnitReq;
-    if (object.kartoffelId !== undefined && object.kartoffelId !== null) {
-      message.kartoffelId = String(object.kartoffelId);
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
     } else {
-      message.kartoffelId = "";
+      message.id = '';
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = String(object.name);
     } else {
-      message.name = "";
+      message.name = '';
     }
     if (object.prefix !== undefined && object.prefix !== null) {
       message.prefix = String(object.prefix);
     } else {
-      message.prefix = "";
+      message.prefix = '';
     }
     if (
       object.oldDomainSuffix !== undefined &&
@@ -607,7 +905,7 @@ export const AddUnitReq = {
     ) {
       message.oldDomainSuffix = String(object.oldDomainSuffix);
     } else {
-      message.oldDomainSuffix = "";
+      message.oldDomainSuffix = '';
     }
     if (
       object.newDomainSuffix !== undefined &&
@@ -615,20 +913,24 @@ export const AddUnitReq = {
     ) {
       message.newDomainSuffix = String(object.newDomainSuffix);
     } else {
-      message.newDomainSuffix = "";
+      message.newDomainSuffix = '';
     }
     if (object.currentCounter !== undefined && object.currentCounter !== null) {
       message.currentCounter = Number(object.currentCounter);
     } else {
       message.currentCounter = 0;
     }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = String(object.hierarchy);
+    } else {
+      message.hierarchy = '';
+    }
     return message;
   },
 
   toJSON(message: AddUnitReq): unknown {
     const obj: any = {};
-    message.kartoffelId !== undefined &&
-      (obj.kartoffelId = message.kartoffelId);
+    message.id !== undefined && (obj.id = message.id);
     message.name !== undefined && (obj.name = message.name);
     message.prefix !== undefined && (obj.prefix = message.prefix);
     message.oldDomainSuffix !== undefined &&
@@ -637,25 +939,26 @@ export const AddUnitReq = {
       (obj.newDomainSuffix = message.newDomainSuffix);
     message.currentCounter !== undefined &&
       (obj.currentCounter = message.currentCounter);
+    message.hierarchy !== undefined && (obj.hierarchy = message.hierarchy);
     return obj;
   },
 
   fromPartial(object: DeepPartial<AddUnitReq>): AddUnitReq {
     const message = { ...baseAddUnitReq } as AddUnitReq;
-    if (object.kartoffelId !== undefined && object.kartoffelId !== null) {
-      message.kartoffelId = object.kartoffelId;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
     } else {
-      message.kartoffelId = "";
+      message.id = '';
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = object.name;
     } else {
-      message.name = "";
+      message.name = '';
     }
     if (object.prefix !== undefined && object.prefix !== null) {
       message.prefix = object.prefix;
     } else {
-      message.prefix = "";
+      message.prefix = '';
     }
     if (
       object.oldDomainSuffix !== undefined &&
@@ -663,7 +966,7 @@ export const AddUnitReq = {
     ) {
       message.oldDomainSuffix = object.oldDomainSuffix;
     } else {
-      message.oldDomainSuffix = "";
+      message.oldDomainSuffix = '';
     }
     if (
       object.newDomainSuffix !== undefined &&
@@ -671,44 +974,50 @@ export const AddUnitReq = {
     ) {
       message.newDomainSuffix = object.newDomainSuffix;
     } else {
-      message.newDomainSuffix = "";
+      message.newDomainSuffix = '';
     }
     if (object.currentCounter !== undefined && object.currentCounter !== null) {
       message.currentCounter = object.currentCounter;
     } else {
       message.currentCounter = 0;
     }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = object.hierarchy;
+    } else {
+      message.hierarchy = '';
+    }
     return message;
   },
 };
 
 const baseUnit: object = {
-  kartoffelId: "",
-  name: "",
-  prefix: "",
-  oldDomainSuffix: "",
-  newDomainSuffix: "",
+  id: '',
+  name: '',
+  prefix: '',
+  oldDomainSuffix: '',
+  newDomainSuffix: '',
   currentCounter: 0,
-  teaInProgress: "",
-  failedTea: "",
+  teaInProgress: '',
+  failedTea: '',
   createdAt: 0,
+  hierarchy: '',
 };
 
 export const Unit = {
   encode(message: Unit, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.kartoffelId !== "") {
-      writer.uint32(10).string(message.kartoffelId);
+    if (message.id !== '') {
+      writer.uint32(10).string(message.id);
     }
-    if (message.name !== "") {
+    if (message.name !== '') {
       writer.uint32(18).string(message.name);
     }
-    if (message.prefix !== "") {
+    if (message.prefix !== '') {
       writer.uint32(26).string(message.prefix);
     }
-    if (message.oldDomainSuffix !== "") {
+    if (message.oldDomainSuffix !== '') {
       writer.uint32(34).string(message.oldDomainSuffix);
     }
-    if (message.newDomainSuffix !== "") {
+    if (message.newDomainSuffix !== '') {
       writer.uint32(42).string(message.newDomainSuffix);
     }
     if (message.currentCounter !== 0) {
@@ -723,6 +1032,9 @@ export const Unit = {
     if (message.createdAt !== 0) {
       writer.uint32(72).int64(message.createdAt);
     }
+    if (message.hierarchy !== '') {
+      writer.uint32(82).string(message.hierarchy);
+    }
     return writer;
   },
 
@@ -736,7 +1048,7 @@ export const Unit = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.kartoffelId = reader.string();
+          message.id = reader.string();
           break;
         case 2:
           message.name = reader.string();
@@ -762,6 +1074,9 @@ export const Unit = {
         case 9:
           message.createdAt = longToNumber(reader.int64() as Long);
           break;
+        case 10:
+          message.hierarchy = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -774,20 +1089,20 @@ export const Unit = {
     const message = { ...baseUnit } as Unit;
     message.teaInProgress = [];
     message.failedTea = [];
-    if (object.kartoffelId !== undefined && object.kartoffelId !== null) {
-      message.kartoffelId = String(object.kartoffelId);
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
     } else {
-      message.kartoffelId = "";
+      message.id = '';
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = String(object.name);
     } else {
-      message.name = "";
+      message.name = '';
     }
     if (object.prefix !== undefined && object.prefix !== null) {
       message.prefix = String(object.prefix);
     } else {
-      message.prefix = "";
+      message.prefix = '';
     }
     if (
       object.oldDomainSuffix !== undefined &&
@@ -795,7 +1110,7 @@ export const Unit = {
     ) {
       message.oldDomainSuffix = String(object.oldDomainSuffix);
     } else {
-      message.oldDomainSuffix = "";
+      message.oldDomainSuffix = '';
     }
     if (
       object.newDomainSuffix !== undefined &&
@@ -803,7 +1118,7 @@ export const Unit = {
     ) {
       message.newDomainSuffix = String(object.newDomainSuffix);
     } else {
-      message.newDomainSuffix = "";
+      message.newDomainSuffix = '';
     }
     if (object.currentCounter !== undefined && object.currentCounter !== null) {
       message.currentCounter = Number(object.currentCounter);
@@ -825,13 +1140,17 @@ export const Unit = {
     } else {
       message.createdAt = 0;
     }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = String(object.hierarchy);
+    } else {
+      message.hierarchy = '';
+    }
     return message;
   },
 
   toJSON(message: Unit): unknown {
     const obj: any = {};
-    message.kartoffelId !== undefined &&
-      (obj.kartoffelId = message.kartoffelId);
+    message.id !== undefined && (obj.id = message.id);
     message.name !== undefined && (obj.name = message.name);
     message.prefix !== undefined && (obj.prefix = message.prefix);
     message.oldDomainSuffix !== undefined &&
@@ -851,6 +1170,7 @@ export const Unit = {
       obj.failedTea = [];
     }
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
+    message.hierarchy !== undefined && (obj.hierarchy = message.hierarchy);
     return obj;
   },
 
@@ -858,20 +1178,20 @@ export const Unit = {
     const message = { ...baseUnit } as Unit;
     message.teaInProgress = [];
     message.failedTea = [];
-    if (object.kartoffelId !== undefined && object.kartoffelId !== null) {
-      message.kartoffelId = object.kartoffelId;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
     } else {
-      message.kartoffelId = "";
+      message.id = '';
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = object.name;
     } else {
-      message.name = "";
+      message.name = '';
     }
     if (object.prefix !== undefined && object.prefix !== null) {
       message.prefix = object.prefix;
     } else {
-      message.prefix = "";
+      message.prefix = '';
     }
     if (
       object.oldDomainSuffix !== undefined &&
@@ -879,7 +1199,7 @@ export const Unit = {
     ) {
       message.oldDomainSuffix = object.oldDomainSuffix;
     } else {
-      message.oldDomainSuffix = "";
+      message.oldDomainSuffix = '';
     }
     if (
       object.newDomainSuffix !== undefined &&
@@ -887,7 +1207,7 @@ export const Unit = {
     ) {
       message.newDomainSuffix = object.newDomainSuffix;
     } else {
-      message.newDomainSuffix = "";
+      message.newDomainSuffix = '';
     }
     if (object.currentCounter !== undefined && object.currentCounter !== null) {
       message.currentCounter = object.currentCounter;
@@ -909,15 +1229,21 @@ export const Unit = {
     } else {
       message.createdAt = 0;
     }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = object.hierarchy;
+    } else {
+      message.hierarchy = '';
+    }
     return message;
   },
 };
 
 const baseUnitProperties: object = {
-  oldDomainSuffix: "",
-  newDomainSuffix: "",
-  teaInProgress: "",
-  failedTea: "",
+  oldDomainSuffix: '',
+  newDomainSuffix: '',
+  teaInProgress: '',
+  failedTea: '',
+  hierarchy: '',
 };
 
 export const UnitProperties = {
@@ -925,8 +1251,8 @@ export const UnitProperties = {
     message: UnitProperties,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.kartoffelId !== undefined) {
-      writer.uint32(10).string(message.kartoffelId);
+    if (message.id !== undefined) {
+      writer.uint32(10).string(message.id);
     }
     if (message.name !== undefined) {
       writer.uint32(18).string(message.name);
@@ -934,10 +1260,10 @@ export const UnitProperties = {
     if (message.prefix !== undefined) {
       writer.uint32(26).string(message.prefix);
     }
-    if (message.oldDomainSuffix !== "") {
+    if (message.oldDomainSuffix !== '') {
       writer.uint32(34).string(message.oldDomainSuffix);
     }
-    if (message.newDomainSuffix !== "") {
+    if (message.newDomainSuffix !== '') {
       writer.uint32(42).string(message.newDomainSuffix);
     }
     if (message.currentCounter !== undefined) {
@@ -948,6 +1274,9 @@ export const UnitProperties = {
     }
     for (const v of message.failedTea) {
       writer.uint32(66).string(v!);
+    }
+    if (message.hierarchy !== '') {
+      writer.uint32(74).string(message.hierarchy);
     }
     return writer;
   },
@@ -962,7 +1291,7 @@ export const UnitProperties = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.kartoffelId = reader.string();
+          message.id = reader.string();
           break;
         case 2:
           message.name = reader.string();
@@ -985,6 +1314,9 @@ export const UnitProperties = {
         case 8:
           message.failedTea.push(reader.string());
           break;
+        case 9:
+          message.hierarchy = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -997,10 +1329,10 @@ export const UnitProperties = {
     const message = { ...baseUnitProperties } as UnitProperties;
     message.teaInProgress = [];
     message.failedTea = [];
-    if (object.kartoffelId !== undefined && object.kartoffelId !== null) {
-      message.kartoffelId = String(object.kartoffelId);
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
     } else {
-      message.kartoffelId = undefined;
+      message.id = undefined;
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = String(object.name);
@@ -1018,7 +1350,7 @@ export const UnitProperties = {
     ) {
       message.oldDomainSuffix = String(object.oldDomainSuffix);
     } else {
-      message.oldDomainSuffix = "";
+      message.oldDomainSuffix = '';
     }
     if (
       object.newDomainSuffix !== undefined &&
@@ -1026,7 +1358,7 @@ export const UnitProperties = {
     ) {
       message.newDomainSuffix = String(object.newDomainSuffix);
     } else {
-      message.newDomainSuffix = "";
+      message.newDomainSuffix = '';
     }
     if (object.currentCounter !== undefined && object.currentCounter !== null) {
       message.currentCounter = String(object.currentCounter);
@@ -1043,13 +1375,17 @@ export const UnitProperties = {
         message.failedTea.push(String(e));
       }
     }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = String(object.hierarchy);
+    } else {
+      message.hierarchy = '';
+    }
     return message;
   },
 
   toJSON(message: UnitProperties): unknown {
     const obj: any = {};
-    message.kartoffelId !== undefined &&
-      (obj.kartoffelId = message.kartoffelId);
+    message.id !== undefined && (obj.id = message.id);
     message.name !== undefined && (obj.name = message.name);
     message.prefix !== undefined && (obj.prefix = message.prefix);
     message.oldDomainSuffix !== undefined &&
@@ -1068,6 +1404,7 @@ export const UnitProperties = {
     } else {
       obj.failedTea = [];
     }
+    message.hierarchy !== undefined && (obj.hierarchy = message.hierarchy);
     return obj;
   },
 
@@ -1075,10 +1412,10 @@ export const UnitProperties = {
     const message = { ...baseUnitProperties } as UnitProperties;
     message.teaInProgress = [];
     message.failedTea = [];
-    if (object.kartoffelId !== undefined && object.kartoffelId !== null) {
-      message.kartoffelId = object.kartoffelId;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
     } else {
-      message.kartoffelId = undefined;
+      message.id = undefined;
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = object.name;
@@ -1096,7 +1433,7 @@ export const UnitProperties = {
     ) {
       message.oldDomainSuffix = object.oldDomainSuffix;
     } else {
-      message.oldDomainSuffix = "";
+      message.oldDomainSuffix = '';
     }
     if (
       object.newDomainSuffix !== undefined &&
@@ -1104,7 +1441,7 @@ export const UnitProperties = {
     ) {
       message.newDomainSuffix = object.newDomainSuffix;
     } else {
-      message.newDomainSuffix = "";
+      message.newDomainSuffix = '';
     }
     if (object.currentCounter !== undefined && object.currentCounter !== null) {
       message.currentCounter = object.currentCounter;
@@ -1121,18 +1458,23 @@ export const UnitProperties = {
         message.failedTea.push(e);
       }
     }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = object.hierarchy;
+    } else {
+      message.hierarchy = '';
+    }
     return message;
   },
 };
 
-const baseReportTeaReq: object = { tea: "" };
+const baseReportTeaReq: object = { tea: '' };
 
 export const ReportTeaReq = {
   encode(
     message: ReportTeaReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.tea !== "") {
+    if (message.tea !== '') {
       writer.uint32(10).string(message.tea);
     }
     return writer;
@@ -1161,7 +1503,7 @@ export const ReportTeaReq = {
     if (object.tea !== undefined && object.tea !== null) {
       message.tea = String(object.tea);
     } else {
-      message.tea = "";
+      message.tea = '';
     }
     return message;
   },
@@ -1177,7 +1519,7 @@ export const ReportTeaReq = {
     if (object.tea !== undefined && object.tea !== null) {
       message.tea = object.tea;
     } else {
-      message.tea = "";
+      message.tea = '';
     }
     return message;
   },
@@ -1319,7 +1661,7 @@ export const RetrieveByEntityReq = {
   },
 };
 
-const baseRetrieveByEntityIdReq: object = { domain: 0, entityId: "" };
+const baseRetrieveByEntityIdReq: object = { domain: 0, entityId: '' };
 
 export const RetrieveByEntityIdReq = {
   encode(
@@ -1329,7 +1671,7 @@ export const RetrieveByEntityIdReq = {
     if (message.domain !== 0) {
       writer.uint32(8).int32(message.domain);
     }
-    if (message.entityId !== "") {
+    if (message.entityId !== '') {
       writer.uint32(18).string(message.entityId);
     }
     return writer;
@@ -1369,7 +1711,7 @@ export const RetrieveByEntityIdReq = {
     if (object.entityId !== undefined && object.entityId !== null) {
       message.entityId = String(object.entityId);
     } else {
-      message.entityId = "";
+      message.entityId = '';
     }
     return message;
   },
@@ -1393,98 +1735,23 @@ export const RetrieveByEntityIdReq = {
     if (object.entityId !== undefined && object.entityId !== null) {
       message.entityId = object.entityId;
     } else {
-      message.entityId = "";
+      message.entityId = '';
     }
     return message;
   },
 };
 
-const baseTeaAndUPN: object = { tea: "", upn: "" };
-
-export const TeaAndUPN = {
-  encode(
-    message: TeaAndUPN,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.tea !== "") {
-      writer.uint32(10).string(message.tea);
-    }
-    if (message.upn !== "") {
-      writer.uint32(18).string(message.upn);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): TeaAndUPN {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseTeaAndUPN } as TeaAndUPN;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.tea = reader.string();
-          break;
-        case 2:
-          message.upn = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): TeaAndUPN {
-    const message = { ...baseTeaAndUPN } as TeaAndUPN;
-    if (object.tea !== undefined && object.tea !== null) {
-      message.tea = String(object.tea);
-    } else {
-      message.tea = "";
-    }
-    if (object.upn !== undefined && object.upn !== null) {
-      message.upn = String(object.upn);
-    } else {
-      message.upn = "";
-    }
-    return message;
-  },
-
-  toJSON(message: TeaAndUPN): unknown {
-    const obj: any = {};
-    message.tea !== undefined && (obj.tea = message.tea);
-    message.upn !== undefined && (obj.upn = message.upn);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<TeaAndUPN>): TeaAndUPN {
-    const message = { ...baseTeaAndUPN } as TeaAndUPN;
-    if (object.tea !== undefined && object.tea !== null) {
-      message.tea = object.tea;
-    } else {
-      message.tea = "";
-    }
-    if (object.upn !== undefined && object.upn !== null) {
-      message.upn = object.upn;
-    } else {
-      message.upn = "";
-    }
-    return message;
-  },
-};
-
-const baseEntityMin: object = { entityType: "", akaUnit: "" };
+const baseEntityMin: object = { entityType: '', akaUnit: '' };
 
 export const EntityMin = {
   encode(
     message: EntityMin,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.entityType !== "") {
+    if (message.entityType !== '') {
       writer.uint32(10).string(message.entityType);
     }
-    if (message.akaUnit !== "") {
+    if (message.akaUnit !== '') {
       writer.uint32(18).string(message.akaUnit);
     }
     if (message.personalNumber !== undefined) {
@@ -1546,12 +1813,12 @@ export const EntityMin = {
     if (object.entityType !== undefined && object.entityType !== null) {
       message.entityType = String(object.entityType);
     } else {
-      message.entityType = "";
+      message.entityType = '';
     }
     if (object.akaUnit !== undefined && object.akaUnit !== null) {
       message.akaUnit = String(object.akaUnit);
     } else {
-      message.akaUnit = "";
+      message.akaUnit = '';
     }
     if (object.personalNumber !== undefined && object.personalNumber !== null) {
       message.personalNumber = String(object.personalNumber);
@@ -1600,12 +1867,12 @@ export const EntityMin = {
     if (object.entityType !== undefined && object.entityType !== null) {
       message.entityType = object.entityType;
     } else {
-      message.entityType = "";
+      message.entityType = '';
     }
     if (object.akaUnit !== undefined && object.akaUnit !== null) {
       message.akaUnit = object.akaUnit;
     } else {
-      message.akaUnit = "";
+      message.akaUnit = '';
     }
     if (object.personalNumber !== undefined && object.personalNumber !== null) {
       message.personalNumber = object.personalNumber;
@@ -1640,16 +1907,14 @@ export interface Tea {
   RetrieveTeaByUnit(request: RetrieveTeaByUnitReq): Promise<TeaMessage>;
   RetrieveUPNByEntity(request: RetrieveByEntityReq): Promise<UPNMessage>;
   RetrieveUPNByEntityId(request: RetrieveByEntityIdReq): Promise<UPNMessage>;
-  RetrieveTeaAndUPNByEntity(request: RetrieveByEntityReq): Promise<TeaAndUPN>;
-  RetrieveTeaAndUPNByEntityId(
-    request: RetrieveByEntityIdReq
-  ): Promise<TeaAndUPN>;
   ReportTeaSuccess(request: ReportTeaReq): Promise<SuccessMessage>;
   ReportTeaFail(request: ReportTeaReq): Promise<SuccessMessage>;
   GetUnit(request: GetUnitReq): Promise<Unit>;
   AddUnit(request: AddUnitReq): Promise<Unit>;
   UpdateUnit(request: UpdateUnitReq): Promise<Unit>;
   DeleteUnit(request: DeleteUnitReq): Promise<SuccessMessage>;
+  GetAllUnits(request: GetAllUnitsReq): Promise<MinUnitArray>;
+  SearchUnit(request: SearchUnitReq): Promise<MinUnitArray>;
 }
 
 export class TeaClientImpl implements Tea {
@@ -1659,90 +1924,79 @@ export class TeaClientImpl implements Tea {
     this.RetrieveTeaByUnit = this.RetrieveTeaByUnit.bind(this);
     this.RetrieveUPNByEntity = this.RetrieveUPNByEntity.bind(this);
     this.RetrieveUPNByEntityId = this.RetrieveUPNByEntityId.bind(this);
-    this.RetrieveTeaAndUPNByEntity = this.RetrieveTeaAndUPNByEntity.bind(this);
-    this.RetrieveTeaAndUPNByEntityId =
-      this.RetrieveTeaAndUPNByEntityId.bind(this);
     this.ReportTeaSuccess = this.ReportTeaSuccess.bind(this);
     this.ReportTeaFail = this.ReportTeaFail.bind(this);
     this.GetUnit = this.GetUnit.bind(this);
     this.AddUnit = this.AddUnit.bind(this);
     this.UpdateUnit = this.UpdateUnit.bind(this);
     this.DeleteUnit = this.DeleteUnit.bind(this);
+    this.GetAllUnits = this.GetAllUnits.bind(this);
+    this.SearchUnit = this.SearchUnit.bind(this);
   }
   RetrieveTeaByUnit(request: RetrieveTeaByUnitReq): Promise<TeaMessage> {
     const data = RetrieveTeaByUnitReq.encode(request).finish();
-    const promise = this.rpc.request("Tea.Tea", "RetrieveTeaByUnit", data);
+    const promise = this.rpc.request('Tea.Tea', 'RetrieveTeaByUnit', data);
     return promise.then((data) => TeaMessage.decode(new _m0.Reader(data)));
   }
 
   RetrieveUPNByEntity(request: RetrieveByEntityReq): Promise<UPNMessage> {
     const data = RetrieveByEntityReq.encode(request).finish();
-    const promise = this.rpc.request("Tea.Tea", "RetrieveUPNByEntity", data);
+    const promise = this.rpc.request('Tea.Tea', 'RetrieveUPNByEntity', data);
     return promise.then((data) => UPNMessage.decode(new _m0.Reader(data)));
   }
 
   RetrieveUPNByEntityId(request: RetrieveByEntityIdReq): Promise<UPNMessage> {
     const data = RetrieveByEntityIdReq.encode(request).finish();
-    const promise = this.rpc.request("Tea.Tea", "RetrieveUPNByEntityId", data);
+    const promise = this.rpc.request('Tea.Tea', 'RetrieveUPNByEntityId', data);
     return promise.then((data) => UPNMessage.decode(new _m0.Reader(data)));
-  }
-
-  RetrieveTeaAndUPNByEntity(request: RetrieveByEntityReq): Promise<TeaAndUPN> {
-    const data = RetrieveByEntityReq.encode(request).finish();
-    const promise = this.rpc.request(
-      "Tea.Tea",
-      "RetrieveTeaAndUPNByEntity",
-      data
-    );
-    return promise.then((data) => TeaAndUPN.decode(new _m0.Reader(data)));
-  }
-
-  RetrieveTeaAndUPNByEntityId(
-    request: RetrieveByEntityIdReq
-  ): Promise<TeaAndUPN> {
-    const data = RetrieveByEntityIdReq.encode(request).finish();
-    const promise = this.rpc.request(
-      "Tea.Tea",
-      "RetrieveTeaAndUPNByEntityId",
-      data
-    );
-    return promise.then((data) => TeaAndUPN.decode(new _m0.Reader(data)));
   }
 
   ReportTeaSuccess(request: ReportTeaReq): Promise<SuccessMessage> {
     const data = ReportTeaReq.encode(request).finish();
-    const promise = this.rpc.request("Tea.Tea", "ReportTeaSuccess", data);
+    const promise = this.rpc.request('Tea.Tea', 'ReportTeaSuccess', data);
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
   ReportTeaFail(request: ReportTeaReq): Promise<SuccessMessage> {
     const data = ReportTeaReq.encode(request).finish();
-    const promise = this.rpc.request("Tea.Tea", "ReportTeaFail", data);
+    const promise = this.rpc.request('Tea.Tea', 'ReportTeaFail', data);
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
   GetUnit(request: GetUnitReq): Promise<Unit> {
     const data = GetUnitReq.encode(request).finish();
-    const promise = this.rpc.request("Tea.Tea", "GetUnit", data);
+    const promise = this.rpc.request('Tea.Tea', 'GetUnit', data);
     return promise.then((data) => Unit.decode(new _m0.Reader(data)));
   }
 
   AddUnit(request: AddUnitReq): Promise<Unit> {
     const data = AddUnitReq.encode(request).finish();
-    const promise = this.rpc.request("Tea.Tea", "AddUnit", data);
+    const promise = this.rpc.request('Tea.Tea', 'AddUnit', data);
     return promise.then((data) => Unit.decode(new _m0.Reader(data)));
   }
 
   UpdateUnit(request: UpdateUnitReq): Promise<Unit> {
     const data = UpdateUnitReq.encode(request).finish();
-    const promise = this.rpc.request("Tea.Tea", "UpdateUnit", data);
+    const promise = this.rpc.request('Tea.Tea', 'UpdateUnit', data);
     return promise.then((data) => Unit.decode(new _m0.Reader(data)));
   }
 
   DeleteUnit(request: DeleteUnitReq): Promise<SuccessMessage> {
     const data = DeleteUnitReq.encode(request).finish();
-    const promise = this.rpc.request("Tea.Tea", "DeleteUnit", data);
+    const promise = this.rpc.request('Tea.Tea', 'DeleteUnit', data);
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
+  }
+
+  GetAllUnits(request: GetAllUnitsReq): Promise<MinUnitArray> {
+    const data = GetAllUnitsReq.encode(request).finish();
+    const promise = this.rpc.request('Tea.Tea', 'GetAllUnits', data);
+    return promise.then((data) => MinUnitArray.decode(new _m0.Reader(data)));
+  }
+
+  SearchUnit(request: SearchUnitReq): Promise<MinUnitArray> {
+    const data = SearchUnitReq.encode(request).finish();
+    const promise = this.rpc.request('Tea.Tea', 'SearchUnit', data);
+    return promise.then((data) => MinUnitArray.decode(new _m0.Reader(data)));
   }
 }
 
@@ -1757,11 +2011,11 @@ interface Rpc {
 declare var self: any | undefined;
 declare var window: any | undefined;
 var globalThis: any = (() => {
-  if (typeof globalThis !== "undefined") return globalThis;
-  if (typeof self !== "undefined") return self;
-  if (typeof window !== "undefined") return window;
-  if (typeof global !== "undefined") return global;
-  throw "Unable to locate global object";
+  if (typeof globalThis !== 'undefined') return globalThis;
+  if (typeof self !== 'undefined') return self;
+  if (typeof window !== 'undefined') return window;
+  if (typeof global !== 'undefined') return global;
+  throw 'Unable to locate global object';
 })();
 
 type Builtin =
@@ -1784,7 +2038,7 @@ export type DeepPartial<T> = T extends Builtin
 
 function longToNumber(long: Long): number {
   if (long.gt(Number.MAX_SAFE_INTEGER)) {
-    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
+    throw new globalThis.Error('Value is larger than Number.MAX_SAFE_INTEGER');
   }
   return long.toNumber();
 }

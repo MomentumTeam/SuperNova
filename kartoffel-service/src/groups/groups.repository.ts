@@ -32,7 +32,9 @@ export class GroupsRepository {
       if (C.useFaker) {
         return this.kartoffelFaker.randomOGTree();
       } else {
-        const organizationGroup: OrganizationGroup = await this.getOGById({ id: getOGTreeRequest.directGroupId });
+        const organizationGroup: OrganizationGroup = await this.getOGById({
+          id: getOGTreeRequest.directGroupId,
+        });
         let treeDepth =
           organizationGroup.ancestors.length < C.kartoffelTreeDepth
             ? organizationGroup.ancestors.length
@@ -41,7 +43,9 @@ export class GroupsRepository {
         const rootTree: OrganizationGroup =
           treeDepth === 0
             ? organizationGroup
-            : await this.getOGById({ id: organizationGroup.ancestors[treeDepth - 1] });
+            : await this.getOGById({
+                id: organizationGroup.ancestors[treeDepth - 1],
+              });
 
         return await this.getTree(
           treeDepth,
@@ -63,6 +67,9 @@ export class GroupsRepository {
         const ogArray: OGArray = await this.kartoffelFaker.randomOGArray(getAllOGsRequest.pageSize);
         return ogArray;
       } else {
+        getAllOGsRequest.source = getAllOGsRequest.source
+          ? getAllOGsRequest.source
+          : 'oneTree';
         const res = await this.kartoffelUtils.kartoffelGet(
           `${C.kartoffelUrl}/api/groups`,
           getAllOGsRequest
@@ -197,7 +204,7 @@ export class GroupsRepository {
       throw error;
     }
   }
-  
+
   async updateOGParent(
     updateOGParentRequest: UpdateOGParentRequest
   ): Promise<SuccessMessage> {
@@ -243,26 +250,38 @@ export class GroupsRepository {
       return { id: currentChild.id, label: currentChild.name, children: [] };
     } else {
       if (currentDepth <= 0) {
-        const members: Entity[] = await this.kartoffelUtils.kartoffelGet( // TODO: use existed api
+        const members: Entity[] = await this.kartoffelUtils.kartoffelGet(
+          // TODO: use existed api
           `${C.kartoffelUrl}/api/entities/group/${currentChild.id}?direct=true&expanded=false&page=1`
         );
         const childrenInTree: OGTree[] = members.map((member) => {
           return { id: member.id, label: member.jobTitle, children: [] };
         });
-        return { id: currentChild.id, label: currentChild.name, children: childrenInTree };
+        return {
+          id: currentChild.id,
+          label: currentChild.name,
+          children: childrenInTree,
+        };
       } else {
-        const OGchildren: OrganizationGroup[] = (await this.getChildrenOfOG({ direct: true, id: currentChild.id, page: 1, pageSize: 100000 })).groups;
+        const OGchildren: OrganizationGroup[] = (
+          await this.getChildrenOfOG({
+            direct: true,
+            id: currentChild.id,
+            page: 1,
+            pageSize: 100000,
+          })
+        ).groups;
 
         const childrenInTree: OGTree[] = await Promise.all(
           OGchildren.map(async (ogChild) => {
-            return await this.getTree(
-              currentDepth--,
-              groupsToQuery,
-              ogChild
-            );
+            return await this.getTree(currentDepth--, groupsToQuery, ogChild);
           })
         );
-        return { id: currentChild.id, label: currentChild.name, children: childrenInTree };
+        return {
+          id: currentChild.id,
+          label: currentChild.name,
+          children: childrenInTree,
+        };
       }
     }
   }

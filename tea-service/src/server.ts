@@ -5,14 +5,14 @@ import { logger } from './logger';
 import {
   addUnit,
   deleteUnit,
+  getAllUnits,
   getUnit,
   reportTeaFail,
   reportTeaSuccess,
-  retrieveTeaAndUPNByEntity,
-  retrieveTeaAndUPNByEntityId,
   retrieveTeaByUnit,
   retrieveUPNByEntity,
   retrieveUPNByEntityId,
+  searchUnit,
   updateUnit,
 } from './tea/tea.controller';
 import { findPath } from './utils/path';
@@ -58,14 +58,14 @@ export class Server {
         RetrieveTeaByUnit: retrieveTeaByUnit,
         RetrieveUPNByEntity: retrieveUPNByEntity,
         RetrieveUPNByEntityId: retrieveUPNByEntityId,
-        RetrieveTeaAndUPNByEntity: retrieveTeaAndUPNByEntity,
-        RetrieveTeaAndUPNByEntityId: retrieveTeaAndUPNByEntityId,
         ReportTeaSuccess: reportTeaSuccess,
         ReportTeaFail: reportTeaFail,
         GetUnit: getUnit,
         AddUnit: addUnit,
         UpdateUnit: updateUnit,
         DeleteUnit: deleteUnit,
+        SearchUnit: searchUnit,
+        GetAllUnits: getAllUnits,
       });
       logger.info(`Grpc services were successfully added to the server`);
     } catch (error: any) {

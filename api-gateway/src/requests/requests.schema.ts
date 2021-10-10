@@ -6,6 +6,10 @@ import {
   StageStatus,
   ApproverType,
   ApprovementStatus,
+  RequestType,
+  personTypeInRequestToJSON,
+  personInfoTypeToJSON,
+  approvementStatusToJSON,
 } from '../interfaces/protoc/proto/requestService';
 
 const Joi = require('joi');
@@ -15,9 +19,7 @@ Joi.objectId = require('joi-objectid')(Joi);
 export const getAllRequestsSchema = Joi.object({
   body: {},
   params: {
-    approvementStatus: Joi.string()
-      .valid(...Object.keys(ApprovementStatus))
-      .required(),
+    approvementStatus: Joi.string().valid(...Object.keys(ApprovementStatus)),
   },
   query: {
     from: Joi.number().default(0),
@@ -33,6 +35,27 @@ export const getRequestByIdSchema = Joi.object({
   query: {},
 });
 
+export const getRequestsSchema = Joi.object({
+  body: {},
+  params: {},
+  query: {
+    // personType: Joi.string()
+    //   .valid(...Object.keys(PersonTypeInRequest))
+    //   .default(personTypeInRequestToJSON(PersonTypeInRequest.APPROVER)),
+    // personInfoType: Joi.string()
+    //   .valid(...Object.keys(PersonInfoType))
+    //   .default(personInfoTypeToJSON(PersonInfoType.ID)),
+    // approvementStatus: Joi.string()
+    //   .valid(...Object.keys(ApprovementStatus))
+    //   .default(approvementStatusToJSON(ApprovementStatus.BY_USER_TYPE)),
+    displayName: Joi.string(),
+    status: Joi.string().valid(...Object.keys(RequestStatus)),
+    type: Joi.string().valid(...Object.keys(RequestType)),
+    from: Joi.number().default(1),
+    to: Joi.number().default(100),
+  },
+});
+
 export const getRequestsByPersonSchema = Joi.object({
   body: {},
   params: {
@@ -41,10 +64,16 @@ export const getRequestsByPersonSchema = Joi.object({
   query: {
     personType: Joi.string()
       .valid(...Object.keys(PersonTypeInRequest))
-      .required(),
+      .default(personTypeInRequestToJSON(PersonTypeInRequest.SUBMITTER)),
     personInfoType: Joi.string()
       .valid(...Object.keys(PersonInfoType))
-      .required(),
+      .default(personInfoTypeToJSON(PersonInfoType.ID)),
+    approvementStatus: Joi.string()
+      .valid(...Object.keys(ApprovementStatus))
+      .default(approvementStatusToJSON(ApprovementStatus.ANY)),
+    displayName: Joi.string(),
+    status: Joi.string().valid(...Object.keys(RequestStatus)),
+    type: Joi.string().valid(...Object.keys(RequestType)),
     from: Joi.number().default(0),
     to: Joi.number().default(100),
   },
@@ -325,15 +354,15 @@ const createEntityKartoffelParamsObj = Joi.object({
   firstName: Joi.string().required(),
   lastName: Joi.string().required(),
   identityCard: Joi.string().required(),
-  personalNumber: Joi.string().required(),
-  serviceType: Joi.string().required(),
+  personalNumber: Joi.string(),
+  serviceType: Joi.string(),
   phone: Joi.array().items(Joi.string()),
   mobilePhone: Joi.array().items(Joi.string()),
-  address: Joi.string().required(),
+  address: Joi.string(),
   clearance: Joi.string().required(),
   sex: Joi.string().required(),
-  birthdate: Joi.number().unsafe().required(),
-  entityType: Joi.string().required(),
+  birthdate: Joi.number().unsafe(),
+  entityType: Joi.string(),
 });
 const createEntityADParamsObj = Joi.object({
   //NO PARAMETERS NEEDED

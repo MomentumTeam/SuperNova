@@ -6,3 +6,8 @@ export const cronJob = process.env.WLS_CRON_JOB
     ? true
     : false
   : true;
+
+export const logPath = process.env.WLS_LOG_PATH || './logs';
+export const storeLogs = process.env.GLOBAL_STORE_LOGS
+  ? process.env.GLOBAL_STORE_LOGS === 'true'
+  : false;
