@@ -289,7 +289,7 @@ services:
 
   supernova-ui:
     image: supernova-ui
-    build: ./superNovaUI/
+    build: ./SuperNovaUI/
     env_file:
       - ./supernova.env
     depends_on:

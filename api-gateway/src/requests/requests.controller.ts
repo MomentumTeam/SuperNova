@@ -28,6 +28,9 @@ import {
   GetAllRequestsReq,
   DeleteEntityReq,
   ChangeRoleHierarchyReq,
+  PersonTypeInRequest,
+  PersonInfoType,
+  ApprovementStatus,
 } from '../interfaces/protoc/proto/requestService';
 import { RequestsService } from './requests.service';
 import { AuthenticationError } from '../utils/errors/userErrors';
@@ -68,25 +71,88 @@ export default class RequestsController {
   static async getMyRequests(req: any, res: Response) {
     const getRequestsByPersonReq: GetRequestsByPersonReq = {
       id: req.user.id,
-      personType: req.query.personType,
-      personInfoType: req.query.personInfoType,
+      personType: PersonTypeInRequest.SUBMITTER,
+      personInfoType: PersonInfoType.ID,
       from: req.query.from,
       to: req.query.to,
       userType: req.user.types,
+      approvementStatus: ApprovementStatus.ANY,
     };
 
-    if (req.query.approvementStatus) {
-      getRequestsByPersonReq.approvementStatus =
-        getRequestsByPersonReq.approvementStatus;
-    }
     if (req.query.displayName) {
-      getRequestsByPersonReq.displayName = getRequestsByPersonReq.displayName;
+      getRequestsByPersonReq.displayName = req.query.displayName;
     }
     if (req.query.status) {
-      getRequestsByPersonReq.status = getRequestsByPersonReq.status;
+      getRequestsByPersonReq.status = req.query.status;
     }
     if (req.query.type) {
-      getRequestsByPersonReq.type = getRequestsByPersonReq.type;
+      getRequestsByPersonReq.type = req.query.type;
+    }
+
+    try {
+      const requests = await RequestsService.getRequestsByPerson(
+        getRequestsByPersonReq
+      );
+      res.send(requests);
+    } catch (error: any) {
+      // TODO : ask barak if we need to return the service's error or always 500
+      const statusCode = statusCodeHandler(error);
+      res.status(statusCode).send(error.message);
+    }
+  }
+
+  static async getAllRequestsToApprove(req: any, res: Response) {
+    const getRequestsByPersonReq: GetRequestsByPersonReq = {
+      id: req.user.id,
+      personType: PersonTypeInRequest.GET_ALL,
+      personInfoType: PersonInfoType.ID,
+      from: req.query.from,
+      to: req.query.to,
+      userType: req.user.types,
+      approvementStatus: ApprovementStatus.BY_USER_TYPE,
+    };
+
+    if (req.query.displayName) {
+      getRequestsByPersonReq.displayName = req.query.displayName;
+    }
+    if (req.query.status) {
+      getRequestsByPersonReq.status = req.query.status;
+    }
+    if (req.query.type) {
+      getRequestsByPersonReq.type = req.query.type;
+    }
+
+    try {
+      const requests = await RequestsService.getRequestsByPerson(
+        getRequestsByPersonReq
+      );
+      res.send(requests);
+    } catch (error: any) {
+      // TODO : ask barak if we need to return the service's error or always 500
+      const statusCode = statusCodeHandler(error);
+      res.status(statusCode).send(error.message);
+    }
+  }
+
+  static async getMyRequestsToApprove(req: any, res: Response) {
+    const getRequestsByPersonReq: GetRequestsByPersonReq = {
+      id: req.user.id,
+      personType: PersonTypeInRequest.APPROVER,
+      personInfoType: PersonInfoType.ID,
+      from: req.query.from,
+      to: req.query.to,
+      userType: req.user.types,
+      approvementStatus: ApprovementStatus.BY_USER_TYPE,
+    };
+
+    if (req.query.displayName) {
+      getRequestsByPersonReq.displayName = req.query.displayName;
+    }
+    if (req.query.status) {
+      getRequestsByPersonReq.status = req.query.status;
+    }
+    if (req.query.type) {
+      getRequestsByPersonReq.type = req.query.type;
     }
 
     try {
@@ -112,17 +178,16 @@ export default class RequestsController {
     };
 
     if (req.query.approvementStatus) {
-      getRequestsByPersonReq.approvementStatus =
-        getRequestsByPersonReq.approvementStatus;
+      getRequestsByPersonReq.approvementStatus = req.query.approvementStatus;
     }
     if (req.query.displayName) {
-      getRequestsByPersonReq.displayName = getRequestsByPersonReq.displayName;
+      getRequestsByPersonReq.displayName = req.query.displayName;
     }
     if (req.query.status) {
-      getRequestsByPersonReq.status = getRequestsByPersonReq.status;
+      getRequestsByPersonReq.status = req.query.status;
     }
     if (req.query.type) {
-      getRequestsByPersonReq.type = getRequestsByPersonReq.type;
+      getRequestsByPersonReq.type = req.query.type;
     }
 
     try {
