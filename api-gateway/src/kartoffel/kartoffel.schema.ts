@@ -1,5 +1,5 @@
-const Joi = require('joi');
-Joi.objectId = require('joi-objectid')(Joi);
+const Joi = require("joi");
+Joi.objectId = require("joi-objectid")(Joi);
 
 // Entities
 export const getEntityByMongoIdSchema = Joi.object({
@@ -167,11 +167,20 @@ export const IsRoleAlreadyTakenSchema = Joi.object({
 
 export const IsJobTitleAlreadyTakenSchema = Joi.object({
   body: {},
-  params: {
-  },
+  params: {},
   query: {
     jobTitle: Joi.string().required(),
     directGroup: Joi.string().required(),
   },
 });
 
+export const GetRolesByHierarchySchema = Joi.object({
+  body: {},
+  params: {
+    hierarchy: Joi.string().required(),
+    direct: Joi.boolean().default(true),
+    page: Joi.number().default(1),
+    pageSize: Joi.number().default(100),
+  },
+  query: {},
+});
