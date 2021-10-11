@@ -118,18 +118,24 @@ export class KartoffelFaker {
   }
   async randomEntity(needPicture: boolean): Promise<Entity> {
     try {
-      const entityTypes = ["אזרח", "רסל", "טוראי"]
-       let entityNum = faker.datatype.number({
-         min: 0,
-         max: 2,
-       });
-      
+      const entityTypes = ["אזרח", "רסל", "טוראי"];
+      let entityNum = faker.datatype.number({
+        min: 0,
+        max: 2,
+      });
+
       let onlyCitizenFields = false;
-      if (entityTypes[entityNum] === "אזרח"){
+      if (entityTypes[entityNum] === "אזרח") {
         onlyCitizenFields = true;
       }
       const clearanceTypes = ["3", "2", "1"];
       let clearanceNum = faker.datatype.number({
+        min: 0,
+        max: 2,
+      });
+
+      const serviceType = ["אזרח", "מילואים", "חייל"];
+      let serviceTypeNum = faker.datatype.number({
         min: 0,
         max: 2,
       });
@@ -143,7 +149,7 @@ export class KartoffelFaker {
         entityType: "soldier",
         identityCard: faker.datatype.number({ min: 100000, max: 999999 }).toString(),
         personalNumber: faker.datatype.number({ min: 100000000, max: 999999999 }).toString(),
-        serviceType: "מילואים",
+        serviceType: serviceType[serviceTypeNum],
         firstName: faker.name.firstName(),
         lastName: faker.name.lastName(),
         fullName: `${faker.name.firstName()} ${faker.name.lastName()}`,
@@ -203,11 +209,13 @@ export class KartoffelFaker {
     if (pageSize) length = pageSize;
 
     let ogArray = new Array(length).fill(0);
-    ogArray = await Promise.all(ogArray.map(async(og) => {
-      let ogGroup: OrganizationGroup = await this.randomOG();
-      return ogGroup
-    }))
-   
+    ogArray = await Promise.all(
+      ogArray.map(async (og) => {
+        let ogGroup: OrganizationGroup = await this.randomOG();
+        return ogGroup;
+      })
+    );
+
     return {
       groups: ogArray,
     };
