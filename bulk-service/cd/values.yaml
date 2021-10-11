@@ -19,4 +19,4 @@ volume:
 
 configmap:
   configmaps:  
-  name: momentum-configmap
+    name: momentum-configmap
