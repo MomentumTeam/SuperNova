@@ -27,6 +27,7 @@ export const config = {
       .get('GATEWAY_APM_URL')
       .default('http://52.169.23.32:8200')
       .asString(),
+    useApm: env.get('GATEWAY_USE_APM').default('false').asBool(),
   },
   files: {
     path: env
