@@ -35,11 +35,11 @@ export default class RequestService {
   static async UpdateKartoffelStatus(
     updateKartoffelStatusReq: UpdateKartoffelStatusReq
   ): Promise<Request> {
-    logger.info(
-      `Call to UpdateKartoffelStatus in KC`,
-      updateKartoffelStatusReq
-    );
     return new Promise((resolve, reject) => {
+      logger.info(
+        `Call to UpdateKartoffelStatus in KC`,
+        updateKartoffelStatusReq
+      );
       requestClient.UpdateKartoffelStatus(
         updateKartoffelStatusReq,
         (err: any, response: Request) => {
@@ -64,11 +64,11 @@ export default class RequestService {
   static async IncrementKartoffelRetries(
     incrementKartoffelRetries: IncrementRetriesReq
   ): Promise<Request> {
-    logger.info(
-      `Call to IncrementKartoffelRetries in KC`,
-      incrementKartoffelRetries
-    );
     return new Promise((resolve, reject) => {
+      logger.info(
+        `Call to IncrementKartoffelRetries in KC`,
+        incrementKartoffelRetries
+      );
       requestClient.IncrementKartoffelRetries(
         IncrementRetriesReq,
         (err: any, response: Request) => {

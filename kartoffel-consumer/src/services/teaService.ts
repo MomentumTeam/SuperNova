@@ -30,11 +30,32 @@ const teaClient: any = new protoDescriptor.Tea(
 );
 
 export default class TeaService {
+  static async throwTea(throwTeaReq: ReportTeaReq): Promise<SuccessMessage> {
+    return new Promise((resolve, reject) => {
+      logger.info(`Call to throwTea in KC`, throwTeaReq);
+      teaClient.ThrowTea(throwTeaReq, (err: any, response: SuccessMessage) => {
+        if (err) {
+          logger.error(`throwTea ERROR in KC`, {
+            err,
+            callRequest: throwTeaReq,
+          });
+          reject(err);
+        } else {
+          logger.info(`throwTea OK in KC`, {
+            response: response,
+            callRequest: throwTeaReq,
+          });
+          resolve(response);
+        }
+      });
+    });
+  }
+
   static async reportTeaSuccess(
     reportTeaSuccessReq: ReportTeaReq
   ): Promise<SuccessMessage> {
-    logger.info(`Call to reportTeaSuccess in KC`, reportTeaSuccessReq);
     return new Promise((resolve, reject) => {
+      logger.info(`Call to reportTeaSuccess in KC`, reportTeaSuccessReq);
       teaClient.ReportTeaSuccess(
         reportTeaSuccessReq,
         (err: any, response: SuccessMessage) => {
@@ -59,8 +80,8 @@ export default class TeaService {
   static async reportTeaFail(
     reportTeaFailReq: ReportTeaReq
   ): Promise<SuccessMessage> {
-    logger.info(`Call to reportTeaFail in KC`, reportTeaFailReq);
     return new Promise((resolve, reject) => {
+      logger.info(`Call to reportTeaFail in KC`, reportTeaFailReq);
       teaClient.ReportTeaFail(
         reportTeaFailReq,
         (err: any, response: SuccessMessage) => {

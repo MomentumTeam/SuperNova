@@ -179,9 +179,11 @@ services:
     environment:
       - KC_RS_URL=request-service:8080
       - KC_TS_URL=tea-service:8080
+      - KC_KS_URL=kartoffel-service:8080
       - KC_KAFKA_HOST=kafka
       - KC_KAFKA_PORT=29092
       - KC_LOG_PATH=/logs
+      - KC_KAFKA_CONSUMER_TOPIC=requests
 
   execution-script:
     image: execution-script
