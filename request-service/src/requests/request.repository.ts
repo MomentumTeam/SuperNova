@@ -205,6 +205,10 @@ export class RequestRepository {
     approverType: PersonTypeInRequest
   ): Promise<Request> {
     try {
+      if (updateDecisionReq.approverDecision) {
+        updateDecisionReq.approverDecision.date = new Date().getTime();
+      }
+
       let updateQuery: any = {
         id: updateDecisionReq.id,
         requestProperties: {},
