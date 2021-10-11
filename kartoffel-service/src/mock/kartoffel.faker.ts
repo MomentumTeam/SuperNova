@@ -202,11 +202,12 @@ export class KartoffelFaker {
 
     if (pageSize) length = pageSize;
 
-    let ogArray = [];
-    for (let i = 0; i < length; i++) {
+    let ogArray = new Array(length).fill(0);
+    ogArray = await Promise.all(ogArray.map(async(og) => {
       let ogGroup: OrganizationGroup = await this.randomOG();
-      ogArray.push(ogGroup);
-    }
+      return ogGroup
+    }))
+   
     return {
       groups: ogArray,
     };

@@ -274,6 +274,17 @@ export default class KartoffelController {
     }
   }
 
+  static async getRolesByHierarchy(req: Request, res: Response) {
+    const getRolesByHierarchyReq: any = { ...req.params, ...req.query };
+
+    try {
+      const roles = await KartoffelService.getRolesByHierarchy(getRolesByHierarchyReq);
+      res.send(roles);
+    } catch (error: any) {
+      const statusCode = statusCodeHandler(error);
+      res.status(statusCode).send(error.message);
+    }
+  }
   static async getAllRoles(req: Request, res: Response) {
     const getAllRolesReq: any = req.query;
 
