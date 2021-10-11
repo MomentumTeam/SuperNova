@@ -6792,6 +6792,7 @@ export interface Kartoffel {
   IsJobTitleAlreadyTaken(
     request: IsJobTitleAlreadyTakenReq
   ): Promise<IsJobTitleAlreadyTakenRes>;
+  GetRolesByHierarchy(request: GetRolesByHierarchyRequest): Promise<RoleArray>;
 }
 
 export class KartoffelClientImpl implements Kartoffel {
@@ -6842,6 +6843,7 @@ export class KartoffelClientImpl implements Kartoffel {
     this.ChangeRoleOG = this.ChangeRoleOG.bind(this);
     this.IsRoleAlreadyTaken = this.IsRoleAlreadyTaken.bind(this);
     this.IsJobTitleAlreadyTaken = this.IsJobTitleAlreadyTaken.bind(this);
+    this.GetRolesByHierarchy = this.GetRolesByHierarchy.bind(this);
   }
   CreateEntity(request: CreateEntityRequest): Promise<Entity> {
     const data = CreateEntityRequest.encode(request).finish();
@@ -7251,6 +7253,16 @@ export class KartoffelClientImpl implements Kartoffel {
     return promise.then((data) =>
       IsJobTitleAlreadyTakenRes.decode(new _m0.Reader(data))
     );
+  }
+
+  GetRolesByHierarchy(request: GetRolesByHierarchyRequest): Promise<RoleArray> {
+    const data = GetRolesByHierarchyRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "GetRolesByHierarchy",
+      data
+    );
+    return promise.then((data) => RoleArray.decode(new _m0.Reader(data)));
   }
 }
 

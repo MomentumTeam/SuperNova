@@ -54,6 +54,7 @@ service Kartoffel {
     rpc ChangeRoleOG(ChangeRoleOGRequest) returns (SuccessMessage){}
     rpc IsRoleAlreadyTaken(IsRoleAlreadyTakenReq) returns (IsRoleAlreadyTakenRes){}
     rpc IsJobTitleAlreadyTaken(IsJobTitleAlreadyTakenReq) returns (IsJobTitleAlreadyTakenRes){}
+    rpc GetRolesByHierarchy(GetRolesByHierarchyRequest) returns (RoleArray){}
 }
 
 message IsRoleAlreadyTakenReq{
