@@ -11,4 +11,4 @@ images:
 service:
 configmap:
   configmaps:  
-  mame: momentum-configmap
+    mame: momentum-configmap
