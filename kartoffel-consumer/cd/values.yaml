@@ -9,6 +9,9 @@ images:
   repository: momentumacr.azurecr.io/kartoffel-consumer
   tag: "latest"
 service:
+  ports:
+  - name: http
+    port: "3000"
 
 config:
   configmaps:

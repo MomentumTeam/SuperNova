@@ -9,6 +9,9 @@ images:
   repository: momentumacr.azurecr.io/spike-service
   tag: "latest"
 service:
+  ports:
+  - name: http
+    port: "3000"
 configmap:
   configmaps:  
     name: momentum-configmap
