@@ -18,20 +18,20 @@ data:
   SS_KARTOFFEL_AUDIENCE: kartoffel
   SS_GRANT_TYPE: client_credentials
   SS_HOST: "0.0.0.0"
-  SS_PORT: "8080"
+  SS_PORT: "3000"
   SS_LOG_PATH: /logs
 
   RS_MONGO_URL: mongodb://mongo:27017/supernova
   RS_HOST: "0.0.0.0"
-  RS_PORT: "8081"
-  RS_NS_URL: notification-service:8080
-  RS_TS_URL: tea-service:8080
+  RS_PORT: "3000"
+  RS_NS_URL: notification-service:3000
+  RS_TS_URL: tea-service:3000
   RS_LOG_PATH: /logs
 
   KS_HOST: "0.0.0.0"
-  KS_PORT: "8082"
+  KS_PORT: "3000"
   KS_KARTOFFEL_URL: http://52.188.158.174:7709
-  KS_SS_URL: spike-service:8080
+  KS_SS_URL: spike-service:3000
   KS_USE_FAKER: "true"
   KS_KARTOFFEL_AUDIENCE: kartoffel
   KS_SPIKE_TOKEN_REFRESH_HOURS: "24"
@@ -39,34 +39,34 @@ data:
   KS_ROOT_ID: 611b5c58a7a257532f054a4b
   KS_LOG_PATH: /logs
 
-  EXS_RS_URL: request-service:8080
-  EXS_PS_URL: producer-service:8080
-  EXS_APS_URL: approver-service:8080
+  EXS_RS_URL: request-service:3000
+  EXS_PS_URL: producer-service:3000
+  EXS_APS_URL: approver-service:3000
   EXS_EVERY_HOUR: "1"
   EXS_CRON_JOB: "false"
   EXS_LOG_PATH: /logs
 
-  WLS_APS_URL: approver-service:8080
+  WLS_APS_URL: approver-service:3000
   WLS_HOUR: "0"
   WLS_MINUTE: "0"
   WLS_CRON_JOB: "false"
   WLS_LOG_PATH: /logs
 
   PS_HOST: "0.0.0.0"
-  PS_PORT: "8083"
+  PS_PORT: "3000"
   PS_QUEUE_API_URL: http://20.199.120.227:3000
-  PS_RS_URL: request-service:8080
+  PS_RS_URL: request-service:3000
   PS_DEV_MODE: "true"
   PS_SHMUEL_AUDIENCE: shmuel
-  PS_SS_URL: spike-service:8080
+  PS_SS_URL: spike-service:3000
   PS_SPIKE_TOKEN_REFRESH_HOURS: "24"
   PS_OLD_DOMAIN: oldDomain
   PS_NEW_DOMAIN: newDomain
   PS_LOG_PATH: /logs
 
-  AS_PORT: "8080"
-  AS_ENDPOINT: http://localhost:9000/auth
-  AS_ALLOWED_ORIGINS: http://localhost/
+  AS_PORT: "3000"
+  AS_ENDPOINT: http://momentum.branch-yesodot.org/auth
+  AS_ALLOWED_ORIGINS: http://momentum.branch-yesodot.org/
   AS_TOKEN: sp-token
   AS_SECRET_KEY: superNova
   AS_TOKEN_DAYS_EXPIRES: "30"
@@ -79,17 +79,17 @@ data:
   AS_SHRAGA_URL: https://shraga-prod.northeurope.cloudapp.azure.com
   AS_SHRAGA_USE_ENRICH_ID: "true"
   AS_SHRAGA_PROVIDERS: Genesis
-  AS_CLIENT_ENDPOINT: http://localhost:2000
+  AS_CLIENT_ENDPOINT: http://momentum.branch-yesodot.org/ 
   AS_LOG_PATH: /logs
 
   GATEWAY_HOST: "0.0.0.0"
-  GATEWAY_PORT: "8080"
-  GATEWAY_RS_URL: request-service:8080
-  GATEWAY_KS_URL: kartoffel-service:8080
-  GATEWAY_PS_URL: producer-service:8080
-  GATEWAY_NS_URL: notification-service:8080
-  GATEWAY_APS_URL: approver-service:8080
-  GATEWAY_BS_URL: bulk-service:8080
+  GATEWAY_PORT: "3000"
+  GATEWAY_RS_URL: request-service:3000
+  GATEWAY_KS_URL: kartoffel-service:3000
+  GATEWAY_PS_URL: producer-service:3000
+  GATEWAY_NS_URL: notification-service:3000
+  GATEWAY_APS_URL: approver-service:3000
+  GATEWAY_BS_URL: bulk-service:3000
   GATEWAY_AS_URL: 0.0.0.0:9000
   GATEWAY_TOKEN: sp-token
   GATEWAY_SECRET_KEY: superNova
@@ -102,26 +102,26 @@ data:
   GATEWAY_BS_FOLDER_PATH: /usr/src/app/bulk-files
 
   NS_HOST: "0.0.0.0"
-  NS_PORT: "8084"
+  NS_PORT: "3000"
   NS_MONGO_URL: mongodb://mongo:27017/supernova
   NS_LOG_PATH: /logs
 
   APS_HOST: "0.0.0.0"
-  APS_PORT: "8085"
+  APS_PORT: "3000"
   APS_MONGO_URL: mongodb://mongo:27017/supernova
-  APS_KS_URL: kartoffel-service:8080
-  APS_RS_URL: request-service:8080
+  APS_KS_URL: kartoffel-service:3000
+  APS_RS_URL: request-service:3000
   APS_COMMANDER_RANKS: aaaa,bbbb,cccc,ssss
   APS_LOG_PATH: /logs
 
   TS_HOST: "0.0.0.0"
-  TS_PORT: "8086"
+  TS_PORT: "3000"
   TS_MONGO_URL: mongodb://mongo:27017/supernova
   TS_SOLDIER: soldier
   TS_RESERVED: reserved
   TS_CIVILIAN: civilian
   TS_GOAL_USER: goalUser
-  TS_KS_URL: kartoffel-service:8080
+  TS_KS_URL: kartoffel-service:3000
   TS_GENERAL_UNIT_ID: google
   TS_NEED_INIT: "true"
   TS_INIT_EMPTY_ARRAYS: "true"
@@ -135,17 +135,17 @@ data:
   TS_LOG_PATH: /logs
 
   BS_HOST: "0.0.0.0"
-  BS_PORT: "8087"
-  BS_RS_URL: request-service:8080
+  BS_PORT: "3000"
+  BS_RS_URL: request-service:3000
   BS_FOLDER_PATH: /usr/src/app/bulk-files
   BS_LOG_PATH: /logs
 
-  POS_RS_URL: request-service:8080
+  POS_RS_URL: request-service:3000
   POS_ENTITY_IDS: 111111111111111111111111,222222222222222222222222,333333333333333333333333,444444444444444444444444
   POS_GENERATE_COUNT: "50"
   POS_LOG_PATH: /logs
 
-  REACT_APP_BASE_URL: http://localhost:2000
+  REACT_APP_BASE_URL: http://momentum.branch-yesodot.org/
   REACT_TOKEN_NAME: sp-token
 
   GLOBAL_STORE_LOGS: "true"
