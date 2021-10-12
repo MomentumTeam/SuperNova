@@ -12,3 +12,12 @@ service:
 configmap:
   configmaps:  
     name: momentum-configmap
+
+ingress:
+  enabled: true
+  hosts:
+  - host: momentum.branch-yesodot.org
+    paths:
+      - path: /auth
+        service: authentication-service
+        port: 3000

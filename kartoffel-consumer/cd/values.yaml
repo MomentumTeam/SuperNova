@@ -9,6 +9,7 @@ images:
   repository: momentumacr.azurecr.io/kartoffel-consumer
   tag: "latest"
 service:
-configmap:
-  configmaps:  
-    name: momentum-configmap
+
+config:
+  configmaps:
+      name: momentum-configmap

@@ -99,6 +99,7 @@ data:
   GATEWAY_WRITE_SCOPE_NAME: write
   GATEWAY_LOG_PATH: /logs
   GATEWAY_USE_APM: "false"
+  GATEWAY_BS_FOLDER_PATH: /usr/src/app/bulk-files
 
   NS_HOST: "0.0.0.0"
   NS_PORT: "8084"

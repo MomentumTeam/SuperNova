@@ -19,3 +19,12 @@ volume:
 config:
   configmaps:
       name: momentum-configmap
+
+ingress:
+  enabled: true
+  hosts:
+  - host: momentum.branch-yesodot.org
+    paths:
+      - path: /api
+        service: api-gateway
+        port: 3000
