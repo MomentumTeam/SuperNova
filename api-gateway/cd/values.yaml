@@ -11,10 +11,10 @@ images:
 
 service:
 
-# volume:
-#   mountPath: /usr/src/app/bulk-files
-#   secretName: azure-secret
-#   shareName: momentum/bulk-files
+volume:
+  mountPath: /usr/src/app/bulk-files
+  secretName: azure-secret
+  shareName: momentum/bulk-files
 
 config:
   configmaps:
