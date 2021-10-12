@@ -7,7 +7,7 @@ images:
   PullSecrets:
     name: momentumacr
   repository: momentumacr.azurecr.io/approver-service
------: "latest"
+  tag: "latest"
 service:
 configmap:
   configmaps:  
