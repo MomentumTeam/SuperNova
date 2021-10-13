@@ -90,7 +90,7 @@ data:
   GATEWAY_NS_URL: notification-service:3000
   GATEWAY_APS_URL: approver-service:3000
   GATEWAY_BS_URL: bulk-service:3000
-  GATEWAY_AS_URL: 0.0.0.0:9000
+  GATEWAY_AS_URL: http://momentum.branch-yesodot.org
   GATEWAY_TOKEN: sp-token
   GATEWAY_SECRET_KEY: superNova
   GATEWAY_APM_URL: http://52.169.23.32:8200
@@ -145,7 +145,7 @@ data:
   POS_GENERATE_COUNT: "50"
   POS_LOG_PATH: /logs
 
-  REACT_APP_BASE_URL: http://momentum.branch-yesodot.org/
+  REACT_APP_BASE_URL: http://momentum.branch-yesodot.org
   REACT_TOKEN_NAME: sp-token
 
   GLOBAL_STORE_LOGS: "true"

@@ -12,10 +12,9 @@ service:
   ports:
   - name: http
     port: "3000"
-configmap:
-  configmaps:  
-    name: momentum-configmap
-
+config:
+  configmaps:
+      name: momentum-configmap
 ingress:
   enabled: true
   hosts:
