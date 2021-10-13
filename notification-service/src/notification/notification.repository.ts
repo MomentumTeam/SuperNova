@@ -116,10 +116,13 @@ export class NotificationRepository {
     getNotificationsByOwnerIdReq: GetNotificationsByOwnerIdReq
   ): Promise<NotificationArray> {
     try {
-      const query: any = {
+      let query: any = {
         ownerId: getNotificationsByOwnerIdReq.ownerId,
         createdAt: { $gte: getNotificationsByOwnerIdReq.startTime },
       };
+      if (getNotificationsByOwnerIdReq.read !== undefined) {
+        query.read = getNotificationsByOwnerIdReq.read;
+      }
       const totalCount = await NotificationModel.countDocuments(query);
       const notifications: any = await NotificationModel.find(
         query,

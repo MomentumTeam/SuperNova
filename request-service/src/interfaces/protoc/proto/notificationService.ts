@@ -202,6 +202,7 @@ export interface GetNotificationsByOwnerIdReq {
   startTime: number;
   from: number;
   to: number;
+  read?: string | undefined;
 }
 
 export interface NotificationArray {
@@ -873,6 +874,9 @@ export const GetNotificationsByOwnerIdReq = {
     if (message.to !== 0) {
       writer.uint32(32).int32(message.to);
     }
+    if (message.read !== undefined) {
+      writer.uint32(42).string(message.read);
+    }
     return writer;
   },
 
@@ -899,6 +903,9 @@ export const GetNotificationsByOwnerIdReq = {
           break;
         case 4:
           message.to = reader.int32();
+          break;
+        case 5:
+          message.read = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -932,6 +939,11 @@ export const GetNotificationsByOwnerIdReq = {
     } else {
       message.to = 0;
     }
+    if (object.read !== undefined && object.read !== null) {
+      message.read = String(object.read);
+    } else {
+      message.read = undefined;
+    }
     return message;
   },
 
@@ -941,6 +953,7 @@ export const GetNotificationsByOwnerIdReq = {
     message.startTime !== undefined && (obj.startTime = message.startTime);
     message.from !== undefined && (obj.from = message.from);
     message.to !== undefined && (obj.to = message.to);
+    message.read !== undefined && (obj.read = message.read);
     return obj;
   },
 
@@ -969,6 +982,11 @@ export const GetNotificationsByOwnerIdReq = {
       message.to = object.to;
     } else {
       message.to = 0;
+    }
+    if (object.read !== undefined && object.read !== null) {
+      message.read = object.read;
+    } else {
+      message.read = undefined;
     }
     return message;
   },

@@ -80,6 +80,7 @@ message GetNotificationsByOwnerIdReq{
     int64 startTime = 2;
     int32 from = 3;
     int32 to = 4; 
+    optional string read = 5;
 }
 
 message NotificationArray{
