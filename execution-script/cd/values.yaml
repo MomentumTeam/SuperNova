@@ -11,7 +11,7 @@ images:
 service:
   ports:
   - name: http
-    port: "3000"
+    port: "8080"
 
 config:
   configmaps:
