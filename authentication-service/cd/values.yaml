@@ -22,4 +22,4 @@ ingress:
     paths:
       - path: /auth
         service: authentication-service
-        port: 3000
+        port: 8080

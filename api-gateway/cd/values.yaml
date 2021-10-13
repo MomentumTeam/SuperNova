@@ -30,4 +30,4 @@ ingress:
     paths:
       - path: /api
         service: api-gateway
-        port: 3000
+        port: 8080
