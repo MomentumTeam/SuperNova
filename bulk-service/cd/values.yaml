@@ -19,7 +19,6 @@ volume:
   secretName: azure-secret
   shareName: momentum/bulk-files
 
-
 config:
   configmaps:
       name: momentum-configmap

@@ -8,11 +8,12 @@ images:
     name: momentumacr
   repository: momentumacr.azurecr.io/approver-service
   tag: "latest"
+
 service:
   ports:
   - name: http
     port: "3000"
-    
+
 config:
   configmaps:
       name: momentum-configmap

@@ -12,6 +12,7 @@ service:
   ports:
   - name: http
     port: "3000"
+
 config:
   configmaps:
       name: momentum-configmap
