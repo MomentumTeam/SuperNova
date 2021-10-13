@@ -148,4 +148,10 @@ data:
   REACT_APP_BASE_URL: http://momentum.branch-yesodot.org
   REACT_TOKEN_NAME: sp-token
 
+  KC_RS_URL: request-service:8080
+  KC_TS_URL: tea-service:8080
+  KC_KAFKA_HOST: kafka
+  KC_KAFKA_PORT: "29092"
+  KC_LOG_PATH: /logs
+
   GLOBAL_STORE_LOGS: "true"
