@@ -7,15 +7,35 @@ images:
   PullSecrets:
     name: momentumacr
   repository: momentumacr.azurecr.io/api-gateway
-  tag: 'latest'
+  tag: "latest"
 
 service:
+  ports:
+  - name: http
+    port: "8080"
 
 volume:
   mountPath: /usr/src/app/src/utils
   secretName: azure-secret
+# <<<<<<< develop
   shareName: momentum/spike-utils
 
 configmap:
   configmaps:
   mame: momentum-configmap
+# =======
+#   shareName: momentum/bulk-files
+
+# config:
+#   configmaps:
+#       name: momentum-configmap
+
+ingress:
+  enabled: true
+  hosts:
+  - host: momentum.branch-yesodot.org
+    paths:
+      - path: /api
+        service: api-gateway
+        port: 8080
+# >>>>>>> main
