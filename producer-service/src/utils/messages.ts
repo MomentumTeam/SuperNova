@@ -139,7 +139,7 @@ export function generateADQueueMessage(request: Request): any {
     case RequestType.CREATE_OG: //Reviewed with Orin, CreateOU
       message.data = {
         ouDName: adParams.ouDisplayName,
-        ouName: adParams.ouName,
+        hierarchyOu: adParams.ouName,
         newOuName: adParams.name,
       };
       break;
