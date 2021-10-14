@@ -1655,8 +1655,8 @@ export interface ADParams {
    * RenameOG
    * string ouDisplayName = ;
    */
-  oldName?: string | undefined;
-  newName?: string | undefined;
+  oldOuName?: string | undefined;
+  newOuName?: string | undefined;
   /**
    * RenameRole
    * string samAccountName = ;
@@ -24880,11 +24880,11 @@ export const ADParams = {
     if (message.roleSerialCode !== undefined) {
       writer.uint32(106).string(message.roleSerialCode);
     }
-    if (message.oldName !== undefined) {
-      writer.uint32(114).string(message.oldName);
+    if (message.oldOuName !== undefined) {
+      writer.uint32(114).string(message.oldOuName);
     }
-    if (message.newName !== undefined) {
-      writer.uint32(122).string(message.newName);
+    if (message.newOuName !== undefined) {
+      writer.uint32(122).string(message.newOuName);
     }
     if (message.newJobTitle !== undefined) {
       writer.uint32(130).string(message.newJobTitle);
@@ -24939,10 +24939,10 @@ export const ADParams = {
           message.roleSerialCode = reader.string();
           break;
         case 14:
-          message.oldName = reader.string();
+          message.oldOuName = reader.string();
           break;
         case 15:
-          message.newName = reader.string();
+          message.newOuName = reader.string();
           break;
         case 16:
           message.newJobTitle = reader.string();
@@ -25028,15 +25028,15 @@ export const ADParams = {
     } else {
       message.roleSerialCode = undefined;
     }
-    if (object.oldName !== undefined && object.oldName !== null) {
-      message.oldName = String(object.oldName);
+    if (object.oldOuName !== undefined && object.oldOuName !== null) {
+      message.oldOuName = String(object.oldOuName);
     } else {
-      message.oldName = undefined;
+      message.oldOuName = undefined;
     }
-    if (object.newName !== undefined && object.newName !== null) {
-      message.newName = String(object.newName);
+    if (object.newOuName !== undefined && object.newOuName !== null) {
+      message.newOuName = String(object.newOuName);
     } else {
-      message.newName = undefined;
+      message.newOuName = undefined;
     }
     if (object.newJobTitle !== undefined && object.newJobTitle !== null) {
       message.newJobTitle = String(object.newJobTitle);
@@ -25066,8 +25066,8 @@ export const ADParams = {
     message.rank !== undefined && (obj.rank = message.rank);
     message.roleSerialCode !== undefined &&
       (obj.roleSerialCode = message.roleSerialCode);
-    message.oldName !== undefined && (obj.oldName = message.oldName);
-    message.newName !== undefined && (obj.newName = message.newName);
+    message.oldOuName !== undefined && (obj.oldOuName = message.oldOuName);
+    message.newOuName !== undefined && (obj.newOuName = message.newOuName);
     message.newJobTitle !== undefined &&
       (obj.newJobTitle = message.newJobTitle);
     return obj;
@@ -25146,15 +25146,15 @@ export const ADParams = {
     } else {
       message.roleSerialCode = undefined;
     }
-    if (object.oldName !== undefined && object.oldName !== null) {
-      message.oldName = object.oldName;
+    if (object.oldOuName !== undefined && object.oldOuName !== null) {
+      message.oldOuName = object.oldOuName;
     } else {
-      message.oldName = undefined;
+      message.oldOuName = undefined;
     }
-    if (object.newName !== undefined && object.newName !== null) {
-      message.newName = object.newName;
+    if (object.newOuName !== undefined && object.newOuName !== null) {
+      message.newOuName = object.newOuName;
     } else {
-      message.newName = undefined;
+      message.newOuName = undefined;
     }
     if (object.newJobTitle !== undefined && object.newJobTitle !== null) {
       message.newJobTitle = object.newJobTitle;
