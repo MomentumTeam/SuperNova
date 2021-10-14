@@ -9,20 +9,15 @@ images:
   repository: momentumacr.azurecr.io/spike-service
   tag: 'latest'
 service:
-# <<<<<<< develop
-# configmap:
-#   configmaps:
-#   mame: momentum-configmap
 
 volume:
   mountPath: /usr/src/app/spike-utils
   secretName: azure-secret
   shareName: momentum/spike-utils
-# =======
+  
   ports:
   - name: http
     port: "8080"
 config:
   configmaps:
       name: momentum-configmap
-# >>>>>>> main
