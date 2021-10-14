@@ -31,3 +31,4 @@ ingress:
       - path: /api
         service: api-gateway
         port: 8080
+
