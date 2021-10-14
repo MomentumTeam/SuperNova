@@ -66,6 +66,14 @@ export class TeaManager {
     }
   }
 
+  async throwTea(throwTeaReq: ReportTeaReq): Promise<SuccessMessage> {
+    try {
+      return await this.teaRepository.throwTea(throwTeaReq);
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async reportTeaFail(reportTeaReq: ReportTeaReq): Promise<SuccessMessage> {
     try {
       return await this.teaRepository.reportTeaFail(reportTeaReq);

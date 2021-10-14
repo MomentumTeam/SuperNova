@@ -1,8 +1,8 @@
 /* eslint-disable */
-import Long from 'long';
-import _m0 from 'protobufjs/minimal';
+import Long from "long";
+import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = 'Tea';
+export const protobufPackage = "Tea";
 
 export enum Domain {
   OLD = 0,
@@ -13,13 +13,13 @@ export enum Domain {
 export function domainFromJSON(object: any): Domain {
   switch (object) {
     case 0:
-    case 'OLD':
+    case "OLD":
       return Domain.OLD;
     case 1:
-    case 'NEW':
+    case "NEW":
       return Domain.NEW;
     case -1:
-    case 'UNRECOGNIZED':
+    case "UNRECOGNIZED":
     default:
       return Domain.UNRECOGNIZED;
   }
@@ -28,11 +28,11 @@ export function domainFromJSON(object: any): Domain {
 export function domainToJSON(object: Domain): string {
   switch (object) {
     case Domain.OLD:
-      return 'OLD';
+      return "OLD";
     case Domain.NEW:
-      return 'NEW';
+      return "NEW";
     default:
-      return 'UNKNOWN';
+      return "UNKNOWN";
   }
 }
 
@@ -148,14 +148,14 @@ export interface EntityMin {
   lastName?: string | undefined;
 }
 
-const baseSearchUnitReq: object = { nameAndHierarchy: '' };
+const baseSearchUnitReq: object = { nameAndHierarchy: "" };
 
 export const SearchUnitReq = {
   encode(
     message: SearchUnitReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.nameAndHierarchy !== '') {
+    if (message.nameAndHierarchy !== "") {
       writer.uint32(10).string(message.nameAndHierarchy);
     }
     return writer;
@@ -187,7 +187,7 @@ export const SearchUnitReq = {
     ) {
       message.nameAndHierarchy = String(object.nameAndHierarchy);
     } else {
-      message.nameAndHierarchy = '';
+      message.nameAndHierarchy = "";
     }
     return message;
   },
@@ -207,7 +207,7 @@ export const SearchUnitReq = {
     ) {
       message.nameAndHierarchy = object.nameAndHierarchy;
     } else {
-      message.nameAndHierarchy = '';
+      message.nameAndHierarchy = "";
     }
     return message;
   },
@@ -336,20 +336,20 @@ export const MinUnitArray = {
   },
 };
 
-const baseUnitMin: object = { id: '', name: '', hierarchy: '' };
+const baseUnitMin: object = { id: "", name: "", hierarchy: "" };
 
 export const UnitMin = {
   encode(
     message: UnitMin,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== '') {
+    if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
-    if (message.name !== '') {
+    if (message.name !== "") {
       writer.uint32(18).string(message.name);
     }
-    if (message.hierarchy !== '') {
+    if (message.hierarchy !== "") {
       writer.uint32(26).string(message.hierarchy);
     }
     return writer;
@@ -384,17 +384,17 @@ export const UnitMin = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = '';
+      message.id = "";
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = String(object.name);
     } else {
-      message.name = '';
+      message.name = "";
     }
     if (object.hierarchy !== undefined && object.hierarchy !== null) {
       message.hierarchy = String(object.hierarchy);
     } else {
-      message.hierarchy = '';
+      message.hierarchy = "";
     }
     return message;
   },
@@ -412,30 +412,30 @@ export const UnitMin = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = '';
+      message.id = "";
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = object.name;
     } else {
-      message.name = '';
+      message.name = "";
     }
     if (object.hierarchy !== undefined && object.hierarchy !== null) {
       message.hierarchy = object.hierarchy;
     } else {
-      message.hierarchy = '';
+      message.hierarchy = "";
     }
     return message;
   },
 };
 
-const baseRetrieveTeaByUnitReq: object = { id: '' };
+const baseRetrieveTeaByUnitReq: object = { id: "" };
 
 export const RetrieveTeaByUnitReq = {
   encode(
     message: RetrieveTeaByUnitReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== '') {
+    if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
     return writer;
@@ -467,7 +467,7 @@ export const RetrieveTeaByUnitReq = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = '';
+      message.id = "";
     }
     return message;
   },
@@ -483,20 +483,20 @@ export const RetrieveTeaByUnitReq = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = '';
+      message.id = "";
     }
     return message;
   },
 };
 
-const baseTeaMessage: object = { tea: '' };
+const baseTeaMessage: object = { tea: "" };
 
 export const TeaMessage = {
   encode(
     message: TeaMessage,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.tea !== '') {
+    if (message.tea !== "") {
       writer.uint32(10).string(message.tea);
     }
     return writer;
@@ -525,7 +525,7 @@ export const TeaMessage = {
     if (object.tea !== undefined && object.tea !== null) {
       message.tea = String(object.tea);
     } else {
-      message.tea = '';
+      message.tea = "";
     }
     return message;
   },
@@ -541,20 +541,20 @@ export const TeaMessage = {
     if (object.tea !== undefined && object.tea !== null) {
       message.tea = object.tea;
     } else {
-      message.tea = '';
+      message.tea = "";
     }
     return message;
   },
 };
 
-const baseUPNMessage: object = { upn: '' };
+const baseUPNMessage: object = { upn: "" };
 
 export const UPNMessage = {
   encode(
     message: UPNMessage,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.upn !== '') {
+    if (message.upn !== "") {
       writer.uint32(10).string(message.upn);
     }
     return writer;
@@ -583,7 +583,7 @@ export const UPNMessage = {
     if (object.upn !== undefined && object.upn !== null) {
       message.upn = String(object.upn);
     } else {
-      message.upn = '';
+      message.upn = "";
     }
     return message;
   },
@@ -599,20 +599,20 @@ export const UPNMessage = {
     if (object.upn !== undefined && object.upn !== null) {
       message.upn = object.upn;
     } else {
-      message.upn = '';
+      message.upn = "";
     }
     return message;
   },
 };
 
-const baseUpdateUnitReq: object = { id: '' };
+const baseUpdateUnitReq: object = { id: "" };
 
 export const UpdateUnitReq = {
   encode(
     message: UpdateUnitReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== '') {
+    if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
     if (message.unitProperties !== undefined) {
@@ -653,7 +653,7 @@ export const UpdateUnitReq = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = '';
+      message.id = "";
     }
     if (object.unitProperties !== undefined && object.unitProperties !== null) {
       message.unitProperties = UnitProperties.fromJSON(object.unitProperties);
@@ -678,7 +678,7 @@ export const UpdateUnitReq = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = '';
+      message.id = "";
     }
     if (object.unitProperties !== undefined && object.unitProperties !== null) {
       message.unitProperties = UnitProperties.fromPartial(
@@ -691,14 +691,14 @@ export const UpdateUnitReq = {
   },
 };
 
-const baseDeleteUnitReq: object = { id: '' };
+const baseDeleteUnitReq: object = { id: "" };
 
 export const DeleteUnitReq = {
   encode(
     message: DeleteUnitReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== '') {
+    if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
     return writer;
@@ -727,7 +727,7 @@ export const DeleteUnitReq = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = '';
+      message.id = "";
     }
     return message;
   },
@@ -743,20 +743,20 @@ export const DeleteUnitReq = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = '';
+      message.id = "";
     }
     return message;
   },
 };
 
-const baseGetUnitReq: object = { id: '' };
+const baseGetUnitReq: object = { id: "" };
 
 export const GetUnitReq = {
   encode(
     message: GetUnitReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== '') {
+    if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
     return writer;
@@ -785,7 +785,7 @@ export const GetUnitReq = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = '';
+      message.id = "";
     }
     return message;
   },
@@ -801,20 +801,20 @@ export const GetUnitReq = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = '';
+      message.id = "";
     }
     return message;
   },
 };
 
 const baseAddUnitReq: object = {
-  id: '',
-  name: '',
-  prefix: '',
-  oldDomainSuffix: '',
-  newDomainSuffix: '',
+  id: "",
+  name: "",
+  prefix: "",
+  oldDomainSuffix: "",
+  newDomainSuffix: "",
   currentCounter: 0,
-  hierarchy: '',
+  hierarchy: "",
 };
 
 export const AddUnitReq = {
@@ -822,25 +822,25 @@ export const AddUnitReq = {
     message: AddUnitReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== '') {
+    if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
-    if (message.name !== '') {
+    if (message.name !== "") {
       writer.uint32(18).string(message.name);
     }
-    if (message.prefix !== '') {
+    if (message.prefix !== "") {
       writer.uint32(26).string(message.prefix);
     }
-    if (message.oldDomainSuffix !== '') {
+    if (message.oldDomainSuffix !== "") {
       writer.uint32(34).string(message.oldDomainSuffix);
     }
-    if (message.newDomainSuffix !== '') {
+    if (message.newDomainSuffix !== "") {
       writer.uint32(42).string(message.newDomainSuffix);
     }
     if (message.currentCounter !== 0) {
       writer.uint32(48).int32(message.currentCounter);
     }
-    if (message.hierarchy !== '') {
+    if (message.hierarchy !== "") {
       writer.uint32(58).string(message.hierarchy);
     }
     return writer;
@@ -887,17 +887,17 @@ export const AddUnitReq = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = '';
+      message.id = "";
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = String(object.name);
     } else {
-      message.name = '';
+      message.name = "";
     }
     if (object.prefix !== undefined && object.prefix !== null) {
       message.prefix = String(object.prefix);
     } else {
-      message.prefix = '';
+      message.prefix = "";
     }
     if (
       object.oldDomainSuffix !== undefined &&
@@ -905,7 +905,7 @@ export const AddUnitReq = {
     ) {
       message.oldDomainSuffix = String(object.oldDomainSuffix);
     } else {
-      message.oldDomainSuffix = '';
+      message.oldDomainSuffix = "";
     }
     if (
       object.newDomainSuffix !== undefined &&
@@ -913,7 +913,7 @@ export const AddUnitReq = {
     ) {
       message.newDomainSuffix = String(object.newDomainSuffix);
     } else {
-      message.newDomainSuffix = '';
+      message.newDomainSuffix = "";
     }
     if (object.currentCounter !== undefined && object.currentCounter !== null) {
       message.currentCounter = Number(object.currentCounter);
@@ -923,7 +923,7 @@ export const AddUnitReq = {
     if (object.hierarchy !== undefined && object.hierarchy !== null) {
       message.hierarchy = String(object.hierarchy);
     } else {
-      message.hierarchy = '';
+      message.hierarchy = "";
     }
     return message;
   },
@@ -948,17 +948,17 @@ export const AddUnitReq = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = '';
+      message.id = "";
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = object.name;
     } else {
-      message.name = '';
+      message.name = "";
     }
     if (object.prefix !== undefined && object.prefix !== null) {
       message.prefix = object.prefix;
     } else {
-      message.prefix = '';
+      message.prefix = "";
     }
     if (
       object.oldDomainSuffix !== undefined &&
@@ -966,7 +966,7 @@ export const AddUnitReq = {
     ) {
       message.oldDomainSuffix = object.oldDomainSuffix;
     } else {
-      message.oldDomainSuffix = '';
+      message.oldDomainSuffix = "";
     }
     if (
       object.newDomainSuffix !== undefined &&
@@ -974,7 +974,7 @@ export const AddUnitReq = {
     ) {
       message.newDomainSuffix = object.newDomainSuffix;
     } else {
-      message.newDomainSuffix = '';
+      message.newDomainSuffix = "";
     }
     if (object.currentCounter !== undefined && object.currentCounter !== null) {
       message.currentCounter = object.currentCounter;
@@ -984,40 +984,40 @@ export const AddUnitReq = {
     if (object.hierarchy !== undefined && object.hierarchy !== null) {
       message.hierarchy = object.hierarchy;
     } else {
-      message.hierarchy = '';
+      message.hierarchy = "";
     }
     return message;
   },
 };
 
 const baseUnit: object = {
-  id: '',
-  name: '',
-  prefix: '',
-  oldDomainSuffix: '',
-  newDomainSuffix: '',
+  id: "",
+  name: "",
+  prefix: "",
+  oldDomainSuffix: "",
+  newDomainSuffix: "",
   currentCounter: 0,
-  teaInProgress: '',
-  failedTea: '',
+  teaInProgress: "",
+  failedTea: "",
   createdAt: 0,
-  hierarchy: '',
+  hierarchy: "",
 };
 
 export const Unit = {
   encode(message: Unit, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.id !== '') {
+    if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
-    if (message.name !== '') {
+    if (message.name !== "") {
       writer.uint32(18).string(message.name);
     }
-    if (message.prefix !== '') {
+    if (message.prefix !== "") {
       writer.uint32(26).string(message.prefix);
     }
-    if (message.oldDomainSuffix !== '') {
+    if (message.oldDomainSuffix !== "") {
       writer.uint32(34).string(message.oldDomainSuffix);
     }
-    if (message.newDomainSuffix !== '') {
+    if (message.newDomainSuffix !== "") {
       writer.uint32(42).string(message.newDomainSuffix);
     }
     if (message.currentCounter !== 0) {
@@ -1032,7 +1032,7 @@ export const Unit = {
     if (message.createdAt !== 0) {
       writer.uint32(72).int64(message.createdAt);
     }
-    if (message.hierarchy !== '') {
+    if (message.hierarchy !== "") {
       writer.uint32(82).string(message.hierarchy);
     }
     return writer;
@@ -1092,17 +1092,17 @@ export const Unit = {
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
-      message.id = '';
+      message.id = "";
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = String(object.name);
     } else {
-      message.name = '';
+      message.name = "";
     }
     if (object.prefix !== undefined && object.prefix !== null) {
       message.prefix = String(object.prefix);
     } else {
-      message.prefix = '';
+      message.prefix = "";
     }
     if (
       object.oldDomainSuffix !== undefined &&
@@ -1110,7 +1110,7 @@ export const Unit = {
     ) {
       message.oldDomainSuffix = String(object.oldDomainSuffix);
     } else {
-      message.oldDomainSuffix = '';
+      message.oldDomainSuffix = "";
     }
     if (
       object.newDomainSuffix !== undefined &&
@@ -1118,7 +1118,7 @@ export const Unit = {
     ) {
       message.newDomainSuffix = String(object.newDomainSuffix);
     } else {
-      message.newDomainSuffix = '';
+      message.newDomainSuffix = "";
     }
     if (object.currentCounter !== undefined && object.currentCounter !== null) {
       message.currentCounter = Number(object.currentCounter);
@@ -1143,7 +1143,7 @@ export const Unit = {
     if (object.hierarchy !== undefined && object.hierarchy !== null) {
       message.hierarchy = String(object.hierarchy);
     } else {
-      message.hierarchy = '';
+      message.hierarchy = "";
     }
     return message;
   },
@@ -1181,17 +1181,17 @@ export const Unit = {
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
-      message.id = '';
+      message.id = "";
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = object.name;
     } else {
-      message.name = '';
+      message.name = "";
     }
     if (object.prefix !== undefined && object.prefix !== null) {
       message.prefix = object.prefix;
     } else {
-      message.prefix = '';
+      message.prefix = "";
     }
     if (
       object.oldDomainSuffix !== undefined &&
@@ -1199,7 +1199,7 @@ export const Unit = {
     ) {
       message.oldDomainSuffix = object.oldDomainSuffix;
     } else {
-      message.oldDomainSuffix = '';
+      message.oldDomainSuffix = "";
     }
     if (
       object.newDomainSuffix !== undefined &&
@@ -1207,7 +1207,7 @@ export const Unit = {
     ) {
       message.newDomainSuffix = object.newDomainSuffix;
     } else {
-      message.newDomainSuffix = '';
+      message.newDomainSuffix = "";
     }
     if (object.currentCounter !== undefined && object.currentCounter !== null) {
       message.currentCounter = object.currentCounter;
@@ -1232,18 +1232,18 @@ export const Unit = {
     if (object.hierarchy !== undefined && object.hierarchy !== null) {
       message.hierarchy = object.hierarchy;
     } else {
-      message.hierarchy = '';
+      message.hierarchy = "";
     }
     return message;
   },
 };
 
 const baseUnitProperties: object = {
-  oldDomainSuffix: '',
-  newDomainSuffix: '',
-  teaInProgress: '',
-  failedTea: '',
-  hierarchy: '',
+  oldDomainSuffix: "",
+  newDomainSuffix: "",
+  teaInProgress: "",
+  failedTea: "",
+  hierarchy: "",
 };
 
 export const UnitProperties = {
@@ -1260,10 +1260,10 @@ export const UnitProperties = {
     if (message.prefix !== undefined) {
       writer.uint32(26).string(message.prefix);
     }
-    if (message.oldDomainSuffix !== '') {
+    if (message.oldDomainSuffix !== "") {
       writer.uint32(34).string(message.oldDomainSuffix);
     }
-    if (message.newDomainSuffix !== '') {
+    if (message.newDomainSuffix !== "") {
       writer.uint32(42).string(message.newDomainSuffix);
     }
     if (message.currentCounter !== undefined) {
@@ -1275,7 +1275,7 @@ export const UnitProperties = {
     for (const v of message.failedTea) {
       writer.uint32(66).string(v!);
     }
-    if (message.hierarchy !== '') {
+    if (message.hierarchy !== "") {
       writer.uint32(74).string(message.hierarchy);
     }
     return writer;
@@ -1350,7 +1350,7 @@ export const UnitProperties = {
     ) {
       message.oldDomainSuffix = String(object.oldDomainSuffix);
     } else {
-      message.oldDomainSuffix = '';
+      message.oldDomainSuffix = "";
     }
     if (
       object.newDomainSuffix !== undefined &&
@@ -1358,7 +1358,7 @@ export const UnitProperties = {
     ) {
       message.newDomainSuffix = String(object.newDomainSuffix);
     } else {
-      message.newDomainSuffix = '';
+      message.newDomainSuffix = "";
     }
     if (object.currentCounter !== undefined && object.currentCounter !== null) {
       message.currentCounter = String(object.currentCounter);
@@ -1378,7 +1378,7 @@ export const UnitProperties = {
     if (object.hierarchy !== undefined && object.hierarchy !== null) {
       message.hierarchy = String(object.hierarchy);
     } else {
-      message.hierarchy = '';
+      message.hierarchy = "";
     }
     return message;
   },
@@ -1433,7 +1433,7 @@ export const UnitProperties = {
     ) {
       message.oldDomainSuffix = object.oldDomainSuffix;
     } else {
-      message.oldDomainSuffix = '';
+      message.oldDomainSuffix = "";
     }
     if (
       object.newDomainSuffix !== undefined &&
@@ -1441,7 +1441,7 @@ export const UnitProperties = {
     ) {
       message.newDomainSuffix = object.newDomainSuffix;
     } else {
-      message.newDomainSuffix = '';
+      message.newDomainSuffix = "";
     }
     if (object.currentCounter !== undefined && object.currentCounter !== null) {
       message.currentCounter = object.currentCounter;
@@ -1461,20 +1461,20 @@ export const UnitProperties = {
     if (object.hierarchy !== undefined && object.hierarchy !== null) {
       message.hierarchy = object.hierarchy;
     } else {
-      message.hierarchy = '';
+      message.hierarchy = "";
     }
     return message;
   },
 };
 
-const baseReportTeaReq: object = { tea: '' };
+const baseReportTeaReq: object = { tea: "" };
 
 export const ReportTeaReq = {
   encode(
     message: ReportTeaReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.tea !== '') {
+    if (message.tea !== "") {
       writer.uint32(10).string(message.tea);
     }
     return writer;
@@ -1503,7 +1503,7 @@ export const ReportTeaReq = {
     if (object.tea !== undefined && object.tea !== null) {
       message.tea = String(object.tea);
     } else {
-      message.tea = '';
+      message.tea = "";
     }
     return message;
   },
@@ -1519,7 +1519,7 @@ export const ReportTeaReq = {
     if (object.tea !== undefined && object.tea !== null) {
       message.tea = object.tea;
     } else {
-      message.tea = '';
+      message.tea = "";
     }
     return message;
   },
@@ -1661,7 +1661,7 @@ export const RetrieveByEntityReq = {
   },
 };
 
-const baseRetrieveByEntityIdReq: object = { domain: 0, entityId: '' };
+const baseRetrieveByEntityIdReq: object = { domain: 0, entityId: "" };
 
 export const RetrieveByEntityIdReq = {
   encode(
@@ -1671,7 +1671,7 @@ export const RetrieveByEntityIdReq = {
     if (message.domain !== 0) {
       writer.uint32(8).int32(message.domain);
     }
-    if (message.entityId !== '') {
+    if (message.entityId !== "") {
       writer.uint32(18).string(message.entityId);
     }
     return writer;
@@ -1711,7 +1711,7 @@ export const RetrieveByEntityIdReq = {
     if (object.entityId !== undefined && object.entityId !== null) {
       message.entityId = String(object.entityId);
     } else {
-      message.entityId = '';
+      message.entityId = "";
     }
     return message;
   },
@@ -1735,23 +1735,23 @@ export const RetrieveByEntityIdReq = {
     if (object.entityId !== undefined && object.entityId !== null) {
       message.entityId = object.entityId;
     } else {
-      message.entityId = '';
+      message.entityId = "";
     }
     return message;
   },
 };
 
-const baseEntityMin: object = { entityType: '', akaUnit: '' };
+const baseEntityMin: object = { entityType: "", akaUnit: "" };
 
 export const EntityMin = {
   encode(
     message: EntityMin,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.entityType !== '') {
+    if (message.entityType !== "") {
       writer.uint32(10).string(message.entityType);
     }
-    if (message.akaUnit !== '') {
+    if (message.akaUnit !== "") {
       writer.uint32(18).string(message.akaUnit);
     }
     if (message.personalNumber !== undefined) {
@@ -1813,12 +1813,12 @@ export const EntityMin = {
     if (object.entityType !== undefined && object.entityType !== null) {
       message.entityType = String(object.entityType);
     } else {
-      message.entityType = '';
+      message.entityType = "";
     }
     if (object.akaUnit !== undefined && object.akaUnit !== null) {
       message.akaUnit = String(object.akaUnit);
     } else {
-      message.akaUnit = '';
+      message.akaUnit = "";
     }
     if (object.personalNumber !== undefined && object.personalNumber !== null) {
       message.personalNumber = String(object.personalNumber);
@@ -1867,12 +1867,12 @@ export const EntityMin = {
     if (object.entityType !== undefined && object.entityType !== null) {
       message.entityType = object.entityType;
     } else {
-      message.entityType = '';
+      message.entityType = "";
     }
     if (object.akaUnit !== undefined && object.akaUnit !== null) {
       message.akaUnit = object.akaUnit;
     } else {
-      message.akaUnit = '';
+      message.akaUnit = "";
     }
     if (object.personalNumber !== undefined && object.personalNumber !== null) {
       message.personalNumber = object.personalNumber;
@@ -1909,6 +1909,7 @@ export interface Tea {
   RetrieveUPNByEntityId(request: RetrieveByEntityIdReq): Promise<UPNMessage>;
   ReportTeaSuccess(request: ReportTeaReq): Promise<SuccessMessage>;
   ReportTeaFail(request: ReportTeaReq): Promise<SuccessMessage>;
+  ThrowTea(request: ReportTeaReq): Promise<SuccessMessage>;
   GetUnit(request: GetUnitReq): Promise<Unit>;
   AddUnit(request: AddUnitReq): Promise<Unit>;
   UpdateUnit(request: UpdateUnitReq): Promise<Unit>;
@@ -1926,6 +1927,7 @@ export class TeaClientImpl implements Tea {
     this.RetrieveUPNByEntityId = this.RetrieveUPNByEntityId.bind(this);
     this.ReportTeaSuccess = this.ReportTeaSuccess.bind(this);
     this.ReportTeaFail = this.ReportTeaFail.bind(this);
+    this.ThrowTea = this.ThrowTea.bind(this);
     this.GetUnit = this.GetUnit.bind(this);
     this.AddUnit = this.AddUnit.bind(this);
     this.UpdateUnit = this.UpdateUnit.bind(this);
@@ -1935,67 +1937,73 @@ export class TeaClientImpl implements Tea {
   }
   RetrieveTeaByUnit(request: RetrieveTeaByUnitReq): Promise<TeaMessage> {
     const data = RetrieveTeaByUnitReq.encode(request).finish();
-    const promise = this.rpc.request('Tea.Tea', 'RetrieveTeaByUnit', data);
+    const promise = this.rpc.request("Tea.Tea", "RetrieveTeaByUnit", data);
     return promise.then((data) => TeaMessage.decode(new _m0.Reader(data)));
   }
 
   RetrieveUPNByEntity(request: RetrieveByEntityReq): Promise<UPNMessage> {
     const data = RetrieveByEntityReq.encode(request).finish();
-    const promise = this.rpc.request('Tea.Tea', 'RetrieveUPNByEntity', data);
+    const promise = this.rpc.request("Tea.Tea", "RetrieveUPNByEntity", data);
     return promise.then((data) => UPNMessage.decode(new _m0.Reader(data)));
   }
 
   RetrieveUPNByEntityId(request: RetrieveByEntityIdReq): Promise<UPNMessage> {
     const data = RetrieveByEntityIdReq.encode(request).finish();
-    const promise = this.rpc.request('Tea.Tea', 'RetrieveUPNByEntityId', data);
+    const promise = this.rpc.request("Tea.Tea", "RetrieveUPNByEntityId", data);
     return promise.then((data) => UPNMessage.decode(new _m0.Reader(data)));
   }
 
   ReportTeaSuccess(request: ReportTeaReq): Promise<SuccessMessage> {
     const data = ReportTeaReq.encode(request).finish();
-    const promise = this.rpc.request('Tea.Tea', 'ReportTeaSuccess', data);
+    const promise = this.rpc.request("Tea.Tea", "ReportTeaSuccess", data);
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
   ReportTeaFail(request: ReportTeaReq): Promise<SuccessMessage> {
     const data = ReportTeaReq.encode(request).finish();
-    const promise = this.rpc.request('Tea.Tea', 'ReportTeaFail', data);
+    const promise = this.rpc.request("Tea.Tea", "ReportTeaFail", data);
+    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
+  }
+
+  ThrowTea(request: ReportTeaReq): Promise<SuccessMessage> {
+    const data = ReportTeaReq.encode(request).finish();
+    const promise = this.rpc.request("Tea.Tea", "ThrowTea", data);
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
   GetUnit(request: GetUnitReq): Promise<Unit> {
     const data = GetUnitReq.encode(request).finish();
-    const promise = this.rpc.request('Tea.Tea', 'GetUnit', data);
+    const promise = this.rpc.request("Tea.Tea", "GetUnit", data);
     return promise.then((data) => Unit.decode(new _m0.Reader(data)));
   }
 
   AddUnit(request: AddUnitReq): Promise<Unit> {
     const data = AddUnitReq.encode(request).finish();
-    const promise = this.rpc.request('Tea.Tea', 'AddUnit', data);
+    const promise = this.rpc.request("Tea.Tea", "AddUnit", data);
     return promise.then((data) => Unit.decode(new _m0.Reader(data)));
   }
 
   UpdateUnit(request: UpdateUnitReq): Promise<Unit> {
     const data = UpdateUnitReq.encode(request).finish();
-    const promise = this.rpc.request('Tea.Tea', 'UpdateUnit', data);
+    const promise = this.rpc.request("Tea.Tea", "UpdateUnit", data);
     return promise.then((data) => Unit.decode(new _m0.Reader(data)));
   }
 
   DeleteUnit(request: DeleteUnitReq): Promise<SuccessMessage> {
     const data = DeleteUnitReq.encode(request).finish();
-    const promise = this.rpc.request('Tea.Tea', 'DeleteUnit', data);
+    const promise = this.rpc.request("Tea.Tea", "DeleteUnit", data);
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
   GetAllUnits(request: GetAllUnitsReq): Promise<MinUnitArray> {
     const data = GetAllUnitsReq.encode(request).finish();
-    const promise = this.rpc.request('Tea.Tea', 'GetAllUnits', data);
+    const promise = this.rpc.request("Tea.Tea", "GetAllUnits", data);
     return promise.then((data) => MinUnitArray.decode(new _m0.Reader(data)));
   }
 
   SearchUnit(request: SearchUnitReq): Promise<MinUnitArray> {
     const data = SearchUnitReq.encode(request).finish();
-    const promise = this.rpc.request('Tea.Tea', 'SearchUnit', data);
+    const promise = this.rpc.request("Tea.Tea", "SearchUnit", data);
     return promise.then((data) => MinUnitArray.decode(new _m0.Reader(data)));
   }
 }
@@ -2011,11 +2019,11 @@ interface Rpc {
 declare var self: any | undefined;
 declare var window: any | undefined;
 var globalThis: any = (() => {
-  if (typeof globalThis !== 'undefined') return globalThis;
-  if (typeof self !== 'undefined') return self;
-  if (typeof window !== 'undefined') return window;
-  if (typeof global !== 'undefined') return global;
-  throw 'Unable to locate global object';
+  if (typeof globalThis !== "undefined") return globalThis;
+  if (typeof self !== "undefined") return self;
+  if (typeof window !== "undefined") return window;
+  if (typeof global !== "undefined") return global;
+  throw "Unable to locate global object";
 })();
 
 type Builtin =
@@ -2038,7 +2046,7 @@ export type DeepPartial<T> = T extends Builtin
 
 function longToNumber(long: Long): number {
   if (long.gt(Number.MAX_SAFE_INTEGER)) {
-    throw new globalThis.Error('Value is larger than Number.MAX_SAFE_INTEGER');
+    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
   }
   return long.toNumber();
 }
