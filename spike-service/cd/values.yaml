@@ -11,13 +11,14 @@ images:
 service:
 
 volume:
-  mountPath: /usr/src/app/spike-utils
+  mountPath: /usr/src/app/src/utils/
   secretName: azure-secret
   shareName: momentum/spike-utils
-  
+
   ports:
   - name: http
     port: "8080"
+    
 config:
   configmaps:
       name: momentum-configmap

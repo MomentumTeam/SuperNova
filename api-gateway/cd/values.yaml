@@ -19,7 +19,7 @@ volume:
   secretName: azure-secret
   shareName: momentum/spike-utils
 
-configmap:
+config:
   configmaps:
   mame: momentum-configmap
 
@@ -31,4 +31,3 @@ ingress:
       - path: /api
         service: api-gateway
         port: 8080
-# >>>>>>> main
