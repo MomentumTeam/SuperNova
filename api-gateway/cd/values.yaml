@@ -14,20 +14,20 @@ service:
   - name: http
     port: "8080"
 
-# volume:
-#   mountPath: /usr/src/app/bulk-files
-#   secretName: azure-secret
-#   shareName: momentum/bulk-files
+volume:
+  mountPath: /usr/src/app/bulk-files
+  secretName: azure-secret
+  shareName: momentum/bulk-files
 
-# config:
-#   configmaps:
-#       name: momentum-configmap
+config:
+  configmaps:
+      name: momentum-configmap
 
-# ingress:
-#   enabled: true
-#   hosts:
-#   - host: momentum.branch-yesodot.org
-#     paths:
-#       - path: /api
-#         service: api-gateway
-#         port: 8080
+ingress:
+  enabled: true
+  hosts:
+  - host: momentum.branch-yesodot.org
+    paths:
+      - path: /api
+        service: api-gateway
+        port: 8080
