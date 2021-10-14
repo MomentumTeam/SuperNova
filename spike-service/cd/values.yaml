@@ -1,4 +1,4 @@
-name: "spike-service"
+name: 'spike-service'
 # If you want to overide the full name you can include the 'fullnameOverride' value
 #fullname:
 replicaCount: 1
@@ -7,8 +7,13 @@ images:
   PullSecrets:
     name: momentumacr
   repository: momentumacr.azurecr.io/spike-service
-  tag: "latest"
+  tag: 'latest'
 service:
 configmap:
-  configmaps:  
+  configmaps:
   mame: momentum-configmap
+
+volume:
+  mountPath: /usr/src/app/spike-utils
+  secretName: azure-secret
+  shareName: momentum/spike-utils

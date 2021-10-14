@@ -20,6 +20,9 @@ RUN npm run build
 
 FROM node:14.17.5-alpine3.14
 
+RUN apk update 
+RUN apk add --no-cache nano vim
+
 RUN GRPC_HEALTH_PROBE_VERSION=v0.4.4 && \
     wget -qO/bin/grpc_health_probe https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/${GRPC_HEALTH_PROBE_VERSION}/grpc_health_probe-linux-amd64 && \
     chmod +x /bin/grpc_health_probe && \
