@@ -106,10 +106,10 @@ export const GetOGByIdSchema = Joi.object({
 
 export const GetOGByHierarchyNameSchema = Joi.object({
   body: {},
-  params: {
+  params: {},
+  query: {
     hierarchy: Joi.string().required(),
   },
-  query: {},
 });
 
 export const GetOGChildrenSchema = Joi.object({
