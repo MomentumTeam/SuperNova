@@ -13,16 +13,15 @@ import {
   createRole,
   deleteOG,
   deleteRole,
-  assignRoleToEntity,
   renameRole,
   renameOG,
   updateEntity,
   disconnectRoleAndDI,
   deleteEntity,
   changeRoleOG,
+  connectEntityAndDI,
 } from './consumer.kartoffel';
 import { logger } from '../utils/logger';
-import { SuccessMessage } from '../interfaces/protoc/proto/teaService';
 import TeaService from '../services/teaService';
 
 /**
@@ -62,7 +61,7 @@ export const requestProcessor = async (incomingRequest: any) => {
           break;
         }
         case RequestType.ASSIGN_ROLE_TO_ENTITY: {
-          await assignRoleToEntity(requestObject.data);
+          await connectEntityAndDI(requestObject.data);
           break;
         }
         case RequestType.CREATE_ENTITY: {
@@ -135,15 +134,16 @@ export const requestProcessor = async (incomingRequest: any) => {
       if (requestObject && requestObject.id) {
         const updatedRequest = await RequestService.IncrementKartoffelRetries({
           id: requestObject.id,
+          message: error.message,
         });
         const updatedStatus =
           typeof updatedRequest.status === typeof ''
             ? requestStatusFromJSON(updatedRequest.status)
             : updatedRequest.status;
         if (
+          updatedStatus === RequestStatus.FAILED &&
           type === RequestType.CREATE_ROLE &&
-          createdObjectId &&
-          updatedStatus === RequestStatus.FAILED
+          createdObjectId
         ) {
           await TeaService.throwTea({
             tea: createdObjectId,

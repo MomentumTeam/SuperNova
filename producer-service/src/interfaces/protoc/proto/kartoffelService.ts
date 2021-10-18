@@ -170,7 +170,6 @@ export interface CreateOGRequest {
 
 /** CreateDI */
 export interface CreateDIRequest {
-  entityId: string;
   isRoleAttachable: boolean;
   mail: string;
   source: string;
@@ -207,7 +206,7 @@ export interface RenameRoleRequest {
 /** ConnectRoleAndDI */
 export interface ConnectRoleAndDIRequest {
   /** id of role */
-  id: string;
+  roleId: string;
   /** uniqueId of DI */
   uniqueId: string;
 }
@@ -3103,7 +3102,6 @@ export const CreateOGRequest = {
 };
 
 const baseCreateDIRequest: object = {
-  entityId: "",
   isRoleAttachable: false,
   mail: "",
   source: "",
@@ -3116,23 +3114,20 @@ export const CreateDIRequest = {
     message: CreateDIRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.entityId !== "") {
-      writer.uint32(10).string(message.entityId);
-    }
     if (message.isRoleAttachable === true) {
-      writer.uint32(16).bool(message.isRoleAttachable);
+      writer.uint32(8).bool(message.isRoleAttachable);
     }
     if (message.mail !== "") {
-      writer.uint32(26).string(message.mail);
+      writer.uint32(18).string(message.mail);
     }
     if (message.source !== "") {
-      writer.uint32(34).string(message.source);
+      writer.uint32(26).string(message.source);
     }
     if (message.type !== "") {
-      writer.uint32(42).string(message.type);
+      writer.uint32(34).string(message.type);
     }
     if (message.uniqueId !== "") {
-      writer.uint32(50).string(message.uniqueId);
+      writer.uint32(42).string(message.uniqueId);
     }
     return writer;
   },
@@ -3145,21 +3140,18 @@ export const CreateDIRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.entityId = reader.string();
-          break;
-        case 2:
           message.isRoleAttachable = reader.bool();
           break;
-        case 3:
+        case 2:
           message.mail = reader.string();
           break;
-        case 4:
+        case 3:
           message.source = reader.string();
           break;
-        case 5:
+        case 4:
           message.type = reader.string();
           break;
-        case 6:
+        case 5:
           message.uniqueId = reader.string();
           break;
         default:
@@ -3172,11 +3164,6 @@ export const CreateDIRequest = {
 
   fromJSON(object: any): CreateDIRequest {
     const message = { ...baseCreateDIRequest } as CreateDIRequest;
-    if (object.entityId !== undefined && object.entityId !== null) {
-      message.entityId = String(object.entityId);
-    } else {
-      message.entityId = "";
-    }
     if (
       object.isRoleAttachable !== undefined &&
       object.isRoleAttachable !== null
@@ -3210,7 +3197,6 @@ export const CreateDIRequest = {
 
   toJSON(message: CreateDIRequest): unknown {
     const obj: any = {};
-    message.entityId !== undefined && (obj.entityId = message.entityId);
     message.isRoleAttachable !== undefined &&
       (obj.isRoleAttachable = message.isRoleAttachable);
     message.mail !== undefined && (obj.mail = message.mail);
@@ -3222,11 +3208,6 @@ export const CreateDIRequest = {
 
   fromPartial(object: DeepPartial<CreateDIRequest>): CreateDIRequest {
     const message = { ...baseCreateDIRequest } as CreateDIRequest;
-    if (object.entityId !== undefined && object.entityId !== null) {
-      message.entityId = object.entityId;
-    } else {
-      message.entityId = "";
-    }
     if (
       object.isRoleAttachable !== undefined &&
       object.isRoleAttachable !== null
@@ -3604,15 +3585,15 @@ export const RenameRoleRequest = {
   },
 };
 
-const baseConnectRoleAndDIRequest: object = { id: "", uniqueId: "" };
+const baseConnectRoleAndDIRequest: object = { roleId: "", uniqueId: "" };
 
 export const ConnectRoleAndDIRequest = {
   encode(
     message: ConnectRoleAndDIRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
+    if (message.roleId !== "") {
+      writer.uint32(10).string(message.roleId);
     }
     if (message.uniqueId !== "") {
       writer.uint32(18).string(message.uniqueId);
@@ -3633,7 +3614,7 @@ export const ConnectRoleAndDIRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.id = reader.string();
+          message.roleId = reader.string();
           break;
         case 2:
           message.uniqueId = reader.string();
@@ -3650,10 +3631,10 @@ export const ConnectRoleAndDIRequest = {
     const message = {
       ...baseConnectRoleAndDIRequest,
     } as ConnectRoleAndDIRequest;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = String(object.roleId);
     } else {
-      message.id = "";
+      message.roleId = "";
     }
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = String(object.uniqueId);
@@ -3665,7 +3646,7 @@ export const ConnectRoleAndDIRequest = {
 
   toJSON(message: ConnectRoleAndDIRequest): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
+    message.roleId !== undefined && (obj.roleId = message.roleId);
     message.uniqueId !== undefined && (obj.uniqueId = message.uniqueId);
     return obj;
   },
@@ -3676,10 +3657,10 @@ export const ConnectRoleAndDIRequest = {
     const message = {
       ...baseConnectRoleAndDIRequest,
     } as ConnectRoleAndDIRequest;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = object.roleId;
     } else {
-      message.id = "";
+      message.roleId = "";
     }
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = object.uniqueId;

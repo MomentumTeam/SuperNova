@@ -364,6 +364,9 @@ export class RequestRepository {
       if (kartoffelStatus.failedRetries + 1 > C.maxQueueRetries) {
         kartoffelStatus.status = stageStatusToJSON(StageStatus.STAGE_FAILED);
         properties.status = requestStatusToJSON(RequestStatus.FAILED);
+        if (incrementRetriesReq.message) {
+          kartoffelStatus.message = incrementRetriesReq.message;
+        }
       } else {
         kartoffelStatus.failedRetries = kartoffelStatus.failedRetries + 1;
         kartoffelStatus.status = stageStatusToJSON(
@@ -404,6 +407,9 @@ export class RequestRepository {
       if (adStatus.failedRetries + 1 > C.maxQueueRetries) {
         adStatus.status = stageStatusToJSON(StageStatus.STAGE_FAILED);
         properties.status = requestStatusToJSON(RequestStatus.FAILED);
+        if (incrementRetriesReq.message) {
+          adStatus.message = incrementRetriesReq.message;
+        }
       } else {
         adStatus.failedRetries = adStatus.failedRetries + 1;
         adStatus.status = stageStatusToJSON(StageStatus.STAGE_NEED_RETRY);

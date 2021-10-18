@@ -222,12 +222,11 @@ message CreateOGRequest{
 
 // CreateDI
 message CreateDIRequest{
-    string entityId = 1;
-    bool isRoleAttachable = 2;
-    string mail = 3;
-    string source = 4;
-    string type = 5;
-    string uniqueId = 6;
+    bool isRoleAttachable = 1;
+    string mail = 2;
+    string source = 3;
+    string type = 4;
+    string uniqueId = 5;
 }
 /**  ROLES **/
 
@@ -259,7 +258,7 @@ message RenameRoleRequest{
 
 // ConnectRoleAndDI
 message ConnectRoleAndDIRequest{
-    string id = 1; // id of role
+    string roleId = 1; // id of role
     string uniqueId = 2; //uniqueId of DI
 }
 
