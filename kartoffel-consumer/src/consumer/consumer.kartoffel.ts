@@ -16,6 +16,7 @@ import {
   DisconnectRoleAndDIRequest,
   DeleteEntityRequest,
   ChangeRoleOGRequest,
+  ConnectEntityAndDIRequest,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { logger } from '../utils/logger';
 
@@ -43,9 +44,9 @@ export const createRole = async (data: any) => {
   try {
     logger.info('createRole request received.', data);
 
-    const { entityId, isRoleAttachable, mail, source, type, uniqueId } = data;
+    const { type, source, uniqueId, mail, isRoleAttachable, roleEntityType } =
+      data;
     const newDI: DigitalIdentity = await KartoffelService.createDI({
-      entityId: entityId,
       isRoleAttachable: isRoleAttachable,
       mail: mail,
       source: source,
@@ -58,19 +59,34 @@ export const createRole = async (data: any) => {
     const newRole: Role = await KartoffelService.createRole({
       jobTitle: jobTitle,
       directGroup: directGroup,
-      source: source,
       roleId: roleId,
+      source: source,
     });
 
     logger.info('Successfuly created Role', newRole);
 
     const successMessageKartoffel: SuccessMessage =
       await KartoffelService.connectRoleAndDI({
-        id: newRole.roleId,
+        roleId: newRole.roleId,
         uniqueId: newDI.uniqueId,
       });
     logger.info('Successfuly connected role and DI', successMessageKartoffel);
 
+    if (roleEntityType === 'goalUser') {
+      //If goal user
+      const goalUserEntity = await KartoffelService.createEntity({
+        firstName: jobTitle,
+        lastName: '',
+        entityType: 'goalUser',
+        serviceType: 'goalUser',
+        phone: [],
+        mobilePhone: [],
+      });
+      await KartoffelService.connectEntityAndDI({
+        id: goalUserEntity.id,
+        uniqueId: newDI.uniqueId,
+      });
+    }
     return newRole.roleId;
   } catch (error) {
     throw error;
@@ -124,15 +140,31 @@ export const createEntity = async (
   }
 };
 
-export const assignRoleToEntity = async (
-  connectRoleToDIReq: ConnectRoleAndDIRequest
-) => {
+export const connectEntityAndDI = async (connectEntityAndDIReq: any) => {
   try {
-    logger.info('assignRoleToEntity request received', connectRoleToDIReq);
+    logger.info(
+      'connectEntityAndDIReq request received',
+      connectEntityAndDIReq
+    );
 
-    const { id, uniqueId } = connectRoleToDIReq;
+    const { id, uniqueId, needToDisconnect } = connectEntityAndDIReq;
+    if (needToDisconnect) {
+      const entity: Entity = await KartoffelService.getEntityById({ id: id });
+      for (let currentDi of entity.digitalIdentities) {
+        if (currentDi.source === 'oneTree') {
+          await KartoffelService.disconnectDIFromEntity({
+            id: id,
+            uniqueId: uniqueId,
+          });
+          break;
+        }
+      }
+    }
     const successMessage: SuccessMessage =
-      await KartoffelService.connectRoleAndDI({ id: id, uniqueId: uniqueId });
+      await KartoffelService.connectEntityAndDI({
+        id: id,
+        uniqueId: uniqueId,
+      });
     logger.info('Successfuly assigned role to entity', successMessage);
   } catch (error) {
     throw error;
@@ -243,17 +275,26 @@ export const disconnectRoleAndDI = async (
   }
 };
 
-export const changeRoleOG = async (
-  createRoleOGRequest: ChangeRoleOGRequest
-) => {
+export const changeRoleOG = async (changeRoleHierarchyReq: any) => {
   try {
-    logger.info('changeRoleOG request received', createRoleOGRequest);
-    const { roleId, groupId } = createRoleOGRequest;
-    const successMessage: SuccessMessage = await KartoffelService.changeRoleOG({
+    logger.info('changeRoleOG request received', changeRoleHierarchyReq);
+    const { roleId, groupId } = changeRoleHierarchyReq;
+    await KartoffelService.changeRoleOG({
       roleId: roleId,
       groupId: groupId,
     });
-    logger.info('Successfuly changeRoleOG', successMessage);
+    logger.info('Successfuly changeRoleOG', {
+      changeRoleHierarchyReq,
+    });
+    if (changeRoleHierarchyReq.newJobTitle) {
+      await KartoffelService.renameRole({
+        roleId: roleId,
+        jobTitle: changeRoleHierarchyReq.newJobTitle,
+      });
+      logger.info('Successfuly renamed role', {
+        changeRoleHierarchyReq,
+      });
+    }
   } catch (error) {
     throw error;
   }

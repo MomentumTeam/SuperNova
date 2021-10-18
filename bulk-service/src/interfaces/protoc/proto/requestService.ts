@@ -1503,6 +1503,7 @@ export interface CanPushToQueueRes {
 /** IncrementKartoffelRetries, IncrementADRetries */
 export interface IncrementRetriesReq {
   id: string;
+  message?: string | undefined;
 }
 
 /** UpdateCommanderDecision, UpdateSecurityDecision, UpdateSuperSecurityDecision */
@@ -22868,6 +22869,9 @@ export const IncrementRetriesReq = {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
+    if (message.message !== undefined) {
+      writer.uint32(18).string(message.message);
+    }
     return writer;
   },
 
@@ -22880,6 +22884,9 @@ export const IncrementRetriesReq = {
       switch (tag >>> 3) {
         case 1:
           message.id = reader.string();
+          break;
+        case 2:
+          message.message = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -22896,12 +22903,18 @@ export const IncrementRetriesReq = {
     } else {
       message.id = "";
     }
+    if (object.message !== undefined && object.message !== null) {
+      message.message = String(object.message);
+    } else {
+      message.message = undefined;
+    }
     return message;
   },
 
   toJSON(message: IncrementRetriesReq): unknown {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
+    message.message !== undefined && (obj.message = message.message);
     return obj;
   },
 
@@ -22911,6 +22924,11 @@ export const IncrementRetriesReq = {
       message.id = object.id;
     } else {
       message.id = "";
+    }
+    if (object.message !== undefined && object.message !== null) {
+      message.message = object.message;
+    } else {
+      message.message = undefined;
     }
     return message;
   },

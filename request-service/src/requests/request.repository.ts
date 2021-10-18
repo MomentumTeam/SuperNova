@@ -104,7 +104,6 @@ export class RequestRepository {
         };
       } else if (type === RequestType.EDIT_ENTITY) {
         //automatically approved
-        const submittedById = createRequestReq.submittedBy.id;
         const approverDecision = {
           approver: createRequestReq.submittedBy
             ? createRequestReq.submittedBy
@@ -364,6 +363,9 @@ export class RequestRepository {
       if (kartoffelStatus.failedRetries + 1 > C.maxQueueRetries) {
         kartoffelStatus.status = stageStatusToJSON(StageStatus.STAGE_FAILED);
         properties.status = requestStatusToJSON(RequestStatus.FAILED);
+        if (incrementRetriesReq.message) {
+          kartoffelStatus.message = incrementRetriesReq.message;
+        }
       } else {
         kartoffelStatus.failedRetries = kartoffelStatus.failedRetries + 1;
         kartoffelStatus.status = stageStatusToJSON(
@@ -404,6 +406,9 @@ export class RequestRepository {
       if (adStatus.failedRetries + 1 > C.maxQueueRetries) {
         adStatus.status = stageStatusToJSON(StageStatus.STAGE_FAILED);
         properties.status = requestStatusToJSON(RequestStatus.FAILED);
+        if (incrementRetriesReq.message) {
+          adStatus.message = incrementRetriesReq.message;
+        }
       } else {
         adStatus.failedRetries = adStatus.failedRetries + 1;
         adStatus.status = stageStatusToJSON(StageStatus.STAGE_NEED_RETRY);
@@ -886,36 +891,21 @@ export class RequestRepository {
         break;
       case RequestType.CHANGE_ROLE_HIERARCHY:
         request.needSecurityDecision = true;
-        request.needSuperSecurityDecision = false;
+        request.needSuperSecurityDecision = true;
         break;
       case RequestType.CREATE_ROLE_BULK:
-        request.needSecurityDecision = false;
-        request.needSuperSecurityDecision = false;
+        request.needSecurityDecision = true;
+        request.needSuperSecurityDecision = true;
         break;
       case RequestType.CHANGE_ROLE_HIERARCHY_BULK:
         request.needSecurityDecision = true;
-        request.needSuperSecurityDecision = false;
+        request.needSuperSecurityDecision = true;
         break;
 
       case RequestType.ADD_APPROVER:
-        const approverType: ApproverType = approverTypeFromJSON(
-          request.additionalParams.type
-        );
-
-        switch (approverType) {
-          case ApproverType.COMMANDER:
-            request.needSecurityDecision = true;
-            request.needSuperSecurityDecision = false;
-            break;
-          case ApproverType.SECURITY:
-            request.needSecurityDecision = true;
-            request.needSuperSecurityDecision = false;
-            break;
-          case ApproverType.SUPER_SECURITY:
-            request.needSecurityDecision = false;
-            request.needSuperSecurityDecision = true;
-            break;
-        }
+        request.needSecurityDecision = true;
+        request.needSuperSecurityDecision = false;
+        break;
     }
   }
 

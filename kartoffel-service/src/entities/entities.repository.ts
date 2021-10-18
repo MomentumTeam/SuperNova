@@ -22,6 +22,7 @@ import {
   SearchCommandersByFullNameRequest,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { cleanUnderscoreFields } from '../utils/json.utils';
+import { logger } from '../logger';
 
 export class EntitiesRepository {
   private kartoffelFaker: KartoffelFaker;
@@ -141,7 +142,11 @@ export class EntitiesRepository {
         return { image: image };
       }
     } catch (error) {
-      throw error;
+      logger.error(
+        `Error while downloading image for id=${getPictureByEntityIdRequest.id}`,
+        { error: { message: error.message } }
+      );
+      return { image: C.defaultImage };
     }
   }
 
