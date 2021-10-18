@@ -104,7 +104,6 @@ export class RequestRepository {
         };
       } else if (type === RequestType.EDIT_ENTITY) {
         //automatically approved
-        const submittedById = createRequestReq.submittedBy.id;
         const approverDecision = {
           approver: createRequestReq.submittedBy
             ? createRequestReq.submittedBy
@@ -892,36 +891,21 @@ export class RequestRepository {
         break;
       case RequestType.CHANGE_ROLE_HIERARCHY:
         request.needSecurityDecision = true;
-        request.needSuperSecurityDecision = false;
+        request.needSuperSecurityDecision = true;
         break;
       case RequestType.CREATE_ROLE_BULK:
-        request.needSecurityDecision = false;
-        request.needSuperSecurityDecision = false;
+        request.needSecurityDecision = true;
+        request.needSuperSecurityDecision = true;
         break;
       case RequestType.CHANGE_ROLE_HIERARCHY_BULK:
         request.needSecurityDecision = true;
-        request.needSuperSecurityDecision = false;
+        request.needSuperSecurityDecision = true;
         break;
 
       case RequestType.ADD_APPROVER:
-        const approverType: ApproverType = approverTypeFromJSON(
-          request.additionalParams.type
-        );
-
-        switch (approverType) {
-          case ApproverType.COMMANDER:
-            request.needSecurityDecision = true;
-            request.needSuperSecurityDecision = false;
-            break;
-          case ApproverType.SECURITY:
-            request.needSecurityDecision = true;
-            request.needSuperSecurityDecision = false;
-            break;
-          case ApproverType.SUPER_SECURITY:
-            request.needSecurityDecision = false;
-            request.needSuperSecurityDecision = true;
-            break;
-        }
+        request.needSecurityDecision = true;
+        request.needSuperSecurityDecision = false;
+        break;
     }
   }
 
