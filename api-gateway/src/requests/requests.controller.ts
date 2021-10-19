@@ -8,7 +8,6 @@ import {
   GetRequestByIdReq,
   GetRequestsByPersonReq,
   GetRequestBySerialNumberReq,
-  SearchRequestsByDisplayNameReq,
   UpdateADStatusReq,
   UpdateReq,
   UpdateApproversReq,
@@ -25,7 +24,6 @@ import {
   DeleteOGReq,
   DisconectRoleFromEntityReq,
   DeleteReq,
-  GetAllRequestsReq,
   DeleteEntityReq,
   ChangeRoleHierarchyReq,
   PersonTypeInRequest,
@@ -39,23 +37,6 @@ import { statusCodeHandler } from '../utils/errors/errorHandlers';
 import { approveUserRequest } from './requests.utils';
 
 export default class RequestsController {
-  //GET
-  static async getAllRequests(req: any, res: Response) {
-    const getAllRequestsReq: GetAllRequestsReq = {
-      approvementStatus: req.params.approvementStatus,
-      from: req.query.from,
-      to: req.query.to,
-    };
-
-    try {
-      const requests = await RequestsService.getAllRequests(getAllRequestsReq);
-      res.send(requests);
-    } catch (error: any) {
-      const statusCode = statusCodeHandler(error);
-      res.status(statusCode).send(error.message);
-    }
-  }
-
   static async getRequestById(req: any, res: Response) {
     const getRequestByIdReq: GetRequestByIdReq = { id: req.params.id };
 
@@ -210,29 +191,6 @@ export default class RequestsController {
     try {
       const requests = await RequestsService.getRequestBySerialNumber(
         getRequestBySerialNumberReq
-      );
-      res.send(requests);
-    } catch (error: any) {
-      const statusCode = statusCodeHandler(error);
-      res.status(statusCode).send(error.message);
-    }
-  }
-
-  static async searchRequestsByDisplayName(req: any, res: Response) {
-    if (!req.user && !req.user.id) throw new AuthenticationError();
-
-    const searchRequestsByDisplayNameReq: SearchRequestsByDisplayNameReq = {
-      displayName: req.params.displayName,
-      personType: req.query.personType,
-      searcherType: req.query.searcherType,
-      searcherId: req.user.id,
-      from: req.query.from,
-      to: req.query.to,
-    };
-
-    try {
-      const requests = await RequestsService.searchRequestsByDisplayName(
-        searchRequestsByDisplayNameReq
       );
       res.send(requests);
     } catch (error: any) {

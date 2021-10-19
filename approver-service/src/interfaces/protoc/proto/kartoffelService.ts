@@ -161,6 +161,14 @@ export interface OGArray {
   groups: OrganizationGroup[];
 }
 
+export interface GetPrefixByOGIdRequest {
+  id: string;
+}
+
+export interface OGPrefix {
+  prefix: string;
+}
+
 /** CreateOG */
 export interface CreateOGRequest {
   name: string;
@@ -3004,6 +3012,127 @@ export const OGArray = {
       for (const e of object.groups) {
         message.groups.push(OrganizationGroup.fromPartial(e));
       }
+    }
+    return message;
+  },
+};
+
+const baseGetPrefixByOGIdRequest: object = { id: "" };
+
+export const GetPrefixByOGIdRequest = {
+  encode(
+    message: GetPrefixByOGIdRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GetPrefixByOGIdRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseGetPrefixByOGIdRequest } as GetPrefixByOGIdRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetPrefixByOGIdRequest {
+    const message = { ...baseGetPrefixByOGIdRequest } as GetPrefixByOGIdRequest;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+
+  toJSON(message: GetPrefixByOGIdRequest): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<GetPrefixByOGIdRequest>
+  ): GetPrefixByOGIdRequest {
+    const message = { ...baseGetPrefixByOGIdRequest } as GetPrefixByOGIdRequest;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+};
+
+const baseOGPrefix: object = { prefix: "" };
+
+export const OGPrefix = {
+  encode(
+    message: OGPrefix,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.prefix !== "") {
+      writer.uint32(10).string(message.prefix);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): OGPrefix {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseOGPrefix } as OGPrefix;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.prefix = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): OGPrefix {
+    const message = { ...baseOGPrefix } as OGPrefix;
+    if (object.prefix !== undefined && object.prefix !== null) {
+      message.prefix = String(object.prefix);
+    } else {
+      message.prefix = "";
+    }
+    return message;
+  },
+
+  toJSON(message: OGPrefix): unknown {
+    const obj: any = {};
+    message.prefix !== undefined && (obj.prefix = message.prefix);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<OGPrefix>): OGPrefix {
+    const message = { ...baseOGPrefix } as OGPrefix;
+    if (object.prefix !== undefined && object.prefix !== null) {
+      message.prefix = object.prefix;
+    } else {
+      message.prefix = "";
     }
     return message;
   },
@@ -6745,6 +6874,7 @@ export interface Kartoffel {
   DeleteOG(request: DeleteOGRequest): Promise<SuccessMessage>;
   UpdateOGParent(request: UpdateOGParentRequest): Promise<SuccessMessage>;
   RenameOG(request: RenameOGRequest): Promise<SuccessMessage>;
+  GetPrefixByOGId(request: GetPrefixByOGIdRequest): Promise<OGPrefix>;
   /** DI */
   CreateDI(request: CreateDIRequest): Promise<DigitalIdentity>;
   GetAllDIs(request: GetAllDIsRequest): Promise<DigitalIdentities>;
@@ -6805,6 +6935,7 @@ export class KartoffelClientImpl implements Kartoffel {
     this.DeleteOG = this.DeleteOG.bind(this);
     this.UpdateOGParent = this.UpdateOGParent.bind(this);
     this.RenameOG = this.RenameOG.bind(this);
+    this.GetPrefixByOGId = this.GetPrefixByOGId.bind(this);
     this.CreateDI = this.CreateDI.bind(this);
     this.GetAllDIs = this.GetAllDIs.bind(this);
     this.GetDIByRoleId = this.GetDIByRoleId.bind(this);
@@ -7064,6 +7195,16 @@ export class KartoffelClientImpl implements Kartoffel {
     const data = RenameOGRequest.encode(request).finish();
     const promise = this.rpc.request("Kartoffel.Kartoffel", "RenameOG", data);
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
+  }
+
+  GetPrefixByOGId(request: GetPrefixByOGIdRequest): Promise<OGPrefix> {
+    const data = GetPrefixByOGIdRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "GetPrefixByOGId",
+      data
+    );
+    return promise.then((data) => OGPrefix.decode(new _m0.Reader(data)));
   }
 
   CreateDI(request: CreateDIRequest): Promise<DigitalIdentity> {

@@ -14,6 +14,7 @@ import {
   PrefixArray,
   UpdatePrefixReq,
   DeletePrefixReq,
+  RetrieveTeaByOGIdReq,
 } from '../interfaces/protoc/proto/teaService';
 import { getUPN } from '../utils/upn';
 import { Entity } from '../interfaces/protoc/proto/kartoffelService';
@@ -68,6 +69,20 @@ export class TeaRepository {
         { $addToSet: { teaInProgress: tea } }
       );
       return { tea: tea };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async retrieveTeaByOGId(
+    retrieveTeaByOGIdReq: RetrieveTeaByOGIdReq
+  ): Promise<TeaMessage> {
+    try {
+      const ogPrefixObj = await KartoffelService.getPrefixByOGId({
+        id: retrieveTeaByOGIdReq.id,
+      });
+      const prefix = ogPrefixObj.prefix;
+      return this.retrieveTeaByPrefix({ prefix: prefix });
     } catch (error) {
       throw error;
     }

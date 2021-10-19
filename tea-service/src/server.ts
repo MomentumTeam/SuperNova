@@ -9,6 +9,7 @@ import {
   getPrefix,
   reportTeaFail,
   reportTeaSuccess,
+  retrieveTeaByOGId,
   retrieveTeaByPrefix,
   retrieveUPNByEntity,
   retrieveUPNByEntityId,
@@ -55,6 +56,7 @@ export class Server {
       const teaServiceDescriptor: any = this.getProtoDescriptor();
       logger.info(`Proto was loaded successfully from file: ${PROTO_PATH}`);
       this.server.addService(teaServiceDescriptor.Tea.service, {
+        RetrieveTeaByOGId: retrieveTeaByOGId,
         RetrieveTeaByPrefix: retrieveTeaByPrefix,
         RetrieveUPNByEntity: retrieveUPNByEntity,
         RetrieveUPNByEntityId: retrieveUPNByEntityId,

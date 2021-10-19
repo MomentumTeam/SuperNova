@@ -2,6 +2,7 @@ syntax = "proto3";
 package Tea;
 
 service Tea {
+    rpc RetrieveTeaByOGId(RetrieveTeaByOGIdReq) returns (TeaMessage){}
     rpc RetrieveTeaByPrefix(RetrieveTeaByPrefixReq) returns (TeaMessage){}
     rpc RetrieveUPNByEntity(RetrieveByEntityReq) returns (UPNMessage) {}
     rpc RetrieveUPNByEntityId(RetrieveByEntityIdReq) returns (UPNMessage) {}
@@ -14,6 +15,10 @@ service Tea {
     rpc UpdatePrefix(UpdatePrefixReq) returns (Prefix){}
     rpc DeletePrefix(DeletePrefixReq) returns (SuccessMessage){}
     rpc GetAllPrefixes(GetAllPrefixesReq) returns (PrefixArray){}
+}
+
+message RetrieveTeaByOGIdReq{
+    string id = 1;
 }
 message GetAllPrefixesReq{
 

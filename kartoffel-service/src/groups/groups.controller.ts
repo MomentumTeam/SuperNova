@@ -1,6 +1,7 @@
 import * as grpc from 'grpc';
 import {
   OGArray,
+  OGPrefix,
   OGTree,
   OrganizationGroup,
   SuccessMessage,
@@ -17,6 +18,35 @@ const groupsManager: GroupsManager = new GroupsManager(
   kartoffelUtils,
   kartoffelFaker
 );
+
+export async function getPrefixByOGId(call: any, callback: any): Promise<void> {
+  try {
+    logger.info(`Call to getPrefixByOGId`, {
+      callRequest: call.request,
+    });
+
+    const prefix: OGPrefix = await groupsManager.getPrefixByOGId(call.request);
+    logger.info(`getPrefixByOGId OK`, {
+      callRequest: call.request,
+      response: prefix,
+    });
+
+    callback(null, prefix);
+  } catch (error: any) {
+    logger.error(`getPrefixByOGId ERROR`, {
+      callRequest: call.request,
+      error: { message: error.message },
+    });
+    callback(
+      {
+        code: 400,
+        error: { message: error.message },
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
 
 export async function getAllOGs(call: any, callback: any): Promise<void> {
   try {
@@ -242,7 +272,10 @@ export async function getChildrenOfOG(call: any, callback: any): Promise<void> {
   }
 }
 
-export async function getChildrenOfRootOG(call: any, callback: any): Promise<void> {
+export async function getChildrenOfRootOG(
+  call: any,
+  callback: any
+): Promise<void> {
   try {
     logger.info(`Call to getChildrenOfRootOG`, {
       callRequest: call.request,

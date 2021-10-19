@@ -36,6 +36,10 @@ export function domainToJSON(object: Domain): string {
   }
 }
 
+export interface RetrieveTeaByOGIdReq {
+  id: string;
+}
+
 export interface GetAllPrefixesReq {}
 
 export interface RetrieveTeaByPrefixReq {
@@ -116,6 +120,67 @@ export interface EntityMin {
   firstName?: string | undefined;
   lastName?: string | undefined;
 }
+
+const baseRetrieveTeaByOGIdReq: object = { id: "" };
+
+export const RetrieveTeaByOGIdReq = {
+  encode(
+    message: RetrieveTeaByOGIdReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): RetrieveTeaByOGIdReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseRetrieveTeaByOGIdReq } as RetrieveTeaByOGIdReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RetrieveTeaByOGIdReq {
+    const message = { ...baseRetrieveTeaByOGIdReq } as RetrieveTeaByOGIdReq;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+
+  toJSON(message: RetrieveTeaByOGIdReq): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<RetrieveTeaByOGIdReq>): RetrieveTeaByOGIdReq {
+    const message = { ...baseRetrieveTeaByOGIdReq } as RetrieveTeaByOGIdReq;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+};
 
 const baseGetAllPrefixesReq: object = {};
 
@@ -1402,6 +1467,7 @@ export const EntityMin = {
 };
 
 export interface Tea {
+  RetrieveTeaByOGId(request: RetrieveTeaByOGIdReq): Promise<TeaMessage>;
   RetrieveTeaByPrefix(request: RetrieveTeaByPrefixReq): Promise<TeaMessage>;
   RetrieveUPNByEntity(request: RetrieveByEntityReq): Promise<UPNMessage>;
   RetrieveUPNByEntityId(request: RetrieveByEntityIdReq): Promise<UPNMessage>;
@@ -1419,6 +1485,7 @@ export class TeaClientImpl implements Tea {
   private readonly rpc: Rpc;
   constructor(rpc: Rpc) {
     this.rpc = rpc;
+    this.RetrieveTeaByOGId = this.RetrieveTeaByOGId.bind(this);
     this.RetrieveTeaByPrefix = this.RetrieveTeaByPrefix.bind(this);
     this.RetrieveUPNByEntity = this.RetrieveUPNByEntity.bind(this);
     this.RetrieveUPNByEntityId = this.RetrieveUPNByEntityId.bind(this);
@@ -1431,6 +1498,12 @@ export class TeaClientImpl implements Tea {
     this.DeletePrefix = this.DeletePrefix.bind(this);
     this.GetAllPrefixes = this.GetAllPrefixes.bind(this);
   }
+  RetrieveTeaByOGId(request: RetrieveTeaByOGIdReq): Promise<TeaMessage> {
+    const data = RetrieveTeaByOGIdReq.encode(request).finish();
+    const promise = this.rpc.request("Tea.Tea", "RetrieveTeaByOGId", data);
+    return promise.then((data) => TeaMessage.decode(new _m0.Reader(data)));
+  }
+
   RetrieveTeaByPrefix(request: RetrieveTeaByPrefixReq): Promise<TeaMessage> {
     const data = RetrieveTeaByPrefixReq.encode(request).finish();
     const promise = this.rpc.request("Tea.Tea", "RetrieveTeaByPrefix", data);

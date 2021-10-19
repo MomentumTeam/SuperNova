@@ -222,4 +222,8 @@ export class KartoffelFaker {
       throw err;
     }
   }
+
+  randomNumber(from: number, to: number) {
+    return faker.datatype.number({ min: from, max: to });
+  }
 }

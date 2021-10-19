@@ -38,7 +38,6 @@ export const storeLogs = process.env.GLOBAL_STORE_LOGS
 export const initExcelFile =
   process.env.TS_EXCEL_INIT_FILE || 'initPrefixes.xlsx';
 
-export const initExcelFolder =
-  process.env.TS_EXCEL_INIT_FOLDER || '/excelFiles';
+export const initExcelFolder = process.env.TS_EXCEL_INIT_FOLDER || '/teaUtils';
 
 export const initExcelFileFullPath = `${initExcelFolder}/${initExcelFile}`;

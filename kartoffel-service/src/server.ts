@@ -32,6 +32,7 @@ import {
   updateOGParent,
   renameOG,
   getOGTree,
+  getPrefixByOGId,
 } from './groups/groups.controller';
 import {
   getAllDIs,
@@ -128,6 +129,7 @@ export class Server {
         UpdateOGParent: updateOGParent,
         RenameOG: renameOG,
         GetOGTree: getOGTree,
+        GetPrefixByOGId: getPrefixByOGId,
 
         //digitalIdentities
         GetAllDIs: getAllDIs,

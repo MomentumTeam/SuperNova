@@ -52,15 +52,10 @@ import {
   turnObjectIdsToStrings,
 } from '../services/requestHelper';
 import { NotificationType } from '../interfaces/protoc/proto/notificationService';
-import {
-  getApprovementQuery,
-  getIdentifierQuery,
-  getIdQuery,
-  getQuery,
-} from '../utils/query';
+import { getQuery } from '../utils/query';
 import {
   reportTeaFail,
-  retrieveTeaByUnit,
+  retrieveTeaByOGId,
   retrieveUPNByEntityId,
 } from '../services/teaHelper';
 
@@ -70,12 +65,9 @@ export class RequestRepository {
     type: RequestType
   ): Promise<Request> {
     try {
-      if (
-        type === RequestType.CREATE_ROLE &&
-        createRequestReq.kartoffelParams.unit
-      ) {
-        const tea = await retrieveTeaByUnit(
-          createRequestReq.kartoffelParams.unit
+      if (type === RequestType.CREATE_ROLE) {
+        const tea = await retrieveTeaByOGId(
+          createRequestReq.kartoffelParams.directGroup
         );
         createRequestReq.kartoffelParams.roleId = tea;
         createRequestReq.kartoffelParams.uniqueId = tea;

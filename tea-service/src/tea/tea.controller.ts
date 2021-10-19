@@ -41,6 +41,36 @@ export async function retrieveTeaByPrefix(
   }
 }
 
+export async function retrieveTeaByOGId(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    logger.info('Call to retrieveTeaByOGId', { request: call.request });
+    const teaMessage: TeaMessage = await teaManager.retrieveTeaByOGId(
+      call.request
+    );
+    logger.info('retrieveTeaByOGId OK', {
+      response: teaMessage,
+      request: call.request,
+    });
+    callback(null, teaMessage);
+  } catch (error: any) {
+    logger.error('retrieveTeaByOGId ERROR', {
+      error: { message: error.message },
+      request: call.request,
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
 export async function retrieveUPNByEntity(
   call: any,
   callback: any

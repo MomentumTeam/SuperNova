@@ -5,6 +5,7 @@ import {
   GetPrefixReq,
   Prefix,
   PrefixArray,
+  RetrieveTeaByOGIdReq,
   RetrieveTeaByPrefixReq,
   SuccessMessage,
   TeaMessage,
@@ -31,6 +32,16 @@ export class TeaManager {
       return await this.teaRepository.retrieveTeaByPrefix(
         retrieveTeaByPrefixReq
       );
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async retrieveTeaByOGId(
+    retrieveTeaByOGIdReq: RetrieveTeaByOGIdReq
+  ): Promise<TeaMessage> {
+    try {
+      return await this.teaRepository.retrieveTeaByOGId(retrieveTeaByOGIdReq);
     } catch (error) {
       throw error;
     }
