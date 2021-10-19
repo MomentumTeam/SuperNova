@@ -395,6 +395,15 @@ services:
       retries: 20
       test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:5601/api/status
 
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:8.0.0-alpha2
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    volumes:
+      - ./logs:/logs
+      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml
+
 volumes:
   bulk-files:
   spike-utils:
