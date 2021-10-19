@@ -180,7 +180,7 @@ export default class BulkController {
   //GET
   static async getCreateRoleBulkRequestById(req: any, res: Response) {
     const getBulkRequestByIdReq: GetBulkRequestByIdReq = {
-      id: req.query.id,
+      id: req.params.id,
     };
     try {
       const detailedBulkRequest =
@@ -196,7 +196,7 @@ export default class BulkController {
   //GET
   static async getChangeRoleHierarchyBulkRequestById(req: any, res: Response) {
     const getBulkRequestByIdReq: GetBulkRequestByIdReq = {
-      id: req.query.id,
+      id: req.params.id,
     };
     try {
       const detailedBulkRequest =

@@ -203,6 +203,7 @@ const createRoleKartoffelParamsObj = Joi.object({
   uniqueId: Joi.string(), //T154514... generated automatically by tea-service if not given
   mail: Joi.string(), //T154514... generated automatically by tea-service if not given
   isRoleAttachable: Joi.boolean().required(), //true, if the role is unoccupied
+  roleEntityType: Joi.string(),
 });
 
 const createRoleADParamsObj = Joi.object({

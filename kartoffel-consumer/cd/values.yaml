@@ -9,6 +9,10 @@ images:
   repository: momentumacr.azurecr.io/kartoffel-consumer
   tag: "latest"
 service:
-configmap:
-  configmaps:  
-  mame: momentum-configmap
+  ports:
+  - name: http
+    port: "8080"
+
+config:
+  configmaps:
+      name: momentum-configmap
