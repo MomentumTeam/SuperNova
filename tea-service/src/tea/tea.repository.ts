@@ -1,71 +1,70 @@
 import {
   ReportTeaReq,
-  GetUnitReq,
-  Unit,
   SuccessMessage,
-  UpdateUnitReq,
-  DeleteUnitReq,
-  AddUnitReq,
   EntityMin,
   RetrieveByEntityReq,
   RetrieveByEntityIdReq,
   UPNMessage,
-  RetrieveTeaByUnitReq,
   TeaMessage,
-  GetAllUnitsReq,
-  MinUnitArray,
-  SearchUnitReq,
+  RetrieveTeaByPrefixReq,
+  AddPrefixReq,
+  Prefix,
+  GetPrefixReq,
+  GetAllPrefixesReq,
+  PrefixArray,
+  UpdatePrefixReq,
+  DeletePrefixReq,
 } from '../interfaces/protoc/proto/teaService';
-import { UnitModel } from '../models/unit.model';
 import { getUPN } from '../utils/upn';
 import { Entity } from '../interfaces/protoc/proto/kartoffelService';
 import KartoffelService from '../services/kartoffelService';
 import * as C from '../config';
+import { PrefixModel } from '../models/prefix.model';
 
 export class TeaRepository {
   zeroPad(num: any, places: any) {
     return String(num).padStart(places, '0');
   }
 
-  async retrieveTeaByUnit(
-    retrieveTeaByUnitReq: RetrieveTeaByUnitReq
+  async retrieveTeaByPrefix(
+    retrieveTeaByPrefixReq: RetrieveTeaByPrefixReq
   ): Promise<TeaMessage> {
     try {
-      let id = retrieveTeaByUnitReq.id;
-      const unitAlreadyExists = await UnitModel.exists({
-        id: id,
+      let prefix = retrieveTeaByPrefixReq.prefix;
+      const prefixAlreadyExists = await PrefixModel.exists({
+        prefix: prefix,
       });
-      if (!unitAlreadyExists) {
-        id = C.generalUnitId;
+      if (!prefixAlreadyExists) {
+        await this.addPrefix({ prefix: prefix, currentCounter: 1 });
       }
       let tea;
-      const documentBeforePop = await UnitModel.findOneAndUpdate(
-        { id: id },
+      const documentBeforePop = await PrefixModel.findOneAndUpdate(
+        { prefix: prefix },
         { $pop: { failedTea: -1 } }
       );
       if (!documentBeforePop) {
-        throw new Error(`Failed to get Unit with id=${id}`);
+        throw new Error(`Failed to get prefix=${prefix}`);
       }
-      const unitBeforePop: any = documentBeforePop.toObject();
+      const prefixBeforePop: any = documentBeforePop.toObject();
 
-      if (unitBeforePop.failedTea && unitBeforePop.failedTea.length > 0) {
-        tea = unitBeforePop.failedTea[0];
+      if (prefixBeforePop.failedTea && prefixBeforePop.failedTea.length > 0) {
+        tea = prefixBeforePop.failedTea[0];
       } else {
-        const documentAfterInc = await UnitModel.findOneAndUpdate(
-          { id: id },
+        const documentAfterInc = await PrefixModel.findOneAndUpdate(
+          { prefix: prefix },
           { $inc: { currentCounter: 1 } }
         );
         if (!documentAfterInc) {
-          throw new Error(`Failed to get Unit with id=${id}`);
+          throw new Error(`Failed to get prefix=${prefix}`);
         }
-        const unitAfterInc: any = documentAfterInc.toObject();
-        tea = `T${unitBeforePop.prefix}${this.zeroPad(
-          unitAfterInc.currentCounter,
+        const prefixAfterInc: any = documentAfterInc.toObject();
+        tea = `T${this.zeroPad(prefixBeforePop.prefix, 4)}${this.zeroPad(
+          prefixAfterInc.currentCounter,
           4
-        )}@${unitAfterInc.oldDomainSuffix}`;
+        )}`;
       }
-      await UnitModel.updateOne(
-        { id: id },
+      await PrefixModel.updateOne(
+        { prefix: prefix },
         { $addToSet: { teaInProgress: tea } }
       );
       return { tea: tea };
@@ -107,7 +106,7 @@ export class TeaRepository {
 
   async reportTeaSuccess(reportTeaReq: ReportTeaReq): Promise<SuccessMessage> {
     try {
-      await UnitModel.updateOne(
+      await PrefixModel.updateOne(
         {
           $or: [
             { teaInProgress: reportTeaReq.tea },
@@ -130,7 +129,7 @@ export class TeaRepository {
 
   async throwTea(throwTeaReq: ReportTeaReq): Promise<SuccessMessage> {
     try {
-      await UnitModel.updateOne(
+      await PrefixModel.updateOne(
         {
           $or: [
             { teaInProgress: throwTeaReq.tea },
@@ -153,7 +152,7 @@ export class TeaRepository {
 
   async reportTeaFail(reportTeaReq: ReportTeaReq): Promise<SuccessMessage> {
     try {
-      await UnitModel.updateOne(
+      await PrefixModel.updateOne(
         {
           $or: [
             { teaInProgress: reportTeaReq.tea },
@@ -176,100 +175,73 @@ export class TeaRepository {
     }
   }
 
-  async getUnit(getUnitReq: GetUnitReq): Promise<Unit> {
+  async getPrefix(getPrefixReq: GetPrefixReq): Promise<Prefix> {
     try {
-      const document = await UnitModel.findOne({
-        id: getUnitReq.id,
+      const document = await PrefixModel.findOne({
+        prefix: getPrefixReq.prefix,
       });
       if (!document) {
-        throw new Error(`A Unit with id=${getUnitReq.id} does not exist!`);
+        throw new Error(`Prefix=${getPrefixReq.prefix} does not exist!`);
       } else {
-        return document.toObject() as Unit;
+        return document.toObject() as Prefix;
       }
     } catch (error) {
       throw error;
     }
   }
 
-  async getAllUnits(getAllUnitsReq: GetAllUnitsReq): Promise<MinUnitArray> {
+  async getAllPrefixes(
+    getAllPrefixesReq: GetAllPrefixesReq
+  ): Promise<PrefixArray> {
     try {
-      const totalCount = await UnitModel.count({});
-      let units = [];
-      const documents = await UnitModel.find({});
+      const totalCount = await PrefixModel.count({});
+      let prefixes = [];
+      const documents = await PrefixModel.find({});
 
       if (!documents) {
-        throw new Error(`problem in getting all units!`);
+        throw new Error(`problem in getting all prefixes!`);
       } else {
         for (let i = 0; i < documents.length; i++) {
-          const unit: any = documents[i].toObject();
-          units.push({
-            id: unit.id,
-            name: unit.name,
-            hierarchy: unit.hierarchy,
-          });
+          const prefix: Prefix = documents[i].toObject() as Prefix;
+          prefixes.push(prefix);
         }
-        return { units: units, totalCount: totalCount };
+        return { prefixes: prefixes, totalCount: totalCount };
       }
     } catch (error) {
       throw error;
     }
   }
 
-  async searchUnit(searchUnitReq: SearchUnitReq): Promise<MinUnitArray> {
+  async addPrefix(addPrefixReq: AddPrefixReq): Promise<Prefix> {
     try {
-      const query: any = {
-        $text: { $search: searchUnitReq.nameAndHierarchy },
-      };
-      const totalCount = await UnitModel.count(query);
-      let units = [];
-      const documents = await UnitModel.find(query);
-
-      if (!documents) {
-        throw new Error(`problem in getting all units!`);
-      } else {
-        for (let i = 0; i < documents.length; i++) {
-          const unit: any = documents[i].toObject();
-          units.push({
-            id: unit.id,
-            name: unit.name,
-            hierarchy: unit.hierarchy,
-          });
-        }
-        return { units: units, totalCount: totalCount };
-      }
+      const prefixModel: any = new PrefixModel(addPrefixReq);
+      prefixModel.createdAt = new Date().getTime();
+      await prefixModel.save();
+      const document = prefixModel.toObject();
+      return document as Prefix;
     } catch (error) {
       throw error;
     }
   }
 
-  async addUnit(addUnitReq: AddUnitReq): Promise<Unit> {
+  async updatePrefix(updatePrefixReq: UpdatePrefixReq): Promise<Prefix> {
     try {
-      const unitModel: any = new UnitModel(addUnitReq);
-      unitModel.createdAt = new Date().getTime();
-      await unitModel.save();
-      const document = unitModel.toObject();
-      return document as Unit;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async updateUnit(updateUnitReq: UpdateUnitReq): Promise<Unit> {
-    try {
-      const documentAfter: any = await UnitModel.findOneAndUpdate(
-        { id: updateUnitReq.id },
-        { $set: updateUnitReq.unitProperties },
+      const documentAfter: any = await PrefixModel.findOneAndUpdate(
+        { prefix: updatePrefixReq.prefix },
+        { $set: updatePrefixReq.properties },
         { new: true }
       );
-      return documentAfter.toObject() as Unit;
+      return documentAfter.toObject() as Prefix;
     } catch (error) {
       throw error;
     }
   }
 
-  async deleteUnit(deleteUnitReq: DeleteUnitReq): Promise<SuccessMessage> {
+  async deletePrefix(
+    deletePrefixReq: DeletePrefixReq
+  ): Promise<SuccessMessage> {
     try {
-      await UnitModel.deleteOne({ id: deleteUnitReq.id });
+      await PrefixModel.deleteOne({ prefix: deletePrefixReq.prefix });
       return { success: true };
     } catch (error) {
       throw error;

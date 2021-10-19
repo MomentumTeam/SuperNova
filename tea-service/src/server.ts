@@ -3,18 +3,17 @@ import * as protoLoader from '@grpc/proto-loader';
 import * as C from './config';
 import { logger } from './logger';
 import {
-  addUnit,
-  deleteUnit,
-  getAllUnits,
-  getUnit,
+  addPrefix,
+  deletePrefix,
+  getAllPrefixes,
+  getPrefix,
   reportTeaFail,
   reportTeaSuccess,
-  retrieveTeaByUnit,
+  retrieveTeaByPrefix,
   retrieveUPNByEntity,
   retrieveUPNByEntityId,
-  searchUnit,
   throwTea,
-  updateUnit,
+  updatePrefix,
 } from './tea/tea.controller';
 import { findPath } from './utils/path';
 import { addHealthService } from './health';
@@ -56,18 +55,17 @@ export class Server {
       const teaServiceDescriptor: any = this.getProtoDescriptor();
       logger.info(`Proto was loaded successfully from file: ${PROTO_PATH}`);
       this.server.addService(teaServiceDescriptor.Tea.service, {
-        RetrieveTeaByUnit: retrieveTeaByUnit,
+        RetrieveTeaByPrefix: retrieveTeaByPrefix,
         RetrieveUPNByEntity: retrieveUPNByEntity,
         RetrieveUPNByEntityId: retrieveUPNByEntityId,
         ReportTeaSuccess: reportTeaSuccess,
         ReportTeaFail: reportTeaFail,
         ThrowTea: throwTea,
-        GetUnit: getUnit,
-        AddUnit: addUnit,
-        UpdateUnit: updateUnit,
-        DeleteUnit: deleteUnit,
-        SearchUnit: searchUnit,
-        GetAllUnits: getAllUnits,
+        GetPrefix: getPrefix,
+        AddPerfix: addPrefix,
+        UpdatePrefix: updatePrefix,
+        DeletePrefix: deletePrefix,
+        GetAllPrefixes: getAllPrefixes,
       });
       logger.info(`Grpc services were successfully added to the server`);
     } catch (error: any) {

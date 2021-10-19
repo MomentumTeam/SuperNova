@@ -10,7 +10,7 @@ if (process.env.NODE_ENV !== 'production') {
 import { Server } from './server';
 import { logger } from './logger';
 import * as C from './config';
-import { initUnits } from './utils/initUnits';
+import { initPrefixes } from './utils/initPrefixes';
 import { connectMongo } from './mongoose';
 async function main(): Promise<void> {
   try {
@@ -19,9 +19,9 @@ async function main(): Promise<void> {
     await connectMongo();
 
     if (C.needInit) {
-        await initUnits();
+      await initPrefixes();
     }
-    
+
     logger.info('tea-service started successfully');
   } catch (error: any) {
     logger.error(`Error while trying to start tea-service: ${error.message}`);
