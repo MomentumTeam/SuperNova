@@ -52,17 +52,13 @@ import {
   turnObjectIdsToStrings,
 } from '../services/requestHelper';
 import { NotificationType } from '../interfaces/protoc/proto/notificationService';
-import {
-  getApprovementQuery,
-  getIdentifierQuery,
-  getIdQuery,
-  getQuery,
-} from '../utils/query';
+import { getQuery } from '../utils/query';
 import {
   reportTeaFail,
-  retrieveTeaByUnit,
+  retrieveTeaByOGId,
   retrieveUPNByEntityId,
 } from '../services/teaHelper';
+import { logger } from '../logger';
 
 export class RequestRepository {
   async createRequest(
@@ -70,17 +66,14 @@ export class RequestRepository {
     type: RequestType
   ): Promise<Request> {
     try {
-      if (
-        type === RequestType.CREATE_ROLE &&
-        createRequestReq.kartoffelParams.unit
-      ) {
-        const tea = await retrieveTeaByUnit(
-          createRequestReq.kartoffelParams.unit
+      if (type === RequestType.CREATE_ROLE) {
+        const tea = await retrieveTeaByOGId(
+          createRequestReq.kartoffelParams.directGroup
         );
-        createRequestReq.kartoffelParams.roleId = tea;
-        createRequestReq.kartoffelParams.uniqueId = tea;
-        createRequestReq.kartoffelParams.mail = tea;
-        createRequestReq.adParams.samAccountName = tea;
+        createRequestReq.kartoffelParams.roleId = tea.roleId;
+        createRequestReq.kartoffelParams.uniqueId = tea.uniqueId;
+        createRequestReq.kartoffelParams.mail = tea.mail;
+        createRequestReq.adParams.samAccountName = tea.samAccountName;
       } else if (type === RequestType.ASSIGN_ROLE_TO_ENTITY) {
         createRequestReq.adParams.upn = await retrieveUPNByEntityId(
           createRequestReq.kartoffelParams.id
@@ -143,8 +136,28 @@ export class RequestRepository {
             status: requestStatusToJSON(RequestStatus.IN_PROGRESS),
           },
         });
+        try {
+          await createNotifications(
+            NotificationType.REQUEST_IN_PROGRESS,
+            document
+          );
+        } catch (notificationError) {
+          logger.error('Notification error', {
+            error: { message: notificationError.message },
+          });
+        }
+      } else {
+        try {
+          await createNotifications(
+            NotificationType.REQUEST_SUBMITTED,
+            document
+          );
+        } catch (notificationError) {
+          logger.error('Notification error', {
+            error: { message: notificationError.message },
+          });
+        }
       }
-      await createNotifications(NotificationType.REQUEST_SUBMITTED, document);
       return document as Request;
     } catch (error) {
       throw error;
@@ -317,19 +330,28 @@ export class RequestRepository {
           }
         }
 
-        // Send notification
-        if (approvingNotificationType) {
-          await createNotifications(approvingNotificationType, updatedRequest);
-          if (newRequestStatus) {
-            requestStatusNotificationType =
-              newRequestStatus === RequestStatus.IN_PROGRESS
-                ? NotificationType.REQUEST_IN_PROGRESS
-                : NotificationType.REQUEST_DECLINED;
+        try {
+          // Send notification
+          if (approvingNotificationType) {
             await createNotifications(
-              requestStatusNotificationType,
+              approvingNotificationType,
               updatedRequest
             );
+            if (newRequestStatus) {
+              requestStatusNotificationType =
+                newRequestStatus === RequestStatus.IN_PROGRESS
+                  ? NotificationType.REQUEST_IN_PROGRESS
+                  : NotificationType.REQUEST_DECLINED;
+              await createNotifications(
+                requestStatusNotificationType,
+                updatedRequest
+              );
+            }
           }
+        } catch (notificationError) {
+          logger.error('Notification error', {
+            error: { message: notificationError.message },
+          });
         }
 
         return updatedRequest;
@@ -379,6 +401,23 @@ export class RequestRepository {
         requestProperties: properties,
       };
       const updatedRequest = await this.updateRequest(updateQuery);
+
+      try {
+        if (properties.status) {
+          const status =
+            typeof properties.status === typeof ''
+              ? requestStatusFromJSON(properties.status)
+              : properties.status;
+          if (status === RequestStatus.FAILED) {
+            await createNotifications(NotificationType.REQUEST_FAILED, request);
+          }
+        }
+      } catch (notificationError) {
+        logger.error('Notification error', {
+          error: { message: notificationError.message },
+        });
+      }
+
       return updatedRequest;
     } catch (error) {
       throw error;
@@ -419,6 +458,21 @@ export class RequestRepository {
         requestProperties: properties,
       };
       const updatedRequest = await this.updateRequest(updateQuery);
+      try {
+        if (properties.status) {
+          const status =
+            typeof properties.status === typeof ''
+              ? requestStatusFromJSON(properties.status)
+              : properties.status;
+          if (status === RequestStatus.FAILED) {
+            await createNotifications(NotificationType.REQUEST_FAILED, request);
+          }
+        }
+      } catch (notificationError) {
+        logger.error('Notification error', {
+          error: { message: notificationError.message },
+        });
+      }
       return updatedRequest;
     } catch (error) {
       throw error;
@@ -671,27 +725,11 @@ export class RequestRepository {
             requestUpdate.securityDecision ||
             requestUpdate.superSecurityDecision)
         ) {
-          const requestIds: string[] = documentObj.requestIds;
           await RequestModel.updateMany(
             { bulkRequestId: updateReq.id },
             { $set: requestUpdate }
           );
         }
-        // Moved to execution-script instead
-        // else if (
-        //   documentObj.isPartOfBulk &&
-        //   (requestUpdate['kartoffelStatus.status'] ||
-        //     requestUpdate['kartoffelStatus.failedRetries'] ||
-        //     requestUpdate['adStatus.status'] ||
-        //     requestUpdate['adStatus.failedRetries'] ||
-        //     requestUpdate.kartoffelStatus ||
-        //     requestUpdate.adStatus ||
-        //     requestUpdate.status)
-        // ) {
-        //   // IF PART OF BULK
-        //   const bulkRequestId = documentObj.bulkRequestId;
-        //   await this.syncBulkRequest({ id: bulkRequestId });
-        // }
 
         return documentObj as Request;
       } else {
@@ -744,17 +782,17 @@ export class RequestRepository {
         });
       }
 
-      if (
-        (kartoffelStatus === StageStatus.STAGE_DONE ||
-          kartoffelStatus === StageStatus.STAGE_FAILED) &&
-        updatedRequest.submittedBy
-      ) {
-        const stageNotificationType: NotificationType =
-          kartoffelStatus === StageStatus.STAGE_DONE
-            ? NotificationType.KARTOFFEL_STAGE_DONE
-            : NotificationType.KARTOFFEL_STAGE_FAILED;
-        await createNotifications(stageNotificationType, updatedRequest);
-      }
+      // if (
+      //   (kartoffelStatus === StageStatus.STAGE_DONE ||
+      //     kartoffelStatus === StageStatus.STAGE_FAILED) &&
+      //   updatedRequest.submittedBy
+      // ) {
+      //   const stageNotificationType: NotificationType =
+      //     kartoffelStatus === StageStatus.STAGE_DONE
+      //       ? NotificationType.KARTOFFEL_STAGE_DONE
+      //       : NotificationType.KARTOFFEL_STAGE_FAILED;
+      //   await createNotifications(stageNotificationType, updatedRequest);
+      // }
       if (
         (requestStatus === RequestStatus.DONE ||
           requestStatus === RequestStatus.FAILED) &&
@@ -764,7 +802,13 @@ export class RequestRepository {
           requestStatus === RequestStatus.DONE
             ? NotificationType.REQUEST_DONE
             : NotificationType.REQUEST_FAILED;
-        await createNotifications(notificationType, updatedRequest);
+        try {
+          await createNotifications(notificationType, updatedRequest);
+        } catch (notificationError) {
+          logger.error('Notificatoin error', {
+            error: { message: notificationError.message },
+          });
+        }
       }
       return updatedRequest;
     } catch (error) {
@@ -805,17 +849,17 @@ export class RequestRepository {
           },
         });
       }
-      if (
-        (adStatus === StageStatus.STAGE_DONE ||
-          adStatus === StageStatus.STAGE_FAILED) &&
-        updatedRequest.submittedBy
-      ) {
-        const stageNotificationType: NotificationType =
-          adStatus === StageStatus.STAGE_DONE
-            ? NotificationType.AD_STAGE_DONE
-            : NotificationType.AD_STAGE_FAILED;
-        await createNotifications(stageNotificationType, updatedRequest);
-      }
+      // if (
+      //   (adStatus === StageStatus.STAGE_DONE ||
+      //     adStatus === StageStatus.STAGE_FAILED) &&
+      //   updatedRequest.submittedBy
+      // ) {
+      //   const stageNotificationType: NotificationType =
+      //     adStatus === StageStatus.STAGE_DONE
+      //       ? NotificationType.AD_STAGE_DONE
+      //       : NotificationType.AD_STAGE_FAILED;
+      //   await createNotifications(stageNotificationType, updatedRequest);
+      // }
       if (
         (requestStatus === RequestStatus.DONE ||
           requestStatus === RequestStatus.FAILED) &&
@@ -825,7 +869,13 @@ export class RequestRepository {
           requestStatus === RequestStatus.DONE
             ? NotificationType.REQUEST_DONE
             : NotificationType.REQUEST_FAILED;
-        await createNotifications(notificationType, updatedRequest);
+        try {
+          await createNotifications(notificationType, updatedRequest);
+        } catch (notificationError) {
+          logger.error('Notificatoin error', {
+            error: { message: notificationError.message },
+          });
+        }
       }
       return updatedRequest;
     } catch (error) {

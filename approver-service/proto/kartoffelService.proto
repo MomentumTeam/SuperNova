@@ -32,6 +32,7 @@ service Kartoffel {
     rpc DeleteOG(DeleteOGRequest) returns (SuccessMessage){}            
     rpc UpdateOGParent(UpdateOGParentRequest) returns (SuccessMessage){}
     rpc RenameOG(RenameOGRequest) returns (SuccessMessage){}
+    rpc GetPrefixByOGId(GetPrefixByOGIdRequest) returns (OGPrefix){}
 
     //DI    
     rpc CreateDI(CreateDIRequest) returns (DigitalIdentity){}
@@ -211,6 +212,15 @@ message SearchOGRequest{
 
 message OGArray{
     repeated OrganizationGroup groups = 1;
+}
+
+message GetPrefixByOGIdRequest{
+    string id = 1;
+}
+
+message OGPrefix {
+    string prefix = 1;
+    string source = 2;
 }
 
 // CreateOG

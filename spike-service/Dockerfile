@@ -27,6 +27,7 @@ RUN GRPC_HEALTH_PROBE_VERSION=v0.4.4 && \
     chown node:node /bin/grpc_health_probe
 
 RUN mkdir -p /logs && chown -R node:node /logs
+RUN mkdir -p /spikeUtils && chown -R node:node /spikeUtils
 RUN mkdir -p /usr/src/app && chown -R node:node /usr/src/app
 WORKDIR /usr/src/app
 

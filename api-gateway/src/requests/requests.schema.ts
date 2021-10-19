@@ -87,23 +87,6 @@ export const getRequestBySerialNumberSchema = Joi.object({
   query: {},
 });
 
-export const SearchRequestsByDisplayNameSchema = Joi.object({
-  body: {},
-  params: {
-    displayName: Joi.string().required(),
-  },
-  query: {
-    personType: Joi.string()
-      .valid(...Object.keys(PersonTypeInRequest))
-      .required(),
-    searcherType: Joi.string()
-      .valid(...Object.keys(PersonTypeInRequest))
-      .required(),
-    from: Joi.number().default(0),
-    to: Joi.number().default(100),
-  },
-});
-
 // PUT
 export const updateADStatusSchema = Joi.object({
   body: {

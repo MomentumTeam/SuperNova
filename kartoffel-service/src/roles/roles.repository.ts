@@ -169,7 +169,7 @@ export class RolesRepository {
         return { success: true };
       } else {
         const data: SuccessMessage = await this.kartoffelUtils.kartoffelPut(
-          `${C.kartoffelUrl}/api/roles/${connectRoleAndDIRequest.id}/digitalIdentity/${connectRoleAndDIRequest.uniqueId}`,
+          `${C.kartoffelUrl}/api/roles/${connectRoleAndDIRequest.roleId}/digitalIdentity/${connectRoleAndDIRequest.uniqueId}`,
           ConnectRoleAndDIRequest
         );
         return data;

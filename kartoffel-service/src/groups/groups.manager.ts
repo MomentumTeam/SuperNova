@@ -13,6 +13,8 @@ import {
   GetAllOGsRequest,
   GetOGTreeRequest,
   OGTree,
+  GetPrefixByOGIdRequest,
+  OGPrefix,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { KartoffelFaker } from '../mock/kartoffel.faker';
 import { KartoffelUtils } from '../utils/kartoffel.utils';
@@ -25,6 +27,18 @@ export class GroupsManager {
       kartoffelUtils,
       kartoffelFaker
     );
+  }
+
+  async getPrefixByOGId(
+    getPrefixByOGIdRequest: GetPrefixByOGIdRequest
+  ): Promise<OGPrefix> {
+    try {
+      return await this.groupsRepository.getPrefixByOGId(
+        getPrefixByOGIdRequest
+      );
+    } catch (error) {
+      throw error;
+    }
   }
 
   async getOGTree(getOGTreeRequest: GetOGTreeRequest): Promise<OGTree> {
