@@ -24,7 +24,6 @@ export const oldSuffix = process.env.TS_OLD_SUFFIX
 export const newSuffix = process.env.TS_NEW_SUFFIX
   ? process.env.TS_NEW_SUFFIX
   : 'yahoo.com';
-// export const oldDomainSuffixesArray
 export const mongoConnectionRetries =
   process.env.MONGO_RECONNECT_ATTEMPTS || '5';
 export const mongoReconnectTimeout =

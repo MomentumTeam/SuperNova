@@ -30,6 +30,10 @@ message RetrieveTeaByPrefixReq{
 
 message TeaMessage{
     string tea = 1;
+    optional string roleId = 2;
+    optional string uniqueId = 3;
+    optional string samAccountName = 4;
+    optional string mail = 5;
 }
 
 message UPNMessage{

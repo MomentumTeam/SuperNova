@@ -167,6 +167,7 @@ export interface GetPrefixByOGIdRequest {
 
 export interface OGPrefix {
   prefix: string;
+  source: string;
 }
 
 /** CreateOG */
@@ -3080,7 +3081,7 @@ export const GetPrefixByOGIdRequest = {
   },
 };
 
-const baseOGPrefix: object = { prefix: "" };
+const baseOGPrefix: object = { prefix: "", source: "" };
 
 export const OGPrefix = {
   encode(
@@ -3089,6 +3090,9 @@ export const OGPrefix = {
   ): _m0.Writer {
     if (message.prefix !== "") {
       writer.uint32(10).string(message.prefix);
+    }
+    if (message.source !== "") {
+      writer.uint32(18).string(message.source);
     }
     return writer;
   },
@@ -3102,6 +3106,9 @@ export const OGPrefix = {
       switch (tag >>> 3) {
         case 1:
           message.prefix = reader.string();
+          break;
+        case 2:
+          message.source = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -3118,12 +3125,18 @@ export const OGPrefix = {
     } else {
       message.prefix = "";
     }
+    if (object.source !== undefined && object.source !== null) {
+      message.source = String(object.source);
+    } else {
+      message.source = "";
+    }
     return message;
   },
 
   toJSON(message: OGPrefix): unknown {
     const obj: any = {};
     message.prefix !== undefined && (obj.prefix = message.prefix);
+    message.source !== undefined && (obj.source = message.source);
     return obj;
   },
 
@@ -3133,6 +3146,11 @@ export const OGPrefix = {
       message.prefix = object.prefix;
     } else {
       message.prefix = "";
+    }
+    if (object.source !== undefined && object.source !== null) {
+      message.source = object.source;
+    } else {
+      message.source = "";
     }
     return message;
   },

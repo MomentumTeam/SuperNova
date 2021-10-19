@@ -82,7 +82,16 @@ export class TeaRepository {
         id: retrieveTeaByOGIdReq.id,
       });
       const prefix = ogPrefixObj.prefix;
-      return this.retrieveTeaByPrefix({ prefix: prefix });
+      const source = ogPrefixObj.source ? ogPrefixObj.source : 'oneTree';
+      const teaObj = await this.retrieveTeaByPrefix({ prefix: prefix });
+      const tea = teaObj.tea;
+      return {
+        tea: tea,
+        roleId: `${tea}@${source}`,
+        uniqueId: `${tea}@${source}`,
+        samAccountName: `${tea}@${C.oldSuffix}`,
+        mail: `${tea}@${C.oldSuffix}`,
+      };
     } catch (error) {
       throw error;
     }

@@ -220,6 +220,7 @@ message GetPrefixByOGIdRequest{
 
 message OGPrefix {
     string prefix = 1;
+    string source = 2;
 }
 
 // CreateOG

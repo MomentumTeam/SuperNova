@@ -19,7 +19,7 @@ export async function retrieveTeaByOGId(id: string) {
     id: id,
   };
   const teaMessage = await TeaService.retrieveTeaByOGId(retrieveTeaByOGIdReq);
-  return teaMessage.tea;
+  return teaMessage;
 }
 
 export async function retrieveUPNByEntityId(id: string) {

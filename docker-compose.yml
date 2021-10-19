@@ -149,6 +149,8 @@ services:
       - TS_INIT_EMPTY_ARRAYS=true
       - TS_EXCEL_INIT_FOLDER=/teaUtils
       - TS_EXCEL_INIT_FILE=initPrefixes.xlsx
+      - TS_OLD_SUFFIX=gmail.com
+      - TS_NEW_SUFFIX=gmail.com
 
   bulk-service:
     image: bulk-service
@@ -224,18 +226,18 @@ services:
       - WLS_CRON_JOB=false
       - WLS_LOG_PATH=/logs
 
-  population-script:
-    image: population-script
-    build: ./population-script/
-    env_file:
-      - ./supernova.env
-    depends_on:
-      - request-service
-    environment:
-      - POS_RS_URL=request-service:8080
-      - POS_ENTITY_IDS=aaaaaaaaaaaaaaaaaaaaaaaa,bbbbbbbbbbbbbbbbbbbbbbbb
-      - POS_GENERATE_COUNT=50
-      - POS_LOG_PATH=/logs
+  # population-script:
+  #   image: population-script
+  #   build: ./population-script/
+  #   env_file:
+  #     - ./supernova.env
+  #   depends_on:
+  #     - request-service
+  #   environment:
+  #     - POS_RS_URL=request-service:8080
+  #     - POS_ENTITY_IDS=aaaaaaaaaaaaaaaaaaaaaaaa,bbbbbbbbbbbbbbbbbbbbbbbb
+  #     - POS_GENERATE_COUNT=50
+  #     - POS_LOG_PATH=/logs
 
   authentication-service:
     image: authentication-service

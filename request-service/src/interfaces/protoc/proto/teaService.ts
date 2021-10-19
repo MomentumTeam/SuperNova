@@ -48,6 +48,10 @@ export interface RetrieveTeaByPrefixReq {
 
 export interface TeaMessage {
   tea: string;
+  roleId?: string | undefined;
+  uniqueId?: string | undefined;
+  samAccountName?: string | undefined;
+  mail?: string | undefined;
 }
 
 export interface UPNMessage {
@@ -296,6 +300,18 @@ export const TeaMessage = {
     if (message.tea !== "") {
       writer.uint32(10).string(message.tea);
     }
+    if (message.roleId !== undefined) {
+      writer.uint32(18).string(message.roleId);
+    }
+    if (message.uniqueId !== undefined) {
+      writer.uint32(26).string(message.uniqueId);
+    }
+    if (message.samAccountName !== undefined) {
+      writer.uint32(34).string(message.samAccountName);
+    }
+    if (message.mail !== undefined) {
+      writer.uint32(42).string(message.mail);
+    }
     return writer;
   },
 
@@ -308,6 +324,18 @@ export const TeaMessage = {
       switch (tag >>> 3) {
         case 1:
           message.tea = reader.string();
+          break;
+        case 2:
+          message.roleId = reader.string();
+          break;
+        case 3:
+          message.uniqueId = reader.string();
+          break;
+        case 4:
+          message.samAccountName = reader.string();
+          break;
+        case 5:
+          message.mail = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -324,12 +352,37 @@ export const TeaMessage = {
     } else {
       message.tea = "";
     }
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = String(object.roleId);
+    } else {
+      message.roleId = undefined;
+    }
+    if (object.uniqueId !== undefined && object.uniqueId !== null) {
+      message.uniqueId = String(object.uniqueId);
+    } else {
+      message.uniqueId = undefined;
+    }
+    if (object.samAccountName !== undefined && object.samAccountName !== null) {
+      message.samAccountName = String(object.samAccountName);
+    } else {
+      message.samAccountName = undefined;
+    }
+    if (object.mail !== undefined && object.mail !== null) {
+      message.mail = String(object.mail);
+    } else {
+      message.mail = undefined;
+    }
     return message;
   },
 
   toJSON(message: TeaMessage): unknown {
     const obj: any = {};
     message.tea !== undefined && (obj.tea = message.tea);
+    message.roleId !== undefined && (obj.roleId = message.roleId);
+    message.uniqueId !== undefined && (obj.uniqueId = message.uniqueId);
+    message.samAccountName !== undefined &&
+      (obj.samAccountName = message.samAccountName);
+    message.mail !== undefined && (obj.mail = message.mail);
     return obj;
   },
 
@@ -339,6 +392,26 @@ export const TeaMessage = {
       message.tea = object.tea;
     } else {
       message.tea = "";
+    }
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = object.roleId;
+    } else {
+      message.roleId = undefined;
+    }
+    if (object.uniqueId !== undefined && object.uniqueId !== null) {
+      message.uniqueId = object.uniqueId;
+    } else {
+      message.uniqueId = undefined;
+    }
+    if (object.samAccountName !== undefined && object.samAccountName !== null) {
+      message.samAccountName = object.samAccountName;
+    } else {
+      message.samAccountName = undefined;
+    }
+    if (object.mail !== undefined && object.mail !== null) {
+      message.mail = object.mail;
+    } else {
+      message.mail = undefined;
     }
     return message;
   },
