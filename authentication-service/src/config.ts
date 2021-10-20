@@ -12,7 +12,7 @@ export const config = {
   kartoffel: {
     endpoint: process.env.AS_KARTOFFEL_RPC_ENDPOINT || '0.0.0.0:8082',
     defaultLastName: ' ',
-    enrich: process.env.AS_KARTOFFEL_ENRICH || true,
+    enrich: process.env.AS_KARTOFFEL_ENRICH || false,
   },
   approver: {
     endpoint: process.env.AS_APS_URL || '0.0.0.0:8085',
