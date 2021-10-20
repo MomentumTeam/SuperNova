@@ -44,8 +44,8 @@ export class AuthManager {
 
     if (!config.kartoffel.enrich) return user;
 
-    const kartoffelUser: IUser = await KartoffelService.getEntityById(genesisId);
-    return kartoffelUser;
+    const kartoffelUser = await KartoffelService.getEntityById(genesisId);
+    return kartoffelUser as IUser;
   }
 
   private static async extractUserType(genesisId: string) {

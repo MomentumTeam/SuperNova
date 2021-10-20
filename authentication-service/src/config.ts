@@ -1,3 +1,5 @@
+import * as env from 'env-var';
+
 export const config = {
   server: {
     port: +(process.env.AS_PORT || 9000),
@@ -12,7 +14,7 @@ export const config = {
   kartoffel: {
     endpoint: process.env.AS_KARTOFFEL_RPC_ENDPOINT || '0.0.0.0:8082',
     defaultLastName: ' ',
-    enrich: process.env.AS_KARTOFFEL_ENRICH || false,
+    enrich: env.get("AS_KARTOFFEL_ENRICH").default('false').asBool(),
   },
   approver: {
     endpoint: process.env.AS_APS_URL || '0.0.0.0:8085',
