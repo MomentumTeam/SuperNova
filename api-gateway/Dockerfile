@@ -21,6 +21,7 @@ RUN apk update
 RUN apk add --no-cache nano vim
 
 RUN mkdir -p /logs && chown -R node:node /logs
+RUN mkdir -p /logs/api-gateway && chown -R node:node /logs/api-gateway
 RUN mkdir -p /spikeUtils && chown -R node:node /spikeUtils
 RUN mkdir -p /bulkFiles && chown -R node:node /bulkFiles
 RUN mkdir -p /usr/src/app && chown -R node:node /usr/src/app

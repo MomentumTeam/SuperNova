@@ -36,7 +36,9 @@ export const commanderRanks = process.env.KS_COMMANDER_RANKS
   ? process.env.KS_COMMANDER_RANKS.split(',')
   : ['aaa', 'bbb', 'ccc'];
 
-export const logPath = process.env.KS_LOG_PATH || './logs';
+export const logPath = process.env.KS_LOG_PATH
+  ? `${process.env.KS_LOG_PATH}/kartoffel-service`
+  : './logs/kartoffel-service';
 export const storeLogs = process.env.GLOBAL_STORE_LOGS
   ? process.env.GLOBAL_STORE_LOGS === 'true'
   : false;

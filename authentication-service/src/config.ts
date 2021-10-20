@@ -45,7 +45,9 @@ export const config = {
   support:
     process.env.AS_UNAUTHORIZED_SUPPORT_URL || 'https://open.rocket.chat',
   defaultUserTypes: ['COMMANDER'],
-  logPath: process.env.AS_LOG_PATH || './logs',
+  logPath: process.env.AS_LOG_PATH
+    ? `${process.env.AS_LOG_PATH}/authentication-service`
+    : './logs/authentication-service',
   storeLogs: process.env.GLOBAL_STORE_LOGS
     ? process.env.GLOBAL_STORE_LOGS === 'true'
     : false,
