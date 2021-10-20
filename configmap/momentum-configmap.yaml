@@ -81,6 +81,7 @@ data:
   AS_SHRAGA_PROVIDERS: Genesis
   AS_CLIENT_ENDPOINT: http://momentum.branch-yesodot.org/ 
   AS_LOG_PATH: /logs
+  AS_KARTOFFEL_RPC_ENDPOINT: kartoffel-service:8080
 
   GATEWAY_HOST: "0.0.0.0"
   GATEWAY_PORT: "8080"
@@ -93,7 +94,7 @@ data:
   GATEWAY_AS_URL: http://momentum.branch-yesodot.org
   GATEWAY_TOKEN: sp-token
   GATEWAY_SECRET_KEY: superNova
-  GATEWAY_APM_URL: http://apm-server:8200
+  GATEWAY_APM_URL: http://lihi.northeurope.cloudapp.azure.com:8200
   GATEWAY_SPIKE_AUDIENCE_ID: bwwIB0gSS0xay_odirl0OCAJ3gUlXkKMKijbDY_e
   GATEWAY_SPIKE_PUBLIC_KEY_FULL_PATH: /spikeUtils/publickey.pem
   GATEWAY_WRITE_SCOPE_NAME: write
@@ -147,7 +148,7 @@ data:
   KC_RS_URL: request-service:8080
   KC_TS_URL: tea-service:8080
   KC_KS_URL: kartoffel-service:8080
-  KC_KAFKA_HOST: kafka
+  KC_KAFKA_HOST: lihi.northeurope.cloudapp.azure.com
   KC_KAFKA_PORT: "9092"
   KC_LOG_PATH: /logs
   KC_KAFKA_CONSUMER_TOPIC: requests
