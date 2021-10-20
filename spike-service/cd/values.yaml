@@ -23,3 +23,4 @@ volume:
     mountPath: /spikeUtils
     secretName: azure-secret
     shareName: momentum/spike-utils
+    type: azurefile

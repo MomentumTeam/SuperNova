@@ -19,12 +19,14 @@ volume:
     mountPath: /spikeUtils
     secretName: azure-secret
     shareName: momentum/spike-utils
+    type: azurefile
   
   - name: bulk-files-utils
     mountPath: /bulkFiles
     secretName: azure-secret
     shareName: momentum/bulk-files
-
+    type: azurefile
+    
 config:
   configmaps:
       name: momentum-configmap
