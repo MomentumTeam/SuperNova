@@ -1,13 +1,13 @@
-import kafka, { KafkaClient } from 'kafka-node';
+import kafka from 'kafka-node';
 import { findPath } from './utils/path';
-import { requestProcessor } from './consumer/consumer.processor';
-import { logger } from './utils/logger';
-import { config } from './config';
-
-if (config.environment !== 'production') {
+if (process.env.NODE_ENV !== 'production') {
   const ENV_PATH = findPath('supernova.env');
   require('dotenv').config({ path: ENV_PATH });
 }
+
+import { requestProcessor } from './consumer/consumer.processor';
+import { logger } from './utils/logger';
+import { config } from './config';
 
 // Kafka connection init
 const connectToKafka = async () => {
