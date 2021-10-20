@@ -13,7 +13,7 @@ data:
   SS_REDIS_PASSWORD: mozart
   SS_SPIKE_TOKEN_URL: https://ospike.northeurope.cloudapp.azure.com/oauth2/token
   SS_SPIKE_PUBKEY_PATH: https://ospike.northeurope.cloudapp.azure.com/.well-known/publickey.pem
-  SS_SPIKE_PUBLIC_KEY_FULL_PATH: /usr/src/app/src/utils/publickey.pem
+  SS_SPIKE_PUBLIC_KEY_FULL_PATH: /spikeUtils/publickey.pem
   SS_SHMUEL_AUDIENCE: shmuel
   SS_KARTOFFEL_AUDIENCE: kartoffel
   SS_GRANT_TYPE: client_credentials
@@ -93,13 +93,13 @@ data:
   GATEWAY_AS_URL: http://momentum.branch-yesodot.org
   GATEWAY_TOKEN: sp-token
   GATEWAY_SECRET_KEY: superNova
-  GATEWAY_APM_URL: http://52.169.23.32:8200
+  GATEWAY_APM_URL: http://apm-server:8200
   GATEWAY_SPIKE_AUDIENCE_ID: bwwIB0gSS0xay_odirl0OCAJ3gUlXkKMKijbDY_e
-  GATEWAY_SPIKE_PUBLIC_KEY_FULL_PATH: /usr/src/app/spike-utils/publickey.pem
+  GATEWAY_SPIKE_PUBLIC_KEY_FULL_PATH: /spikeUtils/publickey.pem
   GATEWAY_WRITE_SCOPE_NAME: write
   GATEWAY_LOG_PATH: /logs
   GATEWAY_USE_APM: "false"
-  GATEWAY_BS_FOLDER_PATH: /usr/src/app/bulk-files
+  GATEWAY_BS_FOLDER_PATH: /bulkFiles
 
   NS_HOST: "0.0.0.0"
   NS_PORT: "8080"
@@ -122,22 +122,18 @@ data:
   TS_CIVILIAN: civilian
   TS_GOAL_USER: goalUser
   TS_KS_URL: kartoffel-service:8080
-  TS_GENERAL_UNIT_ID: google
-  TS_NEED_INIT: "true"
+  TS_OLD_SUFFIX: gmail.com
+  TS_NEW_SUFFIX: gmail.com
+  TS_NEED_INIT: "false"
   TS_INIT_EMPTY_ARRAYS: "true"
-  TS_INIT_UNIT_HIERARCHIES: "גוגל העולמית/גוגל,אמאזון העולמית/אמאזון"
-  TS_INIT_UNIT_NAMES: "גוגל,אמאזון"
-  TS_INIT_IDS: google,amazon
-  TS_INIT_PREFIXES: 100,200
-  TS_INIT_COUNTERS: 1,1
-  TS_SUFFIXES_OLD_DOMAIN: gmail.com,amazon.com
-  TS_SUFFIXES_NEW_DOMAIN: newDomain.com,newDomain.com
+  TS_EXCEL_INIT_FOLDER: /teaUtils
+  TS_EXCEL_INIT_FILE: initPrefixes.xlsx
   TS_LOG_PATH: /logs
 
   BS_HOST: "0.0.0.0"
   BS_PORT: "8080"
   BS_RS_URL: request-service:8080
-  BS_FOLDER_PATH: /usr/src/app/bulk-files
+  BS_FOLDER_PATH: /bulkFiles
   BS_LOG_PATH: /logs
 
   POS_RS_URL: request-service:8080
@@ -150,8 +146,10 @@ data:
 
   KC_RS_URL: request-service:8080
   KC_TS_URL: tea-service:8080
+  KC_KS_URL: kartoffel-service:8080
   KC_KAFKA_HOST: kafka
-  KC_KAFKA_PORT: "29092"
+  KC_KAFKA_PORT: "9092"
   KC_LOG_PATH: /logs
+  KC_KAFKA_CONSUMER_TOPIC: requests
 
   GLOBAL_STORE_LOGS: "true"

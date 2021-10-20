@@ -19,6 +19,7 @@ config:
       name: momentum-configmap
 
 volume:
-  mountPath: /usr/src/app/src/utils
-  secretName: azure-secret
-  shareName: momentum/spike-utils
+  - name: spike-utils
+    mountPath: /spikeUtils
+    secretName: azure-secret
+    shareName: momentum/spike-utils

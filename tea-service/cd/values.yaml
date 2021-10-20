@@ -15,3 +15,9 @@ service:
 config:
   configmaps:
       name: momentum-configmap
+
+volume:
+  - name: teaUtils-utils
+    mountPath: /teaUtils
+    secretName: azure-secret
+    shareName: momentum/tea-utils
