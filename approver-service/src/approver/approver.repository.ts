@@ -348,24 +348,46 @@ export class ApproverRepository {
     updateApproverDecisionReq: UpdateApproverDecisionReq
   ): Promise<Request> {
     try {
+      let updatedRequest: any = undefined;
+      let currentUpdateRequest = updateApproverDecisionReq;
       const approverId: any =
         updateApproverDecisionReq.approverDecision?.approver?.id;
-      const personTypeInRequest: PersonTypeInRequest =
-        typeof updateApproverDecisionReq.approverType === typeof ''
-          ? personTypeInRequestFromJSON(updateApproverDecisionReq.approverType)
-          : updateApproverDecisionReq.approverType;
-      const requestId = updateApproverDecisionReq.id;
-      const hasPermission = await hasPermissionToDecide(
-        approverId,
-        personTypeInRequest,
-        requestId
-      );
+      const hasPermission = await hasPermissionToDecide(approverId);
       if (!hasPermission) {
         throw new Error('User has no permission!');
       } else {
-        return await RequestService.updateApproverDecision(
-          updateApproverDecisionReq
+        const userType = await ApproverRepository.getUserType({
+          entityId: approverId,
+        });
+        let types: any = userType.type;
+        types = types.map((type: any) =>
+          typeof type === typeof '' ? approverTypeFromJSON(type) : type
         );
+        if (
+          types.includes(ApproverType.ADMIN) ||
+          types.includes(ApproverType.COMMANDER)
+        ) {
+          currentUpdateRequest.approverType =
+            PersonTypeInRequest.COMMANDER_APPROVER;
+          updatedRequest = await RequestService.updateApproverDecision(
+            currentUpdateRequest
+          );
+        }
+        if (types.includes(ApproverType.SECURITY)) {
+          currentUpdateRequest.approverType =
+            PersonTypeInRequest.SECURITY_APPROVER;
+          updatedRequest = await RequestService.updateApproverDecision(
+            currentUpdateRequest
+          );
+        }
+        if (types.includes(ApproverType.SUPER_SECURITY)) {
+          currentUpdateRequest.approverType =
+            PersonTypeInRequest.SUPER_SECURITY_APPROVER;
+          updatedRequest = await RequestService.updateApproverDecision(
+            currentUpdateRequest
+          );
+        }
+        return updatedRequest;
       }
     } catch (error: any) {
       logger.error('updateApproverDecision ERROR', {

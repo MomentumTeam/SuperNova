@@ -41,7 +41,6 @@ RequestsRouter.get(
   RequestValidator.isGetRequestBySerialNumberValid,
   RequestsController.getRequestBySerialNumber
 );
-// RequestsRouter.get('/displayName/:displayName',RequestValidator.isSearchRequestsByDisplayNameValid, RequestsController.searchRequestsByDisplayName);
 
 // PUT
 RequestsRouter.put(

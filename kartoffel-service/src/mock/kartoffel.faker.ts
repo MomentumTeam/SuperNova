@@ -13,6 +13,7 @@ import {
   Image,
   DigitalIdentities,
 } from '../interfaces/protoc/proto/kartoffelService';
+import * as C from '../config';
 
 export class KartoffelFaker {
   constructor() {}
@@ -78,7 +79,10 @@ export class KartoffelFaker {
           resolve(image);
         })
         .catch((err) => {
-          reject(err);
+          const image: Image = {
+            image: C.defaultImage,
+          };
+          resolve(image);
         });
     });
   }
@@ -100,15 +104,21 @@ export class KartoffelFaker {
   }
   async randomEntity(needPicture: boolean): Promise<Entity> {
     try {
-      const picture: Image = needPicture ? await this.randomPicture() : { image: 'pictureUrl' };
+      const picture: Image = needPicture
+        ? await this.randomPicture()
+        : { image: 'pictureUrl' };
       const entity: Entity = {
         id: mongoose.Types.ObjectId().toString(),
         displayName: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
         directGroup: mongoose.Types.ObjectId().toString(),
         hierarchy: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
         entityType: 'soldier',
-        identityCard: faker.datatype.number({ min: 100000, max: 999999 }).toString(),
-        personalNumber: faker.datatype.number({ min: 100000000, max: 999999999 }).toString(),
+        identityCard: faker.datatype
+          .number({ min: 100000, max: 999999 })
+          .toString(),
+        personalNumber: faker.datatype
+          .number({ min: 100000000, max: 999999999 })
+          .toString(),
         serviceType: 'מילואים',
         firstName: faker.name.firstName(),
         lastName: faker.name.lastName(),
@@ -191,7 +201,10 @@ export class KartoffelFaker {
     return { roles: roleArray };
   }
 
-  async randomEntityArray(needPicture: boolean, pageSize?: number): Promise<EntityArray> {
+  async randomEntityArray(
+    needPicture: boolean,
+    pageSize?: number
+  ): Promise<EntityArray> {
     try {
       let length = faker.datatype.number({
         min: 1,
@@ -208,5 +221,9 @@ export class KartoffelFaker {
     } catch (err) {
       throw err;
     }
+  }
+
+  randomNumber(from: number, to: number) {
+    return faker.datatype.number({ min: from, max: to });
   }
 }

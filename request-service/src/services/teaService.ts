@@ -6,7 +6,7 @@ import {
   ReportTeaReq,
   RetrieveByEntityIdReq,
   RetrieveByEntityReq,
-  RetrieveTeaByUnitReq,
+  RetrieveTeaByOGIdReq,
   SuccessMessage,
   TeaMessage,
   UPNMessage,
@@ -27,7 +27,7 @@ const packageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(
 
 const protoDescriptor: any = grpc.loadPackageDefinition(packageDefinition).Tea;
 
-const notificationClient: any = new protoDescriptor.Tea(
+const teaClient: any = new protoDescriptor.Tea(
   config.teaServiceUrl,
   grpc.credentials.createInsecure(),
   { 'grpc.keepalive_timeout_ms': 5000 }
@@ -39,7 +39,7 @@ export default class TeaService {
   ): Promise<SuccessMessage> {
     console.log('reportTeaFail');
     return new Promise((resolve, reject) => {
-      notificationClient.ReportTeaFail(
+      teaClient.ReportTeaFail(
         reportTeaReq,
         (err: any, successMessage: SuccessMessage) => {
           if (err) {
@@ -52,13 +52,13 @@ export default class TeaService {
     });
   }
 
-  static async retrieveTeaByUnit(
-    retrieveTeaByUnitReq: RetrieveTeaByUnitReq
+  static async retrieveTeaByOGId(
+    retrieveTeaByOGIdReq: RetrieveTeaByOGIdReq
   ): Promise<TeaMessage> {
-    console.log('retrieveTeaByUnit');
+    console.log('retrieveTeaByOGId');
     return new Promise((resolve, reject) => {
-      notificationClient.RetrieveTeaByUnit(
-        retrieveTeaByUnitReq,
+      teaClient.RetrieveTeaByOGId(
+        retrieveTeaByOGIdReq,
         (err: any, teaMessage: TeaMessage) => {
           if (err) {
             reject(err);
@@ -75,7 +75,7 @@ export default class TeaService {
   ): Promise<UPNMessage> {
     console.log('retrieveUPNByEntity');
     return new Promise((resolve, reject) => {
-      notificationClient.RetrieveUPNByEntity(
+      teaClient.RetrieveUPNByEntity(
         retrieveUPNByEntityReq,
         (err: any, upnMessage: UPNMessage) => {
           if (err) {
@@ -93,7 +93,7 @@ export default class TeaService {
   ): Promise<UPNMessage> {
     console.log('retrieveUPNByEntityId');
     return new Promise((resolve, reject) => {
-      notificationClient.RetrieveUPNByEntityId(
+      teaClient.RetrieveUPNByEntityId(
         retrieveUPNByEntityIdReq,
         (err: any, upnMessage: UPNMessage) => {
           if (err) {

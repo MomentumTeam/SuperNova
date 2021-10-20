@@ -15,7 +15,9 @@ export const mongoConnectionRetries =
 export const mongoReconnectTimeout =
   process.env.MONGO_RECONNECT_TIMEOUT || '2000';
 
-export const logPath = process.env.APS_LOG_PATH || './logs';
+export const logPath = process.env.APS_LOG_PATH
+  ? `${process.env.APS_LOG_PATH}/approver-service`
+  : './logs/approver-service';
 export const storeLogs = process.env.GLOBAL_STORE_LOGS
   ? process.env.GLOBAL_STORE_LOGS === 'true'
   : false;

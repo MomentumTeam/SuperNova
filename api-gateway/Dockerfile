@@ -21,6 +21,9 @@ RUN apk update
 RUN apk add --no-cache nano vim
 
 RUN mkdir -p /logs && chown -R node:node /logs
+RUN mkdir -p /logs/api-gateway && chown -R node:node /logs/api-gateway
+RUN mkdir -p /spikeUtils && chown -R node:node /spikeUtils
+RUN mkdir -p /bulkFiles && chown -R node:node /bulkFiles
 RUN mkdir -p /usr/src/app && chown -R node:node /usr/src/app
 WORKDIR /usr/src/app
 
@@ -29,12 +32,6 @@ COPY --chown=node:node ./package*.json ./
 RUN npm ci --production && npm cache clean --force
 COPY --from=builder --chown=node:node /app/dist .
 COPY --from=builder --chown=node:node /app/proto proto
-
-RUN mkdir bulk-files/
-RUN   chown node:node bulk-files/
-
-RUN mkdir spike-utils/
-RUN   chown node:node spike-utils/
 
 USER node
 

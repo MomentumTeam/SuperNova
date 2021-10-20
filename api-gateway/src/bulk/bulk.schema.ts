@@ -100,8 +100,8 @@ export const getBulkRequestExampleSchema = Joi.object({
 
 export const getBulkRequestByIdReqSchema = Joi.object({
   body: {},
-  params: {},
-  query: {
+  params: {
     id: Joi.objectId().required(),
   },
+  query: {},
 });

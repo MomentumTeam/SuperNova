@@ -161,6 +161,15 @@ export interface OGArray {
   groups: OrganizationGroup[];
 }
 
+export interface GetPrefixByOGIdRequest {
+  id: string;
+}
+
+export interface OGPrefix {
+  prefix: string;
+  source: string;
+}
+
 /** CreateOG */
 export interface CreateOGRequest {
   name: string;
@@ -170,7 +179,6 @@ export interface CreateOGRequest {
 
 /** CreateDI */
 export interface CreateDIRequest {
-  entityId: string;
   isRoleAttachable: boolean;
   mail: string;
   source: string;
@@ -207,7 +215,7 @@ export interface RenameRoleRequest {
 /** ConnectRoleAndDI */
 export interface ConnectRoleAndDIRequest {
   /** id of role */
-  id: string;
+  roleId: string;
   /** uniqueId of DI */
   uniqueId: string;
 }
@@ -3010,6 +3018,144 @@ export const OGArray = {
   },
 };
 
+const baseGetPrefixByOGIdRequest: object = { id: "" };
+
+export const GetPrefixByOGIdRequest = {
+  encode(
+    message: GetPrefixByOGIdRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GetPrefixByOGIdRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseGetPrefixByOGIdRequest } as GetPrefixByOGIdRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetPrefixByOGIdRequest {
+    const message = { ...baseGetPrefixByOGIdRequest } as GetPrefixByOGIdRequest;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+
+  toJSON(message: GetPrefixByOGIdRequest): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<GetPrefixByOGIdRequest>
+  ): GetPrefixByOGIdRequest {
+    const message = { ...baseGetPrefixByOGIdRequest } as GetPrefixByOGIdRequest;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+};
+
+const baseOGPrefix: object = { prefix: "", source: "" };
+
+export const OGPrefix = {
+  encode(
+    message: OGPrefix,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.prefix !== "") {
+      writer.uint32(10).string(message.prefix);
+    }
+    if (message.source !== "") {
+      writer.uint32(18).string(message.source);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): OGPrefix {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseOGPrefix } as OGPrefix;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.prefix = reader.string();
+          break;
+        case 2:
+          message.source = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): OGPrefix {
+    const message = { ...baseOGPrefix } as OGPrefix;
+    if (object.prefix !== undefined && object.prefix !== null) {
+      message.prefix = String(object.prefix);
+    } else {
+      message.prefix = "";
+    }
+    if (object.source !== undefined && object.source !== null) {
+      message.source = String(object.source);
+    } else {
+      message.source = "";
+    }
+    return message;
+  },
+
+  toJSON(message: OGPrefix): unknown {
+    const obj: any = {};
+    message.prefix !== undefined && (obj.prefix = message.prefix);
+    message.source !== undefined && (obj.source = message.source);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<OGPrefix>): OGPrefix {
+    const message = { ...baseOGPrefix } as OGPrefix;
+    if (object.prefix !== undefined && object.prefix !== null) {
+      message.prefix = object.prefix;
+    } else {
+      message.prefix = "";
+    }
+    if (object.source !== undefined && object.source !== null) {
+      message.source = object.source;
+    } else {
+      message.source = "";
+    }
+    return message;
+  },
+};
+
 const baseCreateOGRequest: object = { name: "", parent: "", source: "" };
 
 export const CreateOGRequest = {
@@ -3103,7 +3249,6 @@ export const CreateOGRequest = {
 };
 
 const baseCreateDIRequest: object = {
-  entityId: "",
   isRoleAttachable: false,
   mail: "",
   source: "",
@@ -3116,23 +3261,20 @@ export const CreateDIRequest = {
     message: CreateDIRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.entityId !== "") {
-      writer.uint32(10).string(message.entityId);
-    }
     if (message.isRoleAttachable === true) {
-      writer.uint32(16).bool(message.isRoleAttachable);
+      writer.uint32(8).bool(message.isRoleAttachable);
     }
     if (message.mail !== "") {
-      writer.uint32(26).string(message.mail);
+      writer.uint32(18).string(message.mail);
     }
     if (message.source !== "") {
-      writer.uint32(34).string(message.source);
+      writer.uint32(26).string(message.source);
     }
     if (message.type !== "") {
-      writer.uint32(42).string(message.type);
+      writer.uint32(34).string(message.type);
     }
     if (message.uniqueId !== "") {
-      writer.uint32(50).string(message.uniqueId);
+      writer.uint32(42).string(message.uniqueId);
     }
     return writer;
   },
@@ -3145,21 +3287,18 @@ export const CreateDIRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.entityId = reader.string();
-          break;
-        case 2:
           message.isRoleAttachable = reader.bool();
           break;
-        case 3:
+        case 2:
           message.mail = reader.string();
           break;
-        case 4:
+        case 3:
           message.source = reader.string();
           break;
-        case 5:
+        case 4:
           message.type = reader.string();
           break;
-        case 6:
+        case 5:
           message.uniqueId = reader.string();
           break;
         default:
@@ -3172,11 +3311,6 @@ export const CreateDIRequest = {
 
   fromJSON(object: any): CreateDIRequest {
     const message = { ...baseCreateDIRequest } as CreateDIRequest;
-    if (object.entityId !== undefined && object.entityId !== null) {
-      message.entityId = String(object.entityId);
-    } else {
-      message.entityId = "";
-    }
     if (
       object.isRoleAttachable !== undefined &&
       object.isRoleAttachable !== null
@@ -3210,7 +3344,6 @@ export const CreateDIRequest = {
 
   toJSON(message: CreateDIRequest): unknown {
     const obj: any = {};
-    message.entityId !== undefined && (obj.entityId = message.entityId);
     message.isRoleAttachable !== undefined &&
       (obj.isRoleAttachable = message.isRoleAttachable);
     message.mail !== undefined && (obj.mail = message.mail);
@@ -3222,11 +3355,6 @@ export const CreateDIRequest = {
 
   fromPartial(object: DeepPartial<CreateDIRequest>): CreateDIRequest {
     const message = { ...baseCreateDIRequest } as CreateDIRequest;
-    if (object.entityId !== undefined && object.entityId !== null) {
-      message.entityId = object.entityId;
-    } else {
-      message.entityId = "";
-    }
     if (
       object.isRoleAttachable !== undefined &&
       object.isRoleAttachable !== null
@@ -3604,15 +3732,15 @@ export const RenameRoleRequest = {
   },
 };
 
-const baseConnectRoleAndDIRequest: object = { id: "", uniqueId: "" };
+const baseConnectRoleAndDIRequest: object = { roleId: "", uniqueId: "" };
 
 export const ConnectRoleAndDIRequest = {
   encode(
     message: ConnectRoleAndDIRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
+    if (message.roleId !== "") {
+      writer.uint32(10).string(message.roleId);
     }
     if (message.uniqueId !== "") {
       writer.uint32(18).string(message.uniqueId);
@@ -3633,7 +3761,7 @@ export const ConnectRoleAndDIRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.id = reader.string();
+          message.roleId = reader.string();
           break;
         case 2:
           message.uniqueId = reader.string();
@@ -3650,10 +3778,10 @@ export const ConnectRoleAndDIRequest = {
     const message = {
       ...baseConnectRoleAndDIRequest,
     } as ConnectRoleAndDIRequest;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = String(object.roleId);
     } else {
-      message.id = "";
+      message.roleId = "";
     }
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = String(object.uniqueId);
@@ -3665,7 +3793,7 @@ export const ConnectRoleAndDIRequest = {
 
   toJSON(message: ConnectRoleAndDIRequest): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
+    message.roleId !== undefined && (obj.roleId = message.roleId);
     message.uniqueId !== undefined && (obj.uniqueId = message.uniqueId);
     return obj;
   },
@@ -3676,10 +3804,10 @@ export const ConnectRoleAndDIRequest = {
     const message = {
       ...baseConnectRoleAndDIRequest,
     } as ConnectRoleAndDIRequest;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = object.roleId;
     } else {
-      message.id = "";
+      message.roleId = "";
     }
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = object.uniqueId;
@@ -6764,6 +6892,7 @@ export interface Kartoffel {
   DeleteOG(request: DeleteOGRequest): Promise<SuccessMessage>;
   UpdateOGParent(request: UpdateOGParentRequest): Promise<SuccessMessage>;
   RenameOG(request: RenameOGRequest): Promise<SuccessMessage>;
+  GetPrefixByOGId(request: GetPrefixByOGIdRequest): Promise<OGPrefix>;
   /** DI */
   CreateDI(request: CreateDIRequest): Promise<DigitalIdentity>;
   GetAllDIs(request: GetAllDIsRequest): Promise<DigitalIdentities>;
@@ -6824,6 +6953,7 @@ export class KartoffelClientImpl implements Kartoffel {
     this.DeleteOG = this.DeleteOG.bind(this);
     this.UpdateOGParent = this.UpdateOGParent.bind(this);
     this.RenameOG = this.RenameOG.bind(this);
+    this.GetPrefixByOGId = this.GetPrefixByOGId.bind(this);
     this.CreateDI = this.CreateDI.bind(this);
     this.GetAllDIs = this.GetAllDIs.bind(this);
     this.GetDIByRoleId = this.GetDIByRoleId.bind(this);
@@ -7083,6 +7213,16 @@ export class KartoffelClientImpl implements Kartoffel {
     const data = RenameOGRequest.encode(request).finish();
     const promise = this.rpc.request("Kartoffel.Kartoffel", "RenameOG", data);
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
+  }
+
+  GetPrefixByOGId(request: GetPrefixByOGIdRequest): Promise<OGPrefix> {
+    const data = GetPrefixByOGIdRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "GetPrefixByOGId",
+      data
+    );
+    return promise.then((data) => OGPrefix.decode(new _m0.Reader(data)));
   }
 
   CreateDI(request: CreateDIRequest): Promise<DigitalIdentity> {

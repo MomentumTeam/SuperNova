@@ -4,6 +4,8 @@ import * as config from '../config';
 import {
   Entity,
   GetEntityByIdRequest,
+  GetPrefixByOGIdRequest,
+  OGPrefix,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { findPath } from '../utils/path';
 
@@ -42,6 +44,24 @@ export default class KartoffelService {
             reject(err);
           } else {
             resolve(entity);
+          }
+        }
+      );
+    });
+  }
+
+  static async getPrefixByOGId(
+    getPrefixByOGIdRequest: GetPrefixByOGIdRequest
+  ): Promise<OGPrefix> {
+    console.log('getPrefixByOGId');
+    return new Promise((resolve, reject) => {
+      kartoffelClient.GetPrefixByOGId(
+        getPrefixByOGIdRequest,
+        (err: any, prefix: OGPrefix) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(prefix);
           }
         }
       );

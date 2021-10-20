@@ -129,8 +129,12 @@ const startConsumer = async (client: kafka.KafkaClient) => {
 };
 
 const main = async () => {
-  let kafkaClient = await connectToKafka();
-  await startConsumer(kafkaClient);
+  try {
+    let kafkaClient = await connectToKafka();
+    await startConsumer(kafkaClient);
+  } catch (error) {
+    throw error;
+  }
 };
 
 main()

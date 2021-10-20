@@ -39,7 +39,7 @@ export class SpikeService {
           if (err) {
             reject(err);
           } else {
-            resolve(`Bearer ${res.token}`);
+            resolve(res.token);
           }
         }
       );

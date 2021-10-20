@@ -301,6 +301,8 @@ const RequestSchema = new Schema(
       roleSerialCode: { type: String, default: null },
       oldName: { type: String, default: null },
       newName: { type: String, default: null },
+      oldOuName: { type: String, default: null },
+      newOuName: { type: String, default: null },
       newJobTitle: { type: String, default: null },
       oldOuName: { type: String, default: null },
       newOuName: { type: String, default: null },

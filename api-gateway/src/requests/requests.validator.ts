@@ -8,7 +8,6 @@ import {
   getRequestByIdSchema,
   getRequestsByPersonSchema,
   getRequestBySerialNumberSchema,
-  SearchRequestsByDisplayNameSchema,
   updateADStatusSchema,
   updateRequestSchema,
   UpdateApproversSchema,
@@ -84,20 +83,6 @@ export class RequestValidator {
     transformRequest(
       req,
       validateObject(req, getRequestBySerialNumberSchema, {
-        allowUnknown: true,
-      })
-    );
-    next();
-  }
-
-  static isSearchRequestsByDisplayNameValid(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
-    transformRequest(
-      req,
-      validateObject(req, SearchRequestsByDisplayNameSchema, {
         allowUnknown: true,
       })
     );
