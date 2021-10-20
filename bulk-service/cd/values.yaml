@@ -15,9 +15,10 @@ service:
     port: "8080"
 
 volume:
-  mountPath: /usr/src/app/bulk-files
-  secretName: azure-secret
-  shareName: momentum/bulk-files
+  - name: bulk-files-utils
+    mountPath: /bulkFiles
+    secretName: azure-secret
+    shareName: momentum/bulk-files
 
 config:
   configmaps:

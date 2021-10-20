@@ -1,5 +1,4 @@
 export const config = {
-  environment: process.env.NODE_ENV || 'production',
   kafka: {
     host: process.env.KC_KAFKA_HOST || '127.0.0.1',
     port: process.env.KC_KAFKA_PORT || '9092',
