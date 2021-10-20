@@ -60,6 +60,8 @@ export const config = {
   },
   logs: {
     storeLogs: env.get('GLOBAL_STORE_LOGS').default('true').asBool(),
-    logPath: env.get('GATEWAY_LOG_PATH').default('./logs').asString(),
+    logPath: process.env.GATEWAY_LOG_PATH
+      ? `${process.env.GATEWAY_LOG_PATH}/api-gateway`
+      : './logs/api-gateway',
   },
 };

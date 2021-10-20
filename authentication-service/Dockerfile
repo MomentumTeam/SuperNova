@@ -22,6 +22,7 @@ RUN apk update
 RUN apk add --no-cache nano vim
 
 RUN mkdir -p /logs && chown -R node:node /logs
+RUN mkdir -p /logs/authentication-service && chown -R node:node /logs/authentication-service
 RUN mkdir -p /usr/src/app && chown -R node:node /usr/src/app
 WORKDIR /usr/src/app
 COPY --chown=node:node ./package*.json ./
