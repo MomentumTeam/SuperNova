@@ -14,7 +14,7 @@ export class AuthManager {
 
     const { genesisId } = populatedShragaUser;
 
-    const kartoffelUser = config.kartoffel.enrich ? await AuthManager.extractKartoffelUser(genesisId);
+    const kartoffelUser = config.kartoffel.enrich ? await AuthManager.extractKartoffelUser(genesisId): {};
     const userType = config.approver.enrich ? await AuthManager.extractUserType(genesisId) : {};
 
     const userInformation = {
