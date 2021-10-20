@@ -96,7 +96,10 @@ export class KartoffelFaker {
           resolve(image);
         })
         .catch((err) => {
-          reject(err);
+          const image: Image = {
+            image: C.defaultImage,
+          };
+          resolve(image);
         });
     });
   }
@@ -252,5 +255,9 @@ export class KartoffelFaker {
     } catch (err) {
       throw err;
     }
+  }
+
+  randomNumber(from: number, to: number) {
+    return faker.datatype.number({ min: from, max: to });
   }
 }

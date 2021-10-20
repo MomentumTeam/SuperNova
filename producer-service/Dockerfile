@@ -18,12 +18,16 @@ RUN npm run build
 
 FROM node:14.17.5-alpine3.14
 
+RUN apk update 
+RUN apk add --no-cache nano vim
+
 RUN GRPC_HEALTH_PROBE_VERSION=v0.4.4 && \
     wget -qO/bin/grpc_health_probe https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/${GRPC_HEALTH_PROBE_VERSION}/grpc_health_probe-linux-amd64 && \
     chmod +x /bin/grpc_health_probe && \
     chown node:node /bin/grpc_health_probe
 
 RUN mkdir -p /logs && chown -R node:node /logs
+RUN mkdir -p /logs/producer-service && chown -R node:node /logs/producer-service
 RUN mkdir -p /usr/src/app && chown -R node:node /usr/src/app
 WORKDIR /usr/src/app
 

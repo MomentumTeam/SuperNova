@@ -1,15 +1,15 @@
 import {
-  AddUnitReq,
-  DeleteUnitReq,
-  GetAllUnitsReq,
-  GetUnitReq,
-  MinUnitArray,
-  RetrieveTeaByUnitReq,
-  SearchUnitReq,
+  AddPrefixReq,
+  DeletePrefixReq,
+  GetAllPrefixesReq,
+  GetPrefixReq,
+  Prefix,
+  PrefixArray,
+  RetrieveTeaByOGIdReq,
+  RetrieveTeaByPrefixReq,
   SuccessMessage,
   TeaMessage,
-  Unit,
-  UpdateUnitReq,
+  UpdatePrefixReq,
   UPNMessage,
 } from '../interfaces/protoc/proto/teaService';
 import {
@@ -25,11 +25,23 @@ export class TeaManager {
     this.teaRepository = new TeaRepository();
   }
 
-  async retrieveTeaByUnit(
-    retrieveTeaByUnitReq: RetrieveTeaByUnitReq
+  async retrieveTeaByPrefix(
+    retrieveTeaByPrefixReq: RetrieveTeaByPrefixReq
   ): Promise<TeaMessage> {
     try {
-      return await this.teaRepository.retrieveTeaByUnit(retrieveTeaByUnitReq);
+      return await this.teaRepository.retrieveTeaByPrefix(
+        retrieveTeaByPrefixReq
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async retrieveTeaByOGId(
+    retrieveTeaByOGIdReq: RetrieveTeaByOGIdReq
+  ): Promise<TeaMessage> {
+    try {
+      return await this.teaRepository.retrieveTeaByOGId(retrieveTeaByOGIdReq);
     } catch (error) {
       throw error;
     }
@@ -66,6 +78,14 @@ export class TeaManager {
     }
   }
 
+  async throwTea(throwTeaReq: ReportTeaReq): Promise<SuccessMessage> {
+    try {
+      return await this.teaRepository.throwTea(throwTeaReq);
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async reportTeaFail(reportTeaReq: ReportTeaReq): Promise<SuccessMessage> {
     try {
       return await this.teaRepository.reportTeaFail(reportTeaReq);
@@ -74,49 +94,45 @@ export class TeaManager {
     }
   }
 
-  async getUnit(getUnitReq: GetUnitReq): Promise<Unit> {
+  async getPrefix(getPrefixReq: GetPrefixReq): Promise<Prefix> {
     try {
-      return await this.teaRepository.getUnit(getUnitReq);
+      return await this.teaRepository.getPrefix(getPrefixReq);
     } catch (error) {
       throw error;
     }
   }
 
-  async addUnit(addUnitReq: AddUnitReq): Promise<Unit> {
+  async addPrefix(addPrefixReq: AddPrefixReq): Promise<Prefix> {
     try {
-      return await this.teaRepository.addUnit(addUnitReq);
+      return await this.teaRepository.addPrefix(addPrefixReq);
     } catch (error) {
       throw error;
     }
   }
 
-  async updateUnit(updateUnitReq: UpdateUnitReq): Promise<Unit> {
+  async updatePrefix(updatePrefixReq: UpdatePrefixReq): Promise<Prefix> {
     try {
-      return await this.teaRepository.updateUnit(updateUnitReq);
+      return await this.teaRepository.updatePrefix(updatePrefixReq);
     } catch (error) {
       throw error;
     }
   }
 
-  async deleteUnit(deleteUnitReq: DeleteUnitReq): Promise<SuccessMessage> {
+  async deletePrefix(
+    deletePrefixReq: DeletePrefixReq
+  ): Promise<SuccessMessage> {
     try {
-      return await this.teaRepository.deleteUnit(deleteUnitReq);
+      return await this.teaRepository.deletePrefix(deletePrefixReq);
     } catch (error) {
       throw error;
     }
   }
 
-  async getAllUnits(getAllUnitsReq: GetAllUnitsReq): Promise<MinUnitArray> {
+  async getAllPrefixes(
+    getAllPrefixesReq: GetAllPrefixesReq
+  ): Promise<PrefixArray> {
     try {
-      return await this.teaRepository.getAllUnits(getAllUnitsReq);
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async searchUnit(searchUnitReq: SearchUnitReq): Promise<MinUnitArray> {
-    try {
-      return await this.teaRepository.searchUnit(searchUnitReq);
+      return await this.teaRepository.getAllPrefixes(getAllPrefixesReq);
     } catch (error) {
       throw error;
     }

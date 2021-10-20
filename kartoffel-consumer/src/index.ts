@@ -1,48 +1,91 @@
 import kafka from 'kafka-node';
 import { findPath } from './utils/path';
-import { requestProcessor } from './consumer/consumer.processor';
-import { logger } from './utils/logger';
-import { config } from './config';
-
-if (config.environment !== 'production') {
+if (process.env.NODE_ENV !== 'production') {
   const ENV_PATH = findPath('supernova.env');
   require('dotenv').config({ path: ENV_PATH });
 }
 
+import { requestProcessor } from './consumer/consumer.processor';
+import { logger } from './utils/logger';
+import { config } from './config';
+
 // Kafka connection init
 const connectToKafka = async () => {
-  const client = new kafka.KafkaClient({
-    kafkaHost: `${config.kafka.host}:${config.kafka.port}`,
-    connectRetryOptions: { retries: config.kafka.options.connection.retries },
-    reconnectOnIdle: true,
-  });
+  try {
+    const kafkaClientInit: any = {
+      kafkaHost: `${config.kafka.host}:${config.kafka.port}`,
+      connectRetryOptions: { retries: config.kafka.options.connection.retries },
+      reconnectOnIdle: true,
+    };
+    const client = new kafka.KafkaClient(kafkaClientInit);
 
-  client.on('ready', () => logger.info('Kafka client is ready!'));
-  return client;
+    client.on('ready', () =>
+      logger.info('Kafka client is ready!', kafkaClientInit)
+    );
+    return client;
+  } catch (error) {
+    throw error;
+  }
 };
 
-const createTopics = async (client: kafka.KafkaClient) => {
-  client.createTopics(config.consumer.topics, (error, result) => {
-    error ? logger.error(error) : logger.info(result);
-  });
-};
-
-const offsetInit = async (
-  client: kafka.KafkaClient,
-  consumer: kafka.Consumer
-) => {
-  const offset = new kafka.Offset(client);
-
-  config.consumer.topics.map(async (topic) => {
-    offset.fetchLatestOffsets([topic.topic], (error, offsets) => {
+const createTopics = (client: kafka.KafkaClient) => {
+  return new Promise((resolve, reject) => {
+    client.createTopics(config.consumer.topics, (error, result) => {
       if (error) {
-        logger.error('error in getting lastest offset', error);
+        logger.error('Error while trying to create topics', {
+          error: { message: error.message },
+        });
+        reject(error);
       } else {
-        const latestOffset = offsets[topic.topic][0];
-        logger.info(
-          `Kafka consumer, topic: ${topic.topic} latest offset: ${latestOffset}`
-        );
-        consumer.setOffset(topic.topic, 0, latestOffset);
+        logger.info('Topics were created successfuly in Kafka');
+        resolve(result);
+      }
+    });
+  });
+};
+
+const offsetInit = (client: kafka.KafkaClient, consumer: kafka.Consumer) => {
+  return new Promise((resolve, reject) => {
+    const offset = new kafka.Offset(client);
+    let promises = [];
+    for (let topic of config.consumer.topics) {
+      promises.push(
+        new Promise((topicResolve, topicReject) => {
+          offset.fetchLatestOffsets([topic.topic], (error, offsets) => {
+            if (error) {
+              logger.error('Error in getting latest offset', {
+                error: { message: error.message },
+              });
+              topicReject(error);
+            } else {
+              const latestOffset = offsets[topic.topic][0];
+              logger.info(
+                `Kafka consumer, topic: ${topic.topic} latest offset: ${latestOffset}`
+              );
+              consumer.setOffset(topic.topic, 0, latestOffset);
+              topicResolve(offsets);
+            }
+          });
+        })
+      );
+    }
+    Promise.all(promises)
+      .then((values) => {
+        resolve(values);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+};
+
+const commit = (consumer: kafka.Consumer) => {
+  return new Promise((resolve, reject) => {
+    consumer.commit((error, data) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(data);
       }
     });
   });
@@ -62,29 +105,44 @@ const startConsumer = async (client: kafka.KafkaClient) => {
   // set offset
   await offsetInit(client, consumer);
 
-  consumer.on('error', function (err) {
-    logger.error('Kafka Error: Consumer - ' + err);
+  consumer.on('error', function (error) {
+    logger.error('Consumer error', { error: { message: error.message } });
   });
 
-  consumer.on('offsetOutOfRange', function (err) {
-    logger.error('Kafka offsetOutOfRange: ' + err);
+  consumer.on('offsetOutOfRange', function (error) {
+    logger.error('offsetOutOfRange error', {
+      error: { message: error.message },
+    });
   });
 
-  consumer.on('message', function (incomingRequest) {
-    logger.info('Received message from kafka -', incomingRequest);
+  consumer.on('message', async function (incomingRequest) {
     try {
-      requestProcessor(incomingRequest);
-      consumer.commit((err, data) => logger.error(err, data));
-    } catch (err) {
-      logger.error(err);
+      logger.info('Received a message from Kafka', incomingRequest);
+      await requestProcessor(incomingRequest);
+      await commit(consumer);
+    } catch (error) {
+      logger.error('Error while receiving a message from Kafka', {
+        error: { message: error.message },
+      });
     }
   });
 };
 
 const main = async () => {
-  let kafkaClient = await connectToKafka();
-
-  await startConsumer(kafkaClient);
+  try {
+    let kafkaClient = await connectToKafka();
+    await startConsumer(kafkaClient);
+  } catch (error) {
+    throw error;
+  }
 };
 
-main().catch((err) => console.error(err));
+main()
+  .then(() => {
+    logger.info('kafka-consumer started successfuly!');
+  })
+  .catch((error) => {
+    logger.error('Error while starting kartoffel-consumer', {
+      error: { message: error.message },
+    });
+  });

@@ -3,13 +3,11 @@ FROM node:14.17.5-alpine3.14 as builder
 WORKDIR /app
 
 RUN apk update 
-RUN apk add --no-cache git ca-certificates 
+RUN apk add --no-cache git ca-certificates
 
 # copy configs to /app folder
 COPY --chown=node:node ./package*.json ./
 COPY --chown=node:node ./tsconfig.json ./
-
-
 
 # copy source code to /app/src folder
 COPY . .
@@ -20,12 +18,17 @@ RUN npm run build
 
 FROM node:14.17.5-alpine3.14
 
+RUN apk update 
+RUN apk add --no-cache nano vim
+
 RUN GRPC_HEALTH_PROBE_VERSION=v0.4.4 && \
     wget -qO/bin/grpc_health_probe https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/${GRPC_HEALTH_PROBE_VERSION}/grpc_health_probe-linux-amd64 && \
     chmod +x /bin/grpc_health_probe && \
     chown node:node /bin/grpc_health_probe
 
 RUN mkdir -p /logs && chown -R node:node /logs
+RUN mkdir -p /logs/spike-service && chown -R node:node /logs/spike-service
+RUN mkdir -p /spikeUtils && chown -R node:node /spikeUtils
 RUN mkdir -p /usr/src/app && chown -R node:node /usr/src/app
 WORKDIR /usr/src/app
 

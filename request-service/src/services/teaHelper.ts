@@ -2,7 +2,7 @@ import {
   Domain,
   ReportTeaReq,
   RetrieveByEntityIdReq,
-  RetrieveTeaByUnitReq,
+  RetrieveTeaByOGIdReq,
 } from '../interfaces/protoc/proto/teaService';
 import TeaService from './teaService';
 
@@ -14,12 +14,12 @@ export async function reportTeaFail(tea: string) {
   return successMessage.success;
 }
 
-export async function retrieveTeaByUnit(unit: string) {
-  let retrieveTeaByUnitReq: RetrieveTeaByUnitReq = {
-    id: unit,
+export async function retrieveTeaByOGId(id: string) {
+  let retrieveTeaByOGIdReq: RetrieveTeaByOGIdReq = {
+    id: id,
   };
-  const teaMessage = await TeaService.retrieveTeaByUnit(retrieveTeaByUnitReq);
-  return teaMessage.tea;
+  const teaMessage = await TeaService.retrieveTeaByOGId(retrieveTeaByOGIdReq);
+  return teaMessage;
 }
 
 export async function retrieveUPNByEntityId(id: string) {

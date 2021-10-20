@@ -8,7 +8,9 @@ export const cronJob = process.env.EXS_CRON_JOB
     : false
   : true;
 
-export const logPath = process.env.EXS_LOG_PATH || './logs';
+export const logPath = process.env.EXS_LOG_PATH
+  ? `${process.env.EXS_LOG_PATH}/execution-script`
+  : './logs/execution-script';
 export const storeLogs = process.env.GLOBAL_STORE_LOGS
   ? process.env.GLOBAL_STORE_LOGS === 'true'
   : false;

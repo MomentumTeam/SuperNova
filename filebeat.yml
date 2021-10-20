@@ -1,0 +1,158 @@
+filebeat.inputs:
+  - type: filestream
+    enabled: true
+    paths:
+      - /logs/api-gateway/*.log
+    fields:
+      service_name: 'api-gateway'
+
+  - type: filestream
+    enabled: true
+    paths:
+      - /logs/approver-service/*.log
+    fields:
+      service_name: 'approver-service'
+
+  - type: filestream
+    enabled: true
+    paths:
+      - /logs/authentication-service/*.log
+    fields:
+      service_name: 'authentication-service'
+
+  - type: filestream
+    enabled: true
+    paths:
+      - /logs/bulk-service/*.log
+    fields:
+      service_name: 'bulk-service'
+
+  - type: filestream
+    enabled: true
+    paths:
+      - /logs/execution-script/*.log
+    fields:
+      service_name: 'execution-script'
+
+  - type: filestream
+    enabled: true
+    paths:
+      - /logs/kartoffel-consumer/*.log
+    fields:
+      service_name: 'kartoffel-consumer'
+
+  - type: filestream
+    enabled: true
+    paths:
+      - /logs/kartoffel-service/*.log
+    fields:
+      service_name: 'kartoffel-service'
+
+  - type: filestream
+    enabled: true
+    paths:
+      - /logs/notification-service/*.log
+    fields:
+      service_name: 'notification-service'
+
+  - type: filestream
+    enabled: true
+    paths:
+      - /logs/producer-service/*.log
+    fields:
+      service_name: 'producer-service'
+
+  - type: filestream
+    enabled: true
+    paths:
+      - /logs/request-service/*.log
+    fields:
+      service_name: 'request-service'
+
+  - type: filestream
+    enabled: true
+    paths:
+      - /logs/spike-service/*.log
+    fields:
+      service_name: 'spike-service'
+
+  - type: filestream
+    enabled: true
+    paths:
+      - /logs/tea-service/*.log
+    fields:
+      service_name: 'tea-service'
+
+  - type: filestream
+    enabled: true
+    paths:
+      - /logs/whiteListSync-script/*.log
+    fields:
+      service_name: 'whiteListSync-script'
+
+# setup.ilm.enabled: false
+setup.template.name: 'LEGO'
+setup.template.pattern: 'LEGO-*'
+# setup.dashboards.index: 'LEGO-*'
+# setup.template.settings:
+# index.number_of_shards: 3
+#index.codec: best_compression
+#_source.enabled: false
+
+output.elasticsearch:
+  hosts: ['elasticsearch:9200']
+  index: 'LEGO-%{[service_name]}-%{+yyyy.MM.dd}'
+  # index: 'hahaha'
+  # indices:
+  #   - index: 'api-gateway-%{+yyyy.MM.dd}'
+  #     when.contains:
+  #       service_name: 'api-gateway'
+  #   - index: 'approver-service-%{+yyyy.MM.dd}'
+  #     when.contains:
+  #       service_name: 'approver-service'
+  #   - index: 'authentication-service-%{+yyyy.MM.dd}'
+  #     when.contains:
+  #       service_name: 'authentication-service'
+  #   - index: 'bulk-service-%{+yyyy.MM.dd}'
+  #     when.contains:
+  #       service_name: 'bulk-service'
+  #   - index: 'execution-script-%{+yyyy.MM.dd}'
+  #     when.contains:
+  #       service_name: 'execution-script'
+  #   - index: 'kartoffel-consumer-%{+yyyy.MM.dd}'
+  #     when.contains:
+  #       service_name: 'kartoffel-consumer'
+  #   - index: 'kartoffel-service-%{+yyyy.MM.dd}'
+  #     when.contains:
+  #       service_name: 'kartoffel-service'
+  #   - index: 'notification-service-%{+yyyy.MM.dd}'
+  #     when.contains:
+  #       service_name: 'notification-service'
+  #   - index: 'producer-service-%{+yyyy.MM.dd}'
+  #     when.contains:
+  #       service_name: 'producer-service'
+  #   - index: 'request-service-%{+yyyy.MM.dd}'
+  #     when.contains:
+  #       service_name: 'request-service'
+  #   - index: 'spike-service-%{+yyyy.MM.dd}'
+  #     when.contains:
+  #       service_name: 'spike-service'
+  #   - index: 'tea-service-%{+yyyy.MM.dd}'
+  #     when.contains:
+  #       service_name: 'tea-service'
+  #   - index: 'whiteListSync-script-%{+yyyy.MM.dd}'
+  #     when.contains:
+  #       service_name: 'whiteListSync-script'
+  # Optional protocol and basic auth credentials.
+  # username: 'elastic'
+  # password: 'changeme'
+#================================ Logging =====================================
+
+# Sets log level. The default log level is info.
+# Available log levels are: critical, error, warning, info, debug
+#logging.level: debug
+
+# At debug level, you can selectively enable logging only for some components.
+# To enable all selectors use ["*"]. Examples of other selectors are "beat",
+# "publish", "service".
+#logging.selectors: ["*"]

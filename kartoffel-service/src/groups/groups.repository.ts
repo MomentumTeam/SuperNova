@@ -17,6 +17,8 @@ import {
   GetAllOGsRequest,
   GetOGTreeRequest,
   OGTree,
+  GetPrefixByOGIdRequest,
+  OGPrefix,
 } from '../interfaces/protoc/proto/kartoffelService';
 
 export class GroupsRepository {
@@ -55,6 +57,23 @@ export class GroupsRepository {
           ],
           rootTree
         );
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getPrefixByOGId(
+    getPrefixByOGIdRequest: GetPrefixByOGIdRequest
+  ): Promise<OGPrefix> {
+    try {
+      if (C.useFaker) {
+        const prefix = this.kartoffelFaker.randomNumber(1000, 9999);
+        return { prefix: prefix.toString(), source: 'oneTree' };
+      } else {
+        //TODO
+        const prefix = this.kartoffelFaker.randomNumber(1000, 9999);
+        return { prefix: prefix.toString(), source: 'oneTree' };
       }
     } catch (error) {
       throw error;

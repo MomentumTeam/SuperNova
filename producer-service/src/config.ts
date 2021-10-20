@@ -30,7 +30,9 @@ export const shmuelRequestTypes: any = {
   DELETE_ROLE: 'PurgeRole',
 };
 
-export const logPath = process.env.PS_LOG_PATH || './logs';
+export const logPath = process.env.PS_LOG_PATH
+  ? `${process.env.PS_LOG_PATH}/producer-service`
+  : './logs/producer-service';
 export const storeLogs = process.env.GLOBAL_STORE_LOGS
   ? process.env.GLOBAL_STORE_LOGS === 'true'
   : false;

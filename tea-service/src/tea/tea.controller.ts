@@ -1,8 +1,8 @@
 import {
-  MinUnitArray,
+  Prefix,
+  PrefixArray,
   SuccessMessage,
   TeaMessage,
-  Unit,
   UPNMessage,
 } from '../interfaces/protoc/proto/teaService';
 import { TeaManager } from './tea.manager';
@@ -11,22 +11,52 @@ import { logger } from '../logger';
 
 const teaManager: TeaManager = new TeaManager();
 
-export async function retrieveTeaByUnit(
+export async function retrieveTeaByPrefix(
   call: any,
   callback: any
 ): Promise<void> {
   try {
-    logger.info('Call to retrieveTeaByUnit', { request: call.request });
-    const teaMessage: TeaMessage = await teaManager.retrieveTeaByUnit(
+    logger.info('Call to retrieveTeaByPrefix', { request: call.request });
+    const teaMessage: TeaMessage = await teaManager.retrieveTeaByPrefix(
       call.request
     );
-    logger.info('retrieveTeaByUnit OK', {
+    logger.info('retrieveTeaByPrefix OK', {
       response: teaMessage,
       request: call.request,
     });
     callback(null, teaMessage);
   } catch (error: any) {
-    logger.error('retrieveTeaByUnit ERROR', {
+    logger.error('retrieveTeaByPrefix ERROR', {
+      error: { message: error.message },
+      request: call.request,
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function retrieveTeaByOGId(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    logger.info('Call to retrieveTeaByOGId', { request: call.request });
+    const teaMessage: TeaMessage = await teaManager.retrieveTeaByOGId(
+      call.request
+    );
+    logger.info('retrieveTeaByOGId OK', {
+      response: teaMessage,
+      request: call.request,
+    });
+    callback(null, teaMessage);
+  } catch (error: any) {
+    logger.error('retrieveTeaByOGId ERROR', {
       error: { message: error.message },
       request: call.request,
     });
@@ -101,6 +131,33 @@ export async function retrieveUPNByEntityId(
   }
 }
 
+export async function throwTea(call: any, callback: any): Promise<void> {
+  try {
+    logger.info('Call to throwTea', { request: call.request });
+    const successMessage: SuccessMessage = await teaManager.reportTeaSuccess(
+      call.request
+    );
+    logger.info('throwTea OK', {
+      response: successMessage,
+      request: call.request,
+    });
+    callback(null, successMessage);
+  } catch (error: any) {
+    logger.error('throwTea ERROR', {
+      error: { message: error.message },
+      request: call.request,
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
 export async function reportTeaSuccess(
   call: any,
   callback: any
@@ -158,17 +215,17 @@ export async function reportTeaFail(call: any, callback: any): Promise<void> {
   }
 }
 
-export async function getAllUnits(call: any, callback: any): Promise<void> {
+export async function getAllPrefixes(call: any, callback: any): Promise<void> {
   try {
-    logger.info('Call to getAllUnits', { request: call.request });
-    const units: MinUnitArray = await teaManager.getAllUnits(call.request);
-    logger.info('getAllUnits OK', {
-      response: units,
+    logger.info('Call to getAllPrefixes', { request: call.request });
+    const prefixes: PrefixArray = await teaManager.getAllPrefixes(call.request);
+    logger.info('getAllPrefixes OK', {
+      response: prefixes,
       request: call.request,
     });
-    callback(null, units);
+    callback(null, prefixes);
   } catch (error: any) {
-    logger.error('getAllUnits ERROR', {
+    logger.error('getAllPrefixes ERROR', {
       error: { message: error.message },
       request: call.request,
     });
@@ -183,17 +240,17 @@ export async function getAllUnits(call: any, callback: any): Promise<void> {
   }
 }
 
-export async function searchUnit(call: any, callback: any): Promise<void> {
+export async function getPrefix(call: any, callback: any): Promise<void> {
   try {
-    logger.info('Call to searchUnit', { request: call.request });
-    const units: MinUnitArray = await teaManager.searchUnit(call.request);
-    logger.info('searchUnit OK', {
-      response: units,
+    logger.info('Call to getPrefix', { request: call.request });
+    const prefix: Prefix = await teaManager.getPrefix(call.request);
+    logger.info('getPrefix OK', {
+      response: prefix,
       request: call.request,
     });
-    callback(null, units);
+    callback(null, prefix);
   } catch (error: any) {
-    logger.error('searchUnit ERROR', {
+    logger.error('getPrefix ERROR', {
       error: { message: error.message },
       request: call.request,
     });
@@ -208,17 +265,17 @@ export async function searchUnit(call: any, callback: any): Promise<void> {
   }
 }
 
-export async function getUnit(call: any, callback: any): Promise<void> {
+export async function addPrefix(call: any, callback: any): Promise<void> {
   try {
-    logger.info('Call to getUnit', { request: call.request });
-    const unit: Unit = await teaManager.getUnit(call.request);
-    logger.info('getUnit OK', {
-      response: unit,
+    logger.info('Call to addPrefix', { request: call.request });
+    const prefix: Prefix = await teaManager.addPrefix(call.request);
+    logger.info('addPrefix OK', {
+      response: prefix,
       request: call.request,
     });
-    callback(null, unit);
+    callback(null, prefix);
   } catch (error: any) {
-    logger.error('getUnit ERROR', {
+    logger.error('addPrefix ERROR', {
       error: { message: error.message },
       request: call.request,
     });
@@ -233,17 +290,17 @@ export async function getUnit(call: any, callback: any): Promise<void> {
   }
 }
 
-export async function addUnit(call: any, callback: any): Promise<void> {
+export async function updatePrefix(call: any, callback: any): Promise<void> {
   try {
-    logger.info('Call to addUnit', { request: call.request });
-    const unit: Unit = await teaManager.addUnit(call.request);
-    logger.info('addUnit OK', {
-      response: unit,
+    logger.info('Call to updatePrefix', { request: call.request });
+    const prefix: Prefix = await teaManager.updatePrefix(call.request);
+    logger.info('updatePrefix OK', {
+      response: prefix,
       request: call.request,
     });
-    callback(null, unit);
+    callback(null, prefix);
   } catch (error: any) {
-    logger.error('addUnit ERROR', {
+    logger.error('updatePrefix ERROR', {
       error: { message: error.message },
       request: call.request,
     });
@@ -258,44 +315,19 @@ export async function addUnit(call: any, callback: any): Promise<void> {
   }
 }
 
-export async function updateUnit(call: any, callback: any): Promise<void> {
+export async function deletePrefix(call: any, callback: any): Promise<void> {
   try {
-    logger.info('Call to updateUnit', { request: call.request });
-    const unit: Unit = await teaManager.updateUnit(call.request);
-    logger.info('updateUnit OK', {
-      response: unit,
-      request: call.request,
-    });
-    callback(null, unit);
-  } catch (error: any) {
-    logger.error('updateUnit ERROR', {
-      error: { message: error.message },
-      request: call.request,
-    });
-    callback(
-      {
-        code: 400,
-        message: error.message,
-        status: grpc.status.CANCELLED,
-      },
-      null
-    );
-  }
-}
-
-export async function deleteUnit(call: any, callback: any): Promise<void> {
-  try {
-    logger.info('Call to deleteUnit', { request: call.request });
-    const successMessage: SuccessMessage = await teaManager.deleteUnit(
+    logger.info('Call to deletePrefix', { request: call.request });
+    const successMessage: SuccessMessage = await teaManager.deletePrefix(
       call.request
     );
-    logger.info('deleteUnit OK', {
+    logger.info('deletePrefix OK', {
       response: successMessage,
       request: call.request,
     });
     callback(null, successMessage);
   } catch (error: any) {
-    logger.error('deleteUnit ERROR', {
+    logger.error('deletePrefix ERROR', {
       error: { message: error.message },
       request: call.request,
     });

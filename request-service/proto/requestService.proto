@@ -27,7 +27,6 @@ service RequestService {
 
     rpc GetRequestsByPerson(GetRequestsByPersonReq) returns (RequestArray){}
     rpc GetRequestBySerialNumber(GetRequestBySerialNumberReq) returns (Request){}
-    rpc GetAllRequests(GetAllRequestsReq) returns (RequestArray){}
     rpc GetRequestById(GetRequestByIdReq) returns (Request) {}
     rpc GetRequestsUnderBulk(GetRequestsUnderBulkReq) returns (RequestArray){}
     rpc UpdateApproverDecision(UpdateApproverDecisionReq) returns (Request) {}
@@ -43,8 +42,6 @@ service RequestService {
     rpc GetRequestIdsInProgressByDue(GetRequestsInProgressByDueReq) returns (RequestIdArray){}
     rpc PushError(PushErrorReq) returns (Request){}
     rpc SyncBulkRequest(SyncBulkRequestReq) returns (Request){}
-
-    rpc SearchRequestsByDisplayName(SearchRequestsByDisplayNameReq) returns (RequestArray) {}
 }
 
 // ---------------------------------------------LEGO Requests------------------------------------------------------------
@@ -1020,29 +1017,10 @@ message GetRequestBySerialNumberReq{
     string serialNumber = 1;
 }
 
-//GetAllRequests
-message GetAllRequestsReq{
-    int32 from = 1;
-    int32 to = 2;
-    optional ApprovementStatus approvementStatus = 6;
-}
-
 //GetRequestById
 message GetRequestByIdReq{
     string id = 1;
 }
-
-
-// SearchRequestsByDisplayNameReq
-message SearchRequestsByDisplayNameReq{
-    string displayName = 1;
-    PersonTypeInRequest personType = 2;
-    optional string searcherId = 3;
-    optional PersonTypeInRequest searcherType = 4;
-    int32 from = 5;
-    int32 to = 6;
-}
-
 
 //CanPushToKartoffelQueue, CanPushToADQueue
 message CanPushToQueueReq{
@@ -1056,6 +1034,7 @@ message CanPushToQueueRes{
 //IncrementKartoffelRetries, IncrementADRetries
 message IncrementRetriesReq{
     string id = 1;
+    optional string message = 2;
 }
 
 // UpdateCommanderDecision, UpdateSecurityDecision, UpdateSuperSecurityDecision
@@ -1249,8 +1228,8 @@ message ADParams{
 
     //RenameOG
     //string ouDisplayName = ;
-    optional string oldName = 14;
-    optional string newName = 15;
+    optional string oldOuName = 14;
+    optional string newOuName = 15;
 
     //RenameRole
     // string samAccountName = ;

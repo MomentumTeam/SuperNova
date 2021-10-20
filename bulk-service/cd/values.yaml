@@ -10,13 +10,15 @@ images:
   tag: "latest"
   
 service:
+  ports:
+  - name: http
+    port: "8080"
 
 volume:
   mountPath: /usr/src/app/bulk-files
   secretName: azure-secret
   shareName: momentum/bulk-files
 
-
-configmap:
-  configmaps:  
-  name: momentum-configmap
+config:
+  configmaps:
+      name: momentum-configmap

@@ -32,6 +32,7 @@ service Kartoffel {
     rpc DeleteOG(DeleteOGRequest) returns (SuccessMessage){}            
     rpc UpdateOGParent(UpdateOGParentRequest) returns (SuccessMessage){}
     rpc RenameOG(RenameOGRequest) returns (SuccessMessage){}
+    rpc GetPrefixByOGId(GetPrefixByOGIdRequest) returns (OGPrefix){}
 
     //DI    
     rpc CreateDI(CreateDIRequest) returns (DigitalIdentity){}
@@ -214,6 +215,15 @@ message OGArray{
     repeated OrganizationGroup groups = 1;
 }
 
+message GetPrefixByOGIdRequest{
+    string id = 1;
+}
+
+message OGPrefix {
+    string prefix = 1;
+    string source = 2;
+}
+
 // CreateOG
 message CreateOGRequest{
     string name = 1;
@@ -223,12 +233,11 @@ message CreateOGRequest{
 
 // CreateDI
 message CreateDIRequest{
-    string entityId = 1;
-    bool isRoleAttachable = 2;
-    string mail = 3;
-    string source = 4;
-    string type = 5;
-    string uniqueId = 6;
+    bool isRoleAttachable = 1;
+    string mail = 2;
+    string source = 3;
+    string type = 4;
+    string uniqueId = 5;
 }
 /**  ROLES **/
 
@@ -260,7 +269,7 @@ message RenameRoleRequest{
 
 // ConnectRoleAndDI
 message ConnectRoleAndDIRequest{
-    string id = 1; // id of role
+    string roleId = 1; // id of role
     string uniqueId = 2; //uniqueId of DI
 }
 

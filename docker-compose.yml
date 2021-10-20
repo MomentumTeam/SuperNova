@@ -32,13 +32,13 @@ services:
     depends_on:
       - redis
     volumes:
-      - spike-utils:/usr/src/app/src/utils
-      - ./logs/spike-service:/logs
+      - spike-utils:/spikeUtils
+      - logs:/logs
     environment:
       - SS_REDIS_HOST=redis
       - SS_REDIS_PORT=6379
       - SS_REDIS_PASSWORD=mozart
-      - SS_SPIKE_PUBLIC_KEY_FULL_PATH=/usr/src/app/src/utils/publickey.pem
+      - SS_SPIKE_PUBLIC_KEY_FULL_PATH=/spikeUtils/publickey.pem
       - SS_SHMUEL_AUDIENCE=shmuel
       - SS_KARTOFFEL_AUDIENCE=kartoffel
       - SS_LOG_PATH=/logs
@@ -54,7 +54,7 @@ services:
       - mongo
       - notification-service
     volumes:
-      - ./logs/request-service:/logs
+      - logs:/logs
     environment:
       - RS_MONGO_URL=mongodb://mongo:27017/supernova
       - RS_NS_URL=notification-service:8080
@@ -71,7 +71,7 @@ services:
     depends_on:
       - spike-service
     volumes:
-      - ./logs/kartoffel-service:/logs
+      - logs:/logs
     environment:
       - KS_USE_FAKER=true
       - KS_SS_URL=spike-service:8080
@@ -89,7 +89,7 @@ services:
       - request-service
       - spike-service
     volumes:
-      - ./logs/producer-service:/logs
+      - logs:/logs
     environment:
       - PS_QUEUE_API_URL=http://20.199.120.227:3000
       - PS_RS_URL=request-service:8080
@@ -106,7 +106,7 @@ services:
     env_file:
       - ./supernova.env
     volumes:
-      - ./logs/notification-service:/logs
+      - logs:/logs
     ports:
       - '8084:8080'
     environment:
@@ -124,7 +124,7 @@ services:
       - request-service
       - kartoffel-service
     volumes:
-      - ./logs/approver-service:/logs
+      - logs:/logs
     environment:
       - APS_MONGO_URL=mongodb://mongo:27017/supernova
       - APS_KS_URL=kartoffel-service:8080
@@ -137,13 +137,20 @@ services:
     env_file:
       - ./supernova.env
     volumes:
-      - ./logs/tea-service:/logs
+      - logs:/logs
+      - ./tea-service/src/excelFiles:/teaUtils
     ports:
       - '8086:8080'
     environment:
       - TS_KS_URL=kartoffel-service:8080
       - TS_MONGO_URL=mongodb://mongo:27017/supernova
       - TS_LOG_PATH=/logs
+      - TS_NEED_INIT=true
+      - TS_INIT_EMPTY_ARRAYS=true
+      - TS_EXCEL_INIT_FOLDER=/teaUtils
+      - TS_EXCEL_INIT_FILE=initPrefixes.xlsx
+      - TS_OLD_SUFFIX=gmail.com
+      - TS_NEW_SUFFIX=gmail.com
 
   bulk-service:
     image: bulk-service
@@ -151,8 +158,8 @@ services:
     env_file:
       - ./supernova.env
     volumes:
-      - bulk-files:/usr/src/app/bulk-files
-      - ./logs/bulk-service:/logs
+      - bulk-files:/bulkFiles
+      - logs:/logs
     ports:
       - '8087:8080'
     depends_on:
@@ -160,7 +167,7 @@ services:
       - tea-service
     environment:
       - BS_RS_URL=request-service:8080
-      - BS_FOLDER_PATH=/usr/src/app/bulk-files
+      - BS_FOLDER_PATH=/bulkFiles
       - BS_LOG_PATH=/logs
 
   kartoffel-consumer:
@@ -175,13 +182,15 @@ services:
       - kartoffel-service
       - tea-service
     volumes:
-      - ./logs/kartoffel-consumer:/logs
+      - logs:/logs
     environment:
       - KC_RS_URL=request-service:8080
       - KC_TS_URL=tea-service:8080
+      - KC_KS_URL=kartoffel-service:8080
       - KC_KAFKA_HOST=kafka
       - KC_KAFKA_PORT=29092
       - KC_LOG_PATH=/logs
+      - KC_KAFKA_CONSUMER_TOPIC=requests
 
   execution-script:
     image: execution-script
@@ -192,7 +201,7 @@ services:
       - request-service
       - producer-service
     volumes:
-      - ./logs/execution-script:/logs
+      - logs:/logs
     environment:
       - EXS_RS_URL=request-service:8080
       - EXS_PS_URL=producer-service:8080
@@ -209,7 +218,7 @@ services:
     depends_on:
       - approver-service
     volumes:
-      - ./logs/whiteListSync-script:/logs
+      - logs:/logs
     environment:
       - WLS_APS_URL=approver-service:8080
       - WLS_HOUR=10
@@ -217,18 +226,18 @@ services:
       - WLS_CRON_JOB=false
       - WLS_LOG_PATH=/logs
 
-  population-script:
-    image: population-script
-    build: ./population-script/
-    env_file:
-      - ./supernova.env
-    depends_on:
-      - request-service
-    environment:
-      - POS_RS_URL=request-service:8080
-      - POS_ENTITY_IDS=aaaaaaaaaaaaaaaaaaaaaaaa,bbbbbbbbbbbbbbbbbbbbbbbb
-      - POS_GENERATE_COUNT=50
-      - POS_LOG_PATH=/logs
+  # population-script:
+  #   image: population-script
+  #   build: ./population-script/
+  #   env_file:
+  #     - ./supernova.env
+  #   depends_on:
+  #     - request-service
+  #   environment:
+  #     - POS_RS_URL=request-service:8080
+  #     - POS_ENTITY_IDS=aaaaaaaaaaaaaaaaaaaaaaaa,bbbbbbbbbbbbbbbbbbbbbbbb
+  #     - POS_GENERATE_COUNT=50
+  #     - POS_LOG_PATH=/logs
 
   authentication-service:
     image: authentication-service
@@ -241,7 +250,7 @@ services:
       - kartoffel-service
       - approver-service
     volumes:
-      - ./logs/authentication-service:/logs
+      - logs:/logs
     environment:
       - AS_SHRAGA_URL=https://shraga-prod.northeurope.cloudapp.azure.com
       - AS_CLIENT_ENDPOINT=http://localhost:3000
@@ -255,9 +264,9 @@ services:
     env_file:
       - ./supernova.env
     volumes:
-      - bulk-files:/usr/src/app/bulk-files
-      - spike-utils:/usr/src/app/spike-utils
-      - ./logs/api-gateway:/logs
+      - bulk-files:/bulkFiles
+      - spike-utils:/spikeUtils
+      - logs:/logs
     ports:
       - '2000:8080'
     depends_on:
@@ -279,12 +288,12 @@ services:
       - GATEWAY_AS_URL=http://localhost:9000
       - GATEWAY_BS_URL=bulk-service:8080
       - GATEWAY_APS_URL=approver-service:8080
-      - GATEWAY_BS_FOLDER_PATH=/usr/src/app/bulk-files
+      - GATEWAY_BS_FOLDER_PATH=/bulkFiles
       - GATEWAY_AUTHENTICATION_REQUIRED=true
       - GATEWAY_APM_URL=http://apm-server:8200
       - GATEWAY_TS_URL=tea-service:8080
       - GATEWAY_SPIKE_AUDIENCE_ID=bwwIB0gSS0xay_odirl0OCAJ3gUlXkKMKijbDY_e
-      - GATEWAY_SPIKE_PUBLIC_KEY_FULL_PATH=/usr/src/app/spike-utils/publickey.pem
+      - GATEWAY_SPIKE_PUBLIC_KEY_FULL_PATH=/spikeUtils/publickey.pem
       - GATEWAY_WRITE_SCOPE_NAME=write
       - GATEWAY_LOG_PATH=/logs
 
@@ -386,8 +395,18 @@ services:
       retries: 20
       test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:5601/api/status
 
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:8.0.0-alpha2
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    volumes:
+      - logs:/logs
+      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml
+
 volumes:
   bulk-files:
   spike-utils:
+  logs:
   esdata:
     driver: local

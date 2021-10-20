@@ -36,88 +36,65 @@ export function domainToJSON(object: Domain): string {
   }
 }
 
-export interface SearchUnitReq {
-  nameAndHierarchy: string;
-}
-
-export interface GetAllUnitsReq {}
-
-export interface MinUnitArray {
-  units: UnitMin[];
-  totalCount: number;
-}
-
-export interface UnitMin {
+export interface RetrieveTeaByOGIdReq {
   id: string;
-  name: string;
-  hierarchy: string;
 }
 
-export interface RetrieveTeaByUnitReq {
-  id: string;
+export interface GetAllPrefixesReq {}
+
+export interface RetrieveTeaByPrefixReq {
+  prefix: string;
 }
 
 export interface TeaMessage {
   tea: string;
+  roleId?: string | undefined;
+  uniqueId?: string | undefined;
+  samAccountName?: string | undefined;
+  mail?: string | undefined;
 }
 
 export interface UPNMessage {
   upn: string;
 }
 
-export interface UpdateUnitReq {
-  id: string;
-  unitProperties: UnitProperties | undefined;
-}
-
-export interface DeleteUnitReq {
-  id: string;
-}
-
-export interface GetUnitReq {
-  id: string;
-}
-
-export interface AddUnitReq {
-  id: string;
-  name: string;
+export interface UpdatePrefixReq {
   prefix: string;
-  /** gmail.com, after @ */
-  oldDomainSuffix: string;
-  /** gmail.com, after @ */
-  newDomainSuffix: string;
-  currentCounter: number;
-  hierarchy: string;
+  properties: PrefixProperties | undefined;
 }
 
-export interface Unit {
-  id: string;
-  name: string;
+export interface DeletePrefixReq {
+  prefix: string;
+}
+
+export interface GetPrefixReq {
+  prefix: string;
+}
+
+export interface AddPrefixReq {
+  prefix: string;
+  currentCounter: number;
+}
+
+export interface Prefix {
   /** 1234 */
   prefix: string;
-  /** gmail.com, after @ */
-  oldDomainSuffix: string;
-  /** gmail.com, after @ */
-  newDomainSuffix: string;
   currentCounter: number;
   teaInProgress: string[];
   failedTea: string[];
   createdAt: number;
-  hierarchy: string;
 }
 
-export interface UnitProperties {
-  id?: string | undefined;
-  name?: string | undefined;
+export interface PrefixArray {
+  prefixes: Prefix[];
+  totalCount: number;
+}
+
+export interface PrefixProperties {
   prefix?: string | undefined;
-  /** gmail.com, after @ */
-  oldDomainSuffix: string;
-  /** gmail.com, after @ */
-  newDomainSuffix: string;
   currentCounter?: string | undefined;
   teaInProgress: string[];
   failedTea: string[];
-  hierarchy: string;
 }
 
 export interface ReportTeaReq {
@@ -148,291 +125,11 @@ export interface EntityMin {
   lastName?: string | undefined;
 }
 
-const baseSearchUnitReq: object = { nameAndHierarchy: "" };
+const baseRetrieveTeaByOGIdReq: object = { id: "" };
 
-export const SearchUnitReq = {
+export const RetrieveTeaByOGIdReq = {
   encode(
-    message: SearchUnitReq,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.nameAndHierarchy !== "") {
-      writer.uint32(10).string(message.nameAndHierarchy);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): SearchUnitReq {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseSearchUnitReq } as SearchUnitReq;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.nameAndHierarchy = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): SearchUnitReq {
-    const message = { ...baseSearchUnitReq } as SearchUnitReq;
-    if (
-      object.nameAndHierarchy !== undefined &&
-      object.nameAndHierarchy !== null
-    ) {
-      message.nameAndHierarchy = String(object.nameAndHierarchy);
-    } else {
-      message.nameAndHierarchy = "";
-    }
-    return message;
-  },
-
-  toJSON(message: SearchUnitReq): unknown {
-    const obj: any = {};
-    message.nameAndHierarchy !== undefined &&
-      (obj.nameAndHierarchy = message.nameAndHierarchy);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<SearchUnitReq>): SearchUnitReq {
-    const message = { ...baseSearchUnitReq } as SearchUnitReq;
-    if (
-      object.nameAndHierarchy !== undefined &&
-      object.nameAndHierarchy !== null
-    ) {
-      message.nameAndHierarchy = object.nameAndHierarchy;
-    } else {
-      message.nameAndHierarchy = "";
-    }
-    return message;
-  },
-};
-
-const baseGetAllUnitsReq: object = {};
-
-export const GetAllUnitsReq = {
-  encode(
-    _: GetAllUnitsReq,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): GetAllUnitsReq {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseGetAllUnitsReq } as GetAllUnitsReq;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(_: any): GetAllUnitsReq {
-    const message = { ...baseGetAllUnitsReq } as GetAllUnitsReq;
-    return message;
-  },
-
-  toJSON(_: GetAllUnitsReq): unknown {
-    const obj: any = {};
-    return obj;
-  },
-
-  fromPartial(_: DeepPartial<GetAllUnitsReq>): GetAllUnitsReq {
-    const message = { ...baseGetAllUnitsReq } as GetAllUnitsReq;
-    return message;
-  },
-};
-
-const baseMinUnitArray: object = { totalCount: 0 };
-
-export const MinUnitArray = {
-  encode(
-    message: MinUnitArray,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    for (const v of message.units) {
-      UnitMin.encode(v!, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.totalCount !== 0) {
-      writer.uint32(16).int32(message.totalCount);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): MinUnitArray {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMinUnitArray } as MinUnitArray;
-    message.units = [];
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.units.push(UnitMin.decode(reader, reader.uint32()));
-          break;
-        case 2:
-          message.totalCount = reader.int32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): MinUnitArray {
-    const message = { ...baseMinUnitArray } as MinUnitArray;
-    message.units = [];
-    if (object.units !== undefined && object.units !== null) {
-      for (const e of object.units) {
-        message.units.push(UnitMin.fromJSON(e));
-      }
-    }
-    if (object.totalCount !== undefined && object.totalCount !== null) {
-      message.totalCount = Number(object.totalCount);
-    } else {
-      message.totalCount = 0;
-    }
-    return message;
-  },
-
-  toJSON(message: MinUnitArray): unknown {
-    const obj: any = {};
-    if (message.units) {
-      obj.units = message.units.map((e) => (e ? UnitMin.toJSON(e) : undefined));
-    } else {
-      obj.units = [];
-    }
-    message.totalCount !== undefined && (obj.totalCount = message.totalCount);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<MinUnitArray>): MinUnitArray {
-    const message = { ...baseMinUnitArray } as MinUnitArray;
-    message.units = [];
-    if (object.units !== undefined && object.units !== null) {
-      for (const e of object.units) {
-        message.units.push(UnitMin.fromPartial(e));
-      }
-    }
-    if (object.totalCount !== undefined && object.totalCount !== null) {
-      message.totalCount = object.totalCount;
-    } else {
-      message.totalCount = 0;
-    }
-    return message;
-  },
-};
-
-const baseUnitMin: object = { id: "", name: "", hierarchy: "" };
-
-export const UnitMin = {
-  encode(
-    message: UnitMin,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
-    }
-    if (message.name !== "") {
-      writer.uint32(18).string(message.name);
-    }
-    if (message.hierarchy !== "") {
-      writer.uint32(26).string(message.hierarchy);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): UnitMin {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseUnitMin } as UnitMin;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.id = reader.string();
-          break;
-        case 2:
-          message.name = reader.string();
-          break;
-        case 3:
-          message.hierarchy = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): UnitMin {
-    const message = { ...baseUnitMin } as UnitMin;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
-    } else {
-      message.id = "";
-    }
-    if (object.name !== undefined && object.name !== null) {
-      message.name = String(object.name);
-    } else {
-      message.name = "";
-    }
-    if (object.hierarchy !== undefined && object.hierarchy !== null) {
-      message.hierarchy = String(object.hierarchy);
-    } else {
-      message.hierarchy = "";
-    }
-    return message;
-  },
-
-  toJSON(message: UnitMin): unknown {
-    const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
-    message.name !== undefined && (obj.name = message.name);
-    message.hierarchy !== undefined && (obj.hierarchy = message.hierarchy);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<UnitMin>): UnitMin {
-    const message = { ...baseUnitMin } as UnitMin;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
-    } else {
-      message.id = "";
-    }
-    if (object.name !== undefined && object.name !== null) {
-      message.name = object.name;
-    } else {
-      message.name = "";
-    }
-    if (object.hierarchy !== undefined && object.hierarchy !== null) {
-      message.hierarchy = object.hierarchy;
-    } else {
-      message.hierarchy = "";
-    }
-    return message;
-  },
-};
-
-const baseRetrieveTeaByUnitReq: object = { id: "" };
-
-export const RetrieveTeaByUnitReq = {
-  encode(
-    message: RetrieveTeaByUnitReq,
+    message: RetrieveTeaByOGIdReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.id !== "") {
@@ -444,10 +141,10 @@ export const RetrieveTeaByUnitReq = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): RetrieveTeaByUnitReq {
+  ): RetrieveTeaByOGIdReq {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseRetrieveTeaByUnitReq } as RetrieveTeaByUnitReq;
+    const message = { ...baseRetrieveTeaByOGIdReq } as RetrieveTeaByOGIdReq;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -462,8 +159,8 @@ export const RetrieveTeaByUnitReq = {
     return message;
   },
 
-  fromJSON(object: any): RetrieveTeaByUnitReq {
-    const message = { ...baseRetrieveTeaByUnitReq } as RetrieveTeaByUnitReq;
+  fromJSON(object: any): RetrieveTeaByOGIdReq {
+    const message = { ...baseRetrieveTeaByOGIdReq } as RetrieveTeaByOGIdReq;
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
@@ -472,18 +169,122 @@ export const RetrieveTeaByUnitReq = {
     return message;
   },
 
-  toJSON(message: RetrieveTeaByUnitReq): unknown {
+  toJSON(message: RetrieveTeaByOGIdReq): unknown {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<RetrieveTeaByUnitReq>): RetrieveTeaByUnitReq {
-    const message = { ...baseRetrieveTeaByUnitReq } as RetrieveTeaByUnitReq;
+  fromPartial(object: DeepPartial<RetrieveTeaByOGIdReq>): RetrieveTeaByOGIdReq {
+    const message = { ...baseRetrieveTeaByOGIdReq } as RetrieveTeaByOGIdReq;
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
       message.id = "";
+    }
+    return message;
+  },
+};
+
+const baseGetAllPrefixesReq: object = {};
+
+export const GetAllPrefixesReq = {
+  encode(
+    _: GetAllPrefixesReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): GetAllPrefixesReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseGetAllPrefixesReq } as GetAllPrefixesReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): GetAllPrefixesReq {
+    const message = { ...baseGetAllPrefixesReq } as GetAllPrefixesReq;
+    return message;
+  },
+
+  toJSON(_: GetAllPrefixesReq): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(_: DeepPartial<GetAllPrefixesReq>): GetAllPrefixesReq {
+    const message = { ...baseGetAllPrefixesReq } as GetAllPrefixesReq;
+    return message;
+  },
+};
+
+const baseRetrieveTeaByPrefixReq: object = { prefix: "" };
+
+export const RetrieveTeaByPrefixReq = {
+  encode(
+    message: RetrieveTeaByPrefixReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.prefix !== "") {
+      writer.uint32(10).string(message.prefix);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): RetrieveTeaByPrefixReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseRetrieveTeaByPrefixReq } as RetrieveTeaByPrefixReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.prefix = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RetrieveTeaByPrefixReq {
+    const message = { ...baseRetrieveTeaByPrefixReq } as RetrieveTeaByPrefixReq;
+    if (object.prefix !== undefined && object.prefix !== null) {
+      message.prefix = String(object.prefix);
+    } else {
+      message.prefix = "";
+    }
+    return message;
+  },
+
+  toJSON(message: RetrieveTeaByPrefixReq): unknown {
+    const obj: any = {};
+    message.prefix !== undefined && (obj.prefix = message.prefix);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<RetrieveTeaByPrefixReq>
+  ): RetrieveTeaByPrefixReq {
+    const message = { ...baseRetrieveTeaByPrefixReq } as RetrieveTeaByPrefixReq;
+    if (object.prefix !== undefined && object.prefix !== null) {
+      message.prefix = object.prefix;
+    } else {
+      message.prefix = "";
     }
     return message;
   },
@@ -499,6 +300,18 @@ export const TeaMessage = {
     if (message.tea !== "") {
       writer.uint32(10).string(message.tea);
     }
+    if (message.roleId !== undefined) {
+      writer.uint32(18).string(message.roleId);
+    }
+    if (message.uniqueId !== undefined) {
+      writer.uint32(26).string(message.uniqueId);
+    }
+    if (message.samAccountName !== undefined) {
+      writer.uint32(34).string(message.samAccountName);
+    }
+    if (message.mail !== undefined) {
+      writer.uint32(42).string(message.mail);
+    }
     return writer;
   },
 
@@ -511,6 +324,18 @@ export const TeaMessage = {
       switch (tag >>> 3) {
         case 1:
           message.tea = reader.string();
+          break;
+        case 2:
+          message.roleId = reader.string();
+          break;
+        case 3:
+          message.uniqueId = reader.string();
+          break;
+        case 4:
+          message.samAccountName = reader.string();
+          break;
+        case 5:
+          message.mail = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -527,12 +352,37 @@ export const TeaMessage = {
     } else {
       message.tea = "";
     }
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = String(object.roleId);
+    } else {
+      message.roleId = undefined;
+    }
+    if (object.uniqueId !== undefined && object.uniqueId !== null) {
+      message.uniqueId = String(object.uniqueId);
+    } else {
+      message.uniqueId = undefined;
+    }
+    if (object.samAccountName !== undefined && object.samAccountName !== null) {
+      message.samAccountName = String(object.samAccountName);
+    } else {
+      message.samAccountName = undefined;
+    }
+    if (object.mail !== undefined && object.mail !== null) {
+      message.mail = String(object.mail);
+    } else {
+      message.mail = undefined;
+    }
     return message;
   },
 
   toJSON(message: TeaMessage): unknown {
     const obj: any = {};
     message.tea !== undefined && (obj.tea = message.tea);
+    message.roleId !== undefined && (obj.roleId = message.roleId);
+    message.uniqueId !== undefined && (obj.uniqueId = message.uniqueId);
+    message.samAccountName !== undefined &&
+      (obj.samAccountName = message.samAccountName);
+    message.mail !== undefined && (obj.mail = message.mail);
     return obj;
   },
 
@@ -542,6 +392,26 @@ export const TeaMessage = {
       message.tea = object.tea;
     } else {
       message.tea = "";
+    }
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = object.roleId;
+    } else {
+      message.roleId = undefined;
+    }
+    if (object.uniqueId !== undefined && object.uniqueId !== null) {
+      message.uniqueId = object.uniqueId;
+    } else {
+      message.uniqueId = undefined;
+    }
+    if (object.samAccountName !== undefined && object.samAccountName !== null) {
+      message.samAccountName = object.samAccountName;
+    } else {
+      message.samAccountName = undefined;
+    }
+    if (object.mail !== undefined && object.mail !== null) {
+      message.mail = object.mail;
+    } else {
+      message.mail = undefined;
     }
     return message;
   },
@@ -605,274 +475,37 @@ export const UPNMessage = {
   },
 };
 
-const baseUpdateUnitReq: object = { id: "" };
+const baseUpdatePrefixReq: object = { prefix: "" };
 
-export const UpdateUnitReq = {
+export const UpdatePrefixReq = {
   encode(
-    message: UpdateUnitReq,
+    message: UpdatePrefixReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
+    if (message.prefix !== "") {
+      writer.uint32(10).string(message.prefix);
     }
-    if (message.unitProperties !== undefined) {
-      UnitProperties.encode(
-        message.unitProperties,
+    if (message.properties !== undefined) {
+      PrefixProperties.encode(
+        message.properties,
         writer.uint32(18).fork()
       ).ldelim();
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): UpdateUnitReq {
+  decode(input: _m0.Reader | Uint8Array, length?: number): UpdatePrefixReq {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseUpdateUnitReq } as UpdateUnitReq;
+    const message = { ...baseUpdatePrefixReq } as UpdatePrefixReq;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.id = reader.string();
-          break;
-        case 2:
-          message.unitProperties = UnitProperties.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): UpdateUnitReq {
-    const message = { ...baseUpdateUnitReq } as UpdateUnitReq;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
-    } else {
-      message.id = "";
-    }
-    if (object.unitProperties !== undefined && object.unitProperties !== null) {
-      message.unitProperties = UnitProperties.fromJSON(object.unitProperties);
-    } else {
-      message.unitProperties = undefined;
-    }
-    return message;
-  },
-
-  toJSON(message: UpdateUnitReq): unknown {
-    const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
-    message.unitProperties !== undefined &&
-      (obj.unitProperties = message.unitProperties
-        ? UnitProperties.toJSON(message.unitProperties)
-        : undefined);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<UpdateUnitReq>): UpdateUnitReq {
-    const message = { ...baseUpdateUnitReq } as UpdateUnitReq;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
-    } else {
-      message.id = "";
-    }
-    if (object.unitProperties !== undefined && object.unitProperties !== null) {
-      message.unitProperties = UnitProperties.fromPartial(
-        object.unitProperties
-      );
-    } else {
-      message.unitProperties = undefined;
-    }
-    return message;
-  },
-};
-
-const baseDeleteUnitReq: object = { id: "" };
-
-export const DeleteUnitReq = {
-  encode(
-    message: DeleteUnitReq,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): DeleteUnitReq {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseDeleteUnitReq } as DeleteUnitReq;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.id = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): DeleteUnitReq {
-    const message = { ...baseDeleteUnitReq } as DeleteUnitReq;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
-    } else {
-      message.id = "";
-    }
-    return message;
-  },
-
-  toJSON(message: DeleteUnitReq): unknown {
-    const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<DeleteUnitReq>): DeleteUnitReq {
-    const message = { ...baseDeleteUnitReq } as DeleteUnitReq;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
-    } else {
-      message.id = "";
-    }
-    return message;
-  },
-};
-
-const baseGetUnitReq: object = { id: "" };
-
-export const GetUnitReq = {
-  encode(
-    message: GetUnitReq,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): GetUnitReq {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseGetUnitReq } as GetUnitReq;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.id = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): GetUnitReq {
-    const message = { ...baseGetUnitReq } as GetUnitReq;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
-    } else {
-      message.id = "";
-    }
-    return message;
-  },
-
-  toJSON(message: GetUnitReq): unknown {
-    const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<GetUnitReq>): GetUnitReq {
-    const message = { ...baseGetUnitReq } as GetUnitReq;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
-    } else {
-      message.id = "";
-    }
-    return message;
-  },
-};
-
-const baseAddUnitReq: object = {
-  id: "",
-  name: "",
-  prefix: "",
-  oldDomainSuffix: "",
-  newDomainSuffix: "",
-  currentCounter: 0,
-  hierarchy: "",
-};
-
-export const AddUnitReq = {
-  encode(
-    message: AddUnitReq,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
-    }
-    if (message.name !== "") {
-      writer.uint32(18).string(message.name);
-    }
-    if (message.prefix !== "") {
-      writer.uint32(26).string(message.prefix);
-    }
-    if (message.oldDomainSuffix !== "") {
-      writer.uint32(34).string(message.oldDomainSuffix);
-    }
-    if (message.newDomainSuffix !== "") {
-      writer.uint32(42).string(message.newDomainSuffix);
-    }
-    if (message.currentCounter !== 0) {
-      writer.uint32(48).int32(message.currentCounter);
-    }
-    if (message.hierarchy !== "") {
-      writer.uint32(58).string(message.hierarchy);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): AddUnitReq {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseAddUnitReq } as AddUnitReq;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.id = reader.string();
-          break;
-        case 2:
-          message.name = reader.string();
-          break;
-        case 3:
           message.prefix = reader.string();
           break;
-        case 4:
-          message.oldDomainSuffix = reader.string();
-          break;
-        case 5:
-          message.newDomainSuffix = reader.string();
-          break;
-        case 6:
-          message.currentCounter = reader.int32();
-          break;
-        case 7:
-          message.hierarchy = reader.string();
+        case 2:
+          message.properties = PrefixProperties.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -882,200 +515,293 @@ export const AddUnitReq = {
     return message;
   },
 
-  fromJSON(object: any): AddUnitReq {
-    const message = { ...baseAddUnitReq } as AddUnitReq;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
-    } else {
-      message.id = "";
-    }
-    if (object.name !== undefined && object.name !== null) {
-      message.name = String(object.name);
-    } else {
-      message.name = "";
-    }
+  fromJSON(object: any): UpdatePrefixReq {
+    const message = { ...baseUpdatePrefixReq } as UpdatePrefixReq;
     if (object.prefix !== undefined && object.prefix !== null) {
       message.prefix = String(object.prefix);
     } else {
       message.prefix = "";
     }
-    if (
-      object.oldDomainSuffix !== undefined &&
-      object.oldDomainSuffix !== null
-    ) {
-      message.oldDomainSuffix = String(object.oldDomainSuffix);
+    if (object.properties !== undefined && object.properties !== null) {
+      message.properties = PrefixProperties.fromJSON(object.properties);
     } else {
-      message.oldDomainSuffix = "";
+      message.properties = undefined;
     }
-    if (
-      object.newDomainSuffix !== undefined &&
-      object.newDomainSuffix !== null
-    ) {
-      message.newDomainSuffix = String(object.newDomainSuffix);
+    return message;
+  },
+
+  toJSON(message: UpdatePrefixReq): unknown {
+    const obj: any = {};
+    message.prefix !== undefined && (obj.prefix = message.prefix);
+    message.properties !== undefined &&
+      (obj.properties = message.properties
+        ? PrefixProperties.toJSON(message.properties)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<UpdatePrefixReq>): UpdatePrefixReq {
+    const message = { ...baseUpdatePrefixReq } as UpdatePrefixReq;
+    if (object.prefix !== undefined && object.prefix !== null) {
+      message.prefix = object.prefix;
     } else {
-      message.newDomainSuffix = "";
+      message.prefix = "";
+    }
+    if (object.properties !== undefined && object.properties !== null) {
+      message.properties = PrefixProperties.fromPartial(object.properties);
+    } else {
+      message.properties = undefined;
+    }
+    return message;
+  },
+};
+
+const baseDeletePrefixReq: object = { prefix: "" };
+
+export const DeletePrefixReq = {
+  encode(
+    message: DeletePrefixReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.prefix !== "") {
+      writer.uint32(10).string(message.prefix);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DeletePrefixReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseDeletePrefixReq } as DeletePrefixReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.prefix = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DeletePrefixReq {
+    const message = { ...baseDeletePrefixReq } as DeletePrefixReq;
+    if (object.prefix !== undefined && object.prefix !== null) {
+      message.prefix = String(object.prefix);
+    } else {
+      message.prefix = "";
+    }
+    return message;
+  },
+
+  toJSON(message: DeletePrefixReq): unknown {
+    const obj: any = {};
+    message.prefix !== undefined && (obj.prefix = message.prefix);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<DeletePrefixReq>): DeletePrefixReq {
+    const message = { ...baseDeletePrefixReq } as DeletePrefixReq;
+    if (object.prefix !== undefined && object.prefix !== null) {
+      message.prefix = object.prefix;
+    } else {
+      message.prefix = "";
+    }
+    return message;
+  },
+};
+
+const baseGetPrefixReq: object = { prefix: "" };
+
+export const GetPrefixReq = {
+  encode(
+    message: GetPrefixReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.prefix !== "") {
+      writer.uint32(10).string(message.prefix);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): GetPrefixReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseGetPrefixReq } as GetPrefixReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.prefix = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetPrefixReq {
+    const message = { ...baseGetPrefixReq } as GetPrefixReq;
+    if (object.prefix !== undefined && object.prefix !== null) {
+      message.prefix = String(object.prefix);
+    } else {
+      message.prefix = "";
+    }
+    return message;
+  },
+
+  toJSON(message: GetPrefixReq): unknown {
+    const obj: any = {};
+    message.prefix !== undefined && (obj.prefix = message.prefix);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<GetPrefixReq>): GetPrefixReq {
+    const message = { ...baseGetPrefixReq } as GetPrefixReq;
+    if (object.prefix !== undefined && object.prefix !== null) {
+      message.prefix = object.prefix;
+    } else {
+      message.prefix = "";
+    }
+    return message;
+  },
+};
+
+const baseAddPrefixReq: object = { prefix: "", currentCounter: 0 };
+
+export const AddPrefixReq = {
+  encode(
+    message: AddPrefixReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.prefix !== "") {
+      writer.uint32(10).string(message.prefix);
+    }
+    if (message.currentCounter !== 0) {
+      writer.uint32(16).int32(message.currentCounter);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): AddPrefixReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseAddPrefixReq } as AddPrefixReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.prefix = reader.string();
+          break;
+        case 2:
+          message.currentCounter = reader.int32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): AddPrefixReq {
+    const message = { ...baseAddPrefixReq } as AddPrefixReq;
+    if (object.prefix !== undefined && object.prefix !== null) {
+      message.prefix = String(object.prefix);
+    } else {
+      message.prefix = "";
     }
     if (object.currentCounter !== undefined && object.currentCounter !== null) {
       message.currentCounter = Number(object.currentCounter);
     } else {
       message.currentCounter = 0;
     }
-    if (object.hierarchy !== undefined && object.hierarchy !== null) {
-      message.hierarchy = String(object.hierarchy);
-    } else {
-      message.hierarchy = "";
-    }
     return message;
   },
 
-  toJSON(message: AddUnitReq): unknown {
+  toJSON(message: AddPrefixReq): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
-    message.name !== undefined && (obj.name = message.name);
     message.prefix !== undefined && (obj.prefix = message.prefix);
-    message.oldDomainSuffix !== undefined &&
-      (obj.oldDomainSuffix = message.oldDomainSuffix);
-    message.newDomainSuffix !== undefined &&
-      (obj.newDomainSuffix = message.newDomainSuffix);
     message.currentCounter !== undefined &&
       (obj.currentCounter = message.currentCounter);
-    message.hierarchy !== undefined && (obj.hierarchy = message.hierarchy);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<AddUnitReq>): AddUnitReq {
-    const message = { ...baseAddUnitReq } as AddUnitReq;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
-    } else {
-      message.id = "";
-    }
-    if (object.name !== undefined && object.name !== null) {
-      message.name = object.name;
-    } else {
-      message.name = "";
-    }
+  fromPartial(object: DeepPartial<AddPrefixReq>): AddPrefixReq {
+    const message = { ...baseAddPrefixReq } as AddPrefixReq;
     if (object.prefix !== undefined && object.prefix !== null) {
       message.prefix = object.prefix;
     } else {
       message.prefix = "";
-    }
-    if (
-      object.oldDomainSuffix !== undefined &&
-      object.oldDomainSuffix !== null
-    ) {
-      message.oldDomainSuffix = object.oldDomainSuffix;
-    } else {
-      message.oldDomainSuffix = "";
-    }
-    if (
-      object.newDomainSuffix !== undefined &&
-      object.newDomainSuffix !== null
-    ) {
-      message.newDomainSuffix = object.newDomainSuffix;
-    } else {
-      message.newDomainSuffix = "";
     }
     if (object.currentCounter !== undefined && object.currentCounter !== null) {
       message.currentCounter = object.currentCounter;
     } else {
       message.currentCounter = 0;
     }
-    if (object.hierarchy !== undefined && object.hierarchy !== null) {
-      message.hierarchy = object.hierarchy;
-    } else {
-      message.hierarchy = "";
-    }
     return message;
   },
 };
 
-const baseUnit: object = {
-  id: "",
-  name: "",
+const basePrefix: object = {
   prefix: "",
-  oldDomainSuffix: "",
-  newDomainSuffix: "",
   currentCounter: 0,
   teaInProgress: "",
   failedTea: "",
   createdAt: 0,
-  hierarchy: "",
 };
 
-export const Unit = {
-  encode(message: Unit, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
-    }
-    if (message.name !== "") {
-      writer.uint32(18).string(message.name);
-    }
+export const Prefix = {
+  encode(
+    message: Prefix,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.prefix !== "") {
-      writer.uint32(26).string(message.prefix);
-    }
-    if (message.oldDomainSuffix !== "") {
-      writer.uint32(34).string(message.oldDomainSuffix);
-    }
-    if (message.newDomainSuffix !== "") {
-      writer.uint32(42).string(message.newDomainSuffix);
+      writer.uint32(10).string(message.prefix);
     }
     if (message.currentCounter !== 0) {
-      writer.uint32(48).int32(message.currentCounter);
+      writer.uint32(16).int32(message.currentCounter);
     }
     for (const v of message.teaInProgress) {
-      writer.uint32(58).string(v!);
+      writer.uint32(26).string(v!);
     }
     for (const v of message.failedTea) {
-      writer.uint32(66).string(v!);
+      writer.uint32(34).string(v!);
     }
     if (message.createdAt !== 0) {
-      writer.uint32(72).int64(message.createdAt);
-    }
-    if (message.hierarchy !== "") {
-      writer.uint32(82).string(message.hierarchy);
+      writer.uint32(40).int64(message.createdAt);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): Unit {
+  decode(input: _m0.Reader | Uint8Array, length?: number): Prefix {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseUnit } as Unit;
+    const message = { ...basePrefix } as Prefix;
     message.teaInProgress = [];
     message.failedTea = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.id = reader.string();
-          break;
-        case 2:
-          message.name = reader.string();
-          break;
-        case 3:
           message.prefix = reader.string();
           break;
-        case 4:
-          message.oldDomainSuffix = reader.string();
-          break;
-        case 5:
-          message.newDomainSuffix = reader.string();
-          break;
-        case 6:
+        case 2:
           message.currentCounter = reader.int32();
           break;
-        case 7:
+        case 3:
           message.teaInProgress.push(reader.string());
           break;
-        case 8:
+        case 4:
           message.failedTea.push(reader.string());
           break;
-        case 9:
+        case 5:
           message.createdAt = longToNumber(reader.int64() as Long);
-          break;
-        case 10:
-          message.hierarchy = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -1085,40 +811,14 @@ export const Unit = {
     return message;
   },
 
-  fromJSON(object: any): Unit {
-    const message = { ...baseUnit } as Unit;
+  fromJSON(object: any): Prefix {
+    const message = { ...basePrefix } as Prefix;
     message.teaInProgress = [];
     message.failedTea = [];
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
-    } else {
-      message.id = "";
-    }
-    if (object.name !== undefined && object.name !== null) {
-      message.name = String(object.name);
-    } else {
-      message.name = "";
-    }
     if (object.prefix !== undefined && object.prefix !== null) {
       message.prefix = String(object.prefix);
     } else {
       message.prefix = "";
-    }
-    if (
-      object.oldDomainSuffix !== undefined &&
-      object.oldDomainSuffix !== null
-    ) {
-      message.oldDomainSuffix = String(object.oldDomainSuffix);
-    } else {
-      message.oldDomainSuffix = "";
-    }
-    if (
-      object.newDomainSuffix !== undefined &&
-      object.newDomainSuffix !== null
-    ) {
-      message.newDomainSuffix = String(object.newDomainSuffix);
-    } else {
-      message.newDomainSuffix = "";
     }
     if (object.currentCounter !== undefined && object.currentCounter !== null) {
       message.currentCounter = Number(object.currentCounter);
@@ -1140,23 +840,12 @@ export const Unit = {
     } else {
       message.createdAt = 0;
     }
-    if (object.hierarchy !== undefined && object.hierarchy !== null) {
-      message.hierarchy = String(object.hierarchy);
-    } else {
-      message.hierarchy = "";
-    }
     return message;
   },
 
-  toJSON(message: Unit): unknown {
+  toJSON(message: Prefix): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
-    message.name !== undefined && (obj.name = message.name);
     message.prefix !== undefined && (obj.prefix = message.prefix);
-    message.oldDomainSuffix !== undefined &&
-      (obj.oldDomainSuffix = message.oldDomainSuffix);
-    message.newDomainSuffix !== undefined &&
-      (obj.newDomainSuffix = message.newDomainSuffix);
     message.currentCounter !== undefined &&
       (obj.currentCounter = message.currentCounter);
     if (message.teaInProgress) {
@@ -1170,44 +859,17 @@ export const Unit = {
       obj.failedTea = [];
     }
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
-    message.hierarchy !== undefined && (obj.hierarchy = message.hierarchy);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Unit>): Unit {
-    const message = { ...baseUnit } as Unit;
+  fromPartial(object: DeepPartial<Prefix>): Prefix {
+    const message = { ...basePrefix } as Prefix;
     message.teaInProgress = [];
     message.failedTea = [];
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
-    } else {
-      message.id = "";
-    }
-    if (object.name !== undefined && object.name !== null) {
-      message.name = object.name;
-    } else {
-      message.name = "";
-    }
     if (object.prefix !== undefined && object.prefix !== null) {
       message.prefix = object.prefix;
     } else {
       message.prefix = "";
-    }
-    if (
-      object.oldDomainSuffix !== undefined &&
-      object.oldDomainSuffix !== null
-    ) {
-      message.oldDomainSuffix = object.oldDomainSuffix;
-    } else {
-      message.oldDomainSuffix = "";
-    }
-    if (
-      object.newDomainSuffix !== undefined &&
-      object.newDomainSuffix !== null
-    ) {
-      message.newDomainSuffix = object.newDomainSuffix;
-    } else {
-      message.newDomainSuffix = "";
     }
     if (object.currentCounter !== undefined && object.currentCounter !== null) {
       message.currentCounter = object.currentCounter;
@@ -1229,93 +891,39 @@ export const Unit = {
     } else {
       message.createdAt = 0;
     }
-    if (object.hierarchy !== undefined && object.hierarchy !== null) {
-      message.hierarchy = object.hierarchy;
-    } else {
-      message.hierarchy = "";
-    }
     return message;
   },
 };
 
-const baseUnitProperties: object = {
-  oldDomainSuffix: "",
-  newDomainSuffix: "",
-  teaInProgress: "",
-  failedTea: "",
-  hierarchy: "",
-};
+const basePrefixArray: object = { totalCount: 0 };
 
-export const UnitProperties = {
+export const PrefixArray = {
   encode(
-    message: UnitProperties,
+    message: PrefixArray,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== undefined) {
-      writer.uint32(10).string(message.id);
+    for (const v of message.prefixes) {
+      Prefix.encode(v!, writer.uint32(10).fork()).ldelim();
     }
-    if (message.name !== undefined) {
-      writer.uint32(18).string(message.name);
-    }
-    if (message.prefix !== undefined) {
-      writer.uint32(26).string(message.prefix);
-    }
-    if (message.oldDomainSuffix !== "") {
-      writer.uint32(34).string(message.oldDomainSuffix);
-    }
-    if (message.newDomainSuffix !== "") {
-      writer.uint32(42).string(message.newDomainSuffix);
-    }
-    if (message.currentCounter !== undefined) {
-      writer.uint32(50).string(message.currentCounter);
-    }
-    for (const v of message.teaInProgress) {
-      writer.uint32(58).string(v!);
-    }
-    for (const v of message.failedTea) {
-      writer.uint32(66).string(v!);
-    }
-    if (message.hierarchy !== "") {
-      writer.uint32(74).string(message.hierarchy);
+    if (message.totalCount !== 0) {
+      writer.uint32(16).int32(message.totalCount);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): UnitProperties {
+  decode(input: _m0.Reader | Uint8Array, length?: number): PrefixArray {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseUnitProperties } as UnitProperties;
-    message.teaInProgress = [];
-    message.failedTea = [];
+    const message = { ...basePrefixArray } as PrefixArray;
+    message.prefixes = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.id = reader.string();
+          message.prefixes.push(Prefix.decode(reader, reader.uint32()));
           break;
         case 2:
-          message.name = reader.string();
-          break;
-        case 3:
-          message.prefix = reader.string();
-          break;
-        case 4:
-          message.oldDomainSuffix = reader.string();
-          break;
-        case 5:
-          message.newDomainSuffix = reader.string();
-          break;
-        case 6:
-          message.currentCounter = reader.string();
-          break;
-        case 7:
-          message.teaInProgress.push(reader.string());
-          break;
-        case 8:
-          message.failedTea.push(reader.string());
-          break;
-        case 9:
-          message.hierarchy = reader.string();
+          message.totalCount = reader.int32();
           break;
         default:
           reader.skipType(tag & 7);
@@ -1325,40 +933,111 @@ export const UnitProperties = {
     return message;
   },
 
-  fromJSON(object: any): UnitProperties {
-    const message = { ...baseUnitProperties } as UnitProperties;
+  fromJSON(object: any): PrefixArray {
+    const message = { ...basePrefixArray } as PrefixArray;
+    message.prefixes = [];
+    if (object.prefixes !== undefined && object.prefixes !== null) {
+      for (const e of object.prefixes) {
+        message.prefixes.push(Prefix.fromJSON(e));
+      }
+    }
+    if (object.totalCount !== undefined && object.totalCount !== null) {
+      message.totalCount = Number(object.totalCount);
+    } else {
+      message.totalCount = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: PrefixArray): unknown {
+    const obj: any = {};
+    if (message.prefixes) {
+      obj.prefixes = message.prefixes.map((e) =>
+        e ? Prefix.toJSON(e) : undefined
+      );
+    } else {
+      obj.prefixes = [];
+    }
+    message.totalCount !== undefined && (obj.totalCount = message.totalCount);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<PrefixArray>): PrefixArray {
+    const message = { ...basePrefixArray } as PrefixArray;
+    message.prefixes = [];
+    if (object.prefixes !== undefined && object.prefixes !== null) {
+      for (const e of object.prefixes) {
+        message.prefixes.push(Prefix.fromPartial(e));
+      }
+    }
+    if (object.totalCount !== undefined && object.totalCount !== null) {
+      message.totalCount = object.totalCount;
+    } else {
+      message.totalCount = 0;
+    }
+    return message;
+  },
+};
+
+const basePrefixProperties: object = { teaInProgress: "", failedTea: "" };
+
+export const PrefixProperties = {
+  encode(
+    message: PrefixProperties,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.prefix !== undefined) {
+      writer.uint32(10).string(message.prefix);
+    }
+    if (message.currentCounter !== undefined) {
+      writer.uint32(18).string(message.currentCounter);
+    }
+    for (const v of message.teaInProgress) {
+      writer.uint32(26).string(v!);
+    }
+    for (const v of message.failedTea) {
+      writer.uint32(34).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PrefixProperties {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...basePrefixProperties } as PrefixProperties;
     message.teaInProgress = [];
     message.failedTea = [];
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
-    } else {
-      message.id = undefined;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.prefix = reader.string();
+          break;
+        case 2:
+          message.currentCounter = reader.string();
+          break;
+        case 3:
+          message.teaInProgress.push(reader.string());
+          break;
+        case 4:
+          message.failedTea.push(reader.string());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
     }
-    if (object.name !== undefined && object.name !== null) {
-      message.name = String(object.name);
-    } else {
-      message.name = undefined;
-    }
+    return message;
+  },
+
+  fromJSON(object: any): PrefixProperties {
+    const message = { ...basePrefixProperties } as PrefixProperties;
+    message.teaInProgress = [];
+    message.failedTea = [];
     if (object.prefix !== undefined && object.prefix !== null) {
       message.prefix = String(object.prefix);
     } else {
       message.prefix = undefined;
-    }
-    if (
-      object.oldDomainSuffix !== undefined &&
-      object.oldDomainSuffix !== null
-    ) {
-      message.oldDomainSuffix = String(object.oldDomainSuffix);
-    } else {
-      message.oldDomainSuffix = "";
-    }
-    if (
-      object.newDomainSuffix !== undefined &&
-      object.newDomainSuffix !== null
-    ) {
-      message.newDomainSuffix = String(object.newDomainSuffix);
-    } else {
-      message.newDomainSuffix = "";
     }
     if (object.currentCounter !== undefined && object.currentCounter !== null) {
       message.currentCounter = String(object.currentCounter);
@@ -1375,23 +1054,12 @@ export const UnitProperties = {
         message.failedTea.push(String(e));
       }
     }
-    if (object.hierarchy !== undefined && object.hierarchy !== null) {
-      message.hierarchy = String(object.hierarchy);
-    } else {
-      message.hierarchy = "";
-    }
     return message;
   },
 
-  toJSON(message: UnitProperties): unknown {
+  toJSON(message: PrefixProperties): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
-    message.name !== undefined && (obj.name = message.name);
     message.prefix !== undefined && (obj.prefix = message.prefix);
-    message.oldDomainSuffix !== undefined &&
-      (obj.oldDomainSuffix = message.oldDomainSuffix);
-    message.newDomainSuffix !== undefined &&
-      (obj.newDomainSuffix = message.newDomainSuffix);
     message.currentCounter !== undefined &&
       (obj.currentCounter = message.currentCounter);
     if (message.teaInProgress) {
@@ -1404,44 +1072,17 @@ export const UnitProperties = {
     } else {
       obj.failedTea = [];
     }
-    message.hierarchy !== undefined && (obj.hierarchy = message.hierarchy);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<UnitProperties>): UnitProperties {
-    const message = { ...baseUnitProperties } as UnitProperties;
+  fromPartial(object: DeepPartial<PrefixProperties>): PrefixProperties {
+    const message = { ...basePrefixProperties } as PrefixProperties;
     message.teaInProgress = [];
     message.failedTea = [];
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
-    } else {
-      message.id = undefined;
-    }
-    if (object.name !== undefined && object.name !== null) {
-      message.name = object.name;
-    } else {
-      message.name = undefined;
-    }
     if (object.prefix !== undefined && object.prefix !== null) {
       message.prefix = object.prefix;
     } else {
       message.prefix = undefined;
-    }
-    if (
-      object.oldDomainSuffix !== undefined &&
-      object.oldDomainSuffix !== null
-    ) {
-      message.oldDomainSuffix = object.oldDomainSuffix;
-    } else {
-      message.oldDomainSuffix = "";
-    }
-    if (
-      object.newDomainSuffix !== undefined &&
-      object.newDomainSuffix !== null
-    ) {
-      message.newDomainSuffix = object.newDomainSuffix;
-    } else {
-      message.newDomainSuffix = "";
     }
     if (object.currentCounter !== undefined && object.currentCounter !== null) {
       message.currentCounter = object.currentCounter;
@@ -1457,11 +1098,6 @@ export const UnitProperties = {
       for (const e of object.failedTea) {
         message.failedTea.push(e);
       }
-    }
-    if (object.hierarchy !== undefined && object.hierarchy !== null) {
-      message.hierarchy = object.hierarchy;
-    } else {
-      message.hierarchy = "";
     }
     return message;
   },
@@ -1904,38 +1540,46 @@ export const EntityMin = {
 };
 
 export interface Tea {
-  RetrieveTeaByUnit(request: RetrieveTeaByUnitReq): Promise<TeaMessage>;
+  RetrieveTeaByOGId(request: RetrieveTeaByOGIdReq): Promise<TeaMessage>;
+  RetrieveTeaByPrefix(request: RetrieveTeaByPrefixReq): Promise<TeaMessage>;
   RetrieveUPNByEntity(request: RetrieveByEntityReq): Promise<UPNMessage>;
   RetrieveUPNByEntityId(request: RetrieveByEntityIdReq): Promise<UPNMessage>;
   ReportTeaSuccess(request: ReportTeaReq): Promise<SuccessMessage>;
   ReportTeaFail(request: ReportTeaReq): Promise<SuccessMessage>;
-  GetUnit(request: GetUnitReq): Promise<Unit>;
-  AddUnit(request: AddUnitReq): Promise<Unit>;
-  UpdateUnit(request: UpdateUnitReq): Promise<Unit>;
-  DeleteUnit(request: DeleteUnitReq): Promise<SuccessMessage>;
-  GetAllUnits(request: GetAllUnitsReq): Promise<MinUnitArray>;
-  SearchUnit(request: SearchUnitReq): Promise<MinUnitArray>;
+  ThrowTea(request: ReportTeaReq): Promise<SuccessMessage>;
+  GetPrefix(request: GetPrefixReq): Promise<Prefix>;
+  AddPrefix(request: AddPrefixReq): Promise<Prefix>;
+  UpdatePrefix(request: UpdatePrefixReq): Promise<Prefix>;
+  DeletePrefix(request: DeletePrefixReq): Promise<SuccessMessage>;
+  GetAllPrefixes(request: GetAllPrefixesReq): Promise<PrefixArray>;
 }
 
 export class TeaClientImpl implements Tea {
   private readonly rpc: Rpc;
   constructor(rpc: Rpc) {
     this.rpc = rpc;
-    this.RetrieveTeaByUnit = this.RetrieveTeaByUnit.bind(this);
+    this.RetrieveTeaByOGId = this.RetrieveTeaByOGId.bind(this);
+    this.RetrieveTeaByPrefix = this.RetrieveTeaByPrefix.bind(this);
     this.RetrieveUPNByEntity = this.RetrieveUPNByEntity.bind(this);
     this.RetrieveUPNByEntityId = this.RetrieveUPNByEntityId.bind(this);
     this.ReportTeaSuccess = this.ReportTeaSuccess.bind(this);
     this.ReportTeaFail = this.ReportTeaFail.bind(this);
-    this.GetUnit = this.GetUnit.bind(this);
-    this.AddUnit = this.AddUnit.bind(this);
-    this.UpdateUnit = this.UpdateUnit.bind(this);
-    this.DeleteUnit = this.DeleteUnit.bind(this);
-    this.GetAllUnits = this.GetAllUnits.bind(this);
-    this.SearchUnit = this.SearchUnit.bind(this);
+    this.ThrowTea = this.ThrowTea.bind(this);
+    this.GetPrefix = this.GetPrefix.bind(this);
+    this.AddPrefix = this.AddPrefix.bind(this);
+    this.UpdatePrefix = this.UpdatePrefix.bind(this);
+    this.DeletePrefix = this.DeletePrefix.bind(this);
+    this.GetAllPrefixes = this.GetAllPrefixes.bind(this);
   }
-  RetrieveTeaByUnit(request: RetrieveTeaByUnitReq): Promise<TeaMessage> {
-    const data = RetrieveTeaByUnitReq.encode(request).finish();
-    const promise = this.rpc.request("Tea.Tea", "RetrieveTeaByUnit", data);
+  RetrieveTeaByOGId(request: RetrieveTeaByOGIdReq): Promise<TeaMessage> {
+    const data = RetrieveTeaByOGIdReq.encode(request).finish();
+    const promise = this.rpc.request("Tea.Tea", "RetrieveTeaByOGId", data);
+    return promise.then((data) => TeaMessage.decode(new _m0.Reader(data)));
+  }
+
+  RetrieveTeaByPrefix(request: RetrieveTeaByPrefixReq): Promise<TeaMessage> {
+    const data = RetrieveTeaByPrefixReq.encode(request).finish();
+    const promise = this.rpc.request("Tea.Tea", "RetrieveTeaByPrefix", data);
     return promise.then((data) => TeaMessage.decode(new _m0.Reader(data)));
   }
 
@@ -1963,40 +1607,40 @@ export class TeaClientImpl implements Tea {
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
-  GetUnit(request: GetUnitReq): Promise<Unit> {
-    const data = GetUnitReq.encode(request).finish();
-    const promise = this.rpc.request("Tea.Tea", "GetUnit", data);
-    return promise.then((data) => Unit.decode(new _m0.Reader(data)));
-  }
-
-  AddUnit(request: AddUnitReq): Promise<Unit> {
-    const data = AddUnitReq.encode(request).finish();
-    const promise = this.rpc.request("Tea.Tea", "AddUnit", data);
-    return promise.then((data) => Unit.decode(new _m0.Reader(data)));
-  }
-
-  UpdateUnit(request: UpdateUnitReq): Promise<Unit> {
-    const data = UpdateUnitReq.encode(request).finish();
-    const promise = this.rpc.request("Tea.Tea", "UpdateUnit", data);
-    return promise.then((data) => Unit.decode(new _m0.Reader(data)));
-  }
-
-  DeleteUnit(request: DeleteUnitReq): Promise<SuccessMessage> {
-    const data = DeleteUnitReq.encode(request).finish();
-    const promise = this.rpc.request("Tea.Tea", "DeleteUnit", data);
+  ThrowTea(request: ReportTeaReq): Promise<SuccessMessage> {
+    const data = ReportTeaReq.encode(request).finish();
+    const promise = this.rpc.request("Tea.Tea", "ThrowTea", data);
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
-  GetAllUnits(request: GetAllUnitsReq): Promise<MinUnitArray> {
-    const data = GetAllUnitsReq.encode(request).finish();
-    const promise = this.rpc.request("Tea.Tea", "GetAllUnits", data);
-    return promise.then((data) => MinUnitArray.decode(new _m0.Reader(data)));
+  GetPrefix(request: GetPrefixReq): Promise<Prefix> {
+    const data = GetPrefixReq.encode(request).finish();
+    const promise = this.rpc.request("Tea.Tea", "GetPrefix", data);
+    return promise.then((data) => Prefix.decode(new _m0.Reader(data)));
   }
 
-  SearchUnit(request: SearchUnitReq): Promise<MinUnitArray> {
-    const data = SearchUnitReq.encode(request).finish();
-    const promise = this.rpc.request("Tea.Tea", "SearchUnit", data);
-    return promise.then((data) => MinUnitArray.decode(new _m0.Reader(data)));
+  AddPrefix(request: AddPrefixReq): Promise<Prefix> {
+    const data = AddPrefixReq.encode(request).finish();
+    const promise = this.rpc.request("Tea.Tea", "AddPrefix", data);
+    return promise.then((data) => Prefix.decode(new _m0.Reader(data)));
+  }
+
+  UpdatePrefix(request: UpdatePrefixReq): Promise<Prefix> {
+    const data = UpdatePrefixReq.encode(request).finish();
+    const promise = this.rpc.request("Tea.Tea", "UpdatePrefix", data);
+    return promise.then((data) => Prefix.decode(new _m0.Reader(data)));
+  }
+
+  DeletePrefix(request: DeletePrefixReq): Promise<SuccessMessage> {
+    const data = DeletePrefixReq.encode(request).finish();
+    const promise = this.rpc.request("Tea.Tea", "DeletePrefix", data);
+    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
+  }
+
+  GetAllPrefixes(request: GetAllPrefixesReq): Promise<PrefixArray> {
+    const data = GetAllPrefixesReq.encode(request).finish();
+    const promise = this.rpc.request("Tea.Tea", "GetAllPrefixes", data);
+    return promise.then((data) => PrefixArray.decode(new _m0.Reader(data)));
   }
 }
 

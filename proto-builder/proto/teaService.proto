@@ -2,96 +2,80 @@ syntax = "proto3";
 package Tea;
 
 service Tea {
-    rpc RetrieveTeaByUnit(RetrieveTeaByUnitReq) returns (TeaMessage){}
+    rpc RetrieveTeaByOGId(RetrieveTeaByOGIdReq) returns (TeaMessage){}
+    rpc RetrieveTeaByPrefix(RetrieveTeaByPrefixReq) returns (TeaMessage){}
     rpc RetrieveUPNByEntity(RetrieveByEntityReq) returns (UPNMessage) {}
     rpc RetrieveUPNByEntityId(RetrieveByEntityIdReq) returns (UPNMessage) {}
-
     rpc ReportTeaSuccess(ReportTeaReq) returns (SuccessMessage) {}
     rpc ReportTeaFail(ReportTeaReq) returns (SuccessMessage) {}
-    rpc GetUnit(GetUnitReq) returns (Unit){}
-    rpc AddUnit(AddUnitReq) returns (Unit){}
-    rpc UpdateUnit(UpdateUnitReq) returns (Unit){}
-    rpc DeleteUnit(DeleteUnitReq) returns (SuccessMessage){}
-    rpc GetAllUnits(GetAllUnitsReq) returns (MinUnitArray){}
-    rpc SearchUnit(SearchUnitReq) returns (MinUnitArray){}
+    rpc ThrowTea(ReportTeaReq) returns (SuccessMessage) {}
+
+    rpc GetPrefix(GetPrefixReq) returns (Prefix){}
+    rpc AddPrefix(AddPrefixReq) returns (Prefix){}
+    rpc UpdatePrefix(UpdatePrefixReq) returns (Prefix){}
+    rpc DeletePrefix(DeletePrefixReq) returns (SuccessMessage){}
+    rpc GetAllPrefixes(GetAllPrefixesReq) returns (PrefixArray){}
 }
 
-message SearchUnitReq{
-    string nameAndHierarchy = 1;
-}
-
-message GetAllUnitsReq{
-
-}
-
-message MinUnitArray{
-    repeated UnitMin units = 1;
-    int32 totalCount = 2;
-}
-message UnitMin{
+message RetrieveTeaByOGIdReq{
     string id = 1;
-    string name = 2;
-    string hierarchy = 3;
+}
+message GetAllPrefixesReq{
+
 }
 
-message RetrieveTeaByUnitReq{
- string id = 1;
+message RetrieveTeaByPrefixReq{
+ string prefix = 1;
 }
 
 message TeaMessage{
     string tea = 1;
+    optional string roleId = 2;
+    optional string uniqueId = 3;
+    optional string samAccountName = 4;
+    optional string mail = 5;
 }
 
 message UPNMessage{
     string upn = 1;
 }
 
-message UpdateUnitReq{
-    string id = 1;
-    UnitProperties unitProperties = 2;
+message UpdatePrefixReq{
+    string prefix = 1;
+    PrefixProperties properties = 2;
 }
 
-message DeleteUnitReq{
-    string id = 1;
+message DeletePrefixReq{
+    string prefix = 1;
 }
 
-message GetUnitReq{
-    string id = 1;
+message GetPrefixReq{
+    string prefix = 1;
 }
 
-message AddUnitReq{
-    string id = 1;
-    string name = 2;
-    string prefix = 3;
-    string oldDomainSuffix = 4; //gmail.com, after @
-    string newDomainSuffix = 5; //gmail.com, after @
-    int32 currentCounter = 6;
-    string hierarchy = 7;
+message AddPrefixReq{
+    string prefix = 1;
+    int32 currentCounter = 2;
 }
 
-message Unit{
-    string id = 1;
-    string name = 2;
-    string prefix = 3; //1234
-    string oldDomainSuffix = 4; //gmail.com, after @
-    string newDomainSuffix = 5; //gmail.com, after @
-    int32 currentCounter = 6;
-    repeated string teaInProgress = 7;
-    repeated string failedTea = 8;
-    int64 createdAt = 9;
-    string hierarchy = 10;
+message Prefix{
+    string prefix = 1; //1234
+    int32 currentCounter = 2;
+    repeated string teaInProgress = 3;
+    repeated string failedTea = 4;
+    int64 createdAt = 5;
 }
 
-message UnitProperties{
-    optional string id = 1;
-    optional string name = 2;
-    optional string prefix = 3;
-    string oldDomainSuffix = 4; //gmail.com, after @
-    string newDomainSuffix = 5; //gmail.com, after @
-    optional string currentCounter = 6;
-    repeated string teaInProgress = 7;
-    repeated string failedTea = 8;
-    string hierarchy = 9;
+message PrefixArray{
+    repeated Prefix prefixes = 1;
+    int32 totalCount = 2;
+}
+
+message PrefixProperties{
+    optional string prefix = 1;
+    optional string currentCounter = 2;
+    repeated string teaInProgress = 3;
+    repeated string failedTea = 4;
 }
 
 message ReportTeaReq{
