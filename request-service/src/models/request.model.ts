@@ -304,8 +304,6 @@ const RequestSchema = new Schema(
       oldOuName: { type: String, default: null },
       newOuName: { type: String, default: null },
       newJobTitle: { type: String, default: null },
-      oldOuName: { type: String, default: null },
-      newOuName: { type: String, default: null },
     },
     additionalParams: {
       entityId: { type: String, default: null },
