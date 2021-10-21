@@ -1,12 +1,12 @@
-import * as jwt from 'jsonwebtoken';
-import { config } from '../config';
-import { NotFoundError } from '../utils/errors/user.error';
-import  {IShragaUser} from './auth.interface';
-import { KartoffelService } from '../kartoffel/kartoffel.service';
-import { IUser } from '../kartoffel/kartoffel.interface';
-import { logger } from '../logger';
-import { ApproverService } from '../approver/approver.service';
-import { ApproverType } from '../interfaces/protoc/proto/requestService';
+import * as jwt from "jsonwebtoken";
+import { config } from "../config";
+import { NotFoundError } from "../utils/errors/user.error";
+import { IShragaUser } from "./auth.interface";
+import { KartoffelService } from "../kartoffel/kartoffel.service";
+import { IUser } from "../kartoffel/kartoffel.interface";
+import { logger } from "../logger";
+import { ApproverService } from "../approver/approver.service";
+import { ApproverType } from "../interfaces/protoc/proto/requestService";
 
 export class AuthManager {
   static async createToken(populatedShragaUser: IShragaUser) {
@@ -14,15 +14,15 @@ export class AuthManager {
 
     const { genesisId } = populatedShragaUser;
 
-    const kartoffelUser = await AuthManager.extractKartoffelUser(genesisId);
-    const userWithType = config.approver.enrich ? await AuthManager.extractUserType(kartoffelUser) : {};
+    const kartoffelUser = config.kartoffel.enrich ? await AuthManager.extractKartoffelUser(genesisId): {};
+    const userType = config.approver.enrich ? await AuthManager.extractUserType(genesisId) : {};
 
-    const userInformation = {
-        // ...shragaUser,
-        ...userWithType,
-        id: populatedShragaUser.id,
+    let userInformation = {
+      ...shragaUser,
     };
 
+    if (config.approver.enrich) userInformation = {...userInformation, ...userType}
+    if (config.kartoffel.enrich) userInformation = {...userInformation, ...kartoffelUser}
     return jwt.sign(userInformation, config.authentication.secret);
   }
 
@@ -44,31 +44,29 @@ export class AuthManager {
 
     if (!config.kartoffel.enrich) return user;
 
-    const kartoffelUser: IUser = await KartoffelService.getEntityById(genesisId);
-    return kartoffelUser;
+    const kartoffelUser = await KartoffelService.getEntityById(genesisId);
+    return kartoffelUser as IUser;
   }
 
-  private static async extractUserType(user: IUser) {
-      const userWithType = user;
-      try {
-        logger.info(`Call to addUserType in AS:`, user);
-        const userResponse = await ApproverService.getUserType({
-          entityId: user.id,
-        });
+  private static async extractUserType(genesisId: string) {
+    const userWithType = { types: config.defaultUserTypes };
+    try {
+      logger.info(`Call to addUserType in AS:`, genesisId);
+      const userResponse = await ApproverService.getUserType({
+        entityId: genesisId,
+      });
 
-        userWithType.types =
-          userResponse.type.length > 0 ? userResponse.type.map((type) => ApproverType[type]) : config.defaultUserTypes;
+      userWithType.types =
+        userResponse.type.length > 0 ? userResponse.type.map((type) => ApproverType[type]) : config.defaultUserTypes;
 
-        logger.info('addUserType OK in AS', { user: user });
-      } catch (err) {
-        logger.error(`addUserType Error in AS:`, {
-          err,
-          user: userWithType,
-        });
+      logger.info("addUserType OK in AS", { user: userWithType });
+    } catch (err) {
+      logger.error(`addUserType Error in AS:`, {
+        err,
+        user: userWithType,
+      });
+    }
 
-        userWithType.types = config.defaultUserTypes;
-      }
-
-      return userWithType;
+    return userWithType;
   }
 }

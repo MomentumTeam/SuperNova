@@ -79,7 +79,7 @@ data:
   AS_SHRAGA_URL: https://shraga-prod.northeurope.cloudapp.azure.com
   AS_SHRAGA_USE_ENRICH_ID: "true"
   AS_SHRAGA_PROVIDERS: Genesis
-  AS_CLIENT_ENDPOINT: http://momentum.branch-yesodot.org/ 
+  AS_CLIENT_ENDPOINT: http://momentum.branch-yesodot.org
   AS_LOG_PATH: /logs
   AS_KARTOFFEL_RPC_ENDPOINT: kartoffel-service:8080
 

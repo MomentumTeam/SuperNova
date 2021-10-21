@@ -21,6 +21,7 @@ import {
   GetOGTreeRequest,
   GetPictureByEntityIdRequest,
   GetRoleByRoleIdRequest,
+  GetRolesByHierarchyRequest,
   GetRolesUnderOGRequest,
   Image,
   IsJobTitleAlreadyTakenReq,
@@ -520,6 +521,28 @@ export class KartoffelService {
           resolve(response);
         }
       );
+    });
+  }
+
+  static async getRolesByHierarchy(getRolesByHierarchyReq: GetRolesByHierarchyRequest) {
+    logger.info(`Call to getRolesByHierarchy in GTW`, getRolesByHierarchyReq);
+
+    return new Promise((resolve, reject) => {
+      kartoffelClient.GetRolesByHierarchy(getRolesByHierarchyReq, (err: any, response: RoleArray) => {
+        if (err) {
+          logger.error(`getRolesByHierarchy ERROR in GTW`, {
+            err,
+            callRequest: getRolesByHierarchyReq,
+          });
+          reject(err);
+        }
+
+        logger.info(`getRolesByHierarchy OK in GTW`, {
+          response: response,
+          callRequest: getRolesByHierarchyReq,
+        });
+        resolve(response);
+      });
     });
   }
 

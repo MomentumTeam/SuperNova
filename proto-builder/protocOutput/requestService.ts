@@ -26275,7 +26275,7 @@ export interface RequestService {
     request: CreateNewApproverReq
   ): Promise<CreateNewApproverRes>;
   RenameOGRequest(request: RenameOGReq): Promise<RenameOGRes>;
-  RenameRoleRequest(request: RenameRoleReq): Promise<EditEntityRes>;
+  RenameRoleRequest(request: RenameRoleReq): Promise<RenameRoleRes>;
   EditEntityRequest(request: EditEntityReq): Promise<EditEntityRes>;
   DeleteOGRequest(request: DeleteOGReq): Promise<DeleteOGRes>;
   DeleteRoleRequest(request: DeleteRoleReq): Promise<DeleteRoleRes>;
@@ -26427,14 +26427,14 @@ export class RequestServiceClientImpl implements RequestService {
     return promise.then((data) => RenameOGRes.decode(new _m0.Reader(data)));
   }
 
-  RenameRoleRequest(request: RenameRoleReq): Promise<EditEntityRes> {
+  RenameRoleRequest(request: RenameRoleReq): Promise<RenameRoleRes> {
     const data = RenameRoleReq.encode(request).finish();
     const promise = this.rpc.request(
       "RequestService.RequestService",
       "RenameRoleRequest",
       data
     );
-    return promise.then((data) => EditEntityRes.decode(new _m0.Reader(data)));
+    return promise.then((data) => RenameRoleRes.decode(new _m0.Reader(data)));
   }
 
   EditEntityRequest(request: EditEntityReq): Promise<EditEntityRes> {

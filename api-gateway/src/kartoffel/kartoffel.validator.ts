@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { transformRequest, validateObject } from '../utils/validations/validations';
-import { getAllOGsSchema, getAllRolesSchema, getEntitiesByHierarchySchema, getEntitiesUnderOGSchema, getEntityByDIRequestSchema, getEntityByIdentifierSchema, getEntityByMongoIdSchema, getEntityByRoleIdSchema, GetOGByHierarchyNameSchema, GetOGByIdSchema, GetOGChildrenSchema, GetOGTreeSchema, GetRoleByIdSchema, GetRolesUnderOGSchema, IsJobTitleAlreadyTakenSchema, IsRoleAlreadyTakenSchema, searchEntitiesByFullNameSchema, searchOGSchema } from './kartoffel.schema';
+import { getAllOGsSchema, getAllRolesSchema, getEntitiesByHierarchySchema, getEntitiesUnderOGSchema, getEntityByDIRequestSchema, getEntityByIdentifierSchema, getEntityByMongoIdSchema, getEntityByRoleIdSchema, GetOGByHierarchyNameSchema, GetOGByIdSchema, GetOGChildrenSchema, GetOGTreeSchema, GetRoleByIdSchema, GetRolesByHierarchySchema, GetRolesUnderOGSchema, IsJobTitleAlreadyTakenSchema, IsRoleAlreadyTakenSchema, searchEntitiesByFullNameSchema, searchOGSchema } from './kartoffel.schema';
 export class KartoffelValidator {
     // Entities
     static isGetEntityByMongoIdValid(req: Request, res: Response, next: NextFunction) {
@@ -90,8 +90,13 @@ export class KartoffelValidator {
         next();
     }
 
-       static isJobTitleAlreadyTakenValid(req: Request, res: Response, next: NextFunction) {
+    static isJobTitleAlreadyTakenValid(req: Request, res: Response, next: NextFunction) {
         transformRequest(req, validateObject(req, IsJobTitleAlreadyTakenSchema, { allowUnknown: true }));
+        next();
+    }
+
+    static isGetRolesByHierarchyValid(req: Request, res: Response, next: NextFunction) {
+        transformRequest(req, validateObject(req, GetRolesByHierarchySchema, { allowUnknown: true }));
         next();
     }
 }

@@ -8,7 +8,7 @@ service RequestService {
     rpc CreateEntityRequest(CreateEntityReq) returns (CreateEntityRes){}   //בקשה ליצירת ישות
     rpc CreateNewApproverRequest(CreateNewApproverReq) returns (CreateNewApproverRes) {}   //בקשה להוספת גורם מאשר
     rpc RenameOGRequest(RenameOGReq) returns (RenameOGRes) {}      //בקשה לעריכת היררכיה
-    rpc RenameRoleRequest(RenameRoleReq) returns (EditEntityRes) {}   //בקשה לעריכת תפקיד
+    rpc RenameRoleRequest(RenameRoleReq) returns (RenameRoleRes) {}   //בקשה לעריכת תפקיד
     rpc EditEntityRequest(EditEntityReq) returns (EditEntityRes){}  //בקשה לעריכת ישות
     rpc DeleteOGRequest(DeleteOGReq) returns (DeleteOGRes){}  //בקשה למחיקת להיררכיה
     rpc DeleteRoleRequest(DeleteRoleReq) returns (DeleteRoleRes){}  //בקשה למחיקת תפקיד
