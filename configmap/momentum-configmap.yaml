@@ -82,6 +82,7 @@ data:
   AS_CLIENT_ENDPOINT: http://momentum.branch-yesodot.org
   AS_LOG_PATH: /logs
   AS_KARTOFFEL_RPC_ENDPOINT: kartoffel-service:8080
+  AS_KARTOFFEL_ENRICH: "false"
 
   GATEWAY_HOST: "0.0.0.0"
   GATEWAY_PORT: "8080"
