@@ -254,8 +254,10 @@ services:
     environment:
       - AS_SHRAGA_URL=https://shraga-prod.northeurope.cloudapp.azure.com
       - AS_CLIENT_ENDPOINT=http://localhost:3000
-      - AS_KARTOFFEL_RPC_ENDPOINT=kartoffel-service:8080
+      - AS_KS_URL=kartoffel-service:8080
       - AS_APS_URL=approver-service:8080
+      - AS_KARTOFFEL_ENRICH=false
+      - AS_APPROVER_ENRICH=true
       - AS_LOG_PATH=/logs
 
   api-gateway:
