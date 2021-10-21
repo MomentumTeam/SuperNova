@@ -30,5 +30,6 @@ KartoffelRouter.get('/roles/:roleId', KartoffelValidator.isGetRoleByIdValid, Kar
 KartoffelRouter.get('/roles/group/:id', KartoffelValidator.isGetRolesUnderOGdValid, KartoffelController.getRolesUnderOG);
 KartoffelRouter.get('/roles/job/taken',KartoffelValidator.isJobTitleAlreadyTakenValid,KartoffelController.isJobTitleAlreadyTaken);
 KartoffelRouter.get('/roles/:roleId/taken',KartoffelValidator.isRoleAlreadyTakenValid,KartoffelController.isRoleAlreadyTaken);
+KartoffelRouter.get('/roles/hierarchy/:hierarchy',KartoffelValidator.isGetRolesByHierarchyValid,KartoffelController.getRolesByHierarchy);
 
 export default KartoffelRouter;

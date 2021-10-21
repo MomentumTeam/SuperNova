@@ -1,3 +1,5 @@
+import * as env from 'env-var';
+
 export const config = {
   server: {
     port: +(process.env.AS_PORT || 9000),
@@ -10,13 +12,13 @@ export const config = {
       : ['http://localhost/'],
   },
   kartoffel: {
-    endpoint: process.env.AS_KARTOFFEL_RPC_ENDPOINT || '0.0.0.0:8082',
+    endpoint: process.env.AS_KS_URL || '0.0.0.0:8082',
     defaultLastName: ' ',
-    enrich: process.env.AS_KARTOFFEL_ENRICH || true,
+    enrich: env.get('AS_KARTOFFEL_ENRICH').default('false').asBool(),
   },
   approver: {
     endpoint: process.env.AS_APS_URL || '0.0.0.0:8085',
-    enrich: process.env.AS_APPROVER_ENRICH || true,
+    enrich: env.get('AS_APPROVER_ENRICH').default('true').asBool(),
   },
   authentication: {
     sessionSecret: process.env.SESSION_SECRET || 'Rand0M-SeSS1ioN-SecREt',
