@@ -1,12 +1,15 @@
-import * as jwt from "jsonwebtoken";
-import { config } from "../config";
-import { NotFoundError } from "../utils/errors/user.error";
-import { IShragaUser } from "./auth.interface";
-import { KartoffelService } from "../kartoffel/kartoffel.service";
-import { IUser } from "../kartoffel/kartoffel.interface";
-import { logger } from "../logger";
-import { ApproverService } from "../approver/approver.service";
-import { ApproverType } from "../interfaces/protoc/proto/requestService";
+import * as jwt from 'jsonwebtoken';
+import { config } from '../config';
+import { NotFoundError } from '../utils/errors/user.error';
+import { IShragaUser } from './auth.interface';
+import { KartoffelService } from '../kartoffel/kartoffel.service';
+import { IUser } from '../kartoffel/kartoffel.interface';
+import { logger } from '../logger';
+import { ApproverService } from '../approver/approver.service';
+import {
+  ApproverType,
+  approverTypeToJSON,
+} from '../interfaces/protoc/proto/requestService';
 
 export class AuthManager {
   static async createToken(populatedShragaUser: IShragaUser) {
@@ -14,15 +17,26 @@ export class AuthManager {
 
     const { genesisId } = populatedShragaUser;
 
-    const kartoffelUser = config.kartoffel.enrich ? await AuthManager.extractKartoffelUser(genesisId): {};
-    const userType = config.approver.enrich ? await AuthManager.extractUserType(genesisId) : {};
+    const kartoffelUser = config.kartoffel.enrich
+      ? await AuthManager.extractKartoffelUser(genesisId)
+      : {};
+    const userType = config.approver.enrich
+      ? await AuthManager.extractUserType(genesisId)
+      : {};
 
+    // let userInformation = {
+    //   ...shragaUser,
+    // };
     let userInformation = {
-      ...shragaUser,
+      id: genesisId,
+      exp: shragaUser.exp,
+      iat: shragaUser.iat,
     };
 
-    if (config.approver.enrich) userInformation = {...userInformation, ...userType}
-    if (config.kartoffel.enrich) userInformation = {...userInformation, ...kartoffelUser}
+    if (config.approver.enrich)
+      userInformation = { ...userInformation, ...userType };
+    if (config.kartoffel.enrich)
+      userInformation = { ...userInformation, ...kartoffelUser };
     return jwt.sign(userInformation, config.authentication.secret);
   }
 
@@ -31,7 +45,8 @@ export class AuthManager {
     let parsedUser: IShragaUser = JSON.parse(JSON.stringify(shragaUser));
     if (!parsedUser) throw new NotFoundError();
 
-    const millisecondsExpires = config.authentication.daysExpires * (1000 * 60 * 60 * 24);
+    const millisecondsExpires =
+      config.authentication.daysExpires * (1000 * 60 * 60 * 24);
     const iat = Math.floor(Date.now() / 1000);
     const exp = iat + millisecondsExpires;
 
@@ -49,7 +64,7 @@ export class AuthManager {
   }
 
   private static async extractUserType(genesisId: string) {
-    const userWithType = { types: config.defaultUserTypes };
+    const userWithType: any = { types: config.defaultUserTypes };
     try {
       logger.info(`Call to addUserType in AS:`, genesisId);
       const userResponse = await ApproverService.getUserType({
@@ -57,9 +72,13 @@ export class AuthManager {
       });
 
       userWithType.types =
-        userResponse.type.length > 0 ? userResponse.type.map((type) => ApproverType[type]) : config.defaultUserTypes;
+        userResponse.type.length > 0
+          ? userResponse.type.map((type) =>
+              typeof type === typeof '' ? type : approverTypeToJSON(type)
+            )
+          : config.defaultUserTypes;
 
-      logger.info("addUserType OK in AS", { user: userWithType });
+      logger.info('addUserType OK in AS', { user: userWithType });
     } catch (err) {
       logger.error(`addUserType Error in AS:`, {
         err,
