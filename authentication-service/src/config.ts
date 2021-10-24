@@ -1,4 +1,8 @@
 import * as env from 'env-var';
+import {
+  ApproverType,
+  approverTypeToJSON,
+} from './interfaces/protoc/proto/requestService';
 
 export const config = {
   server: {
@@ -46,7 +50,7 @@ export const config = {
   clientEndpoint: process.env.AS_CLIENT_ENDPOINT || 'http://localhost:3000',
   support:
     process.env.AS_UNAUTHORIZED_SUPPORT_URL || 'https://open.rocket.chat',
-  defaultUserTypes: ['COMMANDER'],
+  defaultUserTypes: [approverTypeToJSON(ApproverType.SOLDIER)],
   logPath: process.env.AS_LOG_PATH
     ? `${process.env.AS_LOG_PATH}/authentication-service`
     : './logs/authentication-service',
