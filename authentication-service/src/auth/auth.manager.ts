@@ -13,24 +13,32 @@ import {
 
 export class AuthManager {
   static async createToken(populatedShragaUser: IShragaUser) {
-    const shragaUser = AuthManager.extractShragaUser(populatedShragaUser);
+    const shragaUser: any = AuthManager.extractShragaUser(populatedShragaUser);
+    delete shragaUser['adfsId'];
+    delete shragaUser['jti'];
+    delete shragaUser['name'];
+    delete shragaUser['provider'];
+    delete shragaUser['iat'];
+    delete shragaUser['exp'];
+    const { id } = populatedShragaUser;
 
-    const { genesisId } = populatedShragaUser;
-
-    const kartoffelUser = config.kartoffel.enrich
-      ? await AuthManager.extractKartoffelUser(genesisId)
-      : {};
+    const kartoffelUser = await AuthManager.extractKartoffelUser(id);
+    shragaUser.identityCard = kartoffelUser.identityCard
+      ? kartoffelUser.identityCard
+      : '';
+    shragaUser.personalNumber = kartoffelUser.personalNumber
+      ? kartoffelUser.personalNumber
+      : '';
+    shragaUser.displayName = kartoffelUser.displayName
+      ? kartoffelUser.displayName
+      : '';
+    shragaUser.fullName = kartoffelUser.fullName ? kartoffelUser.fullName : '';
     const userType = config.approver.enrich
-      ? await AuthManager.extractUserType(genesisId)
+      ? await AuthManager.extractUserType(id)
       : {};
 
-    // let userInformation = {
-    //   ...shragaUser,
-    // };
     let userInformation = {
-      id: genesisId,
-      exp: shragaUser.exp,
-      iat: shragaUser.iat,
+      ...shragaUser,
     };
 
     if (config.approver.enrich)
@@ -55,9 +63,8 @@ export class AuthManager {
   }
 
   private static async extractKartoffelUser(genesisId: string) {
-    const user: any = {};
-
-    if (!config.kartoffel.enrich) return user;
+    // const user: any = {};
+    // if (!config.kartoffel.enrich) return user;
 
     const kartoffelUser = await KartoffelService.getEntityById(genesisId);
     return kartoffelUser as IUser;
