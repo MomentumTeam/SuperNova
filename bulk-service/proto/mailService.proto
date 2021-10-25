@@ -1,0 +1,42 @@
+syntax = "proto3";
+import "requestService.proto";
+
+package MailService;
+
+service MailService {
+    rpc SendCustomMail(SendCustomMailReq) returns (SuccessMessage) {} 
+    rpc SendMail(SendMailReq) returns (SuccessMessage){}
+
+}
+
+message SendCustomMailReq{
+    string entityId = 1;
+    string title = 2;
+    string message = 3;
+    string html = 4;
+}
+
+message SuccessMessage{
+    bool success = 1;
+    string message = 2;
+}
+
+message SendMailReq{
+    MailType type = 1;
+    RequestService.Request request = 2;
+}
+
+enum MailType{
+    REQUEST_APPROVED_1 = 0;
+    REQUEST_DECLINED_1 = 1;
+    REQUEST_APPROVED_2 = 2;
+    REQUEST_DECLINED_2 = 3;
+    REQUEST_APPROVED_3 = 4;
+    REQUEST_DECLINED_3 = 5;
+    REQUEST_DONE = 6;
+    REQUEST_FAILED = 7;
+    REQUEST_TOO_OLD = 8;
+    REQUEST_NEW_USER = 9;
+    REQUEST_SUBMITTED = 10;
+
+}

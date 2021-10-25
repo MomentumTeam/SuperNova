@@ -1,4 +1,8 @@
 import * as env from 'env-var';
+import {
+  ApproverType,
+  approverTypeToJSON,
+} from './interfaces/protoc/proto/requestService';
 
 export const config = {
   server: {
@@ -12,13 +16,13 @@ export const config = {
       : ['http://localhost/'],
   },
   kartoffel: {
-    endpoint: process.env.AS_KARTOFFEL_RPC_ENDPOINT || '0.0.0.0:8082',
+    endpoint: process.env.AS_KS_URL || '0.0.0.0:8082',
     defaultLastName: ' ',
-    enrich: env.get("AS_KARTOFFEL_ENRICH").default('false').asBool(),
+    enrich: env.get('AS_KARTOFFEL_ENRICH').default('false').asBool(),
   },
   approver: {
     endpoint: process.env.AS_APS_URL || '0.0.0.0:8085',
-    enrich: process.env.AS_APPROVER_ENRICH || true,
+    enrich: env.get('AS_APPROVER_ENRICH').default('true').asBool(),
   },
   authentication: {
     sessionSecret: process.env.SESSION_SECRET || 'Rand0M-SeSS1ioN-SecREt',
@@ -46,7 +50,7 @@ export const config = {
   clientEndpoint: process.env.AS_CLIENT_ENDPOINT || 'http://localhost:3000',
   support:
     process.env.AS_UNAUTHORIZED_SUPPORT_URL || 'https://open.rocket.chat',
-  defaultUserTypes: ['COMMANDER'],
+  defaultUserTypes: [approverTypeToJSON(ApproverType.SOLDIER)],
   logPath: process.env.AS_LOG_PATH
     ? `${process.env.AS_LOG_PATH}/authentication-service`
     : './logs/authentication-service',
