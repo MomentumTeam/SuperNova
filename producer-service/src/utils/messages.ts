@@ -32,6 +32,8 @@ export function generateKartoffelQueueMessage(request: Request): any {
         uniqueId: kartoffelParams.uniqueId,
         mail: kartoffelParams.mail,
         isRoleAttachable: kartoffelParams.isRoleAttachable,
+        //in case of goalUser - need to create an entity and assign it to the role
+        roleEntityType: kartoffelParams.roleEntityType,
       };
       break;
     case RequestType.CREATE_ENTITY:
@@ -71,17 +73,19 @@ export function generateKartoffelQueueMessage(request: Request): any {
     case RequestType.EDIT_ENTITY:
       message.data = {
         id: kartoffelParams.id,
-        firstName: kartoffelParams.firstName,
-        lastName: kartoffelParams.lastName,
-        identityCard: kartoffelParams.identityCard,
-        personalNumber: kartoffelParams.firstName,
-        serviceType: kartoffelParams.serviceType,
-        phone: kartoffelParams.phone,
-        address: kartoffelParams.address,
-        clearance: kartoffelParams.clearance,
-        sex: kartoffelParams.sex,
-        birthdate: kartoffelParams.birthdate,
-        entityType: kartoffelParams.entityType,
+        properties: {
+          firstName: kartoffelParams.firstName,
+          lastName: kartoffelParams.lastName,
+          identityCard: kartoffelParams.identityCard,
+          personalNumber: kartoffelParams.firstName,
+          serviceType: kartoffelParams.serviceType,
+          phone: kartoffelParams.phone,
+          address: kartoffelParams.address,
+          clearance: kartoffelParams.clearance,
+          sex: kartoffelParams.sex,
+          birthdate: kartoffelParams.birthdate,
+          entityType: kartoffelParams.entityType,
+        },
       };
       break;
     case RequestType.DELETE_OG:
@@ -139,7 +143,7 @@ export function generateADQueueMessage(request: Request): any {
     case RequestType.CREATE_OG: //Reviewed with Orin, CreateOU
       message.data = {
         ouDName: adParams.ouDisplayName,
-        ouName: adParams.ouName,
+        hierarchyOu: adParams.ouName,
         newOuName: adParams.name,
       };
       break;

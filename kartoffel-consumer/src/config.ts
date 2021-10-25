@@ -1,5 +1,4 @@
 export const config = {
-  environment: process.env.NODE_ENV || 'production',
   kafka: {
     host: process.env.KC_KAFKA_HOST || '127.0.0.1',
     port: process.env.KC_KAFKA_PORT || '9092',
@@ -25,7 +24,9 @@ export const config = {
     request: process.env.KC_RS_URL || '0.0.0.0:8081',
     tea: process.env.KC_TS_URL || '0.0.0.0:8086',
   },
-  logPath: process.env.KC_LOG_PATH || './logs',
+  logPath: process.env.KC_LOG_PATH
+    ? `${process.env.KC_LOG_PATH}/kartoffel-consumer`
+    : './logs/kartoffel-consumer',
   storeLogs: process.env.GLOBAL_STORE_LOGS
     ? process.env.GLOBAL_STORE_LOGS === 'true'
     : false,

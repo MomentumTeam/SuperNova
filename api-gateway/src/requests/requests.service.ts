@@ -27,7 +27,6 @@ import {
   DisconectRoleFromEntityRes,
   EditEntityReq,
   EditEntityRes,
-  GetAllRequestsReq,
   GetRequestByIdReq,
   GetRequestBySerialNumberReq,
   GetRequestsByPersonReq,
@@ -37,7 +36,6 @@ import {
   RenameRoleRes,
   Request,
   RequestArray,
-  SearchRequestsByDisplayNameReq,
   StageStatus,
   SuccessMessage,
   UpdateADStatusReq,
@@ -73,32 +71,6 @@ export const requestsClient: any = new protoDescriptor.RequestService(
 );
 
 export class RequestsService {
-  // GET
-  static async getAllRequests(getAllRequestsReq: GetAllRequestsReq) {
-    logger.info(`Call to getAllRequests in GTW`, getAllRequestsReq);
-
-    return new Promise((resolve, reject) => {
-      requestsClient.GetAllRequests(
-        getAllRequestsReq,
-        (err: any, response: RequestArray) => {
-          if (err) {
-            logger.error(`getAllRequests ERROR in GTW`, {
-              err,
-              callRequest: getAllRequestsReq,
-            });
-            reject(err);
-          }
-
-          logger.info(`getAllRequests OK in GTW`, {
-            response: response,
-            callRequest: getAllRequestsReq,
-          });
-          resolve(response);
-        }
-      );
-    });
-  }
-
   static async getRequestById(getRequestByIdReq: GetRequestByIdReq) {
     logger.info(`Call to getRequestById in GTW`, getRequestByIdReq);
 
@@ -174,36 +146,6 @@ export class RequestsService {
           logger.info(`getRequestBySerialNumber OK in GTW`, {
             response: response,
             callRequest: getRequestBySerialNumberReq,
-          });
-          resolve(response);
-        }
-      );
-    });
-  }
-
-  static async searchRequestsByDisplayName(
-    searchRequestsByDisplayNameReq: SearchRequestsByDisplayNameReq
-  ) {
-    logger.info(
-      `Call to searchRequestsByDisplayName in GTW`,
-      searchRequestsByDisplayNameReq
-    );
-
-    return new Promise((resolve, reject) => {
-      requestsClient.SearchRequestsByDisplayName(
-        searchRequestsByDisplayNameReq,
-        (err: any, response: RequestArray) => {
-          if (err) {
-            logger.error(`searchRequestsByDisplayName ERROR in GTW`, {
-              err,
-              callRequest: searchRequestsByDisplayNameReq,
-            });
-            reject(err);
-          }
-
-          logger.info(`searchRequestsByDisplayName OK in GTW`, {
-            response: response,
-            callRequest: searchRequestsByDisplayNameReq,
           });
           resolve(response);
         }
@@ -410,7 +352,9 @@ export class RequestsService {
   }
 
   // POST
-  static async createRoleRequest(createRoleReq: CreateRoleReq): Promise<CreateRoleRes> {
+  static async createRoleRequest(
+    createRoleReq: CreateRoleReq
+  ): Promise<CreateRoleRes> {
     logger.info(`Call to createRoleRequest in GTW`, createRoleReq);
 
     return new Promise((resolve, reject) => {

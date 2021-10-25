@@ -1469,26 +1469,9 @@ export interface GetRequestBySerialNumberReq {
   serialNumber: string;
 }
 
-/** GetAllRequests */
-export interface GetAllRequestsReq {
-  from: number;
-  to: number;
-  approvementStatus?: ApprovementStatus | undefined;
-}
-
 /** GetRequestById */
 export interface GetRequestByIdReq {
   id: string;
-}
-
-/** SearchRequestsByDisplayNameReq */
-export interface SearchRequestsByDisplayNameReq {
-  displayName: string;
-  personType: PersonTypeInRequest;
-  searcherId?: string | undefined;
-  searcherType?: PersonTypeInRequest | undefined;
-  from: number;
-  to: number;
 }
 
 /** CanPushToKartoffelQueue, CanPushToADQueue */
@@ -1503,6 +1486,7 @@ export interface CanPushToQueueRes {
 /** IncrementKartoffelRetries, IncrementADRetries */
 export interface IncrementRetriesReq {
   id: string;
+  message?: string | undefined;
 }
 
 /** UpdateCommanderDecision, UpdateSecurityDecision, UpdateSuperSecurityDecision */
@@ -22414,110 +22398,6 @@ export const GetRequestBySerialNumberReq = {
   },
 };
 
-const baseGetAllRequestsReq: object = { from: 0, to: 0 };
-
-export const GetAllRequestsReq = {
-  encode(
-    message: GetAllRequestsReq,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.from !== 0) {
-      writer.uint32(8).int32(message.from);
-    }
-    if (message.to !== 0) {
-      writer.uint32(16).int32(message.to);
-    }
-    if (message.approvementStatus !== undefined) {
-      writer.uint32(48).int32(message.approvementStatus);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): GetAllRequestsReq {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseGetAllRequestsReq } as GetAllRequestsReq;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.from = reader.int32();
-          break;
-        case 2:
-          message.to = reader.int32();
-          break;
-        case 6:
-          message.approvementStatus = reader.int32() as any;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): GetAllRequestsReq {
-    const message = { ...baseGetAllRequestsReq } as GetAllRequestsReq;
-    if (object.from !== undefined && object.from !== null) {
-      message.from = Number(object.from);
-    } else {
-      message.from = 0;
-    }
-    if (object.to !== undefined && object.to !== null) {
-      message.to = Number(object.to);
-    } else {
-      message.to = 0;
-    }
-    if (
-      object.approvementStatus !== undefined &&
-      object.approvementStatus !== null
-    ) {
-      message.approvementStatus = approvementStatusFromJSON(
-        object.approvementStatus
-      );
-    } else {
-      message.approvementStatus = undefined;
-    }
-    return message;
-  },
-
-  toJSON(message: GetAllRequestsReq): unknown {
-    const obj: any = {};
-    message.from !== undefined && (obj.from = message.from);
-    message.to !== undefined && (obj.to = message.to);
-    message.approvementStatus !== undefined &&
-      (obj.approvementStatus =
-        message.approvementStatus !== undefined
-          ? approvementStatusToJSON(message.approvementStatus)
-          : undefined);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<GetAllRequestsReq>): GetAllRequestsReq {
-    const message = { ...baseGetAllRequestsReq } as GetAllRequestsReq;
-    if (object.from !== undefined && object.from !== null) {
-      message.from = object.from;
-    } else {
-      message.from = 0;
-    }
-    if (object.to !== undefined && object.to !== null) {
-      message.to = object.to;
-    } else {
-      message.to = 0;
-    }
-    if (
-      object.approvementStatus !== undefined &&
-      object.approvementStatus !== null
-    ) {
-      message.approvementStatus = object.approvementStatus;
-    } else {
-      message.approvementStatus = undefined;
-    }
-    return message;
-  },
-};
-
 const baseGetRequestByIdReq: object = { id: "" };
 
 export const GetRequestByIdReq = {
@@ -22571,171 +22451,6 @@ export const GetRequestByIdReq = {
       message.id = object.id;
     } else {
       message.id = "";
-    }
-    return message;
-  },
-};
-
-const baseSearchRequestsByDisplayNameReq: object = {
-  displayName: "",
-  personType: 0,
-  from: 0,
-  to: 0,
-};
-
-export const SearchRequestsByDisplayNameReq = {
-  encode(
-    message: SearchRequestsByDisplayNameReq,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.displayName !== "") {
-      writer.uint32(10).string(message.displayName);
-    }
-    if (message.personType !== 0) {
-      writer.uint32(16).int32(message.personType);
-    }
-    if (message.searcherId !== undefined) {
-      writer.uint32(26).string(message.searcherId);
-    }
-    if (message.searcherType !== undefined) {
-      writer.uint32(32).int32(message.searcherType);
-    }
-    if (message.from !== 0) {
-      writer.uint32(40).int32(message.from);
-    }
-    if (message.to !== 0) {
-      writer.uint32(48).int32(message.to);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): SearchRequestsByDisplayNameReq {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseSearchRequestsByDisplayNameReq,
-    } as SearchRequestsByDisplayNameReq;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.displayName = reader.string();
-          break;
-        case 2:
-          message.personType = reader.int32() as any;
-          break;
-        case 3:
-          message.searcherId = reader.string();
-          break;
-        case 4:
-          message.searcherType = reader.int32() as any;
-          break;
-        case 5:
-          message.from = reader.int32();
-          break;
-        case 6:
-          message.to = reader.int32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): SearchRequestsByDisplayNameReq {
-    const message = {
-      ...baseSearchRequestsByDisplayNameReq,
-    } as SearchRequestsByDisplayNameReq;
-    if (object.displayName !== undefined && object.displayName !== null) {
-      message.displayName = String(object.displayName);
-    } else {
-      message.displayName = "";
-    }
-    if (object.personType !== undefined && object.personType !== null) {
-      message.personType = personTypeInRequestFromJSON(object.personType);
-    } else {
-      message.personType = 0;
-    }
-    if (object.searcherId !== undefined && object.searcherId !== null) {
-      message.searcherId = String(object.searcherId);
-    } else {
-      message.searcherId = undefined;
-    }
-    if (object.searcherType !== undefined && object.searcherType !== null) {
-      message.searcherType = personTypeInRequestFromJSON(object.searcherType);
-    } else {
-      message.searcherType = undefined;
-    }
-    if (object.from !== undefined && object.from !== null) {
-      message.from = Number(object.from);
-    } else {
-      message.from = 0;
-    }
-    if (object.to !== undefined && object.to !== null) {
-      message.to = Number(object.to);
-    } else {
-      message.to = 0;
-    }
-    return message;
-  },
-
-  toJSON(message: SearchRequestsByDisplayNameReq): unknown {
-    const obj: any = {};
-    message.displayName !== undefined &&
-      (obj.displayName = message.displayName);
-    message.personType !== undefined &&
-      (obj.personType = personTypeInRequestToJSON(message.personType));
-    message.searcherId !== undefined && (obj.searcherId = message.searcherId);
-    message.searcherType !== undefined &&
-      (obj.searcherType =
-        message.searcherType !== undefined
-          ? personTypeInRequestToJSON(message.searcherType)
-          : undefined);
-    message.from !== undefined && (obj.from = message.from);
-    message.to !== undefined && (obj.to = message.to);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<SearchRequestsByDisplayNameReq>
-  ): SearchRequestsByDisplayNameReq {
-    const message = {
-      ...baseSearchRequestsByDisplayNameReq,
-    } as SearchRequestsByDisplayNameReq;
-    if (object.displayName !== undefined && object.displayName !== null) {
-      message.displayName = object.displayName;
-    } else {
-      message.displayName = "";
-    }
-    if (object.personType !== undefined && object.personType !== null) {
-      message.personType = object.personType;
-    } else {
-      message.personType = 0;
-    }
-    if (object.searcherId !== undefined && object.searcherId !== null) {
-      message.searcherId = object.searcherId;
-    } else {
-      message.searcherId = undefined;
-    }
-    if (object.searcherType !== undefined && object.searcherType !== null) {
-      message.searcherType = object.searcherType;
-    } else {
-      message.searcherType = undefined;
-    }
-    if (object.from !== undefined && object.from !== null) {
-      message.from = object.from;
-    } else {
-      message.from = 0;
-    }
-    if (object.to !== undefined && object.to !== null) {
-      message.to = object.to;
-    } else {
-      message.to = 0;
     }
     return message;
   },
@@ -22868,6 +22583,9 @@ export const IncrementRetriesReq = {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
+    if (message.message !== undefined) {
+      writer.uint32(18).string(message.message);
+    }
     return writer;
   },
 
@@ -22880,6 +22598,9 @@ export const IncrementRetriesReq = {
       switch (tag >>> 3) {
         case 1:
           message.id = reader.string();
+          break;
+        case 2:
+          message.message = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -22896,12 +22617,18 @@ export const IncrementRetriesReq = {
     } else {
       message.id = "";
     }
+    if (object.message !== undefined && object.message !== null) {
+      message.message = String(object.message);
+    } else {
+      message.message = undefined;
+    }
     return message;
   },
 
   toJSON(message: IncrementRetriesReq): unknown {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
+    message.message !== undefined && (obj.message = message.message);
     return obj;
   },
 
@@ -22911,6 +22638,11 @@ export const IncrementRetriesReq = {
       message.id = object.id;
     } else {
       message.id = "";
+    }
+    if (object.message !== undefined && object.message !== null) {
+      message.message = object.message;
+    } else {
+      message.message = undefined;
     }
     return message;
   },
@@ -26569,7 +26301,6 @@ export interface RequestService {
   GetRequestBySerialNumber(
     request: GetRequestBySerialNumberReq
   ): Promise<Request>;
-  GetAllRequests(request: GetAllRequestsReq): Promise<RequestArray>;
   GetRequestById(request: GetRequestByIdReq): Promise<Request>;
   GetRequestsUnderBulk(request: GetRequestsUnderBulkReq): Promise<RequestArray>;
   UpdateApproverDecision(request: UpdateApproverDecisionReq): Promise<Request>;
@@ -26593,9 +26324,6 @@ export interface RequestService {
   ): Promise<RequestIdArray>;
   PushError(request: PushErrorReq): Promise<Request>;
   SyncBulkRequest(request: SyncBulkRequestReq): Promise<Request>;
-  SearchRequestsByDisplayName(
-    request: SearchRequestsByDisplayNameReq
-  ): Promise<RequestArray>;
 }
 
 export class RequestServiceClientImpl implements RequestService {
@@ -26626,7 +26354,6 @@ export class RequestServiceClientImpl implements RequestService {
     this.DeleteRequest = this.DeleteRequest.bind(this);
     this.GetRequestsByPerson = this.GetRequestsByPerson.bind(this);
     this.GetRequestBySerialNumber = this.GetRequestBySerialNumber.bind(this);
-    this.GetAllRequests = this.GetAllRequests.bind(this);
     this.GetRequestById = this.GetRequestById.bind(this);
     this.GetRequestsUnderBulk = this.GetRequestsUnderBulk.bind(this);
     this.UpdateApproverDecision = this.UpdateApproverDecision.bind(this);
@@ -26645,8 +26372,6 @@ export class RequestServiceClientImpl implements RequestService {
       this.GetRequestIdsInProgressByDue.bind(this);
     this.PushError = this.PushError.bind(this);
     this.SyncBulkRequest = this.SyncBulkRequest.bind(this);
-    this.SearchRequestsByDisplayName =
-      this.SearchRequestsByDisplayName.bind(this);
   }
   CreateRoleRequest(request: CreateRoleReq): Promise<CreateRoleRes> {
     const data = CreateRoleReq.encode(request).finish();
@@ -26884,16 +26609,6 @@ export class RequestServiceClientImpl implements RequestService {
     return promise.then((data) => Request.decode(new _m0.Reader(data)));
   }
 
-  GetAllRequests(request: GetAllRequestsReq): Promise<RequestArray> {
-    const data = GetAllRequestsReq.encode(request).finish();
-    const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "GetAllRequests",
-      data
-    );
-    return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
-  }
-
   GetRequestById(request: GetRequestByIdReq): Promise<Request> {
     const data = GetRequestByIdReq.encode(request).finish();
     const promise = this.rpc.request(
@@ -27058,18 +26773,6 @@ export class RequestServiceClientImpl implements RequestService {
       data
     );
     return promise.then((data) => Request.decode(new _m0.Reader(data)));
-  }
-
-  SearchRequestsByDisplayName(
-    request: SearchRequestsByDisplayNameReq
-  ): Promise<RequestArray> {
-    const data = SearchRequestsByDisplayNameReq.encode(request).finish();
-    const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "SearchRequestsByDisplayName",
-      data
-    );
-    return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
   }
 }
 

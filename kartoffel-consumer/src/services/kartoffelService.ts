@@ -73,9 +73,9 @@ export default class KartoffelService {
         searchOGRequest,
         (err: any, ogArray: OGArray) => {
           if (err) {
-            throw reject(err);
+            reject(err);
           } else {
-            return resolve(ogArray);
+            resolve(ogArray);
           }
         }
       );
@@ -91,9 +91,9 @@ export default class KartoffelService {
         createOGRequest,
         (err: any, organizationGroup: OrganizationGroup) => {
           if (err) {
-            throw reject(err);
+            reject(err);
           } else {
-            return resolve(organizationGroup);
+            resolve(organizationGroup);
           }
         }
       );
@@ -109,9 +109,9 @@ export default class KartoffelService {
         createDIRequest,
         (err: any, digitalIdentity: DigitalIdentity) => {
           if (err) {
-            throw reject(err);
+            reject(err);
           } else {
-            return resolve(digitalIdentity);
+            resolve(digitalIdentity);
           }
         }
       );
@@ -123,9 +123,9 @@ export default class KartoffelService {
     return new Promise((resolve, reject) => {
       kartoffelClient.CreateRole(createRoleRequest, (err: any, role: Role) => {
         if (err) {
-          throw reject(err);
+          reject(err);
         } else {
-          return resolve(role);
+          resolve(role);
         }
       });
     });
@@ -140,9 +140,9 @@ export default class KartoffelService {
         renameRoleRequest,
         (err: any, message: SuccessMessage) => {
           if (err) {
-            throw reject(err);
+            reject(err);
           } else {
-            return resolve(message);
+            resolve(message);
           }
         }
       );
@@ -158,9 +158,9 @@ export default class KartoffelService {
         renameOGRequest,
         (err: any, message: SuccessMessage) => {
           if (err) {
-            throw reject(err);
+            reject(err);
           } else {
-            return resolve(message);
+            resolve(message);
           }
         }
       );
@@ -176,9 +176,9 @@ export default class KartoffelService {
         updateEntityRequest,
         (err: any, message: SuccessMessage) => {
           if (err) {
-            throw reject(err);
+            reject(err);
           } else {
-            return resolve(message);
+            resolve(message);
           }
         }
       );
@@ -194,9 +194,9 @@ export default class KartoffelService {
         connectRoleAndDIRequest,
         (err: any, successMessage: SuccessMessage) => {
           if (err) {
-            throw reject(err);
+            reject(err);
           } else {
-            return resolve(successMessage);
+            resolve(successMessage);
           }
         }
       );
@@ -212,9 +212,9 @@ export default class KartoffelService {
         disconnectRoleAndDIRequest,
         (err: any, successMessage: SuccessMessage) => {
           if (err) {
-            throw reject(err);
+            reject(err);
           } else {
-            return resolve(successMessage);
+            resolve(successMessage);
           }
         }
       );
@@ -230,9 +230,9 @@ export default class KartoffelService {
         getRoleByRoleIdRequest,
         (err: any, role: Role) => {
           if (err) {
-            throw reject(err);
+            reject(err);
           } else {
-            return resolve(role);
+            resolve(role);
           }
         }
       );
@@ -248,9 +248,9 @@ export default class KartoffelService {
         getRolesUnderOGRequest,
         (err: any, roleArray: RoleArray) => {
           if (err) {
-            throw reject(err);
+            reject(err);
           } else {
-            return resolve(roleArray);
+            resolve(roleArray);
           }
         }
       );
@@ -266,9 +266,9 @@ export default class KartoffelService {
         connectEntityAndDIRequest,
         (err: any, successMessage: SuccessMessage) => {
           if (err) {
-            throw reject(err);
+            reject(err);
           } else {
-            return resolve(successMessage);
+            resolve(successMessage);
           }
         }
       );
@@ -284,9 +284,9 @@ export default class KartoffelService {
         createEntityRequest,
         (err: any, entity: Entity) => {
           if (err) {
-            throw reject(err);
+            reject(err);
           } else {
-            return resolve(entity);
+            resolve(entity);
           }
         }
       );
@@ -302,9 +302,9 @@ export default class KartoffelService {
         DisconnectDIFromEntityRequest,
         (err: any, successMessage: SuccessMessage) => {
           if (err) {
-            throw reject(err);
+            reject(err);
           } else {
-            return resolve(successMessage);
+            resolve(successMessage);
           }
         }
       );
@@ -533,9 +533,9 @@ export default class KartoffelService {
         changeRoleOG,
         (err: any, message: SuccessMessage) => {
           if (err) {
-            throw reject(err);
+            reject(err);
           } else {
-            return resolve(message);
+            resolve(message);
           }
         }
       );

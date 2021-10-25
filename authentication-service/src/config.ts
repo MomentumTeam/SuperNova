@@ -1,3 +1,5 @@
+import * as env from 'env-var';
+
 export const config = {
   server: {
     port: +(process.env.AS_PORT || 9000),
@@ -12,7 +14,7 @@ export const config = {
   kartoffel: {
     endpoint: process.env.AS_KARTOFFEL_RPC_ENDPOINT || '0.0.0.0:8082',
     defaultLastName: ' ',
-    enrich: process.env.AS_KARTOFFEL_ENRICH || true,
+    enrich: env.get("AS_KARTOFFEL_ENRICH").default('false').asBool(),
   },
   approver: {
     endpoint: process.env.AS_APS_URL || '0.0.0.0:8085',
@@ -45,7 +47,9 @@ export const config = {
   support:
     process.env.AS_UNAUTHORIZED_SUPPORT_URL || 'https://open.rocket.chat',
   defaultUserTypes: ['COMMANDER'],
-  logPath: process.env.AS_LOG_PATH || './logs',
+  logPath: process.env.AS_LOG_PATH
+    ? `${process.env.AS_LOG_PATH}/authentication-service`
+    : './logs/authentication-service',
   storeLogs: process.env.GLOBAL_STORE_LOGS
     ? process.env.GLOBAL_STORE_LOGS === 'true'
     : false,

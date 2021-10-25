@@ -34,7 +34,9 @@ export const requestTypeToHebrew = {
     'שינוי היררכיה מרובה',
 };
 
-export const logPath = process.env.NS_LOG_PATH || './logs';
+export const logPath = process.env.NS_LOG_PATH
+  ? `${process.env.NS_LOG_PATH}/notification-service`
+  : './logs/notification-service';
 export const storeLogs = process.env.GLOBAL_STORE_LOGS
   ? process.env.GLOBAL_STORE_LOGS === 'true'
   : false;

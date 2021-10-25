@@ -41,7 +41,9 @@ export const exampleFiles = {
   createRoleRequest: process.env.BS_FILE_CR || 'createRoleBulk.xlsx',
 };
 
-export const logPath = process.env.BS_LOG_PATH || './logs';
+export const logPath = process.env.BS_LOG_PATH
+  ? `${process.env.BS_LOG_PATH}/bulk-service`
+  : './logs/bulk-service';
 export const storeLogs = process.env.GLOBAL_STORE_LOGS
   ? process.env.GLOBAL_STORE_LOGS === 'true'
   : false;

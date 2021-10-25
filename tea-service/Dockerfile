@@ -27,6 +27,8 @@ RUN GRPC_HEALTH_PROBE_VERSION=v0.4.4 && \
     chown node:node /bin/grpc_health_probe
 
 RUN mkdir -p /logs && chown -R node:node /logs
+RUN mkdir -p /logs/tea-service && chown -R node:node /logs/tea-service
+RUN mkdir -p /teaUtils && chown -R node:node /teaUtils
 RUN mkdir -p /usr/src/app && chown -R node:node /usr/src/app
 WORKDIR /usr/src/app
 
