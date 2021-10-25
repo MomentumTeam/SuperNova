@@ -90,6 +90,13 @@ filebeat.inputs:
     fields:
       service_name: 'whiteListSync-script'
 
+  - type: filestream
+    enabled: true
+    paths:
+      - /logs/mail-service/*.log
+    fields:
+      service_name: 'mail-service'
+
 # setup.ilm.enabled: false
 setup.template.name: 'LEGO'
 setup.template.pattern: 'LEGO-*'

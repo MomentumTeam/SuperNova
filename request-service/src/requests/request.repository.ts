@@ -45,6 +45,7 @@ import {
   RowError,
 } from '../interfaces/protoc/proto/requestService';
 import { createNotifications } from '../services/notificationHelper';
+import { sendMail } from '../services/mailHelper';
 import * as C from '../config';
 import { RequestModel } from '../models/request.model';
 import {
@@ -59,6 +60,7 @@ import {
   retrieveUPNByEntityId,
 } from '../services/teaHelper';
 import { logger } from '../logger';
+import { MailType } from '../interfaces/protoc/proto/mailService';
 
 export class RequestRepository {
   async createRequest(
@@ -152,6 +154,7 @@ export class RequestRepository {
             NotificationType.REQUEST_SUBMITTED,
             document
           );
+          await sendMail(MailType.REQUEST_SUBMITTED, document);
         } catch (notificationError) {
           logger.error('Notification error', {
             error: { message: notificationError.message },
@@ -309,24 +312,31 @@ export class RequestRepository {
 
         // Create notification
         let approvingNotificationType: any = undefined,
-          requestStatusNotificationType: any = undefined;
+          requestStatusNotificationType: any = undefined,
+          approvingMailType: any = undefined;
 
         // Get notification type
         if (decision === Decision.APPROVED) {
           if (approverType === PersonTypeInRequest.COMMANDER_APPROVER) {
             approvingNotificationType = NotificationType.REQUEST_APPROVED_1;
+            approvingMailType = MailType.REQUEST_APPROVED_1;
           } else if (approverType === PersonTypeInRequest.SECURITY_APPROVER) {
             approvingNotificationType = NotificationType.REQUEST_APPROVED_2;
+            approvingMailType = MailType.REQUEST_APPROVED_2;
           } else {
             approvingNotificationType = NotificationType.REQUEST_APPROVED_3;
+            approvingMailType = MailType.REQUEST_APPROVED_3;
           }
         } else if (decision === Decision.DENIED) {
           if (approverType === PersonTypeInRequest.COMMANDER_APPROVER) {
             approvingNotificationType = NotificationType.REQUEST_DECLINED_1;
+            approvingMailType = MailType.REQUEST_DECLINED_1;
           } else if (approverType === PersonTypeInRequest.SECURITY_APPROVER) {
             approvingNotificationType = NotificationType.REQUEST_DECLINED_2;
+            approvingMailType = MailType.REQUEST_DECLINED_2;
           } else {
             approvingNotificationType = NotificationType.REQUEST_DECLINED_3;
+            approvingMailType = MailType.REQUEST_DECLINED_3;
           }
         }
 
@@ -337,6 +347,7 @@ export class RequestRepository {
               approvingNotificationType,
               updatedRequest
             );
+            await sendMail(approvingMailType, updatedRequest);
             if (newRequestStatus) {
               requestStatusNotificationType =
                 newRequestStatus === RequestStatus.IN_PROGRESS
@@ -410,6 +421,7 @@ export class RequestRepository {
               : properties.status;
           if (status === RequestStatus.FAILED) {
             await createNotifications(NotificationType.REQUEST_FAILED, request);
+            await sendMail(MailType.REQUEST_FAILED, request);
           }
         }
       } catch (notificationError) {
@@ -466,6 +478,7 @@ export class RequestRepository {
               : properties.status;
           if (status === RequestStatus.FAILED) {
             await createNotifications(NotificationType.REQUEST_FAILED, request);
+            await sendMail(MailType.REQUEST_FAILED, request);
           }
         }
       } catch (notificationError) {
@@ -802,8 +815,13 @@ export class RequestRepository {
           requestStatus === RequestStatus.DONE
             ? NotificationType.REQUEST_DONE
             : NotificationType.REQUEST_FAILED;
+        const mailType: MailType =
+          requestStatus === RequestStatus.DONE
+            ? MailType.REQUEST_DONE
+            : MailType.REQUEST_FAILED;
         try {
           await createNotifications(notificationType, updatedRequest);
+          await sendMail(mailType, updatedRequest);
         } catch (notificationError) {
           logger.error('Notificatoin error', {
             error: { message: notificationError.message },
@@ -869,8 +887,14 @@ export class RequestRepository {
           requestStatus === RequestStatus.DONE
             ? NotificationType.REQUEST_DONE
             : NotificationType.REQUEST_FAILED;
+        const mailType: MailType =
+          requestStatus === RequestStatus.DONE
+            ? MailType.REQUEST_DONE
+            : MailType.REQUEST_FAILED;
+
         try {
           await createNotifications(notificationType, updatedRequest);
+          await sendMail(mailType, updatedRequest);
         } catch (notificationError) {
           logger.error('Notificatoin error', {
             error: { message: notificationError.message },
