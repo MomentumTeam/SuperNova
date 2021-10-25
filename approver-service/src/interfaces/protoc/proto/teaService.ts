@@ -1909,6 +1909,7 @@ export interface Tea {
   RetrieveUPNByEntityId(request: RetrieveByEntityIdReq): Promise<UPNMessage>;
   ReportTeaSuccess(request: ReportTeaReq): Promise<SuccessMessage>;
   ReportTeaFail(request: ReportTeaReq): Promise<SuccessMessage>;
+  ThrowTea(request: ReportTeaReq): Promise<SuccessMessage>;
   GetUnit(request: GetUnitReq): Promise<Unit>;
   AddUnit(request: AddUnitReq): Promise<Unit>;
   UpdateUnit(request: UpdateUnitReq): Promise<Unit>;
@@ -1926,6 +1927,7 @@ export class TeaClientImpl implements Tea {
     this.RetrieveUPNByEntityId = this.RetrieveUPNByEntityId.bind(this);
     this.ReportTeaSuccess = this.ReportTeaSuccess.bind(this);
     this.ReportTeaFail = this.ReportTeaFail.bind(this);
+    this.ThrowTea = this.ThrowTea.bind(this);
     this.GetUnit = this.GetUnit.bind(this);
     this.AddUnit = this.AddUnit.bind(this);
     this.UpdateUnit = this.UpdateUnit.bind(this);
@@ -1960,6 +1962,12 @@ export class TeaClientImpl implements Tea {
   ReportTeaFail(request: ReportTeaReq): Promise<SuccessMessage> {
     const data = ReportTeaReq.encode(request).finish();
     const promise = this.rpc.request("Tea.Tea", "ReportTeaFail", data);
+    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
+  }
+
+  ThrowTea(request: ReportTeaReq): Promise<SuccessMessage> {
+    const data = ReportTeaReq.encode(request).finish();
+    const promise = this.rpc.request("Tea.Tea", "ThrowTea", data);
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 

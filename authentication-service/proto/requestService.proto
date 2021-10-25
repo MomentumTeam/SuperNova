@@ -1249,8 +1249,8 @@ message ADParams{
 
     //RenameOG
     //string ouDisplayName = ;
-    optional string oldName = 14;
-    optional string newName = 15;
+    optional string oldOuName = 14;
+    optional string newOuName = 15;
 
     //RenameRole
     // string samAccountName = ;

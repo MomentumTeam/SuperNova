@@ -128,6 +128,29 @@ export class TeaRepository {
     }
   }
 
+  async throwTea(throwTeaReq: ReportTeaReq): Promise<SuccessMessage> {
+    try {
+      await UnitModel.updateOne(
+        {
+          $or: [
+            { teaInProgress: throwTeaReq.tea },
+            { failedTea: throwTeaReq.tea },
+          ],
+        },
+        {
+          $pull: {
+            teaInProgress: throwTeaReq.tea,
+            failedTea: throwTeaReq.tea,
+          },
+        },
+        { multi: true }
+      );
+      return { success: true };
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async reportTeaFail(reportTeaReq: ReportTeaReq): Promise<SuccessMessage> {
     try {
       await UnitModel.updateOne(

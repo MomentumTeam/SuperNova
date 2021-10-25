@@ -1,4 +1,4 @@
-name: "api-gateway"
+name: 'api-gateway'
 # If you want to overide the full name you can include the 'fullnameOverride' value
 #fullname:
 replicaCount: 1
@@ -8,15 +8,34 @@ images:
     name: momentumacr
   repository: momentumacr.azurecr.io/api-gateway
   tag: "latest"
-  
+
 service:
+  ports:
+  - name: http
+    port: "8080"
 
 volume:
-  mountPath: /usr/src/app/bulk-files
+  mountPath: /usr/src/app/src/utils
   secretName: azure-secret
-  shareName: momentum/bulk-files
-
+# <<<<<<< develop
+  shareName: momentum/spike-utils
 
 configmap:
-  configmaps:  
+  configmaps:
   mame: momentum-configmap
+# =======
+#   shareName: momentum/bulk-files
+
+# config:
+#   configmaps:
+#       name: momentum-configmap
+
+ingress:
+  enabled: true
+  hosts:
+  - host: momentum.branch-yesodot.org
+    paths:
+      - path: /api
+        service: api-gateway
+        port: 8080
+# >>>>>>> main

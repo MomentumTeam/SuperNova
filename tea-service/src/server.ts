@@ -13,6 +13,7 @@ import {
   retrieveUPNByEntity,
   retrieveUPNByEntityId,
   searchUnit,
+  throwTea,
   updateUnit,
 } from './tea/tea.controller';
 import { findPath } from './utils/path';
@@ -60,6 +61,7 @@ export class Server {
         RetrieveUPNByEntityId: retrieveUPNByEntityId,
         ReportTeaSuccess: reportTeaSuccess,
         ReportTeaFail: reportTeaFail,
+        ThrowTea: throwTea,
         GetUnit: getUnit,
         AddUnit: addUnit,
         UpdateUnit: updateUnit,

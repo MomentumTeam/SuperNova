@@ -101,6 +101,33 @@ export async function retrieveUPNByEntityId(
   }
 }
 
+export async function throwTea(call: any, callback: any): Promise<void> {
+  try {
+    logger.info('Call to throwTea', { request: call.request });
+    const successMessage: SuccessMessage = await teaManager.reportTeaSuccess(
+      call.request
+    );
+    logger.info('throwTea OK', {
+      response: successMessage,
+      request: call.request,
+    });
+    callback(null, successMessage);
+  } catch (error: any) {
+    logger.error('throwTea ERROR', {
+      error: { message: error.message },
+      request: call.request,
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
 export async function reportTeaSuccess(
   call: any,
   callback: any

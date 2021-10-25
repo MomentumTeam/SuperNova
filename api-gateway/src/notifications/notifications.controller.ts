@@ -20,6 +20,9 @@ export default class NotificationController {
       from: req.query.from,
       to: req.query.to,
     };
+    if (req.query.read !== undefined) {
+      getNotificationsByOwnerIdReq.read = req.query.read;
+    }
 
     logger.info(`Call to getMyNotifications in GTW`, {
       callRequest: getNotificationsByOwnerIdReq,

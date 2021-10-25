@@ -7,8 +7,13 @@ images:
   PullSecrets:
     name: momentumacr
   repository: momentumacr.azurecr.io/approver-service
------: "latest"
+  tag: "latest"
+
 service:
-configmap:
-  configmaps:  
-  mame: momentum-configmap
+  ports:
+  - name: http
+    port: "8080"
+
+config:
+  configmaps:
+      name: momentum-configmap
