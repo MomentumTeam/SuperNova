@@ -1,7 +1,6 @@
 import * as jwt from 'jsonwebtoken';
 import { config } from '../config';
 import { NotFoundError } from '../utils/errors/user.error';
-import { IShragaUser } from './auth.interface';
 import { KartoffelService } from '../kartoffel/kartoffel.service';
 import { IUser } from '../kartoffel/kartoffel.interface';
 import { logger } from '../logger';
@@ -10,41 +9,34 @@ import {
   ApproverType,
   approverTypeToJSON,
 } from '../interfaces/protoc/proto/requestService';
+import { IShragaUser } from '../passport/passport.interface';
+import { IUserToken } from './auth.interface';
 
 export class AuthManager {
   static async createToken(populatedShragaUser: IShragaUser) {
-    const shragaUser: any = AuthManager.extractShragaUser(populatedShragaUser);
-    delete shragaUser['adfsId'];
-    delete shragaUser['jti'];
-    delete shragaUser['name'];
-    delete shragaUser['provider'];
-    delete shragaUser['iat'];
-    delete shragaUser['exp'];
-    const { id } = populatedShragaUser;
+    const shragaUser: IShragaUser = AuthManager.extractShragaUser(populatedShragaUser);
+    const { genesisId, id, iat, exp} = shragaUser;
 
-    const kartoffelUser = await AuthManager.extractKartoffelUser(id);
-    shragaUser.identityCard = kartoffelUser.identityCard
-      ? kartoffelUser.identityCard
-      : '';
-    shragaUser.personalNumber = kartoffelUser.personalNumber
-      ? kartoffelUser.personalNumber
-      : '';
-    shragaUser.displayName = kartoffelUser.displayName
-      ? kartoffelUser.displayName
-      : '';
-    shragaUser.fullName = kartoffelUser.fullName ? kartoffelUser.fullName : '';
-    const userType = config.approver.enrich
-      ? await AuthManager.extractUserType(id)
-      : {};
+    const kartoffelUser: IUser = await AuthManager.extractKartoffelUser(genesisId);
+    const { displayName, identityCard, personalNumber } = kartoffelUser;
 
-    let userInformation = {
-      ...shragaUser,
+    const types = config.approver.enrich? await AuthManager.extractUserType(genesisId): {};
+    
+    const userToken: IUserToken = {
+      id,
+      genesisId,
+      iat,
+      exp,
+      displayName,
+      identityCard,
+      personalNumber,
+      types
     };
+    let userInformation = {...userToken};
 
-    if (config.approver.enrich)
-      userInformation = { ...userInformation, ...userType };
-    if (config.kartoffel.enrich)
-      userInformation = { ...userInformation, ...kartoffelUser };
+    if (config.approver.enrich) userInformation = { ...userInformation, ...types };
+    if (config.kartoffel.enrich) userInformation = { ...userInformation, ...kartoffelUser };
+    
     return jwt.sign(userInformation, config.authentication.secret);
   }
 
@@ -63,9 +55,6 @@ export class AuthManager {
   }
 
   private static async extractKartoffelUser(genesisId: string) {
-    // const user: any = {};
-    // if (!config.kartoffel.enrich) return user;
-
     const kartoffelUser = await KartoffelService.getEntityById(genesisId);
     return kartoffelUser as IUser;
   }

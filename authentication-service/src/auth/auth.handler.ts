@@ -3,7 +3,7 @@ import { config } from '../config';
 import { logger } from '../logger';
 import { Response, Request } from 'express';
 import { AuthManager } from './auth.manager';
-import { IShragaUser } from './auth.interface';
+import { IShragaUser } from '../passport/passport.interface';
 
 export class AuthenticationHandler {
     static async createTokenAndRedirect(req: Request, res: Response) {
@@ -12,7 +12,6 @@ export class AuthenticationHandler {
            
            res.cookie(config.authentication.token, token);
            logger.info('successful handle user');
-           logger.info(token)
            return res.redirect(config.clientEndpoint);
         } catch (error) {
             logger.error(error)
