@@ -2,7 +2,7 @@ import * as C from '../config';
 
 import {
   SendCustomMailReq,
-  SuccsessMessage,
+  SuccessMessage,
   SendMailReq,
 } from '../interfaces/protoc/proto/mailService';
 import { Entity } from '../interfaces/protoc/proto/kartoffelService';
@@ -10,7 +10,7 @@ import KartoffelService from '../services/kartoffelService';
 import { generateMail, sendMail } from '../utils/mailer';
 
 export class MailRepository {
-  async sendMail(sendMailReq: SendMailReq): Promise<SuccsessMessage> {
+  async sendMail(sendMailReq: SendMailReq): Promise<SuccessMessage> {
     try {
       const message: string = generateMail(
         sendMailReq.type,
@@ -36,7 +36,7 @@ export class MailRepository {
 
   async sendCustomMail(
     sendCustomMailReq: SendCustomMailReq
-  ): Promise<SuccsessMessage> {
+  ): Promise<SuccessMessage> {
     try {
       const entity: Entity = await KartoffelService.getEntityById({
         id: sendCustomMailReq.entityId,

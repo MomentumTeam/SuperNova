@@ -98,7 +98,7 @@ export interface SendCustomMailReq {
   html: string;
 }
 
-export interface SuccsessMessage {
+export interface SuccessMessage {
   success: boolean;
   message: string;
 }
@@ -222,11 +222,11 @@ export const SendCustomMailReq = {
   },
 };
 
-const baseSuccsessMessage: object = { success: false, message: "" };
+const baseSuccessMessage: object = { success: false, message: "" };
 
-export const SuccsessMessage = {
+export const SuccessMessage = {
   encode(
-    message: SuccsessMessage,
+    message: SuccessMessage,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.success === true) {
@@ -238,10 +238,10 @@ export const SuccsessMessage = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): SuccsessMessage {
+  decode(input: _m0.Reader | Uint8Array, length?: number): SuccessMessage {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseSuccsessMessage } as SuccsessMessage;
+    const message = { ...baseSuccessMessage } as SuccessMessage;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -259,8 +259,8 @@ export const SuccsessMessage = {
     return message;
   },
 
-  fromJSON(object: any): SuccsessMessage {
-    const message = { ...baseSuccsessMessage } as SuccsessMessage;
+  fromJSON(object: any): SuccessMessage {
+    const message = { ...baseSuccessMessage } as SuccessMessage;
     if (object.success !== undefined && object.success !== null) {
       message.success = Boolean(object.success);
     } else {
@@ -274,15 +274,15 @@ export const SuccsessMessage = {
     return message;
   },
 
-  toJSON(message: SuccsessMessage): unknown {
+  toJSON(message: SuccessMessage): unknown {
     const obj: any = {};
     message.success !== undefined && (obj.success = message.success);
     message.message !== undefined && (obj.message = message.message);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<SuccsessMessage>): SuccsessMessage {
-    const message = { ...baseSuccsessMessage } as SuccsessMessage;
+  fromPartial(object: DeepPartial<SuccessMessage>): SuccessMessage {
+    const message = { ...baseSuccessMessage } as SuccessMessage;
     if (object.success !== undefined && object.success !== null) {
       message.success = object.success;
     } else {
@@ -376,8 +376,8 @@ export const SendMailReq = {
 };
 
 export interface MailService {
-  SendCustomMail(request: SendCustomMailReq): Promise<SuccsessMessage>;
-  SendMail(request: SendMailReq): Promise<SuccsessMessage>;
+  SendCustomMail(request: SendCustomMailReq): Promise<SuccessMessage>;
+  SendMail(request: SendMailReq): Promise<SuccessMessage>;
 }
 
 export class MailServiceClientImpl implements MailService {
@@ -387,24 +387,24 @@ export class MailServiceClientImpl implements MailService {
     this.SendCustomMail = this.SendCustomMail.bind(this);
     this.SendMail = this.SendMail.bind(this);
   }
-  SendCustomMail(request: SendCustomMailReq): Promise<SuccsessMessage> {
+  SendCustomMail(request: SendCustomMailReq): Promise<SuccessMessage> {
     const data = SendCustomMailReq.encode(request).finish();
     const promise = this.rpc.request(
       "MailService.MailService",
       "SendCustomMail",
       data
     );
-    return promise.then((data) => SuccsessMessage.decode(new _m0.Reader(data)));
+    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
-  SendMail(request: SendMailReq): Promise<SuccsessMessage> {
+  SendMail(request: SendMailReq): Promise<SuccessMessage> {
     const data = SendMailReq.encode(request).finish();
     const promise = this.rpc.request(
       "MailService.MailService",
       "SendMail",
       data
     );
-    return promise.then((data) => SuccsessMessage.decode(new _m0.Reader(data)));
+    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 }
 

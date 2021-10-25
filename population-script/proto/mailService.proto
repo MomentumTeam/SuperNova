@@ -4,8 +4,8 @@ import "requestService.proto";
 package MailService;
 
 service MailService {
-    rpc SendCustomMail(SendCustomMailReq) returns (SuccsessMessage) {} 
-    rpc SendMail(SendMailReq) returns (SuccsessMessage){}
+    rpc SendCustomMail(SendCustomMailReq) returns (SuccessMessage) {} 
+    rpc SendMail(SendMailReq) returns (SuccessMessage){}
 
 }
 
@@ -16,7 +16,7 @@ message SendCustomMailReq{
     string html = 4;
 }
 
-message SuccsessMessage{
+message SuccessMessage{
     bool success = 1;
     string message = 2;
 }
