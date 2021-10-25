@@ -191,6 +191,8 @@ services:
       - MS_MAIL_SERVER_HOST=smtp.office365.com
       - MS_MAIL_SERVER_PORT=587
       - MS_MAIL_SERVER_SECURE=false
+      - MS_IS_TEST=true
+      - MS_EMAILS_FOR_TEST=enterEmailForTest
 
   kartoffel-consumer:
     image: kartoffel-consumer
