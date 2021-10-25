@@ -1,24 +1,4 @@
-# name: "kartoffel-service"
-# # If you want to overide the full name you can include the 'fullnameOverride' value
-# #fullname:
-# replicaCount: 1
-
-# images:
-#   PullSecrets:
-#     name: momentumacr
-#   repository: momentumacr.azurecr.io/kartoffel-service
-#   tag: "latest"
-
-# service:
-#   ports:
-#   - name: http
-#     port: "8080"
-
-# config:
-#   configmaps:
-#       name: momentum-configmap
-
-name: "approver-service"
+name: "kartoffel-service"
 # If you want to overide the full name you can include the 'fullnameOverride' value
 #fullname:
 replicaCount: 1
@@ -26,7 +6,7 @@ replicaCount: 1
 images:
   PullSecrets:
     name: momentumacr
-  repository: momentumacr.azurecr.io/approver-service
+  repository: momentumacr.azurecr.io/kartoffel-service
   tag: "latest"
 
 service:
