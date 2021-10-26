@@ -1,5 +1,18 @@
 version: '3.8'
 services:
+  # nginx:
+  #   image: nginx:latest
+  #   container_name: nginx
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/nginx.conf
+  #   depends_on:
+  #     - api-gateway
+  #     - authentication-service
+  #     - supernova-ui
+  #   ports:
+  #     - 80:80
+  #     - 443:443
+
   mongo:
     image: mongo:latest
     container_name: mongo
@@ -53,12 +66,15 @@ services:
     depends_on:
       - mongo
       - notification-service
+      - tea-service
+      - mail-service
     volumes:
       - logs:/logs
     environment:
       - RS_MONGO_URL=mongodb://mongo:27017/supernova
       - RS_NS_URL=notification-service:8080
       - RS_TS_URL=tea-service:8080
+      - RS_MS_URL=mail-service:8080
       - RS_LOG_PATH=/logs
 
   kartoffel-service:
@@ -170,6 +186,29 @@ services:
       - BS_FOLDER_PATH=/bulkFiles
       - BS_LOG_PATH=/logs
 
+  mail-service:
+    image: mail-service
+    build: ./mail-service/
+    env_file:
+      - ./supernova.env
+    volumes:
+      - logs:/logs
+    ports:
+      - '8088:8080'
+    depends_on:
+      - kartoffel-service
+    environment:
+      - MS_KS_URL=kartoffel-service:8080
+      - MS_MAIL_SERVICE=hotmail
+      - MS_MAIL_ADDRESS=mayatest4321@outlook.com
+      - MS_MAIL_USER=mayatest4321@outlook.com
+      - MS_MAIL_PASSWORD=testpass4321
+      - MS_MAIL_SERVER_HOST=smtp.office365.com
+      - MS_MAIL_SERVER_PORT=587
+      - MS_MAIL_SERVER_SECURE=false
+      - MS_IS_TEST=true
+      - MS_EMAILS_FOR_TEST=enterEmailForTest
+
   kartoffel-consumer:
     image: kartoffel-consumer
     build: ./kartoffel-consumer/
@@ -278,6 +317,7 @@ services:
       - request-service
       - authentication-service
       - notification-service
+      - mail-service
       - approver-service
       - tea-service
       - bulk-service

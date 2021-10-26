@@ -1,0 +1,96 @@
+syntax = "proto3";
+import "requestService.proto"; 
+
+package ApproverService;
+
+service ApproverService {
+    rpc AddApprover(AddApproverReq) returns (Approver) {}
+    rpc GetUserType(GetUserTypeReq) returns (GetUserTypeRes) {}
+    rpc SearchApproverByDisplayName(SearchByDisplayNameReq) returns (ApproverArray) {}
+    rpc SearchApproverByDomainUser(SearchByDomainUserReq) returns (ApproverArray) {}
+    
+    rpc UpdateApproverDecision(RequestService.UpdateApproverDecisionReq) returns (RequestService.Request) {}
+
+    rpc GetAllApprovers(GetAllApproversReq) returns (ApproverArray) {}
+    rpc GetAllApproverIds(GetAllApproversReq) returns (ApproverIdArray) {}
+    rpc SyncApprover(SyncApproverReq) returns (ApproverArray){}
+    rpc DeleteApprover(DeleteApproverReq) returns (SuccessMessage){}
+}
+
+message SyncApproverReq{
+    string approverId = 1;
+}
+
+message DeleteApproverReq{
+    string approverId = 1;
+}
+
+message ApproverIdArray{
+    repeated string approverIds = 1;
+}
+
+message GetAllApproversReq{
+    oneof option {
+        RequestService.ApproverType type =1;
+    } 
+}
+
+message SuccessMessage{
+    bool success = 1;
+}
+
+message SearchByDisplayNameReq{
+    string displayName = 1;
+    RequestService.ApproverType type = 2;
+    int32 from = 3;
+    int32 to = 4;
+
+}
+message SearchByDomainUserReq{
+    string domainUser = 1;
+    RequestService.ApproverType type = 2;
+}
+
+message ApproverArray{
+    repeated Approver approvers = 1;
+}
+
+message GetUserTypeReq{
+    string entityId = 1;
+}
+
+message GetUserTypeRes{
+    string entityId = 1;
+    repeated RequestService.ApproverType type = 2;
+}
+
+message AddApproverReq{
+    string entityId = 1;
+    string displayName = 2;
+    repeated string domainUsers = 3;
+    string akaUnit = 4;
+    RequestService.ApproverType type = 5;
+    optional string personalNumber = 6;
+    optional string identityCard = 7;
+    string directGroup = 8;
+}
+
+message Approver{
+    string entityId = 1;
+    string displayName = 2;
+    repeated string domainUsers = 3; //entity may have multiple emails
+    RequestService.ApproverType type = 4;
+    string akaUnit = 5;
+    string id = 6;
+    string personalNumber = 7;
+    string identityCard = 8;
+    string directGroup = 9;
+}
+
+enum RequestStatus{
+    SUBMITTED = 0;
+    DECLINED = 1;
+    IN_PROGRESS = 2;
+    DONE = 3;
+    FAILED = 4;
+}
