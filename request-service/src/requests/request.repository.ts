@@ -154,7 +154,7 @@ export class RequestRepository {
             NotificationType.REQUEST_SUBMITTED,
             document
           );
-          await sendMail(MailType.REQUEST_SUBMITTED, document);
+          sendMail(MailType.REQUEST_SUBMITTED, document).then().catch();
         } catch (notificationError) {
           logger.error('Notification error', {
             error: { message: notificationError.message },
@@ -347,7 +347,7 @@ export class RequestRepository {
               approvingNotificationType,
               updatedRequest
             );
-            await sendMail(approvingMailType, updatedRequest);
+            sendMail(approvingMailType, updatedRequest).then().catch();
             if (newRequestStatus) {
               requestStatusNotificationType =
                 newRequestStatus === RequestStatus.IN_PROGRESS
@@ -421,7 +421,7 @@ export class RequestRepository {
               : properties.status;
           if (status === RequestStatus.FAILED) {
             await createNotifications(NotificationType.REQUEST_FAILED, request);
-            await sendMail(MailType.REQUEST_FAILED, request);
+            sendMail(MailType.REQUEST_FAILED, request).then().catch();
           }
         }
       } catch (notificationError) {
@@ -478,7 +478,7 @@ export class RequestRepository {
               : properties.status;
           if (status === RequestStatus.FAILED) {
             await createNotifications(NotificationType.REQUEST_FAILED, request);
-            await sendMail(MailType.REQUEST_FAILED, request);
+            sendMail(MailType.REQUEST_FAILED, request).then().catch();
           }
         }
       } catch (notificationError) {
@@ -821,7 +821,7 @@ export class RequestRepository {
             : MailType.REQUEST_FAILED;
         try {
           await createNotifications(notificationType, updatedRequest);
-          await sendMail(mailType, updatedRequest);
+          sendMail(mailType, updatedRequest).then().catch();
         } catch (notificationError) {
           logger.error('Notificatoin error', {
             error: { message: notificationError.message },
@@ -894,7 +894,7 @@ export class RequestRepository {
 
         try {
           await createNotifications(notificationType, updatedRequest);
-          await sendMail(mailType, updatedRequest);
+          sendMail(mailType, updatedRequest).then().catch();
         } catch (notificationError) {
           logger.error('Notificatoin error', {
             error: { message: notificationError.message },
