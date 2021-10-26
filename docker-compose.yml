@@ -215,7 +215,7 @@ services:
     env_file:
       - ./supernova.env
     ports:
-      - '8088:8080'
+      - '8089:8080'
     depends_on:
       - request-service
       - kartoffel-service
@@ -339,18 +339,18 @@ services:
       - GATEWAY_WRITE_SCOPE_NAME=write
       - GATEWAY_LOG_PATH=/logs
 
-  supernova-ui:
-    image: supernova-ui
-    build: ./SuperNovaUI/
-    env_file:
-      - ./supernova.env
-    depends_on:
-      - api-gateway
-    ports:
-      - '3000:80'
-    environment:
-      - REACT_APP_BASE_URL=http://localhost:2000
-      - REACT_TOKEN_NAME=sp-token
+  # supernova-ui:
+  #   image: supernova-ui
+  #   build: ./SuperNovaUI/
+  #   env_file:
+  #     - ./supernova.env
+  #   depends_on:
+  #     - api-gateway
+  #   ports:
+  #     - '3000:80'
+  #   environment:
+  #     - REACT_APP_BASE_URL=http://localhost:2000
+  #     - REACT_TOKEN_NAME=sp-token
 
   # Kafka GUI
   kouncil:
