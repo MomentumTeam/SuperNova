@@ -3,6 +3,7 @@ import * as C from '../config';
 import { logger } from '../logger';
 import { SpikeService } from '../spike/spikeService';
 import https from 'https';
+import { cleanUnderscoreFields } from './json.utils';
 export class KartoffelUtils {
   private axiosKartoffel: AxiosInstance;
   private spikeToken: string | null;
@@ -44,19 +45,18 @@ export class KartoffelUtils {
 
   async kartoffelGet(url: string, params: any = {}): Promise<any> {
     return new Promise((resolve, reject) => {
+      cleanUnderscoreFields(params);
       this.axiosKartoffel
         .get(url, { params })
         .then((res) => {
-          logger.info(`Kartoffel GET Request OK`, {
-            url: url,
+          logger.info(`Kartoffel GET Request to ${url} OK`, {
             response: res.data,
             queryParams: params,
           });
           resolve(res.data);
         })
         .catch((error) => {
-          logger.error(`Kartoffel GET Request ERROR`, {
-            url: url,
+          logger.error(`Kartoffel GET Request to ${url} ERROR`, {
             error: { message: error.message },
             queryParams: params,
           });
@@ -67,19 +67,18 @@ export class KartoffelUtils {
 
   async kartoffelDelete(url: string, params: any = {}): Promise<any> {
     return new Promise((resolve, reject) => {
+      cleanUnderscoreFields(params);
       this.axiosKartoffel
         .delete(url, { params })
         .then((res) => {
-          logger.info(`Kartoffel DELETE Request OK`, {
-            url: url,
+          logger.info(`Kartoffel DELETE Request to ${url} OK`, {
             response: res.data,
             queryParams: params,
           });
           resolve(res.data);
         })
         .catch((error) => {
-          logger.error(`Kartoffel DELETE Request ERROR`, {
-            url: url,
+          logger.error(`Kartoffel DELETE Request to ${url} ERROR`, {
             error: { message: error.message },
             queryParams: params,
           });
@@ -94,11 +93,12 @@ export class KartoffelUtils {
     params: any = {}
   ): Promise<any> {
     return new Promise((resolve, reject) => {
+      cleanUnderscoreFields(params);
+      cleanUnderscoreFields(body);
       this.axiosKartoffel
         .put(url, body, { params })
         .then((res) => {
-          logger.info(`Kartoffel PUT Request OK`, {
-            url: url,
+          logger.info(`Kartoffel PUT Request to ${url} OK`, {
             requestBoody: body,
             response: res.data,
             queryParams: params,
@@ -106,8 +106,7 @@ export class KartoffelUtils {
           resolve(res.data);
         })
         .catch((error) => {
-          logger.error(`Kartoffel PUT Request ERROR`, {
-            url: url,
+          logger.error(`Kartoffel PUT Request to ${url} ERROR`, {
             requestBoody: body,
             queryParams: params,
             error: { message: error.message },
@@ -119,11 +118,12 @@ export class KartoffelUtils {
 
   async kartoffelPost(url: string, body: any, params: any = {}): Promise<any> {
     return new Promise((resolve, reject) => {
+      cleanUnderscoreFields(body);
+      cleanUnderscoreFields(params);
       this.axiosKartoffel
         .post(url, body, { params })
         .then((res) => {
-          logger.info(`Kartoffel POST Request OK`, {
-            url: url,
+          logger.info(`Kartoffel POST Request to ${url} OK`, {
             requestBoody: body,
             response: res.data,
             queryParams: params,
@@ -131,8 +131,7 @@ export class KartoffelUtils {
           resolve(res.data);
         })
         .catch((error) => {
-          logger.error(`Kartoffel POST Request ERROR`, {
-            url: url,
+          logger.error(`Kartoffel POST Request to ${url} ERROR`, {
             requestBoody: body,
             error: { message: error.message },
             queryParams: params,
@@ -144,11 +143,12 @@ export class KartoffelUtils {
 
   async kartoffelPatch(url: string, body: any, params: any = {}): Promise<any> {
     return new Promise((resolve, reject) => {
+      cleanUnderscoreFields(body);
+      cleanUnderscoreFields(params);
       this.axiosKartoffel
         .patch(url, body, { params })
         .then((res) => {
-          logger.info(`Kartoffel PATCH Request OK`, {
-            url: url,
+          logger.info(`Kartoffel PATCH Request to ${url} OK`, {
             requestBoody: body,
             queryParams: params,
             response: res.data,
@@ -156,8 +156,7 @@ export class KartoffelUtils {
           resolve(res.data);
         })
         .catch((error) => {
-          logger.error(`Kartoffel PATCH Request ERROR`, {
-            url: url,
+          logger.error(`Kartoffel PATCH Request to ${url} ERROR`, {
             requestBoody: body,
             error: { message: error.message },
             queryParams: params,
@@ -175,10 +174,16 @@ export class KartoffelUtils {
         })
         .then((res) => {
           const result: string = Buffer.from(res.data).toString('base64');
+          logger.info(`Kartoffel GET Buffer Stream Request to ${url} OK`, {
+            response: res.data,
+          });
           resolve(result);
         })
-        .catch((err) => {
-          reject(err);
+        .catch((error) => {
+          logger.error(`Kartoffel GET Buffer Stream Request to ${url} ERROR`, {
+            error: { message: error.message },
+          });
+          reject(error);
         });
     });
   }
