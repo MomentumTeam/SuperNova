@@ -44,7 +44,11 @@ export async function parseExcelFile(
 }
 
 export function isLegalTable(rows: any, type: RequestType) {
-  return isTableFull(rows, type) && containsLegalValues(rows, type);
+  return (
+    rows.length > 0 &&
+    isTableFull(rows, type) &&
+    containsLegalValues(rows, type)
+  );
 }
 
 export function isTableFull(rows: any, type: RequestType) {
