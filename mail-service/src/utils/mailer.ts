@@ -49,7 +49,10 @@ export function generateMail(mailType: any, request: Request) {
 
     switch (mailType) {
       case MailType.REQUEST_APPROVED_1:
-        message = `בקשתך ל${C.requestTypeToHebrew[requestTypeStr]} מספר ${request.serialNumber} אושרה על ידי ${commanderName} והועברה לטיפול יחב\"ם.`;
+        message = `בקשתך ל${C.requestTypeToHebrew[requestTypeStr]} מספר ${request.serialNumber} אושרה על ידי ${commanderName}.`;
+        if (request.needSecurityDecision) {
+          message = message + 'הועברה לטיפול יחב"ם.';
+        }
         break;
       case MailType.REQUEST_APPROVED_2:
         message = `בקשתך ל${C.requestTypeToHebrew[requestTypeStr]} מספר ${request.serialNumber} אושרה על ידי ${commanderName} ועל ידי יחב\"ם.`;
