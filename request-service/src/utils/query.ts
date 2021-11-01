@@ -1,3 +1,4 @@
+import { searchFields } from '../config';
 import {
   ApprovementStatus,
   ApproverType,
@@ -5,65 +6,72 @@ import {
   decisionToJSON,
   PersonInfoType,
   PersonTypeInRequest,
+  RequestStatus,
+  requestStatusToJSON,
+  requestTypeToJSON,
+  SortField,
+  sortFieldFromJSON,
+  SortOrder,
+  sortOrderFromJSON,
 } from '../interfaces/protoc/proto/requestService';
 
-export function getIdentifierQuery(
-  id: string,
-  personTypeInRequest: PersonTypeInRequest
-) {
-  let query: any = {};
-  switch (personTypeInRequest) {
-    case PersonTypeInRequest.SUBMITTER:
-      query = {
-        $or: [
-          { 'submittedBy.identityCard': id },
-          { 'submittedBy.personalNumber': id },
-        ],
-      };
-      break;
-    case PersonTypeInRequest.COMMANDER_APPROVER:
-      query = {
-        $or: [
-          { 'commanders.identityCard': id },
-          { 'commanders.personalNumber': id },
-        ],
-      };
-      break;
-    case PersonTypeInRequest.SECURITY_APPROVER:
-      query = {
-        $or: [
-          { 'securityApprovers.identityCard': id },
-          { 'securityApprovers.personalNumber': id },
-        ],
-      };
-      break;
-    case PersonTypeInRequest.SUPER_SECURITY_APPROVER:
-      query = {
-        $or: [
-          { 'superSecurityApprovers.identityCard': id },
-          { 'superSecurityApprovers.personalNumber': id },
-        ],
-      };
-      break;
-    case PersonTypeInRequest.APPROVER:
-      //PersonTypeInRequest.APPROVER
-      query = {
-        $or: [
-          { 'commanders.identityCard': id },
-          { 'commanders.personalNumber': id },
-          { 'securityApprovers.identityCard': id },
-          { 'securityApprovers.personalNumber': id },
-          { 'superSecurityApprovers.identityCard': id },
-          { 'superSecurityApprovers.personalNumber': id },
-        ],
-      };
-      break;
-    case PersonTypeInRequest.GET_ALL:
-      //PersonTypeInRequest.APPROVER
-      query = {};
-      break;
-  }
-}
+// export function getIdentifierQuery(
+//   id: string,
+//   personTypeInRequest: PersonTypeInRequest
+// ) {
+//   let query: any = {};
+//   switch (personTypeInRequest) {
+//     case PersonTypeInRequest.SUBMITTER:
+//       query = {
+//         $or: [
+//           { 'submittedBy.identityCard': id },
+//           { 'submittedBy.personalNumber': id },
+//         ],
+//       };
+//       break;
+//     case PersonTypeInRequest.COMMANDER_APPROVER:
+//       query = {
+//         $or: [
+//           { 'commanders.identityCard': id },
+//           { 'commanders.personalNumber': id },
+//         ],
+//       };
+//       break;
+//     case PersonTypeInRequest.SECURITY_APPROVER:
+//       query = {
+//         $or: [
+//           { 'securityApprovers.identityCard': id },
+//           { 'securityApprovers.personalNumber': id },
+//         ],
+//       };
+//       break;
+//     case PersonTypeInRequest.SUPER_SECURITY_APPROVER:
+//       query = {
+//         $or: [
+//           { 'superSecurityApprovers.identityCard': id },
+//           { 'superSecurityApprovers.personalNumber': id },
+//         ],
+//       };
+//       break;
+//     case PersonTypeInRequest.APPROVER:
+//       //PersonTypeInRequest.APPROVER
+//       query = {
+//         $or: [
+//           { 'commanders.identityCard': id },
+//           { 'commanders.personalNumber': id },
+//           { 'securityApprovers.identityCard': id },
+//           { 'securityApprovers.personalNumber': id },
+//           { 'superSecurityApprovers.identityCard': id },
+//           { 'superSecurityApprovers.personalNumber': id },
+//         ],
+//       };
+//       break;
+//     case PersonTypeInRequest.GET_ALL:
+//       //PersonTypeInRequest.APPROVER
+//       query = {};
+//       break;
+//   }
+// }
 
 export function getIdQuery(
   id: string,
@@ -100,9 +108,104 @@ export function getIdQuery(
   return query;
 }
 
-export function getQuery(
+export function getStatusQuery(status: any) {
+  const requestStatus =
+    typeof status === typeof '' ? status : requestStatusToJSON(status);
+  return { status: requestStatus };
+}
+
+export function getRequestTypeQuery(type: any) {
+  const requestType =
+    typeof type === typeof '' ? type : requestTypeToJSON(type);
+  return { type: type };
+}
+
+export function getSearchQuery(searchQuery: any) {
+  let orArray = [];
+  orArray = searchFields.map((field) => {
+    return {
+      [field]: {
+        $regex: searchQuery,
+        $options: 'i',
+      },
+    };
+  });
+  return {
+    $or: orArray,
+  };
+}
+
+export function getSortArray(sortField: any, sortOrder: any) {
+  sortField =
+    typeof sortField === typeof '' ? sortFieldFromJSON(sortField) : sortField;
+  sortOrder =
+    typeof sortOrder === typeof '' ? sortOrderFromJSON(sortOrder) : sortOrder;
+  sortOrder = sortOrder === SortOrder.INC ? 1 : -1;
+  switch (sortField) {
+    case SortField.REQUEST_TYPE:
+      return [
+        ['type', sortOrder],
+        ['status', 1],
+      ];
+    case SortField.SUBMITTED_BY:
+      return [
+        ['submittedBy.displayName', sortOrder],
+        ['status', 1],
+      ];
+    case SortField.CREATED_AT:
+      return [
+        ['createdAt', sortOrder],
+        ['status', 1],
+      ];
+    case SortField.STATUS:
+      return [['status', sortOrder]];
+    default:
+      return [
+        ['createdAt', -1],
+        ['status', 1],
+      ];
+  }
+}
+
+export function getWaitingForApproveCountQuery(userType: ApproverType[]) {
+  let orArray = [];
+  if (
+    userType.includes(ApproverType.COMMANDER) ||
+    userType.includes(ApproverType.ADMIN)
+  ) {
+    orArray.push({
+      'commanderDecision.decision': decisionToJSON(Decision.DECISION_UNKNOWN),
+    });
+  }
+  if (userType.includes(ApproverType.SECURITY)) {
+    orArray.push({
+      $and: [
+        {
+          'securityDecision.decision': decisionToJSON(
+            Decision.DECISION_UNKNOWN
+          ),
+        },
+        { needSecurityDecision: true },
+      ],
+    });
+  }
+  if (userType.includes(ApproverType.SUPER_SECURITY)) {
+    orArray.push({
+      $and: [
+        {
+          'superSecurityDecision.decision': decisionToJSON(
+            Decision.DECISION_UNKNOWN
+          ),
+        },
+        { needSuperSecurityDecision: true },
+      ],
+    });
+  }
+  return { $or: orArray };
+}
+
+export function getPersonQuery(
   id: string,
-  personInfoType: PersonInfoType,
   personTypeInRequest: PersonTypeInRequest,
   approvementStatus: ApprovementStatus,
   userType: ApproverType[]
@@ -110,11 +213,7 @@ export function getQuery(
   try {
     let query: any = {};
     if (personTypeInRequest !== PersonTypeInRequest.GET_ALL) {
-      if (personInfoType === PersonInfoType.ID) {
-        query = getIdQuery(id, personTypeInRequest);
-      } else {
-        query = getIdentifierQuery(id, personTypeInRequest);
-      }
+      query = getIdQuery(id, personTypeInRequest);
     }
 
     const approvementQuery: any = getApprovementQuery(
@@ -140,14 +239,7 @@ export function getApprovementQuery(
         $and: [
           { needSecurityDecision: true },
           {
-            $or: [
-              {
-                'commanderDecision.decision': decisionToJSON(Decision.APPROVED),
-              },
-              {
-                'securityDecision.decision': decisionToJSON(Decision.APPROVED),
-              },
-            ],
+            'commanderDecision.decision': decisionToJSON(Decision.APPROVED),
           },
         ],
       };
@@ -164,21 +256,17 @@ export function getApprovementQuery(
             needSecurityDecision: false,
             'commanderDecision.decision': decisionToJSON(Decision.APPROVED),
           },
-          {
-            needSuperSecurityDecision: true,
-            'superSecurityDecision.decision': decisionToJSON(Decision.APPROVED),
-          },
         ],
       };
     case ApprovementStatus.ANY:
       return {};
     default:
       //BY_USER_TYPE
-      return getAnyApprovementQuery(userType);
+      return getApprovementQueryByUserType(userType);
   }
 }
 
-export function getAnyApprovementQuery(userType: ApproverType[]) {
+export function getApprovementQueryByUserType(userType: ApproverType[]) {
   let or: any = [];
   for (let type of userType) {
     if (type === ApproverType.COMMANDER || type === ApproverType.ADMIN) {
@@ -200,4 +288,11 @@ export function getAnyApprovementQuery(userType: ApproverType[]) {
   } else {
     return { $or: or };
   }
+}
+
+export function isApproverExists(approverArray: any[], newApprover: any) {
+  const filteredArray = approverArray.filter((approver) => {
+    return approver.id === newApprover.id;
+  });
+  return filteredArray.length > 0;
 }

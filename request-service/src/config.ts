@@ -23,3 +23,19 @@ export const logPath = process.env.RS_LOG_PATH
 export const storeLogs = process.env.GLOBAL_STORE_LOGS
   ? process.env.GLOBAL_STORE_LOGS === 'true'
   : false;
+
+export const searchFields = [
+  'submittedBy.displayName',
+  'submittedBy.personalNumber',
+  'submittedBy.identityCard',
+  'commanders.displayName',
+  'commanders.personalNumber',
+  'commanders.identityCard',
+  'securityApprovers.displayName',
+  'securityApprovers.personalNumber',
+  'securityApprovers.identityCard',
+  'superSecurityApprovers.displayName',
+  'superSecurityApprovers.personalNumber',
+  'superSecurityApprovers.identityCard',
+  // 'serialNumber',
+];
