@@ -1,7 +1,15 @@
-const Joi = require("joi");
-Joi.objectId = require("joi-objectid")(Joi);
+const Joi = require('joi');
+Joi.objectId = require('joi-objectid')(Joi);
 
 // Entities
+export const getPictureByEntityIdSchema = Joi.object({
+  body: {},
+  params: {
+    id: Joi.objectId().required(),
+  },
+  query: {},
+});
+
 export const getEntityByMongoIdSchema = Joi.object({
   body: {},
   params: {

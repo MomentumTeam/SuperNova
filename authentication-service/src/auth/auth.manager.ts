@@ -14,29 +14,38 @@ import { IUserToken } from './auth.interface';
 
 export class AuthManager {
   static async createToken(populatedShragaUser: IShragaUser) {
-    const shragaUser: IShragaUser = AuthManager.extractShragaUser(populatedShragaUser);
-    const { genesisId, id, iat, exp} = shragaUser;
+    const shragaUser: IShragaUser =
+      AuthManager.extractShragaUser(populatedShragaUser);
+    const { genesisId, id, iat, exp } = shragaUser;
 
-    const kartoffelUser: IUser = await AuthManager.extractKartoffelUser(genesisId);
-    const { displayName, identityCard, personalNumber } = kartoffelUser;
+    const kartoffelUser: IUser = await AuthManager.extractKartoffelUser(
+      genesisId
+    );
+    const { displayName, identityCard, personalNumber, fullName } =
+      kartoffelUser;
 
-    const types = config.approver.enrich? await AuthManager.extractUserType(genesisId): {};
-    
+    const types = config.approver.enrich
+      ? await AuthManager.extractUserType(genesisId)
+      : {};
+
     const userToken: IUserToken = {
       id,
       genesisId,
       iat,
       exp,
       displayName,
+      fullName,
       identityCard,
       personalNumber,
-      types
+      types,
     };
-    let userInformation = {...userToken};
+    let userInformation = { ...userToken };
 
-    if (config.approver.enrich) userInformation = { ...userInformation, ...types };
-    if (config.kartoffel.enrich) userInformation = { ...userInformation, ...kartoffelUser };
-    
+    if (config.approver.enrich)
+      userInformation = { ...userInformation, ...types };
+    if (config.kartoffel.enrich)
+      userInformation = { ...userInformation, ...kartoffelUser };
+
     return jwt.sign(userInformation, config.authentication.secret);
   }
 

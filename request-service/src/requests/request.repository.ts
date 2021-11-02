@@ -13,7 +13,6 @@ import {
   IncrementRetriesReq,
   IsRequestApprovedReq,
   IsRequestApprovedRes,
-  PersonInfoType,
   PersonTypeInRequest,
   Request,
   RequestArray,
@@ -38,11 +37,12 @@ import {
   requestTypeFromJSON,
   requestStatusFromJSON,
   SyncBulkRequestReq,
-  personInfoTypeFromJSON,
   personTypeInRequestFromJSON,
   GetRequestsUnderBulkReq,
   decisionToJSON,
   RowError,
+  TransferRequestToApproverReq,
+  SortOrder,
 } from '../interfaces/protoc/proto/requestService';
 import { createNotifications } from '../services/notificationHelper';
 import { sendMail } from '../services/mailHelper';
@@ -53,7 +53,15 @@ import {
   turnObjectIdsToStrings,
 } from '../services/requestHelper';
 import { NotificationType } from '../interfaces/protoc/proto/notificationService';
-import { getQuery } from '../utils/query';
+import {
+  getPersonQuery,
+  getRequestTypeQuery,
+  getSearchQuery,
+  getSortArray,
+  getStatusQuery,
+  getWaitingForApproveCountQuery,
+  isApproverExists,
+} from '../utils/query';
 import {
   reportTeaFail,
   retrieveTeaByOGId,
@@ -61,6 +69,7 @@ import {
 } from '../services/teaHelper';
 import { logger } from '../logger';
 import { MailType } from '../interfaces/protoc/proto/mailService';
+import { isEmpty } from 'lodash';
 
 export class RequestRepository {
   async createRequest(
@@ -143,7 +152,7 @@ export class RequestRepository {
             NotificationType.REQUEST_IN_PROGRESS,
             document
           );
-        } catch (notificationError) {
+        } catch (notificationError: any) {
           logger.error('Notification error', {
             error: { message: notificationError.message },
           });
@@ -154,8 +163,8 @@ export class RequestRepository {
             NotificationType.REQUEST_SUBMITTED,
             document
           );
-          await sendMail(MailType.REQUEST_SUBMITTED, document);
-        } catch (notificationError) {
+          sendMail(MailType.REQUEST_SUBMITTED, document).then().catch();
+        } catch (notificationError: any) {
           logger.error('Notification error', {
             error: { message: notificationError.message },
           });
@@ -208,6 +217,69 @@ export class RequestRepository {
           return { isRequestApproved: true };
         } else {
           return { isRequestApproved: false };
+        }
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async transferRequestToApprover(
+    transferRequestToApproverReq: TransferRequestToApproverReq
+  ): Promise<Request> {
+    try {
+      const requestBefore = await this.getRequestById({
+        id: transferRequestToApproverReq.requestId,
+      });
+      const userType = transferRequestToApproverReq.userType.map((type) => {
+        return typeof type === typeof '' ? approverTypeFromJSON(type) : type;
+      });
+      let addToSetQuery: any = {};
+      if (
+        (userType.includes(ApproverType.COMMANDER) ||
+          userType.includes(ApproverType.ADMIN)) &&
+        !isApproverExists(
+          requestBefore.commanders,
+          transferRequestToApproverReq.approver
+        )
+      ) {
+        addToSetQuery.commanders = transferRequestToApproverReq.approver;
+      }
+      if (
+        userType.includes(ApproverType.SECURITY) &&
+        !isApproverExists(
+          requestBefore.securityApprovers,
+          transferRequestToApproverReq.approver
+        )
+      ) {
+        addToSetQuery.securityApprovers = transferRequestToApproverReq.approver;
+      }
+      if (
+        userType.includes(ApproverType.SUPER_SECURITY) &&
+        !isApproverExists(
+          requestBefore.superSecurityApprovers,
+          transferRequestToApproverReq.approver
+        )
+      ) {
+        addToSetQuery.superSecurityApprovers =
+          transferRequestToApproverReq.approver;
+      }
+      if (isEmpty(addToSetQuery)) {
+        return requestBefore;
+      } else {
+        const documentAfter: any = await RequestModel.findOneAndUpdate(
+          { _id: transferRequestToApproverReq.requestId },
+          { $addToSet: addToSetQuery },
+          { new: true }
+        );
+        if (documentAfter) {
+          const documentObj = documentAfter.toObject();
+          turnObjectIdsToStrings(documentObj);
+          return documentObj as Request;
+        } else {
+          throw new Error(
+            `RequestId=${transferRequestToApproverReq.requestId} does not exist!`
+          );
         }
       }
     } catch (error) {
@@ -347,7 +419,7 @@ export class RequestRepository {
               approvingNotificationType,
               updatedRequest
             );
-            await sendMail(approvingMailType, updatedRequest);
+            sendMail(approvingMailType, updatedRequest).then().catch();
             if (newRequestStatus) {
               requestStatusNotificationType =
                 newRequestStatus === RequestStatus.IN_PROGRESS
@@ -359,7 +431,7 @@ export class RequestRepository {
               );
             }
           }
-        } catch (notificationError) {
+        } catch (notificationError: any) {
           logger.error('Notification error', {
             error: { message: notificationError.message },
           });
@@ -421,10 +493,10 @@ export class RequestRepository {
               : properties.status;
           if (status === RequestStatus.FAILED) {
             await createNotifications(NotificationType.REQUEST_FAILED, request);
-            await sendMail(MailType.REQUEST_FAILED, request);
+            sendMail(MailType.REQUEST_FAILED, request).then().catch();
           }
         }
-      } catch (notificationError) {
+      } catch (notificationError: any) {
         logger.error('Notification error', {
           error: { message: notificationError.message },
         });
@@ -478,10 +550,10 @@ export class RequestRepository {
               : properties.status;
           if (status === RequestStatus.FAILED) {
             await createNotifications(NotificationType.REQUEST_FAILED, request);
-            await sendMail(MailType.REQUEST_FAILED, request);
+            sendMail(MailType.REQUEST_FAILED, request).then().catch();
           }
         }
-      } catch (notificationError) {
+      } catch (notificationError: any) {
         logger.error('Notification error', {
           error: { message: notificationError.message },
         });
@@ -821,8 +893,8 @@ export class RequestRepository {
             : MailType.REQUEST_FAILED;
         try {
           await createNotifications(notificationType, updatedRequest);
-          await sendMail(mailType, updatedRequest);
-        } catch (notificationError) {
+          sendMail(mailType, updatedRequest).then().catch();
+        } catch (notificationError: any) {
           logger.error('Notificatoin error', {
             error: { message: notificationError.message },
           });
@@ -894,8 +966,8 @@ export class RequestRepository {
 
         try {
           await createNotifications(notificationType, updatedRequest);
-          await sendMail(mailType, updatedRequest);
-        } catch (notificationError) {
+          sendMail(mailType, updatedRequest).then().catch();
+        } catch (notificationError: any) {
           logger.error('Notificatoin error', {
             error: { message: notificationError.message },
           });
@@ -1068,14 +1140,15 @@ export class RequestRepository {
   async getRequestsByPerson(getRequestsByPersonReq: GetRequestsByPersonReq) {
     try {
       let query: any = {};
+      let sortArray = [
+        ['createdAt', -1],
+        ['status', 1],
+      ];
+
       const personTypeInRequest: PersonTypeInRequest =
         typeof getRequestsByPersonReq.personType === typeof ''
           ? personTypeInRequestFromJSON(getRequestsByPersonReq.personType)
           : getRequestsByPersonReq.personType;
-      const personInfoType: PersonInfoType =
-        typeof getRequestsByPersonReq.personInfoType === typeof ''
-          ? personInfoTypeFromJSON(getRequestsByPersonReq.personInfoType)
-          : getRequestsByPersonReq.personInfoType;
       getRequestsByPersonReq.approvementStatus =
         getRequestsByPersonReq.approvementStatus
           ? getRequestsByPersonReq.approvementStatus
@@ -1091,31 +1164,41 @@ export class RequestRepository {
         return typeof type === typeof '' ? approverTypeFromJSON(type) : type;
       });
 
-      query = getQuery(
+      query = getPersonQuery(
         getRequestsByPersonReq.id,
-        personInfoType,
         personTypeInRequest,
         approvementStatus,
         userType
       );
       query.isPartOfBulk = false;
       if (getRequestsByPersonReq.status) {
-        const status =
-          typeof getRequestsByPersonReq.status === typeof ''
-            ? getRequestsByPersonReq.status
-            : requestStatusToJSON(getRequestsByPersonReq.status);
-        query.status = status;
+        const statusQuery = getStatusQuery(getRequestsByPersonReq.status);
+        query = { ...query, ...statusQuery };
       }
       if (getRequestsByPersonReq.type) {
-        const type =
-          typeof getRequestsByPersonReq.type === typeof ''
-            ? getRequestsByPersonReq.type
-            : requestTypeToJSON(getRequestsByPersonReq.type);
-        query.type = type;
+        const requestTypeQuery = getRequestTypeQuery(
+          getRequestsByPersonReq.type
+        );
+        query = { ...query, ...requestTypeQuery };
       }
-      if (getRequestsByPersonReq.displayName) {
-        query['$text'] = { $search: getRequestsByPersonReq.displayName };
+      if (getRequestsByPersonReq.sortField) {
+        sortArray = getSortArray(
+          getRequestsByPersonReq.sortField,
+          getRequestsByPersonReq.sortOrder
+            ? getRequestsByPersonReq.sortOrder
+            : SortOrder.DEC
+        );
       }
+      if (getRequestsByPersonReq.searchQuery) {
+        const searchQuery = getSearchQuery(getRequestsByPersonReq.searchQuery);
+        if (query['$or']) {
+          query['and'] = [{ $or: query['$or'] }, searchQuery];
+          delete query['$or'];
+        } else {
+          query = { ...query, ...searchQuery };
+        }
+      }
+
       const totalCount = await RequestModel.count(query);
       const requests: any = await RequestModel.find(
         query,
@@ -1124,7 +1207,21 @@ export class RequestRepository {
           skip: getRequestsByPersonReq.from - 1,
           limit: getRequestsByPersonReq.to - getRequestsByPersonReq.from + 1,
         }
-      ).sort([['updatedAt', -1]]);
+      ).sort(sortArray);
+
+      const waitingForApproveCountQuery =
+        getWaitingForApproveCountQuery(userType);
+      if (query['$or']) {
+        if (!query['$and']) {
+          query['$and'] = [];
+        }
+        query['$and'].push({ $or: query['$or'] });
+        query['$and'].push(waitingForApproveCountQuery);
+        delete query['$or'];
+      } else {
+        query = { ...query, ...waitingForApproveCountQuery };
+      }
+      const waitingForApproveCount = await RequestModel.count(query);
       if (requests) {
         let documents: any = [];
         for (let i = 0; i < requests.length; i++) {
@@ -1135,9 +1232,10 @@ export class RequestRepository {
         return {
           requests: documents,
           totalCount: totalCount,
+          waitingForApproveCount: waitingForApproveCount,
         };
       } else {
-        return { requests: [], totalCount: 0 };
+        return { requests: [], totalCount: 0, waitingForApproveCount: 0 };
       }
     } catch (error) {
       throw error;

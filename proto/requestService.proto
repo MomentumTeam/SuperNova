@@ -25,7 +25,6 @@ service RequestService {
     rpc UpdateADStatus(UpdateADStatusReq) returns (Request){}
     rpc DeleteRequest(DeleteReq) returns (SuccessMessage){}
 
-    rpc GetRequestsByPerson(GetRequestsByPersonReq) returns (RequestArray){}
     rpc GetRequestBySerialNumber(GetRequestBySerialNumberReq) returns (Request){}
     rpc GetRequestById(GetRequestByIdReq) returns (Request) {}
     rpc GetRequestsUnderBulk(GetRequestsUnderBulkReq) returns (RequestArray){}
@@ -42,6 +41,9 @@ service RequestService {
     rpc GetRequestIdsInProgressByDue(GetRequestsInProgressByDueReq) returns (RequestIdArray){}
     rpc PushError(PushErrorReq) returns (Request){}
     rpc SyncBulkRequest(SyncBulkRequestReq) returns (Request){}
+
+    rpc GetRequestsByPerson(GetRequestsByPersonReq) returns (GetRequestsByPersonRes){}
+    rpc TransferRequestToApprover(TransferRequestToApproverReq) returns (Request){}
 }
 
 // ---------------------------------------------LEGO Requests------------------------------------------------------------
@@ -945,6 +947,13 @@ message SyncBulkRequestReq{
     string id = 1;
 }
 
+//14.TransferRequestToApprover
+message TransferRequestToApproverReq{
+    string requestId = 1;
+    EntityMin approver = 2;
+    repeated ApproverType userType = 3;
+}
+
 // ---------------------------------------------Other Functions Objects------------------------------------------------------------
 
 //UpdateRequest
@@ -1001,14 +1010,15 @@ message DeleteReq{
 message GetRequestsByPersonReq{
     string id = 1;
     PersonTypeInRequest personType = 2;
-    PersonInfoType personInfoType = 3;
-    repeated ApproverType userType = 4; //only for GET_ALL
+    repeated ApproverType userType = 4; //only when personType=GET_ALL
     int32 from = 5;
     int32 to = 6;
     optional ApprovementStatus approvementStatus = 7;
-    optional string displayName = 8;
+    optional string searchQuery = 8;
     optional RequestStatus status = 9;
     optional RequestType type = 10;
+    optional SortField sortField = 11;
+    optional SortOrder sortOrder = 12;
     
 }
 
@@ -1117,6 +1127,13 @@ message RequestArray{
     repeated Request requests = 1;
     int32 totalCount = 2;
 }
+
+message GetRequestsByPersonRes{
+    repeated Request requests = 1;
+    int32 totalCount = 2;
+    int32 waitingForApproveCount = 3;
+}
+
 
 message RowError{
     string rowNumber = 1;
@@ -1393,4 +1410,16 @@ enum ErrorType{
     UNKNOWN_STAGE = 0;
     KARTOFFEL_ERROR = 1;
     AD_ERROR = 2;
+}
+
+enum SortField{
+    REQUEST_TYPE = 0;
+    SUBMITTED_BY = 1;
+    CREATED_AT = 2;
+    STATUS = 3;
+}
+
+enum SortOrder{
+    INC = 0;
+    DEC = 1;
 }

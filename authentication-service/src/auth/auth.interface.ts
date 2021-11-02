@@ -9,6 +9,7 @@ export interface IUserToken {
   identityCard: string;
   personalNumber: string;
   displayName: string;
+  fullName: string;
 
   // APPROVER
   types: string[];

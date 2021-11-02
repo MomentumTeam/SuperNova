@@ -52,7 +52,7 @@ export default class KartoffelController {
     }
   }
 
-  static async getPictureByEntityId(req: any, res: Response) {
+  static async getMyPicture(req: any, res: Response) {
     if (!req.user && !req.user.id) throw new AuthenticationError();
     const getPictureByEntityIdReq: GetPictureByEntityIdRequest = {
       id: req.user.id,
@@ -62,6 +62,18 @@ export default class KartoffelController {
       const userImage = await KartoffelService.getPictureByEntityId(
         getPictureByEntityIdReq
       );
+      res.send(userImage);
+    } catch (error: any) {
+      const statusCode = statusCodeHandler(error);
+      res.status(statusCode).send(error.message);
+    }
+  }
+
+  static async getPictureByEntityId(req: any, res: Response) {
+    try {
+      const userImage = await KartoffelService.getPictureByEntityId({
+        id: req.params.id,
+      });
       res.send(userImage);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -175,7 +187,9 @@ export default class KartoffelController {
     const getOGRootChildrenReq: any = { ...req.params, ...req.query };
 
     try {
-      const children = await KartoffelService.getOGRootChildren(getOGRootChildrenReq);
+      const children = await KartoffelService.getOGRootChildren(
+        getOGRootChildrenReq
+      );
       res.send(children);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -278,7 +292,9 @@ export default class KartoffelController {
     const getRolesByHierarchyReq: any = { ...req.params, ...req.query };
 
     try {
-      const roles = await KartoffelService.getRolesByHierarchy(getRolesByHierarchyReq);
+      const roles = await KartoffelService.getRolesByHierarchy(
+        getRolesByHierarchyReq
+      );
       res.send(roles);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -303,7 +319,9 @@ export default class KartoffelController {
     };
 
     try {
-      const response = await KartoffelService.isRoleAlreadyTaken(isRoleAlreadyTakenReq);
+      const response = await KartoffelService.isRoleAlreadyTaken(
+        isRoleAlreadyTakenReq
+      );
       res.send(response);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -314,11 +332,13 @@ export default class KartoffelController {
   static async isJobTitleAlreadyTaken(req: Request, res: Response) {
     const isJobTitleAlreadyTakenReq: any = {
       jobTitle: req.query.jobTitle,
-      directGroup: req.query.directGroup
+      directGroup: req.query.directGroup,
     };
-    
+
     try {
-      const response = await KartoffelService.isJobTitleAlreadyTaken(isJobTitleAlreadyTakenReq);
+      const response = await KartoffelService.isJobTitleAlreadyTaken(
+        isJobTitleAlreadyTakenReq
+      );
       res.send(response);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);

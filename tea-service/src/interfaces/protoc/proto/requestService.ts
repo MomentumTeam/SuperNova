@@ -514,6 +514,88 @@ export function errorTypeToJSON(object: ErrorType): string {
   }
 }
 
+export enum SortField {
+  REQUEST_TYPE = 0,
+  SUBMITTED_BY = 1,
+  CREATED_AT = 2,
+  APPROVER_NAME = 3,
+  STATUS = 4,
+  UNRECOGNIZED = -1,
+}
+
+export function sortFieldFromJSON(object: any): SortField {
+  switch (object) {
+    case 0:
+    case "REQUEST_TYPE":
+      return SortField.REQUEST_TYPE;
+    case 1:
+    case "SUBMITTED_BY":
+      return SortField.SUBMITTED_BY;
+    case 2:
+    case "CREATED_AT":
+      return SortField.CREATED_AT;
+    case 3:
+    case "APPROVER_NAME":
+      return SortField.APPROVER_NAME;
+    case 4:
+    case "STATUS":
+      return SortField.STATUS;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return SortField.UNRECOGNIZED;
+  }
+}
+
+export function sortFieldToJSON(object: SortField): string {
+  switch (object) {
+    case SortField.REQUEST_TYPE:
+      return "REQUEST_TYPE";
+    case SortField.SUBMITTED_BY:
+      return "SUBMITTED_BY";
+    case SortField.CREATED_AT:
+      return "CREATED_AT";
+    case SortField.APPROVER_NAME:
+      return "APPROVER_NAME";
+    case SortField.STATUS:
+      return "STATUS";
+    default:
+      return "UNKNOWN";
+  }
+}
+
+export enum SortOrder {
+  INC = 0,
+  DEC = 1,
+  UNRECOGNIZED = -1,
+}
+
+export function sortOrderFromJSON(object: any): SortOrder {
+  switch (object) {
+    case 0:
+    case "INC":
+      return SortOrder.INC;
+    case 1:
+    case "DEC":
+      return SortOrder.DEC;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return SortOrder.UNRECOGNIZED;
+  }
+}
+
+export function sortOrderToJSON(object: SortOrder): string {
+  switch (object) {
+    case SortOrder.INC:
+      return "INC";
+    case SortOrder.DEC:
+      return "DEC";
+    default:
+      return "UNKNOWN";
+  }
+}
+
 /** 1.CreateRole */
 export interface CreateRoleReq {
   submittedBy: EntityMin | undefined;
@@ -1400,6 +1482,13 @@ export interface SyncBulkRequestReq {
   id: string;
 }
 
+/** 14.TransferRequestToApprover */
+export interface TransferRequestToApproverReq {
+  requestId: string;
+  approver: EntityMin | undefined;
+  userType: ApproverType[];
+}
+
 export interface UpdateReq {
   id: string;
   requestProperties: UpdateReqProperties | undefined;
@@ -1453,15 +1542,16 @@ export interface DeleteReq {
 export interface GetRequestsByPersonReq {
   id: string;
   personType: PersonTypeInRequest;
-  personInfoType: PersonInfoType;
-  /** only for GET_ALL */
+  /** only when personType=GET_ALL */
   userType: ApproverType[];
   from: number;
   to: number;
   approvementStatus?: ApprovementStatus | undefined;
-  displayName?: string | undefined;
+  searchQuery?: string | undefined;
   status?: RequestStatus | undefined;
   type?: RequestType | undefined;
+  sortField?: SortField | undefined;
+  sortOrder?: SortOrder | undefined;
 }
 
 /** GetRequestBySerialNumber */
@@ -1568,6 +1658,12 @@ export interface ADStatus {
 export interface RequestArray {
   requests: Request[];
   totalCount: number;
+}
+
+export interface GetRequestsByPersonRes {
+  requests: Request[];
+  totalCount: number;
+  waitingForApproveCount: number;
 }
 
 export interface RowError {
@@ -21130,6 +21226,128 @@ export const SyncBulkRequestReq = {
   },
 };
 
+const baseTransferRequestToApproverReq: object = { requestId: "", userType: 0 };
+
+export const TransferRequestToApproverReq = {
+  encode(
+    message: TransferRequestToApproverReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.requestId !== "") {
+      writer.uint32(10).string(message.requestId);
+    }
+    if (message.approver !== undefined) {
+      EntityMin.encode(message.approver, writer.uint32(18).fork()).ldelim();
+    }
+    writer.uint32(26).fork();
+    for (const v of message.userType) {
+      writer.int32(v);
+    }
+    writer.ldelim();
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): TransferRequestToApproverReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseTransferRequestToApproverReq,
+    } as TransferRequestToApproverReq;
+    message.userType = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.requestId = reader.string();
+          break;
+        case 2:
+          message.approver = EntityMin.decode(reader, reader.uint32());
+          break;
+        case 3:
+          if ((tag & 7) === 2) {
+            const end2 = reader.uint32() + reader.pos;
+            while (reader.pos < end2) {
+              message.userType.push(reader.int32() as any);
+            }
+          } else {
+            message.userType.push(reader.int32() as any);
+          }
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): TransferRequestToApproverReq {
+    const message = {
+      ...baseTransferRequestToApproverReq,
+    } as TransferRequestToApproverReq;
+    message.userType = [];
+    if (object.requestId !== undefined && object.requestId !== null) {
+      message.requestId = String(object.requestId);
+    } else {
+      message.requestId = "";
+    }
+    if (object.approver !== undefined && object.approver !== null) {
+      message.approver = EntityMin.fromJSON(object.approver);
+    } else {
+      message.approver = undefined;
+    }
+    if (object.userType !== undefined && object.userType !== null) {
+      for (const e of object.userType) {
+        message.userType.push(approverTypeFromJSON(e));
+      }
+    }
+    return message;
+  },
+
+  toJSON(message: TransferRequestToApproverReq): unknown {
+    const obj: any = {};
+    message.requestId !== undefined && (obj.requestId = message.requestId);
+    message.approver !== undefined &&
+      (obj.approver = message.approver
+        ? EntityMin.toJSON(message.approver)
+        : undefined);
+    if (message.userType) {
+      obj.userType = message.userType.map((e) => approverTypeToJSON(e));
+    } else {
+      obj.userType = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<TransferRequestToApproverReq>
+  ): TransferRequestToApproverReq {
+    const message = {
+      ...baseTransferRequestToApproverReq,
+    } as TransferRequestToApproverReq;
+    message.userType = [];
+    if (object.requestId !== undefined && object.requestId !== null) {
+      message.requestId = object.requestId;
+    } else {
+      message.requestId = "";
+    }
+    if (object.approver !== undefined && object.approver !== null) {
+      message.approver = EntityMin.fromPartial(object.approver);
+    } else {
+      message.approver = undefined;
+    }
+    if (object.userType !== undefined && object.userType !== null) {
+      for (const e of object.userType) {
+        message.userType.push(e);
+      }
+    }
+    return message;
+  },
+};
+
 const baseUpdateReq: object = { id: "" };
 
 export const UpdateReq = {
@@ -22069,7 +22287,6 @@ export const DeleteReq = {
 const baseGetRequestsByPersonReq: object = {
   id: "",
   personType: 0,
-  personInfoType: 0,
   userType: 0,
   from: 0,
   to: 0,
@@ -22086,9 +22303,6 @@ export const GetRequestsByPersonReq = {
     if (message.personType !== 0) {
       writer.uint32(16).int32(message.personType);
     }
-    if (message.personInfoType !== 0) {
-      writer.uint32(24).int32(message.personInfoType);
-    }
     writer.uint32(34).fork();
     for (const v of message.userType) {
       writer.int32(v);
@@ -22103,14 +22317,20 @@ export const GetRequestsByPersonReq = {
     if (message.approvementStatus !== undefined) {
       writer.uint32(56).int32(message.approvementStatus);
     }
-    if (message.displayName !== undefined) {
-      writer.uint32(66).string(message.displayName);
+    if (message.searchQuery !== undefined) {
+      writer.uint32(66).string(message.searchQuery);
     }
     if (message.status !== undefined) {
       writer.uint32(72).int32(message.status);
     }
     if (message.type !== undefined) {
       writer.uint32(80).int32(message.type);
+    }
+    if (message.sortField !== undefined) {
+      writer.uint32(88).int32(message.sortField);
+    }
+    if (message.sortOrder !== undefined) {
+      writer.uint32(96).int32(message.sortOrder);
     }
     return writer;
   },
@@ -22132,9 +22352,6 @@ export const GetRequestsByPersonReq = {
         case 2:
           message.personType = reader.int32() as any;
           break;
-        case 3:
-          message.personInfoType = reader.int32() as any;
-          break;
         case 4:
           if ((tag & 7) === 2) {
             const end2 = reader.uint32() + reader.pos;
@@ -22155,13 +22372,19 @@ export const GetRequestsByPersonReq = {
           message.approvementStatus = reader.int32() as any;
           break;
         case 8:
-          message.displayName = reader.string();
+          message.searchQuery = reader.string();
           break;
         case 9:
           message.status = reader.int32() as any;
           break;
         case 10:
           message.type = reader.int32() as any;
+          break;
+        case 11:
+          message.sortField = reader.int32() as any;
+          break;
+        case 12:
+          message.sortOrder = reader.int32() as any;
           break;
         default:
           reader.skipType(tag & 7);
@@ -22183,11 +22406,6 @@ export const GetRequestsByPersonReq = {
       message.personType = personTypeInRequestFromJSON(object.personType);
     } else {
       message.personType = 0;
-    }
-    if (object.personInfoType !== undefined && object.personInfoType !== null) {
-      message.personInfoType = personInfoTypeFromJSON(object.personInfoType);
-    } else {
-      message.personInfoType = 0;
     }
     if (object.userType !== undefined && object.userType !== null) {
       for (const e of object.userType) {
@@ -22214,10 +22432,10 @@ export const GetRequestsByPersonReq = {
     } else {
       message.approvementStatus = undefined;
     }
-    if (object.displayName !== undefined && object.displayName !== null) {
-      message.displayName = String(object.displayName);
+    if (object.searchQuery !== undefined && object.searchQuery !== null) {
+      message.searchQuery = String(object.searchQuery);
     } else {
-      message.displayName = undefined;
+      message.searchQuery = undefined;
     }
     if (object.status !== undefined && object.status !== null) {
       message.status = requestStatusFromJSON(object.status);
@@ -22229,6 +22447,16 @@ export const GetRequestsByPersonReq = {
     } else {
       message.type = undefined;
     }
+    if (object.sortField !== undefined && object.sortField !== null) {
+      message.sortField = sortFieldFromJSON(object.sortField);
+    } else {
+      message.sortField = undefined;
+    }
+    if (object.sortOrder !== undefined && object.sortOrder !== null) {
+      message.sortOrder = sortOrderFromJSON(object.sortOrder);
+    } else {
+      message.sortOrder = undefined;
+    }
     return message;
   },
 
@@ -22237,8 +22465,6 @@ export const GetRequestsByPersonReq = {
     message.id !== undefined && (obj.id = message.id);
     message.personType !== undefined &&
       (obj.personType = personTypeInRequestToJSON(message.personType));
-    message.personInfoType !== undefined &&
-      (obj.personInfoType = personInfoTypeToJSON(message.personInfoType));
     if (message.userType) {
       obj.userType = message.userType.map((e) => approverTypeToJSON(e));
     } else {
@@ -22251,8 +22477,8 @@ export const GetRequestsByPersonReq = {
         message.approvementStatus !== undefined
           ? approvementStatusToJSON(message.approvementStatus)
           : undefined);
-    message.displayName !== undefined &&
-      (obj.displayName = message.displayName);
+    message.searchQuery !== undefined &&
+      (obj.searchQuery = message.searchQuery);
     message.status !== undefined &&
       (obj.status =
         message.status !== undefined
@@ -22262,6 +22488,16 @@ export const GetRequestsByPersonReq = {
       (obj.type =
         message.type !== undefined
           ? requestTypeToJSON(message.type)
+          : undefined);
+    message.sortField !== undefined &&
+      (obj.sortField =
+        message.sortField !== undefined
+          ? sortFieldToJSON(message.sortField)
+          : undefined);
+    message.sortOrder !== undefined &&
+      (obj.sortOrder =
+        message.sortOrder !== undefined
+          ? sortOrderToJSON(message.sortOrder)
           : undefined);
     return obj;
   },
@@ -22280,11 +22516,6 @@ export const GetRequestsByPersonReq = {
       message.personType = object.personType;
     } else {
       message.personType = 0;
-    }
-    if (object.personInfoType !== undefined && object.personInfoType !== null) {
-      message.personInfoType = object.personInfoType;
-    } else {
-      message.personInfoType = 0;
     }
     if (object.userType !== undefined && object.userType !== null) {
       for (const e of object.userType) {
@@ -22309,10 +22540,10 @@ export const GetRequestsByPersonReq = {
     } else {
       message.approvementStatus = undefined;
     }
-    if (object.displayName !== undefined && object.displayName !== null) {
-      message.displayName = object.displayName;
+    if (object.searchQuery !== undefined && object.searchQuery !== null) {
+      message.searchQuery = object.searchQuery;
     } else {
-      message.displayName = undefined;
+      message.searchQuery = undefined;
     }
     if (object.status !== undefined && object.status !== null) {
       message.status = object.status;
@@ -22323,6 +22554,16 @@ export const GetRequestsByPersonReq = {
       message.type = object.type;
     } else {
       message.type = undefined;
+    }
+    if (object.sortField !== undefined && object.sortField !== null) {
+      message.sortField = object.sortField;
+    } else {
+      message.sortField = undefined;
+    }
+    if (object.sortOrder !== undefined && object.sortOrder !== null) {
+      message.sortOrder = object.sortOrder;
+    } else {
+      message.sortOrder = undefined;
     }
     return message;
   },
@@ -23912,6 +24153,122 @@ export const RequestArray = {
       message.totalCount = object.totalCount;
     } else {
       message.totalCount = 0;
+    }
+    return message;
+  },
+};
+
+const baseGetRequestsByPersonRes: object = {
+  totalCount: 0,
+  waitingForApproveCount: 0,
+};
+
+export const GetRequestsByPersonRes = {
+  encode(
+    message: GetRequestsByPersonRes,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.requests) {
+      Request.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.totalCount !== 0) {
+      writer.uint32(16).int32(message.totalCount);
+    }
+    if (message.waitingForApproveCount !== 0) {
+      writer.uint32(24).int32(message.waitingForApproveCount);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GetRequestsByPersonRes {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseGetRequestsByPersonRes } as GetRequestsByPersonRes;
+    message.requests = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.requests.push(Request.decode(reader, reader.uint32()));
+          break;
+        case 2:
+          message.totalCount = reader.int32();
+          break;
+        case 3:
+          message.waitingForApproveCount = reader.int32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetRequestsByPersonRes {
+    const message = { ...baseGetRequestsByPersonRes } as GetRequestsByPersonRes;
+    message.requests = [];
+    if (object.requests !== undefined && object.requests !== null) {
+      for (const e of object.requests) {
+        message.requests.push(Request.fromJSON(e));
+      }
+    }
+    if (object.totalCount !== undefined && object.totalCount !== null) {
+      message.totalCount = Number(object.totalCount);
+    } else {
+      message.totalCount = 0;
+    }
+    if (
+      object.waitingForApproveCount !== undefined &&
+      object.waitingForApproveCount !== null
+    ) {
+      message.waitingForApproveCount = Number(object.waitingForApproveCount);
+    } else {
+      message.waitingForApproveCount = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: GetRequestsByPersonRes): unknown {
+    const obj: any = {};
+    if (message.requests) {
+      obj.requests = message.requests.map((e) =>
+        e ? Request.toJSON(e) : undefined
+      );
+    } else {
+      obj.requests = [];
+    }
+    message.totalCount !== undefined && (obj.totalCount = message.totalCount);
+    message.waitingForApproveCount !== undefined &&
+      (obj.waitingForApproveCount = message.waitingForApproveCount);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<GetRequestsByPersonRes>
+  ): GetRequestsByPersonRes {
+    const message = { ...baseGetRequestsByPersonRes } as GetRequestsByPersonRes;
+    message.requests = [];
+    if (object.requests !== undefined && object.requests !== null) {
+      for (const e of object.requests) {
+        message.requests.push(Request.fromPartial(e));
+      }
+    }
+    if (object.totalCount !== undefined && object.totalCount !== null) {
+      message.totalCount = object.totalCount;
+    } else {
+      message.totalCount = 0;
+    }
+    if (
+      object.waitingForApproveCount !== undefined &&
+      object.waitingForApproveCount !== null
+    ) {
+      message.waitingForApproveCount = object.waitingForApproveCount;
+    } else {
+      message.waitingForApproveCount = 0;
     }
     return message;
   },
@@ -26297,7 +26654,6 @@ export interface RequestService {
   UpdateKartoffelStatus(request: UpdateKartoffelStatusReq): Promise<Request>;
   UpdateADStatus(request: UpdateADStatusReq): Promise<Request>;
   DeleteRequest(request: DeleteReq): Promise<SuccessMessage>;
-  GetRequestsByPerson(request: GetRequestsByPersonReq): Promise<RequestArray>;
   GetRequestBySerialNumber(
     request: GetRequestBySerialNumberReq
   ): Promise<Request>;
@@ -26324,6 +26680,12 @@ export interface RequestService {
   ): Promise<RequestIdArray>;
   PushError(request: PushErrorReq): Promise<Request>;
   SyncBulkRequest(request: SyncBulkRequestReq): Promise<Request>;
+  GetRequestsByPerson(
+    request: GetRequestsByPersonReq
+  ): Promise<GetRequestsByPersonRes>;
+  TransferRequestToApprover(
+    request: TransferRequestToApproverReq
+  ): Promise<Request>;
 }
 
 export class RequestServiceClientImpl implements RequestService {
@@ -26352,7 +26714,6 @@ export class RequestServiceClientImpl implements RequestService {
     this.UpdateKartoffelStatus = this.UpdateKartoffelStatus.bind(this);
     this.UpdateADStatus = this.UpdateADStatus.bind(this);
     this.DeleteRequest = this.DeleteRequest.bind(this);
-    this.GetRequestsByPerson = this.GetRequestsByPerson.bind(this);
     this.GetRequestBySerialNumber = this.GetRequestBySerialNumber.bind(this);
     this.GetRequestById = this.GetRequestById.bind(this);
     this.GetRequestsUnderBulk = this.GetRequestsUnderBulk.bind(this);
@@ -26372,6 +26733,8 @@ export class RequestServiceClientImpl implements RequestService {
       this.GetRequestIdsInProgressByDue.bind(this);
     this.PushError = this.PushError.bind(this);
     this.SyncBulkRequest = this.SyncBulkRequest.bind(this);
+    this.GetRequestsByPerson = this.GetRequestsByPerson.bind(this);
+    this.TransferRequestToApprover = this.TransferRequestToApprover.bind(this);
   }
   CreateRoleRequest(request: CreateRoleReq): Promise<CreateRoleRes> {
     const data = CreateRoleReq.encode(request).finish();
@@ -26587,16 +26950,6 @@ export class RequestServiceClientImpl implements RequestService {
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
-  GetRequestsByPerson(request: GetRequestsByPersonReq): Promise<RequestArray> {
-    const data = GetRequestsByPersonReq.encode(request).finish();
-    const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "GetRequestsByPerson",
-      data
-    );
-    return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
-  }
-
   GetRequestBySerialNumber(
     request: GetRequestBySerialNumberReq
   ): Promise<Request> {
@@ -26770,6 +27123,32 @@ export class RequestServiceClientImpl implements RequestService {
     const promise = this.rpc.request(
       "RequestService.RequestService",
       "SyncBulkRequest",
+      data
+    );
+    return promise.then((data) => Request.decode(new _m0.Reader(data)));
+  }
+
+  GetRequestsByPerson(
+    request: GetRequestsByPersonReq
+  ): Promise<GetRequestsByPersonRes> {
+    const data = GetRequestsByPersonReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "GetRequestsByPerson",
+      data
+    );
+    return promise.then((data) =>
+      GetRequestsByPersonRes.decode(new _m0.Reader(data))
+    );
+  }
+
+  TransferRequestToApprover(
+    request: TransferRequestToApproverReq
+  ): Promise<Request> {
+    const data = TransferRequestToApproverReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "TransferRequestToApprover",
       data
     );
     return promise.then((data) => Request.decode(new _m0.Reader(data)));
