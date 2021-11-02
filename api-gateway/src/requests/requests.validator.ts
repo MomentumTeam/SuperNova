@@ -27,6 +27,7 @@ import {
   changeRoleHierarchyReqSchema,
   deleteEntitySchema,
   getRequestsSchema,
+  transferRequestToApproversSchema,
 } from './requests.schema';
 
 export class RequestValidator {
@@ -63,6 +64,20 @@ export class RequestValidator {
     transformRequest(
       req,
       validateObject(req, getRequestsByPersonSchema, { allowUnknown: true })
+    );
+    next();
+  }
+
+  static isTransferRequestToApproversValid(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    transformRequest(
+      req,
+      validateObject(req, transferRequestToApproversSchema, {
+        allowUnknown: true,
+      })
     );
     next();
   }

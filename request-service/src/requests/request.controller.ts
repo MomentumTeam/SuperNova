@@ -13,24 +13,24 @@ import { logger } from '../logger';
 
 const requestManager: RequestManager = new RequestManager();
 
-export async function transferRequestToApprover(
+export async function transferRequestToApprovers(
   call: any,
   callback: any
 ): Promise<void> {
   try {
-    logger.info(`Call to transferRequestToApprover`, {
+    logger.info(`Call to transferRequestToApprovers`, {
       callRequest: call.request,
     });
-    const response = await requestManager.transferRequestToApprover(
+    const response = await requestManager.transferRequestToApprovers(
       call.request
     );
-    logger.info(`transferRequestToApprover OK`, {
+    logger.info(`transferRequestToApprovers OK`, {
       callRequest: call.request,
       response: response,
     });
     callback(null, response);
   } catch (error: any) {
-    logger.error(`transferRequestToApprover ERROR`, {
+    logger.error(`transferRequestToApprovers ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
     });

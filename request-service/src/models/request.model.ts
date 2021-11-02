@@ -36,7 +36,18 @@ const RequestSchema = new Schema(
       default: true,
     },
     comments: { type: String, default: '' },
-    approversComments: { type: String, default: '' },
+    approversComments: {
+      type: {
+        commanderComment: { type: String, default: '' },
+        securityComment: { type: String, default: '' },
+        superSecurityComment: { type: String, default: '' },
+      },
+      default: {
+        commanderComment: '',
+        securityComment: '',
+        superSecurityComment: '',
+      },
+    },
     submittedBy: {
       type: {
         id: { type: mongoose.Schema.Types.ObjectId, default: null },

@@ -43,7 +43,7 @@ service RequestService {
     rpc SyncBulkRequest(SyncBulkRequestReq) returns (Request){}
 
     rpc GetRequestsByPerson(GetRequestsByPersonReq) returns (GetRequestsByPersonRes){}
-    rpc TransferRequestToApprover(TransferRequestToApproverReq) returns (Request){}
+    rpc TransferRequestToApprovers(TransferRequestToApproversReq) returns (Request){}
 }
 
 // ---------------------------------------------LEGO Requests------------------------------------------------------------
@@ -63,7 +63,7 @@ message CreateRoleReq{
     CreateRoleKartoffelParams kartoffelParams = 11;
     CreateRoleADParams adParams = 12;
     optional string comments = 13;
-    optional string approversComments = 14;
+    optional ApproversComments approversComments = 14;
     optional int64 due = 15;
     optional bool isPartOfBulk = 16;
     optional string bulkRequestId = 17;
@@ -84,7 +84,7 @@ message CreateRoleRes{
     CreateRoleKartoffelParams kartoffelParams = 11;
     CreateRoleADParams adParams = 12;
     optional string comments = 13;
-    optional string approversComments = 14;
+    optional ApproversComments approversComments = 14;
     optional int64 due = 15;
     bool isPartOfBulk = 16;
     string bulkRequestId = 17;
@@ -114,7 +114,7 @@ message CreateOGReq{
     CreateOGKartoffelParams kartoffelParams = 11;
     CreateOGADParams adParams = 12;
     optional string comments = 13;
-    optional string approversComments = 14;
+    optional ApproversComments approversComments = 14;
     optional int64 due = 15;
 }
 
@@ -132,7 +132,7 @@ message CreateOGRes{
     CreateOGKartoffelParams kartoffelParams = 11;
     CreateOGADParams adParams = 12;
     string comments = 13;
-    string approversComments = 14;
+    ApproversComments approversComments = 14;
     int64 due = 15;
 
     string id = 16;
@@ -160,7 +160,7 @@ message CreateEntityReq{
     CreateEntityKartoffelParams kartoffelParams = 11;
     CreateEntityADParams adParams = 12;
     optional string comments = 13;
-    optional string approversComments = 14;
+    optional ApproversComments approversComments = 14;
     optional int64 due = 15;
 }
 
@@ -178,7 +178,7 @@ message CreateEntityRes{
     CreateEntityKartoffelParams kartoffelParams = 11;
     CreateEntityADParams adParams = 12;
     string comments = 13;
-    string approversComments = 14;
+    ApproversComments approversComments = 14;
     int64 due = 15;
 
     string id = 16;
@@ -217,7 +217,7 @@ message CreateNewApproverRes{
     repeated EntityMin superSecurityApprovers = 8;
     AdditionalParams additionalParams = 9;
     string comments = 10;
-    string approversComments = 11;
+    ApproversComments approversComments = 11;
     int64 due = 12;
 
     string id = 13;
@@ -244,7 +244,7 @@ message RenameOGReq{
     RenameOGKartoffelParams kartoffelParams = 11;
     RenameOGADParams adParams = 12;
     optional string comments = 13;
-    optional string approversComments = 14;
+    optional ApproversComments approversComments = 14;
     optional int64 due = 15;
 }
 
@@ -262,7 +262,7 @@ message RenameOGRes{
     RenameOGKartoffelParams kartoffelParams = 11;
     RenameOGADParams adParams = 12;
     string comments = 13;
-    string approversComments = 14;
+    ApproversComments approversComments = 14;
     int64 due = 15;
 
     string id = 16;
@@ -289,7 +289,7 @@ message RenameRoleReq{
     RenameRoleKartoffelParams kartoffelParams = 11;
     RenameRoleADParams adParams = 12;
     optional string comments = 13;
-    optional string approversComments = 14;
+    optional ApproversComments approversComments = 14;
     optional int64 due = 15;
 }
 
@@ -307,7 +307,7 @@ message RenameRoleRes{
     RenameRoleKartoffelParams kartoffelParams = 11;
     RenameRoleADParams adParams = 12;
     string comments = 13;
-    string approversComments = 14;
+    ApproversComments approversComments = 14;
     int64 due = 15;
 
     string id = 16;
@@ -334,7 +334,7 @@ message EditEntityReq{
     EditEntityKartoffelParams kartoffelParams = 11;
     EditEntityADParams adParams = 12;
     optional string comments = 13;
-    optional string approversComments = 14;
+    optional ApproversComments approversComments = 14;
     optional int64 due = 15;
 }
 
@@ -352,7 +352,7 @@ message EditEntityRes{
     EditEntityKartoffelParams kartoffelParams = 11;
     EditEntityADParams adParams = 12;
     string comments = 13;
-    string approversComments = 14;
+    ApproversComments approversComments = 14;
     int64 due = 15;
 
     string id = 16;
@@ -379,7 +379,7 @@ message DeleteOGReq{
     DeleteOGKartoffelParams kartoffelParams = 11;
     DeleteOGADParams adParams = 12;
     optional string comments = 13;
-    optional string approversComments = 14;
+    optional ApproversComments approversComments = 14;
     optional int64 due = 15;
 }
 
@@ -397,7 +397,7 @@ message DeleteOGRes{
     DeleteOGKartoffelParams kartoffelParams = 11;
     DeleteOGADParams adParams = 12;
     string comments = 13;
-    string approversComments = 14;
+    ApproversComments approversComments = 14;
     int64 due = 15;
 
     string id = 16;
@@ -424,7 +424,7 @@ message DeleteRoleReq{
     DeleteRoleKartoffelParams kartoffelParams = 11;
     DeleteRoleADParams adParams = 12;
     optional string comments = 13;
-    optional string approversComments = 14;
+    optional ApproversComments approversComments = 14;
     optional int64 due = 15;
 }
 
@@ -442,7 +442,7 @@ message DeleteRoleRes{
     DeleteRoleKartoffelParams kartoffelParams = 11;
     DeleteRoleADParams adParams = 12;
     string comments = 13;
-    string approversComments = 14;
+    ApproversComments approversComments = 14;
     int64 due = 15;
 
     string id = 16;
@@ -469,7 +469,7 @@ message DeleteEntityReq{
     DeleteEntityKartoffelParams kartoffelParams = 11;
     DeleteEntityADParams adParams = 12;
     optional string comments = 13;
-    optional string approversComments = 14;
+    optional ApproversComments approversComments = 14;
     optional int64 due = 15;
 }
 
@@ -487,7 +487,7 @@ message DeleteEntityRes{
     DeleteEntityKartoffelParams kartoffelParams = 11;
     DeleteEntityADParams adParams = 12;
     string comments = 13;
-    string approversComments = 14;
+    ApproversComments approversComments = 14;
     int64 due = 15;
 
     string id = 16;
@@ -514,7 +514,7 @@ message AssignRoleToEntityReq{
     AssignRoleToEntityKartoffelParams kartoffelParams = 11;
     AssignRoleToEntityADParams adParams = 12;
     optional string comments = 13;
-    optional string approversComments = 14;
+    optional ApproversComments approversComments = 14;
     optional int64 due = 15;
 }
 
@@ -532,7 +532,7 @@ message AssignRoleToEntityRes{
     AssignRoleToEntityKartoffelParams kartoffelParams = 11;
     AssignRoleToEntityADParams adParams = 12;
     string comments = 13;
-    string approversComments = 14;
+    ApproversComments approversComments = 14;
     int64 due = 15;
 
     string id = 16;
@@ -559,7 +559,7 @@ message DisconectRoleFromEntityReq{
     DisconectRoleFromEntityKartoffelParams kartoffelParams = 11;
     DisconectRoleFromEntityADParams adParams = 12;
     optional string comments = 13;
-    optional string approversComments = 14;
+    optional ApproversComments approversComments = 14;
     optional int64 due = 15;
 }
 
@@ -577,7 +577,7 @@ message DisconectRoleFromEntityRes{
     DisconectRoleFromEntityKartoffelParams kartoffelParams = 11;
     DisconectRoleFromEntityADParams adParams = 12;
     string comments = 13;
-    string approversComments = 14;
+    ApproversComments approversComments = 14;
     int64 due = 15;
 
     string id = 16;
@@ -604,7 +604,7 @@ message ChangeRoleHierarchyReq{
     ChangeRoleHierarchyKartoffelParams kartoffelParams = 11;
     ChangeRoleHierarchyADParams adParams = 12;
     optional string comments = 13;
-    optional string approversComments = 14;
+    optional ApproversComments approversComments = 14;
     optional int64 due = 15;
     bool isPartOfBulk = 16;
     string bulkRequestId = 17;
@@ -625,7 +625,7 @@ message ChangeRoleHierarchyRes{
     ChangeRoleHierarchyKartoffelParams kartoffelParams = 11;
     ChangeRoleHierarchyADParams adParams = 12;
     string comments = 13;
-    string approversComments = 14;
+    ApproversComments approversComments = 14;
     int64 due = 15;
     bool isPartOfBulk = 16;
     string bulkRequestId = 17;
@@ -651,7 +651,7 @@ message CreateRoleBulkReq{
     repeated EntityMin securityApprovers = 7;
     repeated EntityMin superSecurityApprovers = 8;
     optional string comments = 9;
-    optional string approversComments = 10;
+    optional ApproversComments approversComments = 10;
     optional int64 due = 11;
     repeated string requestIds = 12;
     repeated RowError rowErrors = 13;
@@ -671,7 +671,7 @@ message CreateRoleBulkRes{
     repeated EntityMin securityApprovers = 7;
     repeated EntityMin superSecurityApprovers = 8;
     optional string comments = 9;
-    optional string approversComments = 10;
+    optional ApproversComments approversComments = 10;
     optional int64 due = 11;
     repeated string requestIds = 12;
     repeated RowError rowErrors = 13;
@@ -708,7 +708,7 @@ message ChangeRoleHierarchyBulkReq{
     repeated EntityMin securityApprovers = 7;
     repeated EntityMin superSecurityApprovers = 8;
     optional string comments = 9;
-    optional string approversComments = 10;
+    optional ApproversComments approversComments = 10;
     optional int64 due = 11;
     repeated string requestIds = 12;
     string excelFilePath = 13;
@@ -726,7 +726,7 @@ message ChangeRoleHierarchyBulkRes{
     repeated EntityMin securityApprovers = 7;
     repeated EntityMin superSecurityApprovers = 8;
     optional string comments = 9;
-    optional string approversComments = 10;
+    optional ApproversComments approversComments = 10;
     optional int64 due = 11;
     repeated string requestIds = 12;
     string excelFilePath = 13;
@@ -947,11 +947,12 @@ message SyncBulkRequestReq{
     string id = 1;
 }
 
-//14.TransferRequestToApprover
-message TransferRequestToApproverReq{
-    string requestId = 1;
-    EntityMin approver = 2;
-    repeated ApproverType userType = 3;
+//14.TransferRequestToApprovers
+message TransferRequestToApproversReq{
+    string id = 1;
+    repeated EntityMin approvers = 2;
+    ApproverType type = 3;
+    optional string commentForApprovers = 4;
 }
 
 // ---------------------------------------------Other Functions Objects------------------------------------------------------------
@@ -1141,6 +1142,12 @@ message RowError{
     ErrorType errorType = 3;
 }
 
+message ApproversComments{
+    string commanderComment = 1;
+    string securityComment = 2;
+    string superSecurityComment = 3;
+}
+
 // ---------------------------------------------Generalized Objects------------------------------------------------------------
 
 message KartoffelParams{
@@ -1284,7 +1291,7 @@ message RequestReq{
     optional ADParams adParams = 12;
     optional AdditionalParams additionalParams = 13;
     string comments = 14;
-    string approversComments = 15;
+    ApproversComments approversComments = 15;
     optional int64 due = 16;
     optional bool isPartOfBulk = 17;
     optional string bulkRequestId = 18;
@@ -1309,7 +1316,7 @@ message Request{
     optional AdditionalParams additionalParams=12;
     optional ADParams adParams = 13;
     string comments = 14;
-    string approversComments = 15;
+    ApproversComments approversComments = 15;
     int64 due = 16;
     optional bool isPartOfBulk = 17;
     optional string bulkRequestId = 18;
@@ -1416,8 +1423,7 @@ enum SortField{
     REQUEST_TYPE = 0;
     SUBMITTED_BY = 1;
     CREATED_AT = 2;
-    APPROVER_NAME = 3;
-    STATUS = 4;
+    STATUS = 3;
 }
 
 enum SortOrder{
