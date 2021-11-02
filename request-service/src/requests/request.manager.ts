@@ -24,7 +24,7 @@ import {
   PushErrorReq,
   SyncBulkRequestReq,
   GetRequestsUnderBulkReq,
-  TransferRequestToApproverReq,
+  TransferRequestToApproversReq,
 } from '../interfaces/protoc/proto/requestService';
 import { RequestRepository } from './request.repository';
 export class RequestManager {
@@ -107,11 +107,11 @@ export class RequestManager {
     }
   }
 
-  async transferRequestToApprover(
-    transferRequestToApproverReq: TransferRequestToApproverReq
+  async transferRequestToApprovers(
+    transferRequestToApproverReq: TransferRequestToApproversReq
   ): Promise<Request> {
     try {
-      return (await this.requestRepository.transferRequestToApprover(
+      return (await this.requestRepository.transferRequestToApprovers(
         transferRequestToApproverReq
       )) as Request;
     } catch (error) {

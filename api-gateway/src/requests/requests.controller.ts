@@ -29,6 +29,7 @@ import {
   PersonTypeInRequest,
   PersonInfoType,
   ApprovementStatus,
+  TransferRequestToApproversReq,
 } from '../interfaces/protoc/proto/requestService';
 import { RequestsService } from './requests.service';
 import { AuthenticationError } from '../utils/errors/userErrors';
@@ -53,21 +54,26 @@ export default class RequestsController {
     const getRequestsByPersonReq: GetRequestsByPersonReq = {
       id: req.user.id,
       personType: PersonTypeInRequest.SUBMITTER,
-      personInfoType: PersonInfoType.ID,
       from: req.query.from,
       to: req.query.to,
       userType: req.user.types,
       approvementStatus: ApprovementStatus.ANY,
     };
 
-    if (req.query.displayName) {
-      getRequestsByPersonReq.displayName = req.query.displayName;
+    if (req.query.searchQuery) {
+      getRequestsByPersonReq.searchQuery = req.query.searchQuery;
     }
     if (req.query.status) {
       getRequestsByPersonReq.status = req.query.status;
     }
     if (req.query.type) {
       getRequestsByPersonReq.type = req.query.type;
+    }
+    if (req.query.sortField) {
+      getRequestsByPersonReq.sortField = req.query.sortField;
+    }
+    if (req.query.sortOrder) {
+      getRequestsByPersonReq.sortOrder = req.query.sortOrder;
     }
 
     try {
@@ -86,15 +92,14 @@ export default class RequestsController {
     const getRequestsByPersonReq: GetRequestsByPersonReq = {
       id: req.user.id,
       personType: PersonTypeInRequest.GET_ALL,
-      personInfoType: PersonInfoType.ID,
       from: req.query.from,
       to: req.query.to,
       userType: req.user.types,
       approvementStatus: ApprovementStatus.BY_USER_TYPE,
     };
 
-    if (req.query.displayName) {
-      getRequestsByPersonReq.displayName = req.query.displayName;
+    if (req.query.searchQuery) {
+      getRequestsByPersonReq.searchQuery = req.query.searchQuery;
     }
     if (req.query.status) {
       getRequestsByPersonReq.status = req.query.status;
@@ -102,7 +107,12 @@ export default class RequestsController {
     if (req.query.type) {
       getRequestsByPersonReq.type = req.query.type;
     }
-
+    if (req.query.sortField) {
+      getRequestsByPersonReq.sortField = req.query.sortField;
+    }
+    if (req.query.sortOrder) {
+      getRequestsByPersonReq.sortOrder = req.query.sortOrder;
+    }
     try {
       const requests = await RequestsService.getRequestsByPerson(
         getRequestsByPersonReq
@@ -119,21 +129,26 @@ export default class RequestsController {
     const getRequestsByPersonReq: GetRequestsByPersonReq = {
       id: req.user.id,
       personType: PersonTypeInRequest.APPROVER,
-      personInfoType: PersonInfoType.ID,
       from: req.query.from,
       to: req.query.to,
       userType: req.user.types,
       approvementStatus: ApprovementStatus.BY_USER_TYPE,
     };
 
-    if (req.query.displayName) {
-      getRequestsByPersonReq.displayName = req.query.displayName;
+    if (req.query.searchQuery) {
+      getRequestsByPersonReq.searchQuery = req.query.searchQuery;
     }
     if (req.query.status) {
       getRequestsByPersonReq.status = req.query.status;
     }
     if (req.query.type) {
       getRequestsByPersonReq.type = req.query.type;
+    }
+    if (req.query.sortField) {
+      getRequestsByPersonReq.sortField = req.query.sortField;
+    }
+    if (req.query.sortOrder) {
+      getRequestsByPersonReq.sortOrder = req.query.sortOrder;
     }
 
     try {
@@ -152,17 +167,13 @@ export default class RequestsController {
     const getRequestsByPersonReq: GetRequestsByPersonReq = {
       id: req.params.id,
       personType: req.query.personType,
-      personInfoType: req.query.personInfoType,
       from: req.query.from,
       to: req.query.to,
       userType: req.user.types,
     };
 
-    if (req.query.approvementStatus) {
-      getRequestsByPersonReq.approvementStatus = req.query.approvementStatus;
-    }
-    if (req.query.displayName) {
-      getRequestsByPersonReq.displayName = req.query.displayName;
+    if (req.query.searchQuery) {
+      getRequestsByPersonReq.searchQuery = req.query.searchQuery;
     }
     if (req.query.status) {
       getRequestsByPersonReq.status = req.query.status;
@@ -170,7 +181,12 @@ export default class RequestsController {
     if (req.query.type) {
       getRequestsByPersonReq.type = req.query.type;
     }
-
+    if (req.query.sortField) {
+      getRequestsByPersonReq.sortField = req.query.sortField;
+    }
+    if (req.query.sortOrder) {
+      getRequestsByPersonReq.sortOrder = req.query.sortOrder;
+    }
     try {
       const requests = await RequestsService.getRequestsByPerson(
         getRequestsByPersonReq
@@ -200,6 +216,28 @@ export default class RequestsController {
   }
 
   // PUT
+
+  static async transferRequestToApprovers(req: any, res: Response) {
+    let transferRequestToApproversReq: TransferRequestToApproversReq = {
+      id: req.params.id,
+      approvers: req.body.approvers,
+      type: req.body.type,
+    };
+    if (req.body.commentForApprovers) {
+      transferRequestToApproversReq.commentForApprovers =
+        req.body.commentForApprovers;
+    }
+    try {
+      const request = await RequestsService.transferRequestToApprovers(
+        transferRequestToApproversReq
+      );
+      res.send(request);
+    } catch (error: any) {
+      const statusCode = statusCodeHandler(error);
+      res.status(statusCode).send(error.message);
+    }
+  }
+
   static async updateADStatus(req: any, res: Response) {
     const retry: boolean = req.body.Retry;
     const status: boolean = req.body.Status;

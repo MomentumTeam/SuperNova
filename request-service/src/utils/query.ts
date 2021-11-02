@@ -215,12 +215,14 @@ export function getPersonQuery(
     if (personTypeInRequest !== PersonTypeInRequest.GET_ALL) {
       query = getIdQuery(id, personTypeInRequest);
     }
+    if (personTypeInRequest !== PersonTypeInRequest.SUBMITTER) {
+      const approvementQuery: any = getApprovementQuery(
+        approvementStatus,
+        userType
+      );
+      query = { ...approvementQuery, ...query };
+    }
 
-    const approvementQuery: any = getApprovementQuery(
-      approvementStatus,
-      userType
-    );
-    query = { ...approvementQuery, ...query };
     return query;
   } catch (error: any) {
     throw error;

@@ -25,7 +25,7 @@ import {
   syncBulkRequest,
   pushError,
   getRequestsUnderBulk,
-  transferRequestToApprover,
+  transferRequestToApprovers,
 } from './requests/request.controller';
 import { RequestType } from './interfaces/protoc/proto/requestService';
 import { findPath } from './utils/path';
@@ -92,7 +92,7 @@ export class Server {
         ChangeRoleHierarchyBulkRequest: createRequestFuncByType(
           RequestType.CHANGE_ROLE_HIERARCHY_BULK
         ),
-        TransferRequestToApprover: transferRequestToApprover,
+        TransferRequestToApprovers: transferRequestToApprovers,
         GetRequestsByPerson: getRequestsByPerson,
         GetRequestById: getRequestById,
         UpdateRequest: updateRequest,

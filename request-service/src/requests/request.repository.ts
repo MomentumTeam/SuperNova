@@ -41,7 +41,7 @@ import {
   GetRequestsUnderBulkReq,
   decisionToJSON,
   RowError,
-  TransferRequestToApproverReq,
+  TransferRequestToApproversReq,
   SortOrder,
 } from '../interfaces/protoc/proto/requestService';
 import { createNotifications } from '../services/notificationHelper';
@@ -224,63 +224,54 @@ export class RequestRepository {
     }
   }
 
-  async transferRequestToApprover(
-    transferRequestToApproverReq: TransferRequestToApproverReq
+  async transferRequestToApprovers(
+    transferRequestToApproverReq: TransferRequestToApproversReq
   ): Promise<Request> {
     try {
-      const requestBefore = await this.getRequestById({
-        id: transferRequestToApproverReq.requestId,
-      });
-      const userType = transferRequestToApproverReq.userType.map((type) => {
-        return typeof type === typeof '' ? approverTypeFromJSON(type) : type;
-      });
-      let addToSetQuery: any = {};
-      if (
-        (userType.includes(ApproverType.COMMANDER) ||
-          userType.includes(ApproverType.ADMIN)) &&
-        !isApproverExists(
-          requestBefore.commanders,
-          transferRequestToApproverReq.approver
-        )
-      ) {
-        addToSetQuery.commanders = transferRequestToApproverReq.approver;
+      let updateSetQuery: any = {};
+      const type =
+        typeof transferRequestToApproverReq.type === typeof ''
+          ? approverTypeFromJSON(transferRequestToApproverReq.type)
+          : transferRequestToApproverReq.type;
+      const commentForApprovers =
+        transferRequestToApproverReq.commentForApprovers
+          ? transferRequestToApproverReq.commentForApprovers
+          : '';
+      switch (type) {
+        case ApproverType.COMMANDER:
+          updateSetQuery = {
+            commanders: transferRequestToApproverReq.approvers,
+            'approversComments.commanderComment': commentForApprovers,
+          };
+          break;
+        case ApproverType.SECURITY:
+          updateSetQuery = {
+            securityApprovers: transferRequestToApproverReq.approvers,
+            'approversComments.securityComment': commentForApprovers,
+          };
+          break;
+        case ApproverType.SUPER_SECURITY:
+          updateSetQuery = {
+            superSecurityApprovers: transferRequestToApproverReq.approvers,
+            'approversComments.superSecurityComment': commentForApprovers,
+          };
+          break;
+        default:
+          throw new Error('ApproverType is not supported!');
       }
-      if (
-        userType.includes(ApproverType.SECURITY) &&
-        !isApproverExists(
-          requestBefore.securityApprovers,
-          transferRequestToApproverReq.approver
-        )
-      ) {
-        addToSetQuery.securityApprovers = transferRequestToApproverReq.approver;
-      }
-      if (
-        userType.includes(ApproverType.SUPER_SECURITY) &&
-        !isApproverExists(
-          requestBefore.superSecurityApprovers,
-          transferRequestToApproverReq.approver
-        )
-      ) {
-        addToSetQuery.superSecurityApprovers =
-          transferRequestToApproverReq.approver;
-      }
-      if (isEmpty(addToSetQuery)) {
-        return requestBefore;
+      const documentAfter: any = await RequestModel.findOneAndUpdate(
+        { _id: transferRequestToApproverReq.id },
+        { $set: updateSetQuery },
+        { new: true }
+      );
+      if (documentAfter) {
+        const documentObj = documentAfter.toObject();
+        turnObjectIdsToStrings(documentObj);
+        return documentObj as Request;
       } else {
-        const documentAfter: any = await RequestModel.findOneAndUpdate(
-          { _id: transferRequestToApproverReq.requestId },
-          { $addToSet: addToSetQuery },
-          { new: true }
+        throw new Error(
+          `RequestId=${transferRequestToApproverReq.id} does not exist!`
         );
-        if (documentAfter) {
-          const documentObj = documentAfter.toObject();
-          turnObjectIdsToStrings(documentObj);
-          return documentObj as Request;
-        } else {
-          throw new Error(
-            `RequestId=${transferRequestToApproverReq.requestId} does not exist!`
-          );
-        }
       }
     } catch (error) {
       throw error;
