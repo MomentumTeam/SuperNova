@@ -38,6 +38,7 @@ import {
   RequestArray,
   StageStatus,
   SuccessMessage,
+  TransferRequestToApproversReq,
   UpdateADStatusReq,
   UpdateApproverDecisionReq,
   UpdateApproversReq,
@@ -154,6 +155,36 @@ export class RequestsService {
   }
 
   // PUT
+  static async transferRequestToApprovers(
+    transferRequestToApproversReq: TransferRequestToApproversReq
+  ) {
+    logger.info(
+      `Call to transferRequestToApprovers in GTW`,
+      transferRequestToApproversReq
+    );
+
+    return new Promise((resolve, reject) => {
+      requestsClient.TransferRequestToApprovers(
+        transferRequestToApproversReq,
+        (err: any, response: Request) => {
+          if (err) {
+            logger.error(`transferRequestToApprovers ERROR in GTW`, {
+              err,
+              callRequest: transferRequestToApproversReq,
+            });
+            reject(err);
+          }
+
+          logger.info(`transferRequestToApprovers OK in GTW`, {
+            response: response,
+            callRequest: transferRequestToApproversReq,
+          });
+          resolve(response);
+        }
+      );
+    });
+  }
+
   static async updateADStatus(updateADStatus: UpdateADStatusReq) {
     logger.info(`Call to updateADStatus in GTW`, updateADStatus);
 

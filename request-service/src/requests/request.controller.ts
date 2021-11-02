@@ -13,6 +13,38 @@ import { logger } from '../logger';
 
 const requestManager: RequestManager = new RequestManager();
 
+export async function transferRequestToApprovers(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    logger.info(`Call to transferRequestToApprovers`, {
+      callRequest: call.request,
+    });
+    const response = await requestManager.transferRequestToApprovers(
+      call.request
+    );
+    logger.info(`transferRequestToApprovers OK`, {
+      callRequest: call.request,
+      response: response,
+    });
+    callback(null, response);
+  } catch (error: any) {
+    logger.error(`transferRequestToApprovers ERROR`, {
+      callRequest: call.request,
+      error: { message: error.message },
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
 export async function getRequestsUnderBulk(
   call: any,
   callback: any

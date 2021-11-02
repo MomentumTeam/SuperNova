@@ -10,6 +10,8 @@ import {
   personTypeInRequestToJSON,
   personInfoTypeToJSON,
   approvementStatusToJSON,
+  SortField,
+  SortOrder,
 } from '../interfaces/protoc/proto/requestService';
 
 const Joi = require('joi');
@@ -39,18 +41,11 @@ export const getRequestsSchema = Joi.object({
   body: {},
   params: {},
   query: {
-    // personType: Joi.string()
-    //   .valid(...Object.keys(PersonTypeInRequest))
-    //   .default(personTypeInRequestToJSON(PersonTypeInRequest.APPROVER)),
-    // personInfoType: Joi.string()
-    //   .valid(...Object.keys(PersonInfoType))
-    //   .default(personInfoTypeToJSON(PersonInfoType.ID)),
-    // approvementStatus: Joi.string()
-    //   .valid(...Object.keys(ApprovementStatus))
-    //   .default(approvementStatusToJSON(ApprovementStatus.BY_USER_TYPE)),
-    displayName: Joi.string(),
+    searchQuery: Joi.string(),
     status: Joi.string().valid(...Object.keys(RequestStatus)),
     type: Joi.string().valid(...Object.keys(RequestType)),
+    sortField: Joi.string().valid(...Object.keys(SortField)),
+    sortOrder: Joi.string().valid(...Object.keys(SortOrder)),
     from: Joi.number().default(1),
     to: Joi.number().default(100),
   },
@@ -138,6 +133,18 @@ export const KartoffelParamsObj = Joi.object({
 
 export const ADParamsObj = Joi.object({
   //TODO
+});
+
+export const transferRequestToApproversSchema = Joi.object({
+  body: {
+    approvers: Joi.array().items(entityMinObj).required(),
+    type: Joi.string()
+      .valid(...Object.keys(ApproverType))
+      .required(),
+    commentForApprovers: Joi.string(),
+  },
+  params: { id: Joi.objectId().required() },
+  query: {},
 });
 
 export const updateRequestSchema = Joi.object({

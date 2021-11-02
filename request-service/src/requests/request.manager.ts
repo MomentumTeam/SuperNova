@@ -24,6 +24,7 @@ import {
   PushErrorReq,
   SyncBulkRequestReq,
   GetRequestsUnderBulkReq,
+  TransferRequestToApproversReq,
 } from '../interfaces/protoc/proto/requestService';
 import { RequestRepository } from './request.repository';
 export class RequestManager {
@@ -101,6 +102,18 @@ export class RequestManager {
       return (await this.requestRepository.getRequestIdsInProgressByDue(
         getRequestsInProgressByDueReq
       )) as RequestIdArray;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async transferRequestToApprovers(
+    transferRequestToApproverReq: TransferRequestToApproversReq
+  ): Promise<Request> {
+    try {
+      return (await this.requestRepository.transferRequestToApprovers(
+        transferRequestToApproverReq
+      )) as Request;
     } catch (error) {
       throw error;
     }
