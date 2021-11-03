@@ -19,7 +19,8 @@ service Kartoffel {
     rpc ConnectEntityAndDI(ConnectEntityAndDIRequest) returns (SuccessMessage){}
     rpc DisconnectDIFromEntity(DisconnectDIFromEntityRequest) returns (SuccessMessage){}
     rpc SearchCommandersByFullName(SearchCommandersByFullNameRequest) returns (EntityArray){}
-    
+    rpc SearchHighCommandersByFullName(SearchCommandersByFullNameRequest) returns (EntityArray){}
+
     //Groups
     rpc CreateOG(CreateOGRequest) returns (OrganizationGroup){}        
     rpc GetAllOGs(GetAllOGsRequest) returns (OGArray){}        

@@ -68,6 +68,37 @@ export async function getUserType(call: any, callback: any): Promise<void> {
   }
 }
 
+export async function searchHighCommandersByDisplayName(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    logger.info(`Call to searchHighCommandersByDisplayName`, {
+      callRequest: call.request,
+    });
+    const approverArray: ApproverArray =
+      await approverManager.searchHighCommandersByDisplayName(call.request);
+    logger.info(`searchHighCommandersByDisplayName OK`, {
+      response: approverArray,
+      callRequest: call.request,
+    });
+    callback(null, approverArray);
+  } catch (error: any) {
+    logger.error(`searchHighCommandersByDisplayName ERROR`, {
+      callRequest: call.request,
+      error: { message: error.message },
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
 export async function searchApproverByDisplayName(
   call: any,
   callback: any
