@@ -9,6 +9,7 @@ import {
   GetUserTypeRes,
   SearchByDisplayNameReq,
   SearchByDomainUserReq,
+  SearchHighCommandersByDisplayNameReq,
   SuccessMessage,
   SyncApproverReq,
 } from '../interfaces/protoc/proto/approverService';
@@ -29,6 +30,18 @@ export class ApproverManager {
       return (await this.approverRepository.addApprover(
         addApproverReq
       )) as Approver;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async searchHighCommandersByDisplayName(
+    searchHighCommandersByDisplayNameReq: SearchHighCommandersByDisplayNameReq
+  ): Promise<ApproverArray> {
+    try {
+      return (await this.approverRepository.searchHighCommandersByDisplayName(
+        searchHighCommandersByDisplayNameReq
+      )) as ApproverArray;
     } catch (error) {
       throw error;
     }

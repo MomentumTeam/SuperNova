@@ -141,7 +141,7 @@ export class EntitiesRepository {
           );
         return { image: image };
       }
-    } catch (error) {
+    } catch (error: any) {
       logger.error(
         `Error while downloading image for id=${getPictureByEntityIdRequest.id}`,
         { error: { message: error.message } }
@@ -221,6 +221,33 @@ export class EntitiesRepository {
         cleanUnderscoreFields(searchCommandersByFullNameRequest);
         let url = `${C.kartoffelUrl}/api/entities/search?fullName=${searchCommandersByFullNameRequest.fullName}`;
         for (let rank of C.commanderRanks) {
+          url = url + `&rank=${rank}`;
+        }
+        if (searchCommandersByFullNameRequest.source) {
+          url = url + `&source=${searchCommandersByFullNameRequest.source}`;
+        } else {
+          url = url + `&source=oneTree`;
+        }
+        const data = await this.kartoffelUtils.kartoffelGet(url);
+        return { entities: data as Entity[] };
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async searchHighCommandersByFullName(
+    searchCommandersByFullNameRequest: SearchCommandersByFullNameRequest
+  ): Promise<EntityArray> {
+    try {
+      if (C.useFaker) {
+        const entityArray: EntityArray =
+          await this.kartoffelFaker.randomEntityArray(false);
+        return entityArray;
+      } else {
+        cleanUnderscoreFields(searchCommandersByFullNameRequest);
+        let url = `${C.kartoffelUrl}/api/entities/search?fullName=${searchCommandersByFullNameRequest.fullName}`;
+        for (let rank of C.highCommanderRanks) {
           url = url + `&rank=${rank}`;
         }
         if (searchCommandersByFullNameRequest.source) {

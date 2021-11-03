@@ -18,6 +18,7 @@ import {
   getPictureByEntityId,
   searchCommandersByFullName,
   searchEntitiesByFullName,
+  searchHighCommandersByFullName,
   updateEntity,
 } from './entities/entities.controller';
 import {
@@ -109,6 +110,7 @@ export class Server {
         GetEntitiesByHierarchy: getEntitiesByHierarchy,
         GetEntityByIdentifier: getEntityByIdentifier,
         SearchEntitiesByFullName: searchEntitiesByFullName,
+        SearchHighCommandersByFullName: searchHighCommandersByFullName,
         GetEntityById: getEntityById,
         DeleteEntity: deleteEntity,
         DisconnectDIFromEntity: disconnectDIFromEntity,

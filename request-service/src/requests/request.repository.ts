@@ -979,7 +979,7 @@ export class RequestRepository {
 
       case RequestType.CREATE_ROLE:
         request.needSecurityDecision = true;
-        request.needSuperSecurityDecision = true;
+        request.needSuperSecurityDecision = false;
         break;
 
       case RequestType.ASSIGN_ROLE_TO_ENTITY:
@@ -998,13 +998,13 @@ export class RequestRepository {
         break;
 
       case RequestType.RENAME_OG:
-        request.needSecurityDecision = false;
+        request.needSecurityDecision = true;
         request.needSuperSecurityDecision = true;
         break;
 
       case RequestType.RENAME_ROLE:
-        request.needSecurityDecision = false;
-        request.needSuperSecurityDecision = false;
+        request.needSecurityDecision = true;
+        request.needSuperSecurityDecision = true;
         break;
 
       case RequestType.EDIT_ENTITY:

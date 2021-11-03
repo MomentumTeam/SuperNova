@@ -7,6 +7,7 @@ import {
   GetUserTypeReq,
   AddApproverReq,
   DeleteApproverReq,
+  SearchHighCommandersByDisplayNameReq,
 } from '../interfaces/protoc/proto/approverService';
 import { ApproverService } from './approver.service';
 import { KartoffelService } from '../kartoffel/kartoffel.service';
@@ -39,6 +40,23 @@ export default class ApproverController {
     try {
       const approvers = await ApproverService.getAllApprovers(
         getAllApproversReq
+      );
+      res.send(approvers);
+    } catch (error: any) {
+      const statusCode = statusCodeHandler(error);
+      res.status(statusCode).send(error.message);
+    }
+  }
+
+  static async searchHighCommandersByDisplayName(req: any, res: Response) {
+    const searchHighCommandersByDisplayNameReq: SearchHighCommandersByDisplayNameReq =
+      {
+        displayName: req.params.displayName,
+      };
+
+    try {
+      const approvers = await ApproverService.searchHighCommandersByDisplayName(
+        searchHighCommandersByDisplayNameReq
       );
       res.send(approvers);
     } catch (error: any) {
