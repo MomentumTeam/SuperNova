@@ -48,6 +48,13 @@ RequestsRouter.put(
   RequestValidator.isUpdateRequestValid,
   RequestsController.updateRequest
 );
+
+RequestsRouter.put(
+  '/transferToApprovers/:id',
+  RequestValidator.isTransferRequestToApproversValid,
+  RequestsController.transferRequestToApprovers
+);
+
 RequestsRouter.put(
   '/adStatus',
   RequestValidator.isUpdateADStatusValid,

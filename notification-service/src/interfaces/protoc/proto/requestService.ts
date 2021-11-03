@@ -514,6 +514,82 @@ export function errorTypeToJSON(object: ErrorType): string {
   }
 }
 
+export enum SortField {
+  REQUEST_TYPE = 0,
+  SUBMITTED_BY = 1,
+  CREATED_AT = 2,
+  STATUS = 3,
+  UNRECOGNIZED = -1,
+}
+
+export function sortFieldFromJSON(object: any): SortField {
+  switch (object) {
+    case 0:
+    case "REQUEST_TYPE":
+      return SortField.REQUEST_TYPE;
+    case 1:
+    case "SUBMITTED_BY":
+      return SortField.SUBMITTED_BY;
+    case 2:
+    case "CREATED_AT":
+      return SortField.CREATED_AT;
+    case 3:
+    case "STATUS":
+      return SortField.STATUS;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return SortField.UNRECOGNIZED;
+  }
+}
+
+export function sortFieldToJSON(object: SortField): string {
+  switch (object) {
+    case SortField.REQUEST_TYPE:
+      return "REQUEST_TYPE";
+    case SortField.SUBMITTED_BY:
+      return "SUBMITTED_BY";
+    case SortField.CREATED_AT:
+      return "CREATED_AT";
+    case SortField.STATUS:
+      return "STATUS";
+    default:
+      return "UNKNOWN";
+  }
+}
+
+export enum SortOrder {
+  INC = 0,
+  DEC = 1,
+  UNRECOGNIZED = -1,
+}
+
+export function sortOrderFromJSON(object: any): SortOrder {
+  switch (object) {
+    case 0:
+    case "INC":
+      return SortOrder.INC;
+    case 1:
+    case "DEC":
+      return SortOrder.DEC;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return SortOrder.UNRECOGNIZED;
+  }
+}
+
+export function sortOrderToJSON(object: SortOrder): string {
+  switch (object) {
+    case SortOrder.INC:
+      return "INC";
+    case SortOrder.DEC:
+      return "DEC";
+    default:
+      return "UNKNOWN";
+  }
+}
+
 /** 1.CreateRole */
 export interface CreateRoleReq {
   submittedBy: EntityMin | undefined;
@@ -529,7 +605,7 @@ export interface CreateRoleReq {
   kartoffelParams: CreateRoleKartoffelParams | undefined;
   adParams: CreateRoleADParams | undefined;
   comments?: string | undefined;
-  approversComments?: string | undefined;
+  approversComments?: ApproversComments | undefined;
   due?: number | undefined;
   isPartOfBulk?: boolean | undefined;
   bulkRequestId?: string | undefined;
@@ -550,7 +626,7 @@ export interface CreateRoleRes {
   kartoffelParams: CreateRoleKartoffelParams | undefined;
   adParams: CreateRoleADParams | undefined;
   comments?: string | undefined;
-  approversComments?: string | undefined;
+  approversComments?: ApproversComments | undefined;
   due?: number | undefined;
   isPartOfBulk: boolean;
   bulkRequestId: string;
@@ -579,7 +655,7 @@ export interface CreateOGReq {
   kartoffelParams: CreateOGKartoffelParams | undefined;
   adParams: CreateOGADParams | undefined;
   comments?: string | undefined;
-  approversComments?: string | undefined;
+  approversComments?: ApproversComments | undefined;
   due?: number | undefined;
 }
 
@@ -597,7 +673,7 @@ export interface CreateOGRes {
   kartoffelParams: CreateOGKartoffelParams | undefined;
   adParams: CreateOGADParams | undefined;
   comments: string;
-  approversComments: string;
+  approversComments: ApproversComments | undefined;
   due: number;
   id: string;
   createdAt: number;
@@ -623,7 +699,7 @@ export interface CreateEntityReq {
   kartoffelParams: CreateEntityKartoffelParams | undefined;
   adParams: CreateEntityADParams | undefined;
   comments?: string | undefined;
-  approversComments?: string | undefined;
+  approversComments?: ApproversComments | undefined;
   due?: number | undefined;
 }
 
@@ -641,7 +717,7 @@ export interface CreateEntityRes {
   kartoffelParams: CreateEntityKartoffelParams | undefined;
   adParams: CreateEntityADParams | undefined;
   comments: string;
-  approversComments: string;
+  approversComments: ApproversComments | undefined;
   due: number;
   id: string;
   createdAt: number;
@@ -679,7 +755,7 @@ export interface CreateNewApproverRes {
   superSecurityApprovers: EntityMin[];
   additionalParams: AdditionalParams | undefined;
   comments: string;
-  approversComments: string;
+  approversComments: ApproversComments | undefined;
   due: number;
   id: string;
   createdAt: number;
@@ -705,7 +781,7 @@ export interface RenameOGReq {
   kartoffelParams: RenameOGKartoffelParams | undefined;
   adParams: RenameOGADParams | undefined;
   comments?: string | undefined;
-  approversComments?: string | undefined;
+  approversComments?: ApproversComments | undefined;
   due?: number | undefined;
 }
 
@@ -723,7 +799,7 @@ export interface RenameOGRes {
   kartoffelParams: RenameOGKartoffelParams | undefined;
   adParams: RenameOGADParams | undefined;
   comments: string;
-  approversComments: string;
+  approversComments: ApproversComments | undefined;
   due: number;
   id: string;
   createdAt: number;
@@ -749,7 +825,7 @@ export interface RenameRoleReq {
   kartoffelParams: RenameRoleKartoffelParams | undefined;
   adParams: RenameRoleADParams | undefined;
   comments?: string | undefined;
-  approversComments?: string | undefined;
+  approversComments?: ApproversComments | undefined;
   due?: number | undefined;
 }
 
@@ -767,7 +843,7 @@ export interface RenameRoleRes {
   kartoffelParams: RenameRoleKartoffelParams | undefined;
   adParams: RenameRoleADParams | undefined;
   comments: string;
-  approversComments: string;
+  approversComments: ApproversComments | undefined;
   due: number;
   id: string;
   createdAt: number;
@@ -793,7 +869,7 @@ export interface EditEntityReq {
   kartoffelParams: EditEntityKartoffelParams | undefined;
   adParams: EditEntityADParams | undefined;
   comments?: string | undefined;
-  approversComments?: string | undefined;
+  approversComments?: ApproversComments | undefined;
   due?: number | undefined;
 }
 
@@ -811,7 +887,7 @@ export interface EditEntityRes {
   kartoffelParams: EditEntityKartoffelParams | undefined;
   adParams: EditEntityADParams | undefined;
   comments: string;
-  approversComments: string;
+  approversComments: ApproversComments | undefined;
   due: number;
   id: string;
   createdAt: number;
@@ -837,7 +913,7 @@ export interface DeleteOGReq {
   kartoffelParams: DeleteOGKartoffelParams | undefined;
   adParams: DeleteOGADParams | undefined;
   comments?: string | undefined;
-  approversComments?: string | undefined;
+  approversComments?: ApproversComments | undefined;
   due?: number | undefined;
 }
 
@@ -855,7 +931,7 @@ export interface DeleteOGRes {
   kartoffelParams: DeleteOGKartoffelParams | undefined;
   adParams: DeleteOGADParams | undefined;
   comments: string;
-  approversComments: string;
+  approversComments: ApproversComments | undefined;
   due: number;
   id: string;
   createdAt: number;
@@ -881,7 +957,7 @@ export interface DeleteRoleReq {
   kartoffelParams: DeleteRoleKartoffelParams | undefined;
   adParams: DeleteRoleADParams | undefined;
   comments?: string | undefined;
-  approversComments?: string | undefined;
+  approversComments?: ApproversComments | undefined;
   due?: number | undefined;
 }
 
@@ -899,7 +975,7 @@ export interface DeleteRoleRes {
   kartoffelParams: DeleteRoleKartoffelParams | undefined;
   adParams: DeleteRoleADParams | undefined;
   comments: string;
-  approversComments: string;
+  approversComments: ApproversComments | undefined;
   due: number;
   id: string;
   createdAt: number;
@@ -925,7 +1001,7 @@ export interface DeleteEntityReq {
   kartoffelParams: DeleteEntityKartoffelParams | undefined;
   adParams: DeleteEntityADParams | undefined;
   comments?: string | undefined;
-  approversComments?: string | undefined;
+  approversComments?: ApproversComments | undefined;
   due?: number | undefined;
 }
 
@@ -943,7 +1019,7 @@ export interface DeleteEntityRes {
   kartoffelParams: DeleteEntityKartoffelParams | undefined;
   adParams: DeleteEntityADParams | undefined;
   comments: string;
-  approversComments: string;
+  approversComments: ApproversComments | undefined;
   due: number;
   id: string;
   createdAt: number;
@@ -969,7 +1045,7 @@ export interface AssignRoleToEntityReq {
   kartoffelParams: AssignRoleToEntityKartoffelParams | undefined;
   adParams: AssignRoleToEntityADParams | undefined;
   comments?: string | undefined;
-  approversComments?: string | undefined;
+  approversComments?: ApproversComments | undefined;
   due?: number | undefined;
 }
 
@@ -987,7 +1063,7 @@ export interface AssignRoleToEntityRes {
   kartoffelParams: AssignRoleToEntityKartoffelParams | undefined;
   adParams: AssignRoleToEntityADParams | undefined;
   comments: string;
-  approversComments: string;
+  approversComments: ApproversComments | undefined;
   due: number;
   id: string;
   createdAt: number;
@@ -1013,7 +1089,7 @@ export interface DisconectRoleFromEntityReq {
   kartoffelParams: DisconectRoleFromEntityKartoffelParams | undefined;
   adParams: DisconectRoleFromEntityADParams | undefined;
   comments?: string | undefined;
-  approversComments?: string | undefined;
+  approversComments?: ApproversComments | undefined;
   due?: number | undefined;
 }
 
@@ -1031,7 +1107,7 @@ export interface DisconectRoleFromEntityRes {
   kartoffelParams: DisconectRoleFromEntityKartoffelParams | undefined;
   adParams: DisconectRoleFromEntityADParams | undefined;
   comments: string;
-  approversComments: string;
+  approversComments: ApproversComments | undefined;
   due: number;
   id: string;
   createdAt: number;
@@ -1057,7 +1133,7 @@ export interface ChangeRoleHierarchyReq {
   kartoffelParams: ChangeRoleHierarchyKartoffelParams | undefined;
   adParams: ChangeRoleHierarchyADParams | undefined;
   comments?: string | undefined;
-  approversComments?: string | undefined;
+  approversComments?: ApproversComments | undefined;
   due?: number | undefined;
   isPartOfBulk: boolean;
   bulkRequestId: string;
@@ -1078,7 +1154,7 @@ export interface ChangeRoleHierarchyRes {
   kartoffelParams: ChangeRoleHierarchyKartoffelParams | undefined;
   adParams: ChangeRoleHierarchyADParams | undefined;
   comments: string;
-  approversComments: string;
+  approversComments: ApproversComments | undefined;
   due: number;
   isPartOfBulk: boolean;
   bulkRequestId: string;
@@ -1103,7 +1179,7 @@ export interface CreateRoleBulkReq {
   securityApprovers: EntityMin[];
   superSecurityApprovers: EntityMin[];
   comments?: string | undefined;
-  approversComments?: string | undefined;
+  approversComments?: ApproversComments | undefined;
   due?: number | undefined;
   requestIds: string[];
   rowErrors: RowError[];
@@ -1122,7 +1198,7 @@ export interface CreateRoleBulkRes {
   securityApprovers: EntityMin[];
   superSecurityApprovers: EntityMin[];
   comments?: string | undefined;
-  approversComments?: string | undefined;
+  approversComments?: ApproversComments | undefined;
   due?: number | undefined;
   requestIds: string[];
   rowErrors: RowError[];
@@ -1160,7 +1236,7 @@ export interface ChangeRoleHierarchyBulkReq {
   securityApprovers: EntityMin[];
   superSecurityApprovers: EntityMin[];
   comments?: string | undefined;
-  approversComments?: string | undefined;
+  approversComments?: ApproversComments | undefined;
   due?: number | undefined;
   requestIds: string[];
   excelFilePath: string;
@@ -1178,7 +1254,7 @@ export interface ChangeRoleHierarchyBulkRes {
   securityApprovers: EntityMin[];
   superSecurityApprovers: EntityMin[];
   comments?: string | undefined;
-  approversComments?: string | undefined;
+  approversComments?: ApproversComments | undefined;
   due?: number | undefined;
   requestIds: string[];
   excelFilePath: string;
@@ -1400,6 +1476,14 @@ export interface SyncBulkRequestReq {
   id: string;
 }
 
+/** 14.TransferRequestToApprovers */
+export interface TransferRequestToApproversReq {
+  id: string;
+  approvers: EntityMin[];
+  type: ApproverType;
+  commentForApprovers?: string | undefined;
+}
+
 export interface UpdateReq {
   id: string;
   requestProperties: UpdateReqProperties | undefined;
@@ -1453,15 +1537,16 @@ export interface DeleteReq {
 export interface GetRequestsByPersonReq {
   id: string;
   personType: PersonTypeInRequest;
-  personInfoType: PersonInfoType;
-  /** only for GET_ALL */
+  /** only when personType=GET_ALL */
   userType: ApproverType[];
   from: number;
   to: number;
   approvementStatus?: ApprovementStatus | undefined;
-  displayName?: string | undefined;
+  searchQuery?: string | undefined;
   status?: RequestStatus | undefined;
   type?: RequestType | undefined;
+  sortField?: SortField | undefined;
+  sortOrder?: SortOrder | undefined;
 }
 
 /** GetRequestBySerialNumber */
@@ -1570,10 +1655,22 @@ export interface RequestArray {
   totalCount: number;
 }
 
+export interface GetRequestsByPersonRes {
+  requests: Request[];
+  totalCount: number;
+  waitingForApproveCount: number;
+}
+
 export interface RowError {
   rowNumber: string;
   error: string;
   errorType: ErrorType;
+}
+
+export interface ApproversComments {
+  commanderComment: string;
+  securityComment: string;
+  superSecurityComment: string;
 }
 
 export interface KartoffelParams {
@@ -1663,7 +1760,7 @@ export interface RequestReq {
   adParams?: ADParams | undefined;
   additionalParams?: AdditionalParams | undefined;
   comments: string;
-  approversComments: string;
+  approversComments: ApproversComments | undefined;
   due?: number | undefined;
   isPartOfBulk?: boolean | undefined;
   bulkRequestId?: string | undefined;
@@ -1688,7 +1785,7 @@ export interface Request {
   additionalParams?: AdditionalParams | undefined;
   adParams?: ADParams | undefined;
   comments: string;
-  approversComments: string;
+  approversComments: ApproversComments | undefined;
   due: number;
   isPartOfBulk?: boolean | undefined;
   bulkRequestId?: string | undefined;
@@ -1770,7 +1867,10 @@ export const CreateRoleReq = {
       writer.uint32(106).string(message.comments);
     }
     if (message.approversComments !== undefined) {
-      writer.uint32(114).string(message.approversComments);
+      ApproversComments.encode(
+        message.approversComments,
+        writer.uint32(114).fork()
+      ).ldelim();
     }
     if (message.due !== undefined) {
       writer.uint32(120).int64(message.due);
@@ -1856,7 +1956,10 @@ export const CreateRoleReq = {
           message.comments = reader.string();
           break;
         case 14:
-          message.approversComments = reader.string();
+          message.approversComments = ApproversComments.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 15:
           message.due = longToNumber(reader.int64() as Long);
@@ -1983,7 +2086,9 @@ export const CreateRoleReq = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = String(object.approversComments);
+      message.approversComments = ApproversComments.fromJSON(
+        object.approversComments
+      );
     } else {
       message.approversComments = undefined;
     }
@@ -2072,7 +2177,9 @@ export const CreateRoleReq = {
         : undefined);
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
-      (obj.approversComments = message.approversComments);
+      (obj.approversComments = message.approversComments
+        ? ApproversComments.toJSON(message.approversComments)
+        : undefined);
     message.due !== undefined && (obj.due = message.due);
     message.isPartOfBulk !== undefined &&
       (obj.isPartOfBulk = message.isPartOfBulk);
@@ -2187,7 +2294,9 @@ export const CreateRoleReq = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = object.approversComments;
+      message.approversComments = ApproversComments.fromPartial(
+        object.approversComments
+      );
     } else {
       message.approversComments = undefined;
     }
@@ -2290,7 +2399,10 @@ export const CreateRoleRes = {
       writer.uint32(106).string(message.comments);
     }
     if (message.approversComments !== undefined) {
-      writer.uint32(114).string(message.approversComments);
+      ApproversComments.encode(
+        message.approversComments,
+        writer.uint32(114).fork()
+      ).ldelim();
     }
     if (message.due !== undefined) {
       writer.uint32(120).int64(message.due);
@@ -2397,7 +2509,10 @@ export const CreateRoleRes = {
           message.comments = reader.string();
           break;
         case 14:
-          message.approversComments = reader.string();
+          message.approversComments = ApproversComments.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 15:
           message.due = longToNumber(reader.int64() as Long);
@@ -2545,7 +2660,9 @@ export const CreateRoleRes = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = String(object.approversComments);
+      message.approversComments = ApproversComments.fromJSON(
+        object.approversComments
+      );
     } else {
       message.approversComments = undefined;
     }
@@ -2677,7 +2794,9 @@ export const CreateRoleRes = {
         : undefined);
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
-      (obj.approversComments = message.approversComments);
+      (obj.approversComments = message.approversComments
+        ? ApproversComments.toJSON(message.approversComments)
+        : undefined);
     message.due !== undefined && (obj.due = message.due);
     message.isPartOfBulk !== undefined &&
       (obj.isPartOfBulk = message.isPartOfBulk);
@@ -2802,7 +2921,9 @@ export const CreateRoleRes = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = object.approversComments;
+      message.approversComments = ApproversComments.fromPartial(
+        object.approversComments
+      );
     } else {
       message.approversComments = undefined;
     }
@@ -2936,7 +3057,10 @@ export const CreateOGReq = {
       writer.uint32(106).string(message.comments);
     }
     if (message.approversComments !== undefined) {
-      writer.uint32(114).string(message.approversComments);
+      ApproversComments.encode(
+        message.approversComments,
+        writer.uint32(114).fork()
+      ).ldelim();
     }
     if (message.due !== undefined) {
       writer.uint32(120).int64(message.due);
@@ -3013,7 +3137,10 @@ export const CreateOGReq = {
           message.comments = reader.string();
           break;
         case 14:
-          message.approversComments = reader.string();
+          message.approversComments = ApproversComments.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 15:
           message.due = longToNumber(reader.int64() as Long);
@@ -3131,7 +3258,9 @@ export const CreateOGReq = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = String(object.approversComments);
+      message.approversComments = ApproversComments.fromJSON(
+        object.approversComments
+      );
     } else {
       message.approversComments = undefined;
     }
@@ -3205,7 +3334,9 @@ export const CreateOGReq = {
         : undefined);
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
-      (obj.approversComments = message.approversComments);
+      (obj.approversComments = message.approversComments
+        ? ApproversComments.toJSON(message.approversComments)
+        : undefined);
     message.due !== undefined && (obj.due = message.due);
     return obj;
   },
@@ -3315,7 +3446,9 @@ export const CreateOGReq = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = object.approversComments;
+      message.approversComments = ApproversComments.fromPartial(
+        object.approversComments
+      );
     } else {
       message.approversComments = undefined;
     }
@@ -3331,7 +3464,6 @@ export const CreateOGReq = {
 const baseCreateOGRes: object = {
   status: 0,
   comments: "",
-  approversComments: "",
   due: 0,
   id: "",
   createdAt: 0,
@@ -3404,8 +3536,11 @@ export const CreateOGRes = {
     if (message.comments !== "") {
       writer.uint32(106).string(message.comments);
     }
-    if (message.approversComments !== "") {
-      writer.uint32(114).string(message.approversComments);
+    if (message.approversComments !== undefined) {
+      ApproversComments.encode(
+        message.approversComments,
+        writer.uint32(114).fork()
+      ).ldelim();
     }
     if (message.due !== 0) {
       writer.uint32(120).int64(message.due);
@@ -3503,7 +3638,10 @@ export const CreateOGRes = {
           message.comments = reader.string();
           break;
         case 14:
-          message.approversComments = reader.string();
+          message.approversComments = ApproversComments.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 15:
           message.due = longToNumber(reader.int64() as Long);
@@ -3642,9 +3780,11 @@ export const CreateOGRes = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = String(object.approversComments);
+      message.approversComments = ApproversComments.fromJSON(
+        object.approversComments
+      );
     } else {
-      message.approversComments = "";
+      message.approversComments = undefined;
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = Number(object.due);
@@ -3756,7 +3896,9 @@ export const CreateOGRes = {
         : undefined);
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
-      (obj.approversComments = message.approversComments);
+      (obj.approversComments = message.approversComments
+        ? ApproversComments.toJSON(message.approversComments)
+        : undefined);
     message.due !== undefined && (obj.due = message.due);
     message.id !== undefined && (obj.id = message.id);
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
@@ -3876,9 +4018,11 @@ export const CreateOGRes = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = object.approversComments;
+      message.approversComments = ApproversComments.fromPartial(
+        object.approversComments
+      );
     } else {
-      message.approversComments = "";
+      message.approversComments = undefined;
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = object.due;
@@ -3995,7 +4139,10 @@ export const CreateEntityReq = {
       writer.uint32(106).string(message.comments);
     }
     if (message.approversComments !== undefined) {
-      writer.uint32(114).string(message.approversComments);
+      ApproversComments.encode(
+        message.approversComments,
+        writer.uint32(114).fork()
+      ).ldelim();
     }
     if (message.due !== undefined) {
       writer.uint32(120).int64(message.due);
@@ -4075,7 +4222,10 @@ export const CreateEntityReq = {
           message.comments = reader.string();
           break;
         case 14:
-          message.approversComments = reader.string();
+          message.approversComments = ApproversComments.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 15:
           message.due = longToNumber(reader.int64() as Long);
@@ -4193,7 +4343,9 @@ export const CreateEntityReq = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = String(object.approversComments);
+      message.approversComments = ApproversComments.fromJSON(
+        object.approversComments
+      );
     } else {
       message.approversComments = undefined;
     }
@@ -4267,7 +4419,9 @@ export const CreateEntityReq = {
         : undefined);
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
-      (obj.approversComments = message.approversComments);
+      (obj.approversComments = message.approversComments
+        ? ApproversComments.toJSON(message.approversComments)
+        : undefined);
     message.due !== undefined && (obj.due = message.due);
     return obj;
   },
@@ -4377,7 +4531,9 @@ export const CreateEntityReq = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = object.approversComments;
+      message.approversComments = ApproversComments.fromPartial(
+        object.approversComments
+      );
     } else {
       message.approversComments = undefined;
     }
@@ -4393,7 +4549,6 @@ export const CreateEntityReq = {
 const baseCreateEntityRes: object = {
   status: 0,
   comments: "",
-  approversComments: "",
   due: 0,
   id: "",
   createdAt: 0,
@@ -4466,8 +4621,11 @@ export const CreateEntityRes = {
     if (message.comments !== "") {
       writer.uint32(106).string(message.comments);
     }
-    if (message.approversComments !== "") {
-      writer.uint32(114).string(message.approversComments);
+    if (message.approversComments !== undefined) {
+      ApproversComments.encode(
+        message.approversComments,
+        writer.uint32(114).fork()
+      ).ldelim();
     }
     if (message.due !== 0) {
       writer.uint32(120).int64(message.due);
@@ -4568,7 +4726,10 @@ export const CreateEntityRes = {
           message.comments = reader.string();
           break;
         case 14:
-          message.approversComments = reader.string();
+          message.approversComments = ApproversComments.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 15:
           message.due = longToNumber(reader.int64() as Long);
@@ -4707,9 +4868,11 @@ export const CreateEntityRes = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = String(object.approversComments);
+      message.approversComments = ApproversComments.fromJSON(
+        object.approversComments
+      );
     } else {
-      message.approversComments = "";
+      message.approversComments = undefined;
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = Number(object.due);
@@ -4821,7 +4984,9 @@ export const CreateEntityRes = {
         : undefined);
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
-      (obj.approversComments = message.approversComments);
+      (obj.approversComments = message.approversComments
+        ? ApproversComments.toJSON(message.approversComments)
+        : undefined);
     message.due !== undefined && (obj.due = message.due);
     message.id !== undefined && (obj.id = message.id);
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
@@ -4941,9 +5106,11 @@ export const CreateEntityRes = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = object.approversComments;
+      message.approversComments = ApproversComments.fromPartial(
+        object.approversComments
+      );
     } else {
-      message.approversComments = "";
+      message.approversComments = undefined;
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = object.due;
@@ -5379,7 +5546,6 @@ export const CreateNewApproverReq = {
 const baseCreateNewApproverRes: object = {
   status: 0,
   comments: "",
-  approversComments: "",
   due: 0,
   id: "",
   createdAt: 0,
@@ -5437,8 +5603,11 @@ export const CreateNewApproverRes = {
     if (message.comments !== "") {
       writer.uint32(82).string(message.comments);
     }
-    if (message.approversComments !== "") {
-      writer.uint32(90).string(message.approversComments);
+    if (message.approversComments !== undefined) {
+      ApproversComments.encode(
+        message.approversComments,
+        writer.uint32(90).fork()
+      ).ldelim();
     }
     if (message.due !== 0) {
       writer.uint32(96).int64(message.due);
@@ -5527,7 +5696,10 @@ export const CreateNewApproverRes = {
           message.comments = reader.string();
           break;
         case 11:
-          message.approversComments = reader.string();
+          message.approversComments = ApproversComments.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 12:
           message.due = longToNumber(reader.int64() as Long);
@@ -5646,9 +5818,11 @@ export const CreateNewApproverRes = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = String(object.approversComments);
+      message.approversComments = ApproversComments.fromJSON(
+        object.approversComments
+      );
     } else {
-      message.approversComments = "";
+      message.approversComments = undefined;
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = Number(object.due);
@@ -5748,7 +5922,9 @@ export const CreateNewApproverRes = {
         : undefined);
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
-      (obj.approversComments = message.approversComments);
+      (obj.approversComments = message.approversComments
+        ? ApproversComments.toJSON(message.approversComments)
+        : undefined);
     message.due !== undefined && (obj.due = message.due);
     message.id !== undefined && (obj.id = message.id);
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
@@ -5848,9 +6024,11 @@ export const CreateNewApproverRes = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = object.approversComments;
+      message.approversComments = ApproversComments.fromPartial(
+        object.approversComments
+      );
     } else {
-      message.approversComments = "";
+      message.approversComments = undefined;
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = object.due;
@@ -5967,7 +6145,10 @@ export const RenameOGReq = {
       writer.uint32(106).string(message.comments);
     }
     if (message.approversComments !== undefined) {
-      writer.uint32(114).string(message.approversComments);
+      ApproversComments.encode(
+        message.approversComments,
+        writer.uint32(114).fork()
+      ).ldelim();
     }
     if (message.due !== undefined) {
       writer.uint32(120).int64(message.due);
@@ -6044,7 +6225,10 @@ export const RenameOGReq = {
           message.comments = reader.string();
           break;
         case 14:
-          message.approversComments = reader.string();
+          message.approversComments = ApproversComments.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 15:
           message.due = longToNumber(reader.int64() as Long);
@@ -6162,7 +6346,9 @@ export const RenameOGReq = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = String(object.approversComments);
+      message.approversComments = ApproversComments.fromJSON(
+        object.approversComments
+      );
     } else {
       message.approversComments = undefined;
     }
@@ -6236,7 +6422,9 @@ export const RenameOGReq = {
         : undefined);
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
-      (obj.approversComments = message.approversComments);
+      (obj.approversComments = message.approversComments
+        ? ApproversComments.toJSON(message.approversComments)
+        : undefined);
     message.due !== undefined && (obj.due = message.due);
     return obj;
   },
@@ -6346,7 +6534,9 @@ export const RenameOGReq = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = object.approversComments;
+      message.approversComments = ApproversComments.fromPartial(
+        object.approversComments
+      );
     } else {
       message.approversComments = undefined;
     }
@@ -6362,7 +6552,6 @@ export const RenameOGReq = {
 const baseRenameOGRes: object = {
   status: 0,
   comments: "",
-  approversComments: "",
   due: 0,
   id: "",
   createdAt: 0,
@@ -6435,8 +6624,11 @@ export const RenameOGRes = {
     if (message.comments !== "") {
       writer.uint32(106).string(message.comments);
     }
-    if (message.approversComments !== "") {
-      writer.uint32(114).string(message.approversComments);
+    if (message.approversComments !== undefined) {
+      ApproversComments.encode(
+        message.approversComments,
+        writer.uint32(114).fork()
+      ).ldelim();
     }
     if (message.due !== 0) {
       writer.uint32(120).int64(message.due);
@@ -6534,7 +6726,10 @@ export const RenameOGRes = {
           message.comments = reader.string();
           break;
         case 14:
-          message.approversComments = reader.string();
+          message.approversComments = ApproversComments.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 15:
           message.due = longToNumber(reader.int64() as Long);
@@ -6673,9 +6868,11 @@ export const RenameOGRes = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = String(object.approversComments);
+      message.approversComments = ApproversComments.fromJSON(
+        object.approversComments
+      );
     } else {
-      message.approversComments = "";
+      message.approversComments = undefined;
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = Number(object.due);
@@ -6787,7 +6984,9 @@ export const RenameOGRes = {
         : undefined);
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
-      (obj.approversComments = message.approversComments);
+      (obj.approversComments = message.approversComments
+        ? ApproversComments.toJSON(message.approversComments)
+        : undefined);
     message.due !== undefined && (obj.due = message.due);
     message.id !== undefined && (obj.id = message.id);
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
@@ -6907,9 +7106,11 @@ export const RenameOGRes = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = object.approversComments;
+      message.approversComments = ApproversComments.fromPartial(
+        object.approversComments
+      );
     } else {
-      message.approversComments = "";
+      message.approversComments = undefined;
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = object.due;
@@ -7026,7 +7227,10 @@ export const RenameRoleReq = {
       writer.uint32(106).string(message.comments);
     }
     if (message.approversComments !== undefined) {
-      writer.uint32(114).string(message.approversComments);
+      ApproversComments.encode(
+        message.approversComments,
+        writer.uint32(114).fork()
+      ).ldelim();
     }
     if (message.due !== undefined) {
       writer.uint32(120).int64(message.due);
@@ -7103,7 +7307,10 @@ export const RenameRoleReq = {
           message.comments = reader.string();
           break;
         case 14:
-          message.approversComments = reader.string();
+          message.approversComments = ApproversComments.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 15:
           message.due = longToNumber(reader.int64() as Long);
@@ -7221,7 +7428,9 @@ export const RenameRoleReq = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = String(object.approversComments);
+      message.approversComments = ApproversComments.fromJSON(
+        object.approversComments
+      );
     } else {
       message.approversComments = undefined;
     }
@@ -7295,7 +7504,9 @@ export const RenameRoleReq = {
         : undefined);
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
-      (obj.approversComments = message.approversComments);
+      (obj.approversComments = message.approversComments
+        ? ApproversComments.toJSON(message.approversComments)
+        : undefined);
     message.due !== undefined && (obj.due = message.due);
     return obj;
   },
@@ -7405,7 +7616,9 @@ export const RenameRoleReq = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = object.approversComments;
+      message.approversComments = ApproversComments.fromPartial(
+        object.approversComments
+      );
     } else {
       message.approversComments = undefined;
     }
@@ -7421,7 +7634,6 @@ export const RenameRoleReq = {
 const baseRenameRoleRes: object = {
   status: 0,
   comments: "",
-  approversComments: "",
   due: 0,
   id: "",
   createdAt: 0,
@@ -7494,8 +7706,11 @@ export const RenameRoleRes = {
     if (message.comments !== "") {
       writer.uint32(106).string(message.comments);
     }
-    if (message.approversComments !== "") {
-      writer.uint32(114).string(message.approversComments);
+    if (message.approversComments !== undefined) {
+      ApproversComments.encode(
+        message.approversComments,
+        writer.uint32(114).fork()
+      ).ldelim();
     }
     if (message.due !== 0) {
       writer.uint32(120).int64(message.due);
@@ -7593,7 +7808,10 @@ export const RenameRoleRes = {
           message.comments = reader.string();
           break;
         case 14:
-          message.approversComments = reader.string();
+          message.approversComments = ApproversComments.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 15:
           message.due = longToNumber(reader.int64() as Long);
@@ -7732,9 +7950,11 @@ export const RenameRoleRes = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = String(object.approversComments);
+      message.approversComments = ApproversComments.fromJSON(
+        object.approversComments
+      );
     } else {
-      message.approversComments = "";
+      message.approversComments = undefined;
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = Number(object.due);
@@ -7846,7 +8066,9 @@ export const RenameRoleRes = {
         : undefined);
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
-      (obj.approversComments = message.approversComments);
+      (obj.approversComments = message.approversComments
+        ? ApproversComments.toJSON(message.approversComments)
+        : undefined);
     message.due !== undefined && (obj.due = message.due);
     message.id !== undefined && (obj.id = message.id);
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
@@ -7966,9 +8188,11 @@ export const RenameRoleRes = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = object.approversComments;
+      message.approversComments = ApproversComments.fromPartial(
+        object.approversComments
+      );
     } else {
-      message.approversComments = "";
+      message.approversComments = undefined;
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = object.due;
@@ -8085,7 +8309,10 @@ export const EditEntityReq = {
       writer.uint32(106).string(message.comments);
     }
     if (message.approversComments !== undefined) {
-      writer.uint32(114).string(message.approversComments);
+      ApproversComments.encode(
+        message.approversComments,
+        writer.uint32(114).fork()
+      ).ldelim();
     }
     if (message.due !== undefined) {
       writer.uint32(120).int64(message.due);
@@ -8162,7 +8389,10 @@ export const EditEntityReq = {
           message.comments = reader.string();
           break;
         case 14:
-          message.approversComments = reader.string();
+          message.approversComments = ApproversComments.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 15:
           message.due = longToNumber(reader.int64() as Long);
@@ -8280,7 +8510,9 @@ export const EditEntityReq = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = String(object.approversComments);
+      message.approversComments = ApproversComments.fromJSON(
+        object.approversComments
+      );
     } else {
       message.approversComments = undefined;
     }
@@ -8354,7 +8586,9 @@ export const EditEntityReq = {
         : undefined);
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
-      (obj.approversComments = message.approversComments);
+      (obj.approversComments = message.approversComments
+        ? ApproversComments.toJSON(message.approversComments)
+        : undefined);
     message.due !== undefined && (obj.due = message.due);
     return obj;
   },
@@ -8464,7 +8698,9 @@ export const EditEntityReq = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = object.approversComments;
+      message.approversComments = ApproversComments.fromPartial(
+        object.approversComments
+      );
     } else {
       message.approversComments = undefined;
     }
@@ -8480,7 +8716,6 @@ export const EditEntityReq = {
 const baseEditEntityRes: object = {
   status: 0,
   comments: "",
-  approversComments: "",
   due: 0,
   id: "",
   createdAt: 0,
@@ -8553,8 +8788,11 @@ export const EditEntityRes = {
     if (message.comments !== "") {
       writer.uint32(106).string(message.comments);
     }
-    if (message.approversComments !== "") {
-      writer.uint32(114).string(message.approversComments);
+    if (message.approversComments !== undefined) {
+      ApproversComments.encode(
+        message.approversComments,
+        writer.uint32(114).fork()
+      ).ldelim();
     }
     if (message.due !== 0) {
       writer.uint32(120).int64(message.due);
@@ -8652,7 +8890,10 @@ export const EditEntityRes = {
           message.comments = reader.string();
           break;
         case 14:
-          message.approversComments = reader.string();
+          message.approversComments = ApproversComments.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 15:
           message.due = longToNumber(reader.int64() as Long);
@@ -8791,9 +9032,11 @@ export const EditEntityRes = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = String(object.approversComments);
+      message.approversComments = ApproversComments.fromJSON(
+        object.approversComments
+      );
     } else {
-      message.approversComments = "";
+      message.approversComments = undefined;
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = Number(object.due);
@@ -8905,7 +9148,9 @@ export const EditEntityRes = {
         : undefined);
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
-      (obj.approversComments = message.approversComments);
+      (obj.approversComments = message.approversComments
+        ? ApproversComments.toJSON(message.approversComments)
+        : undefined);
     message.due !== undefined && (obj.due = message.due);
     message.id !== undefined && (obj.id = message.id);
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
@@ -9025,9 +9270,11 @@ export const EditEntityRes = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = object.approversComments;
+      message.approversComments = ApproversComments.fromPartial(
+        object.approversComments
+      );
     } else {
-      message.approversComments = "";
+      message.approversComments = undefined;
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = object.due;
@@ -9144,7 +9391,10 @@ export const DeleteOGReq = {
       writer.uint32(106).string(message.comments);
     }
     if (message.approversComments !== undefined) {
-      writer.uint32(114).string(message.approversComments);
+      ApproversComments.encode(
+        message.approversComments,
+        writer.uint32(114).fork()
+      ).ldelim();
     }
     if (message.due !== undefined) {
       writer.uint32(120).int64(message.due);
@@ -9221,7 +9471,10 @@ export const DeleteOGReq = {
           message.comments = reader.string();
           break;
         case 14:
-          message.approversComments = reader.string();
+          message.approversComments = ApproversComments.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 15:
           message.due = longToNumber(reader.int64() as Long);
@@ -9339,7 +9592,9 @@ export const DeleteOGReq = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = String(object.approversComments);
+      message.approversComments = ApproversComments.fromJSON(
+        object.approversComments
+      );
     } else {
       message.approversComments = undefined;
     }
@@ -9413,7 +9668,9 @@ export const DeleteOGReq = {
         : undefined);
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
-      (obj.approversComments = message.approversComments);
+      (obj.approversComments = message.approversComments
+        ? ApproversComments.toJSON(message.approversComments)
+        : undefined);
     message.due !== undefined && (obj.due = message.due);
     return obj;
   },
@@ -9523,7 +9780,9 @@ export const DeleteOGReq = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = object.approversComments;
+      message.approversComments = ApproversComments.fromPartial(
+        object.approversComments
+      );
     } else {
       message.approversComments = undefined;
     }
@@ -9539,7 +9798,6 @@ export const DeleteOGReq = {
 const baseDeleteOGRes: object = {
   status: 0,
   comments: "",
-  approversComments: "",
   due: 0,
   id: "",
   createdAt: 0,
@@ -9612,8 +9870,11 @@ export const DeleteOGRes = {
     if (message.comments !== "") {
       writer.uint32(106).string(message.comments);
     }
-    if (message.approversComments !== "") {
-      writer.uint32(114).string(message.approversComments);
+    if (message.approversComments !== undefined) {
+      ApproversComments.encode(
+        message.approversComments,
+        writer.uint32(114).fork()
+      ).ldelim();
     }
     if (message.due !== 0) {
       writer.uint32(120).int64(message.due);
@@ -9711,7 +9972,10 @@ export const DeleteOGRes = {
           message.comments = reader.string();
           break;
         case 14:
-          message.approversComments = reader.string();
+          message.approversComments = ApproversComments.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 15:
           message.due = longToNumber(reader.int64() as Long);
@@ -9850,9 +10114,11 @@ export const DeleteOGRes = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = String(object.approversComments);
+      message.approversComments = ApproversComments.fromJSON(
+        object.approversComments
+      );
     } else {
-      message.approversComments = "";
+      message.approversComments = undefined;
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = Number(object.due);
@@ -9964,7 +10230,9 @@ export const DeleteOGRes = {
         : undefined);
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
-      (obj.approversComments = message.approversComments);
+      (obj.approversComments = message.approversComments
+        ? ApproversComments.toJSON(message.approversComments)
+        : undefined);
     message.due !== undefined && (obj.due = message.due);
     message.id !== undefined && (obj.id = message.id);
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
@@ -10084,9 +10352,11 @@ export const DeleteOGRes = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = object.approversComments;
+      message.approversComments = ApproversComments.fromPartial(
+        object.approversComments
+      );
     } else {
-      message.approversComments = "";
+      message.approversComments = undefined;
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = object.due;
@@ -10203,7 +10473,10 @@ export const DeleteRoleReq = {
       writer.uint32(106).string(message.comments);
     }
     if (message.approversComments !== undefined) {
-      writer.uint32(114).string(message.approversComments);
+      ApproversComments.encode(
+        message.approversComments,
+        writer.uint32(114).fork()
+      ).ldelim();
     }
     if (message.due !== undefined) {
       writer.uint32(120).int64(message.due);
@@ -10280,7 +10553,10 @@ export const DeleteRoleReq = {
           message.comments = reader.string();
           break;
         case 14:
-          message.approversComments = reader.string();
+          message.approversComments = ApproversComments.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 15:
           message.due = longToNumber(reader.int64() as Long);
@@ -10398,7 +10674,9 @@ export const DeleteRoleReq = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = String(object.approversComments);
+      message.approversComments = ApproversComments.fromJSON(
+        object.approversComments
+      );
     } else {
       message.approversComments = undefined;
     }
@@ -10472,7 +10750,9 @@ export const DeleteRoleReq = {
         : undefined);
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
-      (obj.approversComments = message.approversComments);
+      (obj.approversComments = message.approversComments
+        ? ApproversComments.toJSON(message.approversComments)
+        : undefined);
     message.due !== undefined && (obj.due = message.due);
     return obj;
   },
@@ -10582,7 +10862,9 @@ export const DeleteRoleReq = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = object.approversComments;
+      message.approversComments = ApproversComments.fromPartial(
+        object.approversComments
+      );
     } else {
       message.approversComments = undefined;
     }
@@ -10598,7 +10880,6 @@ export const DeleteRoleReq = {
 const baseDeleteRoleRes: object = {
   status: 0,
   comments: "",
-  approversComments: "",
   due: 0,
   id: "",
   createdAt: 0,
@@ -10671,8 +10952,11 @@ export const DeleteRoleRes = {
     if (message.comments !== "") {
       writer.uint32(106).string(message.comments);
     }
-    if (message.approversComments !== "") {
-      writer.uint32(114).string(message.approversComments);
+    if (message.approversComments !== undefined) {
+      ApproversComments.encode(
+        message.approversComments,
+        writer.uint32(114).fork()
+      ).ldelim();
     }
     if (message.due !== 0) {
       writer.uint32(120).int64(message.due);
@@ -10770,7 +11054,10 @@ export const DeleteRoleRes = {
           message.comments = reader.string();
           break;
         case 14:
-          message.approversComments = reader.string();
+          message.approversComments = ApproversComments.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 15:
           message.due = longToNumber(reader.int64() as Long);
@@ -10909,9 +11196,11 @@ export const DeleteRoleRes = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = String(object.approversComments);
+      message.approversComments = ApproversComments.fromJSON(
+        object.approversComments
+      );
     } else {
-      message.approversComments = "";
+      message.approversComments = undefined;
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = Number(object.due);
@@ -11023,7 +11312,9 @@ export const DeleteRoleRes = {
         : undefined);
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
-      (obj.approversComments = message.approversComments);
+      (obj.approversComments = message.approversComments
+        ? ApproversComments.toJSON(message.approversComments)
+        : undefined);
     message.due !== undefined && (obj.due = message.due);
     message.id !== undefined && (obj.id = message.id);
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
@@ -11143,9 +11434,11 @@ export const DeleteRoleRes = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = object.approversComments;
+      message.approversComments = ApproversComments.fromPartial(
+        object.approversComments
+      );
     } else {
-      message.approversComments = "";
+      message.approversComments = undefined;
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = object.due;
@@ -11262,7 +11555,10 @@ export const DeleteEntityReq = {
       writer.uint32(106).string(message.comments);
     }
     if (message.approversComments !== undefined) {
-      writer.uint32(114).string(message.approversComments);
+      ApproversComments.encode(
+        message.approversComments,
+        writer.uint32(114).fork()
+      ).ldelim();
     }
     if (message.due !== undefined) {
       writer.uint32(120).int64(message.due);
@@ -11342,7 +11638,10 @@ export const DeleteEntityReq = {
           message.comments = reader.string();
           break;
         case 14:
-          message.approversComments = reader.string();
+          message.approversComments = ApproversComments.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 15:
           message.due = longToNumber(reader.int64() as Long);
@@ -11460,7 +11759,9 @@ export const DeleteEntityReq = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = String(object.approversComments);
+      message.approversComments = ApproversComments.fromJSON(
+        object.approversComments
+      );
     } else {
       message.approversComments = undefined;
     }
@@ -11534,7 +11835,9 @@ export const DeleteEntityReq = {
         : undefined);
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
-      (obj.approversComments = message.approversComments);
+      (obj.approversComments = message.approversComments
+        ? ApproversComments.toJSON(message.approversComments)
+        : undefined);
     message.due !== undefined && (obj.due = message.due);
     return obj;
   },
@@ -11644,7 +11947,9 @@ export const DeleteEntityReq = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = object.approversComments;
+      message.approversComments = ApproversComments.fromPartial(
+        object.approversComments
+      );
     } else {
       message.approversComments = undefined;
     }
@@ -11660,7 +11965,6 @@ export const DeleteEntityReq = {
 const baseDeleteEntityRes: object = {
   status: 0,
   comments: "",
-  approversComments: "",
   due: 0,
   id: "",
   createdAt: 0,
@@ -11733,8 +12037,11 @@ export const DeleteEntityRes = {
     if (message.comments !== "") {
       writer.uint32(106).string(message.comments);
     }
-    if (message.approversComments !== "") {
-      writer.uint32(114).string(message.approversComments);
+    if (message.approversComments !== undefined) {
+      ApproversComments.encode(
+        message.approversComments,
+        writer.uint32(114).fork()
+      ).ldelim();
     }
     if (message.due !== 0) {
       writer.uint32(120).int64(message.due);
@@ -11835,7 +12142,10 @@ export const DeleteEntityRes = {
           message.comments = reader.string();
           break;
         case 14:
-          message.approversComments = reader.string();
+          message.approversComments = ApproversComments.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 15:
           message.due = longToNumber(reader.int64() as Long);
@@ -11974,9 +12284,11 @@ export const DeleteEntityRes = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = String(object.approversComments);
+      message.approversComments = ApproversComments.fromJSON(
+        object.approversComments
+      );
     } else {
-      message.approversComments = "";
+      message.approversComments = undefined;
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = Number(object.due);
@@ -12088,7 +12400,9 @@ export const DeleteEntityRes = {
         : undefined);
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
-      (obj.approversComments = message.approversComments);
+      (obj.approversComments = message.approversComments
+        ? ApproversComments.toJSON(message.approversComments)
+        : undefined);
     message.due !== undefined && (obj.due = message.due);
     message.id !== undefined && (obj.id = message.id);
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
@@ -12208,9 +12522,11 @@ export const DeleteEntityRes = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = object.approversComments;
+      message.approversComments = ApproversComments.fromPartial(
+        object.approversComments
+      );
     } else {
-      message.approversComments = "";
+      message.approversComments = undefined;
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = object.due;
@@ -12327,7 +12643,10 @@ export const AssignRoleToEntityReq = {
       writer.uint32(106).string(message.comments);
     }
     if (message.approversComments !== undefined) {
-      writer.uint32(114).string(message.approversComments);
+      ApproversComments.encode(
+        message.approversComments,
+        writer.uint32(114).fork()
+      ).ldelim();
     }
     if (message.due !== undefined) {
       writer.uint32(120).int64(message.due);
@@ -12410,7 +12729,10 @@ export const AssignRoleToEntityReq = {
           message.comments = reader.string();
           break;
         case 14:
-          message.approversComments = reader.string();
+          message.approversComments = ApproversComments.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 15:
           message.due = longToNumber(reader.int64() as Long);
@@ -12528,7 +12850,9 @@ export const AssignRoleToEntityReq = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = String(object.approversComments);
+      message.approversComments = ApproversComments.fromJSON(
+        object.approversComments
+      );
     } else {
       message.approversComments = undefined;
     }
@@ -12602,7 +12926,9 @@ export const AssignRoleToEntityReq = {
         : undefined);
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
-      (obj.approversComments = message.approversComments);
+      (obj.approversComments = message.approversComments
+        ? ApproversComments.toJSON(message.approversComments)
+        : undefined);
     message.due !== undefined && (obj.due = message.due);
     return obj;
   },
@@ -12716,7 +13042,9 @@ export const AssignRoleToEntityReq = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = object.approversComments;
+      message.approversComments = ApproversComments.fromPartial(
+        object.approversComments
+      );
     } else {
       message.approversComments = undefined;
     }
@@ -12732,7 +13060,6 @@ export const AssignRoleToEntityReq = {
 const baseAssignRoleToEntityRes: object = {
   status: 0,
   comments: "",
-  approversComments: "",
   due: 0,
   id: "",
   createdAt: 0,
@@ -12805,8 +13132,11 @@ export const AssignRoleToEntityRes = {
     if (message.comments !== "") {
       writer.uint32(106).string(message.comments);
     }
-    if (message.approversComments !== "") {
-      writer.uint32(114).string(message.approversComments);
+    if (message.approversComments !== undefined) {
+      ApproversComments.encode(
+        message.approversComments,
+        writer.uint32(114).fork()
+      ).ldelim();
     }
     if (message.due !== 0) {
       writer.uint32(120).int64(message.due);
@@ -12910,7 +13240,10 @@ export const AssignRoleToEntityRes = {
           message.comments = reader.string();
           break;
         case 14:
-          message.approversComments = reader.string();
+          message.approversComments = ApproversComments.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 15:
           message.due = longToNumber(reader.int64() as Long);
@@ -13049,9 +13382,11 @@ export const AssignRoleToEntityRes = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = String(object.approversComments);
+      message.approversComments = ApproversComments.fromJSON(
+        object.approversComments
+      );
     } else {
-      message.approversComments = "";
+      message.approversComments = undefined;
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = Number(object.due);
@@ -13163,7 +13498,9 @@ export const AssignRoleToEntityRes = {
         : undefined);
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
-      (obj.approversComments = message.approversComments);
+      (obj.approversComments = message.approversComments
+        ? ApproversComments.toJSON(message.approversComments)
+        : undefined);
     message.due !== undefined && (obj.due = message.due);
     message.id !== undefined && (obj.id = message.id);
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
@@ -13287,9 +13624,11 @@ export const AssignRoleToEntityRes = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = object.approversComments;
+      message.approversComments = ApproversComments.fromPartial(
+        object.approversComments
+      );
     } else {
-      message.approversComments = "";
+      message.approversComments = undefined;
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = object.due;
@@ -13406,7 +13745,10 @@ export const DisconectRoleFromEntityReq = {
       writer.uint32(106).string(message.comments);
     }
     if (message.approversComments !== undefined) {
-      writer.uint32(114).string(message.approversComments);
+      ApproversComments.encode(
+        message.approversComments,
+        writer.uint32(114).fork()
+      ).ldelim();
     }
     if (message.due !== undefined) {
       writer.uint32(120).int64(message.due);
@@ -13492,7 +13834,10 @@ export const DisconectRoleFromEntityReq = {
           message.comments = reader.string();
           break;
         case 14:
-          message.approversComments = reader.string();
+          message.approversComments = ApproversComments.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 15:
           message.due = longToNumber(reader.int64() as Long);
@@ -13614,7 +13959,9 @@ export const DisconectRoleFromEntityReq = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = String(object.approversComments);
+      message.approversComments = ApproversComments.fromJSON(
+        object.approversComments
+      );
     } else {
       message.approversComments = undefined;
     }
@@ -13688,7 +14035,9 @@ export const DisconectRoleFromEntityReq = {
         : undefined);
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
-      (obj.approversComments = message.approversComments);
+      (obj.approversComments = message.approversComments
+        ? ApproversComments.toJSON(message.approversComments)
+        : undefined);
     message.due !== undefined && (obj.due = message.due);
     return obj;
   },
@@ -13805,7 +14154,9 @@ export const DisconectRoleFromEntityReq = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = object.approversComments;
+      message.approversComments = ApproversComments.fromPartial(
+        object.approversComments
+      );
     } else {
       message.approversComments = undefined;
     }
@@ -13821,7 +14172,6 @@ export const DisconectRoleFromEntityReq = {
 const baseDisconectRoleFromEntityRes: object = {
   status: 0,
   comments: "",
-  approversComments: "",
   due: 0,
   id: "",
   createdAt: 0,
@@ -13894,8 +14244,11 @@ export const DisconectRoleFromEntityRes = {
     if (message.comments !== "") {
       writer.uint32(106).string(message.comments);
     }
-    if (message.approversComments !== "") {
-      writer.uint32(114).string(message.approversComments);
+    if (message.approversComments !== undefined) {
+      ApproversComments.encode(
+        message.approversComments,
+        writer.uint32(114).fork()
+      ).ldelim();
     }
     if (message.due !== 0) {
       writer.uint32(120).int64(message.due);
@@ -14002,7 +14355,10 @@ export const DisconectRoleFromEntityRes = {
           message.comments = reader.string();
           break;
         case 14:
-          message.approversComments = reader.string();
+          message.approversComments = ApproversComments.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 15:
           message.due = longToNumber(reader.int64() as Long);
@@ -14145,9 +14501,11 @@ export const DisconectRoleFromEntityRes = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = String(object.approversComments);
+      message.approversComments = ApproversComments.fromJSON(
+        object.approversComments
+      );
     } else {
-      message.approversComments = "";
+      message.approversComments = undefined;
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = Number(object.due);
@@ -14259,7 +14617,9 @@ export const DisconectRoleFromEntityRes = {
         : undefined);
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
-      (obj.approversComments = message.approversComments);
+      (obj.approversComments = message.approversComments
+        ? ApproversComments.toJSON(message.approversComments)
+        : undefined);
     message.due !== undefined && (obj.due = message.due);
     message.id !== undefined && (obj.id = message.id);
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
@@ -14386,9 +14746,11 @@ export const DisconectRoleFromEntityRes = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = object.approversComments;
+      message.approversComments = ApproversComments.fromPartial(
+        object.approversComments
+      );
     } else {
-      message.approversComments = "";
+      message.approversComments = undefined;
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = object.due;
@@ -14508,7 +14870,10 @@ export const ChangeRoleHierarchyReq = {
       writer.uint32(106).string(message.comments);
     }
     if (message.approversComments !== undefined) {
-      writer.uint32(114).string(message.approversComments);
+      ApproversComments.encode(
+        message.approversComments,
+        writer.uint32(114).fork()
+      ).ldelim();
     }
     if (message.due !== undefined) {
       writer.uint32(120).int64(message.due);
@@ -14600,7 +14965,10 @@ export const ChangeRoleHierarchyReq = {
           message.comments = reader.string();
           break;
         case 14:
-          message.approversComments = reader.string();
+          message.approversComments = ApproversComments.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 15:
           message.due = longToNumber(reader.int64() as Long);
@@ -14727,7 +15095,9 @@ export const ChangeRoleHierarchyReq = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = String(object.approversComments);
+      message.approversComments = ApproversComments.fromJSON(
+        object.approversComments
+      );
     } else {
       message.approversComments = undefined;
     }
@@ -14816,7 +15186,9 @@ export const ChangeRoleHierarchyReq = {
         : undefined);
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
-      (obj.approversComments = message.approversComments);
+      (obj.approversComments = message.approversComments
+        ? ApproversComments.toJSON(message.approversComments)
+        : undefined);
     message.due !== undefined && (obj.due = message.due);
     message.isPartOfBulk !== undefined &&
       (obj.isPartOfBulk = message.isPartOfBulk);
@@ -14935,7 +15307,9 @@ export const ChangeRoleHierarchyReq = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = object.approversComments;
+      message.approversComments = ApproversComments.fromPartial(
+        object.approversComments
+      );
     } else {
       message.approversComments = undefined;
     }
@@ -14966,7 +15340,6 @@ export const ChangeRoleHierarchyReq = {
 const baseChangeRoleHierarchyRes: object = {
   status: 0,
   comments: "",
-  approversComments: "",
   due: 0,
   isPartOfBulk: false,
   bulkRequestId: "",
@@ -15041,8 +15414,11 @@ export const ChangeRoleHierarchyRes = {
     if (message.comments !== "") {
       writer.uint32(106).string(message.comments);
     }
-    if (message.approversComments !== "") {
-      writer.uint32(114).string(message.approversComments);
+    if (message.approversComments !== undefined) {
+      ApproversComments.encode(
+        message.approversComments,
+        writer.uint32(114).fork()
+      ).ldelim();
     }
     if (message.due !== 0) {
       writer.uint32(120).int64(message.due);
@@ -15155,7 +15531,10 @@ export const ChangeRoleHierarchyRes = {
           message.comments = reader.string();
           break;
         case 14:
-          message.approversComments = reader.string();
+          message.approversComments = ApproversComments.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 15:
           message.due = longToNumber(reader.int64() as Long);
@@ -15303,9 +15682,11 @@ export const ChangeRoleHierarchyRes = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = String(object.approversComments);
+      message.approversComments = ApproversComments.fromJSON(
+        object.approversComments
+      );
     } else {
-      message.approversComments = "";
+      message.approversComments = undefined;
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = Number(object.due);
@@ -15432,7 +15813,9 @@ export const ChangeRoleHierarchyRes = {
         : undefined);
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
-      (obj.approversComments = message.approversComments);
+      (obj.approversComments = message.approversComments
+        ? ApproversComments.toJSON(message.approversComments)
+        : undefined);
     message.due !== undefined && (obj.due = message.due);
     message.isPartOfBulk !== undefined &&
       (obj.isPartOfBulk = message.isPartOfBulk);
@@ -15561,9 +15944,11 @@ export const ChangeRoleHierarchyRes = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = object.approversComments;
+      message.approversComments = ApproversComments.fromPartial(
+        object.approversComments
+      );
     } else {
-      message.approversComments = "";
+      message.approversComments = undefined;
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = object.due;
@@ -15674,7 +16059,10 @@ export const CreateRoleBulkReq = {
       writer.uint32(74).string(message.comments);
     }
     if (message.approversComments !== undefined) {
-      writer.uint32(82).string(message.approversComments);
+      ApproversComments.encode(
+        message.approversComments,
+        writer.uint32(82).fork()
+      ).ldelim();
     }
     if (message.due !== undefined) {
       writer.uint32(88).int64(message.due);
@@ -15756,7 +16144,10 @@ export const CreateRoleBulkReq = {
           message.comments = reader.string();
           break;
         case 10:
-          message.approversComments = reader.string();
+          message.approversComments = ApproversComments.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 11:
           message.due = longToNumber(reader.int64() as Long);
@@ -15867,7 +16258,9 @@ export const CreateRoleBulkReq = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = String(object.approversComments);
+      message.approversComments = ApproversComments.fromJSON(
+        object.approversComments
+      );
     } else {
       message.approversComments = undefined;
     }
@@ -15955,7 +16348,9 @@ export const CreateRoleBulkReq = {
     }
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
-      (obj.approversComments = message.approversComments);
+      (obj.approversComments = message.approversComments
+        ? ApproversComments.toJSON(message.approversComments)
+        : undefined);
     message.due !== undefined && (obj.due = message.due);
     if (message.requestIds) {
       obj.requestIds = message.requestIds.map((e) => e);
@@ -16059,7 +16454,9 @@ export const CreateRoleBulkReq = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = object.approversComments;
+      message.approversComments = ApproversComments.fromPartial(
+        object.approversComments
+      );
     } else {
       message.approversComments = undefined;
     }
@@ -16156,7 +16553,10 @@ export const CreateRoleBulkRes = {
       writer.uint32(74).string(message.comments);
     }
     if (message.approversComments !== undefined) {
-      writer.uint32(82).string(message.approversComments);
+      ApproversComments.encode(
+        message.approversComments,
+        writer.uint32(82).fork()
+      ).ldelim();
     }
     if (message.due !== undefined) {
       writer.uint32(88).int64(message.due);
@@ -16259,7 +16659,10 @@ export const CreateRoleBulkRes = {
           message.comments = reader.string();
           break;
         case 10:
-          message.approversComments = reader.string();
+          message.approversComments = ApproversComments.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 11:
           message.due = longToNumber(reader.int64() as Long);
@@ -16391,7 +16794,9 @@ export const CreateRoleBulkRes = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = String(object.approversComments);
+      message.approversComments = ApproversComments.fromJSON(
+        object.approversComments
+      );
     } else {
       message.approversComments = undefined;
     }
@@ -16522,7 +16927,9 @@ export const CreateRoleBulkRes = {
     }
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
-      (obj.approversComments = message.approversComments);
+      (obj.approversComments = message.approversComments
+        ? ApproversComments.toJSON(message.approversComments)
+        : undefined);
     message.due !== undefined && (obj.due = message.due);
     if (message.requestIds) {
       obj.requestIds = message.requestIds.map((e) => e);
@@ -16636,7 +17043,9 @@ export const CreateRoleBulkRes = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = object.approversComments;
+      message.approversComments = ApproversComments.fromPartial(
+        object.approversComments
+      );
     } else {
       message.approversComments = undefined;
     }
@@ -16918,7 +17327,10 @@ export const ChangeRoleHierarchyBulkReq = {
       writer.uint32(74).string(message.comments);
     }
     if (message.approversComments !== undefined) {
-      writer.uint32(82).string(message.approversComments);
+      ApproversComments.encode(
+        message.approversComments,
+        writer.uint32(82).fork()
+      ).ldelim();
     }
     if (message.due !== undefined) {
       writer.uint32(88).int64(message.due);
@@ -17001,7 +17413,10 @@ export const ChangeRoleHierarchyBulkReq = {
           message.comments = reader.string();
           break;
         case 10:
-          message.approversComments = reader.string();
+          message.approversComments = ApproversComments.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 11:
           message.due = longToNumber(reader.int64() as Long);
@@ -17111,7 +17526,9 @@ export const ChangeRoleHierarchyBulkReq = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = String(object.approversComments);
+      message.approversComments = ApproversComments.fromJSON(
+        object.approversComments
+      );
     } else {
       message.approversComments = undefined;
     }
@@ -17196,7 +17613,9 @@ export const ChangeRoleHierarchyBulkReq = {
     }
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
-      (obj.approversComments = message.approversComments);
+      (obj.approversComments = message.approversComments
+        ? ApproversComments.toJSON(message.approversComments)
+        : undefined);
     message.due !== undefined && (obj.due = message.due);
     if (message.requestIds) {
       obj.requestIds = message.requestIds.map((e) => e);
@@ -17296,7 +17715,9 @@ export const ChangeRoleHierarchyBulkReq = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = object.approversComments;
+      message.approversComments = ApproversComments.fromPartial(
+        object.approversComments
+      );
     } else {
       message.approversComments = undefined;
     }
@@ -17391,7 +17812,10 @@ export const ChangeRoleHierarchyBulkRes = {
       writer.uint32(74).string(message.comments);
     }
     if (message.approversComments !== undefined) {
-      writer.uint32(82).string(message.approversComments);
+      ApproversComments.encode(
+        message.approversComments,
+        writer.uint32(82).fork()
+      ).ldelim();
     }
     if (message.due !== undefined) {
       writer.uint32(88).int64(message.due);
@@ -17495,7 +17919,10 @@ export const ChangeRoleHierarchyBulkRes = {
           message.comments = reader.string();
           break;
         case 10:
-          message.approversComments = reader.string();
+          message.approversComments = ApproversComments.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 11:
           message.due = longToNumber(reader.int64() as Long);
@@ -17626,7 +18053,9 @@ export const ChangeRoleHierarchyBulkRes = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = String(object.approversComments);
+      message.approversComments = ApproversComments.fromJSON(
+        object.approversComments
+      );
     } else {
       message.approversComments = undefined;
     }
@@ -17754,7 +18183,9 @@ export const ChangeRoleHierarchyBulkRes = {
     }
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
-      (obj.approversComments = message.approversComments);
+      (obj.approversComments = message.approversComments
+        ? ApproversComments.toJSON(message.approversComments)
+        : undefined);
     message.due !== undefined && (obj.due = message.due);
     if (message.requestIds) {
       obj.requestIds = message.requestIds.map((e) => e);
@@ -17864,7 +18295,9 @@ export const ChangeRoleHierarchyBulkRes = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = object.approversComments;
+      message.approversComments = ApproversComments.fromPartial(
+        object.approversComments
+      );
     } else {
       message.approversComments = undefined;
     }
@@ -21130,6 +21563,142 @@ export const SyncBulkRequestReq = {
   },
 };
 
+const baseTransferRequestToApproversReq: object = { id: "", type: 0 };
+
+export const TransferRequestToApproversReq = {
+  encode(
+    message: TransferRequestToApproversReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    for (const v of message.approvers) {
+      EntityMin.encode(v!, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.type !== 0) {
+      writer.uint32(24).int32(message.type);
+    }
+    if (message.commentForApprovers !== undefined) {
+      writer.uint32(34).string(message.commentForApprovers);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): TransferRequestToApproversReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseTransferRequestToApproversReq,
+    } as TransferRequestToApproversReq;
+    message.approvers = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        case 2:
+          message.approvers.push(EntityMin.decode(reader, reader.uint32()));
+          break;
+        case 3:
+          message.type = reader.int32() as any;
+          break;
+        case 4:
+          message.commentForApprovers = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): TransferRequestToApproversReq {
+    const message = {
+      ...baseTransferRequestToApproversReq,
+    } as TransferRequestToApproversReq;
+    message.approvers = [];
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    if (object.approvers !== undefined && object.approvers !== null) {
+      for (const e of object.approvers) {
+        message.approvers.push(EntityMin.fromJSON(e));
+      }
+    }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = approverTypeFromJSON(object.type);
+    } else {
+      message.type = 0;
+    }
+    if (
+      object.commentForApprovers !== undefined &&
+      object.commentForApprovers !== null
+    ) {
+      message.commentForApprovers = String(object.commentForApprovers);
+    } else {
+      message.commentForApprovers = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: TransferRequestToApproversReq): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    if (message.approvers) {
+      obj.approvers = message.approvers.map((e) =>
+        e ? EntityMin.toJSON(e) : undefined
+      );
+    } else {
+      obj.approvers = [];
+    }
+    message.type !== undefined && (obj.type = approverTypeToJSON(message.type));
+    message.commentForApprovers !== undefined &&
+      (obj.commentForApprovers = message.commentForApprovers);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<TransferRequestToApproversReq>
+  ): TransferRequestToApproversReq {
+    const message = {
+      ...baseTransferRequestToApproversReq,
+    } as TransferRequestToApproversReq;
+    message.approvers = [];
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    if (object.approvers !== undefined && object.approvers !== null) {
+      for (const e of object.approvers) {
+        message.approvers.push(EntityMin.fromPartial(e));
+      }
+    }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = object.type;
+    } else {
+      message.type = 0;
+    }
+    if (
+      object.commentForApprovers !== undefined &&
+      object.commentForApprovers !== null
+    ) {
+      message.commentForApprovers = object.commentForApprovers;
+    } else {
+      message.commentForApprovers = undefined;
+    }
+    return message;
+  },
+};
+
 const baseUpdateReq: object = { id: "" };
 
 export const UpdateReq = {
@@ -22069,7 +22638,6 @@ export const DeleteReq = {
 const baseGetRequestsByPersonReq: object = {
   id: "",
   personType: 0,
-  personInfoType: 0,
   userType: 0,
   from: 0,
   to: 0,
@@ -22086,9 +22654,6 @@ export const GetRequestsByPersonReq = {
     if (message.personType !== 0) {
       writer.uint32(16).int32(message.personType);
     }
-    if (message.personInfoType !== 0) {
-      writer.uint32(24).int32(message.personInfoType);
-    }
     writer.uint32(34).fork();
     for (const v of message.userType) {
       writer.int32(v);
@@ -22103,14 +22668,20 @@ export const GetRequestsByPersonReq = {
     if (message.approvementStatus !== undefined) {
       writer.uint32(56).int32(message.approvementStatus);
     }
-    if (message.displayName !== undefined) {
-      writer.uint32(66).string(message.displayName);
+    if (message.searchQuery !== undefined) {
+      writer.uint32(66).string(message.searchQuery);
     }
     if (message.status !== undefined) {
       writer.uint32(72).int32(message.status);
     }
     if (message.type !== undefined) {
       writer.uint32(80).int32(message.type);
+    }
+    if (message.sortField !== undefined) {
+      writer.uint32(88).int32(message.sortField);
+    }
+    if (message.sortOrder !== undefined) {
+      writer.uint32(96).int32(message.sortOrder);
     }
     return writer;
   },
@@ -22132,9 +22703,6 @@ export const GetRequestsByPersonReq = {
         case 2:
           message.personType = reader.int32() as any;
           break;
-        case 3:
-          message.personInfoType = reader.int32() as any;
-          break;
         case 4:
           if ((tag & 7) === 2) {
             const end2 = reader.uint32() + reader.pos;
@@ -22155,13 +22723,19 @@ export const GetRequestsByPersonReq = {
           message.approvementStatus = reader.int32() as any;
           break;
         case 8:
-          message.displayName = reader.string();
+          message.searchQuery = reader.string();
           break;
         case 9:
           message.status = reader.int32() as any;
           break;
         case 10:
           message.type = reader.int32() as any;
+          break;
+        case 11:
+          message.sortField = reader.int32() as any;
+          break;
+        case 12:
+          message.sortOrder = reader.int32() as any;
           break;
         default:
           reader.skipType(tag & 7);
@@ -22183,11 +22757,6 @@ export const GetRequestsByPersonReq = {
       message.personType = personTypeInRequestFromJSON(object.personType);
     } else {
       message.personType = 0;
-    }
-    if (object.personInfoType !== undefined && object.personInfoType !== null) {
-      message.personInfoType = personInfoTypeFromJSON(object.personInfoType);
-    } else {
-      message.personInfoType = 0;
     }
     if (object.userType !== undefined && object.userType !== null) {
       for (const e of object.userType) {
@@ -22214,10 +22783,10 @@ export const GetRequestsByPersonReq = {
     } else {
       message.approvementStatus = undefined;
     }
-    if (object.displayName !== undefined && object.displayName !== null) {
-      message.displayName = String(object.displayName);
+    if (object.searchQuery !== undefined && object.searchQuery !== null) {
+      message.searchQuery = String(object.searchQuery);
     } else {
-      message.displayName = undefined;
+      message.searchQuery = undefined;
     }
     if (object.status !== undefined && object.status !== null) {
       message.status = requestStatusFromJSON(object.status);
@@ -22229,6 +22798,16 @@ export const GetRequestsByPersonReq = {
     } else {
       message.type = undefined;
     }
+    if (object.sortField !== undefined && object.sortField !== null) {
+      message.sortField = sortFieldFromJSON(object.sortField);
+    } else {
+      message.sortField = undefined;
+    }
+    if (object.sortOrder !== undefined && object.sortOrder !== null) {
+      message.sortOrder = sortOrderFromJSON(object.sortOrder);
+    } else {
+      message.sortOrder = undefined;
+    }
     return message;
   },
 
@@ -22237,8 +22816,6 @@ export const GetRequestsByPersonReq = {
     message.id !== undefined && (obj.id = message.id);
     message.personType !== undefined &&
       (obj.personType = personTypeInRequestToJSON(message.personType));
-    message.personInfoType !== undefined &&
-      (obj.personInfoType = personInfoTypeToJSON(message.personInfoType));
     if (message.userType) {
       obj.userType = message.userType.map((e) => approverTypeToJSON(e));
     } else {
@@ -22251,8 +22828,8 @@ export const GetRequestsByPersonReq = {
         message.approvementStatus !== undefined
           ? approvementStatusToJSON(message.approvementStatus)
           : undefined);
-    message.displayName !== undefined &&
-      (obj.displayName = message.displayName);
+    message.searchQuery !== undefined &&
+      (obj.searchQuery = message.searchQuery);
     message.status !== undefined &&
       (obj.status =
         message.status !== undefined
@@ -22262,6 +22839,16 @@ export const GetRequestsByPersonReq = {
       (obj.type =
         message.type !== undefined
           ? requestTypeToJSON(message.type)
+          : undefined);
+    message.sortField !== undefined &&
+      (obj.sortField =
+        message.sortField !== undefined
+          ? sortFieldToJSON(message.sortField)
+          : undefined);
+    message.sortOrder !== undefined &&
+      (obj.sortOrder =
+        message.sortOrder !== undefined
+          ? sortOrderToJSON(message.sortOrder)
           : undefined);
     return obj;
   },
@@ -22280,11 +22867,6 @@ export const GetRequestsByPersonReq = {
       message.personType = object.personType;
     } else {
       message.personType = 0;
-    }
-    if (object.personInfoType !== undefined && object.personInfoType !== null) {
-      message.personInfoType = object.personInfoType;
-    } else {
-      message.personInfoType = 0;
     }
     if (object.userType !== undefined && object.userType !== null) {
       for (const e of object.userType) {
@@ -22309,10 +22891,10 @@ export const GetRequestsByPersonReq = {
     } else {
       message.approvementStatus = undefined;
     }
-    if (object.displayName !== undefined && object.displayName !== null) {
-      message.displayName = object.displayName;
+    if (object.searchQuery !== undefined && object.searchQuery !== null) {
+      message.searchQuery = object.searchQuery;
     } else {
-      message.displayName = undefined;
+      message.searchQuery = undefined;
     }
     if (object.status !== undefined && object.status !== null) {
       message.status = object.status;
@@ -22323,6 +22905,16 @@ export const GetRequestsByPersonReq = {
       message.type = object.type;
     } else {
       message.type = undefined;
+    }
+    if (object.sortField !== undefined && object.sortField !== null) {
+      message.sortField = object.sortField;
+    } else {
+      message.sortField = undefined;
+    }
+    if (object.sortOrder !== undefined && object.sortOrder !== null) {
+      message.sortOrder = object.sortOrder;
+    } else {
+      message.sortOrder = undefined;
     }
     return message;
   },
@@ -23917,6 +24509,122 @@ export const RequestArray = {
   },
 };
 
+const baseGetRequestsByPersonRes: object = {
+  totalCount: 0,
+  waitingForApproveCount: 0,
+};
+
+export const GetRequestsByPersonRes = {
+  encode(
+    message: GetRequestsByPersonRes,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.requests) {
+      Request.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.totalCount !== 0) {
+      writer.uint32(16).int32(message.totalCount);
+    }
+    if (message.waitingForApproveCount !== 0) {
+      writer.uint32(24).int32(message.waitingForApproveCount);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GetRequestsByPersonRes {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseGetRequestsByPersonRes } as GetRequestsByPersonRes;
+    message.requests = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.requests.push(Request.decode(reader, reader.uint32()));
+          break;
+        case 2:
+          message.totalCount = reader.int32();
+          break;
+        case 3:
+          message.waitingForApproveCount = reader.int32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetRequestsByPersonRes {
+    const message = { ...baseGetRequestsByPersonRes } as GetRequestsByPersonRes;
+    message.requests = [];
+    if (object.requests !== undefined && object.requests !== null) {
+      for (const e of object.requests) {
+        message.requests.push(Request.fromJSON(e));
+      }
+    }
+    if (object.totalCount !== undefined && object.totalCount !== null) {
+      message.totalCount = Number(object.totalCount);
+    } else {
+      message.totalCount = 0;
+    }
+    if (
+      object.waitingForApproveCount !== undefined &&
+      object.waitingForApproveCount !== null
+    ) {
+      message.waitingForApproveCount = Number(object.waitingForApproveCount);
+    } else {
+      message.waitingForApproveCount = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: GetRequestsByPersonRes): unknown {
+    const obj: any = {};
+    if (message.requests) {
+      obj.requests = message.requests.map((e) =>
+        e ? Request.toJSON(e) : undefined
+      );
+    } else {
+      obj.requests = [];
+    }
+    message.totalCount !== undefined && (obj.totalCount = message.totalCount);
+    message.waitingForApproveCount !== undefined &&
+      (obj.waitingForApproveCount = message.waitingForApproveCount);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<GetRequestsByPersonRes>
+  ): GetRequestsByPersonRes {
+    const message = { ...baseGetRequestsByPersonRes } as GetRequestsByPersonRes;
+    message.requests = [];
+    if (object.requests !== undefined && object.requests !== null) {
+      for (const e of object.requests) {
+        message.requests.push(Request.fromPartial(e));
+      }
+    }
+    if (object.totalCount !== undefined && object.totalCount !== null) {
+      message.totalCount = object.totalCount;
+    } else {
+      message.totalCount = 0;
+    }
+    if (
+      object.waitingForApproveCount !== undefined &&
+      object.waitingForApproveCount !== null
+    ) {
+      message.waitingForApproveCount = object.waitingForApproveCount;
+    } else {
+      message.waitingForApproveCount = 0;
+    }
+    return message;
+  },
+};
+
 const baseRowError: object = { rowNumber: "", error: "", errorType: 0 };
 
 export const RowError = {
@@ -24005,6 +24713,123 @@ export const RowError = {
       message.errorType = object.errorType;
     } else {
       message.errorType = 0;
+    }
+    return message;
+  },
+};
+
+const baseApproversComments: object = {
+  commanderComment: "",
+  securityComment: "",
+  superSecurityComment: "",
+};
+
+export const ApproversComments = {
+  encode(
+    message: ApproversComments,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.commanderComment !== "") {
+      writer.uint32(10).string(message.commanderComment);
+    }
+    if (message.securityComment !== "") {
+      writer.uint32(18).string(message.securityComment);
+    }
+    if (message.superSecurityComment !== "") {
+      writer.uint32(26).string(message.superSecurityComment);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ApproversComments {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseApproversComments } as ApproversComments;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.commanderComment = reader.string();
+          break;
+        case 2:
+          message.securityComment = reader.string();
+          break;
+        case 3:
+          message.superSecurityComment = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ApproversComments {
+    const message = { ...baseApproversComments } as ApproversComments;
+    if (
+      object.commanderComment !== undefined &&
+      object.commanderComment !== null
+    ) {
+      message.commanderComment = String(object.commanderComment);
+    } else {
+      message.commanderComment = "";
+    }
+    if (
+      object.securityComment !== undefined &&
+      object.securityComment !== null
+    ) {
+      message.securityComment = String(object.securityComment);
+    } else {
+      message.securityComment = "";
+    }
+    if (
+      object.superSecurityComment !== undefined &&
+      object.superSecurityComment !== null
+    ) {
+      message.superSecurityComment = String(object.superSecurityComment);
+    } else {
+      message.superSecurityComment = "";
+    }
+    return message;
+  },
+
+  toJSON(message: ApproversComments): unknown {
+    const obj: any = {};
+    message.commanderComment !== undefined &&
+      (obj.commanderComment = message.commanderComment);
+    message.securityComment !== undefined &&
+      (obj.securityComment = message.securityComment);
+    message.superSecurityComment !== undefined &&
+      (obj.superSecurityComment = message.superSecurityComment);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<ApproversComments>): ApproversComments {
+    const message = { ...baseApproversComments } as ApproversComments;
+    if (
+      object.commanderComment !== undefined &&
+      object.commanderComment !== null
+    ) {
+      message.commanderComment = object.commanderComment;
+    } else {
+      message.commanderComment = "";
+    }
+    if (
+      object.securityComment !== undefined &&
+      object.securityComment !== null
+    ) {
+      message.securityComment = object.securityComment;
+    } else {
+      message.securityComment = "";
+    }
+    if (
+      object.superSecurityComment !== undefined &&
+      object.superSecurityComment !== null
+    ) {
+      message.superSecurityComment = object.superSecurityComment;
+    } else {
+      message.superSecurityComment = "";
     }
     return message;
   },
@@ -24897,12 +25722,7 @@ export const ADParams = {
   },
 };
 
-const baseRequestReq: object = {
-  status: 0,
-  comments: "",
-  approversComments: "",
-  requestIds: "",
-};
+const baseRequestReq: object = { status: 0, comments: "", requestIds: "" };
 
 export const RequestReq = {
   encode(
@@ -24969,8 +25789,11 @@ export const RequestReq = {
     if (message.comments !== "") {
       writer.uint32(114).string(message.comments);
     }
-    if (message.approversComments !== "") {
-      writer.uint32(122).string(message.approversComments);
+    if (message.approversComments !== undefined) {
+      ApproversComments.encode(
+        message.approversComments,
+        writer.uint32(122).fork()
+      ).ldelim();
     }
     if (message.due !== undefined) {
       writer.uint32(128).int64(message.due);
@@ -25073,7 +25896,10 @@ export const RequestReq = {
           message.comments = reader.string();
           break;
         case 15:
-          message.approversComments = reader.string();
+          message.approversComments = ApproversComments.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 16:
           message.due = longToNumber(reader.int64() as Long);
@@ -25221,9 +26047,11 @@ export const RequestReq = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = String(object.approversComments);
+      message.approversComments = ApproversComments.fromJSON(
+        object.approversComments
+      );
     } else {
-      message.approversComments = "";
+      message.approversComments = undefined;
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = Number(object.due);
@@ -25326,7 +26154,9 @@ export const RequestReq = {
         : undefined);
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
-      (obj.approversComments = message.approversComments);
+      (obj.approversComments = message.approversComments
+        ? ApproversComments.toJSON(message.approversComments)
+        : undefined);
     message.due !== undefined && (obj.due = message.due);
     message.isPartOfBulk !== undefined &&
       (obj.isPartOfBulk = message.isPartOfBulk);
@@ -25467,9 +26297,11 @@ export const RequestReq = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = object.approversComments;
+      message.approversComments = ApproversComments.fromPartial(
+        object.approversComments
+      );
     } else {
-      message.approversComments = "";
+      message.approversComments = undefined;
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = object.due;
@@ -25513,7 +26345,6 @@ export const RequestReq = {
 const baseRequest: object = {
   status: 0,
   comments: "",
-  approversComments: "",
   due: 0,
   requestIds: "",
   id: "",
@@ -25590,8 +26421,11 @@ export const Request = {
     if (message.comments !== "") {
       writer.uint32(114).string(message.comments);
     }
-    if (message.approversComments !== "") {
-      writer.uint32(122).string(message.approversComments);
+    if (message.approversComments !== undefined) {
+      ApproversComments.encode(
+        message.approversComments,
+        writer.uint32(122).fork()
+      ).ldelim();
     }
     if (message.due !== 0) {
       writer.uint32(128).int64(message.due);
@@ -25715,7 +26549,10 @@ export const Request = {
           message.comments = reader.string();
           break;
         case 15:
-          message.approversComments = reader.string();
+          message.approversComments = ApproversComments.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 16:
           message.due = longToNumber(reader.int64() as Long);
@@ -25884,9 +26721,11 @@ export const Request = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = String(object.approversComments);
+      message.approversComments = ApproversComments.fromJSON(
+        object.approversComments
+      );
     } else {
-      message.approversComments = "";
+      message.approversComments = undefined;
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = Number(object.due);
@@ -26032,7 +26871,9 @@ export const Request = {
         : undefined);
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
-      (obj.approversComments = message.approversComments);
+      (obj.approversComments = message.approversComments
+        ? ApproversComments.toJSON(message.approversComments)
+        : undefined);
     message.due !== undefined && (obj.due = message.due);
     message.isPartOfBulk !== undefined &&
       (obj.isPartOfBulk = message.isPartOfBulk);
@@ -26183,9 +27024,11 @@ export const Request = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = object.approversComments;
+      message.approversComments = ApproversComments.fromPartial(
+        object.approversComments
+      );
     } else {
-      message.approversComments = "";
+      message.approversComments = undefined;
     }
     if (object.due !== undefined && object.due !== null) {
       message.due = object.due;
@@ -26297,7 +27140,6 @@ export interface RequestService {
   UpdateKartoffelStatus(request: UpdateKartoffelStatusReq): Promise<Request>;
   UpdateADStatus(request: UpdateADStatusReq): Promise<Request>;
   DeleteRequest(request: DeleteReq): Promise<SuccessMessage>;
-  GetRequestsByPerson(request: GetRequestsByPersonReq): Promise<RequestArray>;
   GetRequestBySerialNumber(
     request: GetRequestBySerialNumberReq
   ): Promise<Request>;
@@ -26324,6 +27166,12 @@ export interface RequestService {
   ): Promise<RequestIdArray>;
   PushError(request: PushErrorReq): Promise<Request>;
   SyncBulkRequest(request: SyncBulkRequestReq): Promise<Request>;
+  GetRequestsByPerson(
+    request: GetRequestsByPersonReq
+  ): Promise<GetRequestsByPersonRes>;
+  TransferRequestToApprovers(
+    request: TransferRequestToApproversReq
+  ): Promise<Request>;
 }
 
 export class RequestServiceClientImpl implements RequestService {
@@ -26352,7 +27200,6 @@ export class RequestServiceClientImpl implements RequestService {
     this.UpdateKartoffelStatus = this.UpdateKartoffelStatus.bind(this);
     this.UpdateADStatus = this.UpdateADStatus.bind(this);
     this.DeleteRequest = this.DeleteRequest.bind(this);
-    this.GetRequestsByPerson = this.GetRequestsByPerson.bind(this);
     this.GetRequestBySerialNumber = this.GetRequestBySerialNumber.bind(this);
     this.GetRequestById = this.GetRequestById.bind(this);
     this.GetRequestsUnderBulk = this.GetRequestsUnderBulk.bind(this);
@@ -26372,6 +27219,9 @@ export class RequestServiceClientImpl implements RequestService {
       this.GetRequestIdsInProgressByDue.bind(this);
     this.PushError = this.PushError.bind(this);
     this.SyncBulkRequest = this.SyncBulkRequest.bind(this);
+    this.GetRequestsByPerson = this.GetRequestsByPerson.bind(this);
+    this.TransferRequestToApprovers =
+      this.TransferRequestToApprovers.bind(this);
   }
   CreateRoleRequest(request: CreateRoleReq): Promise<CreateRoleRes> {
     const data = CreateRoleReq.encode(request).finish();
@@ -26587,16 +27437,6 @@ export class RequestServiceClientImpl implements RequestService {
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
-  GetRequestsByPerson(request: GetRequestsByPersonReq): Promise<RequestArray> {
-    const data = GetRequestsByPersonReq.encode(request).finish();
-    const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "GetRequestsByPerson",
-      data
-    );
-    return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
-  }
-
   GetRequestBySerialNumber(
     request: GetRequestBySerialNumberReq
   ): Promise<Request> {
@@ -26770,6 +27610,32 @@ export class RequestServiceClientImpl implements RequestService {
     const promise = this.rpc.request(
       "RequestService.RequestService",
       "SyncBulkRequest",
+      data
+    );
+    return promise.then((data) => Request.decode(new _m0.Reader(data)));
+  }
+
+  GetRequestsByPerson(
+    request: GetRequestsByPersonReq
+  ): Promise<GetRequestsByPersonRes> {
+    const data = GetRequestsByPersonReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "GetRequestsByPerson",
+      data
+    );
+    return promise.then((data) =>
+      GetRequestsByPersonRes.decode(new _m0.Reader(data))
+    );
+  }
+
+  TransferRequestToApprovers(
+    request: TransferRequestToApproversReq
+  ): Promise<Request> {
+    const data = TransferRequestToApproversReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "TransferRequestToApprovers",
       data
     );
     return promise.then((data) => Request.decode(new _m0.Reader(data)));

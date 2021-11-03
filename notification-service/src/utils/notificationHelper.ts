@@ -46,7 +46,7 @@ export function generateNotifications(
     const requestTypeStr = requestTypeToJSON(requestType);
 
     if (type === NotificationType.REQUEST_SUBMITTED) {
-      message = `התקבלה בקשה חדשה לאישורך מאת <b>${request.submittedBy?.displayName}</b> עבור <b>${requestTypeToHebrew[requestTypeStr]}</b>.`;
+      message = `התקבלה בקשה חדשה מספר <b>${request.serialNumber}</b> לאישורך מאת <b>${request.submittedBy?.displayName}</b> עבור <b>${requestTypeToHebrew[requestTypeStr]}</b>.`;
 
       if (request.commanders) {
         const addNotification: CreateCustomNotificationReq[] =
@@ -71,49 +71,49 @@ export function generateNotifications(
       commanderName = 'גורם מאשר ראשוני';
     }
     if (type === NotificationType.REQUEST_APPROVED_1) {
-      message = `בקשתך ל<b>${requestTypeToHebrew[requestTypeStr]}</b> מספר ${request.serialNumber} אושרה על ידי <b>${commanderName}</b> והועברה לטיפול יחב\"ם.`;
+      message = `בקשתך ל<b>${requestTypeToHebrew[requestTypeStr]}</b> מספר <b>${request.serialNumber}</b> אושרה על ידי <b>${commanderName}</b> והועברה לטיפול יחב\"ם.`;
     } else if (type === NotificationType.REQUEST_DECLINED_1) {
-      message = `בקשתך ל<b>${requestTypeToHebrew[requestTypeStr]}</b> מספר ${request.serialNumber} נדחתה על ידי <b>${commanderName}</b>.`;
+      message = `בקשתך ל<b>${requestTypeToHebrew[requestTypeStr]}</b> מספר <b>${request.serialNumber}</b> נדחתה על ידי <b>${commanderName}</b>.`;
       reason = request.commanderDecision?.reason
         ? request.commanderDecision?.reason
         : '';
     } else if (type === NotificationType.REQUEST_APPROVED_2) {
-      message = `בקשתך ל<b>${requestTypeToHebrew[requestTypeStr]}</b> מספר ${request.serialNumber} אושרה על ידי <b>${commanderName}</b> ועל ידי יחב\"ם.`;
+      message = `בקשתך ל<b>${requestTypeToHebrew[requestTypeStr]}</b> מספר <b>${request.serialNumber}</b> אושרה על ידי <b>${commanderName}</b> ועל ידי יחב\"ם.`;
       if (request.needSuperSecurityDecision) {
         message = message + 'הועברה לטיפול בטח"ם.';
       }
     } else if (type === NotificationType.REQUEST_DECLINED_2) {
-      message = `בקשתך ל<b>${requestTypeToHebrew[requestTypeStr]}</b> מספר ${request.serialNumber} נדחתה על ידי יחב\"ם.`;
+      message = `בקשתך ל<b>${requestTypeToHebrew[requestTypeStr]}</b> מספר <b>${request.serialNumber}</b> נדחתה על ידי יחב\"ם.`;
       reason = request.securityDecision?.reason
         ? request.securityDecision?.reason
         : '';
     } else if (type === NotificationType.REQUEST_APPROVED_3) {
-      message = `בקשתך ל<b>${requestTypeToHebrew[requestTypeStr]}</b> מספר ${request.serialNumber} אושרה על ידי <b>${commanderName}</b> ועל ידי יחב\"ם ובטח\"ם.`;
+      message = `בקשתך ל<b>${requestTypeToHebrew[requestTypeStr]}</b> מספר <b>${request.serialNumber}</b> אושרה על ידי <b>${commanderName}</b> ועל ידי יחב\"ם ובטח\"ם.`;
     } else if (type === NotificationType.REQUEST_DECLINED_3) {
-      message = `בקשתך ל<b>${requestTypeToHebrew[requestTypeStr]}</b> מספר ${request.serialNumber} נדחתה על ידי בטח\"ם.`;
+      message = `בקשתך ל<b>${requestTypeToHebrew[requestTypeStr]}</b> מספר <b>${request.serialNumber}</b> נדחתה על ידי בטח\"ם.`;
       reason = request.superSecurityDecision?.reason
         ? request.superSecurityDecision?.reason
         : '';
     } else if (type === NotificationType.REQUEST_IN_PROGRESS) {
-      message = `בקשתך ל<b>${requestTypeToHebrew[requestTypeStr]}</b> מספר ${request.serialNumber} אושרה על ידי כל הגורמים המאשרים ותבוצע בזמן הקרוב.`;
+      message = `בקשתך ל<b>${requestTypeToHebrew[requestTypeStr]}</b> מספר <b>${request.serialNumber}</b> אושרה על ידי כל הגורמים המאשרים ותבוצע בזמן הקרוב.`;
     } else if (type === NotificationType.REQUEST_DECLINED) {
-      message = `בקשתך ל<b>${requestTypeToHebrew[requestTypeStr]}</b> מספר ${request.serialNumber} נדחתה ולכן לא תבוצע.`;
+      message = `בקשתך ל<b>${requestTypeToHebrew[requestTypeStr]}</b> מספר <b>${request.serialNumber}</b> נדחתה ולכן לא תבוצע.`;
     } else if (type === NotificationType.KARTOFFEL_STAGE_DONE) {
-      message = `בקשתך ל<b>${requestTypeToHebrew[requestTypeStr]}</b> מספר ${request.serialNumber} עברה את שלב שירות המשתמשים בהצלחה.`;
+      message = `בקשתך ל<b>${requestTypeToHebrew[requestTypeStr]}</b> מספר <b>${request.serialNumber}</b> עברה את שלב שירות המשתמשים בהצלחה.`;
     } else if (type === NotificationType.KARTOFFEL_STAGE_FAILED) {
-      message = `בקשתך ל<b>${requestTypeToHebrew[requestTypeStr]}</b> מספר ${request.serialNumber} נכשלה בשלב שירות המשתמשים.`;
+      message = `בקשתך ל<b>${requestTypeToHebrew[requestTypeStr]}</b> מספר <b>${request.serialNumber}</b> נכשלה בשלב שירות המשתמשים.`;
       reason = request.kartoffelStatus?.message
         ? request.kartoffelStatus?.message
         : '';
     } else if (type === NotificationType.AD_STAGE_DONE) {
-      message = `בקשתך ל<b>${requestTypeToHebrew[requestTypeStr]}</b> מספר ${request.serialNumber} עברה את שלב AD בהצלחה.`;
+      message = `בקשתך ל<b>${requestTypeToHebrew[requestTypeStr]}</b> מספר <b>${request.serialNumber}</b> עברה את שלב AD בהצלחה.`;
     } else if (type === NotificationType.AD_STAGE_FAILED) {
-      message = `בקשתך ל<b>${requestTypeToHebrew[requestTypeStr]}</b> מספר ${request.serialNumber} נכשלה בשלב AD.`;
+      message = `בקשתך ל<b>${requestTypeToHebrew[requestTypeStr]}</b> מספר <b>${request.serialNumber}</b> נכשלה בשלב AD.`;
       reason = request.adStatus?.message ? request.adStatus?.message : '';
     } else if (type === NotificationType.REQUEST_DONE) {
-      message = `בקשתך ל<b>${requestTypeToHebrew[requestTypeStr]}</b> מספר ${request.serialNumber} בוצעה בהצלחה.`;
+      message = `בקשתך ל<b>${requestTypeToHebrew[requestTypeStr]}</b> מספר <b>${request.serialNumber}</b> בוצעה בהצלחה.`;
     } else {
-      message = `בקשתך ל<b>${requestTypeToHebrew[requestTypeStr]}</b> מספר ${request.serialNumber} נכשלה.`;
+      message = `בקשתך ל<b>${requestTypeToHebrew[requestTypeStr]}</b> מספר <b>${request.serialNumber}</b> נכשלה.`;
       //REQUEST_FAILED
     }
 

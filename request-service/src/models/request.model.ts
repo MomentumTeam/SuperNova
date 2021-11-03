@@ -36,7 +36,18 @@ const RequestSchema = new Schema(
       default: true,
     },
     comments: { type: String, default: '' },
-    approversComments: { type: String, default: '' },
+    approversComments: {
+      type: {
+        commanderComment: { type: String, default: '' },
+        securityComment: { type: String, default: '' },
+        superSecurityComment: { type: String, default: '' },
+      },
+      default: {
+        commanderComment: '',
+        securityComment: '',
+        superSecurityComment: '',
+      },
+    },
     submittedBy: {
       type: {
         id: { type: mongoose.Schema.Types.ObjectId, default: null },
@@ -361,15 +372,27 @@ RequestSchema.pre<any>('findOneAndUpdate', function (next) {
   const func: any = (object: any) => {
     object.updatedAt = new Date().getTime();
   };
+  if (!this._update.$set) {
+    this._update.$set = {};
+  }
   func(this._update.$set);
   return next();
 });
 
 RequestSchema.index({
   'submittedBy.displayName': 'text',
+  'submittedBy.personalNumber': 'text',
+  'submittedBy.identityCard': 'text',
   'commanders.displayName': 'text',
+  'commanders.personalNumber': 'text',
+  'commanders.identityCard': 'text',
   'securityApprovers.displayName': 'text',
+  'securityApprovers.personalNumber': 'text',
+  'securityApprovers.identityCard': 'text',
   'superSecurityApprovers.displayName': 'text',
+  'superSecurityApprovers.personalNumber': 'text',
+  'superSecurityApprovers.identityCard': 'text',
+  serialNumber: 'text',
 });
 
 export const RequestModel = mongoose.model(
