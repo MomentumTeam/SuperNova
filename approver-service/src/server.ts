@@ -10,6 +10,7 @@ import {
   getUserType,
   searchApproverByDisplayName,
   searchApproverByDomainUser,
+  searchHighCommandersByDisplayName,
   syncApprover,
   updateApproverDecision,
 } from './approver/approver.controller';
@@ -60,6 +61,7 @@ export class Server {
           GetUserType: getUserType,
           SearchApproverByDisplayName: searchApproverByDisplayName,
           SearchApproverByDomainUser: searchApproverByDomainUser,
+          SearchHighCommandersByDisplayName: searchHighCommandersByDisplayName,
           UpdateApproverDecision: updateApproverDecision,
           GetAllApprovers: getAllApprovers,
           GetAllApproverIds: getAllApproverIds,

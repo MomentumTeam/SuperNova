@@ -97,6 +97,10 @@ export interface ApproverArray {
   approvers: Approver[];
 }
 
+export interface SearchHighCommandersByDisplayNameReq {
+  displayName: string;
+}
+
 export interface GetUserTypeReq {
   entityId: string;
 }
@@ -698,6 +702,76 @@ export const ApproverArray = {
   },
 };
 
+const baseSearchHighCommandersByDisplayNameReq: object = { displayName: "" };
+
+export const SearchHighCommandersByDisplayNameReq = {
+  encode(
+    message: SearchHighCommandersByDisplayNameReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.displayName !== "") {
+      writer.uint32(10).string(message.displayName);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): SearchHighCommandersByDisplayNameReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseSearchHighCommandersByDisplayNameReq,
+    } as SearchHighCommandersByDisplayNameReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.displayName = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SearchHighCommandersByDisplayNameReq {
+    const message = {
+      ...baseSearchHighCommandersByDisplayNameReq,
+    } as SearchHighCommandersByDisplayNameReq;
+    if (object.displayName !== undefined && object.displayName !== null) {
+      message.displayName = String(object.displayName);
+    } else {
+      message.displayName = "";
+    }
+    return message;
+  },
+
+  toJSON(message: SearchHighCommandersByDisplayNameReq): unknown {
+    const obj: any = {};
+    message.displayName !== undefined &&
+      (obj.displayName = message.displayName);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<SearchHighCommandersByDisplayNameReq>
+  ): SearchHighCommandersByDisplayNameReq {
+    const message = {
+      ...baseSearchHighCommandersByDisplayNameReq,
+    } as SearchHighCommandersByDisplayNameReq;
+    if (object.displayName !== undefined && object.displayName !== null) {
+      message.displayName = object.displayName;
+    } else {
+      message.displayName = "";
+    }
+    return message;
+  },
+};
+
 const baseGetUserTypeReq: object = { entityId: "" };
 
 export const GetUserTypeReq = {
@@ -1267,6 +1341,9 @@ export interface ApproverService {
     request: SearchByDomainUserReq
   ): Promise<ApproverArray>;
   UpdateApproverDecision(request: UpdateApproverDecisionReq): Promise<Request>;
+  SearchHighCommandersByDisplayName(
+    request: SearchHighCommandersByDisplayNameReq
+  ): Promise<ApproverArray>;
   GetAllApprovers(request: GetAllApproversReq): Promise<ApproverArray>;
   GetAllApproverIds(request: GetAllApproversReq): Promise<ApproverIdArray>;
   SyncApprover(request: SyncApproverReq): Promise<ApproverArray>;
@@ -1284,6 +1361,8 @@ export class ApproverServiceClientImpl implements ApproverService {
     this.SearchApproverByDomainUser =
       this.SearchApproverByDomainUser.bind(this);
     this.UpdateApproverDecision = this.UpdateApproverDecision.bind(this);
+    this.SearchHighCommandersByDisplayName =
+      this.SearchHighCommandersByDisplayName.bind(this);
     this.GetAllApprovers = this.GetAllApprovers.bind(this);
     this.GetAllApproverIds = this.GetAllApproverIds.bind(this);
     this.SyncApprover = this.SyncApprover.bind(this);
@@ -1341,6 +1420,18 @@ export class ApproverServiceClientImpl implements ApproverService {
       data
     );
     return promise.then((data) => Request.decode(new _m0.Reader(data)));
+  }
+
+  SearchHighCommandersByDisplayName(
+    request: SearchHighCommandersByDisplayNameReq
+  ): Promise<ApproverArray> {
+    const data = SearchHighCommandersByDisplayNameReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "ApproverService.ApproverService",
+      "SearchHighCommandersByDisplayName",
+      data
+    );
+    return promise.then((data) => ApproverArray.decode(new _m0.Reader(data)));
   }
 
   GetAllApprovers(request: GetAllApproversReq): Promise<ApproverArray> {

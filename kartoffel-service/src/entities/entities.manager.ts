@@ -123,6 +123,18 @@ export class EntitiesManager {
     }
   }
 
+  async searchHighCommandersByFullName(
+    searchCommandersByFullNameRequest: SearchCommandersByFullNameRequest
+  ): Promise<EntityArray> {
+    try {
+      return await this.entitiesRepository.searchHighCommandersByFullName(
+        searchCommandersByFullNameRequest
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async searchEntitiesByFullName(
     searchEntitiesByFullNameRequest: SearchEntitiesByFullNameRequest
   ): Promise<EntityArray> {
