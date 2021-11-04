@@ -96,6 +96,15 @@ export const getAllOGsSchema = Joi.object({
   },
 });
 
+export const isOGNameAlreadyTakenSchema = Joi.object({
+  body: {},
+  params: {},
+  query: {
+    name: Joi.string().required(),
+    parent: Joi.objectId().required(),
+  },
+});
+
 export const searchOGSchema = Joi.object({
   body: {},
   params: {},

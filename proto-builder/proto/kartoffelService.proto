@@ -34,6 +34,7 @@ service Kartoffel {
     rpc UpdateOGParent(UpdateOGParentRequest) returns (SuccessMessage){}
     rpc RenameOG(RenameOGRequest) returns (SuccessMessage){}
     rpc GetPrefixByOGId(GetPrefixByOGIdRequest) returns (OGPrefix){}
+    rpc IsOGNameAlreadyTaken(IsOGNameAlreadyTakenReq) returns (IsOGNameAlreadyTakenRes){}
 
     //DI    
     rpc CreateDI(CreateDIRequest) returns (DigitalIdentity){}
@@ -66,6 +67,16 @@ message IsRoleAlreadyTakenReq{
 message IsRoleAlreadyTakenRes{
     bool isRoleAlreadyTaken = 1;
 }
+
+message IsOGNameAlreadyTakenReq{
+    string name = 1;
+    string parent = 2;
+}
+
+message IsOGNameAlreadyTakenRes{
+    bool isOGNameAlreadyTaken = 1;
+}
+
 
 message IsJobTitleAlreadyTakenReq{
     string jobTitle = 1;

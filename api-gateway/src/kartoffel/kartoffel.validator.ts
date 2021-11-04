@@ -21,6 +21,7 @@ import {
   GetRolesByHierarchySchema,
   GetRolesUnderOGSchema,
   IsJobTitleAlreadyTakenSchema,
+  isOGNameAlreadyTakenSchema,
   IsRoleAlreadyTakenSchema,
   searchEntitiesByFullNameSchema,
   searchOGSchema,
@@ -130,6 +131,18 @@ export class KartoffelValidator {
     transformRequest(
       req,
       validateObject(req, getAllOGsSchema, { allowUnknown: true })
+    );
+    next();
+  }
+
+  static isOGNameAlreadyTakenValid(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    transformRequest(
+      req,
+      validateObject(req, isOGNameAlreadyTakenSchema, { allowUnknown: true })
     );
     next();
   }

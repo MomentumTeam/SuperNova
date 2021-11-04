@@ -19,7 +19,10 @@ import {
   OGTree,
   GetPrefixByOGIdRequest,
   OGPrefix,
+  IsOGNameAlreadyTakenReq,
+  IsOGNameAlreadyTakenRes,
 } from '../interfaces/protoc/proto/kartoffelService';
+import { ogNameExists } from '../utils/ogName.utils';
 
 export class GroupsRepository {
   private kartoffelFaker: KartoffelFaker;
@@ -27,6 +30,33 @@ export class GroupsRepository {
   constructor(kartoffelUtils: KartoffelUtils, kartoffelFaker: KartoffelFaker) {
     this.kartoffelFaker = kartoffelFaker;
     this.kartoffelUtils = kartoffelUtils;
+  }
+
+  async isOGNameAlreadyTaken(
+    isOGNameAlreadyTakenReq: IsOGNameAlreadyTakenReq
+  ): Promise<IsOGNameAlreadyTakenRes> {
+    try {
+      if (C.useFaker) {
+        const isOGNameAlreadyTaken = Math.random() < 0.5;
+        let res: any = { isOGNameAlreadyTaken: isOGNameAlreadyTaken };
+        return res as IsOGNameAlreadyTakenRes;
+      } else {
+        let childrenArray: OGArray = await this.getChildrenOfOG({
+          id: isOGNameAlreadyTakenReq.parent,
+          direct: true,
+          page: 1,
+          pageSize: 100,
+        });
+        const name = isOGNameAlreadyTakenReq.name;
+        if (ogNameExists(childrenArray, name)) {
+          return { isOGNameAlreadyTaken: true };
+        } else {
+          return { isOGNameAlreadyTaken: false };
+        }
+      }
+    } catch (error) {
+      throw error;
+    }
   }
 
   async getOGTree(getOGTreeRequest: GetOGTreeRequest): Promise<OGTree> {
@@ -83,7 +113,9 @@ export class GroupsRepository {
   async getAllOGs(getAllOGsRequest: GetAllOGsRequest): Promise<OGArray> {
     try {
       if (C.useFaker) {
-        const ogArray: OGArray = await this.kartoffelFaker.randomOGArray(getAllOGsRequest.pageSize);
+        const ogArray: OGArray = await this.kartoffelFaker.randomOGArray(
+          getAllOGsRequest.pageSize
+        );
         return ogArray;
       } else {
         getAllOGsRequest.source = getAllOGsRequest.source
@@ -193,7 +225,9 @@ export class GroupsRepository {
   ): Promise<OGArray> {
     try {
       if (C.useFaker) {
-        const ogChildern: OGArray = await this.kartoffelFaker.randomOGArray(getChildrenOfOGRequest.pageSize);
+        const ogChildern: OGArray = await this.kartoffelFaker.randomOGArray(
+          getChildrenOfOGRequest.pageSize
+        );
         return ogChildern;
       } else {
         const res = await this.kartoffelUtils.kartoffelGet(

@@ -12,6 +12,15 @@ export interface IsRoleAlreadyTakenRes {
   isRoleAlreadyTaken: boolean;
 }
 
+export interface IsOGNameAlreadyTakenReq {
+  name: string;
+  parent: string;
+}
+
+export interface IsOGNameAlreadyTakenRes {
+  isOGNameAlreadyTaken: boolean;
+}
+
 export interface IsJobTitleAlreadyTakenReq {
   jobTitle: string;
   directGroup: string;
@@ -550,6 +559,168 @@ export const IsRoleAlreadyTakenRes = {
       message.isRoleAlreadyTaken = object.isRoleAlreadyTaken;
     } else {
       message.isRoleAlreadyTaken = false;
+    }
+    return message;
+  },
+};
+
+const baseIsOGNameAlreadyTakenReq: object = { name: "", parent: "" };
+
+export const IsOGNameAlreadyTakenReq = {
+  encode(
+    message: IsOGNameAlreadyTakenReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.name !== "") {
+      writer.uint32(10).string(message.name);
+    }
+    if (message.parent !== "") {
+      writer.uint32(18).string(message.parent);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): IsOGNameAlreadyTakenReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseIsOGNameAlreadyTakenReq,
+    } as IsOGNameAlreadyTakenReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.name = reader.string();
+          break;
+        case 2:
+          message.parent = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): IsOGNameAlreadyTakenReq {
+    const message = {
+      ...baseIsOGNameAlreadyTakenReq,
+    } as IsOGNameAlreadyTakenReq;
+    if (object.name !== undefined && object.name !== null) {
+      message.name = String(object.name);
+    } else {
+      message.name = "";
+    }
+    if (object.parent !== undefined && object.parent !== null) {
+      message.parent = String(object.parent);
+    } else {
+      message.parent = "";
+    }
+    return message;
+  },
+
+  toJSON(message: IsOGNameAlreadyTakenReq): unknown {
+    const obj: any = {};
+    message.name !== undefined && (obj.name = message.name);
+    message.parent !== undefined && (obj.parent = message.parent);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<IsOGNameAlreadyTakenReq>
+  ): IsOGNameAlreadyTakenReq {
+    const message = {
+      ...baseIsOGNameAlreadyTakenReq,
+    } as IsOGNameAlreadyTakenReq;
+    if (object.name !== undefined && object.name !== null) {
+      message.name = object.name;
+    } else {
+      message.name = "";
+    }
+    if (object.parent !== undefined && object.parent !== null) {
+      message.parent = object.parent;
+    } else {
+      message.parent = "";
+    }
+    return message;
+  },
+};
+
+const baseIsOGNameAlreadyTakenRes: object = { isOGNameAlreadyTaken: false };
+
+export const IsOGNameAlreadyTakenRes = {
+  encode(
+    message: IsOGNameAlreadyTakenRes,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.isOGNameAlreadyTaken === true) {
+      writer.uint32(8).bool(message.isOGNameAlreadyTaken);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): IsOGNameAlreadyTakenRes {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseIsOGNameAlreadyTakenRes,
+    } as IsOGNameAlreadyTakenRes;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.isOGNameAlreadyTaken = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): IsOGNameAlreadyTakenRes {
+    const message = {
+      ...baseIsOGNameAlreadyTakenRes,
+    } as IsOGNameAlreadyTakenRes;
+    if (
+      object.isOGNameAlreadyTaken !== undefined &&
+      object.isOGNameAlreadyTaken !== null
+    ) {
+      message.isOGNameAlreadyTaken = Boolean(object.isOGNameAlreadyTaken);
+    } else {
+      message.isOGNameAlreadyTaken = false;
+    }
+    return message;
+  },
+
+  toJSON(message: IsOGNameAlreadyTakenRes): unknown {
+    const obj: any = {};
+    message.isOGNameAlreadyTaken !== undefined &&
+      (obj.isOGNameAlreadyTaken = message.isOGNameAlreadyTaken);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<IsOGNameAlreadyTakenRes>
+  ): IsOGNameAlreadyTakenRes {
+    const message = {
+      ...baseIsOGNameAlreadyTakenRes,
+    } as IsOGNameAlreadyTakenRes;
+    if (
+      object.isOGNameAlreadyTaken !== undefined &&
+      object.isOGNameAlreadyTaken !== null
+    ) {
+      message.isOGNameAlreadyTaken = object.isOGNameAlreadyTaken;
+    } else {
+      message.isOGNameAlreadyTaken = false;
     }
     return message;
   },
@@ -6896,6 +7067,9 @@ export interface Kartoffel {
   UpdateOGParent(request: UpdateOGParentRequest): Promise<SuccessMessage>;
   RenameOG(request: RenameOGRequest): Promise<SuccessMessage>;
   GetPrefixByOGId(request: GetPrefixByOGIdRequest): Promise<OGPrefix>;
+  IsOGNameAlreadyTaken(
+    request: IsOGNameAlreadyTakenReq
+  ): Promise<IsOGNameAlreadyTakenRes>;
   /** DI */
   CreateDI(request: CreateDIRequest): Promise<DigitalIdentity>;
   GetAllDIs(request: GetAllDIsRequest): Promise<DigitalIdentities>;
@@ -6960,6 +7134,7 @@ export class KartoffelClientImpl implements Kartoffel {
     this.UpdateOGParent = this.UpdateOGParent.bind(this);
     this.RenameOG = this.RenameOG.bind(this);
     this.GetPrefixByOGId = this.GetPrefixByOGId.bind(this);
+    this.IsOGNameAlreadyTaken = this.IsOGNameAlreadyTaken.bind(this);
     this.CreateDI = this.CreateDI.bind(this);
     this.GetAllDIs = this.GetAllDIs.bind(this);
     this.GetDIByRoleId = this.GetDIByRoleId.bind(this);
@@ -7242,6 +7417,20 @@ export class KartoffelClientImpl implements Kartoffel {
       data
     );
     return promise.then((data) => OGPrefix.decode(new _m0.Reader(data)));
+  }
+
+  IsOGNameAlreadyTaken(
+    request: IsOGNameAlreadyTakenReq
+  ): Promise<IsOGNameAlreadyTakenRes> {
+    const data = IsOGNameAlreadyTakenReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "IsOGNameAlreadyTaken",
+      data
+    );
+    return promise.then((data) =>
+      IsOGNameAlreadyTakenRes.decode(new _m0.Reader(data))
+    );
   }
 
   CreateDI(request: CreateDIRequest): Promise<DigitalIdentity> {
