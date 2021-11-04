@@ -202,7 +202,7 @@ message CreateNewApproverReq{
     repeated EntityMin superSecurityApprovers = 8;
     optional AdditionalParams additionalParams = 9;
     optional string comments = 10;
-    optional string approversComments = 11;
+    optional ApproversComments approversComments = 11;
     optional int64 due = 12;
 }
 
@@ -1291,7 +1291,7 @@ message RequestReq{
     optional ADParams adParams = 12;
     optional AdditionalParams additionalParams = 13;
     string comments = 14;
-    ApproversComments approversComments = 15;
+    optional ApproversComments approversComments = 15;
     optional int64 due = 16;
     optional bool isPartOfBulk = 17;
     optional string bulkRequestId = 18;
