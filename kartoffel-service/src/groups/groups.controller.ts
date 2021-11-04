@@ -1,5 +1,6 @@
 import * as grpc from 'grpc';
 import {
+  IsOGNameAlreadyTakenRes,
   OGArray,
   OGPrefix,
   OGTree,
@@ -18,6 +19,39 @@ const groupsManager: GroupsManager = new GroupsManager(
   kartoffelUtils,
   kartoffelFaker
 );
+
+export async function isOGNameAlreadyTaken(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    logger.info(`Call to isOGNameAlreadyTaken`, {
+      callRequest: call.request,
+    });
+
+    const isOGNameAlreadyTakenRes: IsOGNameAlreadyTakenRes =
+      await groupsManager.isOGNameAlreadyTaken(call.request);
+    logger.info(`isOGNameAlreadyTaken OK`, {
+      callRequest: call.request,
+      response: isOGNameAlreadyTakenRes,
+    });
+
+    callback(null, isOGNameAlreadyTakenRes);
+  } catch (error: any) {
+    logger.error(`isOGNameAlreadyTaken ERROR`, {
+      callRequest: call.request,
+      error: { message: error.message },
+    });
+    callback(
+      {
+        code: 400,
+        error: { message: error.message },
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
 
 export async function getPrefixByOGId(call: any, callback: any): Promise<void> {
   try {

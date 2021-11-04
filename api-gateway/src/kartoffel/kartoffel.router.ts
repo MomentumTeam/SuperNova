@@ -80,6 +80,11 @@ KartoffelRouter.get(
   KartoffelValidator.isGetOGTreeValid,
   KartoffelController.getOGTree
 );
+KartoffelRouter.get(
+  '/groups/name/taken',
+  KartoffelValidator.isOGNameAlreadyTakenValid,
+  KartoffelController.isOGNameAlreadyTaken
+);
 
 // Roles
 KartoffelRouter.get(

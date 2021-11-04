@@ -2,6 +2,7 @@ import { Response } from 'express';
 import { logger } from '../utils/logger/logger';
 import ProducerController from '../producer/producer.controller';
 import { SuccessMessage } from '../interfaces/protoc/proto/producerService';
+import { ApproverService } from '../approver/approver.service';
 import {
   StageStatus,
   EntityMin,
@@ -30,12 +31,15 @@ import {
   PersonInfoType,
   ApprovementStatus,
   TransferRequestToApproversReq,
+  approverTypeFromJSON,
+  ApproverType,
 } from '../interfaces/protoc/proto/requestService';
 import { RequestsService } from './requests.service';
 import { AuthenticationError } from '../utils/errors/userErrors';
 import { KartoffelService } from '../kartoffel/kartoffel.service';
 import { statusCodeHandler } from '../utils/errors/errorHandlers';
 import { approveUserRequest } from './requests.utils';
+import { GetUserTypeRes } from '../interfaces/protoc/proto/approverService';
 
 export default class RequestsController {
   static async getRequestById(req: any, res: Response) {
@@ -411,6 +415,32 @@ export default class RequestsController {
     };
 
     try {
+      if (assignRoleToEntityReq.kartoffelParams?.needDisconnect) {
+        const entityWithRole: any = await KartoffelService.getEntityByDI({
+          uniqueId: assignRoleToEntityReq.kartoffelParams?.uniqueId,
+        });
+        const entityUserTypeRes: GetUserTypeRes =
+          await ApproverService.getUserType({
+            entityId: entityWithRole.id,
+          });
+        const entityUserType = entityUserTypeRes.type.map((type) => {
+          return typeof type === typeof '' ? approverTypeFromJSON(type) : type;
+        });
+        if (entityUserType.includes(ApproverType.COMMANDER)) {
+          assignRoleToEntityReq.commanders = [
+            {
+              id: entityWithRole.id,
+              displayName: entityWithRole.displayName,
+              identityCard: entityWithRole.identityCard
+                ? entityWithRole.identityCard
+                : '',
+              personalNumber: entityWithRole.personalNumber
+                ? entityWithRole.personalNumber
+                : '',
+            },
+          ];
+        }
+      }
       const request: any = await approveUserRequest(req, assignRoleToEntityReq);
       const assignRole = await RequestsService.assignRoleToEntityRequest(
         request
