@@ -8,10 +8,13 @@ images:
     name: momentumacr
   repository: momentumacr.azurecr.io/mail-service
   tag: "latest"
+
 service:
   ports:
   - name: http
     port: "8080"
+    
 config:
   configmaps:
       name: momentum-configmap
+
