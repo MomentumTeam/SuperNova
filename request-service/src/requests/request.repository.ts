@@ -1183,7 +1183,7 @@ export class RequestRepository {
       if (getRequestsByPersonReq.searchQuery) {
         const searchQuery = getSearchQuery(getRequestsByPersonReq.searchQuery);
         if (query['$or']) {
-          query['and'] = [{ $or: query['$or'] }, searchQuery];
+          query['$and'] = [{ $or: query['$or'] }, searchQuery];
           delete query['$or'];
         } else {
           query = { ...query, ...searchQuery };
