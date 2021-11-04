@@ -144,7 +144,7 @@ export class RolesRepository {
           groupId: isJobTitleAlreadyTakenRequest.directGroup,
           direct: true,
           page: 1,
-          pageSize: 1000,
+          pageSize: 100,
         });
         const jobTitle = isJobTitleAlreadyTakenRequest.jobTitle;
         if (!jobTitleExists(roleArray, jobTitle)) {

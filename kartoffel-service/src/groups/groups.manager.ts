@@ -15,6 +15,8 @@ import {
   OGTree,
   GetPrefixByOGIdRequest,
   OGPrefix,
+  IsOGNameAlreadyTakenReq,
+  IsOGNameAlreadyTakenRes,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { KartoffelFaker } from '../mock/kartoffel.faker';
 import { KartoffelUtils } from '../utils/kartoffel.utils';
@@ -35,6 +37,18 @@ export class GroupsManager {
     try {
       return await this.groupsRepository.getPrefixByOGId(
         getPrefixByOGIdRequest
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async isOGNameAlreadyTaken(
+    isOGNameAlreadyTakenReq: IsOGNameAlreadyTakenReq
+  ): Promise<IsOGNameAlreadyTakenRes> {
+    try {
+      return await this.groupsRepository.isOGNameAlreadyTaken(
+        isOGNameAlreadyTakenReq
       );
     } catch (error) {
       throw error;

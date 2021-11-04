@@ -34,6 +34,7 @@ import {
   renameOG,
   getOGTree,
   getPrefixByOGId,
+  isOGNameAlreadyTaken,
 } from './groups/groups.controller';
 import {
   getAllDIs,
@@ -132,6 +133,7 @@ export class Server {
         RenameOG: renameOG,
         GetOGTree: getOGTree,
         GetPrefixByOGId: getPrefixByOGId,
+        IsOGNameAlreadyTaken: isOGNameAlreadyTaken,
 
         //digitalIdentities
         GetAllDIs: getAllDIs,
