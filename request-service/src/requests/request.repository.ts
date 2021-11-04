@@ -1135,15 +1135,11 @@ export class RequestRepository {
         ['createdAt', -1],
         ['status', 1],
       ];
-
       const personTypeInRequest: PersonTypeInRequest =
         typeof getRequestsByPersonReq.personType === typeof ''
           ? personTypeInRequestFromJSON(getRequestsByPersonReq.personType)
           : getRequestsByPersonReq.personType;
-      getRequestsByPersonReq.approvementStatus =
-        getRequestsByPersonReq.approvementStatus
-          ? getRequestsByPersonReq.approvementStatus
-          : ApprovementStatus.ANY;
+      getRequestsByPersonReq.approvementStatus = getRequestsByPersonReq.approvementStatus? getRequestsByPersonReq.approvementStatus: ApprovementStatus.ANY;
       const approvementStatus: ApprovementStatus =
         typeof getRequestsByPersonReq.approvementStatus === typeof ''
           ? approvementStatusFromJSON(getRequestsByPersonReq.approvementStatus)
@@ -1183,7 +1179,7 @@ export class RequestRepository {
       if (getRequestsByPersonReq.searchQuery) {
         const searchQuery = getSearchQuery(getRequestsByPersonReq.searchQuery);
         if (query['$or']) {
-          query['and'] = [{ $or: query['$or'] }, searchQuery];
+          query['$and'] = [{ $or: query['$or'] }, searchQuery];
           delete query['$or'];
         } else {
           query = { ...query, ...searchQuery };

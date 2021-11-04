@@ -227,8 +227,9 @@ export class ApproverRepository {
       const mongoApprovers: any = await ApproverModel.find(
         {
           type: searchByDisplayNameReq.type,
-          $text: {
-            $search: searchByDisplayNameReq.displayName,
+          displayName: {
+            $regex: searchByDisplayNameReq.displayName,
+            $options: "i",
           },
         },
         {},

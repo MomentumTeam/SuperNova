@@ -49,17 +49,19 @@ RequestsRouter.put(
   RequestsController.updateRequest
 );
 
-RequestsRouter.put(
-  '/transferToApprovers/:id',
-  RequestValidator.isTransferRequestToApproversValid,
-  RequestsController.transferRequestToApprovers
-);
 
 RequestsRouter.put(
   '/adStatus',
   RequestValidator.isUpdateADStatusValid,
   RequestsController.updateADStatus
+  );
+
+RequestsRouter.put(
+  '/approver/transfer/:id',
+  RequestValidator.isTransferRequestToApproversValid,
+  RequestsController.transferRequestToApprovers
 );
+
 RequestsRouter.put(
   '/approver/commanders/:id',
   RequestValidator.isUpdateApproversValid,
