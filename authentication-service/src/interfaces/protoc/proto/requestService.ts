@@ -740,7 +740,7 @@ export interface CreateNewApproverReq {
   superSecurityApprovers: EntityMin[];
   additionalParams?: AdditionalParams | undefined;
   comments?: string | undefined;
-  approversComments?: string | undefined;
+  approversComments?: ApproversComments | undefined;
   due?: number | undefined;
 }
 
@@ -1760,7 +1760,7 @@ export interface RequestReq {
   adParams?: ADParams | undefined;
   additionalParams?: AdditionalParams | undefined;
   comments: string;
-  approversComments: ApproversComments | undefined;
+  approversComments?: ApproversComments | undefined;
   due?: number | undefined;
   isPartOfBulk?: boolean | undefined;
   bulkRequestId?: string | undefined;
@@ -5212,7 +5212,10 @@ export const CreateNewApproverReq = {
       writer.uint32(82).string(message.comments);
     }
     if (message.approversComments !== undefined) {
-      writer.uint32(90).string(message.approversComments);
+      ApproversComments.encode(
+        message.approversComments,
+        writer.uint32(90).fork()
+      ).ldelim();
     }
     if (message.due !== undefined) {
       writer.uint32(96).int64(message.due);
@@ -5280,7 +5283,10 @@ export const CreateNewApproverReq = {
           message.comments = reader.string();
           break;
         case 11:
-          message.approversComments = reader.string();
+          message.approversComments = ApproversComments.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 12:
           message.due = longToNumber(reader.int64() as Long);
@@ -5378,7 +5384,9 @@ export const CreateNewApproverReq = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = String(object.approversComments);
+      message.approversComments = ApproversComments.fromJSON(
+        object.approversComments
+      );
     } else {
       message.approversComments = undefined;
     }
@@ -5440,7 +5448,9 @@ export const CreateNewApproverReq = {
         : undefined);
     message.comments !== undefined && (obj.comments = message.comments);
     message.approversComments !== undefined &&
-      (obj.approversComments = message.approversComments);
+      (obj.approversComments = message.approversComments
+        ? ApproversComments.toJSON(message.approversComments)
+        : undefined);
     message.due !== undefined && (obj.due = message.due);
     return obj;
   },
@@ -5530,7 +5540,9 @@ export const CreateNewApproverReq = {
       object.approversComments !== undefined &&
       object.approversComments !== null
     ) {
-      message.approversComments = object.approversComments;
+      message.approversComments = ApproversComments.fromPartial(
+        object.approversComments
+      );
     } else {
       message.approversComments = undefined;
     }
