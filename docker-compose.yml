@@ -1,17 +1,17 @@
 version: '3.8'
 services:
-  # nginx:
-  #   image: nginx:latest
-  #   container_name: nginx
-  #   volumes:
-  #     - ./nginx.conf:/etc/nginx/nginx.conf
-  #   depends_on:
-  #     - api-gateway
-  #     - authentication-service
-  #     - supernova-ui
-  #   ports:
-  #     - 80:80
-  #     - 443:443
+  nginx-server:
+    image: nginx:latest
+    container_name: nginx-server
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - api-gateway
+      - authentication-service
+      - supernova-ui
+    ports:
+      - 80:80
+      - 443:443
 
   mongo:
     image: mongo:latest
@@ -214,8 +214,6 @@ services:
     build: ./kartoffel-consumer/
     env_file:
       - ./supernova.env
-    ports:
-      - '8089:8080'
     depends_on:
       - request-service
       - kartoffel-service
@@ -265,18 +263,18 @@ services:
       - WLS_CRON_JOB=false
       - WLS_LOG_PATH=/logs
 
-  # population-script:
-  #   image: population-script
-  #   build: ./population-script/
-  #   env_file:
-  #     - ./supernova.env
-  #   depends_on:
-  #     - request-service
-  #   environment:
-  #     - POS_RS_URL=request-service:8080
-  #     - POS_ENTITY_IDS=aaaaaaaaaaaaaaaaaaaaaaaa,bbbbbbbbbbbbbbbbbbbbbbbb
-  #     - POS_GENERATE_COUNT=50
-  #     - POS_LOG_PATH=/logs
+  population-script:
+    image: population-script
+    build: ./population-script/
+    env_file:
+      - ./supernova.env
+    depends_on:
+      - request-service
+    environment:
+      - POS_RS_URL=request-service:8080
+      - POS_ENTITY_IDS=aaaaaaaaaaaaaaaaaaaaaaaa,bbbbbbbbbbbbbbbbbbbbbbbb
+      - POS_GENERATE_COUNT=50
+      - POS_LOG_PATH=/logs
 
   authentication-service:
     image: authentication-service
@@ -291,8 +289,8 @@ services:
     volumes:
       - logs:/logs
     environment:
-      - AS_SHRAGA_URL=https://shraga-prod.northeurope.cloudapp.azure.com
-      - AS_CLIENT_ENDPOINT=http://localhost:3000
+      - AS_SHRAGA_URL=https://shraga.shraga.branch-yesodot.org
+      - AS_CLIENT_ENDPOINT=http://localhost
       - AS_KS_URL=kartoffel-service:8080
       - AS_APS_URL=approver-service:8080
       - AS_KARTOFFEL_ENRICH=false
@@ -321,13 +319,14 @@ services:
       - approver-service
       - tea-service
       - bulk-service
-      - apm-server
+      # - apm-server
     environment:
       - GATEWAY_KS_URL=kartoffel-service:8080
       - GATEWAY_RS_URL=request-service:8080
       - GATEWAY_PS_URL=producer-service:8080
       - GATEWAY_NS_URL=notification-service:8080
-      - GATEWAY_AS_URL=http://localhost:9000
+      # - GATEWAY_AS_URL=http://localhost:9000
+      - GATEWAY_AS_URL=http://localhost
       - GATEWAY_BS_URL=bulk-service:8080
       - GATEWAY_APS_URL=approver-service:8080
       - GATEWAY_BS_FOLDER_PATH=/bulkFiles

@@ -9,6 +9,7 @@ import {
   GetUserTypeRes,
   SearchByDisplayNameReq,
   SearchByDomainUserReq,
+  SearchHighCommandersByDisplayNameReq,
   SuccessMessage,
   SyncApproverReq,
 } from '../interfaces/protoc/proto/approverService';
@@ -215,6 +216,31 @@ export class ApproverRepository {
         error: { message: error.message },
       });
       throw error;
+    }
+  }
+
+  async searchHighCommandersByDisplayName(
+    searchHighCommandersByDisplayNameReq: SearchHighCommandersByDisplayNameReq
+  ): Promise<ApproverArray> {
+    try {
+      const kartoffelEntities =
+        await KartoffelService.searchCommandersByFullName({
+          fullName: searchHighCommandersByDisplayNameReq.displayName,
+        });
+      logger.info('searchHighCommandersByDisplayName kartoffelResults', {
+        kartoffelEntities,
+        searchHighCommandersByDisplayNameReq,
+      });
+      const approvers: Approver[] = getApproverArrayByEntityArray(
+        kartoffelEntities,
+        ApproverType.COMMANDER
+      );
+      return { approvers: approvers };
+    } catch (kartoffelError: any) {
+      logger.error('searchHighCommandersByDisplayName KartoffelError', {
+        error: { message: kartoffelError.message },
+      });
+      throw kartoffelError;
     }
   }
 

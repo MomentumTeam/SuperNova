@@ -6878,6 +6878,9 @@ export interface Kartoffel {
   SearchCommandersByFullName(
     request: SearchCommandersByFullNameRequest
   ): Promise<EntityArray>;
+  SearchHighCommandersByFullName(
+    request: SearchCommandersByFullNameRequest
+  ): Promise<EntityArray>;
   /** Groups */
   CreateOG(request: CreateOGRequest): Promise<OrganizationGroup>;
   GetAllOGs(request: GetAllOGsRequest): Promise<OGArray>;
@@ -6943,6 +6946,8 @@ export class KartoffelClientImpl implements Kartoffel {
     this.DisconnectDIFromEntity = this.DisconnectDIFromEntity.bind(this);
     this.SearchCommandersByFullName =
       this.SearchCommandersByFullName.bind(this);
+    this.SearchHighCommandersByFullName =
+      this.SearchHighCommandersByFullName.bind(this);
     this.CreateOG = this.CreateOG.bind(this);
     this.GetAllOGs = this.GetAllOGs.bind(this);
     this.GetOGByHierarchyName = this.GetOGByHierarchyName.bind(this);
@@ -7122,6 +7127,18 @@ export class KartoffelClientImpl implements Kartoffel {
     const promise = this.rpc.request(
       "Kartoffel.Kartoffel",
       "SearchCommandersByFullName",
+      data
+    );
+    return promise.then((data) => EntityArray.decode(new _m0.Reader(data)));
+  }
+
+  SearchHighCommandersByFullName(
+    request: SearchCommandersByFullNameRequest
+  ): Promise<EntityArray> {
+    const data = SearchCommandersByFullNameRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "SearchHighCommandersByFullName",
       data
     );
     return promise.then((data) => EntityArray.decode(new _m0.Reader(data)));

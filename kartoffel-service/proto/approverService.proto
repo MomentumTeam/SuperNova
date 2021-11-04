@@ -11,6 +11,8 @@ service ApproverService {
     
     rpc UpdateApproverDecision(RequestService.UpdateApproverDecisionReq) returns (RequestService.Request) {}
 
+    rpc SearchHighCommandersByDisplayName(SearchHighCommandersByDisplayNameReq) returns (ApproverArray) {}
+
     rpc GetAllApprovers(GetAllApproversReq) returns (ApproverArray) {}
     rpc GetAllApproverIds(GetAllApproversReq) returns (ApproverIdArray) {}
     rpc SyncApprover(SyncApproverReq) returns (ApproverArray){}
@@ -53,6 +55,10 @@ message SearchByDomainUserReq{
 
 message ApproverArray{
     repeated Approver approvers = 1;
+}
+
+message SearchHighCommandersByDisplayNameReq{
+    string displayName = 1;
 }
 
 message GetUserTypeReq{

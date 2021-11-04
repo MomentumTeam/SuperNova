@@ -1,4 +1,8 @@
-import { ApproverType, Decision, PersonTypeInRequest } from '../interfaces/protoc/proto/requestService';
+import {
+  ApproverType,
+  Decision,
+  PersonTypeInRequest,
+} from '../interfaces/protoc/proto/requestService';
 
 const Joi = require('joi');
 Joi.objectId = require('joi-objectid')(Joi);
@@ -10,6 +14,14 @@ export const getAllApproversSchema = Joi.object({
   query: {
     type: Joi.string().valid(...Object.keys(ApproverType)),
   },
+});
+
+export const searchHighCommandersByDisplayNameValidSchema = Joi.object({
+  body: {},
+  params: {
+    displayName: Joi.string().required(),
+  },
+  query: {},
 });
 
 export const getSearchByDisplayName = Joi.object({
@@ -37,7 +49,6 @@ export const getSearchByDomainUser = Joi.object({
       .required(),
   },
 });
-
 
 // POST
 export const addApproverSchema = Joi.object({

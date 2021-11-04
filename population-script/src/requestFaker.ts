@@ -53,7 +53,11 @@ export class RequestFaker {
       kartoffelParams: {},
       adParams: {},
       comments: faker.lorem.paragraph(),
-      approversComments: faker.lorem.paragraph(),
+      approversComments: {
+        commanderComment: faker.lorem.paragraph(),
+        securityComment: faker.lorem.paragraph(),
+        superSecurityComment: faker.lorem.paragraph(),
+      },
       due: faker.datatype.datetime().getTime(),
       isPartOfBulk: false,
     };

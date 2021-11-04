@@ -12,6 +12,7 @@ import {
   GetUserTypeRes,
   SearchByDisplayNameReq,
   SearchByDomainUserReq,
+  SearchHighCommandersByDisplayNameReq,
 } from '../interfaces/protoc/proto/approverService';
 import { logger } from '../utils/logger/logger';
 import {
@@ -62,6 +63,36 @@ export class ApproverService {
           logger.info(`getAllApprovers OK in GTW`, {
             response: response,
             callRequest: getAllApproversReq,
+          });
+          resolve(response);
+        }
+      );
+    });
+  }
+
+  static async searchHighCommandersByDisplayName(
+    searchHighCommandersByDisplayNameReq: SearchHighCommandersByDisplayNameReq
+  ) {
+    logger.info(
+      `Call to searchHighCommandersByDisplayName in GTW`,
+      searchHighCommandersByDisplayNameReq
+    );
+
+    return new Promise((resolve, reject) => {
+      approverClient.SearchHighCommandersByDisplayName(
+        searchHighCommandersByDisplayNameReq,
+        (err: any, response: ApproverArray) => {
+          if (err) {
+            logger.error(`searchHighCommandersByDisplayName ERROR in GTW`, {
+              err,
+              callRequest: searchHighCommandersByDisplayNameReq,
+            });
+            reject(err);
+          }
+
+          logger.info(`searchHighCommandersByDisplayName OK in GTW`, {
+            response: response,
+            callRequest: searchHighCommandersByDisplayNameReq,
           });
           resolve(response);
         }
