@@ -34,7 +34,7 @@ RUN mkdir -p /usr/src/app && chown -R node:node /usr/src/app
 WORKDIR /usr/src/app
 
 COPY --chown=node:node ./package*.json ./
-COPY --chown=node:node ./src/excelFilesExample bulk-files
+COPY --chown=node:node ./src/excelFilesExample /bulkFiles
 
 RUN npm ci --production && npm cache clean --force
 
