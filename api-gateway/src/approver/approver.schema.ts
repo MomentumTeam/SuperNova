@@ -74,9 +74,6 @@ export const approverDecisionObj = Joi.object({
 export const updateApproverDecisionSchema = Joi.object({
   body: {
     decision: approverDecisionObj.required(),
-    type: Joi.string()
-      .valid(...Object.keys(PersonTypeInRequest))
-      .required(),
   },
   params: {
     requestId: Joi.objectId().required(),

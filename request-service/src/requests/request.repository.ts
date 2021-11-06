@@ -1135,15 +1135,11 @@ export class RequestRepository {
         ['createdAt', -1],
         ['status', 1],
       ];
-
       const personTypeInRequest: PersonTypeInRequest =
         typeof getRequestsByPersonReq.personType === typeof ''
           ? personTypeInRequestFromJSON(getRequestsByPersonReq.personType)
           : getRequestsByPersonReq.personType;
-      getRequestsByPersonReq.approvementStatus =
-        getRequestsByPersonReq.approvementStatus
-          ? getRequestsByPersonReq.approvementStatus
-          : ApprovementStatus.ANY;
+      getRequestsByPersonReq.approvementStatus = getRequestsByPersonReq.approvementStatus? getRequestsByPersonReq.approvementStatus: ApprovementStatus.ANY;
       const approvementStatus: ApprovementStatus =
         typeof getRequestsByPersonReq.approvementStatus === typeof ''
           ? approvementStatusFromJSON(getRequestsByPersonReq.approvementStatus)

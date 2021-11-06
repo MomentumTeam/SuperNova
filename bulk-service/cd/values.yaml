@@ -16,6 +16,7 @@ service:
 
 volume:
   - name: bulk-files-utils
+    type: azurefile
     mountPath: /bulkFiles
     secretName: azure-secret
     shareName: momentum/bulk-files

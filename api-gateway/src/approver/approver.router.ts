@@ -38,7 +38,7 @@ ApproverRouter.put(
   '/decision/:requestId',
   ApproverValidator.isUpdateApproverDecisionValid,
   ApproverController.updateApproverDecision
-); // TODO: CHANGE add user type from user conncted? discuss about this with barak
+);
 
 // DELETE
 ApproverRouter.delete(
