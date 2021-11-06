@@ -3,8 +3,8 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import {
   ApproverType,
+  ApproverDecision,
   Request,
-  UpdateApproverDecisionReq,
   approverTypeFromJSON,
   approverTypeToJSON,
 } from "./requestService";
@@ -119,6 +119,11 @@ export interface AddApproverReq {
   personalNumber?: string | undefined;
   identityCard?: string | undefined;
   directGroup: string;
+}
+
+export interface UpdateApproverDecisionReq {
+  id: string;
+  approverDecision: ApproverDecision | undefined;
 }
 
 export interface Approver {
@@ -1111,6 +1116,111 @@ export const AddApproverReq = {
       message.directGroup = object.directGroup;
     } else {
       message.directGroup = "";
+    }
+    return message;
+  },
+};
+
+const baseUpdateApproverDecisionReq: object = { id: "" };
+
+export const UpdateApproverDecisionReq = {
+  encode(
+    message: UpdateApproverDecisionReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.approverDecision !== undefined) {
+      ApproverDecision.encode(
+        message.approverDecision,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): UpdateApproverDecisionReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseUpdateApproverDecisionReq,
+    } as UpdateApproverDecisionReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        case 2:
+          message.approverDecision = ApproverDecision.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UpdateApproverDecisionReq {
+    const message = {
+      ...baseUpdateApproverDecisionReq,
+    } as UpdateApproverDecisionReq;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    if (
+      object.approverDecision !== undefined &&
+      object.approverDecision !== null
+    ) {
+      message.approverDecision = ApproverDecision.fromJSON(
+        object.approverDecision
+      );
+    } else {
+      message.approverDecision = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: UpdateApproverDecisionReq): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    message.approverDecision !== undefined &&
+      (obj.approverDecision = message.approverDecision
+        ? ApproverDecision.toJSON(message.approverDecision)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<UpdateApproverDecisionReq>
+  ): UpdateApproverDecisionReq {
+    const message = {
+      ...baseUpdateApproverDecisionReq,
+    } as UpdateApproverDecisionReq;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    if (
+      object.approverDecision !== undefined &&
+      object.approverDecision !== null
+    ) {
+      message.approverDecision = ApproverDecision.fromPartial(
+        object.approverDecision
+      );
+    } else {
+      message.approverDecision = undefined;
     }
     return message;
   },
