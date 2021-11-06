@@ -183,6 +183,23 @@ export default class KartoffelController {
     }
   }
 
+  static async isOGNameAlreadyTaken(req: Request, res: Response) {
+    const isOGNameAlreadyTakenReq: any = {
+      name: req.query.name,
+      parent: req.query.parent,
+    };
+
+    try {
+      const response = await KartoffelService.isOGNameAlreadyTaken(
+        isOGNameAlreadyTakenReq
+      );
+      res.send(response);
+    } catch (error: any) {
+      const statusCode = statusCodeHandler(error);
+      res.status(statusCode).send(error.message);
+    }
+  }
+
   static async getOGRootChildren(req: Request, res: Response) {
     const getOGRootChildrenReq: any = { ...req.params, ...req.query };
 

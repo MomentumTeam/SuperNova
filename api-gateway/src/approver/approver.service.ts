@@ -17,8 +17,14 @@ import {
 } from "../interfaces/protoc/proto/approverService";
 import { logger } from '../utils/logger/logger';
 import {
+  ApproverType,
   Request,
 } from '../interfaces/protoc/proto/requestService';
+import {
+  DigitalIdentity,
+  Entity,
+  EntityArray,
+} from '../interfaces/protoc/proto/kartoffelService';
 
 const PROTO_PATH = __dirname.includes('dist')
   ? path.join(__dirname, '../../../proto/approverService.proto')
@@ -160,7 +166,9 @@ export class ApproverService {
     });
   }
 
-  static async getUserType(getUserTypeReq: GetUserTypeReq) {
+  static async getUserType(
+    getUserTypeReq: GetUserTypeReq
+  ): Promise<GetUserTypeRes> {
     logger.info(`Call to getUserTypeReq in GTW`, getUserTypeReq);
 
     return new Promise((resolve, reject) => {
