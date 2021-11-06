@@ -72,11 +72,6 @@ RequestsRouter.put(
   RequestValidator.isUpdateApproversValid,
   RequestsController.updateSecurityApprovers
 );
-RequestsRouter.put(
-  '/approver/decision/:id',
-  RequestValidator.isUpdateApproverDecision,
-  RequestsController.updateApproverDecision
-);
 
 RequestsRouter.put(
   '/request/entity',

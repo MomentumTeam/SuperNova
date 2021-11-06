@@ -13,11 +13,11 @@ import {
   SearchByDisplayNameReq,
   SearchByDomainUserReq,
   SearchHighCommandersByDisplayNameReq,
-} from '../interfaces/protoc/proto/approverService';
+  UpdateApproverDecisionReq,
+} from "../interfaces/protoc/proto/approverService";
 import { logger } from '../utils/logger/logger';
 import {
   Request,
-  UpdateApproverDecisionReq,
 } from '../interfaces/protoc/proto/requestService';
 
 const PROTO_PATH = __dirname.includes('dist')

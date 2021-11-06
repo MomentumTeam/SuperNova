@@ -12,7 +12,8 @@ import {
   SearchHighCommandersByDisplayNameReq,
   SuccessMessage,
   SyncApproverReq,
-} from '../interfaces/protoc/proto/approverService';
+  UpdateApproverDecisionReq,
+} from "../interfaces/protoc/proto/approverService";
 import {
   DigitalIdentity,
   Entity,
@@ -24,8 +25,8 @@ import {
   PersonTypeInRequest,
   personTypeInRequestFromJSON,
   Request,
-  UpdateApproverDecisionReq,
-} from '../interfaces/protoc/proto/requestService';
+  UpdateApproverDecisionReq as UpdateApproverDecisionReqService,
+} from "../interfaces/protoc/proto/requestService";
 import { logger } from '../logger';
 import { ApproverModel } from '../models/approver.model';
 import KartoffelService from '../services/kartoffelService';
@@ -376,7 +377,7 @@ export class ApproverRepository {
   ): Promise<Request> {
     try {
       let updatedRequest: any = undefined;
-      let currentUpdateRequest = updateApproverDecisionReq;
+      let currentUpdateRequest: UpdateApproverDecisionReqService = {...updateApproverDecisionReq, approverType:PersonTypeInRequest.UNRECOGNIZED};
       const approverId: any =
         updateApproverDecisionReq.approverDecision?.approver?.id;
       const hasPermission = await hasPermissionToDecide(approverId);
@@ -394,22 +395,20 @@ export class ApproverRepository {
           types.includes(ApproverType.ADMIN) ||
           types.includes(ApproverType.COMMANDER)
         ) {
-          currentUpdateRequest.approverType =
-            PersonTypeInRequest.COMMANDER_APPROVER;
+          currentUpdateRequest.approverType = PersonTypeInRequest.COMMANDER_APPROVER;
           updatedRequest = await RequestService.updateApproverDecision(
             currentUpdateRequest
           );
         }
+
         if (types.includes(ApproverType.SECURITY)) {
-          currentUpdateRequest.approverType =
-            PersonTypeInRequest.SECURITY_APPROVER;
+          currentUpdateRequest.approverType = PersonTypeInRequest.SECURITY_APPROVER;
           updatedRequest = await RequestService.updateApproverDecision(
             currentUpdateRequest
           );
         }
         if (types.includes(ApproverType.SUPER_SECURITY)) {
-          currentUpdateRequest.approverType =
-            PersonTypeInRequest.SUPER_SECURITY_APPROVER;
+          currentUpdateRequest.approverType = PersonTypeInRequest.SUPER_SECURITY_APPROVER;
           updatedRequest = await RequestService.updateApproverDecision(
             currentUpdateRequest
           );
