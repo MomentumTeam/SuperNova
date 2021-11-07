@@ -10,7 +10,7 @@ images:
   tag: 'latest'
 service:
   ports:
-    - name: http-request-service
+    - name: http-rs
       port: '8080'
 config:
   configmaps:
