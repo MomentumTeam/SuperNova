@@ -1,4 +1,4 @@
-name: "producer-service"
+name: 'producer-service'
 # If you want to overide the full name you can include the 'fullnameOverride' value
 #fullname:
 replicaCount: 1
@@ -7,11 +7,11 @@ images:
   PullSecrets:
     name: momentumacr
   repository: momentumacr.azurecr.io/producer-service
-  tag: "latest"
+  tag: 'latest'
 service:
   ports:
-  - name: http
-    port: "8080"
+    - name: http-ps
+      port: '8080'
 config:
   configmaps:
-      name: momentum-configmap
+    name: momentum-configmap

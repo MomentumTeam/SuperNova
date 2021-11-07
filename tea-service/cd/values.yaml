@@ -10,7 +10,7 @@ images:
   tag: 'latest'
 service:
   ports:
-    - name: http-tea-service
+    - name: http-ts
       port: '8080'
 config:
   configmaps:

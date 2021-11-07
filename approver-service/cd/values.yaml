@@ -1,4 +1,4 @@
-name: "approver-service"
+name: 'approver-service'
 # If you want to overide the full name you can include the 'fullnameOverride' value
 #fullname:
 replicaCount: 1
@@ -7,12 +7,12 @@ images:
   PullSecrets:
     name: momentumacr
   repository: momentumacr.azurecr.io/approver-service
-  tag: "latest"
+  tag: 'latest'
 
 service:
   ports:
-  - name: http
-    port: "8080"
+    - name: http-aps
+      port: '8080'
 
 volume: 
   - name: logs
@@ -23,4 +23,4 @@ volume:
 
 config:
   configmaps:
-      name: momentum-configmap
+    name: momentum-configmap
