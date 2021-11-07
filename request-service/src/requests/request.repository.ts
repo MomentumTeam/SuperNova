@@ -1135,6 +1135,7 @@ export class RequestRepository {
         ['createdAt', -1],
         ['status', 1],
       ];
+      let waitingForApproveCount = 0;
 
       const personTypeInRequest: PersonTypeInRequest =
         typeof getRequestsByPersonReq.personType === typeof ''
@@ -1212,7 +1213,7 @@ export class RequestRepository {
       } else {
         query = { ...query, ...waitingForApproveCountQuery };
       }
-      const waitingForApproveCount = await RequestModel.count(query);
+      waitingForApproveCount = await RequestModel.count(query);
       if (requests) {
         let documents: any = [];
         for (let i = 0; i < requests.length; i++) {
