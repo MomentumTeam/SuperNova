@@ -13,12 +13,12 @@ import {
   SearchByDisplayNameReq,
   SearchByDomainUserReq,
   SearchHighCommandersByDisplayNameReq,
-} from '../interfaces/protoc/proto/approverService';
+  UpdateApproverDecisionReq,
+} from "../interfaces/protoc/proto/approverService";
 import { logger } from '../utils/logger/logger';
 import {
   ApproverType,
   Request,
-  UpdateApproverDecisionReq,
 } from '../interfaces/protoc/proto/requestService';
 import {
   DigitalIdentity,

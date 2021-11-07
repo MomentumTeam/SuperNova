@@ -1,4 +1,4 @@
-name: "tea-service"
+name: 'tea-service'
 # If you want to overide the full name you can include the 'fullnameOverride' value
 #fullname:
 replicaCount: 1
@@ -7,14 +7,14 @@ images:
   PullSecrets:
     name: momentumacr
   repository: momentumacr.azurecr.io/tea-service
-  tag: "latest"
+  tag: 'latest'
 service:
   ports:
-  - name: http
-    port: "8080"
+    - name: http-tea-service
+      port: '8080'
 config:
   configmaps:
-      name: momentum-configmap
+    name: momentum-configmap
 
 volume:
   - name: tea-utils

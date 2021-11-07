@@ -9,7 +9,7 @@ service ApproverService {
     rpc SearchApproverByDisplayName(SearchByDisplayNameReq) returns (ApproverArray) {}
     rpc SearchApproverByDomainUser(SearchByDomainUserReq) returns (ApproverArray) {}
     
-    rpc UpdateApproverDecision(RequestService.UpdateApproverDecisionReq) returns (RequestService.Request) {}
+    rpc UpdateApproverDecision(UpdateApproverDecisionReq) returns (RequestService.Request) {}
 
     rpc SearchHighCommandersByDisplayName(SearchHighCommandersByDisplayNameReq) returns (ApproverArray) {}
 
@@ -79,6 +79,11 @@ message AddApproverReq{
     optional string personalNumber = 6;
     optional string identityCard = 7;
     string directGroup = 8;
+}
+
+message UpdateApproverDecisionReq{
+    string id = 1;
+    RequestService.ApproverDecision approverDecision = 2;
 }
 
 message Approver{

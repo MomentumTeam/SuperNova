@@ -11,7 +11,6 @@ import {
   updateADStatusSchema,
   updateRequestSchema,
   UpdateApproversSchema,
-  updateApproverDecisionSchema,
   createRoleSchema,
   assignRoleToEntitySchema,
   createOGSchema,
@@ -133,18 +132,6 @@ export class RequestValidator {
     transformRequest(
       req,
       validateObject(req, UpdateApproversSchema, { allowUnknown: true })
-    );
-    next();
-  }
-
-  static isUpdateApproverDecision(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
-    transformRequest(
-      req,
-      validateObject(req, updateApproverDecisionSchema, { allowUnknown: true })
     );
     next();
   }

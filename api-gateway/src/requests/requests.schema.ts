@@ -181,19 +181,6 @@ export const UpdateApproversSchema = Joi.object({
   query: {},
 });
 
-export const updateApproverDecisionSchema = Joi.object({
-  body: {
-    approverDecision: ApproverDecisionObj,
-    approverType: Joi.string()
-      .valid(...Object.keys(PersonTypeInRequest))
-      .required(),
-  },
-  params: {
-    id: Joi.objectId().required(),
-  },
-  query: {},
-});
-
 // POST
 
 const createRoleKartoffelParamsObj = Joi.object({
