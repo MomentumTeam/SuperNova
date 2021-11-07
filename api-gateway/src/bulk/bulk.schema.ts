@@ -16,7 +16,6 @@ Joi.objectId = require('joi-objectid')(Joi);
 // OBJ
 const createRoleBulkKartoffelParamsObj = Joi.object({
   directGroup: Joi.string().required(),
-  unit: Joi.string().required(),
 });
 
 const createRoleBulkADParamsObj = Joi.object({

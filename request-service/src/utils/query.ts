@@ -208,6 +208,18 @@ export function getWaitingForApproveCountQuery(userType: ApproverType[]) {
       ],
     });
   }
+  if (orArray.length === 0) {
+    orArray.push({
+      status: {
+        $nin: [
+          requestStatusToJSON(RequestStatus.DONE),
+          requestStatusToJSON(RequestStatus.FAILED),
+          requestStatusToJSON(RequestStatus.IN_PROGRESS),
+          requestStatusToJSON(RequestStatus.DECLINED),
+        ],
+      },
+    });
+  }
   return { $or: orArray };
 }
 

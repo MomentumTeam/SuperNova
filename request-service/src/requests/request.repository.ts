@@ -1135,11 +1135,16 @@ export class RequestRepository {
         ['createdAt', -1],
         ['status', 1],
       ];
+      let waitingForApproveCount = 0;
+
       const personTypeInRequest: PersonTypeInRequest =
         typeof getRequestsByPersonReq.personType === typeof ''
           ? personTypeInRequestFromJSON(getRequestsByPersonReq.personType)
           : getRequestsByPersonReq.personType;
-      getRequestsByPersonReq.approvementStatus = getRequestsByPersonReq.approvementStatus? getRequestsByPersonReq.approvementStatus: ApprovementStatus.ANY;
+      getRequestsByPersonReq.approvementStatus =
+        getRequestsByPersonReq.approvementStatus
+          ? getRequestsByPersonReq.approvementStatus
+          : ApprovementStatus.ANY;
       const approvementStatus: ApprovementStatus =
         typeof getRequestsByPersonReq.approvementStatus === typeof ''
           ? approvementStatusFromJSON(getRequestsByPersonReq.approvementStatus)
@@ -1208,7 +1213,7 @@ export class RequestRepository {
       } else {
         query = { ...query, ...waitingForApproveCountQuery };
       }
-      const waitingForApproveCount = await RequestModel.count(query);
+      waitingForApproveCount = await RequestModel.count(query);
       if (requests) {
         let documents: any = [];
         for (let i = 0; i < requests.length; i++) {
