@@ -1032,7 +1032,7 @@ export class RequestRepository {
         break;
       case RequestType.CREATE_ROLE_BULK:
         request.needSecurityDecision = true;
-        request.needSuperSecurityDecision = true;
+        request.needSuperSecurityDecision = false;
         break;
       case RequestType.CHANGE_ROLE_HIERARCHY_BULK:
         request.needSecurityDecision = true;

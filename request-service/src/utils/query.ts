@@ -123,12 +123,19 @@ export function getRequestTypeQuery(type: any) {
 export function getSearchQuery(searchQuery: any) {
   let orArray = [];
   orArray = searchFields.map((field) => {
-    return {
-      [field]: {
-        $regex: searchQuery,
-        $options: 'i',
-      },
-    };
+    if (field.type === undefined)
+      return {
+        [field.name]: {
+          $regex: searchQuery,
+          $options: "i",
+        },
+      };
+
+    if (field.type && field.type === "number" && !isNaN(searchQuery)) {
+      return { $where: `/${searchQuery}/.test(this.${field.name})` };
+    }
+
+    return {};
   });
   return {
     $or: orArray,

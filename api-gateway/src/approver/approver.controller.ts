@@ -8,7 +8,8 @@ import {
   AddApproverReq,
   DeleteApproverReq,
   SearchHighCommandersByDisplayNameReq,
-} from '../interfaces/protoc/proto/approverService';
+  UpdateApproverDecisionReq,
+} from "../interfaces/protoc/proto/approverService";
 import { ApproverService } from './approver.service';
 import { KartoffelService } from '../kartoffel/kartoffel.service';
 import {
@@ -23,7 +24,6 @@ import {
   RequestStatus,
   RequestType,
   requestTypeFromJSON,
-  UpdateApproverDecisionReq,
 } from '../interfaces/protoc/proto/requestService';
 import { AuthenticationError } from '../utils/errors/userErrors';
 import { statusCodeHandler } from '../utils/errors/errorHandlers';
@@ -182,7 +182,6 @@ export default class ApproverController {
     const updateApproverDecisionReq: UpdateApproverDecisionReq = {
       id: req.params.requestId,
       approverDecision: approverDecision,
-      approverType: req.params.type,
     };
 
     try {

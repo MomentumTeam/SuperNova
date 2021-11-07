@@ -12,10 +12,10 @@ import {
   SearchHighCommandersByDisplayNameReq,
   SuccessMessage,
   SyncApproverReq,
+  UpdateApproverDecisionReq,
 } from '../interfaces/protoc/proto/approverService';
 import {
   Request,
-  UpdateApproverDecisionReq,
 } from '../interfaces/protoc/proto/requestService';
 import { ApproverRepository } from './approver.repository';
 
