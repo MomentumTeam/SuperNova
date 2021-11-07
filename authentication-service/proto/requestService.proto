@@ -690,7 +690,6 @@ message CreateRoleBulkRes{
 
 message CreateRoleBulkKartoffelParams{
     string directGroup = 1; //The same for all the rows
-    string unit = 2;
 }
 
 message CreateRoleBulkADParams{
@@ -760,16 +759,15 @@ message CreateRoleKartoffelParams{
     string directGroup = 2; //groupId of direct father
     optional string roleId = 3; //T154514... generated automatically by tea-service if not given
     string clearance = 4; //clearance of the role
-    optional string unit = 5;
 
     //forDigitalIdentity
-    string type = 6; //always domainUser
-    string source = 7; //always oneTree
-    optional string uniqueId = 8; //T154514... generated automatically by tea-service if not given
-    optional string mail = 9; //T154514... generated automatically by tea-service if not given
-    bool isRoleAttachable = 10; //true, if the role is unoccupied
+    string type = 5; //always domainUser
+    string source = 6; //always oneTree
+    optional string uniqueId = 7; //T154514... generated automatically by tea-service if not given
+    optional string mail = 8; //T154514... generated automatically by tea-service if not given
+    bool isRoleAttachable = 9; //true, if the role is unoccupied
 
-    optional string roleEntityType = 11;
+    optional string roleEntityType = 10;
 }
 
 message CreateRoleADParams{
@@ -1162,37 +1160,36 @@ message KartoffelParams{
     optional string jobTitle = 4;
     optional string directGroup = 5;
     optional string roleId = 6;
-    optional string unit = 7;
 
     //forDigitalIdentity
-    optional string type = 8;
+    optional string type = 7;
     // string source = 2;
-    optional string uniqueId = 9;
-    optional string mail = 10;
-    optional bool isRoleAttachable = 11;
+    optional string uniqueId = 8;
+    optional string mail = 9;
+    optional bool isRoleAttachable = 10;
 
     //AssignRoleToEntity, same as changing role to entity
-    optional string id = 12;
+    optional string id = 11;
     // string uniqueId = 8;
-    bool needDisconnect = 13;
+    bool needDisconnect = 12;
     //CreateEntity
-    optional string firstName = 14;
-    optional string lastName = 15;
-    optional string identityCard = 16;
-    optional string personalNumber = 17;
-    optional string serviceType = 18;
-    repeated string phone = 19;
-    repeated string mobilePhone = 20;
-    optional string address = 21;
-    optional string clearance = 22; //for createRole too
-    optional string sex = 23;
-    optional int64 birthdate = 24;
-    optional string entityType = 25;
+    optional string firstName = 13;
+    optional string lastName = 14;
+    optional string identityCard = 15;
+    optional string personalNumber = 16;
+    optional string serviceType = 17;
+    repeated string phone = 18;
+    repeated string mobilePhone = 19;
+    optional string address = 20;
+    optional string clearance = 21; //for createRole too
+    optional string sex = 22;
+    optional int64 birthdate = 23;
+    optional string entityType = 24;
 
-    optional string roleEntityType = 26;
+    optional string roleEntityType = 25;
 
-    optional string currentJobTitle = 27;
-    optional string newJobTitle = 28;
+    optional string currentJobTitle = 26;
+    optional string newJobTitle = 27;
     
 
     //RenameOG
