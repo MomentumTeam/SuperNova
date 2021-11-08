@@ -45,7 +45,8 @@ export class EntitiesRepository {
           `${C.kartoffelUrl}/api/entities`,
           createEntityRequest
         );
-        return data as Entity;
+        const entity = await this.getEntityById({ id: data.id });
+        return entity as Entity;
       }
     } catch (error) {
       throw error;
@@ -279,7 +280,7 @@ export class EntitiesRepository {
           await this.kartoffelFaker.randomEntityArray(false);
         return entityArray;
       } else {
-        let url = `${C.kartoffelUrl}/api/entities/search?fullName=${searchEntitiesByFullNameRequest.fullName}`;
+        let url = `${C.kartoffelUrl}/api/entities/search?fullName=${searchEntitiesByFullNameRequest.fullName}&expanded=true`;
         if (searchEntitiesByFullNameRequest.rank) {
           url = url + `&rank=${searchEntitiesByFullNameRequest.rank}`;
         }
@@ -295,11 +296,12 @@ export class EntitiesRepository {
         if (searchEntitiesByFullNameRequest.status) {
           url = url + `&status=${searchEntitiesByFullNameRequest.status}`;
         }
-        if (searchEntitiesByFullNameRequest.source) {
-          url = url + `&source=${searchEntitiesByFullNameRequest.source}`;
-        } else {
-          url = url + `&source=oneTree`;
-        }
+        // if (searchEntitiesByFullNameRequest.source) {
+        //   url = url + `&source=${searchEntitiesByFullNameRequest.source}`;
+        // } else {
+        //   url = url + `&source=oneTree`;
+        // }
+        url = encodeURI(url);
         const data = await this.kartoffelUtils.kartoffelGet(url);
         return { entities: data as Entity[] };
       }
@@ -330,10 +332,10 @@ export class EntitiesRepository {
         );
         delete data.picture;
         if (withPicture) {
-          const picture = this.getPictureByEntityId({
+          const picture = await this.getPictureByEntityId({
             id: getEntityByIdRequest.id,
           });
-          data.picture = picture;
+          data.picture = picture.image;
         }
         return data as Entity;
       }
@@ -370,12 +372,14 @@ export class EntitiesRepository {
         return entity;
       } else {
         let updateReq = updateEntityRequest.properties;
+        cleanUnderscoreFields(updateReq);
         //TODO update date fields
-        const data = await this.kartoffelUtils.kartoffelPost(
+        const data = await this.kartoffelUtils.kartoffelPatch(
           `${C.kartoffelUrl}/api/entities/${updateEntityRequest.id}`,
           { ...updateReq }
         );
-        return data as Entity;
+        const entity = await this.getEntityById({ id: updateEntityRequest.id });
+        return entity as Entity;
       }
     } catch (error) {
       throw error;
