@@ -130,7 +130,7 @@ export class GroupsRepository {
           `${C.kartoffelUrl}/api/groups`,
           getAllOGsRequest
         );
-        return res as OGArray;
+        return { groups: res } as OGArray;
       }
     } catch (error) {
       throw error;

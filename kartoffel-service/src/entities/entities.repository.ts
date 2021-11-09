@@ -296,11 +296,11 @@ export class EntitiesRepository {
         if (searchEntitiesByFullNameRequest.status) {
           url = url + `&status=${searchEntitiesByFullNameRequest.status}`;
         }
-        // if (searchEntitiesByFullNameRequest.source) {
-        //   url = url + `&source=${searchEntitiesByFullNameRequest.source}`;
-        // } else {
-        //   url = url + `&source=oneTree`;
-        // }
+        if (searchEntitiesByFullNameRequest.source) {
+          url = url + `&source=${searchEntitiesByFullNameRequest.source}`;
+        } else {
+          url = url + `&source=oneTree`;
+        }
         url = encodeURI(url);
         const data = await this.kartoffelUtils.kartoffelGet(url);
         return { entities: data as Entity[] };
