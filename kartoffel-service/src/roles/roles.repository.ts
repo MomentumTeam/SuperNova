@@ -22,6 +22,7 @@ import { KartoffelFaker } from '../mock/kartoffel.faker';
 import { KartoffelUtils } from '../utils/kartoffel.utils';
 import * as C from '../config';
 import { getSuggestions, jobTitleExists } from '../utils/jobTitles.utils';
+import { cleanUnderscoreFields } from '../utils/json.utils';
 
 export class RolesRepository {
   private kartoffelFaker: KartoffelFaker;
@@ -35,6 +36,7 @@ export class RolesRepository {
     getAllRolesRequest: GetAllRolesRequest
   ): Promise<RoleArray> {
     try {
+      cleanUnderscoreFields(getAllRolesRequest);
       if (C.useFaker) {
         return this.kartoffelFaker.randomRoleArray(getAllRolesRequest.pageSize);
       } else {
@@ -51,6 +53,7 @@ export class RolesRepository {
 
   async createRole(createRoleRequest: CreateRoleRequest): Promise<Role> {
     try {
+      cleanUnderscoreFields(createRoleRequest);
       if (C.useFaker) {
         return this.kartoffelFaker.randomRole();
       } else {
@@ -69,6 +72,7 @@ export class RolesRepository {
     getRolesUnderOGRequest: GetRolesUnderOGRequest
   ): Promise<RoleArray> {
     try {
+      cleanUnderscoreFields(getRolesUnderOGRequest);
       if (C.useFaker) {
         return this.kartoffelFaker.randomRoleArray(
           getRolesUnderOGRequest.pageSize
@@ -87,6 +91,7 @@ export class RolesRepository {
 
   async deleteRole(deleteRoleRequest: DeleteRoleRequest): Promise<Role> {
     try {
+      cleanUnderscoreFields(deleteRoleRequest);
       if (C.useFaker) {
         return this.kartoffelFaker.randomRole();
       } else {
@@ -103,6 +108,7 @@ export class RolesRepository {
     isRoleAlreadyTakenRequest: IsRoleAlreadyTakenReq
   ): Promise<IsRoleAlreadyTakenRes> {
     try {
+      cleanUnderscoreFields(isRoleAlreadyTakenRequest);
       if (C.useFaker) {
         const isRoleAlradyTaken = Math.random() < 0.5;
         return { isRoleAlreadyTaken: isRoleAlradyTaken };
@@ -134,6 +140,7 @@ export class RolesRepository {
     isJobTitleAlreadyTakenRequest: IsJobTitleAlreadyTakenReq
   ): Promise<IsJobTitleAlreadyTakenRes> {
     try {
+      cleanUnderscoreFields(isJobTitleAlreadyTakenRequest);
       if (C.useFaker) {
         const isJobTitleAlreadyTaken = Math.random() < 0.5;
         let res: any = { isJobTitleAlreadyTaken: isJobTitleAlreadyTaken };
@@ -165,6 +172,7 @@ export class RolesRepository {
     connectRoleAndDIRequest: ConnectRoleAndDIRequest
   ): Promise<SuccessMessage> {
     try {
+      cleanUnderscoreFields(connectRoleAndDIRequest);
       if (C.useFaker) {
         return { success: true };
       } else {
@@ -183,6 +191,7 @@ export class RolesRepository {
     getRoleByRoleIdRequest: GetRoleByRoleIdRequest
   ): Promise<Role> {
     try {
+      cleanUnderscoreFields(getRoleByRoleIdRequest);
       if (C.useFaker) {
         return this.kartoffelFaker.randomRole();
       } else {
@@ -200,6 +209,7 @@ export class RolesRepository {
     disconnectRoleAndDIRequest: DisconnectRoleAndDIRequest
   ): Promise<SuccessMessage> {
     try {
+      cleanUnderscoreFields(disconnectRoleAndDIRequest);
       if (C.useFaker) {
         return { success: true };
       } else {
@@ -215,6 +225,7 @@ export class RolesRepository {
 
   async renameRole(RenameRoleRequest: RenameRoleRequest): Promise<Role> {
     try {
+      cleanUnderscoreFields(RenameRoleRequest);
       if (C.useFaker) {
         return this.kartoffelFaker.randomRole();
       } else {
@@ -231,6 +242,7 @@ export class RolesRepository {
 
   async getRoleByDI(getRoleByDIRequest: GetRoleByDIRequest): Promise<Role> {
     try {
+      cleanUnderscoreFields(getRoleByDIRequest);
       if (C.useFaker) {
         return this.kartoffelFaker.randomRole();
       } else {
@@ -249,6 +261,7 @@ export class RolesRepository {
     getRolesByHierarchy: GetRolesByHierarchyRequest
   ): Promise<Role> {
     try {
+      cleanUnderscoreFields(getRolesByHierarchy);
       if (C.useFaker) {
         return this.kartoffelFaker.randomRole();
       } else {
@@ -265,6 +278,7 @@ export class RolesRepository {
 
   async changeRoleOG(changeRoleOGRequest: ChangeRoleOGRequest): Promise<Role> {
     try {
+      cleanUnderscoreFields(changeRoleOGRequest);
       if (C.useFaker) {
         return this.kartoffelFaker.randomRole();
       } else {

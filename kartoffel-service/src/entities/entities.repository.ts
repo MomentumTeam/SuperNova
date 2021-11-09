@@ -36,6 +36,7 @@ export class EntitiesRepository {
     createEntityRequest: CreateEntityRequest
   ): Promise<Entity> {
     try {
+      cleanUnderscoreFields(createEntityRequest);
       if (C.useFaker) {
         const entity: Entity = await this.kartoffelFaker.randomEntity(false);
         return entity;
@@ -44,7 +45,8 @@ export class EntitiesRepository {
           `${C.kartoffelUrl}/api/entities`,
           createEntityRequest
         );
-        return data as Entity;
+        const entity = await this.getEntityById({ id: data.id });
+        return entity as Entity;
       }
     } catch (error) {
       throw error;
@@ -55,6 +57,7 @@ export class EntitiesRepository {
     getEntityByDIRequest: GetEntityByDIRequest
   ): Promise<Entity> {
     try {
+      cleanUnderscoreFields(getEntityByDIRequest);
       if (C.useFaker) {
         const entity: Entity = await this.kartoffelFaker.randomEntity(false);
         return entity;
@@ -74,6 +77,7 @@ export class EntitiesRepository {
     getEntityByRoleIdRequest: GetEntityByRoleIdRequest
   ): Promise<Entity> {
     try {
+      cleanUnderscoreFields(getEntityByRoleIdRequest);
       if (C.useFaker) {
         const entity: Entity = await this.kartoffelFaker.randomEntity(false);
         return entity;
@@ -93,6 +97,7 @@ export class EntitiesRepository {
     getEntitiesUnderOGRequest: GetEntitiesUnderOGRequest
   ): Promise<EntityArray> {
     try {
+      cleanUnderscoreFields(getEntitiesUnderOGRequest);
       if (C.useFaker) {
         const entityArray: EntityArray =
           await this.kartoffelFaker.randomEntityArray(
@@ -131,6 +136,7 @@ export class EntitiesRepository {
     getPictureByEntityIdRequest: GetPictureByEntityIdRequest
   ): Promise<Image> {
     try {
+      cleanUnderscoreFields(getPictureByEntityIdRequest);
       if (C.useFaker) {
         const image: Image = await this.kartoffelFaker.randomPicture();
         return image;
@@ -154,6 +160,7 @@ export class EntitiesRepository {
     getEntitiesByHierarchyRequest: GetEntitiesByHierarchyRequest
   ): Promise<EntityArray> {
     try {
+      cleanUnderscoreFields(getEntitiesByHierarchyRequest);
       if (C.useFaker) {
         const entityArray: EntityArray =
           await this.kartoffelFaker.randomEntityArray(
@@ -162,7 +169,6 @@ export class EntitiesRepository {
           );
         return entityArray;
       } else {
-        cleanUnderscoreFields(getEntitiesByHierarchyRequest);
         getEntitiesByHierarchyRequest.page = getEntitiesByHierarchyRequest.page
           ? getEntitiesByHierarchyRequest.page
           : 1;
@@ -194,6 +200,7 @@ export class EntitiesRepository {
     getEntityByIndetifierRequest: GetEntityByIdentifierRequest
   ): Promise<Entity> {
     try {
+      cleanUnderscoreFields(getEntityByIndetifierRequest);
       if (C.useFaker) {
         const entity: Entity = await this.kartoffelFaker.randomEntity(true);
         return entity;
@@ -213,12 +220,12 @@ export class EntitiesRepository {
     searchCommandersByFullNameRequest: SearchCommandersByFullNameRequest
   ): Promise<EntityArray> {
     try {
+      cleanUnderscoreFields(searchCommandersByFullNameRequest);
       if (C.useFaker) {
         const entityArray: EntityArray =
           await this.kartoffelFaker.randomEntityArray(false);
         return entityArray;
       } else {
-        cleanUnderscoreFields(searchCommandersByFullNameRequest);
         let url = `${C.kartoffelUrl}/api/entities/search?fullName=${searchCommandersByFullNameRequest.fullName}`;
         for (let rank of C.commanderRanks) {
           url = url + `&rank=${rank}`;
@@ -240,12 +247,12 @@ export class EntitiesRepository {
     searchCommandersByFullNameRequest: SearchCommandersByFullNameRequest
   ): Promise<EntityArray> {
     try {
+      cleanUnderscoreFields(searchCommandersByFullNameRequest);
       if (C.useFaker) {
         const entityArray: EntityArray =
           await this.kartoffelFaker.randomEntityArray(false);
         return entityArray;
       } else {
-        cleanUnderscoreFields(searchCommandersByFullNameRequest);
         let url = `${C.kartoffelUrl}/api/entities/search?fullName=${searchCommandersByFullNameRequest.fullName}`;
         for (let rank of C.highCommanderRanks) {
           url = url + `&rank=${rank}`;
@@ -267,13 +274,13 @@ export class EntitiesRepository {
     searchEntitiesByFullNameRequest: SearchEntitiesByFullNameRequest
   ): Promise<EntityArray> {
     try {
+      cleanUnderscoreFields(searchEntitiesByFullNameRequest);
       if (C.useFaker) {
         const entityArray: EntityArray =
           await this.kartoffelFaker.randomEntityArray(false);
         return entityArray;
       } else {
-        cleanUnderscoreFields(searchEntitiesByFullNameRequest);
-        let url = `${C.kartoffelUrl}/api/entities/search?fullName=${searchEntitiesByFullNameRequest.fullName}`;
+        let url = `${C.kartoffelUrl}/api/entities/search?fullName=${searchEntitiesByFullNameRequest.fullName}&expanded=true`;
         if (searchEntitiesByFullNameRequest.rank) {
           url = url + `&rank=${searchEntitiesByFullNameRequest.rank}`;
         }
@@ -294,6 +301,7 @@ export class EntitiesRepository {
         } else {
           url = url + `&source=oneTree`;
         }
+        url = encodeURI(url);
         const data = await this.kartoffelUtils.kartoffelGet(url);
         return { entities: data as Entity[] };
       }
@@ -306,6 +314,7 @@ export class EntitiesRepository {
     getEntityByIdRequest: GetEntityByIdRequest
   ): Promise<Entity> {
     try {
+      cleanUnderscoreFields(getEntityByIdRequest);
       const withPicture =
         getEntityByIdRequest.withPicture != undefined
           ? getEntityByIdRequest.withPicture
@@ -323,10 +332,10 @@ export class EntitiesRepository {
         );
         delete data.picture;
         if (withPicture) {
-          const picture = this.getPictureByEntityId({
+          const picture = await this.getPictureByEntityId({
             id: getEntityByIdRequest.id,
           });
-          data.picture = picture;
+          data.picture = picture.image;
         }
         return data as Entity;
       }
@@ -339,6 +348,7 @@ export class EntitiesRepository {
     deleteEntityRequest: DeleteEntityRequest
   ): Promise<SuccessMessage> {
     try {
+      cleanUnderscoreFields(deleteEntityRequest);
       if (C.useFaker) {
         return { success: true };
       } else {
@@ -356,6 +366,7 @@ export class EntitiesRepository {
     updateEntityRequest: UpdateEntityRequest
   ): Promise<Entity> {
     try {
+      cleanUnderscoreFields(updateEntityRequest);
       if (C.useFaker) {
         const entity: Entity = await this.kartoffelFaker.randomEntity(true);
         return entity;
@@ -363,11 +374,12 @@ export class EntitiesRepository {
         let updateReq = updateEntityRequest.properties;
         cleanUnderscoreFields(updateReq);
         //TODO update date fields
-        const data = await this.kartoffelUtils.kartoffelPost(
+        const data = await this.kartoffelUtils.kartoffelPatch(
           `${C.kartoffelUrl}/api/entities/${updateEntityRequest.id}`,
           { ...updateReq }
         );
-        return data as Entity;
+        const entity = await this.getEntityById({ id: updateEntityRequest.id });
+        return entity as Entity;
       }
     } catch (error) {
       throw error;
@@ -378,6 +390,7 @@ export class EntitiesRepository {
     disconnectDIFromEntityRequest: DisconnectDIFromEntityRequest
   ): Promise<SuccessMessage> {
     try {
+      cleanUnderscoreFields(disconnectDIFromEntityRequest);
       if (C.useFaker) {
         return { success: true };
       } else {
@@ -395,6 +408,7 @@ export class EntitiesRepository {
     connectEntityAndDIRequest: ConnectEntityAndDIRequest
   ): Promise<SuccessMessage> {
     try {
+      cleanUnderscoreFields(connectEntityAndDIRequest);
       if (C.useFaker) {
         return { success: true };
       } else {
