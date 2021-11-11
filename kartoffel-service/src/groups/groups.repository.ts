@@ -148,7 +148,8 @@ export class GroupsRepository {
           `${C.kartoffelUrl}/api/groups`,
           createOGRequest
         );
-        return res as OrganizationGroup;
+        const group = await this.getOGById({ id: res.id });
+        return group as OrganizationGroup;
       }
     } catch (error) {
       throw error;
@@ -164,10 +165,12 @@ export class GroupsRepository {
         const og: OrganizationGroup = await this.kartoffelFaker.randomOG();
         return og;
       } else {
-        const res = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/api/groups/hierarchy/${getOGByHierarchyName.hierarchy}`,
-          {}
-        );
+        const url = `${
+          C.kartoffelUrl
+        }/api/groups/hierarchy/${encodeURIComponent(
+          getOGByHierarchyName.hierarchy
+        )}`;
+        const res = await this.kartoffelUtils.kartoffelGet(url, {});
         return res as OrganizationGroup;
       }
     } catch (error) {
@@ -203,7 +206,7 @@ export class GroupsRepository {
         const res = await this.kartoffelUtils.kartoffelDelete(
           `${C.kartoffelUrl}/api/groups/${deleteOGRequest.id}`
         );
-        return res as SuccessMessage;
+        return { success: true } as SuccessMessage;
       }
     } catch (error) {
       throw error;
