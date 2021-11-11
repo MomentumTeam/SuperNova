@@ -18,7 +18,7 @@ async function main() {
     await connectMongo();
 
     logger.info(`approver-service started successfully`);
-  } catch (error) {
+  } catch (error: any) {
     logger.error(
       `Error while trying to start approver-service: ${error.message}`
     );

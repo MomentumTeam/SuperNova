@@ -1,4 +1,4 @@
-import * as grpc from 'grpc';
+import * as grpc from '@grpc/grpc-js';
 import { logger } from '../logger';
 import { MailManager } from './mail.manager';
 

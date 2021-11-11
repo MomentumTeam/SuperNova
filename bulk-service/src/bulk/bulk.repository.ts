@@ -9,6 +9,8 @@ import {
   GetBulkRequestByIdReq,
   GetBulkRequestExampleReq,
   GetBulkRequestExampleRes,
+  IsBulkFileValidReq,
+  IsBulkFileValidRes,
 } from '../interfaces/protoc/proto/bulkService';
 import {
   ChangeRoleHierarchyBulkReq,
@@ -18,6 +20,7 @@ import {
   Request,
   RequestArray,
   RequestType,
+  requestTypeFromJSON,
 } from '../interfaces/protoc/proto/requestService';
 import { RequestService } from '../services/request.service';
 import { parseExcelFile } from '../utils/excel';
@@ -27,6 +30,21 @@ export class BulkRepository {
   private requestService: RequestService;
   constructor() {
     this.requestService = new RequestService();
+  }
+
+  async isBulkFileValid(
+    isBulkFileValidReq: IsBulkFileValidReq
+  ): Promise<IsBulkFileValidRes> {
+    try {
+      const type =
+        typeof isBulkFileValidReq.type === typeof ''
+          ? requestTypeFromJSON(isBulkFileValidReq.type)
+          : isBulkFileValidReq.type;
+      const rows = await parseExcelFile(isBulkFileValidReq.fileName, type);
+      return { isFileValid: true };
+    } catch (error: any) {
+      throw error;
+    }
   }
 
   async createRoleBulkRequest(

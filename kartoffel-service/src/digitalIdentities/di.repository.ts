@@ -13,6 +13,7 @@ import {
   GetDIByUniqueIdRequest,
   UpdateDIRequest,
 } from '../interfaces/protoc/proto/kartoffelService';
+import { cleanUnderscoreFields } from '../utils/json.utils';
 
 export class DiRepository {
   private kartoffelFaker: KartoffelFaker;
@@ -26,6 +27,7 @@ export class DiRepository {
     getAllDIsRequest: GetAllDIsRequest
   ): Promise<DigitalIdentities> {
     try {
+      cleanUnderscoreFields(getAllDIsRequest);
       if (C.useFaker) {
         const digitalIdentities: DigitalIdentities =
           await this.kartoffelFaker.randomDiArray(getAllDIsRequest.pageSize);
@@ -44,6 +46,7 @@ export class DiRepository {
 
   async createDI(createDIRequest: CreateDIRequest): Promise<DigitalIdentity> {
     try {
+      cleanUnderscoreFields(createDIRequest);
       if (C.useFaker) {
         const newDI: DigitalIdentity = await this.kartoffelFaker.randomDI();
         return newDI;
@@ -63,6 +66,7 @@ export class DiRepository {
     getDIByRoleIdRequest: GetDIByRoleIdRequest
   ): Promise<DigitalIdentity> {
     try {
+      cleanUnderscoreFields(getDIByRoleIdRequest);
       if (C.useFaker) {
         const newDI: DigitalIdentity = await this.kartoffelFaker.randomDI();
         return newDI;
@@ -81,6 +85,7 @@ export class DiRepository {
     searchDIOrUniqueIdRequest: SearchDIOrUniqueIdRequest
   ): Promise<DigitalIdentities> {
     try {
+      cleanUnderscoreFields(searchDIOrUniqueIdRequest);
       if (C.useFaker) {
         const digitalIdentities: DigitalIdentities =
           await this.kartoffelFaker.randomDiArray();
@@ -99,6 +104,7 @@ export class DiRepository {
 
   async deleteDI(deleteDIRequest: DeleteDIRequest): Promise<SuccessMessage> {
     try {
+      cleanUnderscoreFields(deleteDIRequest);
       if (C.useFaker) {
         const successMessage: SuccessMessage = { success: true };
         return successMessage;
@@ -117,6 +123,7 @@ export class DiRepository {
     getDIByUniqueIdRequest: GetDIByUniqueIdRequest
   ): Promise<DigitalIdentity> {
     try {
+      cleanUnderscoreFields(getDIByUniqueIdRequest);
       if (C.useFaker) {
         const di: DigitalIdentity = await this.kartoffelFaker.randomDI();
         return di;
@@ -133,6 +140,7 @@ export class DiRepository {
 
   async updateDI(updateDIRequest: UpdateDIRequest): Promise<DigitalIdentity> {
     try {
+      cleanUnderscoreFields(updateDIRequest);
       if (C.useFaker) {
         const digitalIdentity: DigitalIdentity = this.kartoffelFaker.randomDI();
         return digitalIdentity;

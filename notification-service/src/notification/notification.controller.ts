@@ -1,4 +1,4 @@
-import * as grpc from 'grpc';
+import * as grpc from '@grpc/grpc-js';
 import { logger } from '../logger';
 import { NotificationManager } from './notification.manager';
 

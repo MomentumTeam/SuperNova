@@ -1,5 +1,5 @@
 import { RequestManager } from './request.manager';
-import * as grpc from 'grpc';
+import * as grpc from '@grpc/grpc-js';
 import {
   IsRequestApprovedRes,
   Request,

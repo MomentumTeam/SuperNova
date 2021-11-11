@@ -239,7 +239,7 @@ message OGPrefix {
 // CreateOG
 message CreateOGRequest{
     string name = 1;
-    string parent = 2;
+    string directGroup = 2;
     string source = 3;
 }
 

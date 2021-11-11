@@ -1,5 +1,5 @@
 import { RequestManager } from './producer.manager';
-import * as grpc from 'grpc';
+import * as grpc from '@grpc/grpc-js';
 import { SuccessMessage } from '../interfaces/protoc/proto/producerService';
 import { logger } from '../logger';
 const requestManager: RequestManager = new RequestManager();

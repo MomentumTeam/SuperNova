@@ -23,6 +23,7 @@ import {
   IsOGNameAlreadyTakenRes,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { ogNameExists } from '../utils/ogName.utils';
+import { cleanUnderscoreFields } from '../utils/json.utils';
 
 export class GroupsRepository {
   private kartoffelFaker: KartoffelFaker;
@@ -36,6 +37,7 @@ export class GroupsRepository {
     isOGNameAlreadyTakenReq: IsOGNameAlreadyTakenReq
   ): Promise<IsOGNameAlreadyTakenRes> {
     try {
+      cleanUnderscoreFields(isOGNameAlreadyTakenReq);
       if (C.useFaker) {
         const isOGNameAlreadyTaken = Math.random() < 0.5;
         let res: any = { isOGNameAlreadyTaken: isOGNameAlreadyTaken };
@@ -61,6 +63,7 @@ export class GroupsRepository {
 
   async getOGTree(getOGTreeRequest: GetOGTreeRequest): Promise<OGTree> {
     try {
+      cleanUnderscoreFields(getOGTreeRequest);
       if (C.useFaker) {
         return this.kartoffelFaker.randomOGTree();
       } else {
@@ -97,6 +100,7 @@ export class GroupsRepository {
     getPrefixByOGIdRequest: GetPrefixByOGIdRequest
   ): Promise<OGPrefix> {
     try {
+      cleanUnderscoreFields(getPrefixByOGIdRequest);
       if (C.useFaker) {
         const prefix = this.kartoffelFaker.randomNumber(1000, 9999);
         return { prefix: prefix.toString(), source: 'oneTree' };
@@ -112,6 +116,7 @@ export class GroupsRepository {
 
   async getAllOGs(getAllOGsRequest: GetAllOGsRequest): Promise<OGArray> {
     try {
+      cleanUnderscoreFields(getAllOGsRequest);
       if (C.useFaker) {
         const ogArray: OGArray = await this.kartoffelFaker.randomOGArray(
           getAllOGsRequest.pageSize
@@ -125,7 +130,7 @@ export class GroupsRepository {
           `${C.kartoffelUrl}/api/groups`,
           getAllOGsRequest
         );
-        return res as OGArray;
+        return { groups: res } as OGArray;
       }
     } catch (error) {
       throw error;
@@ -134,6 +139,7 @@ export class GroupsRepository {
 
   async createOG(createOGRequest: CreateOGRequest): Promise<OrganizationGroup> {
     try {
+      cleanUnderscoreFields(createOGRequest);
       if (C.useFaker) {
         const newOG: OrganizationGroup = await this.kartoffelFaker.randomOG();
         return newOG;
@@ -142,7 +148,8 @@ export class GroupsRepository {
           `${C.kartoffelUrl}/api/groups`,
           createOGRequest
         );
-        return res as OrganizationGroup;
+        const group = await this.getOGById({ id: res.id });
+        return group as OrganizationGroup;
       }
     } catch (error) {
       throw error;
@@ -153,14 +160,17 @@ export class GroupsRepository {
     getOGByHierarchyName: GetOGByHierarchyNameRequest
   ): Promise<OrganizationGroup> {
     try {
+      cleanUnderscoreFields(getOGByHierarchyName);
       if (C.useFaker) {
         const og: OrganizationGroup = await this.kartoffelFaker.randomOG();
         return og;
       } else {
-        const res = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/api/groups/hierarchy/${getOGByHierarchyName.hierarchy}`,
-          {}
-        );
+        const url = `${
+          C.kartoffelUrl
+        }/api/groups/hierarchy/${encodeURIComponent(
+          getOGByHierarchyName.hierarchy
+        )}`;
+        const res = await this.kartoffelUtils.kartoffelGet(url, {});
         return res as OrganizationGroup;
       }
     } catch (error) {
@@ -170,6 +180,7 @@ export class GroupsRepository {
 
   async searchOG(searchOGRequest: SearchOGRequest): Promise<OGArray> {
     try {
+      cleanUnderscoreFields(searchOGRequest);
       if (C.useFaker) {
         const ogArray: OGArray = await this.kartoffelFaker.randomOGArray();
         return ogArray;
@@ -187,6 +198,7 @@ export class GroupsRepository {
 
   async deleteOG(deleteOGRequest: DeleteOGRequest): Promise<SuccessMessage> {
     try {
+      cleanUnderscoreFields(deleteOGRequest);
       if (C.useFaker) {
         const successMessage: SuccessMessage = { success: true };
         return successMessage;
@@ -194,7 +206,7 @@ export class GroupsRepository {
         const res = await this.kartoffelUtils.kartoffelDelete(
           `${C.kartoffelUrl}/api/groups/${deleteOGRequest.id}`
         );
-        return res as SuccessMessage;
+        return { success: true } as SuccessMessage;
       }
     } catch (error) {
       throw error;
@@ -205,6 +217,7 @@ export class GroupsRepository {
     getOGByIdRequest: GetOGByIdRequest
   ): Promise<OrganizationGroup> {
     try {
+      cleanUnderscoreFields(getOGByIdRequest);
       if (C.useFaker) {
         const og: OrganizationGroup = await this.kartoffelFaker.randomOG();
         return og;
@@ -224,6 +237,7 @@ export class GroupsRepository {
     getChildrenOfOGRequest: GetChildrenOfOGRequest
   ): Promise<OGArray> {
     try {
+      cleanUnderscoreFields(getChildrenOfOGRequest);
       if (C.useFaker) {
         const ogChildern: OGArray = await this.kartoffelFaker.randomOGArray(
           getChildrenOfOGRequest.pageSize
@@ -262,6 +276,7 @@ export class GroupsRepository {
     updateOGParentRequest: UpdateOGParentRequest
   ): Promise<SuccessMessage> {
     try {
+      cleanUnderscoreFields(updateOGParentRequest);
       if (C.useFaker) {
         const successMessage: SuccessMessage = { success: true };
         return successMessage;
@@ -279,6 +294,7 @@ export class GroupsRepository {
 
   async renameOG(renameOGRequest: RenameOGRequest): Promise<SuccessMessage> {
     try {
+      cleanUnderscoreFields(renameOGRequest);
       if (C.useFaker) {
         const successMessage: SuccessMessage = { success: true };
         return successMessage;
