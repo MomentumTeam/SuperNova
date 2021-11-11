@@ -4,6 +4,8 @@ import {
   GetBulkRequestByIdReq,
   GetBulkRequestExampleReq,
   GetBulkRequestExampleRes,
+  IsBulkFileValidReq,
+  IsBulkFileValidRes,
 } from '../interfaces/protoc/proto/bulkService';
 import {
   ChangeRoleHierarchyBulkReq,
@@ -26,6 +28,18 @@ export class BulkManager {
       return (await this.BulkRepository.createRoleBulkRequest(
         createRoleBulkReq
       )) as CreateRoleBulkRes;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async isBulkFileValid(
+    isBulkFileValidReq: IsBulkFileValidReq
+  ): Promise<IsBulkFileValidRes> {
+    try {
+      return (await this.BulkRepository.isBulkFileValid(
+        isBulkFileValidReq
+      )) as IsBulkFileValidRes;
     } catch (error) {
       throw error;
     }

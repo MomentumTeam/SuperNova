@@ -6,7 +6,7 @@ import {
   UPNMessage,
 } from '../interfaces/protoc/proto/teaService';
 import { TeaManager } from './tea.manager';
-import * as grpc from 'grpc';
+import * as grpc from '@grpc/grpc-js';
 import { logger } from '../logger';
 
 const teaManager: TeaManager = new TeaManager();

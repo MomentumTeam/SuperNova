@@ -41,6 +41,7 @@
   },
   "dependencies": {
     "@elastic/ecs-winston-format": "^1.1.0",
+    "@grpc/grpc-js": "^1.4.4",
     "@grpc/proto-loader": "^0.5.5",
     "@types/cookie-parser": "^1.4.2",
     "@types/express-session": "^1.17.3",
@@ -51,6 +52,7 @@
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "grpc": "^1.24.4",
+    "grpc-js-health-check": "^1.0.2",
     "helmet": "^3.21.1",
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",

@@ -1,5 +1,5 @@
 import path from 'path';
-import * as grpc from 'grpc';
+import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 import { config } from '../config';
 import { logger } from '../utils/logger/logger';

@@ -3,7 +3,7 @@ import { logger } from '../logger';
 import { GetEntityByIdRequest } from '../interfaces/protoc/proto/kartoffelService';
 import { findPath } from '../utils/path';
 
-const grpc = require('grpc');
+const grpc = require('@grpc/grpc-js');
 const protoLoader = require('@grpc/proto-loader');
 
 const PROTO_PATH = `${findPath('proto')}/kartoffelService.proto`;
