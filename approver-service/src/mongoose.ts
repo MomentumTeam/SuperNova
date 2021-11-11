@@ -1,6 +1,6 @@
+const grpcHealth = require("grpc-js-health-check");
 import mongoose from 'mongoose';
 import * as C from './config';
-import { HealthCheckResponse } from 'grpc-ts-health-check';
 import { setHealthStatus } from './health';
 import { logger } from './logger';
 
@@ -11,21 +11,21 @@ export async function connectMongo() {
   try {
     await startConnectionAttempts();
   } catch (err) {
-    setHealthStatus(HealthCheckResponse.ServingStatus.NOT_SERVING);
+    setHealthStatus(grpcHealth.servingStatus.NOT_SERVING);
     logger.error(`connectDB - did not connect to mongo: ${err}`);
   }
 
   db.on('connected', () => {
     logger.info(`connectDB- connected to ${C.mongoUrl}`);
-    setHealthStatus(HealthCheckResponse.ServingStatus.SERVING);
+    setHealthStatus(grpcHealth.servingStatus.SERVING);
   });
   db.on('error', (err:any) => {
     logger.error('connectDB - mongo connection error!', err);
-    setHealthStatus(HealthCheckResponse.ServingStatus.NOT_SERVING);
+    setHealthStatus(grpcHealth.servingStatus.NOT_SERVING);
   });
   db.on('disconnected', () => {
     logger.error('connectDB - mongo disconnected');
-    setHealthStatus(HealthCheckResponse.ServingStatus.NOT_SERVING);
+    setHealthStatus(grpcHealth.servingStatus.NOT_SERVING);
   });
 }
 
@@ -48,11 +48,11 @@ async function startConnectionAttempts() {
         stack: connectionRes.error?.stack,
       });
 
-      setHealthStatus(HealthCheckResponse.ServingStatus.NOT_SERVING);
+      setHealthStatus(grpcHealth.servingStatus.NOT_SERVING);
       await sleep(timeout);
     } else {
       logger.info(`connectDB - connected to ${C.mongoUrl}`);
-      setHealthStatus(HealthCheckResponse.ServingStatus.SERVING);
+      setHealthStatus(grpcHealth.servingStatus.SERVING);
       break;
     }
   }
