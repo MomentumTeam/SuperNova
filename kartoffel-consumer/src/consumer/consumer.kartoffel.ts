@@ -20,14 +20,14 @@ import {
 } from '../interfaces/protoc/proto/kartoffelService';
 import { logger } from '../utils/logger';
 
-export const createOG = async (createOGRequest: CreateOGRequest) => {
+export const createOG = async (createOGRequest: any) => {
   try {
     logger.info('createOG request received.', createOGRequest);
-    const { name, parent, source } = createOGRequest;
+    const { name, directGroup, source } = createOGRequest;
     const newOrganizationGroup: OrganizationGroup =
       await KartoffelService.createOG({
         name: name,
-        parent: parent,
+        directGroup: createOGRequest.parent,
         source: source,
       });
     logger.info('Successfuly created OG', {

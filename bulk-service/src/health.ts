@@ -1,7 +1,7 @@
 const grpcHealth = require('grpc-js-health-check');
 import * as grpc from '@grpc/grpc-js';
 
-const serviceNames: string[] = ['', 'NotificationService.NotificationService'];
+const serviceNames: string[] = ['', 'BulkService.BulkService'];
 
 export const healthCheckStatusMap = {
   '': grpcHealth.servingStatus.UNKNOWN,

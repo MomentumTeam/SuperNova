@@ -182,7 +182,7 @@ export interface OGPrefix {
 /** CreateOG */
 export interface CreateOGRequest {
   name: string;
-  parent: string;
+  directGroup: string;
   source: string;
 }
 
@@ -3327,7 +3327,7 @@ export const OGPrefix = {
   },
 };
 
-const baseCreateOGRequest: object = { name: "", parent: "", source: "" };
+const baseCreateOGRequest: object = { name: "", directGroup: "", source: "" };
 
 export const CreateOGRequest = {
   encode(
@@ -3337,8 +3337,8 @@ export const CreateOGRequest = {
     if (message.name !== "") {
       writer.uint32(10).string(message.name);
     }
-    if (message.parent !== "") {
-      writer.uint32(18).string(message.parent);
+    if (message.directGroup !== "") {
+      writer.uint32(18).string(message.directGroup);
     }
     if (message.source !== "") {
       writer.uint32(26).string(message.source);
@@ -3357,7 +3357,7 @@ export const CreateOGRequest = {
           message.name = reader.string();
           break;
         case 2:
-          message.parent = reader.string();
+          message.directGroup = reader.string();
           break;
         case 3:
           message.source = reader.string();
@@ -3377,10 +3377,10 @@ export const CreateOGRequest = {
     } else {
       message.name = "";
     }
-    if (object.parent !== undefined && object.parent !== null) {
-      message.parent = String(object.parent);
+    if (object.directGroup !== undefined && object.directGroup !== null) {
+      message.directGroup = String(object.directGroup);
     } else {
-      message.parent = "";
+      message.directGroup = "";
     }
     if (object.source !== undefined && object.source !== null) {
       message.source = String(object.source);
@@ -3393,7 +3393,8 @@ export const CreateOGRequest = {
   toJSON(message: CreateOGRequest): unknown {
     const obj: any = {};
     message.name !== undefined && (obj.name = message.name);
-    message.parent !== undefined && (obj.parent = message.parent);
+    message.directGroup !== undefined &&
+      (obj.directGroup = message.directGroup);
     message.source !== undefined && (obj.source = message.source);
     return obj;
   },
@@ -3405,10 +3406,10 @@ export const CreateOGRequest = {
     } else {
       message.name = "";
     }
-    if (object.parent !== undefined && object.parent !== null) {
-      message.parent = object.parent;
+    if (object.directGroup !== undefined && object.directGroup !== null) {
+      message.directGroup = object.directGroup;
     } else {
-      message.parent = "";
+      message.directGroup = "";
     }
     if (object.source !== undefined && object.source !== null) {
       message.source = object.source;

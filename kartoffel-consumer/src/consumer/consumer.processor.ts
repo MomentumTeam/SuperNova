@@ -126,7 +126,7 @@ export const requestProcessor = async (incomingRequest: any) => {
         incomingRequest
       );
     }
-  } catch (error) {
+  } catch (error: any) {
     logger.error('requestProcessor error', {
       error: { message: error.message },
     });
@@ -150,7 +150,7 @@ export const requestProcessor = async (incomingRequest: any) => {
           });
         }
       }
-    } catch (catchError) {
+    } catch (catchError: any) {
       logger.error('requestProcessor catch error', {
         error: { message: catchError.message },
       });

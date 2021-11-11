@@ -120,7 +120,7 @@ const startConsumer = async (client: kafka.KafkaClient) => {
       logger.info('Received a message from Kafka', incomingRequest);
       await requestProcessor(incomingRequest);
       await commit(consumer);
-    } catch (error) {
+    } catch (error: any) {
       logger.error('Error while receiving a message from Kafka', {
         error: { message: error.message },
       });
