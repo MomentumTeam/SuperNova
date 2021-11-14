@@ -981,6 +981,8 @@ message UpdateReqProperties{
     optional string rowNumber = 17;
     repeated RowError rowErrors = 18;
     optional string excelFilePath = 19;
+    optional string comments = 20;
+    optional ApproversComments approversComments = 21;
 }
 
 //UpdateKartoffelStatus

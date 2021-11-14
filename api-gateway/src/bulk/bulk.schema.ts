@@ -40,6 +40,12 @@ const changeRoleHierarchyBulkADParamsObj = Joi.object({
 
 // POST
 
+export const uploadBulkFileSchema = Joi.object({
+  body: {
+  },
+  params: {},
+  query: {type : Joi.string().valid(...Object.keys(BulkType)).required()}});
+
 export const createRoleBulkRequestSchema = Joi.object({
   body: {
     status: Joi.string().valid(...Object.keys(RequestStatus)),

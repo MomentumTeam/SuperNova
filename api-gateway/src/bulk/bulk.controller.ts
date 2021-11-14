@@ -14,6 +14,8 @@ import { logger } from '../utils/logger/logger';
 import { config } from '../config';
 import { statusCodeHandler } from '../utils/errors/errorHandlers';
 import {
+  BulkType,
+  bulkTypeFromJSON,
   GetBulkRequestByIdReq,
   GetBulkRequestExampleReq,
 } from '../interfaces/protoc/proto/bulkService';
@@ -64,13 +66,13 @@ export default class BulkController {
           )}`
         );
       }
-
       bulkFile.name = generateFileName(bulkFile.name);
       await moveFile(bulkFile);
       return bulkFile.name;
     };
 
     try {
+      const type = bulkTypeFromJSON(req.query.type);
       if (!req.files || Object.keys(req.files).length === 0) {
         throw new InvalidBodyError('No files were uploaded.');
       }
@@ -86,6 +88,8 @@ export default class BulkController {
       const uploadFiles = await Promise.all(
         files.map((bulkFile: any) => uploadFile(bulkFile))
       );
+
+      const isValid = await Promise.all(uploadFiles.map((uploadedFileName : any) => BulkService.isBulkFileValid({fileName: uploadedFileName, type: type})));
       res.status(200).send({ uploadFiles });
     } catch (error: any) {
       logger.error(error.message);

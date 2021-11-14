@@ -9,6 +9,7 @@ import {
   createRoleBulkRequestSchema,
   getBulkRequestByIdReqSchema,
   getBulkRequestExampleSchema,
+  uploadBulkFileSchema
 } from './bulk.schema';
 
 export class BulkValidator {
@@ -20,10 +21,11 @@ export class BulkValidator {
   ) {
     transformRequest(
       req,
-      validateObject(req, createRoleBulkRequestSchema, { allowUnknown: true })
+      validateObject(req, uploadBulkFileSchema, { allowUnknown: true })
     );
     next();
   }
+
 
   static isCreateRoleBulkRequestValid(
     req: Request,

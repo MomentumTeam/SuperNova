@@ -7,7 +7,7 @@ const BulkRouter: Router = Router();
 BulkRouter.use(fileUpload());
 
 // POST
-BulkRouter.post('/upload', BulkController.uploadBulkFile);
+BulkRouter.post('/upload', BulkValidator.isUploadBulkFileValid, BulkController.uploadBulkFile);
 BulkRouter.post(
   '/request/role',
   BulkValidator.isCreateRoleBulkRequestValid,

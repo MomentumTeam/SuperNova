@@ -2,14 +2,11 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import {
-  RequestType,
   Request,
   CreateRoleBulkRes,
   ChangeRoleHierarchyBulkRes,
   CreateRoleBulkReq,
   ChangeRoleHierarchyBulkReq,
-  requestTypeFromJSON,
-  requestTypeToJSON,
 } from "./requestService";
 
 export const protobufPackage = "BulkService";
@@ -48,7 +45,7 @@ export function bulkTypeToJSON(object: BulkType): string {
 
 export interface IsBulkFileValidReq {
   fileName: string;
-  type: RequestType;
+  type: BulkType;
 }
 
 export interface IsBulkFileValidRes {
@@ -138,7 +135,7 @@ export const IsBulkFileValidReq = {
       message.fileName = "";
     }
     if (object.type !== undefined && object.type !== null) {
-      message.type = requestTypeFromJSON(object.type);
+      message.type = bulkTypeFromJSON(object.type);
     } else {
       message.type = 0;
     }
@@ -148,7 +145,7 @@ export const IsBulkFileValidReq = {
   toJSON(message: IsBulkFileValidReq): unknown {
     const obj: any = {};
     message.fileName !== undefined && (obj.fileName = message.fileName);
-    message.type !== undefined && (obj.type = requestTypeToJSON(message.type));
+    message.type !== undefined && (obj.type = bulkTypeToJSON(message.type));
     return obj;
   },
 
