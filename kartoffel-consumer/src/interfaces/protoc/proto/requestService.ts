@@ -1507,6 +1507,8 @@ export interface UpdateReqProperties {
   rowNumber?: string | undefined;
   rowErrors: RowError[];
   excelFilePath?: string | undefined;
+  comments?: string | undefined;
+  approversComments?: ApproversComments | undefined;
 }
 
 /** UpdateKartoffelStatus */
@@ -21847,6 +21849,15 @@ export const UpdateReqProperties = {
     if (message.excelFilePath !== undefined) {
       writer.uint32(154).string(message.excelFilePath);
     }
+    if (message.comments !== undefined) {
+      writer.uint32(162).string(message.comments);
+    }
+    if (message.approversComments !== undefined) {
+      ApproversComments.encode(
+        message.approversComments,
+        writer.uint32(170).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -21937,6 +21948,15 @@ export const UpdateReqProperties = {
           break;
         case 19:
           message.excelFilePath = reader.string();
+          break;
+        case 20:
+          message.comments = reader.string();
+          break;
+        case 21:
+          message.approversComments = ApproversComments.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         default:
           reader.skipType(tag & 7);
@@ -22079,6 +22099,21 @@ export const UpdateReqProperties = {
     } else {
       message.excelFilePath = undefined;
     }
+    if (object.comments !== undefined && object.comments !== null) {
+      message.comments = String(object.comments);
+    } else {
+      message.comments = undefined;
+    }
+    if (
+      object.approversComments !== undefined &&
+      object.approversComments !== null
+    ) {
+      message.approversComments = ApproversComments.fromJSON(
+        object.approversComments
+      );
+    } else {
+      message.approversComments = undefined;
+    }
     return message;
   },
 
@@ -22162,6 +22197,11 @@ export const UpdateReqProperties = {
     }
     message.excelFilePath !== undefined &&
       (obj.excelFilePath = message.excelFilePath);
+    message.comments !== undefined && (obj.comments = message.comments);
+    message.approversComments !== undefined &&
+      (obj.approversComments = message.approversComments
+        ? ApproversComments.toJSON(message.approversComments)
+        : undefined);
     return obj;
   },
 
@@ -22297,6 +22337,21 @@ export const UpdateReqProperties = {
       message.excelFilePath = object.excelFilePath;
     } else {
       message.excelFilePath = undefined;
+    }
+    if (object.comments !== undefined && object.comments !== null) {
+      message.comments = object.comments;
+    } else {
+      message.comments = undefined;
+    }
+    if (
+      object.approversComments !== undefined &&
+      object.approversComments !== null
+    ) {
+      message.approversComments = ApproversComments.fromPartial(
+        object.approversComments
+      );
+    } else {
+      message.approversComments = undefined;
     }
     return message;
   },

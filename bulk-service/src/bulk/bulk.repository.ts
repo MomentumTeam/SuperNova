@@ -40,7 +40,8 @@ export class BulkRepository {
         typeof isBulkFileValidReq.type === typeof ''
           ? requestTypeFromJSON(isBulkFileValidReq.type)
           : isBulkFileValidReq.type;
-      const rows = await parseExcelFile(isBulkFileValidReq.fileName, type);
+      const requestType = type === BulkType.CHANGE_ROLE_HIERARCHY_REQUEST ? RequestType.CREATE_ROLE_BULK : RequestType.CHANGE_ROLE_HIERARCHY_BULK;
+      const rows = await parseExcelFile(isBulkFileValidReq.fileName, requestType);
       return { isFileValid: true };
     } catch (error: any) {
       throw error;
