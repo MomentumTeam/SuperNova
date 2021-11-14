@@ -838,6 +838,7 @@ message RenameOGADParams{
 message RenameRoleKartoffelParams{
     string jobTitle = 1;
     string roleId = 2;
+    string oldJobTitle=3;
 }
 
 message RenameRoleADParams{
@@ -1199,6 +1200,7 @@ message KartoffelParams{
 
     //RenameRole
     // ?
+    string oldJobTitle = 28;
 
     //EditEntity
     // string firstName = 25;

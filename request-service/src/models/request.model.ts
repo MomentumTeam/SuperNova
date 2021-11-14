@@ -295,6 +295,7 @@ const RequestSchema = new Schema(
       roleEntityType: { type: String, default: null },
       currentJobTitle: { type: String, default: null },
       newJobTitle: { type: String, default: null },
+      oldJobTitle: { type: String, default: null },
     },
     adParams: {
       ouDisplayName: { type: String, default: null },
