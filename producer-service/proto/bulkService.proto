@@ -16,7 +16,7 @@ service BulkService {
 
 message IsBulkFileValidReq{
     string fileName = 1;
-    RequestService.RequestType type = 2;
+    BulkType type = 2;
 }
 
 message IsBulkFileValidRes{

@@ -63,6 +63,12 @@ RequestsRouter.put(
 );
 
 RequestsRouter.put(
+  '/approver/comments/:id',
+  RequestValidator.isUpdateApproversCommentsValid,
+  RequestsController.updateApproversComments
+);
+
+RequestsRouter.put(
   '/approver/commanders/:id',
   RequestValidator.isUpdateApproversValid,
   RequestsController.updateCommanders

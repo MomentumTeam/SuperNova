@@ -14,6 +14,8 @@ import {
   GetBulkRequestByIdReq,
   GetBulkRequestExampleReq,
   GetBulkRequestExampleRes,
+  IsBulkFileValidReq,
+  IsBulkFileValidRes,
 } from '../interfaces/protoc/proto/bulkService';
 
 const PROTO_PATH = __dirname.includes('dist')
@@ -44,6 +46,32 @@ const bulkClient: any = new protoDescriptor.BulkService(
 
 export class BulkService {
   // POST
+
+  static async isBulkFileValid(isBulkFileValidReq: IsBulkFileValidReq) {
+    logger.info(`Call to isBulkFileValid in GTW`, isBulkFileValidReq);
+
+    return new Promise((resolve, reject) => {
+      bulkClient.IsBulkFileValid(
+        isBulkFileValidReq,
+        (err: any, response: IsBulkFileValidRes) => {
+          if (err) {
+            logger.error(`isBulkFileValid ERROR in GTW`, {
+              err,
+              callRequest: isBulkFileValidReq,
+            });
+            reject(err);
+          }
+
+          logger.info(`isBulkFileValid OK in GTW`, {
+            response: response,
+            callRequest: isBulkFileValidReq,
+          });
+          resolve(response);
+        }
+      );
+    });
+  }
+
   static async createRoleBulkRequest(createRoleBulkReq: CreateRoleBulkReq) {
     logger.info(`Call to createRoleBulkRequest in GTW`, createRoleBulkReq);
 
