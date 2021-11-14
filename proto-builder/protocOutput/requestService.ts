@@ -1368,6 +1368,7 @@ export interface RenameOGADParams {
 export interface RenameRoleKartoffelParams {
   jobTitle: string;
   roleId: string;
+  oldJobTitle: string;
 }
 
 export interface RenameRoleADParams {
@@ -1710,6 +1711,11 @@ export interface KartoffelParams {
   roleEntityType?: string | undefined;
   currentJobTitle?: string | undefined;
   newJobTitle?: string | undefined;
+  /**
+   * RenameRole
+   * ?
+   */
+  oldJobTitle: string;
 }
 
 export interface ADParams {
@@ -19761,7 +19767,11 @@ export const RenameOGADParams = {
   },
 };
 
-const baseRenameRoleKartoffelParams: object = { jobTitle: "", roleId: "" };
+const baseRenameRoleKartoffelParams: object = {
+  jobTitle: "",
+  roleId: "",
+  oldJobTitle: "",
+};
 
 export const RenameRoleKartoffelParams = {
   encode(
@@ -19773,6 +19783,9 @@ export const RenameRoleKartoffelParams = {
     }
     if (message.roleId !== "") {
       writer.uint32(18).string(message.roleId);
+    }
+    if (message.oldJobTitle !== "") {
+      writer.uint32(26).string(message.oldJobTitle);
     }
     return writer;
   },
@@ -19794,6 +19807,9 @@ export const RenameRoleKartoffelParams = {
           break;
         case 2:
           message.roleId = reader.string();
+          break;
+        case 3:
+          message.oldJobTitle = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -19817,6 +19833,11 @@ export const RenameRoleKartoffelParams = {
     } else {
       message.roleId = "";
     }
+    if (object.oldJobTitle !== undefined && object.oldJobTitle !== null) {
+      message.oldJobTitle = String(object.oldJobTitle);
+    } else {
+      message.oldJobTitle = "";
+    }
     return message;
   },
 
@@ -19824,6 +19845,8 @@ export const RenameRoleKartoffelParams = {
     const obj: any = {};
     message.jobTitle !== undefined && (obj.jobTitle = message.jobTitle);
     message.roleId !== undefined && (obj.roleId = message.roleId);
+    message.oldJobTitle !== undefined &&
+      (obj.oldJobTitle = message.oldJobTitle);
     return obj;
   },
 
@@ -19842,6 +19865,11 @@ export const RenameRoleKartoffelParams = {
       message.roleId = object.roleId;
     } else {
       message.roleId = "";
+    }
+    if (object.oldJobTitle !== undefined && object.oldJobTitle !== null) {
+      message.oldJobTitle = object.oldJobTitle;
+    } else {
+      message.oldJobTitle = "";
     }
     return message;
   },
@@ -24869,6 +24897,7 @@ const baseKartoffelParams: object = {
   needDisconnect: false,
   phone: "",
   mobilePhone: "",
+  oldJobTitle: "",
 };
 
 export const KartoffelParams = {
@@ -24956,6 +24985,9 @@ export const KartoffelParams = {
     }
     if (message.newJobTitle !== undefined) {
       writer.uint32(218).string(message.newJobTitle);
+    }
+    if (message.oldJobTitle !== "") {
+      writer.uint32(226).string(message.oldJobTitle);
     }
     return writer;
   },
@@ -25049,6 +25081,9 @@ export const KartoffelParams = {
           break;
         case 27:
           message.newJobTitle = reader.string();
+          break;
+        case 28:
+          message.oldJobTitle = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -25203,6 +25238,11 @@ export const KartoffelParams = {
     } else {
       message.newJobTitle = undefined;
     }
+    if (object.oldJobTitle !== undefined && object.oldJobTitle !== null) {
+      message.oldJobTitle = String(object.oldJobTitle);
+    } else {
+      message.oldJobTitle = "";
+    }
     return message;
   },
 
@@ -25252,6 +25292,8 @@ export const KartoffelParams = {
       (obj.currentJobTitle = message.currentJobTitle);
     message.newJobTitle !== undefined &&
       (obj.newJobTitle = message.newJobTitle);
+    message.oldJobTitle !== undefined &&
+      (obj.oldJobTitle = message.oldJobTitle);
     return obj;
   },
 
@@ -25399,6 +25441,11 @@ export const KartoffelParams = {
       message.newJobTitle = object.newJobTitle;
     } else {
       message.newJobTitle = undefined;
+    }
+    if (object.oldJobTitle !== undefined && object.oldJobTitle !== null) {
+      message.oldJobTitle = object.oldJobTitle;
+    } else {
+      message.oldJobTitle = "";
     }
     return message;
   },
