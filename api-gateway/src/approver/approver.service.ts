@@ -1,5 +1,5 @@
 import path from 'path';
-import * as grpc from 'grpc';
+import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 import { config } from '../config';
 import {
@@ -14,7 +14,7 @@ import {
   SearchByDomainUserReq,
   SearchHighCommandersByDisplayNameReq,
   UpdateApproverDecisionReq,
-} from "../interfaces/protoc/proto/approverService";
+} from '../interfaces/protoc/proto/approverService';
 import { logger } from '../utils/logger/logger';
 import {
   ApproverType,

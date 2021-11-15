@@ -83,6 +83,7 @@ export const getRequestBySerialNumberSchema = Joi.object({
 });
 
 // PUT
+
 export const updateADStatusSchema = Joi.object({
   body: {
     Retry: Joi.boolean().required(),
@@ -144,6 +145,17 @@ export const transferRequestToApproversSchema = Joi.object({
     commentForApprovers: Joi.string(),
   },
   params: { id: Joi.objectId().required() },
+  query: {},
+});
+
+export const updateApproversCommentsSchema = Joi.object({
+  body: {
+    type: Joi.string()
+      .valid(...Object.keys(ApproverType))
+      .required(),
+    commentForApprovers: Joi.string(),
+  },
+  params: {id: Joi.objectId().required() },
   query: {},
 });
 

@@ -1,5 +1,5 @@
 import { BulkManager } from './bulk.manager';
-import * as grpc from 'grpc';
+import * as grpc from '@grpc/grpc-js';
 import {
   ChangeRoleHierarchyBulkRes,
   CreateRoleBulkRes,
@@ -9,6 +9,7 @@ import {
   DetailedChangeRoleHierarchyBulkRequest,
   DetailedCreateRoleBulkRequest,
   GetBulkRequestExampleRes,
+  IsBulkFileValidRes,
 } from '../interfaces/protoc/proto/bulkService';
 const bulkManager: BulkManager = new BulkManager();
 
@@ -27,6 +28,34 @@ export async function createRoleBulkRequest(call: any, callback: any) {
     callback(null, request);
   } catch (error: any) {
     logger.info(`createRoleBulkRequest ERROR`, {
+      callRequest: call.request,
+      error: { message: error.message },
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function isBulkFileValid(call: any, callback: any) {
+  try {
+    logger.info(`Call to isBulkFileValid`, {
+      callRequest: call.request,
+    });
+    const isBulkFileValidRes: IsBulkFileValidRes =
+      await bulkManager.isBulkFileValid(call.request);
+    logger.info(`isBulkFileValid OK`, {
+      callRequest: call.request,
+      isBulkFileValidRes: isBulkFileValidRes,
+    });
+    callback(null, isBulkFileValidRes);
+  } catch (error: any) {
+    logger.info(`isBulkFileValid ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
     });

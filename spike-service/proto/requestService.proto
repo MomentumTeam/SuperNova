@@ -838,6 +838,7 @@ message RenameOGADParams{
 message RenameRoleKartoffelParams{
     string jobTitle = 1;
     string roleId = 2;
+    string oldJobTitle=3;
 }
 
 message RenameRoleADParams{
@@ -981,6 +982,8 @@ message UpdateReqProperties{
     optional string rowNumber = 17;
     repeated RowError rowErrors = 18;
     optional string excelFilePath = 19;
+    optional string comments = 20;
+    optional ApproversComments approversComments = 21;
 }
 
 //UpdateKartoffelStatus
@@ -1197,6 +1200,7 @@ message KartoffelParams{
 
     //RenameRole
     // ?
+    string oldJobTitle = 28;
 
     //EditEntity
     // string firstName = 25;

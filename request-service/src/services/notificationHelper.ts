@@ -20,7 +20,7 @@ export async function createNotifications(
       createNotificationsReq
     );
     return notificationArray;
-  } catch (error) {
+  } catch (error: any) {
     logger.error('Error while creating notifications', {
       error: { message: error.message },
     });

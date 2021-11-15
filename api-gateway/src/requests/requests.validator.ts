@@ -27,6 +27,7 @@ import {
   deleteEntitySchema,
   getRequestsSchema,
   transferRequestToApproversSchema,
+  updateApproversCommentsSchema,
 } from './requests.schema';
 
 export class RequestValidator {
@@ -104,6 +105,19 @@ export class RequestValidator {
   }
 
   // PUT
+
+  static isUpdateApproversCommentsValid(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    transformRequest(
+      req,
+      validateObject(req, updateApproversCommentsSchema, { allowUnknown: true })
+    );
+    next();
+  }
+
   static isUpdateADStatusValid(
     req: Request,
     res: Response,

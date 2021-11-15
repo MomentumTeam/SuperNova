@@ -33,6 +33,7 @@ import {
   TransferRequestToApproversReq,
   approverTypeFromJSON,
   ApproverType,
+  ApproversComments,
 } from '../interfaces/protoc/proto/requestService';
 import { RequestsService } from './requests.service';
 import { AuthenticationError } from '../utils/errors/userErrors';
@@ -221,6 +222,44 @@ export default class RequestsController {
 
   // PUT
 
+  static async updateApproversComments(req: any, res: Response) {
+    const request: any = await RequestsService.getRequestById({
+      id: req.params.id,
+    });
+    const approversComments: ApproversComments = request.approversComments;
+    const type = approverTypeFromJSON(req.body.type);
+    switch (type) {
+      case ApproverType.SUPER_SECURITY:
+        approversComments.superSecurityComment = req.body.commentForApprovers;
+        break;
+      case ApproverType.SECURITY:
+        approversComments.securityComment = req.body.commentForApprovers;
+        break;
+      case ApproverType.COMMANDER:
+        approversComments.commanderComment = req.body.commentForApprovers;
+        break;
+      case ApproverType.ADMIN:
+        approversComments.commanderComment = req.body.commentForApprovers;
+        break;
+      default:
+        return res.status(500).send('Approver type not supported!');
+    }
+
+    const updateRequestReq: any = {
+      id: req.params.id,
+      requestProperties: { approversComments: approversComments },
+    };
+    try {
+      const updatedRequest = await RequestsService.updateRequest(
+        updateRequestReq
+      );
+      res.send(updatedRequest);
+    } catch (error: any) {
+      const statusCode = statusCodeHandler(error);
+      res.status(statusCode).send(error.message);
+    }
+  }
+
   static async transferRequestToApprovers(req: any, res: Response) {
     let transferRequestToApproversReq: TransferRequestToApproversReq = {
       id: req.params.id,
@@ -338,36 +377,36 @@ export default class RequestsController {
     }
   }
 
-//   static async updateApproverDecision(req: any, res: Response) {
-//     const updateApproverDecisionReq: UpdateApproverDecisionReq = {
-//       id: req.params.id,
-//       approverDecision: req.body.approverDecision, //TODO
-//       approverType: req.body.approverType, // ASK : liora if she returns person in type request
-//     };
-// 
-//     logger.info(`Call to updateApproverDecision in GTW`, {
-//       callRequest: updateApproverDecisionReq,
-//     });
-// 
-//     try {
-//       const request = await RequestsService.updateApproverDecision(
-//         updateApproverDecisionReq
-//       );
-// 
-//       const canPushToQueueRes = await RequestsService.canPushToADQueue({
-//         id: req.params.id,
-//       });
-// 
-//       if (canPushToQueueRes.canPushToQueue) {
-//         await ProducerController.produceToADQueue(req.params.id, res);
-//       }
-// 
-//       res.status(200).send(request);
-//     } catch (error: any) {
-//       const statusCode = statusCodeHandler(error);
-//       res.status(statusCode).send(error.message);
-//     }
-//   }
+  //   static async updateApproverDecision(req: any, res: Response) {
+  //     const updateApproverDecisionReq: UpdateApproverDecisionReq = {
+  //       id: req.params.id,
+  //       approverDecision: req.body.approverDecision, //TODO
+  //       approverType: req.body.approverType, // ASK : liora if she returns person in type request
+  //     };
+  //
+  //     logger.info(`Call to updateApproverDecision in GTW`, {
+  //       callRequest: updateApproverDecisionReq,
+  //     });
+  //
+  //     try {
+  //       const request = await RequestsService.updateApproverDecision(
+  //         updateApproverDecisionReq
+  //       );
+  //
+  //       const canPushToQueueRes = await RequestsService.canPushToADQueue({
+  //         id: req.params.id,
+  //       });
+  //
+  //       if (canPushToQueueRes.canPushToQueue) {
+  //         await ProducerController.produceToADQueue(req.params.id, res);
+  //       }
+  //
+  //       res.status(200).send(request);
+  //     } catch (error: any) {
+  //       const statusCode = statusCodeHandler(error);
+  //       res.status(statusCode).send(error.message);
+  //     }
+  //   }
 
   static async createRoleRequest(req: any, res: Response) {
     if (!req.user && !req.user.id) throw new AuthenticationError();

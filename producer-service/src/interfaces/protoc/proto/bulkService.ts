@@ -43,6 +43,15 @@ export function bulkTypeToJSON(object: BulkType): string {
   }
 }
 
+export interface IsBulkFileValidReq {
+  fileName: string;
+  type: BulkType;
+}
+
+export interface IsBulkFileValidRes {
+  isFileValid: boolean;
+}
+
 export interface GetBulkRequestExampleReq {
   bulkType: BulkType;
 }
@@ -80,6 +89,140 @@ export interface ChangeRoleHierarchyRow {
   newJobTitle: string;
   rowNumber: string;
 }
+
+const baseIsBulkFileValidReq: object = { fileName: "", type: 0 };
+
+export const IsBulkFileValidReq = {
+  encode(
+    message: IsBulkFileValidReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.fileName !== "") {
+      writer.uint32(10).string(message.fileName);
+    }
+    if (message.type !== 0) {
+      writer.uint32(16).int32(message.type);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): IsBulkFileValidReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseIsBulkFileValidReq } as IsBulkFileValidReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.fileName = reader.string();
+          break;
+        case 2:
+          message.type = reader.int32() as any;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): IsBulkFileValidReq {
+    const message = { ...baseIsBulkFileValidReq } as IsBulkFileValidReq;
+    if (object.fileName !== undefined && object.fileName !== null) {
+      message.fileName = String(object.fileName);
+    } else {
+      message.fileName = "";
+    }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = bulkTypeFromJSON(object.type);
+    } else {
+      message.type = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: IsBulkFileValidReq): unknown {
+    const obj: any = {};
+    message.fileName !== undefined && (obj.fileName = message.fileName);
+    message.type !== undefined && (obj.type = bulkTypeToJSON(message.type));
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<IsBulkFileValidReq>): IsBulkFileValidReq {
+    const message = { ...baseIsBulkFileValidReq } as IsBulkFileValidReq;
+    if (object.fileName !== undefined && object.fileName !== null) {
+      message.fileName = object.fileName;
+    } else {
+      message.fileName = "";
+    }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = object.type;
+    } else {
+      message.type = 0;
+    }
+    return message;
+  },
+};
+
+const baseIsBulkFileValidRes: object = { isFileValid: false };
+
+export const IsBulkFileValidRes = {
+  encode(
+    message: IsBulkFileValidRes,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.isFileValid === true) {
+      writer.uint32(8).bool(message.isFileValid);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): IsBulkFileValidRes {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseIsBulkFileValidRes } as IsBulkFileValidRes;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.isFileValid = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): IsBulkFileValidRes {
+    const message = { ...baseIsBulkFileValidRes } as IsBulkFileValidRes;
+    if (object.isFileValid !== undefined && object.isFileValid !== null) {
+      message.isFileValid = Boolean(object.isFileValid);
+    } else {
+      message.isFileValid = false;
+    }
+    return message;
+  },
+
+  toJSON(message: IsBulkFileValidRes): unknown {
+    const obj: any = {};
+    message.isFileValid !== undefined &&
+      (obj.isFileValid = message.isFileValid);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<IsBulkFileValidRes>): IsBulkFileValidRes {
+    const message = { ...baseIsBulkFileValidRes } as IsBulkFileValidRes;
+    if (object.isFileValid !== undefined && object.isFileValid !== null) {
+      message.isFileValid = object.isFileValid;
+    } else {
+      message.isFileValid = false;
+    }
+    return message;
+  },
+};
 
 const baseGetBulkRequestExampleReq: object = { bulkType: 0 };
 
@@ -774,6 +917,7 @@ export interface BulkService {
   GetChangeRoleHierarchyBulkRequestById(
     request: GetBulkRequestByIdReq
   ): Promise<DetailedChangeRoleHierarchyBulkRequest>;
+  IsBulkFileValid(request: IsBulkFileValidReq): Promise<IsBulkFileValidRes>;
 }
 
 export class BulkServiceClientImpl implements BulkService {
@@ -788,6 +932,7 @@ export class BulkServiceClientImpl implements BulkService {
       this.GetCreateRoleBulkRequestById.bind(this);
     this.GetChangeRoleHierarchyBulkRequestById =
       this.GetChangeRoleHierarchyBulkRequestById.bind(this);
+    this.IsBulkFileValid = this.IsBulkFileValid.bind(this);
   }
   CreateRoleBulkRequest(
     request: CreateRoleBulkReq
@@ -856,6 +1001,18 @@ export class BulkServiceClientImpl implements BulkService {
     );
     return promise.then((data) =>
       DetailedChangeRoleHierarchyBulkRequest.decode(new _m0.Reader(data))
+    );
+  }
+
+  IsBulkFileValid(request: IsBulkFileValidReq): Promise<IsBulkFileValidRes> {
+    const data = IsBulkFileValidReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "BulkService.BulkService",
+      "IsBulkFileValid",
+      data
+    );
+    return promise.then((data) =>
+      IsBulkFileValidRes.decode(new _m0.Reader(data))
     );
   }
 }

@@ -10,6 +10,17 @@ service BulkService {
     rpc GetBulkRequestExample(GetBulkRequestExampleReq) returns (GetBulkRequestExampleRes){}
     rpc GetCreateRoleBulkRequestById(GetBulkRequestByIdReq) returns (DetailedCreateRoleBulkRequest){}
     rpc GetChangeRoleHierarchyBulkRequestById(GetBulkRequestByIdReq) returns (DetailedChangeRoleHierarchyBulkRequest){}
+
+    rpc IsBulkFileValid(IsBulkFileValidReq) returns (IsBulkFileValidRes){}
+}
+
+message IsBulkFileValidReq{
+    string fileName = 1;
+    BulkType type = 2;
+}
+
+message IsBulkFileValidRes{
+    bool isFileValid = 1;
 }
 
 message GetBulkRequestExampleReq {

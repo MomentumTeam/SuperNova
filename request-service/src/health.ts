@@ -1,20 +1,17 @@
-import {
-  GrpcHealthCheck,
-  HealthCheckResponse,
-  HealthService,
-} from 'grpc-ts-health-check';
-import * as grpc from 'grpc';
-const serviceNames: string[] = ['', 'NotificationService.NotificationService'];
+const grpcHealth = require('grpc-js-health-check');
+import * as grpc from '@grpc/grpc-js';
+
+const serviceNames: string[] = ['', 'RequestService.RequestService'];
 
 export const healthCheckStatusMap = {
-  '': HealthCheckResponse.ServingStatus.UNKNOWN,
-  serviceName: HealthCheckResponse.ServingStatus.UNKNOWN,
+  '': grpcHealth.servingStatus.UNKNOWN,
+  serviceName: grpcHealth.servingStatus.UNKNOWN,
 };
 
-const grpcHealthCheck = new GrpcHealthCheck(healthCheckStatusMap);
+const grpcHealthCheck = new grpcHealth.Implementation(healthCheckStatusMap);
 
 export function addHealthService(server: grpc.Server): grpc.Server {
-  server.addService(HealthService, grpcHealthCheck);
+  server.addService(grpcHealth.service, grpcHealthCheck);
   return server;
 }
 
