@@ -75,7 +75,6 @@ export interface GetAllDIsRequest {
 export interface UpdateOGParentRequest {
   id: string;
   parentId: string;
-  parent: string;
 }
 
 export interface GetOGByIdRequest {
@@ -184,6 +183,7 @@ export interface CreateOGRequest {
   name: string;
   directGroup: string;
   source: string;
+  prefix?: string | undefined;
 }
 
 /** CreateDI */
@@ -374,6 +374,7 @@ export interface OrganizationGroup {
   updatedAt: string;
   directEntities: Entity[];
   directRoles: Role[];
+  prefix?: string | undefined;
 }
 
 export interface Role {
@@ -1599,7 +1600,7 @@ export const GetAllDIsRequest = {
   },
 };
 
-const baseUpdateOGParentRequest: object = { id: "", parentId: "", parent: "" };
+const baseUpdateOGParentRequest: object = { id: "", parentId: "" };
 
 export const UpdateOGParentRequest = {
   encode(
@@ -1611,9 +1612,6 @@ export const UpdateOGParentRequest = {
     }
     if (message.parentId !== "") {
       writer.uint32(18).string(message.parentId);
-    }
-    if (message.parent !== "") {
-      writer.uint32(26).string(message.parent);
     }
     return writer;
   },
@@ -1633,9 +1631,6 @@ export const UpdateOGParentRequest = {
           break;
         case 2:
           message.parentId = reader.string();
-          break;
-        case 3:
-          message.parent = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -1657,11 +1652,6 @@ export const UpdateOGParentRequest = {
     } else {
       message.parentId = "";
     }
-    if (object.parent !== undefined && object.parent !== null) {
-      message.parent = String(object.parent);
-    } else {
-      message.parent = "";
-    }
     return message;
   },
 
@@ -1669,7 +1659,6 @@ export const UpdateOGParentRequest = {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
     message.parentId !== undefined && (obj.parentId = message.parentId);
-    message.parent !== undefined && (obj.parent = message.parent);
     return obj;
   },
 
@@ -1686,11 +1675,6 @@ export const UpdateOGParentRequest = {
       message.parentId = object.parentId;
     } else {
       message.parentId = "";
-    }
-    if (object.parent !== undefined && object.parent !== null) {
-      message.parent = object.parent;
-    } else {
-      message.parent = "";
     }
     return message;
   },
@@ -3343,6 +3327,9 @@ export const CreateOGRequest = {
     if (message.source !== "") {
       writer.uint32(26).string(message.source);
     }
+    if (message.prefix !== undefined) {
+      writer.uint32(34).string(message.prefix);
+    }
     return writer;
   },
 
@@ -3361,6 +3348,9 @@ export const CreateOGRequest = {
           break;
         case 3:
           message.source = reader.string();
+          break;
+        case 4:
+          message.prefix = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -3387,6 +3377,11 @@ export const CreateOGRequest = {
     } else {
       message.source = "";
     }
+    if (object.prefix !== undefined && object.prefix !== null) {
+      message.prefix = String(object.prefix);
+    } else {
+      message.prefix = undefined;
+    }
     return message;
   },
 
@@ -3396,6 +3391,7 @@ export const CreateOGRequest = {
     message.directGroup !== undefined &&
       (obj.directGroup = message.directGroup);
     message.source !== undefined && (obj.source = message.source);
+    message.prefix !== undefined && (obj.prefix = message.prefix);
     return obj;
   },
 
@@ -3415,6 +3411,11 @@ export const CreateOGRequest = {
       message.source = object.source;
     } else {
       message.source = "";
+    }
+    if (object.prefix !== undefined && object.prefix !== null) {
+      message.prefix = object.prefix;
+    } else {
+      message.prefix = undefined;
     }
     return message;
   },
@@ -5802,6 +5803,9 @@ export const OrganizationGroup = {
     for (const v of message.directRoles) {
       Role.encode(v!, writer.uint32(90).fork()).ldelim();
     }
+    if (message.prefix !== undefined) {
+      writer.uint32(98).string(message.prefix);
+    }
     return writer;
   },
 
@@ -5847,6 +5851,9 @@ export const OrganizationGroup = {
           break;
         case 11:
           message.directRoles.push(Role.decode(reader, reader.uint32()));
+          break;
+        case 12:
+          message.prefix = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -5916,6 +5923,11 @@ export const OrganizationGroup = {
         message.directRoles.push(Role.fromJSON(e));
       }
     }
+    if (object.prefix !== undefined && object.prefix !== null) {
+      message.prefix = String(object.prefix);
+    } else {
+      message.prefix = undefined;
+    }
     return message;
   },
 
@@ -5948,6 +5960,7 @@ export const OrganizationGroup = {
     } else {
       obj.directRoles = [];
     }
+    message.prefix !== undefined && (obj.prefix = message.prefix);
     return obj;
   },
 
@@ -6010,6 +6023,11 @@ export const OrganizationGroup = {
       for (const e of object.directRoles) {
         message.directRoles.push(Role.fromPartial(e));
       }
+    }
+    if (object.prefix !== undefined && object.prefix !== null) {
+      message.prefix = object.prefix;
+    } else {
+      message.prefix = undefined;
     }
     return message;
   },
