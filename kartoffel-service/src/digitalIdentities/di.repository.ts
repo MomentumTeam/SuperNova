@@ -55,7 +55,13 @@ export class DiRepository {
           `${C.kartoffelUrl}/api/digitalIdentities`,
           createDIRequest
         );
-        return res as DigitalIdentity;
+
+        if (res === C.kartoffelOK) {
+          const newDI = await this.getDIByUniqueId({ id: createDIRequest.uniqueId });
+          return newDI as DigitalIdentity;
+        } else {
+          throw new Error("res not ok");
+        }
       }
     } catch (error) {
       throw error;
