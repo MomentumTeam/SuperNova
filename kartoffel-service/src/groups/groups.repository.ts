@@ -125,7 +125,7 @@ export class GroupsRepository {
       } else {
         getAllOGsRequest.source = getAllOGsRequest.source
           ? getAllOGsRequest.source
-          : 'oneTree';
+          : C.defaultSource;
         const res = await this.kartoffelUtils.kartoffelGet(
           `${C.kartoffelUrl}/api/groups`,
           getAllOGsRequest
@@ -189,7 +189,7 @@ export class GroupsRepository {
           `${C.kartoffelUrl}/api/groups/search`,
           searchOGRequest
         );
-        return res as OGArray;
+        return { groups: res as OrganizationGroup[] } as OGArray;
       }
     } catch (error) {
       throw error;
@@ -244,11 +244,13 @@ export class GroupsRepository {
         );
         return ogChildern;
       } else {
+        const queryParams: any = { ...getChildrenOfOGRequest };
+        delete queryParams.id;
         const res = await this.kartoffelUtils.kartoffelGet(
           `${C.kartoffelUrl}/api/groups/${getChildrenOfOGRequest.id}/children`,
-          getChildrenOfOGRequest
+          queryParams
         );
-        return res as OGArray;
+        return { groups: res as OrganizationGroup[] } as OGArray;
       }
     } catch (error) {
       throw error;
