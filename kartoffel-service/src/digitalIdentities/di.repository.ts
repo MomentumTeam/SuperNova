@@ -78,7 +78,7 @@ export class DiRepository {
         return newDI;
       } else {
         const res = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/api/digitalIdentities/role/${getDIByRoleIdRequest.roleId}`
+          `${C.kartoffelUrl}/api/digitalIdentities/role/${encodeURIComponent(getDIByRoleIdRequest.roleId)}`
         );
         return res as DigitalIdentity;
       }
@@ -116,7 +116,7 @@ export class DiRepository {
         return successMessage;
       } else {
         const res = await this.kartoffelUtils.kartoffelDelete(
-          `${C.kartoffelUrl}/api/digitalIdentities/${deleteDIRequest.id}`
+          `${C.kartoffelUrl}/api/digitalIdentities/${encodeURIComponent(deleteDIRequest.id)}`
         );
         return res as SuccessMessage;
       }
@@ -135,7 +135,7 @@ export class DiRepository {
         return di;
       } else {
         const res = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/api/digitalIdentities/${getDIByUniqueIdRequest.id}`
+          `${C.kartoffelUrl}/api/digitalIdentities/${encodeURIComponent(getDIByUniqueIdRequest.id)}`
         );
         return res as DigitalIdentity;
       }
@@ -152,7 +152,7 @@ export class DiRepository {
         return digitalIdentity;
       } else {
         const res: DigitalIdentity = await this.kartoffelUtils.kartoffelPatch(
-          `${C.kartoffelUrl}/api/digitalIdentities/${updateDIRequest.id}`,
+          `${C.kartoffelUrl}/api/digitalIdentities/${encodeURIComponent(updateDIRequest.id)}`,
           updateDIRequest
         );
         return res;

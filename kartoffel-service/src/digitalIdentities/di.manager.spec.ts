@@ -5,7 +5,6 @@ import { KartoffelFaker } from "../mock/kartoffel.faker";
 import { KartoffelUtils } from "../utils/kartoffel.utils";
 import { DiManager } from "./di.manager";
 
-
 const userExample = {
   _id: "6187edac2da776001134860c",
   phone: ["089225048"],
@@ -26,13 +25,14 @@ const userExample = {
   id: "6187edac2da776001134860c",
 };
 
-
 const kartoffelFaker: KartoffelFaker = new KartoffelFaker();
 const kartoffelUtils: KartoffelUtils = new KartoffelUtils();
 
 const diManager: DiManager = new DiManager(kartoffelUtils, kartoffelFaker);
 
 const randomDI = kartoffelFaker.randomDI(false);
+const randomDIWithRole = kartoffelFaker.randomDI();
+
 console.log(randomDI);
 
 describe("DI Manager", () => {
@@ -52,17 +52,21 @@ describe("DI Manager", () => {
       }
     });
   });
-  // 
-  // describe("GetAllDIs", () => {
-  //   it("get all di", async () => {
-  //     const di = await diManager.getAllDIs({page: 1, pageSize: 50, ex});
-  //     expect(di).to.be.exist;
-  //     expect(di.uniqueId).to.equal(randomDI.uniqueId);
-  //   });
-  // });
-  
-  
-  describe("get di by uniqueid", () => {
+
+  describe("GetAllDIs", () => {
+    it("get all di", async () => {
+      const arrdi = await diManager.getAllDIs({ page: 1, pageSize: 50 });
+      expect(arrdi).to.be.exist;
+      expect(arrdi).to.be.an("array");
+      expect(arrdi).to.have.length.within(0, 50);
+    });
+  });
+
+  describe("SearchDIOrUniqueId", () => {
+    // TODO
+  });
+
+  describe("GetDIByUniqueId", () => {
     it("should get 1 di", async () => {
       const di: DigitalIdentity = await diManager.getDIByUniqueId({ id: randomDI.uniqueId });
       expect(di).to.exist;
@@ -72,10 +76,32 @@ describe("DI Manager", () => {
       try {
         const res = await diManager.getDIByUniqueId({ id: "blalalala" });
       } catch (error: any) {
-          expect(error.response.status).to.equal(404);
+        expect(error.response.status).to.equal(404);
       }
     });
   });
 
-})
+  describe("GetDIByRoleId", () => {
+    let diwithrole: DigitalIdentity;
+    before(async() => {
+      diwithrole = await diManager.createDI(randomDIWithRole);
+    })
+    it("should get di", async() => {
+      if (randomDIWithRole.role?.roleId) {
+        const di: DigitalIdentity = await diManager.getDIByRoleId({ roleId: randomDIWithRole.role?.roleId });
+        expect(di).to.be.exist;
+        expect(di.uniqueId).to.be.equal(diwithrole.uniqueId)
+      }
+    })
+  });
 
+  describe("UpdateDI", () => {
+    it("change role attachable", async() => {
+      await diManager.updateDI({id: randomDI.uniqueId, isRoleAttachable: false});
+    })
+  });
+
+  describe("DeleteDI", () => {
+    // TODO
+  });
+});

@@ -102,7 +102,7 @@ export class RolesRepository {
         return this.kartoffelFaker.randomRole();
       } else {
         return this.kartoffelUtils.kartoffelDelete(
-          `${C.kartoffelUrl}/api/roles/${deleteRoleRequest.roleId}`
+          `${C.kartoffelUrl}/api/roles/${encodeURIComponent(deleteRoleRequest.roleId)}`
         );
       }
     } catch (error) {
@@ -121,7 +121,7 @@ export class RolesRepository {
       } else {
         try {
           const entity = await this.kartoffelUtils.kartoffelGet(
-            `${C.kartoffelUrl}/api/entities/role/${isRoleAlreadyTakenRequest.roleId}`,
+            `${C.kartoffelUrl}/api/entities/role/${encodeURIComponent(isRoleAlreadyTakenRequest.roleId)}`,
             { expanded: true }
           );
           if (entity) {
@@ -183,7 +183,9 @@ export class RolesRepository {
         return { success: true };
       } else {
         const data: SuccessMessage = await this.kartoffelUtils.kartoffelPut(
-          `${C.kartoffelUrl}/api/roles/${connectRoleAndDIRequest.roleId}/digitalIdentity/${connectRoleAndDIRequest.uniqueId}`,
+          `${C.kartoffelUrl}/api/roles/${encodeURIComponent(
+            connectRoleAndDIRequest.roleId
+          )}/digitalIdentity/${encodeURIComponent(connectRoleAndDIRequest.uniqueId)}`,
           ConnectRoleAndDIRequest
         );
         return data;
@@ -202,7 +204,7 @@ export class RolesRepository {
         return this.kartoffelFaker.randomRole();
       } else {
         const data: Role = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/api/roles/${getRoleByRoleIdRequest.roleId}`
+          `${C.kartoffelUrl}/api/roles/${encodeURIComponent(getRoleByRoleIdRequest.roleId)}`
         );
         return data;
       }
@@ -220,7 +222,9 @@ export class RolesRepository {
         return { success: true };
       } else {
         const data: SuccessMessage = await this.kartoffelUtils.kartoffelDelete(
-          `${C.kartoffelUrl}/api/roles/${disconnectRoleAndDIRequest.roleId}/digitalIdentity/${disconnectRoleAndDIRequest.uniqueId}`
+          `${C.kartoffelUrl}/api/roles/${encodeURIComponent(
+            disconnectRoleAndDIRequest.roleId
+          )}/digitalIdentity/${encodeURIComponent(disconnectRoleAndDIRequest.uniqueId)}`
         );
         return data;
       }
@@ -236,7 +240,7 @@ export class RolesRepository {
         return this.kartoffelFaker.randomRole();
       } else {
         const res = await this.kartoffelUtils.kartoffelPatch(
-          `${C.kartoffelUrl}/api/roles/${RenameRoleRequest.roleId}`,
+          `${C.kartoffelUrl}/api/roles/${encodeURIComponent(RenameRoleRequest.roleId)}`,
           RenameRoleRequest
         );
 
@@ -259,7 +263,7 @@ export class RolesRepository {
         return this.kartoffelFaker.randomRole();
       } else {
         const data: Role = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/api/roles/digitalIdentity/${getRoleByDIRequest.uniqueId}`,
+          `${C.kartoffelUrl}/api/roles/digitalIdentity/${encodeURIComponent(getRoleByDIRequest.uniqueId)}`,
           getRoleByDIRequest
         );
         return data;
@@ -295,7 +299,7 @@ export class RolesRepository {
         return this.kartoffelFaker.randomRole();
       } else {
         const data: Role = await this.kartoffelUtils.kartoffelPut(
-          `${C.kartoffelUrl}/api/roles/${changeRoleOGRequest.roleId}/group/${changeRoleOGRequest.groupId}`,
+          `${C.kartoffelUrl}/api/roles/${encodeURIComponent(changeRoleOGRequest.roleId)}/group/${changeRoleOGRequest.groupId}`,
           changeRoleOGRequest
         );
         return data;
