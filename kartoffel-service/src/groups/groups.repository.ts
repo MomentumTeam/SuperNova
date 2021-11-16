@@ -22,16 +22,23 @@ import {
   IsOGNameAlreadyTakenReq,
   IsOGNameAlreadyTakenRes,
   IdMessage,
+  EntityArray,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { ogNameExists } from '../utils/ogName.utils';
 import { cleanUnderscoreFields } from '../utils/json.utils';
+import { EntitiesRepository } from '../entities/entities.repository';
 
 export class GroupsRepository {
   private kartoffelFaker: KartoffelFaker;
   private kartoffelUtils: KartoffelUtils;
+  private entitiesRepository: EntitiesRepository;
   constructor(kartoffelUtils: KartoffelUtils, kartoffelFaker: KartoffelFaker) {
     this.kartoffelFaker = kartoffelFaker;
     this.kartoffelUtils = kartoffelUtils;
+    this.entitiesRepository = new EntitiesRepository(
+      kartoffelUtils,
+      kartoffelFaker
+    );
   }
 
   async isOGNameAlreadyTaken(
@@ -244,18 +251,32 @@ export class GroupsRepository {
         return ogChildern;
       } else {
         const queryParams: any = { ...getChildrenOfOGRequest };
-        if (!queryParams.page) {
-          queryParams.page = 1;
-        }
-        if (!queryParams.pageSize) {
-          queryParams.pageSize = 1000;
-        }
         delete queryParams.id;
-        const res = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/api/groups/${getChildrenOfOGRequest.id}/children`,
-          queryParams
-        );
-        return { groups: res as OrganizationGroup[] } as OGArray;
+        if (!queryParams.page || !queryParams.pageSize) {
+          //get all children
+          let page = 1;
+          let groups: OrganizationGroup[] = [];
+          while (true) {
+            const currentPage = await this.getChildrenOfOG({
+              id: getChildrenOfOGRequest.id,
+              direct: getChildrenOfOGRequest.direct,
+              page: page,
+              pageSize: 1000,
+            });
+            if (!currentPage.groups || currentPage.groups.length === 0) {
+              break;
+            }
+            groups.push(...currentPage.groups);
+            page++;
+          }
+          return { groups: groups } as OGArray;
+        } else {
+          const res = await this.kartoffelUtils.kartoffelGet(
+            `${C.kartoffelUrl}/api/groups/${getChildrenOfOGRequest.id}/children`,
+            queryParams
+          );
+          return { groups: res as OrganizationGroup[] } as OGArray;
+        }
       }
     } catch (error) {
       throw error;
@@ -268,11 +289,12 @@ export class GroupsRepository {
         const ogChildern: OGArray = await this.kartoffelFaker.randomOGArray();
         return ogChildern;
       } else {
-        const res = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/api/groups/${C.kartoffelRootID}/children`,
-          { direct: true }
-        );
-        return { groups: res as OrganizationGroup[] } as OGArray;
+        let groups: OrganizationGroup[] = [];
+        const ogArray: OGArray = await this.getChildrenOfOG({
+          id: C.kartoffelRootID,
+          direct: true,
+        });
+        return ogArray;
       }
     } catch (error) {
       throw error;
@@ -327,12 +349,15 @@ export class GroupsRepository {
       return { id: currentChild.id, label: currentChild.name, children: [] };
     } else {
       if (currentDepth <= 0) {
-        const members: Entity[] = await this.kartoffelUtils.kartoffelGet(
-          // TODO: use existed api
-          `${C.kartoffelUrl}/api/entities/group/${currentChild.id}?direct=true&expanded=false&page=1`
-        );
+        const members: Entity[] = (
+          await this.entitiesRepository.getEntitiesUnderOG({
+            id: currentChild.id,
+            direct: true,
+          })
+        ).entities;
+
         const childrenInTree: OGTree[] = members.map((member) => {
-          return { id: member.id, label: member.jobTitle, children: [] };
+          return { id: member.id, label: member.fullName, children: [] };
         });
         return {
           id: currentChild.id,
@@ -344,8 +369,6 @@ export class GroupsRepository {
           await this.getChildrenOfOG({
             direct: true,
             id: currentChild.id,
-            page: 1,
-            pageSize: 100000,
           })
         ).groups;
 
