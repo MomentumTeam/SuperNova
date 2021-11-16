@@ -30,7 +30,7 @@ export class DiManager {
     }
   }
 
-  async createDI(createDIRequest: CreateDIRequest): Promise<DigitalIdentity> {
+  async createDI(createDIRequest: CreateDIRequest): Promise<Id> {
     try {
       return await this.diRepository.createDI(createDIRequest);
     } catch (error) {
