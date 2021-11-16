@@ -21,6 +21,7 @@ import {
   OGPrefix,
   IsOGNameAlreadyTakenReq,
   IsOGNameAlreadyTakenRes,
+  IdMessage,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { ogNameExists } from '../utils/ogName.utils';
 import { cleanUnderscoreFields } from '../utils/json.utils';
@@ -46,9 +47,7 @@ export class GroupsRepository {
         let childrenArray: OGArray = await this.getChildrenOfOG({
           id: isOGNameAlreadyTakenReq.parent,
           direct: true,
-          page: 1,
-          pageSize: 100,
-        });
+        } as any);
         const name = isOGNameAlreadyTakenReq.name;
         if (ogNameExists(childrenArray, name)) {
           return { isOGNameAlreadyTaken: true };
@@ -105,9 +104,10 @@ export class GroupsRepository {
         const prefix = this.kartoffelFaker.randomNumber(1000, 9999);
         return { prefix: prefix.toString(), source: 'oneTree' };
       } else {
-        //TODO
-        const prefix = this.kartoffelFaker.randomNumber(1000, 9999);
-        return { prefix: prefix.toString(), source: 'oneTree' };
+        const res = await this.kartoffelUtils.kartoffelGet(
+          `${C.kartoffelUrl}/api/groups/${getPrefixByOGIdRequest.id}/diPrefix`
+        );
+        return { prefix: res.diPrefix } as OGPrefix;
       }
     } catch (error) {
       throw error;
@@ -137,7 +137,7 @@ export class GroupsRepository {
     }
   }
 
-  async createOG(createOGRequest: CreateOGRequest): Promise<OrganizationGroup> {
+  async createOG(createOGRequest: CreateOGRequest): Promise<IdMessage> {
     try {
       cleanUnderscoreFields(createOGRequest);
       if (C.useFaker) {
@@ -148,8 +148,7 @@ export class GroupsRepository {
           `${C.kartoffelUrl}/api/groups`,
           createOGRequest
         );
-        const group = await this.getOGById({ id: res.id });
-        return group as OrganizationGroup;
+        return { id: res.id } as IdMessage;
       }
     } catch (error) {
       throw error;
@@ -245,6 +244,12 @@ export class GroupsRepository {
         return ogChildern;
       } else {
         const queryParams: any = { ...getChildrenOfOGRequest };
+        if (!queryParams.page) {
+          queryParams.page = 1;
+        }
+        if (!queryParams.pageSize) {
+          queryParams.pageSize = 1000;
+        }
         delete queryParams.id;
         const res = await this.kartoffelUtils.kartoffelGet(
           `${C.kartoffelUrl}/api/groups/${getChildrenOfOGRequest.id}/children`,
@@ -267,7 +272,7 @@ export class GroupsRepository {
           `${C.kartoffelUrl}/api/groups/${C.kartoffelRootID}/children`,
           { direct: true }
         );
-        return res as OGArray;
+        return { groups: res as OrganizationGroup[] } as OGArray;
       }
     } catch (error) {
       throw error;
@@ -284,8 +289,7 @@ export class GroupsRepository {
         return successMessage;
       } else {
         const res = await this.kartoffelUtils.kartoffelPut(
-          `${C.kartoffelUrl}/api/groups/${updateOGParentRequest.id}/parent/${updateOGParentRequest.parentId}`,
-          updateOGParentRequest
+          `${C.kartoffelUrl}/api/groups/${updateOGParentRequest.id}/parent/${updateOGParentRequest.parentId}`
         );
         return res as SuccessMessage;
       }
@@ -301,11 +305,13 @@ export class GroupsRepository {
         const successMessage: SuccessMessage = { success: true };
         return successMessage;
       } else {
+        const body: any = { ...renameOGRequest };
+        delete body.id;
         const res = await this.kartoffelUtils.kartoffelPatch(
           `${C.kartoffelUrl}/api/groups/${renameOGRequest.id}/rename`,
-          renameOGRequest
+          body
         );
-        return res as SuccessMessage;
+        return { success: true } as SuccessMessage;
       }
     } catch (error) {
       throw error;

@@ -62,12 +62,14 @@ export class RolesRepository {
           createRoleRequest
         );
 
-         if (res === C.kartoffelOK) {
-           const role = await this.getRoleByRoleId({ roleId: createRoleRequest.roleId });
-           return role as Role;
-         } else {
-           throw new Error("res not ok");
-         }
+        if (res === C.kartoffelOK) {
+          const role = await this.getRoleByRoleId({
+            roleId: createRoleRequest.roleId,
+          });
+          return role as Role;
+        } else {
+          throw new Error('res not ok');
+        }
       }
     } catch (error) {
       throw error;
@@ -183,7 +185,11 @@ export class RolesRepository {
         return { success: true };
       } else {
         const data: SuccessMessage = await this.kartoffelUtils.kartoffelPut(
-          `${C.kartoffelUrl}/api/roles/${connectRoleAndDIRequest.roleId}/digitalIdentity/${connectRoleAndDIRequest.uniqueId}`,
+          `${C.kartoffelUrl}/api/roles/${encodeURIComponent(
+            connectRoleAndDIRequest.roleId
+          )}/digitalIdentity/${encodeURIComponent(
+            connectRoleAndDIRequest.uniqueId
+          )}`,
           ConnectRoleAndDIRequest
         );
         return data;
@@ -241,10 +247,12 @@ export class RolesRepository {
         );
 
         if (res === C.kartoffelOK) {
-          const role = await this.getRoleByRoleId({ roleId: RenameRoleRequest.roleId });
+          const role = await this.getRoleByRoleId({
+            roleId: RenameRoleRequest.roleId,
+          });
           return role as Role;
         } else {
-          throw new Error("res not ok");
+          throw new Error('res not ok');
         }
       }
     } catch (error) {
@@ -278,7 +286,9 @@ export class RolesRepository {
         return this.kartoffelFaker.randomRole();
       } else {
         const data: Role = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/api/roles/hierarchy/${encodeURIComponent(getRolesByHierarchy.hierarchy)}`,
+          `${C.kartoffelUrl}/api/roles/hierarchy/${encodeURIComponent(
+            getRolesByHierarchy.hierarchy
+          )}`,
           getRolesByHierarchy
         );
         return data;

@@ -20,6 +20,7 @@ import {
   DisconnectDIFromEntityRequest,
   GetEntityByIdentifierRequest,
   SearchCommandersByFullNameRequest,
+  IdMessage,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { cleanUnderscoreFields } from '../utils/json.utils';
 import { logger } from '../logger';
@@ -34,7 +35,7 @@ export class EntitiesRepository {
 
   async createEntity(
     createEntityRequest: CreateEntityRequest
-  ): Promise<Entity> {
+  ): Promise<IdMessage> {
     try {
       cleanUnderscoreFields(createEntityRequest);
       if (C.useFaker) {
@@ -45,8 +46,7 @@ export class EntitiesRepository {
           `${C.kartoffelUrl}/api/entities`,
           createEntityRequest
         );
-        const entity = await this.getEntityById({ id: data.id });
-        return entity as Entity;
+        return { id: data.id } as IdMessage;
       }
     } catch (error) {
       throw error;
@@ -63,7 +63,9 @@ export class EntitiesRepository {
         return entity;
       } else {
         const data = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/api/entities/digitalIdentity/${getEntityByDIRequest.uniqueId}`,
+          `${C.kartoffelUrl}/api/entities/digitalIdentity/${encodeURIComponent(
+            getEntityByDIRequest.uniqueId
+          )}`,
           { expanded: true }
         );
         return data as Entity;
@@ -83,7 +85,9 @@ export class EntitiesRepository {
         return entity;
       } else {
         const data = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/api/entities/role/${getEntityByRoleIdRequest.roleId}`,
+          `${C.kartoffelUrl}/api/entities/role/${encodeURIComponent(
+            getEntityByRoleIdRequest.roleId
+          )}`,
           { expanded: true }
         );
         return data as Entity;
@@ -280,30 +284,15 @@ export class EntitiesRepository {
           await this.kartoffelFaker.randomEntityArray(false);
         return entityArray;
       } else {
-        let url = `${C.kartoffelUrl}/api/entities/search?fullName=${searchEntitiesByFullNameRequest.fullName}&expanded=true`;
-        if (searchEntitiesByFullNameRequest.rank) {
-          url = url + `&rank=${searchEntitiesByFullNameRequest.rank}`;
-        }
-        if (searchEntitiesByFullNameRequest.entityType) {
-          url =
-            url + `&entityType=${searchEntitiesByFullNameRequest.entityType}`;
-        }
-        if (searchEntitiesByFullNameRequest.underGroupId) {
-          url =
-            url +
-            `&underGroupId=${searchEntitiesByFullNameRequest.underGroupId}`;
-        }
-        if (searchEntitiesByFullNameRequest.status) {
-          url = url + `&status=${searchEntitiesByFullNameRequest.status}`;
-        }
+        let url = `${C.kartoffelUrl}/api/entities/search`;
+        const queryParams: any = { ...searchEntitiesByFullNameRequest };
+        queryParams.expanded = true;
         if (searchEntitiesByFullNameRequest.source) {
-          url = url + `&source=${searchEntitiesByFullNameRequest.source}`;
-        } else {
-          url = url + `&source=oneTree`;
+          queryParams['digitalIdentity.source'] = queryParams.source;
         }
-        url = encodeURI(url);
-        const data = await this.kartoffelUtils.kartoffelGet(url);
-        return { entities: data as Entity[] };
+        delete queryParams.source;
+        const data = await this.kartoffelUtils.kartoffelGet(url, queryParams);
+        return { entities: data as Entity[] } as EntityArray;
       }
     } catch (error) {
       throw error;
@@ -395,7 +384,11 @@ export class EntitiesRepository {
         return { success: true };
       } else {
         await this.kartoffelUtils.kartoffelDelete(
-          `${C.kartoffelUrl}/api/entities/${disconnectDIFromEntityRequest.id}/digitalIdentity/${disconnectDIFromEntityRequest.uniqueId}`
+          `${C.kartoffelUrl}/api/entities/${
+            disconnectDIFromEntityRequest.id
+          }/digitalIdentity/${encodeURIComponent(
+            disconnectDIFromEntityRequest.uniqueId
+          )}`
         );
         return { success: true };
       }
@@ -413,7 +406,11 @@ export class EntitiesRepository {
         return { success: true };
       } else {
         const data = await this.kartoffelUtils.kartoffelPut(
-          `${C.kartoffelUrl}/api/entities/${connectEntityAndDIRequest.id}/digitalIdentity/${connectEntityAndDIRequest.uniqueId}`,
+          `${C.kartoffelUrl}/api/entities/${
+            connectEntityAndDIRequest.id
+          }/digitalIdentity/${encodeURIComponent(
+            connectEntityAndDIRequest.uniqueId
+          )}`,
           {
             digitalIdentityUniqueId: connectEntityAndDIRequest.uniqueId,
           }

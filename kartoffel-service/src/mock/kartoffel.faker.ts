@@ -12,7 +12,7 @@ import {
   OGTree,
   Image,
   DigitalIdentities,
-} from "../interfaces/protoc/proto/kartoffelService";
+} from '../interfaces/protoc/proto/kartoffelService';
 import * as C from '../config';
 
 export class KartoffelFaker {
@@ -117,6 +117,7 @@ export class KartoffelFaker {
       createdAt: faker.datatype.datetime().toString(),
       updatedAt: faker.datatype.datetime().toString(),
       clearance: '1',
+      displayName: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
     };
     return role;
   }

@@ -2,6 +2,7 @@ import * as grpc from '@grpc/grpc-js';
 import {
   Entity,
   EntityArray,
+  IdMessage,
   Image,
   SuccessMessage,
 } from '../interfaces/protoc/proto/kartoffelService';
@@ -51,12 +52,14 @@ export async function getPictureByEntityId(
 export async function createEntity(call: any, callback: any): Promise<void> {
   try {
     logger.info(`Call to createEntity`, { callRequest: call.request });
-    const entity: Entity = await entitiesManager.createEntity(call.request);
+    const idMessage: IdMessage = await entitiesManager.createEntity(
+      call.request
+    );
     logger.info(`createEntity OK`, {
       callRequest: call.request,
-      response: entity,
+      response: idMessage,
     });
-    callback(null, entity);
+    callback(null, idMessage);
   } catch (error: any) {
     logger.error(`createEntity ERROR`, {
       callRequest: call.request,

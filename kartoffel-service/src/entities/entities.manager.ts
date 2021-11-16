@@ -12,6 +12,7 @@ import {
   GetEntityByIdRequest,
   GetEntityByRoleIdRequest,
   GetPictureByEntityIdRequest,
+  IdMessage,
   Image,
   SearchCommandersByFullNameRequest,
   SearchEntitiesByFullNameRequest,
@@ -45,7 +46,7 @@ export class EntitiesManager {
 
   async createEntity(
     createEntityRequest: CreateEntityRequest
-  ): Promise<Entity> {
+  ): Promise<IdMessage> {
     try {
       return await this.entitiesRepository.createEntity(createEntityRequest);
     } catch (error) {
