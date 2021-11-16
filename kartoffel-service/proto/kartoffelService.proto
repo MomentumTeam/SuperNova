@@ -103,8 +103,8 @@ message GetAllOGsRequest{
 
 message UpdateDIRequest{
     string id = 1;
-    bool isRoleAttachable = 2;
-    string mail = 3;
+    optional bool isRoleAttachable = 2;
+    optional string mail = 3;
 }
 
 message GetDIByUniqueIdRequest{

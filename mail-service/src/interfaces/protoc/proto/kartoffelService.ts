@@ -46,8 +46,8 @@ export interface GetAllOGsRequest {
 
 export interface UpdateDIRequest {
   id: string;
-  isRoleAttachable: boolean;
-  mail: string;
+  isRoleAttachable?: boolean | undefined;
+  mail?: string | undefined;
 }
 
 export interface GetDIByUniqueIdRequest {
@@ -1137,11 +1137,7 @@ export const GetAllOGsRequest = {
   },
 };
 
-const baseUpdateDIRequest: object = {
-  id: "",
-  isRoleAttachable: false,
-  mail: "",
-};
+const baseUpdateDIRequest: object = { id: "" };
 
 export const UpdateDIRequest = {
   encode(
@@ -1151,10 +1147,10 @@ export const UpdateDIRequest = {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
-    if (message.isRoleAttachable === true) {
+    if (message.isRoleAttachable !== undefined) {
       writer.uint32(16).bool(message.isRoleAttachable);
     }
-    if (message.mail !== "") {
+    if (message.mail !== undefined) {
       writer.uint32(26).string(message.mail);
     }
     return writer;
@@ -1197,12 +1193,12 @@ export const UpdateDIRequest = {
     ) {
       message.isRoleAttachable = Boolean(object.isRoleAttachable);
     } else {
-      message.isRoleAttachable = false;
+      message.isRoleAttachable = undefined;
     }
     if (object.mail !== undefined && object.mail !== null) {
       message.mail = String(object.mail);
     } else {
-      message.mail = "";
+      message.mail = undefined;
     }
     return message;
   },
@@ -1229,12 +1225,12 @@ export const UpdateDIRequest = {
     ) {
       message.isRoleAttachable = object.isRoleAttachable;
     } else {
-      message.isRoleAttachable = false;
+      message.isRoleAttachable = undefined;
     }
     if (object.mail !== undefined && object.mail !== null) {
       message.mail = object.mail;
     } else {
-      message.mail = "";
+      message.mail = undefined;
     }
     return message;
   },
