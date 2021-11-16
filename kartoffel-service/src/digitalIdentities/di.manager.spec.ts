@@ -1,9 +1,10 @@
-require("../index");
+require("../envload");
 import { expect } from "chai";
 import { DigitalIdentity } from "../interfaces/protoc/proto/kartoffelService";
 import { KartoffelFaker } from "../mock/kartoffel.faker";
 import { KartoffelUtils } from "../utils/kartoffel.utils";
 import { DiManager } from "./di.manager";
+
 
 const userExample = {
   _id: "6187edac2da776001134860c",
@@ -25,50 +26,56 @@ const userExample = {
   id: "6187edac2da776001134860c",
 };
 
-const diExample = {
-  uniqueId: "ophelia.little37@leonardo.com",
-  type: "domainUser",
-  source: "sf_name",
-  mail: "enola.pouros@leonardo.com",
-  isRoleAttachable: true,
-  createdAt: "2021-11-10T06:53:20.644Z",
-  updatedAt: "2021-11-10T06:53:21.189Z",
-  entityId: "618b6c602da776001134abef",
-};
-
 
 const kartoffelFaker: KartoffelFaker = new KartoffelFaker();
 const kartoffelUtils: KartoffelUtils = new KartoffelUtils();
 
 const diManager: DiManager = new DiManager(kartoffelUtils, kartoffelFaker);
 
-const newDI = {
-  isRoleAttachable: true,
-  mail: "test@gmail.com",
-  source: "sf_name",
-  type: "domainUser",
-  uniqueId: "test@leonardo.com",
-};
+const randomDI = kartoffelFaker.randomDI(false);
+console.log(randomDI);
 
-describe("createDI", ()=> {
-    it("create di", async ()=> {
-        const di = await diManager.createDI(newDI);
-        expect(di).to.be.exist;
-        expect(di.uniqueId).to.equal(newDI.uniqueId);
-    })
+describe("DI Manager", () => {
+  describe("CreateDI", () => {
+    it("create di", async () => {
+      const di = await diManager.createDI(randomDI);
+      expect(di).to.be.exist;
+      expect(di.uniqueId).to.equal(randomDI.uniqueId);
+    });
+
+    it("create the same di", async () => {
+      try {
+        const di = await diManager.createDI(randomDI);
+      } catch (error: any) {
+        expect(error.response.status).to.equal(400);
+        expect(error.response.message).to.equal(`digital identity: ${randomDI.uniqueId} already exists`);
+      }
+    });
+  });
+  // 
+  // describe("GetAllDIs", () => {
+  //   it("get all di", async () => {
+  //     const di = await diManager.getAllDIs({page: 1, pageSize: 50, ex});
+  //     expect(di).to.be.exist;
+  //     expect(di.uniqueId).to.equal(randomDI.uniqueId);
+  //   });
+  // });
+  
+  
+  describe("get di by uniqueid", () => {
+    it("should get 1 di", async () => {
+      const di: DigitalIdentity = await diManager.getDIByUniqueId({ id: randomDI.uniqueId });
+      expect(di).to.exist;
+      expect(di.uniqueId).to.equal(randomDI.uniqueId);
+    });
+    it("invalid id", async () => {
+      try {
+        const res = await diManager.getDIByUniqueId({ id: "blalalala" });
+      } catch (error: any) {
+          expect(error.response.status).to.equal(404);
+      }
+    });
+  });
+
 })
-describe("get di by uniqueid", () => {
-  it("should get 1 di", async () => {
-    const di: DigitalIdentity = await diManager.getDIByUniqueId({ id: diExample.uniqueId });
-    expect(di).to.exist;
-    expect(di.uniqueId).to.equal(diExample.uniqueId);
-  });
-  it("invalid id", async () => {
-    try {
-      const res = await diManager.getDIByUniqueId({ id: "blalalala" });
-    } catch (error: any) {
-        expect(error.response.status).to.equal(404);
-    }
-  });
-});
 

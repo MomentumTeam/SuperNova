@@ -14,7 +14,8 @@ import {
   DigitalIdentities,
 } from "../interfaces/protoc/proto/kartoffelService";
 import * as C from '../config';
-
+import { sample } from 'lodash'; 
+import { kartoffelConfig } from '../utils/kartoffelConfig';
 export class KartoffelFaker {
   constructor() {}
 
@@ -53,18 +54,24 @@ export class KartoffelFaker {
     return organizationGroup;
   }
 
-  randomDI(): DigitalIdentity {
+  randomDI(withRole = true): DigitalIdentity {
+    const domain = sample(kartoffelConfig.valueObjects.digitalIdentityId.domain.values);
+    const type = sample(kartoffelConfig.valueObjects.digitalIdentityType)
+    const source = sample(kartoffelConfig.valueObjects.source.values)
+
     const digitalIdentity: DigitalIdentity = {
-      type: 'domainUser',
-      source: 'oneTree',
+      type: type ? type : "domainUser",
+      source: source ? source : "oa_name",
       mail: faker.internet.email(),
-      uniqueId: faker.internet.email(),
+      uniqueId: faker.internet.email(undefined, undefined, domain),
       entityId: mongoose.Types.ObjectId().toString(),
       createdAt: faker.datatype.datetime().toString(),
       updatedAt: faker.datatype.datetime().toString(),
       isRoleAttachable: true,
-      role: this.randomRole(),
+      role: undefined
     };
+
+    if (withRole) digitalIdentity.role = this.randomRole();
     return digitalIdentity;
   }
 
@@ -106,6 +113,8 @@ export class KartoffelFaker {
   }
 
   randomRole(): Role {
+    const source = sample(kartoffelConfig.valueObjects.source.values);
+
     const role: Role = {
       roleId: faker.internet.email(),
       jobTitle: faker.name.jobTitle(),
@@ -113,10 +122,10 @@ export class KartoffelFaker {
       directGroup: mongoose.Types.ObjectId().toString(),
       hierarchy: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
       hierarchyIds: [],
-      source: 'oneTree',
+      source: source ? source : "oa_name",
       createdAt: faker.datatype.datetime().toString(),
       updatedAt: faker.datatype.datetime().toString(),
-      clearance: '1',
+      clearance: "1",
     };
     return role;
   }
