@@ -339,8 +339,8 @@ export interface DeleteOGRequest {
 export interface GetChildrenOfOGRequest {
   /** mongoId of OG */
   id: string;
-  page: number;
-  pageSize: number;
+  page?: number | undefined;
+  pageSize?: number | undefined;
   direct: boolean;
 }
 
@@ -358,8 +358,8 @@ export interface GetEntitiesUnderOGRequest {
   /** mongoIds of OG */
   id: string;
   direct: boolean;
-  page: number;
-  pageSize: number;
+  page?: number | undefined;
+  pageSize?: number | undefined;
 }
 
 /** SuccessMessage */
@@ -5422,12 +5422,7 @@ export const DeleteOGRequest = {
   },
 };
 
-const baseGetChildrenOfOGRequest: object = {
-  id: "",
-  page: 0,
-  pageSize: 0,
-  direct: false,
-};
+const baseGetChildrenOfOGRequest: object = { id: "", direct: false };
 
 export const GetChildrenOfOGRequest = {
   encode(
@@ -5437,10 +5432,10 @@ export const GetChildrenOfOGRequest = {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
-    if (message.page !== 0) {
+    if (message.page !== undefined) {
       writer.uint32(16).int32(message.page);
     }
-    if (message.pageSize !== 0) {
+    if (message.pageSize !== undefined) {
       writer.uint32(24).int32(message.pageSize);
     }
     if (message.direct === true) {
@@ -5489,12 +5484,12 @@ export const GetChildrenOfOGRequest = {
     if (object.page !== undefined && object.page !== null) {
       message.page = Number(object.page);
     } else {
-      message.page = 0;
+      message.page = undefined;
     }
     if (object.pageSize !== undefined && object.pageSize !== null) {
       message.pageSize = Number(object.pageSize);
     } else {
-      message.pageSize = 0;
+      message.pageSize = undefined;
     }
     if (object.direct !== undefined && object.direct !== null) {
       message.direct = Boolean(object.direct);
@@ -5525,12 +5520,12 @@ export const GetChildrenOfOGRequest = {
     if (object.page !== undefined && object.page !== null) {
       message.page = object.page;
     } else {
-      message.page = 0;
+      message.page = undefined;
     }
     if (object.pageSize !== undefined && object.pageSize !== null) {
       message.pageSize = object.pageSize;
     } else {
-      message.pageSize = 0;
+      message.pageSize = undefined;
     }
     if (object.direct !== undefined && object.direct !== null) {
       message.direct = object.direct;
@@ -5651,12 +5646,7 @@ export const DeleteDIRequest = {
   },
 };
 
-const baseGetEntitiesUnderOGRequest: object = {
-  id: "",
-  direct: false,
-  page: 0,
-  pageSize: 0,
-};
+const baseGetEntitiesUnderOGRequest: object = { id: "", direct: false };
 
 export const GetEntitiesUnderOGRequest = {
   encode(
@@ -5669,10 +5659,10 @@ export const GetEntitiesUnderOGRequest = {
     if (message.direct === true) {
       writer.uint32(16).bool(message.direct);
     }
-    if (message.page !== 0) {
+    if (message.page !== undefined) {
       writer.uint32(24).int32(message.page);
     }
-    if (message.pageSize !== 0) {
+    if (message.pageSize !== undefined) {
       writer.uint32(32).int32(message.pageSize);
     }
     return writer;
@@ -5727,12 +5717,12 @@ export const GetEntitiesUnderOGRequest = {
     if (object.page !== undefined && object.page !== null) {
       message.page = Number(object.page);
     } else {
-      message.page = 0;
+      message.page = undefined;
     }
     if (object.pageSize !== undefined && object.pageSize !== null) {
       message.pageSize = Number(object.pageSize);
     } else {
-      message.pageSize = 0;
+      message.pageSize = undefined;
     }
     return message;
   },
@@ -5765,12 +5755,12 @@ export const GetEntitiesUnderOGRequest = {
     if (object.page !== undefined && object.page !== null) {
       message.page = object.page;
     } else {
-      message.page = 0;
+      message.page = undefined;
     }
     if (object.pageSize !== undefined && object.pageSize !== null) {
       message.pageSize = object.pageSize;
     } else {
-      message.pageSize = 0;
+      message.pageSize = undefined;
     }
     return message;
   },
