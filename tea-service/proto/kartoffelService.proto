@@ -37,7 +37,7 @@ service Kartoffel {
     rpc IsOGNameAlreadyTaken(IsOGNameAlreadyTakenReq) returns (IsOGNameAlreadyTakenRes){}
 
     //DI    
-    rpc CreateDI(CreateDIRequest) returns (DigitalIdentity){}
+    rpc CreateDI(CreateDIRequest) returns (Id){}
     rpc GetAllDIs(GetAllDIsRequest) returns (DigitalIdentities){}
     rpc GetDIByRoleId(GetDIByRoleIdRequest) returns (DigitalIdentity){}
     rpc SearchDIOrUniqueId(SearchDIOrUniqueIdRequest) returns (DigitalIdentities){}
@@ -46,7 +46,7 @@ service Kartoffel {
     rpc UpdateDI(UpdateDIRequest) returns (SuccessMessage){} 
 
     // Roles
-    rpc CreateRole(CreateRoleRequest) returns (Role){}
+    rpc CreateRole(CreateRoleRequest) returns (Id){}
     rpc GetAllRoles(GetAllRolesRequest) returns (RoleArray){}
     rpc GetRoleByRoleId(GetRoleByRoleIdRequest) returns (Role){}
     rpc GetRolesUnderOG(GetRolesUnderOGRequest) returns (RoleArray){}
@@ -481,4 +481,8 @@ message DigitalIdentity{
     string updatedAt = 7;    
     bool isRoleAttachable = 8;   
     optional Role role = 9;        
+}
+
+message Id {
+    string id = 1;
 }

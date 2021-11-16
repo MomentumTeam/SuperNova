@@ -433,6 +433,10 @@ export interface DigitalIdentity {
   role?: Role | undefined;
 }
 
+export interface Id {
+  id: string;
+}
+
 const baseIsRoleAlreadyTakenReq: object = { roleId: "" };
 
 export const IsRoleAlreadyTakenReq = {
@@ -7058,6 +7062,61 @@ export const DigitalIdentity = {
   },
 };
 
+const baseId: object = { id: "" };
+
+export const Id = {
+  encode(message: Id, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Id {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseId } as Id;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Id {
+    const message = { ...baseId } as Id;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+
+  toJSON(message: Id): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<Id>): Id {
+    const message = { ...baseId } as Id;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+};
+
 export interface Kartoffel {
   /** Entities */
   CreateEntity(request: CreateEntityRequest): Promise<Entity>;
@@ -7106,7 +7165,7 @@ export interface Kartoffel {
     request: IsOGNameAlreadyTakenReq
   ): Promise<IsOGNameAlreadyTakenRes>;
   /** DI */
-  CreateDI(request: CreateDIRequest): Promise<DigitalIdentity>;
+  CreateDI(request: CreateDIRequest): Promise<Id>;
   GetAllDIs(request: GetAllDIsRequest): Promise<DigitalIdentities>;
   GetDIByRoleId(request: GetDIByRoleIdRequest): Promise<DigitalIdentity>;
   SearchDIOrUniqueId(
@@ -7116,7 +7175,7 @@ export interface Kartoffel {
   DeleteDI(request: DeleteDIRequest): Promise<SuccessMessage>;
   UpdateDI(request: UpdateDIRequest): Promise<SuccessMessage>;
   /** Roles */
-  CreateRole(request: CreateRoleRequest): Promise<Role>;
+  CreateRole(request: CreateRoleRequest): Promise<Id>;
   GetAllRoles(request: GetAllRolesRequest): Promise<RoleArray>;
   GetRoleByRoleId(request: GetRoleByRoleIdRequest): Promise<Role>;
   GetRolesUnderOG(request: GetRolesUnderOGRequest): Promise<RoleArray>;
@@ -7468,10 +7527,10 @@ export class KartoffelClientImpl implements Kartoffel {
     );
   }
 
-  CreateDI(request: CreateDIRequest): Promise<DigitalIdentity> {
+  CreateDI(request: CreateDIRequest): Promise<Id> {
     const data = CreateDIRequest.encode(request).finish();
     const promise = this.rpc.request("Kartoffel.Kartoffel", "CreateDI", data);
-    return promise.then((data) => DigitalIdentity.decode(new _m0.Reader(data)));
+    return promise.then((data) => Id.decode(new _m0.Reader(data)));
   }
 
   GetAllDIs(request: GetAllDIsRequest): Promise<DigitalIdentities> {
@@ -7528,10 +7587,10 @@ export class KartoffelClientImpl implements Kartoffel {
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
-  CreateRole(request: CreateRoleRequest): Promise<Role> {
+  CreateRole(request: CreateRoleRequest): Promise<Id> {
     const data = CreateRoleRequest.encode(request).finish();
     const promise = this.rpc.request("Kartoffel.Kartoffel", "CreateRole", data);
-    return promise.then((data) => Role.decode(new _m0.Reader(data)));
+    return promise.then((data) => Id.decode(new _m0.Reader(data)));
   }
 
   GetAllRoles(request: GetAllRolesRequest): Promise<RoleArray> {
