@@ -67,12 +67,14 @@ export class KartoffelFaker {
       entityId: mongoose.Types.ObjectId().toString(),
       createdAt: faker.datatype.datetime().toString(),
       updatedAt: faker.datatype.datetime().toString(),
-      isRoleAttachable: true,
-      role: undefined
+      isRoleAttachable: true
     };
     
     if (type === kartoffelConfig.valueObjects.digitalIdentityType.VirtualUser) digitalIdentity.isRoleAttachable = false;
-    if (withRole) digitalIdentity.role = this.randomRole();
+    if (withRole && type !== kartoffelConfig.valueObjects.digitalIdentityType.VirtualUser) {
+      digitalIdentity.role = this.randomRole();
+    }
+
     return digitalIdentity;
   }
 
