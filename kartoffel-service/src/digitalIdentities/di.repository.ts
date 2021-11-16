@@ -57,8 +57,8 @@ export class DiRepository {
         );
 
         if (res === C.kartoffelOK) {
-          const newDI = await this.getDIByUniqueId({ id: createDIRequest.uniqueId });
-          return newDI as DigitalIdentity;
+          const newDI: DigitalIdentity = await this.getDIByUniqueId({ id: createDIRequest.uniqueId });
+          return newDI;
         } else {
           throw new Error("res not ok");
         }

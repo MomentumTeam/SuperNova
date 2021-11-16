@@ -58,7 +58,7 @@ export class KartoffelFaker {
     const domain = sample(kartoffelConfig.valueObjects.digitalIdentityId.domain.values);
     const type = sample(kartoffelConfig.valueObjects.digitalIdentityType)
     const source = sample(kartoffelConfig.valueObjects.source.values)
-
+    
     const digitalIdentity: DigitalIdentity = {
       type: type ? type : "domainUser",
       source: source ? source : "oa_name",
@@ -70,7 +70,8 @@ export class KartoffelFaker {
       isRoleAttachable: true,
       role: undefined
     };
-
+    
+    if (type === kartoffelConfig.valueObjects.digitalIdentityType.VirtualUser) digitalIdentity.isRoleAttachable = false;
     if (withRole) digitalIdentity.role = this.randomRole();
     return digitalIdentity;
   }
@@ -126,6 +127,7 @@ export class KartoffelFaker {
       createdAt: faker.datatype.datetime().toString(),
       updatedAt: faker.datatype.datetime().toString(),
       clearance: "1",
+      displayName: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
     };
     return role;
   }

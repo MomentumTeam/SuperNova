@@ -1,37 +1,26 @@
 require("../envload");
 import { expect } from "chai";
-import { DigitalIdentity } from "../interfaces/protoc/proto/kartoffelService";
+import { DigitalIdentity, SuccessMessage } from "../interfaces/protoc/proto/kartoffelService";
 import { KartoffelFaker } from "../mock/kartoffel.faker";
 import { KartoffelUtils } from "../utils/kartoffel.utils";
 import { DiManager } from "./di.manager";
 
-const userExample = {
-  _id: "6187edac2da776001134860c",
-  phone: ["089225048"],
-  mobilePhone: ["0526639648"],
-  firstName: "ברק",
-  lastName: "שטינדל",
-  entityType: "agumon",
-  personalNumber: "8071170",
-  identityCard: "313162208",
-  rank: "rookie",
-  clearance: "1",
-  sex: "male",
-  serviceType: "A",
-  address: "כרמל 5 רחובות",
-  createdAt: "2021-11-07T15:15:56.369Z",
-  updatedAt: "2021-11-07T15:15:56.369Z",
-  fullName: "ברק שטינדל",
-  id: "6187edac2da776001134860c",
-};
 
 const kartoffelFaker: KartoffelFaker = new KartoffelFaker();
 const kartoffelUtils: KartoffelUtils = new KartoffelUtils();
 
 const diManager: DiManager = new DiManager(kartoffelUtils, kartoffelFaker);
 
-const randomDI = kartoffelFaker.randomDI(false);
-const randomDIWithRole = kartoffelFaker.randomDI();
+const randomDI: any = kartoffelFaker.randomDI(false);
+delete randomDI.createdAt;
+delete randomDI.updatedAt;
+delete randomDI.entityId;
+delete randomDI.role;
+
+const randomDIWithRole: any = kartoffelFaker.randomDI();
+delete randomDIWithRole.createdAt;
+delete randomDIWithRole.updatedAt;
+delete randomDIWithRole.entityId;
 
 console.log(randomDI);
 
@@ -83,25 +72,46 @@ describe("DI Manager", () => {
 
   describe("GetDIByRoleId", () => {
     let diwithrole: DigitalIdentity;
-    before(async() => {
+    before(async () => {
       diwithrole = await diManager.createDI(randomDIWithRole);
-    })
-    it("should get di", async() => {
+    });
+    it("should get di", async () => {
       if (randomDIWithRole.role?.roleId) {
         const di: DigitalIdentity = await diManager.getDIByRoleId({ roleId: randomDIWithRole.role?.roleId });
         expect(di).to.be.exist;
-        expect(di.uniqueId).to.be.equal(diwithrole.uniqueId)
+        expect(di.uniqueId).to.be.equal(diwithrole.uniqueId);
       }
-    })
+    });
   });
 
   describe("UpdateDI", () => {
-    it("change role attachable", async() => {
-      await diManager.updateDI({id: randomDI.uniqueId, isRoleAttachable: false});
-    })
+    it("change role attachable to false", async () => {
+      const updatedDI = await diManager.updateDI({ id: randomDI.uniqueId, isRoleAttachable: false });
+      expect(updatedDI).to.be.exist;
+      expect(updatedDI.uniqueId).to.be.equal(randomDI.uniqueId);
+      expect(updatedDI.isRoleAttachable).to.be.false;
+    });
+    after("get the same role", async () => {
+      const di = await diManager.getDIByUniqueId({ id: randomDI.uniqueId });
+      expect(di).to.be.exist;
+      expect(di.uniqueId).to.be.equal(randomDI.uniqueId);
+      expect(di.isRoleAttachable).to.be.false;
+    });
   });
 
   describe("DeleteDI", () => {
-    // TODO
+    it("delete di", async () => {
+      const successMessage: SuccessMessage = await diManager.deleteDI({ id: randomDI.uniqueId });
+      expect(successMessage).to.be.exist;
+      expect(successMessage.success).to.be.true;
+    });
+
+    after("check if deleted", async () => {
+      try {
+        const di = await diManager.getDIByUniqueId({ id: randomDI.uniqueId });
+      } catch (error: any) {
+        expect(error.response.status).to.equal(404);
+      }
+    });
   });
 });
