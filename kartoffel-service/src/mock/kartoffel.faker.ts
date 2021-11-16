@@ -12,7 +12,7 @@ import {
   OGTree,
   Image,
   DigitalIdentities,
-} from "../interfaces/protoc/proto/kartoffelService";
+} from '../interfaces/protoc/proto/kartoffelService';
 import * as C from '../config';
 import { sample } from 'lodash'; 
 import { kartoffelConfig } from '../utils/kartoffelConfig';

@@ -1,5 +1,6 @@
 import * as grpc from '@grpc/grpc-js';
 import {
+  IdMessage,
   IsOGNameAlreadyTakenRes,
   OGArray,
   OGPrefix,
@@ -116,12 +117,12 @@ export async function createOG(call: any, callback: any): Promise<void> {
     logger.info(`Call to createOG`, {
       callRequest: call.request,
     });
-    const newOG: OrganizationGroup = await groupsManager.createOG(call.request);
+    const idMessage: IdMessage = await groupsManager.createOG(call.request);
     logger.info(`createOG OK`, {
       callRequest: call.request,
-      response: newOG,
+      response: idMessage,
     });
-    callback(null, newOG);
+    callback(null, idMessage);
   } catch (error: any) {
     logger.error(`createOG ERROR`, {
       callRequest: call.request,

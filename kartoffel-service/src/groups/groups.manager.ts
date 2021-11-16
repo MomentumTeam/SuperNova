@@ -17,6 +17,7 @@ import {
   OGPrefix,
   IsOGNameAlreadyTakenReq,
   IsOGNameAlreadyTakenRes,
+  IdMessage,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { KartoffelFaker } from '../mock/kartoffel.faker';
 import { KartoffelUtils } from '../utils/kartoffel.utils';
@@ -71,7 +72,7 @@ export class GroupsManager {
     }
   }
 
-  async createOG(createOGRequest: CreateOGRequest): Promise<OrganizationGroup> {
+  async createOG(createOGRequest: CreateOGRequest): Promise<IdMessage> {
     try {
       return await this.groupsRepository.createOG(createOGRequest);
     } catch (error) {

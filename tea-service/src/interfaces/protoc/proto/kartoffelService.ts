@@ -4,6 +4,10 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "Kartoffel";
 
+export interface IdMessage {
+  id: string;
+}
+
 export interface IsRoleAlreadyTakenReq {
   roleId: string;
 }
@@ -76,7 +80,6 @@ export interface GetAllDIsRequest {
 export interface UpdateOGParentRequest {
   id: string;
   parentId: string;
-  parent: string;
 }
 
 export interface GetOGByIdRequest {
@@ -185,6 +188,7 @@ export interface CreateOGRequest {
   name: string;
   directGroup: string;
   source: string;
+  diPrefix?: string | undefined;
 }
 
 /** CreateDI */
@@ -375,6 +379,7 @@ export interface OrganizationGroup {
   updatedAt: string;
   directEntities: Entity[];
   directRoles: Role[];
+  diPrefix?: string | undefined;
 }
 
 export interface Role {
@@ -436,6 +441,64 @@ export interface DigitalIdentity {
 export interface Id {
   id: string;
 }
+
+const baseIdMessage: object = { id: "" };
+
+export const IdMessage = {
+  encode(
+    message: IdMessage,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): IdMessage {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseIdMessage } as IdMessage;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): IdMessage {
+    const message = { ...baseIdMessage } as IdMessage;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+
+  toJSON(message: IdMessage): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<IdMessage>): IdMessage {
+    const message = { ...baseIdMessage } as IdMessage;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+};
 
 const baseIsRoleAlreadyTakenReq: object = { roleId: "" };
 
@@ -1618,7 +1681,7 @@ export const GetAllDIsRequest = {
   },
 };
 
-const baseUpdateOGParentRequest: object = { id: "", parentId: "", parent: "" };
+const baseUpdateOGParentRequest: object = { id: "", parentId: "" };
 
 export const UpdateOGParentRequest = {
   encode(
@@ -1630,9 +1693,6 @@ export const UpdateOGParentRequest = {
     }
     if (message.parentId !== "") {
       writer.uint32(18).string(message.parentId);
-    }
-    if (message.parent !== "") {
-      writer.uint32(26).string(message.parent);
     }
     return writer;
   },
@@ -1652,9 +1712,6 @@ export const UpdateOGParentRequest = {
           break;
         case 2:
           message.parentId = reader.string();
-          break;
-        case 3:
-          message.parent = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -1676,11 +1733,6 @@ export const UpdateOGParentRequest = {
     } else {
       message.parentId = "";
     }
-    if (object.parent !== undefined && object.parent !== null) {
-      message.parent = String(object.parent);
-    } else {
-      message.parent = "";
-    }
     return message;
   },
 
@@ -1688,7 +1740,6 @@ export const UpdateOGParentRequest = {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
     message.parentId !== undefined && (obj.parentId = message.parentId);
-    message.parent !== undefined && (obj.parent = message.parent);
     return obj;
   },
 
@@ -1705,11 +1756,6 @@ export const UpdateOGParentRequest = {
       message.parentId = object.parentId;
     } else {
       message.parentId = "";
-    }
-    if (object.parent !== undefined && object.parent !== null) {
-      message.parent = object.parent;
-    } else {
-      message.parent = "";
     }
     return message;
   },
@@ -3362,6 +3408,9 @@ export const CreateOGRequest = {
     if (message.source !== "") {
       writer.uint32(26).string(message.source);
     }
+    if (message.diPrefix !== undefined) {
+      writer.uint32(34).string(message.diPrefix);
+    }
     return writer;
   },
 
@@ -3380,6 +3429,9 @@ export const CreateOGRequest = {
           break;
         case 3:
           message.source = reader.string();
+          break;
+        case 4:
+          message.diPrefix = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -3406,6 +3458,11 @@ export const CreateOGRequest = {
     } else {
       message.source = "";
     }
+    if (object.diPrefix !== undefined && object.diPrefix !== null) {
+      message.diPrefix = String(object.diPrefix);
+    } else {
+      message.diPrefix = undefined;
+    }
     return message;
   },
 
@@ -3415,6 +3472,7 @@ export const CreateOGRequest = {
     message.directGroup !== undefined &&
       (obj.directGroup = message.directGroup);
     message.source !== undefined && (obj.source = message.source);
+    message.diPrefix !== undefined && (obj.diPrefix = message.diPrefix);
     return obj;
   },
 
@@ -3434,6 +3492,11 @@ export const CreateOGRequest = {
       message.source = object.source;
     } else {
       message.source = "";
+    }
+    if (object.diPrefix !== undefined && object.diPrefix !== null) {
+      message.diPrefix = object.diPrefix;
+    } else {
+      message.diPrefix = undefined;
     }
     return message;
   },
@@ -5821,6 +5884,9 @@ export const OrganizationGroup = {
     for (const v of message.directRoles) {
       Role.encode(v!, writer.uint32(90).fork()).ldelim();
     }
+    if (message.diPrefix !== undefined) {
+      writer.uint32(98).string(message.diPrefix);
+    }
     return writer;
   },
 
@@ -5866,6 +5932,9 @@ export const OrganizationGroup = {
           break;
         case 11:
           message.directRoles.push(Role.decode(reader, reader.uint32()));
+          break;
+        case 12:
+          message.diPrefix = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -5935,6 +6004,11 @@ export const OrganizationGroup = {
         message.directRoles.push(Role.fromJSON(e));
       }
     }
+    if (object.diPrefix !== undefined && object.diPrefix !== null) {
+      message.diPrefix = String(object.diPrefix);
+    } else {
+      message.diPrefix = undefined;
+    }
     return message;
   },
 
@@ -5967,6 +6041,7 @@ export const OrganizationGroup = {
     } else {
       obj.directRoles = [];
     }
+    message.diPrefix !== undefined && (obj.diPrefix = message.diPrefix);
     return obj;
   },
 
@@ -6029,6 +6104,11 @@ export const OrganizationGroup = {
       for (const e of object.directRoles) {
         message.directRoles.push(Role.fromPartial(e));
       }
+    }
+    if (object.diPrefix !== undefined && object.diPrefix !== null) {
+      message.diPrefix = object.diPrefix;
+    } else {
+      message.diPrefix = undefined;
     }
     return message;
   },
@@ -7119,7 +7199,7 @@ export const Id = {
 
 export interface Kartoffel {
   /** Entities */
-  CreateEntity(request: CreateEntityRequest): Promise<Entity>;
+  CreateEntity(request: CreateEntityRequest): Promise<IdMessage>;
   GetEntityByDI(request: GetEntityByDIRequest): Promise<Entity>;
   GetEntityByRoleId(request: GetEntityByRoleIdRequest): Promise<Entity>;
   GetEntitiesUnderOG(request: GetEntitiesUnderOGRequest): Promise<EntityArray>;
@@ -7147,7 +7227,7 @@ export interface Kartoffel {
     request: SearchCommandersByFullNameRequest
   ): Promise<EntityArray>;
   /** Groups */
-  CreateOG(request: CreateOGRequest): Promise<OrganizationGroup>;
+  CreateOG(request: CreateOGRequest): Promise<IdMessage>;
   GetAllOGs(request: GetAllOGsRequest): Promise<OGArray>;
   GetOGByHierarchyName(
     request: GetOGByHierarchyNameRequest
@@ -7249,14 +7329,14 @@ export class KartoffelClientImpl implements Kartoffel {
     this.IsJobTitleAlreadyTaken = this.IsJobTitleAlreadyTaken.bind(this);
     this.GetRolesByHierarchy = this.GetRolesByHierarchy.bind(this);
   }
-  CreateEntity(request: CreateEntityRequest): Promise<Entity> {
+  CreateEntity(request: CreateEntityRequest): Promise<IdMessage> {
     const data = CreateEntityRequest.encode(request).finish();
     const promise = this.rpc.request(
       "Kartoffel.Kartoffel",
       "CreateEntity",
       data
     );
-    return promise.then((data) => Entity.decode(new _m0.Reader(data)));
+    return promise.then((data) => IdMessage.decode(new _m0.Reader(data)));
   }
 
   GetEntityByDI(request: GetEntityByDIRequest): Promise<Entity> {
@@ -7413,12 +7493,10 @@ export class KartoffelClientImpl implements Kartoffel {
     return promise.then((data) => EntityArray.decode(new _m0.Reader(data)));
   }
 
-  CreateOG(request: CreateOGRequest): Promise<OrganizationGroup> {
+  CreateOG(request: CreateOGRequest): Promise<IdMessage> {
     const data = CreateOGRequest.encode(request).finish();
     const promise = this.rpc.request("Kartoffel.Kartoffel", "CreateOG", data);
-    return promise.then((data) =>
-      OrganizationGroup.decode(new _m0.Reader(data))
-    );
+    return promise.then((data) => IdMessage.decode(new _m0.Reader(data)));
   }
 
   GetAllOGs(request: GetAllOGsRequest): Promise<OGArray> {
