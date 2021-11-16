@@ -20,6 +20,7 @@ import {
   DisconnectDIFromEntityRequest,
   GetEntityByIdentifierRequest,
   SearchCommandersByFullNameRequest,
+  IdMessage,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { cleanUnderscoreFields } from '../utils/json.utils';
 import { logger } from '../logger';
@@ -34,7 +35,7 @@ export class EntitiesRepository {
 
   async createEntity(
     createEntityRequest: CreateEntityRequest
-  ): Promise<Entity> {
+  ): Promise<IdMessage> {
     try {
       cleanUnderscoreFields(createEntityRequest);
       if (C.useFaker) {
@@ -45,8 +46,7 @@ export class EntitiesRepository {
           `${C.kartoffelUrl}/api/entities`,
           createEntityRequest
         );
-        const entity = await this.getEntityById({ id: data.id });
-        return entity as Entity;
+        return { id: data.id } as IdMessage;
       }
     } catch (error) {
       throw error;
@@ -85,7 +85,9 @@ export class EntitiesRepository {
         return entity;
       } else {
         const data = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/api/entities/role/${getEntityByRoleIdRequest.roleId}`,
+          `${C.kartoffelUrl}/api/entities/role/${encodeURIComponent(
+            getEntityByRoleIdRequest.roleId
+          )}`,
           { expanded: true }
         );
         return data as Entity;

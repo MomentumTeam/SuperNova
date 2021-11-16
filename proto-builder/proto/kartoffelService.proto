@@ -5,7 +5,7 @@ package Kartoffel;
 service Kartoffel {
 
     //Entities
-    rpc CreateEntity(CreateEntityRequest) returns (Entity){}
+    rpc CreateEntity(CreateEntityRequest) returns (IdMessage){}
     rpc GetEntityByDI(GetEntityByDIRequest) returns (Entity){}
     rpc GetEntityByRoleId(GetEntityByRoleIdRequest) returns (Entity){}
     rpc GetEntitiesUnderOG(GetEntitiesUnderOGRequest) returns (EntityArray){}
@@ -22,7 +22,7 @@ service Kartoffel {
     rpc SearchHighCommandersByFullName(SearchCommandersByFullNameRequest) returns (EntityArray){}
 
     //Groups
-    rpc CreateOG(CreateOGRequest) returns (OrganizationGroup){}        
+    rpc CreateOG(CreateOGRequest) returns (IdMessage){}        
     rpc GetAllOGs(GetAllOGsRequest) returns (OGArray){}        
     rpc GetOGByHierarchyName(GetOGByHierarchyNameRequest) returns (OrganizationGroup){}   
     rpc SearchOG(SearchOGRequest) returns (OGArray) {}          
@@ -58,6 +58,10 @@ service Kartoffel {
     rpc IsRoleAlreadyTaken(IsRoleAlreadyTakenReq) returns (IsRoleAlreadyTakenRes){}
     rpc IsJobTitleAlreadyTaken(IsJobTitleAlreadyTakenReq) returns (IsJobTitleAlreadyTakenRes){}
     rpc GetRolesByHierarchy(GetRolesByHierarchyRequest) returns (RoleArray){}
+}
+
+message IdMessage{
+    string id = 1;
 }
 
 message IsRoleAlreadyTakenReq{
@@ -124,9 +128,10 @@ message DigitalIdentities{
 }
 
 message GetAllDIsRequest{
-    string updatedFrom = 1;
+    optional string updatedFrom = 1;
     int32 page = 2;
     int32 pageSize = 3;
+    optional bool expanded = 4;
 }
 
 message UpdateOGParentRequest{
@@ -240,7 +245,7 @@ message CreateOGRequest{
     string name = 1;
     string directGroup = 2;
     string source = 3;
-    optional string prefix = 4;
+    optional string diPrefix = 4;
 }
 
 // CreateDI
@@ -423,7 +428,7 @@ message OrganizationGroup{
     string updatedAt = 9;
     repeated Entity directEntities = 10;
     repeated Role directRoles = 11;
-    optional string prefix = 12;
+    optional string diPrefix = 12;
 }
 
 message Role{
@@ -437,6 +442,7 @@ message Role{
     string source = 8;
     string createdAt = 9;
     string updatedAt = 10;
+    string displayName = 11;
 }
 
 
