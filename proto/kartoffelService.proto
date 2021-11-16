@@ -124,9 +124,10 @@ message DigitalIdentities{
 }
 
 message GetAllDIsRequest{
-    string updatedFrom = 1;
+    optional string updatedFrom = 1;
     int32 page = 2;
     int32 pageSize = 3;
+    optional bool expanded = 4;
 }
 
 message UpdateOGParentRequest{
@@ -437,6 +438,7 @@ message Role{
     string source = 8;
     string createdAt = 9;
     string updatedAt = 10;
+    string displayName = 11;
 }
 
 

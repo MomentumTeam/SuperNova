@@ -57,11 +57,17 @@ export class RolesRepository {
       if (C.useFaker) {
         return this.kartoffelFaker.randomRole();
       } else {
-        const role: Role = await this.kartoffelUtils.kartoffelPost(
+        const res = await this.kartoffelUtils.kartoffelPost(
           `${C.kartoffelUrl}/api/roles`,
           createRoleRequest
         );
-        return role;
+
+         if (res === C.kartoffelOK) {
+           const role = await this.getRoleByRoleId({ roleId: createRoleRequest.roleId });
+           return role as Role;
+         } else {
+           throw new Error("res not ok");
+         }
       }
     } catch (error) {
       throw error;
@@ -229,11 +235,17 @@ export class RolesRepository {
       if (C.useFaker) {
         return this.kartoffelFaker.randomRole();
       } else {
-        const data: Role = await this.kartoffelUtils.kartoffelPatch(
+        const res = await this.kartoffelUtils.kartoffelPatch(
           `${C.kartoffelUrl}/api/roles/${RenameRoleRequest.roleId}`,
           RenameRoleRequest
         );
-        return data;
+
+        if (res === C.kartoffelOK) {
+          const role = await this.getRoleByRoleId({ roleId: RenameRoleRequest.roleId });
+          return role as Role;
+        } else {
+          throw new Error("res not ok");
+        }
       }
     } catch (error) {
       throw error;
@@ -266,7 +278,7 @@ export class RolesRepository {
         return this.kartoffelFaker.randomRole();
       } else {
         const data: Role = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/api/roles/hierarchy/${getRolesByHierarchy.hierarchy}`,
+          `${C.kartoffelUrl}/api/roles/hierarchy/${encodeURIComponent(getRolesByHierarchy.hierarchy)}`,
           getRolesByHierarchy
         );
         return data;
