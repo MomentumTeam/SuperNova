@@ -17,6 +17,7 @@ import {
   IsJobTitleAlreadyTakenRes,
   IsRoleAlreadyTakenReq,
   IsRoleAlreadyTakenRes,
+  RoleIdMessage,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { KartoffelFaker } from '../mock/kartoffel.faker';
 import { KartoffelUtils } from '../utils/kartoffel.utils';
@@ -51,11 +52,12 @@ export class RolesRepository {
     }
   }
 
-  async createRole(createRoleRequest: CreateRoleRequest): Promise<Role> {
+  async createRole(createRoleRequest: CreateRoleRequest): Promise<RoleIdMessage> {
     try {
       cleanUnderscoreFields(createRoleRequest);
       if (C.useFaker) {
-        return this.kartoffelFaker.randomRole();
+        const role = this.kartoffelFaker.randomRole();
+        return {roleId: role.roleId}
       } else {
         const res = await this.kartoffelUtils.kartoffelPost(
           `${C.kartoffelUrl}/api/roles`,
@@ -66,7 +68,7 @@ export class RolesRepository {
           const role = await this.getRoleByRoleId({
             roleId: createRoleRequest.roleId,
           });
-          return role as Role;
+          return {roleId: role.roleId};
         } else {
           throw new Error('res not ok');
         }

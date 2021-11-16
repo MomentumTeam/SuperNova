@@ -1,40 +1,39 @@
 require("../envload");
 import { expect } from "chai";
-import { DigitalIdentity, SuccessMessage } from "../interfaces/protoc/proto/kartoffelService";
+import { CreateRoleRequest, Role, SuccessMessage } from "../interfaces/protoc/proto/kartoffelService";
 import { KartoffelFaker } from "../mock/kartoffel.faker";
 import { KartoffelUtils } from "../utils/kartoffel.utils";
-import { DiManager } from "./di.manager";
-
+import { RolesManager } from "./roles.manager";
 
 const kartoffelFaker: KartoffelFaker = new KartoffelFaker();
 const kartoffelUtils: KartoffelUtils = new KartoffelUtils();
 
-const diManager: DiManager = new DiManager(kartoffelUtils, kartoffelFaker);
+const rolesManager: RolesManager = new RolesManager(kartoffelUtils, kartoffelFaker);
 
-const randomDI: any = kartoffelFaker.randomDI(true);
-const randomDIUniqueId = randomDI.uniqueId.toLowerCase();
+const randomRole: Role = kartoffelFaker.randomRole();
 
-delete randomDI.createdAt;
-delete randomDI.updatedAt;
-delete randomDI.entityId;
-delete randomDI.role;
-
-console.log(randomDI);
+console.log(randomRole);
 
 const timeout = 5000;
-describe("DI Manager", () => {
+describe("Roles Manager", () => {
   beforeEach((done) => setTimeout(done, timeout));
 
-  describe("CreateDI", () => {
-    it("create di", async () => {
-      const res = await diManager.createDI(randomDI);
+  const req: CreateRoleRequest = {
+    directGroup: randomRole.directGroup,
+    jobTitle: randomRole.jobTitle,
+    source: randomRole.source,
+    roleId: randomRole.roleId,
+  };
+
+  describe("CreateRole", () => {
+    it("create role", async () => {
+      const res = await rolesManager.createRole(req);
       expect(res).to.be.exist;
-      expect(res.uniqueId.toLowerCase()).to.equal(randomDIUniqueId);
     });
 
     it("create the same di", async () => {
       try {
-        const di = await diManager.createDI(randomDI);
+        const di = await rolesManager.createRole(req);
       } catch (error: any) {
         expect(error.response.data.status).to.equal(400);
         expect(error.response.data.message).to.equal(`digital identity: ${randomDI.uniqueId} already exists`);
@@ -71,8 +70,7 @@ describe("DI Manager", () => {
   });
 
   describe("GetDIByRoleId", () => {
-    // TODO 
-    
+    // TODO
     // it("should get di", async () => {
     //   if (randomDIWithRole.role?.roleId) {
     //     const di: DigitalIdentity = await diManager.getDIByRoleId({ roleId: randomDIWithRole.role?.roleId });

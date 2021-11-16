@@ -3,6 +3,7 @@ import {
   DigitalIdentities,
   DigitalIdentity,
   SuccessMessage,
+  UniqueIdMessage,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { logger } from '../logger';
 import { KartoffelFaker } from '../mock/kartoffel.faker';
@@ -48,12 +49,12 @@ export async function getAllDIs(call: any, callback: any): Promise<void> {
 export async function createDI(call: any, callback: any): Promise<void> {
   try {
     logger.info(`Call to createDI`, { callRequest: call.request });
-    const newDI: DigitalIdentity = await diManager.createDI(call.request);
+    const uniqueId: UniqueIdMessage = await diManager.createDI(call.request);
     logger.info(`createDI OK`, {
       callRequest: call.request,
-      response: newDI,
+      response: uniqueId,
     });
-    callback(null, newDI);
+    callback(null, uniqueId);
   } catch (error: any) {
     const status = getStatusCode(error);
     const message = getErrorMessage(error);
@@ -194,12 +195,10 @@ export async function getDIByUniqueId(call: any, callback: any): Promise<void> {
 export async function updateDI(call: any, callback: any): Promise<void> {
   try {
     logger.info(`Call to updateDI`, { callRequest: call.request });
-    const digitalIdentity: DigitalIdentity = await diManager.updateDI(
-      call.request
-    );
+    const successMessage: SuccessMessage = await diManager.updateDI(call.request);
     logger.info(`updateDI OK`, {
       callRequest: call.request,
-      response: digitalIdentity,
+      response: successMessage,
     });
     callback(null, { success: true });
   } catch (error: any) {

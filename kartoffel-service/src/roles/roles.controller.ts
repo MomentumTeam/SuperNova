@@ -4,6 +4,7 @@ import {
   IsRoleAlreadyTakenRes,
   Role,
   RoleArray,
+  RoleIdMessage,
   SuccessMessage,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { logger } from '../logger';
@@ -120,12 +121,12 @@ export async function isRoleAlreadyTaken(
 export async function createRole(call: any, callback: any): Promise<void> {
   try {
     logger.info(`Call to createRole`, { callRequest: call.request });
-    const createdRole: Role = await rolesManager.createRole(call.request);
+    const roleId: RoleIdMessage = await rolesManager.createRole(call.request);
     logger.info(`createRole OK`, {
       callRequest: call.request,
-      response: createdRole,
+      response: roleId,
     });
-    callback(null, createdRole);
+    callback(null, roleId);
   } catch (error: any) {
     const status = getStatusCode(error);
     const message = getErrorMessage(error);

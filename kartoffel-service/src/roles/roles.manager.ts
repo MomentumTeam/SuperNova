@@ -16,6 +16,7 @@ import {
   IsJobTitleAlreadyTakenRes,
   IsRoleAlreadyTakenReq,
   IsRoleAlreadyTakenRes,
+  RoleIdMessage,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { KartoffelFaker } from '../mock/kartoffel.faker';
 import { KartoffelUtils } from '../utils/kartoffel.utils';
@@ -33,7 +34,7 @@ export class RolesManager {
     return await this.rolesRepository.getAllRoles(getAllRolesRequest);
   }
 
-  async createRole(createRoleRequest: CreateRoleRequest): Promise<Role> {
+  async createRole(createRoleRequest: CreateRoleRequest): Promise<RoleIdMessage> {
     return await this.rolesRepository.createRole(createRoleRequest);
   }
 

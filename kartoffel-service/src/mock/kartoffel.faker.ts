@@ -60,17 +60,17 @@ export class KartoffelFaker {
     const source = sample(kartoffelConfig.valueObjects.source.values)
     
     const digitalIdentity: DigitalIdentity = {
-      type: type ? type : "domainUser",
+      type: type && !withRole ? type : "domainUser",
       source: source ? source : "oa_name",
       mail: faker.internet.email(),
       uniqueId: faker.internet.email(undefined, undefined, domain),
       entityId: mongoose.Types.ObjectId().toString(),
       createdAt: faker.datatype.datetime().toString(),
       updatedAt: faker.datatype.datetime().toString(),
-      isRoleAttachable: true
+      isRoleAttachable: true,
     };
     
-    if (type === kartoffelConfig.valueObjects.digitalIdentityType.VirtualUser) digitalIdentity.isRoleAttachable = false;
+    if (digitalIdentity.type === kartoffelConfig.valueObjects.digitalIdentityType.VirtualUser) digitalIdentity.isRoleAttachable = false;
     if (withRole && type !== kartoffelConfig.valueObjects.digitalIdentityType.VirtualUser) {
       digitalIdentity.role = this.randomRole();
     }

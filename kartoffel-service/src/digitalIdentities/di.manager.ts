@@ -9,6 +9,7 @@ import {
   DeleteDIRequest,
   GetDIByUniqueIdRequest,
   UpdateDIRequest,
+  UniqueIdMessage
 } from '../interfaces/protoc/proto/kartoffelService';
 import { KartoffelFaker } from '../mock/kartoffel.faker';
 import { KartoffelUtils } from '../utils/kartoffel.utils';
@@ -30,7 +31,7 @@ export class DiManager {
     }
   }
 
-  async createDI(createDIRequest: CreateDIRequest): Promise<Id> {
+  async createDI(createDIRequest: CreateDIRequest): Promise<UniqueIdMessage> {
     try {
       return await this.diRepository.createDI(createDIRequest);
     } catch (error) {
@@ -78,7 +79,7 @@ export class DiManager {
     }
   }
 
-  async updateDI(updateDIRequest: UpdateDIRequest): Promise<DigitalIdentity> {
+  async updateDI(updateDIRequest: UpdateDIRequest): Promise<SuccessMessage> {
     try {
       return await this.diRepository.updateDI(updateDIRequest);
     } catch (error) {
