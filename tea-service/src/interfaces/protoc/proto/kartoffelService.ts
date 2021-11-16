@@ -67,9 +67,10 @@ export interface DigitalIdentities {
 }
 
 export interface GetAllDIsRequest {
-  updatedFrom: string;
+  updatedFrom?: string | undefined;
   page: number;
   pageSize: number;
+  expanded?: boolean | undefined;
 }
 
 export interface UpdateOGParentRequest {
@@ -387,6 +388,7 @@ export interface Role {
   source: string;
   createdAt: string;
   updatedAt: string;
+  displayName: string;
 }
 
 export interface Entity {
@@ -1506,14 +1508,14 @@ export const DigitalIdentities = {
   },
 };
 
-const baseGetAllDIsRequest: object = { updatedFrom: "", page: 0, pageSize: 0 };
+const baseGetAllDIsRequest: object = { page: 0, pageSize: 0 };
 
 export const GetAllDIsRequest = {
   encode(
     message: GetAllDIsRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.updatedFrom !== "") {
+    if (message.updatedFrom !== undefined) {
       writer.uint32(10).string(message.updatedFrom);
     }
     if (message.page !== 0) {
@@ -1521,6 +1523,9 @@ export const GetAllDIsRequest = {
     }
     if (message.pageSize !== 0) {
       writer.uint32(24).int32(message.pageSize);
+    }
+    if (message.expanded !== undefined) {
+      writer.uint32(32).bool(message.expanded);
     }
     return writer;
   },
@@ -1541,6 +1546,9 @@ export const GetAllDIsRequest = {
         case 3:
           message.pageSize = reader.int32();
           break;
+        case 4:
+          message.expanded = reader.bool();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1554,7 +1562,7 @@ export const GetAllDIsRequest = {
     if (object.updatedFrom !== undefined && object.updatedFrom !== null) {
       message.updatedFrom = String(object.updatedFrom);
     } else {
-      message.updatedFrom = "";
+      message.updatedFrom = undefined;
     }
     if (object.page !== undefined && object.page !== null) {
       message.page = Number(object.page);
@@ -1566,6 +1574,11 @@ export const GetAllDIsRequest = {
     } else {
       message.pageSize = 0;
     }
+    if (object.expanded !== undefined && object.expanded !== null) {
+      message.expanded = Boolean(object.expanded);
+    } else {
+      message.expanded = undefined;
+    }
     return message;
   },
 
@@ -1575,6 +1588,7 @@ export const GetAllDIsRequest = {
       (obj.updatedFrom = message.updatedFrom);
     message.page !== undefined && (obj.page = message.page);
     message.pageSize !== undefined && (obj.pageSize = message.pageSize);
+    message.expanded !== undefined && (obj.expanded = message.expanded);
     return obj;
   },
 
@@ -1583,7 +1597,7 @@ export const GetAllDIsRequest = {
     if (object.updatedFrom !== undefined && object.updatedFrom !== null) {
       message.updatedFrom = object.updatedFrom;
     } else {
-      message.updatedFrom = "";
+      message.updatedFrom = undefined;
     }
     if (object.page !== undefined && object.page !== null) {
       message.page = object.page;
@@ -1594,6 +1608,11 @@ export const GetAllDIsRequest = {
       message.pageSize = object.pageSize;
     } else {
       message.pageSize = 0;
+    }
+    if (object.expanded !== undefined && object.expanded !== null) {
+      message.expanded = object.expanded;
+    } else {
+      message.expanded = undefined;
     }
     return message;
   },
@@ -6026,6 +6045,7 @@ const baseRole: object = {
   source: "",
   createdAt: "",
   updatedAt: "",
+  displayName: "",
 };
 
 export const Role = {
@@ -6059,6 +6079,9 @@ export const Role = {
     }
     if (message.updatedAt !== "") {
       writer.uint32(82).string(message.updatedAt);
+    }
+    if (message.displayName !== "") {
+      writer.uint32(90).string(message.displayName);
     }
     return writer;
   },
@@ -6100,6 +6123,9 @@ export const Role = {
           break;
         case 10:
           message.updatedAt = reader.string();
+          break;
+        case 11:
+          message.displayName = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -6165,6 +6191,11 @@ export const Role = {
     } else {
       message.updatedAt = "";
     }
+    if (object.displayName !== undefined && object.displayName !== null) {
+      message.displayName = String(object.displayName);
+    } else {
+      message.displayName = "";
+    }
     return message;
   },
 
@@ -6186,6 +6217,8 @@ export const Role = {
     message.source !== undefined && (obj.source = message.source);
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
     message.updatedAt !== undefined && (obj.updatedAt = message.updatedAt);
+    message.displayName !== undefined &&
+      (obj.displayName = message.displayName);
     return obj;
   },
 
@@ -6244,6 +6277,11 @@ export const Role = {
       message.updatedAt = object.updatedAt;
     } else {
       message.updatedAt = "";
+    }
+    if (object.displayName !== undefined && object.displayName !== null) {
+      message.displayName = object.displayName;
+    } else {
+      message.displayName = "";
     }
     return message;
   },
