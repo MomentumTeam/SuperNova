@@ -430,7 +430,7 @@ export interface DigitalIdentity {
   createdAt: string;
   updatedAt: string;
   isRoleAttachable: boolean;
-  role: Role | undefined;
+  role?: Role | undefined;
 }
 
 const baseIsRoleAlreadyTakenReq: object = { roleId: "" };
