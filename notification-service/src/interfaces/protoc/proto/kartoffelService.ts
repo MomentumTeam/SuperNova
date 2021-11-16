@@ -202,7 +202,7 @@ export interface CreateDIRequest {
 
 /** GetAllRoles */
 export interface GetAllRolesRequest {
-  updatedFrom: string;
+  updatedFrom?: string | undefined;
   page: number;
   pageSize: number;
 }
@@ -3645,18 +3645,14 @@ export const CreateDIRequest = {
   },
 };
 
-const baseGetAllRolesRequest: object = {
-  updatedFrom: "",
-  page: 0,
-  pageSize: 0,
-};
+const baseGetAllRolesRequest: object = { page: 0, pageSize: 0 };
 
 export const GetAllRolesRequest = {
   encode(
     message: GetAllRolesRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.updatedFrom !== "") {
+    if (message.updatedFrom !== undefined) {
       writer.uint32(10).string(message.updatedFrom);
     }
     if (message.page !== 0) {
@@ -3697,7 +3693,7 @@ export const GetAllRolesRequest = {
     if (object.updatedFrom !== undefined && object.updatedFrom !== null) {
       message.updatedFrom = String(object.updatedFrom);
     } else {
-      message.updatedFrom = "";
+      message.updatedFrom = undefined;
     }
     if (object.page !== undefined && object.page !== null) {
       message.page = Number(object.page);
@@ -3726,7 +3722,7 @@ export const GetAllRolesRequest = {
     if (object.updatedFrom !== undefined && object.updatedFrom !== null) {
       message.updatedFrom = object.updatedFrom;
     } else {
-      message.updatedFrom = "";
+      message.updatedFrom = undefined;
     }
     if (object.page !== undefined && object.page !== null) {
       message.page = object.page;

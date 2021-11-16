@@ -260,7 +260,7 @@ message CreateDIRequest{
 
 // GetAllRoles
 message GetAllRolesRequest {
-    string updatedFrom = 1;
+    optional string updatedFrom = 1;
     int32 page = 2;
     int32 pageSize = 3;
 }
