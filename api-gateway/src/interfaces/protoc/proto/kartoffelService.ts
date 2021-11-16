@@ -438,8 +438,12 @@ export interface DigitalIdentity {
   role?: Role | undefined;
 }
 
-export interface Id {
-  id: string;
+export interface RoleIdMessage {
+  roleId: string;
+}
+
+export interface UniqueIdMessage {
+  uniqueId: string;
 }
 
 const baseIdMessage: object = { id: "" };
@@ -7142,25 +7146,28 @@ export const DigitalIdentity = {
   },
 };
 
-const baseId: object = { id: "" };
+const baseRoleIdMessage: object = { roleId: "" };
 
-export const Id = {
-  encode(message: Id, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
+export const RoleIdMessage = {
+  encode(
+    message: RoleIdMessage,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.roleId !== "") {
+      writer.uint32(10).string(message.roleId);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): Id {
+  decode(input: _m0.Reader | Uint8Array, length?: number): RoleIdMessage {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseId } as Id;
+    const message = { ...baseRoleIdMessage } as RoleIdMessage;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.id = reader.string();
+          message.roleId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -7170,28 +7177,86 @@ export const Id = {
     return message;
   },
 
-  fromJSON(object: any): Id {
-    const message = { ...baseId } as Id;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
+  fromJSON(object: any): RoleIdMessage {
+    const message = { ...baseRoleIdMessage } as RoleIdMessage;
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = String(object.roleId);
     } else {
-      message.id = "";
+      message.roleId = "";
     }
     return message;
   },
 
-  toJSON(message: Id): unknown {
+  toJSON(message: RoleIdMessage): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
+    message.roleId !== undefined && (obj.roleId = message.roleId);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Id>): Id {
-    const message = { ...baseId } as Id;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
+  fromPartial(object: DeepPartial<RoleIdMessage>): RoleIdMessage {
+    const message = { ...baseRoleIdMessage } as RoleIdMessage;
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = object.roleId;
     } else {
-      message.id = "";
+      message.roleId = "";
+    }
+    return message;
+  },
+};
+
+const baseUniqueIdMessage: object = { uniqueId: "" };
+
+export const UniqueIdMessage = {
+  encode(
+    message: UniqueIdMessage,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.uniqueId !== "") {
+      writer.uint32(10).string(message.uniqueId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UniqueIdMessage {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseUniqueIdMessage } as UniqueIdMessage;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.uniqueId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UniqueIdMessage {
+    const message = { ...baseUniqueIdMessage } as UniqueIdMessage;
+    if (object.uniqueId !== undefined && object.uniqueId !== null) {
+      message.uniqueId = String(object.uniqueId);
+    } else {
+      message.uniqueId = "";
+    }
+    return message;
+  },
+
+  toJSON(message: UniqueIdMessage): unknown {
+    const obj: any = {};
+    message.uniqueId !== undefined && (obj.uniqueId = message.uniqueId);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<UniqueIdMessage>): UniqueIdMessage {
+    const message = { ...baseUniqueIdMessage } as UniqueIdMessage;
+    if (object.uniqueId !== undefined && object.uniqueId !== null) {
+      message.uniqueId = object.uniqueId;
+    } else {
+      message.uniqueId = "";
     }
     return message;
   },
@@ -7245,7 +7310,7 @@ export interface Kartoffel {
     request: IsOGNameAlreadyTakenReq
   ): Promise<IsOGNameAlreadyTakenRes>;
   /** DI */
-  CreateDI(request: CreateDIRequest): Promise<Id>;
+  CreateDI(request: CreateDIRequest): Promise<UniqueIdMessage>;
   GetAllDIs(request: GetAllDIsRequest): Promise<DigitalIdentities>;
   GetDIByRoleId(request: GetDIByRoleIdRequest): Promise<DigitalIdentity>;
   SearchDIOrUniqueId(
@@ -7255,7 +7320,7 @@ export interface Kartoffel {
   DeleteDI(request: DeleteDIRequest): Promise<SuccessMessage>;
   UpdateDI(request: UpdateDIRequest): Promise<SuccessMessage>;
   /** Roles */
-  CreateRole(request: CreateRoleRequest): Promise<Id>;
+  CreateRole(request: CreateRoleRequest): Promise<RoleIdMessage>;
   GetAllRoles(request: GetAllRolesRequest): Promise<RoleArray>;
   GetRoleByRoleId(request: GetRoleByRoleIdRequest): Promise<Role>;
   GetRolesUnderOG(request: GetRolesUnderOGRequest): Promise<RoleArray>;
@@ -7605,10 +7670,10 @@ export class KartoffelClientImpl implements Kartoffel {
     );
   }
 
-  CreateDI(request: CreateDIRequest): Promise<Id> {
+  CreateDI(request: CreateDIRequest): Promise<UniqueIdMessage> {
     const data = CreateDIRequest.encode(request).finish();
     const promise = this.rpc.request("Kartoffel.Kartoffel", "CreateDI", data);
-    return promise.then((data) => Id.decode(new _m0.Reader(data)));
+    return promise.then((data) => UniqueIdMessage.decode(new _m0.Reader(data)));
   }
 
   GetAllDIs(request: GetAllDIsRequest): Promise<DigitalIdentities> {
@@ -7665,10 +7730,10 @@ export class KartoffelClientImpl implements Kartoffel {
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
   }
 
-  CreateRole(request: CreateRoleRequest): Promise<Id> {
+  CreateRole(request: CreateRoleRequest): Promise<RoleIdMessage> {
     const data = CreateRoleRequest.encode(request).finish();
     const promise = this.rpc.request("Kartoffel.Kartoffel", "CreateRole", data);
-    return promise.then((data) => Id.decode(new _m0.Reader(data)));
+    return promise.then((data) => RoleIdMessage.decode(new _m0.Reader(data)));
   }
 
   GetAllRoles(request: GetAllRolesRequest): Promise<RoleArray> {
