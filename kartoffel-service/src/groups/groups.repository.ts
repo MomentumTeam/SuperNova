@@ -80,20 +80,23 @@ export class GroupsRepository {
           organizationGroup.ancestors.length < C.kartoffelTreeDepth
             ? organizationGroup.ancestors.length
             : C.kartoffelTreeDepth;
+        let treeAncestors = [];
+        for (let i = 1; i <= treeDepth; i++) {
+          treeAncestors.push(
+            organizationGroup.ancestors[organizationGroup.ancestors.length - i]
+          );
+        }
 
         const rootTree: OrganizationGroup =
           treeDepth === 0
             ? organizationGroup
             : await this.getOGById({
-                id: organizationGroup.ancestors[treeDepth - 1],
+                id: treeAncestors[treeDepth - 1],
               });
 
         return await this.getTree(
           treeDepth,
-          [
-            organizationGroup.id,
-            ...organizationGroup.ancestors.slice(0, treeDepth - 1),
-          ],
+          [organizationGroup.id, ...treeAncestors],
           rootTree
         );
       }
@@ -289,7 +292,6 @@ export class GroupsRepository {
         const ogChildern: OGArray = await this.kartoffelFaker.randomOGArray();
         return ogChildern;
       } else {
-        let groups: OrganizationGroup[] = [];
         const ogArray: OGArray = await this.getChildrenOfOG({
           id: C.kartoffelRootID,
           direct: true,
@@ -365,7 +367,7 @@ export class GroupsRepository {
           children: childrenInTree,
         };
       } else {
-        const OGchildren: OrganizationGroup[] = (
+        const ogChildren: OrganizationGroup[] = (
           await this.getChildrenOfOG({
             direct: true,
             id: currentChild.id,
@@ -373,7 +375,7 @@ export class GroupsRepository {
         ).groups;
 
         const childrenInTree: OGTree[] = await Promise.all(
-          OGchildren.map(async (ogChild) => {
+          ogChildren.map(async (ogChild) => {
             return await this.getTree(currentDepth--, groupsToQuery, ogChild);
           })
         );
