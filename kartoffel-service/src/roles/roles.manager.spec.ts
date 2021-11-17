@@ -81,6 +81,8 @@ describe("Roles Manager", () => {
       const role: Role = await rolesManager.getRoleByRoleId({ roleId: randomRole.roleId });
       expect(role).to.be.exist;
       expect(role.roleId.toLowerCase()).to.be.equal(randomRole.roleId.toLowerCase());
+
+      randomRole.hierarchy = role.hierarchy;
     });
   });
 
@@ -235,24 +237,24 @@ describe("Roles Manager", () => {
     // TODO: change role to group with existing jobtitle
   });
 
-//   describe("DeleteRole", () => {
-//     it("delete role", async () => {
-//       const successMessage: SuccessMessage = await rolesManager.deleteRole({ roleId: randomRole.roleId });
-//       expect(successMessage).to.be.exist;
-//       expect(successMessage.success).to.be.true;
-//     });
-// 
-//     before((done) => setTimeout(done, timeout));
-//     it("check if deleted", async () => {
-//       try {
-//         const role = await rolesManager.getRoleByRoleId({ roleId: randomRole.roleId });
-//       } catch (error: any) {
-//         expect(error.response.data.status).to.equal(404);
-//       }
-//     });
-//   });
-// 
-//   after(async () => {
-//     await diManager.deleteDI({ id: randomDI.uniqueId });
-//   });
+  describe("DeleteRole", () => {
+    it("delete role", async () => {
+      const successMessage: SuccessMessage = await rolesManager.deleteRole({ roleId: randomRole.roleId });
+      expect(successMessage).to.be.exist;
+      expect(successMessage.success).to.be.true;
+    });
+
+    before((done) => setTimeout(done, timeout));
+    it("check if deleted", async () => {
+      try {
+        const role = await rolesManager.getRoleByRoleId({ roleId: randomRole.roleId });
+      } catch (error: any) {
+        expect(error.response.data.status).to.equal(404);
+      }
+    });
+  });
+
+  after(async () => {
+    await diManager.deleteDI({ id: randomDI.uniqueId });
+  });
 });

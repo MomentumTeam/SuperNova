@@ -288,11 +288,15 @@ export class RolesRepository {
       if (C.useFaker) {
         return this.kartoffelFaker.randomRoleArray(getRolesByHierarchy.pageSize);
       } else {
-        const data: RoleArray = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/api/roles/hierarchy/${encodeURIComponent(getRolesByHierarchy.hierarchy)}`,
-          getRolesByHierarchy
+        const hierarchy = getRolesByHierarchy.hierarchy;
+        const req:any  = getRolesByHierarchy;
+        delete req.hierarchy;
+
+        const data: Role[] = await this.kartoffelUtils.kartoffelGet(
+          `${C.kartoffelUrl}/api/roles/hierarchy/${encodeURIComponent(hierarchy)}`,
+          req
         );
-        return data;
+        return {roles: data};
       }
     } catch (error) {
       throw error;

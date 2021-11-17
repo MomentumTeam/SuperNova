@@ -7,7 +7,7 @@ import {
   DigitalIdentities,
   DigitalIdentity,
   GetDIByRoleIdRequest,
-  SearchDIOrUniqueIdRequest,
+  SearchDIByUniqueIdRequest,
   SuccessMessage,
   DeleteDIRequest,
   GetDIByUniqueIdRequest,
@@ -87,11 +87,11 @@ export class DiRepository {
     }
   }
 
-  async searchDIOrUniqueId(
-    searchDIOrUniqueIdRequest: SearchDIOrUniqueIdRequest
+  async searchDIByUniqueId(
+    searchDIByUniqueIdRequest: SearchDIByUniqueIdRequest
   ): Promise<DigitalIdentities> {
     try {
-      cleanUnderscoreFields(searchDIOrUniqueIdRequest);
+      cleanUnderscoreFields(searchDIByUniqueIdRequest);
       if (C.useFaker) {
         const digitalIdentities: DigitalIdentities =
           await this.kartoffelFaker.randomDiArray();
@@ -99,7 +99,7 @@ export class DiRepository {
       } else {
         const res = await this.kartoffelUtils.kartoffelGet(
           `${C.kartoffelUrl}/api/digitalIdentities/search`,
-          searchDIOrUniqueIdRequest
+          searchDIByUniqueIdRequest
         );
         return res as DigitalIdentities;
       }

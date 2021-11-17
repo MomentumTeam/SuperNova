@@ -102,15 +102,15 @@ export async function getDIByRoleId(call: any, callback: any): Promise<void> {
   }
 }
 
-export async function searchDIOrUniqueId(
+export async function searchDIByUniqueId(
   call: any,
   callback: any
 ): Promise<void> {
   try {
-    logger.info(`Call to searchDIOrUniqueId`, { callRequest: call.request });
+    logger.info(`Call to searchDIByUniqueId`, { callRequest: call.request });
     const DigitalIdentities: DigitalIdentities =
-      await diManager.searchDIOrUniqueId(call.request);
-    logger.info(`searchDIOrUniqueId OK`, {
+      await diManager.searchDIByUniqueId(call.request);
+    logger.info(`searchDIByUniqueId OK`, {
       callRequest: call.request,
       response: DigitalIdentities,
     });
@@ -119,7 +119,7 @@ export async function searchDIOrUniqueId(
     const status = getStatusCode(error);
     const message = getErrorMessage(error);
 
-    logger.error(`searchDIOrUniqueId ERROR`, {
+    logger.error(`searchDIByUniqueId ERROR`, {
       callRequest: call.request,
       error: { message },
     });

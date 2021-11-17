@@ -4,7 +4,7 @@ import {
   GetAllDIsRequest,
   DigitalIdentity,
   GetDIByRoleIdRequest,
-  SearchDIOrUniqueIdRequest,
+  SearchDIByUniqueIdRequest,
   SuccessMessage,
   DeleteDIRequest,
   GetDIByUniqueIdRequest,
@@ -49,12 +49,12 @@ export class DiManager {
     }
   }
 
-  async searchDIOrUniqueId(
-    searchDIOrUniqueIdRequest: SearchDIOrUniqueIdRequest
+  async searchDIByUniqueId(
+    searchDIByUniqueIdRequest: SearchDIByUniqueIdRequest
   ): Promise<DigitalIdentities> {
     try {
-      return await this.diRepository.searchDIOrUniqueId(
-        searchDIOrUniqueIdRequest
+      return await this.diRepository.searchDIByUniqueId(
+        searchDIByUniqueIdRequest
       );
     } catch (error) {
       throw error;
