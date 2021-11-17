@@ -429,6 +429,7 @@ message OrganizationGroup{
     repeated Entity directEntities = 10;
     repeated Role directRoles = 11;
     optional string diPrefix = 12;
+    string directGroup = 13;
 }
 
 message Role{

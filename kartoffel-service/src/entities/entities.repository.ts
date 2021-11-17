@@ -122,7 +122,7 @@ export class EntitiesRepository {
               id: getEntitiesUnderOGRequest.id,
               direct: getEntitiesUnderOGRequest.direct,
               page: page,
-              pageSize: 1000,
+              pageSize: 100,
             });
             if (!currentPage.entities || currentPage.entities.length === 0) {
               break;
@@ -181,27 +181,36 @@ export class EntitiesRepository {
           );
         return entityArray;
       } else {
-        getEntitiesByHierarchyRequest.page = getEntitiesByHierarchyRequest.page
-          ? getEntitiesByHierarchyRequest.page
-          : 1;
-        getEntitiesByHierarchyRequest.pageSize =
-          getEntitiesByHierarchyRequest.pageSize
-            ? getEntitiesByHierarchyRequest.pageSize
-            : 20;
-        getEntitiesByHierarchyRequest.direct =
-          getEntitiesByHierarchyRequest.direct
-            ? getEntitiesByHierarchyRequest.direct
-            : true;
-        const data = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/api/entities/hierarchy/${getEntitiesByHierarchyRequest.hierarchy}`,
-          {
-            expanded: true,
-            direct: getEntitiesByHierarchyRequest.direct,
-            page: getEntitiesByHierarchyRequest.page,
-            pageSize: getEntitiesByHierarchyRequest.pageSize,
+        const queryParams: any = { ...getEntitiesByHierarchyRequest };
+        queryParams.expanded = true;
+        delete queryParams.hierarchy;
+        if (!queryParams.page || !queryParams.pageSize) {
+          //get all groups by hierarchy
+          let page = 1;
+          let entities: Entity[] = [];
+          while (true) {
+            const currentPage = await this.getEntitiesByHierarchy({
+              hierarchy: getEntitiesByHierarchyRequest.hierarchy,
+              direct: getEntitiesByHierarchyRequest.direct,
+              page: page,
+              pageSize: 100,
+            });
+            if (!currentPage.entities || currentPage.entities.length === 0) {
+              break;
+            }
+            entities.push(...currentPage.entities);
+            page++;
           }
-        );
-        return { entities: data as Entity[] };
+          return { entities: entities } as EntityArray;
+        } else {
+          const data = await this.kartoffelUtils.kartoffelGet(
+            `${C.kartoffelUrl}/api/entities/hierarchy/${encodeURIComponent(
+              getEntitiesByHierarchyRequest.hierarchy
+            )}`,
+            queryParams
+          );
+          return { entities: data as Entity[] };
+        }
       }
     } catch (error) {
       throw error;

@@ -380,6 +380,7 @@ export interface OrganizationGroup {
   directEntities: Entity[];
   directRoles: Role[];
   diPrefix?: string | undefined;
+  directGroup: string;
 }
 
 export interface Role {
@@ -5834,6 +5835,7 @@ const baseOrganizationGroup: object = {
   isLeaf: false,
   createdAt: "",
   updatedAt: "",
+  directGroup: "",
 };
 
 export const OrganizationGroup = {
@@ -5876,6 +5878,9 @@ export const OrganizationGroup = {
     }
     if (message.diPrefix !== undefined) {
       writer.uint32(98).string(message.diPrefix);
+    }
+    if (message.directGroup !== "") {
+      writer.uint32(106).string(message.directGroup);
     }
     return writer;
   },
@@ -5925,6 +5930,9 @@ export const OrganizationGroup = {
           break;
         case 12:
           message.diPrefix = reader.string();
+          break;
+        case 13:
+          message.directGroup = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -5999,6 +6007,11 @@ export const OrganizationGroup = {
     } else {
       message.diPrefix = undefined;
     }
+    if (object.directGroup !== undefined && object.directGroup !== null) {
+      message.directGroup = String(object.directGroup);
+    } else {
+      message.directGroup = "";
+    }
     return message;
   },
 
@@ -6032,6 +6045,8 @@ export const OrganizationGroup = {
       obj.directRoles = [];
     }
     message.diPrefix !== undefined && (obj.diPrefix = message.diPrefix);
+    message.directGroup !== undefined &&
+      (obj.directGroup = message.directGroup);
     return obj;
   },
 
@@ -6099,6 +6114,11 @@ export const OrganizationGroup = {
       message.diPrefix = object.diPrefix;
     } else {
       message.diPrefix = undefined;
+    }
+    if (object.directGroup !== undefined && object.directGroup !== null) {
+      message.directGroup = object.directGroup;
+    } else {
+      message.directGroup = "";
     }
     return message;
   },

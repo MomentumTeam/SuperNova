@@ -261,7 +261,7 @@ export class GroupsRepository {
               id: getChildrenOfOGRequest.id,
               direct: getChildrenOfOGRequest.direct,
               page: page,
-              pageSize: 1000,
+              pageSize: 100,
             });
             if (!currentPage.groups || currentPage.groups.length === 0) {
               break;
