@@ -386,8 +386,8 @@ message DeleteOGRequest{
 // GetChildrenOfOG
 message GetChildrenOfOGRequest{
     string id = 1; //mongoId of OG
-    int32 page = 2;
-    int32 pageSize = 3;
+    optional int32 page = 2;
+    optional int32 pageSize = 3;
     bool direct = 4;
 }
 
@@ -405,8 +405,8 @@ message DeleteDIRequest{
 message GetEntitiesUnderOGRequest{
     string id = 1; //mongoIds of OG
     bool direct = 2;
-    int32 page = 3;
-    int32 pageSize = 4;
+    optional int32 page = 3;
+    optional int32 pageSize = 4;
 }
 
 //SuccessMessage
@@ -429,6 +429,7 @@ message OrganizationGroup{
     repeated Entity directEntities = 10;
     repeated Role directRoles = 11;
     optional string diPrefix = 12;
+    string directGroup = 13;
 }
 
 message Role{

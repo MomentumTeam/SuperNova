@@ -36,6 +36,7 @@ export class KartoffelFaker {
       updatedAt: faker.datatype.datetime().toString(),
       directEntities: [],
       directRoles: [],
+      directGroup: mongoose.Types.ObjectId().toString(),
     };
 
     let roleLength = faker.datatype.number({
