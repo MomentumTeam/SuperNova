@@ -40,7 +40,7 @@ service Kartoffel {
     rpc CreateDI(CreateDIRequest) returns (UniqueIdMessage){}
     rpc GetAllDIs(GetAllDIsRequest) returns (DigitalIdentities){}
     rpc GetDIByRoleId(GetDIByRoleIdRequest) returns (DigitalIdentity){}
-    rpc SearchDIOrUniqueId(SearchDIOrUniqueIdRequest) returns (DigitalIdentities){}
+    rpc SearchDIByUniqueId(SearchDIByUniqueIdRequest) returns (DigitalIdentities){}
     rpc GetDIByUniqueId(GetDIByUniqueIdRequest) returns (DigitalIdentity){} 
     rpc DeleteDI(DeleteDIRequest) returns (SuccessMessage){}  
     rpc UpdateDI(UpdateDIRequest) returns (SuccessMessage){} 
@@ -115,8 +115,8 @@ message GetDIByUniqueIdRequest{
     string id = 1;
 }
 
-message SearchDIOrUniqueIdRequest{
-    string unique_id = 1;
+message SearchDIByUniqueIdRequest{
+    string uniqueId = 1;
 }
 
 message GetDIByRoleIdRequest{

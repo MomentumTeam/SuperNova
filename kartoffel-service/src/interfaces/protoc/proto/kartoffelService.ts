@@ -58,7 +58,7 @@ export interface GetDIByUniqueIdRequest {
   id: string;
 }
 
-export interface SearchDIOrUniqueIdRequest {
+export interface SearchDIByUniqueIdRequest {
   uniqueId: string;
 }
 
@@ -1370,11 +1370,11 @@ export const GetDIByUniqueIdRequest = {
   },
 };
 
-const baseSearchDIOrUniqueIdRequest: object = { uniqueId: "" };
+const baseSearchDIByUniqueIdRequest: object = { uniqueId: "" };
 
-export const SearchDIOrUniqueIdRequest = {
+export const SearchDIByUniqueIdRequest = {
   encode(
-    message: SearchDIOrUniqueIdRequest,
+    message: SearchDIByUniqueIdRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.uniqueId !== "") {
@@ -1386,12 +1386,12 @@ export const SearchDIOrUniqueIdRequest = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): SearchDIOrUniqueIdRequest {
+  ): SearchDIByUniqueIdRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseSearchDIOrUniqueIdRequest,
-    } as SearchDIOrUniqueIdRequest;
+      ...baseSearchDIByUniqueIdRequest,
+    } as SearchDIByUniqueIdRequest;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1406,10 +1406,10 @@ export const SearchDIOrUniqueIdRequest = {
     return message;
   },
 
-  fromJSON(object: any): SearchDIOrUniqueIdRequest {
+  fromJSON(object: any): SearchDIByUniqueIdRequest {
     const message = {
-      ...baseSearchDIOrUniqueIdRequest,
-    } as SearchDIOrUniqueIdRequest;
+      ...baseSearchDIByUniqueIdRequest,
+    } as SearchDIByUniqueIdRequest;
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = String(object.uniqueId);
     } else {
@@ -1418,18 +1418,18 @@ export const SearchDIOrUniqueIdRequest = {
     return message;
   },
 
-  toJSON(message: SearchDIOrUniqueIdRequest): unknown {
+  toJSON(message: SearchDIByUniqueIdRequest): unknown {
     const obj: any = {};
     message.uniqueId !== undefined && (obj.uniqueId = message.uniqueId);
     return obj;
   },
 
   fromPartial(
-    object: DeepPartial<SearchDIOrUniqueIdRequest>
-  ): SearchDIOrUniqueIdRequest {
+    object: DeepPartial<SearchDIByUniqueIdRequest>
+  ): SearchDIByUniqueIdRequest {
     const message = {
-      ...baseSearchDIOrUniqueIdRequest,
-    } as SearchDIOrUniqueIdRequest;
+      ...baseSearchDIByUniqueIdRequest,
+    } as SearchDIByUniqueIdRequest;
     if (object.uniqueId !== undefined && object.uniqueId !== null) {
       message.uniqueId = object.uniqueId;
     } else {
@@ -7309,8 +7309,8 @@ export interface Kartoffel {
   CreateDI(request: CreateDIRequest): Promise<UniqueIdMessage>;
   GetAllDIs(request: GetAllDIsRequest): Promise<DigitalIdentities>;
   GetDIByRoleId(request: GetDIByRoleIdRequest): Promise<DigitalIdentity>;
-  SearchDIOrUniqueId(
-    request: SearchDIOrUniqueIdRequest
+  SearchDIByUniqueId(
+    request: SearchDIByUniqueIdRequest
   ): Promise<DigitalIdentities>;
   GetDIByUniqueId(request: GetDIByUniqueIdRequest): Promise<DigitalIdentity>;
   DeleteDI(request: DeleteDIRequest): Promise<SuccessMessage>;
@@ -7373,7 +7373,7 @@ export class KartoffelClientImpl implements Kartoffel {
     this.CreateDI = this.CreateDI.bind(this);
     this.GetAllDIs = this.GetAllDIs.bind(this);
     this.GetDIByRoleId = this.GetDIByRoleId.bind(this);
-    this.SearchDIOrUniqueId = this.SearchDIOrUniqueId.bind(this);
+    this.SearchDIByUniqueId = this.SearchDIByUniqueId.bind(this);
     this.GetDIByUniqueId = this.GetDIByUniqueId.bind(this);
     this.DeleteDI = this.DeleteDI.bind(this);
     this.UpdateDI = this.UpdateDI.bind(this);
@@ -7690,13 +7690,13 @@ export class KartoffelClientImpl implements Kartoffel {
     return promise.then((data) => DigitalIdentity.decode(new _m0.Reader(data)));
   }
 
-  SearchDIOrUniqueId(
-    request: SearchDIOrUniqueIdRequest
+  SearchDIByUniqueId(
+    request: SearchDIByUniqueIdRequest
   ): Promise<DigitalIdentities> {
-    const data = SearchDIOrUniqueIdRequest.encode(request).finish();
+    const data = SearchDIByUniqueIdRequest.encode(request).finish();
     const promise = this.rpc.request(
       "Kartoffel.Kartoffel",
-      "SearchDIOrUniqueId",
+      "SearchDIByUniqueId",
       data
     );
     return promise.then((data) =>
