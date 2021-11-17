@@ -19,6 +19,10 @@ import { kartoffelConfig } from '../utils/kartoffelConfig';
 export class KartoffelFaker {
   constructor() {}
 
+  randomJobTitle(): string {
+    return faker.name.jobTitle();
+  }
+
   async randomOG(): Promise<OrganizationGroup> {
     const organizationGroup: OrganizationGroup = {
       id: mongoose.Types.ObjectId().toString(),

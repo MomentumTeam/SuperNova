@@ -200,7 +200,7 @@ export async function updateDI(call: any, callback: any): Promise<void> {
       callRequest: call.request,
       response: successMessage,
     });
-    callback(null, { success: true });
+    callback(null, successMessage);
   } catch (error: any) {
     const status = getStatusCode(error);
     const message = getErrorMessage(error);

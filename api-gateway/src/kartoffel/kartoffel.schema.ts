@@ -174,7 +174,7 @@ export const GetRolesUnderOGSchema = Joi.object({
   query: {
     direct: Joi.boolean().default(true),
     page: Joi.number().default(1).min(1),
-    pageSize: Joi.number().default(100).min(50),
+    pageSize: Joi.number().default(100),
   },
 });
 
