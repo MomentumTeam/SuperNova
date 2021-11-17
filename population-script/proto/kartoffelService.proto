@@ -344,7 +344,7 @@ message ConnectEntityAndDIRequest{
 
 // CreateEntity
 message CreateEntityRequest{
-    optional string firstName = 1;
+    string firstName = 1;
     optional string lastName = 2;
     optional string identityCard = 3;
     optional string personalNumber = 4;
@@ -355,7 +355,7 @@ message CreateEntityRequest{
     optional string clearance = 9;
     optional string sex = 10;
     optional string birthDate = 11;
-    optional string entityType = 12;
+    string entityType = 12;
     optional string akaUnit = 13;
     optional string dischargeDay = 14;
     optional string rank = 15;

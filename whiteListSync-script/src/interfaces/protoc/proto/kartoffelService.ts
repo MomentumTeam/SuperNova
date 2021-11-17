@@ -292,7 +292,7 @@ export interface ConnectEntityAndDIRequest {
 
 /** CreateEntity */
 export interface CreateEntityRequest {
-  firstName?: string | undefined;
+  firstName: string;
   lastName?: string | undefined;
   identityCard?: string | undefined;
   personalNumber?: string | undefined;
@@ -303,7 +303,7 @@ export interface CreateEntityRequest {
   clearance?: string | undefined;
   sex?: string | undefined;
   birthDate?: string | undefined;
-  entityType?: string | undefined;
+  entityType: string;
   akaUnit?: string | undefined;
   dischargeDay?: string | undefined;
   rank?: string | undefined;
@@ -4817,14 +4817,19 @@ export const ConnectEntityAndDIRequest = {
   },
 };
 
-const baseCreateEntityRequest: object = { phone: "", mobilePhone: "" };
+const baseCreateEntityRequest: object = {
+  firstName: "",
+  phone: "",
+  mobilePhone: "",
+  entityType: "",
+};
 
 export const CreateEntityRequest = {
   encode(
     message: CreateEntityRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.firstName !== undefined) {
+    if (message.firstName !== "") {
       writer.uint32(10).string(message.firstName);
     }
     if (message.lastName !== undefined) {
@@ -4857,7 +4862,7 @@ export const CreateEntityRequest = {
     if (message.birthDate !== undefined) {
       writer.uint32(90).string(message.birthDate);
     }
-    if (message.entityType !== undefined) {
+    if (message.entityType !== "") {
       writer.uint32(98).string(message.entityType);
     }
     if (message.akaUnit !== undefined) {
@@ -4941,7 +4946,7 @@ export const CreateEntityRequest = {
     if (object.firstName !== undefined && object.firstName !== null) {
       message.firstName = String(object.firstName);
     } else {
-      message.firstName = undefined;
+      message.firstName = "";
     }
     if (object.lastName !== undefined && object.lastName !== null) {
       message.lastName = String(object.lastName);
@@ -4996,7 +5001,7 @@ export const CreateEntityRequest = {
     if (object.entityType !== undefined && object.entityType !== null) {
       message.entityType = String(object.entityType);
     } else {
-      message.entityType = undefined;
+      message.entityType = "";
     }
     if (object.akaUnit !== undefined && object.akaUnit !== null) {
       message.akaUnit = String(object.akaUnit);
@@ -5055,7 +5060,7 @@ export const CreateEntityRequest = {
     if (object.firstName !== undefined && object.firstName !== null) {
       message.firstName = object.firstName;
     } else {
-      message.firstName = undefined;
+      message.firstName = "";
     }
     if (object.lastName !== undefined && object.lastName !== null) {
       message.lastName = object.lastName;
@@ -5110,7 +5115,7 @@ export const CreateEntityRequest = {
     if (object.entityType !== undefined && object.entityType !== null) {
       message.entityType = object.entityType;
     } else {
-      message.entityType = undefined;
+      message.entityType = "";
     }
     if (object.akaUnit !== undefined && object.akaUnit !== null) {
       message.akaUnit = object.akaUnit;
