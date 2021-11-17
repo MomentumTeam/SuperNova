@@ -8,6 +8,7 @@ import {
 } from '../interfaces/protoc/proto/kartoffelService';
 import { logger } from '../logger';
 import { KartoffelFaker } from '../mock/kartoffel.faker';
+import { getErrorMessage, getStatusCode } from '../utils/errors.utils';
 import { KartoffelUtils } from '../utils/kartoffel.utils';
 import { EntitiesManager } from './entities.manager';
 
@@ -61,14 +62,17 @@ export async function createEntity(call: any, callback: any): Promise<void> {
     });
     callback(null, idMessage);
   } catch (error: any) {
+    const code = getStatusCode(error);
+    const message = getErrorMessage(error);
+
     logger.error(`createEntity ERROR`, {
       callRequest: call.request,
-      error: { message: error.message },
+      error: { message },
     });
     callback(
       {
-        code: 400,
-        message: error.message,
+        code,
+        message,
         status: grpc.status.CANCELLED,
       },
       null
