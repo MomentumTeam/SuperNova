@@ -118,7 +118,12 @@ export class DiRepository {
         const res = await this.kartoffelUtils.kartoffelDelete(
           `${C.kartoffelUrl}/api/digitalIdentities/${encodeURIComponent(deleteDIRequest.id)}`
         );
-        return res as SuccessMessage;
+        
+         if (res === C.kartoffelOK) {
+           return { success: true };
+         } else {
+           throw new Error("res not ok");
+         }
       }
     } catch (error) {
       throw error;

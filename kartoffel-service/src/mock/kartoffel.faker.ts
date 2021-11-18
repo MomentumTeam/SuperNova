@@ -19,6 +19,24 @@ import { kartoffelConfig } from "../utils/kartoffelConfig";
 export class KartoffelFaker {
   constructor() {}
 
+  randomIdentityCard(): string {
+    const getRandomInt = (min = 1, max = 100) => {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    };
+
+    const getInc = (num: number, i: number) => {
+      var inc = Number(num) * ((i % 2) + 1);
+      return inc > 9 ? (inc -= 9) : inc;
+    };
+
+    let iid = "", num, counter = 0;
+    for (let i = 0; i < 8; i++) {
+      num = getRandomInt(i < 2 ? 2 : 0, i < 2 ? 3 : 9);
+      iid += num.toString();
+      counter += getInc(num, i);
+    }
+    return iid + (10 - (counter % 10)).toString();
+  }
   randomJobTitle(): string {
     return faker.name.jobTitle();
   }
@@ -160,7 +178,7 @@ export class KartoffelFaker {
         directGroup: mongoose.Types.ObjectId().toString(),
         hierarchy: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
         entityType: entityType ? entityType : "digimon",
-        identityCard: faker.datatype.number({ min: 100000, max: 999999 }).toString(),
+        identityCard: this.randomIdentityCard(),
         personalNumber: faker.datatype.number({ min: 100000000, max: 999999999 }).toString(),
         serviceType: serviceType ? serviceType : "A",
         firstName: faker.name.firstName(),
@@ -216,7 +234,7 @@ export class KartoffelFaker {
         directGroup: mongoose.Types.ObjectId().toString(),
         hierarchy: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
         entityType: "soldier",
-        identityCard: faker.datatype.number({ min: 100000, max: 999999 }).toString(),
+        identityCard: this.randomIdentityCard(),
         personalNumber: faker.datatype.number({ min: 100000000, max: 999999999 }).toString(),
         serviceType: serviceType[serviceTypeNum],
         firstName: faker.name.firstName(),

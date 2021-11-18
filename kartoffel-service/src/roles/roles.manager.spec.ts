@@ -2,7 +2,6 @@ require("../envload");
 import { expect } from "chai";
 import { DiManager } from "../digitalIdentities/di.manager";
 import {
-  CreateRoleRequest,
   DigitalIdentity,
   Role,
   RoleArray,
@@ -10,6 +9,7 @@ import {
 } from "../interfaces/protoc/proto/kartoffelService";
 import { KartoffelFaker } from "../mock/kartoffel.faker";
 import { KartoffelUtils } from "../utils/kartoffel.utils";
+import { createRandomDI, createRandomRole, getRandomDI, getRandomRole } from '../utils/tests.utils';
 import { RolesManager } from "./roles.manager";
 
 const kartoffelFaker: KartoffelFaker = new KartoffelFaker();
@@ -19,12 +19,9 @@ const rolesManager: RolesManager = new RolesManager(kartoffelUtils, kartoffelFak
 const diManager: DiManager = new DiManager(kartoffelUtils, kartoffelFaker);
 
 // TODO: get the first and second group
-let directGroup = "6184af5e2da77600113431f7";
 let secondDirectGroup = "6184af552da7760011342d0d";
-const randomRole: Role = kartoffelFaker.randomRole();
-randomRole.directGroup = directGroup;
-
-const randomDI: DigitalIdentity = kartoffelFaker.randomDI();
+const randomRole: Role = getRandomRole();
+const randomDI: DigitalIdentity = getRandomDI();
 
 console.log(randomDI);
 console.log(randomRole);
@@ -32,34 +29,20 @@ console.log(randomRole);
 const timeout = 5000;
 describe("Roles Manager", () => {
   before("create di", async () => {
-    const di = await diManager.createDI({
-      uniqueId: randomDI.uniqueId,
-      isRoleAttachable: true,
-      source: randomDI.source,
-      type: randomDI.type,
-      mail: randomDI.mail,
-    });
-
+    const di = await createRandomDI(randomDI);
   });
 
   beforeEach((done) => setTimeout(done, timeout));
 
-  const req: CreateRoleRequest = {
-    directGroup: randomRole.directGroup,
-    jobTitle: randomRole.jobTitle,
-    source: randomRole.source,
-    roleId: randomRole.roleId,
-  };
-
   describe("CreateRole", () => {
     it("create role", async () => {
-      const res = await rolesManager.createRole(req);
+      const res = await createRandomRole(randomRole);
       expect(res).to.be.exist;
     });
 
     it("create the same role", async () => {
       try {
-        const res = await rolesManager.createRole(req);
+        const res = await createRandomRole(randomRole);
       } catch (error: any) {
         expect(error.response.data.status).to.equal(400);
         expect(error.response.data.message).to.equal(`role: ${randomRole.roleId} already exists`);
@@ -132,11 +115,14 @@ describe("Roles Manager", () => {
     });
 
     it("get di by role id", async () => {
+      let di;
       try {
-        const di = await diManager.getDIByRoleId({ roleId: randomRole.roleId });
+        di = await diManager.getDIByRoleId({ roleId: randomRole.roleId });
       } catch (error: any) {
-        expect(error.response.data.status).to.equal(404);
+        if (error.response?.data?.status) expect(error.response.data.status).to.equal(404)
       }
+
+      expect(di).not.to.be.exist;
     });
   });
 
@@ -238,6 +224,8 @@ describe("Roles Manager", () => {
   });
 
   describe("DeleteRole", () => {
+    // TODO: try delete role before disconnect entity/di
+    
     it("delete role", async () => {
       const successMessage: SuccessMessage = await rolesManager.deleteRole({ roleId: randomRole.roleId });
       expect(successMessage).to.be.exist;
