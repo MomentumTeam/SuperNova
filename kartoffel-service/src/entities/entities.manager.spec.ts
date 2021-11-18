@@ -174,6 +174,19 @@ describe("Entity Manager", () => {
       expect(entity).to.be.exist;
       expect(entity.id).to.be.equal(randomEntity.id);
     });
+
+    it("delete di", async () => {
+      let res;
+      try {
+        res = await diManager.deleteDI({ id: randomDI.uniqueId });
+      } catch (error: any) {
+        expect(error.response.data.status).to.equal(400);
+        expect(error.response.data.message).to.equal(
+          `digital identity: ${randomDI.uniqueId.toLowerCase()} is connected to entity`
+        );
+      }
+      expect(res).not.to.be.exist;
+    });
   });
 
   describe("DisconnectDIFromEntity", () => {

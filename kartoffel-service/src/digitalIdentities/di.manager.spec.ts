@@ -65,17 +65,6 @@ describe("DI Manager", () => {
     });
   });
 
-  describe("GetDIByRoleId", () => {
-    // TODO 
-    
-    // it("should get di", async () => {
-    //   if (randomDIWithRole.role?.roleId) {
-    //     const di: DigitalIdentity = await diManager.getDIByRoleId({ roleId: randomDIWithRole.role?.roleId });
-    //     expect(di).to.be.exist;
-    //     expect(di.uniqueId.toLowerCase()).to.be.equal(randomDIWithRole.uniqueId.toLowerCase());
-    //   }
-    // });
-  });
 
   describe("UpdateDI", () => {
     it("change role attachable to false", async () => {
@@ -94,8 +83,6 @@ describe("DI Manager", () => {
   });
 
   describe("DeleteDI", () => {
-    // TODO: try delete di before disconnect entity/role
-
     it("delete di", async () => {
       const successMessage: SuccessMessage = await diManager.deleteDI({ id: randomDI.uniqueId });
       expect(successMessage).to.be.exist;
