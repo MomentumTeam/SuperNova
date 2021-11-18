@@ -1,6 +1,6 @@
-import faker from "faker";
-import mongoose from "mongoose";
-import axios from "axios";
+import faker from 'faker';
+import mongoose from 'mongoose';
+import axios from 'axios';
 import {
   OrganizationGroup,
   DigitalIdentity,
@@ -12,10 +12,10 @@ import {
   OGTree,
   Image,
   DigitalIdentities,
-} from "../interfaces/protoc/proto/kartoffelService";
-import * as C from "../config";
-import { sample } from "lodash";
-import { kartoffelConfig } from "../utils/kartoffelConfig";
+} from '../interfaces/protoc/proto/kartoffelService';
+import * as C from '../config';
+import { sample } from 'lodash';
+import { kartoffelConfig } from '../utils/kartoffelConfig';
 export class KartoffelFaker {
   constructor() {}
 
@@ -29,7 +29,9 @@ export class KartoffelFaker {
       return inc > 9 ? (inc -= 9) : inc;
     };
 
-    let iid = "", num, counter = 0;
+    let iid = '',
+      num,
+      counter = 0;
     for (let i = 0; i < 8; i++) {
       num = getRandomInt(i < 2 ? 2 : 0, i < 2 ? 3 : 9);
       iid += num.toString();
@@ -45,10 +47,10 @@ export class KartoffelFaker {
     const organizationGroup: OrganizationGroup = {
       id: mongoose.Types.ObjectId().toString(),
       name: faker.company.companyName(),
-      source: "oneTree",
+      source: C.defaultSource,
       ancestors: [mongoose.Types.ObjectId().toString()],
       hierarchy: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
-      status: "active",
+      status: 'active',
       isLeaf: true,
       createdAt: faker.datatype.datetime().toString(),
       updatedAt: faker.datatype.datetime().toString(),
@@ -78,13 +80,15 @@ export class KartoffelFaker {
   }
 
   randomDI(withRole = true): DigitalIdentity {
-    const domain = sample(kartoffelConfig.valueObjects.digitalIdentityId.domain.values);
+    const domain = sample(
+      kartoffelConfig.valueObjects.digitalIdentityId.domain.values
+    );
     const type = sample(kartoffelConfig.valueObjects.digitalIdentityType);
     const source = sample(kartoffelConfig.valueObjects.source.values);
 
     const digitalIdentity: DigitalIdentity = {
-      type: type && !withRole ? type : "domainUser",
-      source: source ? source : "oa_name",
+      type: type && !withRole ? type : 'domainUser',
+      source: source ? source : 'oa_name',
       mail: faker.internet.email(),
       uniqueId: faker.internet.email(undefined, undefined, domain),
       entityId: mongoose.Types.ObjectId().toString(),
@@ -93,9 +97,15 @@ export class KartoffelFaker {
       isRoleAttachable: true,
     };
 
-    if (digitalIdentity.type === kartoffelConfig.valueObjects.digitalIdentityType.VirtualUser)
+    if (
+      digitalIdentity.type ===
+      kartoffelConfig.valueObjects.digitalIdentityType.VirtualUser
+    )
       digitalIdentity.isRoleAttachable = false;
-    if (withRole && type !== kartoffelConfig.valueObjects.digitalIdentityType.VirtualUser) {
+    if (
+      withRole &&
+      type !== kartoffelConfig.valueObjects.digitalIdentityType.VirtualUser
+    ) {
       digitalIdentity.role = this.randomRole();
     }
 
@@ -121,12 +131,12 @@ export class KartoffelFaker {
   async randomPicture(): Promise<Image> {
     return new Promise((resolve, reject) => {
       axios
-        .get("https://picsum.photos/200", {
-          responseType: "arraybuffer",
+        .get('https://picsum.photos/200', {
+          responseType: 'arraybuffer',
         })
         .then((res) => {
           const image: Image = {
-            image: Buffer.from(res.data).toString("base64"),
+            image: Buffer.from(res.data).toString('base64'),
           };
           resolve(image);
         })
@@ -149,10 +159,10 @@ export class KartoffelFaker {
       directGroup: mongoose.Types.ObjectId().toString(),
       hierarchy: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
       hierarchyIds: [],
-      source: source ? source : "oa_name",
+      source: source ? source : 'oa_name',
       createdAt: faker.datatype.datetime().toString(),
       updatedAt: faker.datatype.datetime().toString(),
-      clearance: "1",
+      clearance: '1',
       displayName: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
     };
     return role;
@@ -165,10 +175,12 @@ export class KartoffelFaker {
       if (entityType === kartoffelConfig.valueObjects.EntityType.Civilian) {
         onlyCitizenFields = true;
       }
-      const clearanceTypes = ["3", "2", "1"];
+      const clearanceTypes = ['3', '2', '1'];
       const clearance = sample(clearanceTypes);
 
-      const serviceType = sample(kartoffelConfig.valueObjects.serviceType.values);
+      const serviceType = sample(
+        kartoffelConfig.valueObjects.serviceType.values
+      );
       const rank = sample(kartoffelConfig.valueObjects.rank.values);
       const sex = sample(kartoffelConfig.valueObjects.Sex);
 
@@ -177,28 +189,30 @@ export class KartoffelFaker {
         displayName: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
         directGroup: mongoose.Types.ObjectId().toString(),
         hierarchy: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
-        entityType: entityType ? entityType : "digimon",
+        entityType: entityType ? entityType : 'digimon',
         identityCard: this.randomIdentityCard(),
-        personalNumber: faker.datatype.number({ min: 100000000, max: 999999999 }).toString(),
-        serviceType: serviceType ? serviceType : "A",
+        personalNumber: faker.datatype
+          .number({ min: 100000000, max: 999999999 })
+          .toString(),
+        serviceType: serviceType ? serviceType : 'A',
         firstName: faker.name.firstName(),
         lastName: faker.name.lastName(),
         fullName: `${faker.name.firstName()} ${faker.name.lastName()}`,
         akaUnit: faker.company.companyName(),
         dischargeDay: faker.datatype.datetime().toString(),
-        rank: rank ? rank : "unknown",
+        rank: rank ? rank : 'unknown',
         mail: faker.internet.email(),
         jobTitle: faker.name.jobTitle(),
         phone: [faker.phone.phoneNumber()],
         mobilePhone: [faker.phone.phoneNumber()],
         address: `${faker.address.streetAddress()}, ${faker.address.country()}`,
-        clearance: clearance ? clearance : "1",
-        sex: sex ? sex : "male",
+        clearance: clearance ? clearance : '1',
+        sex: sex ? sex : 'male',
         birthDate: faker.datatype.datetime().toString(),
         createdAt: faker.datatype.datetime().toString(),
         updatedAt: faker.datatype.datetime().toString(),
         digitalIdentities: this.randomDiArray().digitalIdentities,
-        picture: "",
+        picture: '',
         goalUserID: mongoose.Types.ObjectId().toString(),
       };
       return entity;
@@ -208,48 +222,52 @@ export class KartoffelFaker {
   }
   async randomEntity(needPicture: boolean = false): Promise<Entity> {
     try {
-      const entityTypes = ["אזרח", "רסל", "טוראי"];
+      const entityTypes = ['אזרח', 'רסל', 'טוראי'];
       const entityType = sample(entityTypes);
 
       let onlyCitizenFields = false;
-      if (entityType === "אזרח") {
+      if (entityType === 'אזרח') {
         onlyCitizenFields = true;
       }
-      const clearanceTypes = ["3", "2", "1"];
+      const clearanceTypes = ['3', '2', '1'];
       let clearanceNum = faker.datatype.number({
         min: 0,
         max: 2,
       });
 
-      const serviceType = ["אזרח", "מילואים", "חייל"];
+      const serviceType = ['אזרח', 'מילואים', 'חייל'];
       let serviceTypeNum = faker.datatype.number({
         min: 0,
         max: 2,
       });
 
-      const picture: Image = needPicture ? await this.randomPicture() : { image: "pictureUrl" };
+      const picture: Image = needPicture
+        ? await this.randomPicture()
+        : { image: 'pictureUrl' };
       const entity: Entity = {
         id: mongoose.Types.ObjectId().toString(),
         displayName: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
         directGroup: mongoose.Types.ObjectId().toString(),
         hierarchy: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
-        entityType: "soldier",
+        entityType: 'soldier',
         identityCard: this.randomIdentityCard(),
-        personalNumber: faker.datatype.number({ min: 100000000, max: 999999999 }).toString(),
+        personalNumber: faker.datatype
+          .number({ min: 100000000, max: 999999999 })
+          .toString(),
         serviceType: serviceType[serviceTypeNum],
         firstName: faker.name.firstName(),
         lastName: faker.name.lastName(),
         fullName: `${faker.name.firstName()} ${faker.name.lastName()}`,
         akaUnit: faker.company.companyName(),
         dischargeDay: faker.datatype.datetime().toString(),
-        rank: entityType ? entityType : "אזרח",
+        rank: entityType ? entityType : 'אזרח',
         mail: faker.internet.email(),
         jobTitle: faker.name.jobTitle(),
         phone: [faker.phone.phoneNumber()],
         mobilePhone: [faker.phone.phoneNumber()],
         address: `${faker.address.streetAddress()}, ${faker.address.country()}`,
         clearance: clearanceTypes[clearanceNum],
-        sex: "זכר",
+        sex: 'זכר',
         birthDate: faker.datatype.datetime().toString(),
         createdAt: faker.datatype.datetime().toString(),
         updatedAt: faker.datatype.datetime().toString(),
@@ -322,7 +340,10 @@ export class KartoffelFaker {
     return { roles: roleArray };
   }
 
-  async randomEntityArray(needPicture: boolean, pageSize?: number): Promise<EntityArray> {
+  async randomEntityArray(
+    needPicture: boolean,
+    pageSize?: number
+  ): Promise<EntityArray> {
     try {
       let length = faker.datatype.number({
         min: 1,

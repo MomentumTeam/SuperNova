@@ -50,7 +50,7 @@ export class DiRepository {
       cleanUnderscoreFields(createDIRequest);
       if (C.useFaker) {
         const newDI: DigitalIdentity = await this.kartoffelFaker.randomDI();
-        return {uniqueId :newDI.uniqueId};
+        return { uniqueId: newDI.uniqueId };
       } else {
         const res = await this.kartoffelUtils.kartoffelPost(
           `${C.kartoffelUrl}/api/digitalIdentities`,
@@ -60,7 +60,7 @@ export class DiRepository {
         if (res === C.kartoffelOK) {
           return { uniqueId: createDIRequest.uniqueId };
         } else {
-          throw new Error("res not ok");
+          throw new Error('res not ok');
         }
       }
     } catch (error) {
@@ -78,7 +78,9 @@ export class DiRepository {
         return newDI;
       } else {
         const res = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/api/digitalIdentities/role/${encodeURIComponent(getDIByRoleIdRequest.roleId)}`
+          `${C.kartoffelUrl}/api/digitalIdentities/role/${encodeURIComponent(
+            getDIByRoleIdRequest.roleId
+          )}`
         );
         return res as DigitalIdentity;
       }
@@ -116,14 +118,16 @@ export class DiRepository {
         return successMessage;
       } else {
         const res = await this.kartoffelUtils.kartoffelDelete(
-          `${C.kartoffelUrl}/api/digitalIdentities/${encodeURIComponent(deleteDIRequest.id)}`
+          `${C.kartoffelUrl}/api/digitalIdentities/${encodeURIComponent(
+            deleteDIRequest.id
+          )}`
         );
-        
-         if (res === C.kartoffelOK) {
-           return { success: true };
-         } else {
-           throw new Error("res not ok");
-         }
+
+        if (res === C.kartoffelOK) {
+          return { success: true };
+        } else {
+          throw new Error('res not ok');
+        }
       }
     } catch (error) {
       throw error;
@@ -140,7 +144,9 @@ export class DiRepository {
         return di;
       } else {
         const res = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/api/digitalIdentities/${encodeURIComponent(getDIByUniqueIdRequest.id)}`
+          `${C.kartoffelUrl}/api/digitalIdentities/${encodeURIComponent(
+            getDIByUniqueIdRequest.id
+          )}`
         );
         return res as DigitalIdentity;
       }
@@ -155,10 +161,10 @@ export class DiRepository {
       if (C.useFaker) {
         // TODO?
         const digitalIdentity: DigitalIdentity = this.kartoffelFaker.randomDI();
-        return {success: true};
+        return { success: true };
       } else {
         const id = updateDIRequest.id;
-        const req:any = updateDIRequest;
+        const req: any = updateDIRequest;
         delete req.id;
 
         const res: any = await this.kartoffelUtils.kartoffelPatch(
@@ -167,9 +173,9 @@ export class DiRepository {
         );
 
         if (res === C.kartoffelOK) {
-          return {success: true}
+          return { success: true };
         } else {
-          throw new Error("res not ok")
+          throw new Error('res not ok');
         }
       }
     } catch (error) {
