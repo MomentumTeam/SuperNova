@@ -373,7 +373,7 @@ export class GroupsRepository {
 
         const childrenInTree: OGTree[] = await Promise.all(
           ogChildren.map(async (ogChild) => {
-            return await this.getTree(currentDepth--, groupsToQuery, ogChild);
+            return await this.getTree(currentDepth - 1, groupsToQuery, ogChild);
           })
         );
         return {
