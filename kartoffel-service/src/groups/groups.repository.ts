@@ -80,23 +80,20 @@ export class GroupsRepository {
           organizationGroup.ancestors.length < C.kartoffelTreeDepth
             ? organizationGroup.ancestors.length
             : C.kartoffelTreeDepth;
-        let treeAncestors = [];
-        for (let i = 1; i <= treeDepth; i++) {
-          treeAncestors.push(
-            organizationGroup.ancestors[organizationGroup.ancestors.length - i]
-          );
-        }
 
         const rootTree: OrganizationGroup =
           treeDepth === 0
             ? organizationGroup
             : await this.getOGById({
-                id: treeAncestors[treeDepth - 1],
+                id: organizationGroup.ancestors[treeDepth - 1],
               });
 
         return await this.getTree(
           treeDepth,
-          [organizationGroup.id, ...treeAncestors],
+          [
+            organizationGroup.id,
+            ...organizationGroup.ancestors.slice(0, treeDepth),
+          ],
           rootTree
         );
       }
