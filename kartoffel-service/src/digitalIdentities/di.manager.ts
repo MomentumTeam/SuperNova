@@ -4,11 +4,12 @@ import {
   GetAllDIsRequest,
   DigitalIdentity,
   GetDIByRoleIdRequest,
-  SearchDIOrUniqueIdRequest,
+  SearchDIByUniqueIdRequest,
   SuccessMessage,
   DeleteDIRequest,
   GetDIByUniqueIdRequest,
   UpdateDIRequest,
+  UniqueIdMessage
 } from '../interfaces/protoc/proto/kartoffelService';
 import { KartoffelFaker } from '../mock/kartoffel.faker';
 import { KartoffelUtils } from '../utils/kartoffel.utils';
@@ -30,7 +31,7 @@ export class DiManager {
     }
   }
 
-  async createDI(createDIRequest: CreateDIRequest): Promise<DigitalIdentity> {
+  async createDI(createDIRequest: CreateDIRequest): Promise<UniqueIdMessage> {
     try {
       return await this.diRepository.createDI(createDIRequest);
     } catch (error) {
@@ -48,12 +49,12 @@ export class DiManager {
     }
   }
 
-  async searchDIOrUniqueId(
-    searchDIOrUniqueIdRequest: SearchDIOrUniqueIdRequest
+  async searchDIByUniqueId(
+    searchDIByUniqueIdRequest: SearchDIByUniqueIdRequest
   ): Promise<DigitalIdentities> {
     try {
-      return await this.diRepository.searchDIOrUniqueId(
-        searchDIOrUniqueIdRequest
+      return await this.diRepository.searchDIByUniqueId(
+        searchDIByUniqueIdRequest
       );
     } catch (error) {
       throw error;
@@ -78,7 +79,7 @@ export class DiManager {
     }
   }
 
-  async updateDI(updateDIRequest: UpdateDIRequest): Promise<DigitalIdentity> {
+  async updateDI(updateDIRequest: UpdateDIRequest): Promise<SuccessMessage> {
     try {
       return await this.diRepository.updateDI(updateDIRequest);
     } catch (error) {

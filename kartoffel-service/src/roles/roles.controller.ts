@@ -4,6 +4,7 @@ import {
   IsRoleAlreadyTakenRes,
   Role,
   RoleArray,
+  RoleIdMessage,
   SuccessMessage,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { logger } from '../logger';
@@ -120,12 +121,12 @@ export async function isRoleAlreadyTaken(
 export async function createRole(call: any, callback: any): Promise<void> {
   try {
     logger.info(`Call to createRole`, { callRequest: call.request });
-    const createdRole: Role = await rolesManager.createRole(call.request);
+    const roleId: RoleIdMessage = await rolesManager.createRole(call.request);
     logger.info(`createRole OK`, {
       callRequest: call.request,
-      response: createdRole,
+      response: roleId,
     });
-    callback(null, createdRole);
+    callback(null, roleId);
   } catch (error: any) {
     const status = getStatusCode(error);
     const message = getErrorMessage(error);
@@ -213,12 +214,12 @@ export async function disconnectRoleAndDI(
 export async function deleteRole(call: any, callback: any): Promise<void> {
   try {
     logger.info(`Call to deleteRole`, { callRequest: call.request });
-    const role: Role = await rolesManager.deleteRole(call.request);
+    const successMessage: SuccessMessage = await rolesManager.deleteRole(call.request);
     logger.info(`deleteRole OK`, {
       callRequest: call.request,
-      response: { success: true },
+      response: successMessage,
     });
-    callback(null, role);
+    callback(null, successMessage);
   } catch (error: any) {
     const status = getStatusCode(error);
     const message = getErrorMessage(error);
@@ -272,12 +273,12 @@ export async function getRolesByHierarchy(
 ): Promise<void> {
   try {
     logger.info(`Call to getRolesByHierarchy`, { callRequest: call.request });
-    const role: Role = await rolesManager.getRolesByHierarchy(call.request);
+    const roles: RoleArray = await rolesManager.getRolesByHierarchy(call.request);
     logger.info(`getRolesByHierarchy OK`, {
       callRequest: call.request,
-      response: { success: true },
+      response: roles,
     });
-    callback(null, { success: true });
+    callback(null, roles);
   } catch (error: any) {
     const status = getStatusCode(error);
     const message = getErrorMessage(error);
@@ -300,12 +301,12 @@ export async function getRolesByHierarchy(
 export async function changeRoleOG(call: any, callback: any): Promise<void> {
   try {
     logger.info(`Call to changeRoleOG`, { callRequest: call.request });
-    const role: Role = await rolesManager.changeRoleOG(call.request);
+    const successMessage: SuccessMessage = await rolesManager.changeRoleOG(call.request);
     logger.info(`changeRoleOG OK`, {
       callRequest: call.request,
-      response: { success: true },
+      response: successMessage,
     });
-    callback(null, { success: true });
+    callback(null, successMessage);
   } catch (error: any) {
     const status = getStatusCode(error);
     const message = getErrorMessage(error);
@@ -358,12 +359,12 @@ export async function getRolesUnderOG(call: any, callback: any): Promise<void> {
 export async function renameRole(call: any, callback: any): Promise<void> {
   try {
     logger.info(`Call to renameRole`, { callRequest: call.request });
-    const role: Role = await rolesManager.renameRole(call.request);
+    const successMessage: SuccessMessage = await rolesManager.renameRole(call.request);
     logger.info(`renameRole OK`, {
       callRequest: call.request,
-      response: { success: true },
+      response: successMessage,
     });
-    callback(null, { success: true });
+    callback(null, successMessage);
   } catch (error: any) {
     const status = getStatusCode(error);
     const message = getErrorMessage(error);

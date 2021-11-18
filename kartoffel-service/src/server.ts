@@ -40,7 +40,7 @@ import {
   getAllDIs,
   createDI,
   getDIByRoleId,
-  searchDIOrUniqueId,
+  searchDIByUniqueId,
   deleteDI,
   getDIByUniqueId,
   updateDI,
@@ -140,7 +140,7 @@ export class Server {
         CreateDI: createDI,
         DeleteDI: deleteDI,
         GetDIByRoleId: getDIByRoleId,
-        SearchDIOrUniqueId: searchDIOrUniqueId,
+        SearchDIByUniqueId: searchDIByUniqueId,
         GetDIByUniqueId: getDIByUniqueId,
         UpdateDI: updateDI,
 

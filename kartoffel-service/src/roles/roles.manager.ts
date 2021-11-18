@@ -16,6 +16,7 @@ import {
   IsJobTitleAlreadyTakenRes,
   IsRoleAlreadyTakenReq,
   IsRoleAlreadyTakenRes,
+  RoleIdMessage,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { KartoffelFaker } from '../mock/kartoffel.faker';
 import { KartoffelUtils } from '../utils/kartoffel.utils';
@@ -33,11 +34,11 @@ export class RolesManager {
     return await this.rolesRepository.getAllRoles(getAllRolesRequest);
   }
 
-  async createRole(createRoleRequest: CreateRoleRequest): Promise<Role> {
+  async createRole(createRoleRequest: CreateRoleRequest): Promise<RoleIdMessage> {
     return await this.rolesRepository.createRole(createRoleRequest);
   }
 
-  async deleteRole(deleteRoleRequest: DeleteRoleRequest): Promise<Role> {
+  async deleteRole(deleteRoleRequest: DeleteRoleRequest): Promise<SuccessMessage> {
     return await this.rolesRepository.deleteRole(deleteRoleRequest);
   }
 
@@ -59,7 +60,7 @@ export class RolesManager {
     return await this.rolesRepository.getRolesUnderOG(getRolesUnderOGRequest);
   }
 
-  async renameRole(RenameRoleRequest: RenameRoleRequest): Promise<Role> {
+  async renameRole(RenameRoleRequest: RenameRoleRequest): Promise<SuccessMessage> {
     return await this.rolesRepository.renameRole(RenameRoleRequest);
   }
 
@@ -97,11 +98,11 @@ export class RolesManager {
 
   async getRolesByHierarchy(
     getRolesByHierarchy: GetRolesByHierarchyRequest
-  ): Promise<Role> {
+  ): Promise<RoleArray> {
     return await this.rolesRepository.getRolesByHierarchy(getRolesByHierarchy);
   }
 
-  async changeRoleOG(changeRoleOGRequest: ChangeRoleOGRequest): Promise<Role> {
+  async changeRoleOG(changeRoleOGRequest: ChangeRoleOGRequest): Promise<SuccessMessage> {
     return await this.rolesRepository.changeRoleOG(changeRoleOGRequest);
   }
 }
