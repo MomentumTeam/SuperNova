@@ -20,6 +20,7 @@ import {
   DisconnectDIFromEntityRequest,
   GetEntityByIdentifierRequest,
   SearchCommandersByFullNameRequest,
+  IdMessage,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { cleanUnderscoreFields } from '../utils/json.utils';
 import { logger } from '../logger';
@@ -34,7 +35,7 @@ export class EntitiesRepository {
 
   async createEntity(
     createEntityRequest: CreateEntityRequest
-  ): Promise<Entity> {
+  ): Promise<IdMessage> {
     try {
       cleanUnderscoreFields(createEntityRequest);
       if (C.useFaker) {
@@ -45,8 +46,7 @@ export class EntitiesRepository {
           `${C.kartoffelUrl}/api/entities`,
           createEntityRequest
         );
-        const entity = await this.getEntityById({ id: data.id });
-        return entity as Entity;
+        return { id: data.id } as IdMessage;
       }
     } catch (error) {
       throw error;
@@ -63,7 +63,9 @@ export class EntitiesRepository {
         return entity;
       } else {
         const data = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/api/entities/digitalIdentity/${getEntityByDIRequest.uniqueId}`,
+          `${C.kartoffelUrl}/api/entities/digitalIdentity/${encodeURIComponent(
+            getEntityByDIRequest.uniqueId
+          )}`,
           { expanded: true }
         );
         return data as Entity;
@@ -83,7 +85,9 @@ export class EntitiesRepository {
         return entity;
       } else {
         const data = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/api/entities/role/${getEntityByRoleIdRequest.roleId}`,
+          `${C.kartoffelUrl}/api/entities/role/${encodeURIComponent(
+            getEntityByRoleIdRequest.roleId
+          )}`,
           { expanded: true }
         );
         return data as Entity;
@@ -106,26 +110,34 @@ export class EntitiesRepository {
           );
         return entityArray;
       } else {
-        getEntitiesUnderOGRequest.page = getEntitiesUnderOGRequest.page
-          ? getEntitiesUnderOGRequest.page
-          : 1;
-        getEntitiesUnderOGRequest.pageSize = getEntitiesUnderOGRequest.pageSize
-          ? getEntitiesUnderOGRequest.pageSize
-          : 20;
-        getEntitiesUnderOGRequest.direct =
-          getEntitiesUnderOGRequest.direct != undefined
-            ? getEntitiesUnderOGRequest.direct
-            : true;
-        const data = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/api/entities/group/${getEntitiesUnderOGRequest.id}`,
-          {
-            expanded: true,
-            direct: getEntitiesUnderOGRequest.direct,
-            page: getEntitiesUnderOGRequest.page,
-            pageSize: getEntitiesUnderOGRequest.pageSize,
+        const queryParams: any = { ...getEntitiesUnderOGRequest };
+        queryParams.expanded = true;
+        delete queryParams.id;
+        if (!queryParams.page || !queryParams.pageSize) {
+          //get all children
+          let page = 1;
+          let entities: Entity[] = [];
+          while (true) {
+            const currentPage = await this.getEntitiesUnderOG({
+              id: getEntitiesUnderOGRequest.id,
+              direct: getEntitiesUnderOGRequest.direct,
+              page: page,
+              pageSize: 100,
+            });
+            if (!currentPage.entities || currentPage.entities.length === 0) {
+              break;
+            }
+            entities.push(...currentPage.entities);
+            page++;
           }
-        );
-        return { entities: data as Entity[] };
+          return { entities: entities } as EntityArray;
+        } else {
+          const data = await this.kartoffelUtils.kartoffelGet(
+            `${C.kartoffelUrl}/api/entities/group/${getEntitiesUnderOGRequest.id}`,
+            queryParams
+          );
+          return { entities: data as Entity[] };
+        }
       }
     } catch (error) {
       throw error;
@@ -169,27 +181,36 @@ export class EntitiesRepository {
           );
         return entityArray;
       } else {
-        getEntitiesByHierarchyRequest.page = getEntitiesByHierarchyRequest.page
-          ? getEntitiesByHierarchyRequest.page
-          : 1;
-        getEntitiesByHierarchyRequest.pageSize =
-          getEntitiesByHierarchyRequest.pageSize
-            ? getEntitiesByHierarchyRequest.pageSize
-            : 20;
-        getEntitiesByHierarchyRequest.direct =
-          getEntitiesByHierarchyRequest.direct
-            ? getEntitiesByHierarchyRequest.direct
-            : true;
-        const data = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/api/entities/hierarchy/${getEntitiesByHierarchyRequest.hierarchy}`,
-          {
-            expanded: true,
-            direct: getEntitiesByHierarchyRequest.direct,
-            page: getEntitiesByHierarchyRequest.page,
-            pageSize: getEntitiesByHierarchyRequest.pageSize,
+        const queryParams: any = { ...getEntitiesByHierarchyRequest };
+        queryParams.expanded = true;
+        delete queryParams.hierarchy;
+        if (!queryParams.page || !queryParams.pageSize) {
+          //get all groups by hierarchy
+          let page = 1;
+          let entities: Entity[] = [];
+          while (true) {
+            const currentPage = await this.getEntitiesByHierarchy({
+              hierarchy: getEntitiesByHierarchyRequest.hierarchy,
+              direct: getEntitiesByHierarchyRequest.direct,
+              page: page,
+              pageSize: 100,
+            });
+            if (!currentPage.entities || currentPage.entities.length === 0) {
+              break;
+            }
+            entities.push(...currentPage.entities);
+            page++;
           }
-        );
-        return { entities: data as Entity[] };
+          return { entities: entities } as EntityArray;
+        } else {
+          const data = await this.kartoffelUtils.kartoffelGet(
+            `${C.kartoffelUrl}/api/entities/hierarchy/${encodeURIComponent(
+              getEntitiesByHierarchyRequest.hierarchy
+            )}`,
+            queryParams
+          );
+          return { entities: data as Entity[] };
+        }
       }
     } catch (error) {
       throw error;
@@ -226,15 +247,20 @@ export class EntitiesRepository {
           await this.kartoffelFaker.randomEntityArray(false);
         return entityArray;
       } else {
-        let url = `${C.kartoffelUrl}/api/entities/search?fullName=${searchCommandersByFullNameRequest.fullName}`;
+        let url = `${
+          C.kartoffelUrl
+        }/api/entities/search?fullName=${encodeURIComponent(
+          searchCommandersByFullNameRequest.fullName
+        )}`;
         for (let rank of C.commanderRanks) {
           url = url + `&rank=${rank}`;
         }
         if (searchCommandersByFullNameRequest.source) {
           url = url + `&source=${searchCommandersByFullNameRequest.source}`;
         } else {
-          url = url + `&source=oneTree`;
+          url = url + `&source=${C.defaultSource}`;
         }
+        url = url + '&expanded=true';
         const data = await this.kartoffelUtils.kartoffelGet(url);
         return { entities: data as Entity[] };
       }
@@ -253,15 +279,20 @@ export class EntitiesRepository {
           await this.kartoffelFaker.randomEntityArray(false);
         return entityArray;
       } else {
-        let url = `${C.kartoffelUrl}/api/entities/search?fullName=${searchCommandersByFullNameRequest.fullName}`;
+        let url = `${
+          C.kartoffelUrl
+        }/api/entities/search?fullName=${encodeURIComponent(
+          searchCommandersByFullNameRequest.fullName
+        )}`;
         for (let rank of C.highCommanderRanks) {
           url = url + `&rank=${rank}`;
         }
         if (searchCommandersByFullNameRequest.source) {
           url = url + `&source=${searchCommandersByFullNameRequest.source}`;
         } else {
-          url = url + `&source=oneTree`;
+          url = url + `&source=${C.defaultSource}`;
         }
+        url = url + '&expanded=true';
         const data = await this.kartoffelUtils.kartoffelGet(url);
         return { entities: data as Entity[] };
       }
@@ -280,30 +311,15 @@ export class EntitiesRepository {
           await this.kartoffelFaker.randomEntityArray(false);
         return entityArray;
       } else {
-        let url = `${C.kartoffelUrl}/api/entities/search?fullName=${searchEntitiesByFullNameRequest.fullName}&expanded=true`;
-        if (searchEntitiesByFullNameRequest.rank) {
-          url = url + `&rank=${searchEntitiesByFullNameRequest.rank}`;
-        }
-        if (searchEntitiesByFullNameRequest.entityType) {
-          url =
-            url + `&entityType=${searchEntitiesByFullNameRequest.entityType}`;
-        }
-        if (searchEntitiesByFullNameRequest.underGroupId) {
-          url =
-            url +
-            `&underGroupId=${searchEntitiesByFullNameRequest.underGroupId}`;
-        }
-        if (searchEntitiesByFullNameRequest.status) {
-          url = url + `&status=${searchEntitiesByFullNameRequest.status}`;
-        }
+        let url = `${C.kartoffelUrl}/api/entities/search`;
+        const queryParams: any = { ...searchEntitiesByFullNameRequest };
+        queryParams.expanded = true;
         if (searchEntitiesByFullNameRequest.source) {
-          url = url + `&source=${searchEntitiesByFullNameRequest.source}`;
-        } else {
-          url = url + `&source=oneTree`;
+          queryParams['digitalIdentity.source'] = queryParams.source;
         }
-        url = encodeURI(url);
-        const data = await this.kartoffelUtils.kartoffelGet(url);
-        return { entities: data as Entity[] };
+        delete queryParams.source;
+        const data = await this.kartoffelUtils.kartoffelGet(url, queryParams);
+        return { entities: data as Entity[] } as EntityArray;
       }
     } catch (error) {
       throw error;
@@ -395,7 +411,11 @@ export class EntitiesRepository {
         return { success: true };
       } else {
         await this.kartoffelUtils.kartoffelDelete(
-          `${C.kartoffelUrl}/api/entities/${disconnectDIFromEntityRequest.id}/digitalIdentity/${disconnectDIFromEntityRequest.uniqueId}`
+          `${C.kartoffelUrl}/api/entities/${
+            disconnectDIFromEntityRequest.id
+          }/digitalIdentity/${encodeURIComponent(
+            disconnectDIFromEntityRequest.uniqueId
+          )}`
         );
         return { success: true };
       }
@@ -413,7 +433,11 @@ export class EntitiesRepository {
         return { success: true };
       } else {
         const data = await this.kartoffelUtils.kartoffelPut(
-          `${C.kartoffelUrl}/api/entities/${connectEntityAndDIRequest.id}/digitalIdentity/${connectEntityAndDIRequest.uniqueId}`,
+          `${C.kartoffelUrl}/api/entities/${
+            connectEntityAndDIRequest.id
+          }/digitalIdentity/${encodeURIComponent(
+            connectEntityAndDIRequest.uniqueId
+          )}`,
           {
             digitalIdentityUniqueId: connectEntityAndDIRequest.uniqueId,
           }

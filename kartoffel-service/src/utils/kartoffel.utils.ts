@@ -10,6 +10,7 @@ export class KartoffelUtils {
   private lastSpikeTokenRecieved: number = new Date().getTime();
   private spikeService: SpikeService;
 
+  // TODO: add encode uri here
   constructor() {
     this.spikeService = new SpikeService();
     this.axiosKartoffel = axios.create();

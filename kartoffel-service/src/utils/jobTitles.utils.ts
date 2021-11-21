@@ -18,12 +18,7 @@ export function jobTitleExists(
   roleArray: RoleArray,
   jobTitle: string
 ): boolean {
-  for (let role of roleArray.roles) {
-    if (role.jobTitle === jobTitle) {
-      return true;
-    }
-  }
-  return false;
+  return (roleArray.roles.some(role => role.jobTitle === jobTitle))
 }
 
 export function getSuggestions(

@@ -2,11 +2,13 @@ import * as grpc from '@grpc/grpc-js';
 import {
   Entity,
   EntityArray,
+  IdMessage,
   Image,
   SuccessMessage,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { logger } from '../logger';
 import { KartoffelFaker } from '../mock/kartoffel.faker';
+import { getErrorMessage, getStatusCode } from '../utils/errors.utils';
 import { KartoffelUtils } from '../utils/kartoffel.utils';
 import { EntitiesManager } from './entities.manager';
 
@@ -33,14 +35,17 @@ export async function getPictureByEntityId(
     });
     callback(null, image);
   } catch (error: any) {
+    const code = getStatusCode(error);
+    const message = getErrorMessage(error);
+
     logger.error(`getPictureByEntityId ERROR`, {
       callRequest: call.request,
-      error: { message: error.message },
+      error: { message },
     });
     callback(
       {
-        code: 400,
-        message: error.message,
+        code,
+        message,
         status: grpc.status.CANCELLED,
       },
       null
@@ -51,21 +56,26 @@ export async function getPictureByEntityId(
 export async function createEntity(call: any, callback: any): Promise<void> {
   try {
     logger.info(`Call to createEntity`, { callRequest: call.request });
-    const entity: Entity = await entitiesManager.createEntity(call.request);
+    const idMessage: IdMessage = await entitiesManager.createEntity(
+      call.request
+    );
     logger.info(`createEntity OK`, {
       callRequest: call.request,
-      response: entity,
+      response: idMessage,
     });
-    callback(null, entity);
+    callback(null, idMessage);
   } catch (error: any) {
+    const code = getStatusCode(error);
+    const message = getErrorMessage(error);
+
     logger.error(`createEntity ERROR`, {
       callRequest: call.request,
-      error: { message: error.message },
+      error: { message },
     });
     callback(
       {
-        code: 400,
-        message: error.message,
+        code,
+        message,
         status: grpc.status.CANCELLED,
       },
       null
@@ -83,14 +93,17 @@ export async function getEntityByDI(call: any, callback: any): Promise<void> {
     });
     callback(null, entity);
   } catch (error: any) {
+    const code = getStatusCode(error);
+    const message = getErrorMessage(error);
+
     logger.error(`getEntityByDI ERROR`, {
       callRequest: call.request,
-      error: { message: error.message },
+      error: { message },
     });
     callback(
       {
-        code: 400,
-        message: error.message,
+        code,
+        message,
         status: grpc.status.CANCELLED,
       },
       null
@@ -113,14 +126,17 @@ export async function getEntityByRoleId(
     });
     callback(null, entity);
   } catch (error: any) {
+    const code = getStatusCode(error);
+    const message = getErrorMessage(error);
+
     logger.error(`getEntityByRoleId ERROR`, {
       callRequest: call.request,
-      error: { message: error.message },
+      error: { message },
     });
     callback(
       {
-        code: 400,
-        message: error.message,
+        code,
+        message,
         status: grpc.status.CANCELLED,
       },
       null
@@ -143,14 +159,17 @@ export async function getEntitiesUnderOG(
     });
     callback(null, entityArray);
   } catch (error: any) {
+    const code = getStatusCode(error);
+    const message = getErrorMessage(error);
+
     logger.error(`getEntitiesUnderOG ERROR`, {
       callRequest: call.request,
-      error: { message: error.message },
+      error: { message },
     });
     callback(
       {
-        code: 400,
-        message: error.message,
+        code,
+        message,
         status: grpc.status.CANCELLED,
       },
       null
@@ -175,14 +194,17 @@ export async function getEntitiesByHierarchy(
     });
     callback(null, entities);
   } catch (error: any) {
+    const code = getStatusCode(error);
+    const message = getErrorMessage(error);
+
     logger.error(`getEntitiesByHierarchy ERROR`, {
       callRequest: call.request,
-      error: { message: error.message },
+      error: { message },
     });
     callback(
       {
-        code: 400,
-        message: error.message,
+        code,
+        message,
         status: grpc.status.CANCELLED,
       },
       null
@@ -207,14 +229,17 @@ export async function getEntityByIdentifier(
     });
     callback(null, entity);
   } catch (error: any) {
+    const code = getStatusCode(error);
+    const message = getErrorMessage(error);
+
     logger.error(`searchEntitiesByIdentifier ERROR`, {
       callRequest: call.request,
-      error: { message: error.message },
+      error: { message },
     });
     callback(
       {
-        code: 400,
-        message: error.message,
+        code,
+        message,
         status: grpc.status.CANCELLED,
       },
       null
@@ -238,14 +263,17 @@ export async function searchCommandersByFullName(
     });
     callback(null, entityArray);
   } catch (error: any) {
+    const code = getStatusCode(error);
+    const message = getErrorMessage(error);
+
     logger.error(`searchCommandersByFullName ERROR`, {
       callRequest: call.request,
-      error: { message: error.message },
+      error: { message },
     });
     callback(
       {
-        code: 400,
-        message: error.message,
+        code,
+        message,
         status: grpc.status.CANCELLED,
       },
       null
@@ -269,14 +297,17 @@ export async function searchHighCommandersByFullName(
     });
     callback(null, entityArray);
   } catch (error: any) {
+    const code = getStatusCode(error);
+    const message = getErrorMessage(error);
+
     logger.error(`searchHighCommandersByFullName ERROR`, {
       callRequest: call.request,
-      error: { message: error.message },
+      error: { message },
     });
     callback(
       {
-        code: 400,
-        message: error.message,
+        code,
+        message,
         status: grpc.status.CANCELLED,
       },
       null
@@ -300,14 +331,17 @@ export async function searchEntitiesByFullName(
     });
     callback(null, entityArray);
   } catch (error: any) {
+    const code = getStatusCode(error);
+    const message = getErrorMessage(error);
+
     logger.error(`searchEntitiesByFullName ERROR`, {
       callRequest: call.request,
-      error: { message: error.message },
+      error: { message },
     });
     callback(
       {
-        code: 400,
-        message: error.message,
+        code,
+        message,
         status: grpc.status.CANCELLED,
       },
       null
@@ -325,14 +359,17 @@ export async function getEntityById(call: any, callback: any): Promise<void> {
     });
     callback(null, entity);
   } catch (error: any) {
+    const code = getStatusCode(error);
+    const message = getErrorMessage(error);
+
     logger.error(`getEntityById ERROR`, {
       callRequest: call.request,
-      error: { message: error.message },
+      error: { message },
     });
     callback(
       {
-        code: 400,
-        message: error.message,
+        code,
+        message,
         status: grpc.status.CANCELLED,
       },
       null
@@ -352,14 +389,17 @@ export async function deleteEntity(call: any, callback: any): Promise<void> {
     });
     callback(null, successMessage);
   } catch (error: any) {
+    const code = getStatusCode(error);
+    const message = getErrorMessage(error);
+
     logger.error(`deleteEntity ERROR`, {
       callRequest: call.request,
-      error: { message: error.message },
+      error: { message },
     });
     callback(
       {
-        code: 400,
-        message: error.message,
+        code,
+        message,
         status: grpc.status.CANCELLED,
       },
       null
@@ -377,14 +417,17 @@ export async function updateEntity(call: any, callback: any): Promise<void> {
     });
     callback(null, entity);
   } catch (error: any) {
+    const code = getStatusCode(error);
+    const message = getErrorMessage(error);
+
     logger.error(`updateEntity ERROR`, {
       callRequest: call.request,
-      error: { message: error.message },
+      error: { message },
     });
     callback(
       {
-        code: 400,
-        message: error.message,
+        code,
+        message,
         status: grpc.status.CANCELLED,
       },
       null
@@ -408,14 +451,17 @@ export async function disconnectDIFromEntity(
     });
     callback(null, successMessage);
   } catch (error: any) {
+    const code = getStatusCode(error);
+    const message = getErrorMessage(error);
+
     logger.error(`disconnectDIFromEntity ERROR`, {
       callRequest: call.request,
-      error: { message: error.message },
+      error: { message },
     });
     callback(
       {
-        code: 400,
-        message: error.message,
+        code,
+        message,
         status: grpc.status.CANCELLED,
       },
       null
@@ -437,14 +483,17 @@ export async function connectEntityAndDI(
     });
     callback(null, successMessage);
   } catch (error: any) {
+    const code = getStatusCode(error);
+    const message = getErrorMessage(error);
+
     logger.error(`connectEntityAndDI ERROR`, {
       callRequest: call.request,
-      error: { message: error.message },
+      error: { message },
     });
     callback(
       {
-        code: 400,
-        message: error.message,
+        code,
+        message,
         status: grpc.status.CANCELLED,
       },
       null

@@ -4,10 +4,12 @@ import {
   IsRoleAlreadyTakenRes,
   Role,
   RoleArray,
+  RoleIdMessage,
   SuccessMessage,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { logger } from '../logger';
 import { KartoffelFaker } from '../mock/kartoffel.faker';
+import { getErrorMessage, getStatusCode } from '../utils/errors.utils';
 import { KartoffelUtils } from '../utils/kartoffel.utils';
 import { RolesManager } from './roles.manager';
 
@@ -29,14 +31,17 @@ export async function getAllRoles(call: any, callback: any): Promise<void> {
     });
     callback(null, { roles: roles });
   } catch (error: any) {
+    const status = getStatusCode(error);
+    const message = getErrorMessage(error);
+
     logger.error(`getAllRoles ERROR`, {
       callRequest: call.request,
-      error: { message: error.message },
+      error: { message },
     });
     callback(
       {
-        code: 400,
-        error: error.message,
+        code: status,
+        message,
         status: grpc.status.CANCELLED,
       },
       null
@@ -60,14 +65,17 @@ export async function isJobTitleAlreadyTaken(
     });
     callback(null, res);
   } catch (error: any) {
+     const status = getStatusCode(error);
+     const message = getErrorMessage(error);
+
     logger.error(`isJobTitleAlreadyTaken ERROR`, {
       callRequest: call.request,
-      error: { message: error.message },
+      error: { message },
     });
     callback(
       {
-        code: 400,
-        message: error.message,
+        code: status,
+        message,
         status: grpc.status.CANCELLED,
       },
       null
@@ -92,14 +100,17 @@ export async function isRoleAlreadyTaken(
     });
     callback(null, res);
   } catch (error: any) {
+    const status = getStatusCode(error);
+    const message = getErrorMessage(error);
+
     logger.error(`isRoleAlreadyTaken ERROR`, {
       callRequest: call.request,
-      error: { message: error.message },
+      error: { message },
     });
     callback(
       {
-        code: 400,
-        message: error.message,
+        code: status,
+        message,
         status: grpc.status.CANCELLED,
       },
       null
@@ -110,21 +121,24 @@ export async function isRoleAlreadyTaken(
 export async function createRole(call: any, callback: any): Promise<void> {
   try {
     logger.info(`Call to createRole`, { callRequest: call.request });
-    const createdRole: Role = await rolesManager.createRole(call.request);
+    const roleId: RoleIdMessage = await rolesManager.createRole(call.request);
     logger.info(`createRole OK`, {
       callRequest: call.request,
-      response: createdRole,
+      response: roleId,
     });
-    callback(null, createdRole);
+    callback(null, roleId);
   } catch (error: any) {
+    const status = getStatusCode(error);
+    const message = getErrorMessage(error);
+
     logger.error(`createRole OK`, {
       callRequest: call.request,
-      error: { message: error.message },
+      error: { message },
     });
     callback(
       {
-        code: 400,
-        message: error.message,
+        code: status,
+        message,
         status: grpc.status.CANCELLED,
       },
       null
@@ -147,14 +161,17 @@ export async function connectRoleAndDI(
     });
     callback(null, successMessage);
   } catch (error: any) {
+    const status = getStatusCode(error);
+    const message = getErrorMessage(error);
+
     logger.error(`connectRoleAndDI ERROR`, {
       callRequest: call.request,
-      error: { message: error.message },
+      error: {message},
     });
     callback(
       {
-        code: 400,
-        message: error.message,
+        code: status,
+        message,
         status: grpc.status.CANCELLED,
       },
       null
@@ -176,14 +193,17 @@ export async function disconnectRoleAndDI(
     });
     callback(null, successMessage);
   } catch (error: any) {
+    const status = getStatusCode(error);
+    const message = getErrorMessage(error);
+
     logger.error(`disconnectRoleAndDI ERROR`, {
       callRequest: call.request,
-      error: { message: error.message },
+      error: { message },
     });
     callback(
       {
-        code: 400,
-        message: error.message,
+        code: status,
+        message,
         status: grpc.status.CANCELLED,
       },
       null
@@ -194,21 +214,24 @@ export async function disconnectRoleAndDI(
 export async function deleteRole(call: any, callback: any): Promise<void> {
   try {
     logger.info(`Call to deleteRole`, { callRequest: call.request });
-    const role: Role = await rolesManager.deleteRole(call.request);
+    const successMessage: SuccessMessage = await rolesManager.deleteRole(call.request);
     logger.info(`deleteRole OK`, {
       callRequest: call.request,
-      response: { success: true },
+      response: successMessage,
     });
-    callback(null, role);
+    callback(null, successMessage);
   } catch (error: any) {
+    const status = getStatusCode(error);
+    const message = getErrorMessage(error);
+
     logger.error(`deleteRole ERROR`, {
       callRequest: call.request,
-      error: { message: error.message },
+      error: { message },
     });
     callback(
       {
-        code: 400,
-        message: error.message,
+        code: status,
+        message,
         status: grpc.status.CANCELLED,
       },
       null
@@ -226,14 +249,17 @@ export async function getRoleByRoleId(call: any, callback: any): Promise<void> {
     });
     callback(null, role);
   } catch (error: any) {
+    const status = getStatusCode(error);
+    const message = getErrorMessage(error);
+
     logger.error(`getRoleByRoleId ERROR`, {
       callRequest: call.request,
-      error: { message: error.message },
+      error: { message },
     });
     callback(
       {
-        code: 400,
-        message: error.message,
+        code: status,
+        message,
         status: grpc.status.CANCELLED,
       },
       null
@@ -247,21 +273,24 @@ export async function getRolesByHierarchy(
 ): Promise<void> {
   try {
     logger.info(`Call to getRolesByHierarchy`, { callRequest: call.request });
-    const role: Role = await rolesManager.getRolesByHierarchy(call.request);
+    const roles: RoleArray = await rolesManager.getRolesByHierarchy(call.request);
     logger.info(`getRolesByHierarchy OK`, {
       callRequest: call.request,
-      response: { success: true },
+      response: roles,
     });
-    callback(null, { success: true });
+    callback(null, roles);
   } catch (error: any) {
+    const status = getStatusCode(error);
+    const message = getErrorMessage(error);
+
     logger.error(`getRolesByHierarchy ERROR`, {
       callRequest: call.request,
-      error: { message: error.message },
+      error: { message },
     });
     callback(
       {
-        code: 400,
-        message: error.message,
+        code: status,
+        message,
         status: grpc.status.CANCELLED,
       },
       null
@@ -272,21 +301,24 @@ export async function getRolesByHierarchy(
 export async function changeRoleOG(call: any, callback: any): Promise<void> {
   try {
     logger.info(`Call to changeRoleOG`, { callRequest: call.request });
-    const role: Role = await rolesManager.changeRoleOG(call.request);
+    const successMessage: SuccessMessage = await rolesManager.changeRoleOG(call.request);
     logger.info(`changeRoleOG OK`, {
       callRequest: call.request,
-      response: { success: true },
+      response: successMessage,
     });
-    callback(null, { success: true });
+    callback(null, successMessage);
   } catch (error: any) {
+    const status = getStatusCode(error);
+    const message = getErrorMessage(error);
+
     logger.error(`changeRoleOG ERROR`, {
       callRequest: call.request,
-      error: { message: error.message },
+      error: { message },
     });
     callback(
       {
-        code: 400,
-        message: error.message,
+        code: status,
+        message,
         status: grpc.status.CANCELLED,
       },
       null
@@ -306,14 +338,17 @@ export async function getRolesUnderOG(call: any, callback: any): Promise<void> {
     });
     callback(null, roleArray);
   } catch (error: any) {
+    const status = getStatusCode(error);
+    const message = getErrorMessage(error);
+
     logger.error(`getRolesUnderOG ERROR`, {
       callRequest: call.request,
-      error: { message: error.message },
+      error: { message },
     });
     callback(
       {
-        code: 400,
-        message: error.message,
+        code: status,
+        message,
         status: grpc.status.CANCELLED,
       },
       null
@@ -324,21 +359,25 @@ export async function getRolesUnderOG(call: any, callback: any): Promise<void> {
 export async function renameRole(call: any, callback: any): Promise<void> {
   try {
     logger.info(`Call to renameRole`, { callRequest: call.request });
-    const role: Role = await rolesManager.renameRole(call.request);
+    const successMessage: SuccessMessage = await rolesManager.renameRole(call.request);
     logger.info(`renameRole OK`, {
       callRequest: call.request,
-      response: { success: true },
+      response: successMessage,
     });
-    callback(null, { success: true });
+    callback(null, successMessage);
   } catch (error: any) {
+    const status = getStatusCode(error);
+    const message = getErrorMessage(error);
+
+
     logger.error(`renameRole ERROR`, {
       callRequest: call.request,
-      error: { message: error.message },
+      error: { message },
     });
     callback(
       {
-        code: 400,
-        message: error.message,
+        code: status,
+        message,
         status: grpc.status.CANCELLED,
       },
       null
