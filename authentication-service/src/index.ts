@@ -1,3 +1,5 @@
+require('./envload');
+
 import { Server } from './server';
 import { logger } from './logger';
 

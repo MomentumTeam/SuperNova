@@ -16,8 +16,11 @@ export class AuthManager {
   static async createToken(populatedShragaUser: IShragaUser) {
     const shragaUser: IShragaUser =
       AuthManager.extractShragaUser(populatedShragaUser);
-    const { genesisId, id, iat, exp } = shragaUser;
-
+    let { genesisId, id, adfsId, iat, exp } = shragaUser;
+    if (config.authentication.useShragaLocalMap) {
+      genesisId = config.authentication.diToId[adfsId];
+      id = config.authentication.diToId[adfsId];
+    }
     const kartoffelUser: IUser = await AuthManager.extractKartoffelUser(
       genesisId
     );

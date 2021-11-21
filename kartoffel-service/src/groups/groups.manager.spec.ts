@@ -71,7 +71,7 @@ describe('Groups Manager', () => {
   describe('GetOGByHierarchyName', () => {
     it('get groups by hierarchy', async () => {
       const ogByHierarchy = await groupsManager.getOGByHierarchyName({
-        hierarchy: randomOG.hierarchy,
+        hierarchy: `${randomOG.hierarchy}/${randomOG.name}`,
       });
       expect(ogByHierarchy).to.be.exist;
       expect(ogByHierarchy.id).to.equal(randomOGId);
