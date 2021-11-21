@@ -98,9 +98,9 @@ message SearchCommandersByFullNameRequest{
 }
 
 message GetAllOGsRequest{
-    string source = 1;
-    string akaUnit = 2;
-    string updatedFrom = 3;
+    optional string source = 1;
+    optional string akaUnit = 2;
+    optional string updatedFrom = 3;
     int32 page = 4;
     int32 pageSize = 5;
 }
