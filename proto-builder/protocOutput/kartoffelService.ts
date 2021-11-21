@@ -41,9 +41,9 @@ export interface SearchCommandersByFullNameRequest {
 }
 
 export interface GetAllOGsRequest {
-  source: string;
-  akaUnit: string;
-  updatedFrom: string;
+  source?: string | undefined;
+  akaUnit?: string | undefined;
+  updatedFrom?: string | undefined;
   page: number;
   pageSize: number;
 }
@@ -1076,26 +1076,20 @@ export const SearchCommandersByFullNameRequest = {
   },
 };
 
-const baseGetAllOGsRequest: object = {
-  source: "",
-  akaUnit: "",
-  updatedFrom: "",
-  page: 0,
-  pageSize: 0,
-};
+const baseGetAllOGsRequest: object = { page: 0, pageSize: 0 };
 
 export const GetAllOGsRequest = {
   encode(
     message: GetAllOGsRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.source !== "") {
+    if (message.source !== undefined) {
       writer.uint32(10).string(message.source);
     }
-    if (message.akaUnit !== "") {
+    if (message.akaUnit !== undefined) {
       writer.uint32(18).string(message.akaUnit);
     }
-    if (message.updatedFrom !== "") {
+    if (message.updatedFrom !== undefined) {
       writer.uint32(26).string(message.updatedFrom);
     }
     if (message.page !== 0) {
@@ -1142,17 +1136,17 @@ export const GetAllOGsRequest = {
     if (object.source !== undefined && object.source !== null) {
       message.source = String(object.source);
     } else {
-      message.source = "";
+      message.source = undefined;
     }
     if (object.akaUnit !== undefined && object.akaUnit !== null) {
       message.akaUnit = String(object.akaUnit);
     } else {
-      message.akaUnit = "";
+      message.akaUnit = undefined;
     }
     if (object.updatedFrom !== undefined && object.updatedFrom !== null) {
       message.updatedFrom = String(object.updatedFrom);
     } else {
-      message.updatedFrom = "";
+      message.updatedFrom = undefined;
     }
     if (object.page !== undefined && object.page !== null) {
       message.page = Number(object.page);
@@ -1183,17 +1177,17 @@ export const GetAllOGsRequest = {
     if (object.source !== undefined && object.source !== null) {
       message.source = object.source;
     } else {
-      message.source = "";
+      message.source = undefined;
     }
     if (object.akaUnit !== undefined && object.akaUnit !== null) {
       message.akaUnit = object.akaUnit;
     } else {
-      message.akaUnit = "";
+      message.akaUnit = undefined;
     }
     if (object.updatedFrom !== undefined && object.updatedFrom !== null) {
       message.updatedFrom = object.updatedFrom;
     } else {
-      message.updatedFrom = "";
+      message.updatedFrom = undefined;
     }
     if (object.page !== undefined && object.page !== null) {
       message.page = object.page;

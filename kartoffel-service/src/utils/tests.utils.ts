@@ -1,7 +1,9 @@
 import { DiManager } from '../digitalIdentities/di.manager';
 import { EntitiesManager } from '../entities/entities.manager';
+import { GroupsManager } from '../groups/groups.manager';
 import {
   CreateRoleRequest,
+  CreateOGRequest,
   DigitalIdentity,
   Entity,
   IdMessage,
@@ -17,6 +19,10 @@ const kartoffelUtils: KartoffelUtils = new KartoffelUtils();
 
 // Managers
 const diManager: DiManager = new DiManager(kartoffelUtils, kartoffelFaker);
+const groupsManager: GroupsManager = new GroupsManager(
+  kartoffelUtils,
+  kartoffelFaker
+);
 const rolesManager: RolesManager = new RolesManager(
   kartoffelUtils,
   kartoffelFaker
@@ -71,9 +77,21 @@ export const getRandomRole = () => {
 
 export const getRandomOG = async () => {
   let directGroup = '619519aec254f50012283cda';
+  let diPrefix = '1769';
   const randomOG: OrganizationGroup = await kartoffelFaker.randomOG();
   randomOG.directGroup = directGroup;
+  randomOG.diPrefix = diPrefix;
   return randomOG;
+};
+
+export const createRandomOG = async (randomOG: OrganizationGroup) => {
+  const req: CreateOGRequest = {
+    name: randomOG.name,
+    directGroup: randomOG.directGroup,
+    source: randomOG.source,
+    diPrefix: randomOG.diPrefix,
+  };
+  return await groupsManager.createOG(req);
 };
 
 export const createRandomRole = async (randomRole: Role) => {
