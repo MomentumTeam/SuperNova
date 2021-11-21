@@ -24,6 +24,7 @@ import {
 } from '../interfaces/protoc/proto/kartoffelService';
 import { cleanUnderscoreFields } from '../utils/json.utils';
 import { logger } from '../logger';
+import { fillEntityFields } from '../utils/entities.utils';
 
 export class EntitiesRepository {
   private kartoffelFaker: KartoffelFaker;
@@ -68,6 +69,7 @@ export class EntitiesRepository {
           )}`,
           { expanded: true }
         );
+        fillEntityFields(data);
         return data as Entity;
       }
     } catch (error) {
@@ -90,6 +92,7 @@ export class EntitiesRepository {
           )}`,
           { expanded: true }
         );
+        fillEntityFields(data);
         return data as Entity;
       }
     } catch (error) {
@@ -230,6 +233,7 @@ export class EntitiesRepository {
           `${C.kartoffelUrl}/api/entities/identifier/${getEntityByIndetifierRequest.identifier}`,
           { expanded: true }
         );
+        fillEntityFields(data);
         return data as Entity;
       }
     } catch (error) {
@@ -353,6 +357,7 @@ export class EntitiesRepository {
           });
           data.picture = picture.image;
         }
+        fillEntityFields(data);
         return data as Entity;
       }
     } catch (error) {
