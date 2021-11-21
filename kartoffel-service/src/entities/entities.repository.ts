@@ -133,12 +133,14 @@ export class EntitiesRepository {
             entities.push(...currentPage.entities);
             page++;
           }
+          entities.map((entity: any) => fillEntityFields(entity));
           return { entities: entities } as EntityArray;
         } else {
           const data = await this.kartoffelUtils.kartoffelGet(
             `${C.kartoffelUrl}/api/entities/group/${getEntitiesUnderOGRequest.id}`,
             queryParams
           );
+          data.map((entity: any) => fillEntityFields(entity));
           return { entities: data as Entity[] };
         }
       }
@@ -204,6 +206,9 @@ export class EntitiesRepository {
             entities.push(...currentPage.entities);
             page++;
           }
+          entities.map((entity) => {
+            fillEntityFields(entity);
+          });
           return { entities: entities } as EntityArray;
         } else {
           const data = await this.kartoffelUtils.kartoffelGet(
@@ -212,6 +217,9 @@ export class EntitiesRepository {
             )}`,
             queryParams
           );
+          data.map((entity: any) => {
+            fillEntityFields(entity);
+          });
           return { entities: data as Entity[] };
         }
       }
@@ -266,6 +274,9 @@ export class EntitiesRepository {
         }
         url = url + '&expanded=true';
         const data = await this.kartoffelUtils.kartoffelGet(url);
+        data.map((entity: any) => {
+          fillEntityFields(entity);
+        });
         return { entities: data as Entity[] };
       }
     } catch (error) {
@@ -298,6 +309,9 @@ export class EntitiesRepository {
         }
         url = url + '&expanded=true';
         const data = await this.kartoffelUtils.kartoffelGet(url);
+        data.map((entity: any) => {
+          fillEntityFields(entity);
+        });
         return { entities: data as Entity[] };
       }
     } catch (error) {
@@ -323,6 +337,9 @@ export class EntitiesRepository {
         }
         delete queryParams.source;
         const data = await this.kartoffelUtils.kartoffelGet(url, queryParams);
+        data.map((entity: any) => {
+          fillEntityFields(entity);
+        });
         return { entities: data as Entity[] } as EntityArray;
       }
     } catch (error) {
