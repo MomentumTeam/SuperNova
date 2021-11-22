@@ -23,7 +23,7 @@ let randomOG: OrganizationGroup;
 let randomOGId: any;
 const newOGName = 'TheBestOGName1234';
 const newDirectGroupId = '6184af3a2da7760011341faa';
-const timeout = 5000;
+const timeout = 7000;
 describe('Groups Manager', () => {
   before(async () => {
     randomOG = await getRandomOG();
