@@ -24,6 +24,7 @@ import {
 } from '../interfaces/protoc/proto/kartoffelService';
 import { cleanUnderscoreFields } from '../utils/json.utils';
 import { logger } from '../logger';
+import { fillEntityFields } from '../utils/entities.utils';
 
 export class EntitiesRepository {
   private kartoffelFaker: KartoffelFaker;
@@ -68,6 +69,7 @@ export class EntitiesRepository {
           )}`,
           { expanded: true }
         );
+        fillEntityFields(data);
         return data as Entity;
       }
     } catch (error) {
@@ -90,6 +92,7 @@ export class EntitiesRepository {
           )}`,
           { expanded: true }
         );
+        fillEntityFields(data);
         return data as Entity;
       }
     } catch (error) {
@@ -130,12 +133,14 @@ export class EntitiesRepository {
             entities.push(...currentPage.entities);
             page++;
           }
+          entities.map((entity: any) => fillEntityFields(entity));
           return { entities: entities } as EntityArray;
         } else {
           const data = await this.kartoffelUtils.kartoffelGet(
             `${C.kartoffelUrl}/api/entities/group/${getEntitiesUnderOGRequest.id}`,
             queryParams
           );
+          data.map((entity: any) => fillEntityFields(entity));
           return { entities: data as Entity[] };
         }
       }
@@ -201,6 +206,9 @@ export class EntitiesRepository {
             entities.push(...currentPage.entities);
             page++;
           }
+          entities.map((entity) => {
+            fillEntityFields(entity);
+          });
           return { entities: entities } as EntityArray;
         } else {
           const data = await this.kartoffelUtils.kartoffelGet(
@@ -209,6 +217,9 @@ export class EntitiesRepository {
             )}`,
             queryParams
           );
+          data.map((entity: any) => {
+            fillEntityFields(entity);
+          });
           return { entities: data as Entity[] };
         }
       }
@@ -230,6 +241,7 @@ export class EntitiesRepository {
           `${C.kartoffelUrl}/api/entities/identifier/${getEntityByIndetifierRequest.identifier}`,
           { expanded: true }
         );
+        fillEntityFields(data);
         return data as Entity;
       }
     } catch (error) {
@@ -262,6 +274,9 @@ export class EntitiesRepository {
         }
         url = url + '&expanded=true';
         const data = await this.kartoffelUtils.kartoffelGet(url);
+        data.map((entity: any) => {
+          fillEntityFields(entity);
+        });
         return { entities: data as Entity[] };
       }
     } catch (error) {
@@ -294,6 +309,9 @@ export class EntitiesRepository {
         }
         url = url + '&expanded=true';
         const data = await this.kartoffelUtils.kartoffelGet(url);
+        data.map((entity: any) => {
+          fillEntityFields(entity);
+        });
         return { entities: data as Entity[] };
       }
     } catch (error) {
@@ -319,6 +337,9 @@ export class EntitiesRepository {
         }
         delete queryParams.source;
         const data = await this.kartoffelUtils.kartoffelGet(url, queryParams);
+        data.map((entity: any) => {
+          fillEntityFields(entity);
+        });
         return { entities: data as Entity[] } as EntityArray;
       }
     } catch (error) {
@@ -353,6 +374,7 @@ export class EntitiesRepository {
           });
           data.picture = picture.image;
         }
+        fillEntityFields(data);
         return data as Entity;
       }
     } catch (error) {
