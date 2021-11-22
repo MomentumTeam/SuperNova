@@ -79,8 +79,8 @@ describe('Roles Manager', () => {
     it('get all roles', async () => {
       const roles = await rolesManager.getAllRoles({ page: 1, pageSize: 50 });
       expect(roles).to.be.exist;
-      expect(roles).to.be.an('array');
-      expect(roles).to.have.length.within(0, 50);
+      expect(roles.roles).to.be.an('array');
+      expect(roles.roles).to.have.length.within(0, 50);
     });
   });
 
@@ -145,7 +145,7 @@ describe('Roles Manager', () => {
       } catch (error: any) {
         expect(error.response.data.status).to.equal(400);
         expect(error.response.data.message).to.equal(
-          `role: ${randomRole.roleId.toLowerCase()} is connected to a digital Identity`
+          `role: ${randomRole.roleId} is connected to a digital Identity`
         );
       }
       expect(res).not.to.be.exist;
@@ -158,7 +158,7 @@ describe('Roles Manager', () => {
       } catch (error: any) {
         expect(error.response.data.status).to.equal(400);
         expect(error.response.data.message).to.equal(
-          `digital identity: ${randomDI.uniqueId.toLowerCase()} is connected to role`
+          `digital identity: ${randomDI.uniqueId} is connected to role`
         );
       }
       expect(res).not.to.be.exist;

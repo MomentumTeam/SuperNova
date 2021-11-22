@@ -45,8 +45,8 @@ describe('DI Manager', () => {
     it('get all di', async () => {
       const arrdi = await diManager.getAllDIs({ page: 1, pageSize: 50 });
       expect(arrdi).to.be.exist;
-      expect(arrdi).to.be.an('array');
-      expect(arrdi).to.have.length.within(0, 50);
+      expect(arrdi.digitalIdentities).to.be.an('array');
+      expect(arrdi.digitalIdentities).to.have.length.within(0, 50);
     });
   });
 
