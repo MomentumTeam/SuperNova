@@ -39,11 +39,12 @@ export class RolesRepository {
       if (C.useFaker) {
         return this.kartoffelFaker.randomRoleArray(getAllRolesRequest.pageSize);
       } else {
-        const roles: RoleArray = await this.kartoffelUtils.kartoffelGet(
+        const res = await this.kartoffelUtils.kartoffelGet(
           `${C.kartoffelUrl}/api/roles`,
           getAllRolesRequest
         );
-        return roles;
+        
+        return {roles: res} as RoleArray;
       }
     } catch (error) {
       throw error;
@@ -84,7 +85,7 @@ export class RolesRepository {
           `${C.kartoffelUrl}/api/roles/group/${groupId}`,
           req
         );
-        return { roles: roles };
+        return { roles: roles } as RoleArray;
       }
     } catch (error) {
       throw error;

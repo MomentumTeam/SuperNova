@@ -182,7 +182,7 @@ describe("Entity Manager", () => {
       } catch (error: any) {
         expect(error.response.data.status).to.equal(400);
         expect(error.response.data.message).to.equal(
-          `digital identity: ${randomDI.uniqueId.toLowerCase()} is connected to entity`
+          `digital identity: ${randomDI.uniqueId} is connected to entity`
         );
       }
       expect(res).not.to.be.exist;

@@ -38,7 +38,7 @@ export class DiRepository {
           `${C.kartoffelUrl}/api/digitalIdentities`,
           getAllDIsRequest
         );
-        return res as DigitalIdentities;
+        return { digitalIdentities: res } as DigitalIdentities;
       }
     } catch (error) {
       throw error;
@@ -103,7 +103,8 @@ export class DiRepository {
           `${C.kartoffelUrl}/api/digitalIdentities/search`,
           searchDIByUniqueIdRequest
         );
-        return res as DigitalIdentities;
+        
+        return { digitalIdentities: res } as DigitalIdentities;
       }
     } catch (error) {
       throw error;
