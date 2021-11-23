@@ -28,6 +28,8 @@ export function fillEntityFields(entity: any): void {
           entity.displayName && entity.displayName.length > 0
             ? entity.displayName
             : role.displayName;
+      } else {
+        entity.displayName = entity.fullName;
       }
     }
   } catch (error) {
