@@ -24,6 +24,10 @@ export function fillEntityFields(entity: any): void {
           entity.jobTitle && entity.jobTitle.length > 0
             ? entity.jobTitle
             : role.jobTitle;
+        entity.displayName =
+          entity.displayName && entity.displayName.length > 0
+            ? entity.displayName
+            : role.displayName;
       }
     }
   } catch (error) {

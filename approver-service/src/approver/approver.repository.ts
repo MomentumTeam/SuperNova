@@ -13,7 +13,7 @@ import {
   SuccessMessage,
   SyncApproverReq,
   UpdateApproverDecisionReq,
-} from "../interfaces/protoc/proto/approverService";
+} from '../interfaces/protoc/proto/approverService';
 import {
   DigitalIdentity,
   Entity,
@@ -26,7 +26,7 @@ import {
   personTypeInRequestFromJSON,
   Request,
   UpdateApproverDecisionReq as UpdateApproverDecisionReqService,
-} from "../interfaces/protoc/proto/requestService";
+} from '../interfaces/protoc/proto/requestService';
 import { logger } from '../logger';
 import { ApproverModel } from '../models/approver.model';
 import KartoffelService from '../services/kartoffelService';
@@ -225,9 +225,10 @@ export class ApproverRepository {
   ): Promise<ApproverArray> {
     try {
       const kartoffelEntities =
-        await KartoffelService.searchCommandersByFullName({
+        await KartoffelService.searchHighCommandersByFullName({
           fullName: searchHighCommandersByDisplayNameReq.displayName,
         });
+
       logger.info('searchHighCommandersByDisplayName kartoffelResults', {
         kartoffelEntities,
         searchHighCommandersByDisplayNameReq,
@@ -256,7 +257,7 @@ export class ApproverRepository {
           type: searchByDisplayNameReq.type,
           displayName: {
             $regex: searchByDisplayNameReq.displayName,
-            $options: "i",
+            $options: 'i',
           },
         },
         {},
@@ -377,7 +378,10 @@ export class ApproverRepository {
   ): Promise<Request> {
     try {
       let updatedRequest: any = undefined;
-      let currentUpdateRequest: UpdateApproverDecisionReqService = {...updateApproverDecisionReq, approverType:PersonTypeInRequest.UNRECOGNIZED};
+      let currentUpdateRequest: UpdateApproverDecisionReqService = {
+        ...updateApproverDecisionReq,
+        approverType: PersonTypeInRequest.UNRECOGNIZED,
+      };
       const approverId: any =
         updateApproverDecisionReq.approverDecision?.approver?.id;
       const hasPermission = await hasPermissionToDecide(approverId);
@@ -395,20 +399,23 @@ export class ApproverRepository {
           types.includes(ApproverType.ADMIN) ||
           types.includes(ApproverType.COMMANDER)
         ) {
-          currentUpdateRequest.approverType = PersonTypeInRequest.COMMANDER_APPROVER;
+          currentUpdateRequest.approverType =
+            PersonTypeInRequest.COMMANDER_APPROVER;
           updatedRequest = await RequestService.updateApproverDecision(
             currentUpdateRequest
           );
         }
 
         if (types.includes(ApproverType.SECURITY)) {
-          currentUpdateRequest.approverType = PersonTypeInRequest.SECURITY_APPROVER;
+          currentUpdateRequest.approverType =
+            PersonTypeInRequest.SECURITY_APPROVER;
           updatedRequest = await RequestService.updateApproverDecision(
             currentUpdateRequest
           );
         }
         if (types.includes(ApproverType.SUPER_SECURITY)) {
-          currentUpdateRequest.approverType = PersonTypeInRequest.SUPER_SECURITY_APPROVER;
+          currentUpdateRequest.approverType =
+            PersonTypeInRequest.SUPER_SECURITY_APPROVER;
           updatedRequest = await RequestService.updateApproverDecision(
             currentUpdateRequest
           );

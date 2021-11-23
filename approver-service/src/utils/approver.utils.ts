@@ -73,7 +73,7 @@ export function getApproverArrayByEntityArray(
         entityId: entity.id,
         displayName: entity.displayName,
         domainUsers: entity.digitalIdentities.map((di: DigitalIdentity) => {
-          return di.mail;
+          return di.uniqueId;
         }), //entity may have multiple emails
         type: type,
         akaUnit: entity.akaUnit,
