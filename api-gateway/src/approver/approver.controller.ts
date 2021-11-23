@@ -9,7 +9,7 @@ import {
   DeleteApproverReq,
   SearchHighCommandersByDisplayNameReq,
   UpdateApproverDecisionReq,
-} from "../interfaces/protoc/proto/approverService";
+} from '../interfaces/protoc/proto/approverService';
 import { ApproverService } from './approver.service';
 import { KartoffelService } from '../kartoffel/kartoffel.service';
 import {

@@ -81,6 +81,10 @@ export default class KartoffelService {
               searchCommandersByFullName,
               entityArray,
             });
+            entityArray.entities = entityArray.entities.filter(
+              (entity) =>
+                entity.digitalIdentities && entity.digitalIdentities.length > 0
+            );
             resolve(entityArray);
           }
         }
@@ -105,6 +109,10 @@ export default class KartoffelService {
             );
             reject(error);
           } else {
+            entityArray.entities = entityArray.entities.filter(
+              (entity) =>
+                entity.digitalIdentities && entity.digitalIdentities.length > 0
+            );
             logger.info('searchHighCommandersByFullName in KartoffelService', {
               searchCommandersByFullName,
               entityArray,
