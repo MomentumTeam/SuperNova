@@ -814,7 +814,7 @@ message AdditionalParams{
     string entityId = 1;
     string displayName = 2;
     repeated string domainUsers = 3;
-    string akaUnit = 4;
+    optional string akaUnit = 4;
     ApproverType type = 5;
     optional string personalNumber = 6;
     optional string identityCard = 7;

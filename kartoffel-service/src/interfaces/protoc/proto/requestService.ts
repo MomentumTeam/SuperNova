@@ -1345,7 +1345,7 @@ export interface AdditionalParams {
   entityId: string;
   displayName: string;
   domainUsers: string[];
-  akaUnit: string;
+  akaUnit?: string | undefined;
   type: ApproverType;
   personalNumber?: string | undefined;
   identityCard?: string | undefined;
@@ -19393,7 +19393,6 @@ const baseAdditionalParams: object = {
   entityId: "",
   displayName: "",
   domainUsers: "",
-  akaUnit: "",
   type: 0,
   directGroup: "",
 };
@@ -19412,7 +19411,7 @@ export const AdditionalParams = {
     for (const v of message.domainUsers) {
       writer.uint32(26).string(v!);
     }
-    if (message.akaUnit !== "") {
+    if (message.akaUnit !== undefined) {
       writer.uint32(34).string(message.akaUnit);
     }
     if (message.type !== 0) {
@@ -19491,7 +19490,7 @@ export const AdditionalParams = {
     if (object.akaUnit !== undefined && object.akaUnit !== null) {
       message.akaUnit = String(object.akaUnit);
     } else {
-      message.akaUnit = "";
+      message.akaUnit = undefined;
     }
     if (object.type !== undefined && object.type !== null) {
       message.type = approverTypeFromJSON(object.type);
@@ -19558,7 +19557,7 @@ export const AdditionalParams = {
     if (object.akaUnit !== undefined && object.akaUnit !== null) {
       message.akaUnit = object.akaUnit;
     } else {
-      message.akaUnit = "";
+      message.akaUnit = undefined;
     }
     if (object.type !== undefined && object.type !== null) {
       message.type = object.type;
