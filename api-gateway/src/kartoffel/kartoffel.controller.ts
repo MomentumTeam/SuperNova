@@ -298,6 +298,7 @@ export default class KartoffelController {
 
   static async getRolesUnderOG(req: Request, res: Response) {
     const getRolesUnderOGReq: any = { ...req.params, ...req.query };
+    getRolesUnderOGReq['groupId'] = getRolesUnderOGReq.id;
 
     try {
       const roles = await KartoffelService.getRolesUnderOG(getRolesUnderOGReq);
