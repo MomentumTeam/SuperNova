@@ -13,12 +13,8 @@ let diToId: any = {}; // for user1,user2,user3
 
 if (useShragaLocalMap) {
   const idArray = process.env.AS_SHRAGA_LOCAL_MAP_IDS
-    ? process.env.AS_SHRAGA_LOCAL_MAP_IDS.split(',')
-    : [
-        '619a43ca5ce9f30018d8abb4',
-        '619a44fe5ce9f30018d8abba',
-        '619a45385ce9f30018d8abc0',
-      ];
+    ? process.env.AS_SHRAGA_LOCAL_MAP_IDS.split(",")
+    : ["619e3a6fe4de0300121d78c7", "619e406ee4de0300121dc4c8", "619a45385ce9f30018d8abc0"];
 
   const diArray = process.env.AS_SHRAGA_LOCAL_MAP_DIS
     ? process.env.AS_SHRAGA_LOCAL_MAP_DIS.split(',')
