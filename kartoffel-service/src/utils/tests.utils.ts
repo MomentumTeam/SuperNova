@@ -68,7 +68,7 @@ export const createRandomDI = async (randomDI: DigitalIdentity) => {
 
 export const getRandomRole = () => {
   // TODO: get group
-  let directGroup = '6184af5e2da77600113431f7';
+  let directGroup = '619e31e9f235dc001846e2f7';
   const randomRole: Role = kartoffelFaker.randomRole();
   randomRole.directGroup = directGroup;
 
@@ -76,7 +76,7 @@ export const getRandomRole = () => {
 };
 
 export const getRandomOG = async () => {
-  let directGroup = '619519aec254f50012283cda';
+  let directGroup = '619e31e9f235dc001846e2f7';
   let diPrefix = '1769';
   const randomOG: OrganizationGroup = await kartoffelFaker.randomOG();
   randomOG.directGroup = directGroup;

@@ -51,7 +51,16 @@ describe('DI Manager', () => {
   });
 
   describe('SearchDIByUniqueId', () => {
-    // TODO
+    it('search di by uniqueId', async () => {
+      const arrdi = await diManager.searchDIByUniqueId({
+        uniqueId: randomDIUniqueId,
+      });
+      expect(arrdi).to.be.exist;
+      expect(arrdi.digitalIdentities).to.be.an('array');
+      expect(arrdi.digitalIdentities.map((di) => di.uniqueId)).to.include(
+        randomDIUniqueId
+      );
+    });
   });
 
   describe('GetDIByUniqueId', () => {
