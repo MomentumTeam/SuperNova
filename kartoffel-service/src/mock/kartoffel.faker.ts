@@ -151,9 +151,9 @@ export class KartoffelFaker {
 
   randomRole(): Role {
     const source = sample(kartoffelConfig.valueObjects.source.values);
-
     const role: Role = {
-      roleId: faker.internet.email(),
+      // roleId: faker.internet.email(),
+      roleId: `${faker.internet.userName()}@leonardo`,
       jobTitle: faker.name.jobTitle(),
       digitalIdentityUniqueId: faker.internet.email(),
       directGroup: mongoose.Types.ObjectId().toString(),
