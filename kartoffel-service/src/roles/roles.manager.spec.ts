@@ -35,7 +35,7 @@ const entitiesManager: EntitiesManager = new EntitiesManager(
 );
 
 // TODO: get the first and second group
-let secondDirectGroup = '6184af552da7760011342d0d';
+let secondDirectGroup = '619e31f5f235dc001846e872';
 const randomRole: Role = getRandomRole();
 const randomDI: DigitalIdentity = getRandomDI();
 let randomEntity: Entity;
