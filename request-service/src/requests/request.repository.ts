@@ -327,8 +327,13 @@ export class RequestRepository {
           const isRequestApprovedObj = await this.isRequestApproved({
             id: updateDecisionReq.id,
           });
-          if (isRequestApprovedObj.isRequestApproved)
+          if (isRequestApprovedObj.isRequestApproved) {
             newRequestStatus = RequestStatus.IN_PROGRESS;
+          } else if (approverType === PersonTypeInRequest.COMMANDER_APPROVER) {
+            newRequestStatus = RequestStatus.APPROVED_BY_COMMANDER;
+          } else if (approverType === PersonTypeInRequest.SECURITY_APPROVER) {
+            newRequestStatus = RequestStatus.APPROVED_BY_SECURITY;
+          }
         }
 
         const requestType =
@@ -1040,8 +1045,22 @@ export class RequestRepository {
         break;
 
       case RequestType.ADD_APPROVER:
-        request.needSecurityDecision = true;
-        request.needSuperSecurityDecision = false;
+        const approverType = approverTypeFromJSON(request.additionalParams.type);
+        //TODO: ASK
+        if (approverType === ApproverType.COMMANDER) {
+          request.needSecurityDecision = false;
+          request.needSuperSecurityDecision = false;
+        } else if (approverType === ApproverType.SECURITY) {
+          request.needSecurityDecision = true;
+          request.needSuperSecurityDecision = false;
+        } else if (approverType === ApproverType.SUPER_SECURITY) {
+          request.needSecurityDecision = false;
+          request.needSuperSecurityDecision = true;
+        } else {
+          // TODO: ask about others
+          request.needSecurityDecision = true;
+          request.needSuperSecurityDecision = false;
+        }
         break;
     }
   }

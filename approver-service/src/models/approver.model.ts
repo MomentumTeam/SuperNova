@@ -10,7 +10,7 @@ export const ApproverSchema = new Schema(
     personalNumber: { type: String, default: '' },
     identityCard: { type: String, default: '' },
     type: { type: String, enum: ApproverType, default: ApproverType.SOLDIER },
-    akaUnit: { type: String, required: true },
+    akaUnit: { type: String, default: '' },
     directGroup: { type: String, default: '' },
   },
   { strict: false }
