@@ -17,7 +17,9 @@ export function generateKartoffelQueueMessage(request: Request): any {
       message.data = {
         name: kartoffelParams.name,
         parent: kartoffelParams.parent,
-        source: kartoffelParams.source ? kartoffelParams.source : 'oneTree',
+        source: kartoffelParams.source
+          ? kartoffelParams.source
+          : C.defaultSource,
       };
       break;
     case RequestType.CREATE_ROLE:
@@ -28,7 +30,9 @@ export function generateKartoffelQueueMessage(request: Request): any {
         roleId: kartoffelParams.roleId,
         //for digitalIdentity
         type: kartoffelParams.type ? kartoffelParams.type : 'domainUser',
-        source: kartoffelParams.source ? kartoffelParams.source : 'oneTree',
+        source: kartoffelParams.source
+          ? kartoffelParams.source
+          : C.defaultSource,
         uniqueId: kartoffelParams.uniqueId,
         mail: kartoffelParams.mail,
         isRoleAttachable: kartoffelParams.isRoleAttachable,
