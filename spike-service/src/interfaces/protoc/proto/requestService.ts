@@ -1622,8 +1622,8 @@ export interface RequestIdArray {
 export interface EntityMin {
   id: string;
   displayName: string;
-  identityCard: string;
-  personalNumber: string;
+  identityCard?: string | undefined;
+  personalNumber?: string | undefined;
 }
 
 export interface SuccessMessage {
@@ -23968,12 +23968,7 @@ export const RequestIdArray = {
   },
 };
 
-const baseEntityMin: object = {
-  id: "",
-  displayName: "",
-  identityCard: "",
-  personalNumber: "",
-};
+const baseEntityMin: object = { id: "", displayName: "" };
 
 export const EntityMin = {
   encode(
@@ -23986,10 +23981,10 @@ export const EntityMin = {
     if (message.displayName !== "") {
       writer.uint32(18).string(message.displayName);
     }
-    if (message.identityCard !== "") {
+    if (message.identityCard !== undefined) {
       writer.uint32(26).string(message.identityCard);
     }
-    if (message.personalNumber !== "") {
+    if (message.personalNumber !== undefined) {
       writer.uint32(34).string(message.personalNumber);
     }
     return writer;
@@ -24037,12 +24032,12 @@ export const EntityMin = {
     if (object.identityCard !== undefined && object.identityCard !== null) {
       message.identityCard = String(object.identityCard);
     } else {
-      message.identityCard = "";
+      message.identityCard = undefined;
     }
     if (object.personalNumber !== undefined && object.personalNumber !== null) {
       message.personalNumber = String(object.personalNumber);
     } else {
-      message.personalNumber = "";
+      message.personalNumber = undefined;
     }
     return message;
   },
@@ -24074,12 +24069,12 @@ export const EntityMin = {
     if (object.identityCard !== undefined && object.identityCard !== null) {
       message.identityCard = object.identityCard;
     } else {
-      message.identityCard = "";
+      message.identityCard = undefined;
     }
     if (object.personalNumber !== undefined && object.personalNumber !== null) {
       message.personalNumber = object.personalNumber;
     } else {
-      message.personalNumber = "";
+      message.personalNumber = undefined;
     }
     return message;
   },

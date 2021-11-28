@@ -1096,8 +1096,8 @@ message RequestIdArray{
 message EntityMin{
     string id = 1;
     string displayName = 2;
-    string identityCard = 3;
-    string personalNumber = 4;
+    optional string identityCard = 3;
+    optional string personalNumber = 4;
 }
 
 message SuccessMessage{
