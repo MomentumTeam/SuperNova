@@ -145,16 +145,18 @@ describe('Entity Manager', () => {
   });
 
   describe('SearchEntitiesByFullName', async () => {
-    const entities: EntityArray =
-      await entitiesManager.searchEntitiesByFullName({
-        fullName: randomEntity.fullName,
-      });
+    it('SearchEntitiesByFullName', async () => {
+      const entities: EntityArray =
+        await entitiesManager.searchEntitiesByFullName({
+          fullName: randomEntity.fullName,
+        });
 
-    expect(entities).to.be.exist;
-    expect(entities.entities).to.be.an('array');
-    expect(entities.entities.map((entity) => entity.id)).to.include(
-      randomEntity.id
-    );
+      expect(entities).to.be.exist;
+      expect(entities.entities).to.be.an('array');
+      expect(entities.entities.map((entity) => entity.id)).to.include(
+        randomEntity.id
+      );
+    });
   });
 
   // describe('SearchCommandersByFullName', () => {

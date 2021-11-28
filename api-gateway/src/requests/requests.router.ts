@@ -43,18 +43,18 @@ RequestsRouter.get(
 );
 
 // PUT
-RequestsRouter.put(
-  '/:id',
-  RequestValidator.isUpdateRequestValid,
-  RequestsController.updateRequest
-);
-
 
 RequestsRouter.put(
   '/adStatus',
   RequestValidator.isUpdateADStatusValid,
   RequestsController.updateADStatus
-  );
+);
+
+RequestsRouter.put(
+  '/:id',
+  RequestValidator.isUpdateRequestValid,
+  RequestsController.updateRequest
+);
 
 RequestsRouter.put(
   '/approver/transfer/:id',

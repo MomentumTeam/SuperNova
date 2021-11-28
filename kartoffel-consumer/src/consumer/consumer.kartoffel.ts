@@ -27,7 +27,7 @@ export const createOG = async (createOGRequest: any) => {
     const newOrganizationGroup: OrganizationGroup =
       await KartoffelService.createOG({
         name: name,
-        directGroup: createOGRequest.parent,
+        directGroup: directGroup,
         source: source,
       });
     logger.info('Successfuly created OG', {

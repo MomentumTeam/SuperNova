@@ -219,11 +219,11 @@ export default class ApproverController {
         }
       } else {
         const canPushToQueueRes = await RequestsService.canPushToADQueue({
-          id: req.params.id,
+          id: req.params.requestId,
         });
 
         if (canPushToQueueRes.canPushToQueue) {
-          await ProducerController.produceToADQueue(req.params.id, res);
+          await ProducerController.produceToADQueue(req.params.requestId, res);
         }
       }
       res.send(request);

@@ -88,7 +88,7 @@ export class TeaRepository {
       return {
         tea: tea,
         roleId: `${tea}@${source}`,
-        uniqueId: `${tea}@${source}`,
+        uniqueId: `${tea}@${C.oldSuffix}`,
         samAccountName: `${tea}@${C.oldSuffix}`,
         mail: `${tea}@${C.oldSuffix}`,
       };
