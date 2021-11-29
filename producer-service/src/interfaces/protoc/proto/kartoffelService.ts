@@ -4,6 +4,14 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "Kartoffel";
 
+export interface GetRoleIdSuffixByOGReq {
+  id: string;
+}
+
+export interface RoleIdSuffix {
+  suffix: string;
+}
+
 export interface IdMessage {
   id: string;
 }
@@ -446,6 +454,127 @@ export interface RoleIdMessage {
 export interface UniqueIdMessage {
   uniqueId: string;
 }
+
+const baseGetRoleIdSuffixByOGReq: object = { id: "" };
+
+export const GetRoleIdSuffixByOGReq = {
+  encode(
+    message: GetRoleIdSuffixByOGReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GetRoleIdSuffixByOGReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseGetRoleIdSuffixByOGReq } as GetRoleIdSuffixByOGReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetRoleIdSuffixByOGReq {
+    const message = { ...baseGetRoleIdSuffixByOGReq } as GetRoleIdSuffixByOGReq;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+
+  toJSON(message: GetRoleIdSuffixByOGReq): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<GetRoleIdSuffixByOGReq>
+  ): GetRoleIdSuffixByOGReq {
+    const message = { ...baseGetRoleIdSuffixByOGReq } as GetRoleIdSuffixByOGReq;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+};
+
+const baseRoleIdSuffix: object = { suffix: "" };
+
+export const RoleIdSuffix = {
+  encode(
+    message: RoleIdSuffix,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.suffix !== "") {
+      writer.uint32(10).string(message.suffix);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): RoleIdSuffix {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseRoleIdSuffix } as RoleIdSuffix;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.suffix = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RoleIdSuffix {
+    const message = { ...baseRoleIdSuffix } as RoleIdSuffix;
+    if (object.suffix !== undefined && object.suffix !== null) {
+      message.suffix = String(object.suffix);
+    } else {
+      message.suffix = "";
+    }
+    return message;
+  },
+
+  toJSON(message: RoleIdSuffix): unknown {
+    const obj: any = {};
+    message.suffix !== undefined && (obj.suffix = message.suffix);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<RoleIdSuffix>): RoleIdSuffix {
+    const message = { ...baseRoleIdSuffix } as RoleIdSuffix;
+    if (object.suffix !== undefined && object.suffix !== null) {
+      message.suffix = object.suffix;
+    } else {
+      message.suffix = "";
+    }
+    return message;
+  },
+};
 
 const baseIdMessage: object = { id: "" };
 
@@ -7343,6 +7472,7 @@ export interface Kartoffel {
     request: IsJobTitleAlreadyTakenReq
   ): Promise<IsJobTitleAlreadyTakenRes>;
   GetRolesByHierarchy(request: GetRolesByHierarchyRequest): Promise<RoleArray>;
+  GetRoleIdSuffixByOG(request: GetRoleIdSuffixByOGReq): Promise<RoleIdSuffix>;
 }
 
 export class KartoffelClientImpl implements Kartoffel {
@@ -7398,6 +7528,7 @@ export class KartoffelClientImpl implements Kartoffel {
     this.IsRoleAlreadyTaken = this.IsRoleAlreadyTaken.bind(this);
     this.IsJobTitleAlreadyTaken = this.IsJobTitleAlreadyTaken.bind(this);
     this.GetRolesByHierarchy = this.GetRolesByHierarchy.bind(this);
+    this.GetRoleIdSuffixByOG = this.GetRoleIdSuffixByOG.bind(this);
   }
   CreateEntity(request: CreateEntityRequest): Promise<IdMessage> {
     const data = CreateEntityRequest.encode(request).finish();
@@ -7851,6 +7982,16 @@ export class KartoffelClientImpl implements Kartoffel {
       data
     );
     return promise.then((data) => RoleArray.decode(new _m0.Reader(data)));
+  }
+
+  GetRoleIdSuffixByOG(request: GetRoleIdSuffixByOGReq): Promise<RoleIdSuffix> {
+    const data = GetRoleIdSuffixByOGReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "GetRoleIdSuffixByOG",
+      data
+    );
+    return promise.then((data) => RoleIdSuffix.decode(new _m0.Reader(data)));
   }
 }
 
