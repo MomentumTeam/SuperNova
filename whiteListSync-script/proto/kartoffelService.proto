@@ -58,6 +58,14 @@ service Kartoffel {
     rpc IsRoleAlreadyTaken(IsRoleAlreadyTakenReq) returns (IsRoleAlreadyTakenRes){}
     rpc IsJobTitleAlreadyTaken(IsJobTitleAlreadyTakenReq) returns (IsJobTitleAlreadyTakenRes){}
     rpc GetRolesByHierarchy(GetRolesByHierarchyRequest) returns (RoleArray){}
+    rpc GetRoleIdSuffixByOG(GetRoleIdSuffixByOGReq) returns (RoleIdSuffix){}
+}
+
+message GetRoleIdSuffixByOGReq{
+    string id = 1;
+}
+message RoleIdSuffix{
+    string suffix = 1;
 }
 
 message IdMessage{

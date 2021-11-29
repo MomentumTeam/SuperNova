@@ -12,20 +12,28 @@ export class Authenticator {
   private static readonly publiclyAvailablePaths: string[] = [
     '/isAlive',
     '/auth/login',
-    '/api-docs'
+    '/api-docs',
   ];
 
-  private static isPubliclyAvailablePath(req:Request): boolean {
-    return Authenticator.publiclyAvailablePaths.filter(path => req.path.indexOf(path) > -1).length > 0
-  };
+  private static isPubliclyAvailablePath(req: Request): boolean {
+    return (
+      Authenticator.publiclyAvailablePaths.filter(
+        (path) => req.path.indexOf(path) > -1
+      ).length > 0
+    );
+  }
 
   private static spikeProtectedPaths: string[] = [
-    '/adStatus'
+    // '/adStatus' // just for tests
   ];
 
-  private static isSpikeProtectedPath(req:Request): boolean {
-    return Authenticator.spikeProtectedPaths.filter(path => req.path.indexOf(path) > -1).length > 0
-  };
+  private static isSpikeProtectedPath(req: Request): boolean {
+    return (
+      Authenticator.spikeProtectedPaths.filter(
+        (path) => req.path.indexOf(path) > -1
+      ).length > 0
+    );
+  }
 
   public static initialize(verifyCallback?: passportJwt.VerifiedCallback) {
     const strategy = new passportJwt.Strategy(
@@ -47,6 +55,8 @@ export class Authenticator {
   public static middleware(req: Request, res: Response, next: NextFunction) {
     if (Authenticator.isPubliclyAvailablePath(req)) return next();
 
-    return Authenticator.isSpikeProtectedPath(req) ? validateSpikeWriteScope : passport.authenticate('jwt', { session: false })(req, res, next);
+    return Authenticator.isSpikeProtectedPath(req)
+      ? validateSpikeWriteScope
+      : passport.authenticate('jwt', { session: false })(req, res, next);
   }
 }

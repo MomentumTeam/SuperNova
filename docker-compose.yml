@@ -93,6 +93,7 @@ services:
       - KS_SS_URL=spike-service:8080
       - KS_ROOT_ID=6184af202da776001134110b
       - KS_DEFAULT_SOURCE=sf_name
+      - KS_DEFAULT_ROLE_ID_SUFFIX=oneTree
       - KS_LOG_PATH=/logs
 
   producer-service:
