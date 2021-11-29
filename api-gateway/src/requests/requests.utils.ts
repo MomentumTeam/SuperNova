@@ -8,21 +8,22 @@ import {
 } from '../interfaces/protoc/proto/requestService';
 
 export const approveUserRequest = async (req: any, request: any) => {
+    // Approver request if the user has type different than soldier
     if (req.user.types.length > 0 && req.user.types !== [ApproverType.SOLDIER]) {
+        const entityUser: EntityMin = {
+            displayName: req.user.displayName,
+            id: req.user.id,
+            identityCard: req.user.identityCard,
+            personalNumber: req.user.personalNumber,
+        };
+
+        const decision: ApproverDecision = {
+            approver: entityUser,
+            decision: Decision.APPROVED,
+        };
+
         req.user.types.map((type: any) => {
             const approverType = parseFromApproverTypeToPersonInRequest(type);
-
-            const entityUser: EntityMin = {
-                displayName: req.user.displayName,
-                id: req.user.id,
-                identityCard: req.user.identityCard,
-                personalNumber: req.user.personalNumber,
-            };
-
-            const decision: ApproverDecision = {
-                approver: entityUser,
-                decision: Decision.APPROVED,
-            };
 
             switch (approverType) {
                 case PersonTypeInRequest.SECURITY_APPROVER:
