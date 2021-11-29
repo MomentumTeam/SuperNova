@@ -16,7 +16,7 @@ export function generateKartoffelQueueMessage(request: Request): any {
     case RequestType.CREATE_OG:
       message.data = {
         name: kartoffelParams.name,
-        parent: kartoffelParams.parent,
+        directGroup: kartoffelParams.parent,
         source: kartoffelParams.source
           ? kartoffelParams.source
           : C.defaultSource,
