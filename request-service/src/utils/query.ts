@@ -14,7 +14,7 @@ import {
   SortOrder,
   sortOrderFromJSON,
 } from '../interfaces/protoc/proto/requestService';
-
+const ObjectId = require("mongoose").Types.ObjectId;
 // export function getIdentifierQuery(
 //   id: string,
 //   personTypeInRequest: PersonTypeInRequest
@@ -83,21 +83,21 @@ export function getIdQuery(
       query = { 'submittedBy.id': id };
       break;
     case PersonTypeInRequest.COMMANDER_APPROVER:
-      query = { 'commanders.id': id };
+      query = { 'commanders.id': ObjectId(id) };
       break;
     case PersonTypeInRequest.SECURITY_APPROVER:
-      query = { 'securityApprovers.id': id };
+      query = { "securityApprovers.id": ObjectId(id) };
       break;
     case PersonTypeInRequest.SUPER_SECURITY_APPROVER:
-      query = { 'superSecurityApprovers.id': id };
+      query = { "superSecurityApprovers.id": ObjectId(id) };
       break;
     case PersonTypeInRequest.APPROVER:
       //PersonTypeInRequest.APPROVER
       query = {
         $or: [
-          { 'commanders.id': id },
-          { 'securityApprovers.id': id },
-          { 'superSecurityApprovers.id': id },
+          { "commanders.id": ObjectId(id) },
+          { "securityApprovers.id": ObjectId(id) },
+          { "superSecurityApprovers.id": ObjectId(id) },
         ],
       };
       break;
@@ -123,26 +123,20 @@ export function getRequestTypeQuery(type: any) {
 export function getSearchQuery(searchQuery: any) {
   let orArray = [];
   orArray = searchFields.map((field) => {
-    if (field.type === undefined)
+    if (field)
       return {
         [field.name]: {
           $regex: searchQuery,
           $options: "i",
         },
       };
-
-    if (field.type && field.type === "number" && !isNaN(searchQuery)) {
-      return { $where: `/${searchQuery}/.test(this.${field.name})` };
-    }
-
-    return {};
   });
   return {
     $or: orArray,
   };
 }
 
-export function getSortArray(sortField: any, sortOrder: any) {
+export function getSortQuery(sortField: any, sortOrder: any) {
   sortField =
     typeof sortField === typeof '' ? sortFieldFromJSON(sortField) : sortField;
   sortOrder =
@@ -150,27 +144,29 @@ export function getSortArray(sortField: any, sortOrder: any) {
   sortOrder = sortOrder === SortOrder.INC ? 1 : -1;
   switch (sortField) {
     case SortField.REQUEST_TYPE:
-      return [
-        ['type', sortOrder],
-        ['status', 1],
-      ];
+      return {
+        'type': sortOrder,
+        'sortStatusId': 1
+      };
     case SortField.SUBMITTED_BY:
-      return [
-        ['submittedBy.displayName', sortOrder],
-        ['status', 1],
-      ];
+      return {
+        'submittedBy.displayName': sortOrder,
+        'sortStatusId': 1,
+      };
     case SortField.CREATED_AT:
-      return [
-        ['createdAt', sortOrder],
-        ['status', 1],
-      ];
+      return  {
+        'createdAt': sortOrder,
+        'sortStatusId': 1,
+      };
     case SortField.STATUS:
-      return [['status', sortOrder]];
+      return {
+        'sortStatusId': sortOrder,
+      };
     default:
-      return [
-        ['createdAt', -1],
-        ['status', 1],
-      ];
+      return {
+        'sortStatusId': 1,
+        'createdAt': -1
+      };
   }
 }
 
