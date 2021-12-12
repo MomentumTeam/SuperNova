@@ -312,7 +312,11 @@ export class GroupsRepository {
         const res = await this.kartoffelUtils.kartoffelPut(
           `${C.kartoffelUrl}/api/groups/${updateOGParentRequest.id}/parent/${updateOGParentRequest.parentId}`
         );
-        return res as SuccessMessage;
+        if (res === C.kartoffelOK) {
+          return { success: true };
+        } else {
+          return { success: false };
+        }
       }
     } catch (error) {
       throw error;
