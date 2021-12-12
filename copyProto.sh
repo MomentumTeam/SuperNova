@@ -1,6 +1,7 @@
 cp -r ./proto ./execution-script/
 cp -r ./proto ./whiteListSync-script/
 cp -r ./proto ./population-script/
+cp -r ./proto ./approvers-init-script/
 
 cp -r ./proto ./api-gateway/
 cp -r ./proto ./approver-service/
