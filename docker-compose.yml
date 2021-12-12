@@ -272,7 +272,7 @@ services:
       - ./supernova.env
     depends_on:
       - approver-service
-      - kartoffel-serivce
+      - kartoffel-service
     volumes:
       - logs:/logs
       - ais-excel-files:/excelFiles
