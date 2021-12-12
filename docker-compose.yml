@@ -275,8 +275,8 @@ services:
       - kartoffel-service
     volumes:
       - logs:/logs
-      # - ais-excel-files:/excelFiles
-      - /home/reuven/SuperNova/approvers-init-script/src/excelFiles:/excelFiles
+      - ais-excel-files:/excelFiles
+      # - /home/reuven/SuperNova/approvers-init-script/src/excelFiles:/excelFiles
     environment:
       - AIS_KS_URL=kartoffel-service:8080
       - AIS_APS_URL=approver-service:8080
