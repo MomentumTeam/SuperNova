@@ -265,6 +265,23 @@ services:
       - WLS_CRON_JOB=false
       - WLS_LOG_PATH=/logs
 
+  approvers-init-script:
+    image: approvers-init-script
+    build: ./approvers-init-script/
+    env_file:
+      - ./supernova.env
+    depends_on:
+      - approver-service
+      - kartoffel-serivce
+    volumes:
+      - logs:/logs
+      - ais-excel-files:/excelFiles
+    environment:
+      - AIS_KS_URL=kartoffel-service:8080
+      - AIS_APS_URL=approver-service:8080
+      - AIS_EXCEL_FILE_PATH=/excelFiles/aisExcelFile.xlsx
+      - AIS_APS_URL=/logs
+
   population-script:
     image: population-script
     build: ./population-script/
@@ -455,6 +472,7 @@ services:
 volumes:
   bulk-files:
   spike-utils:
+  ais-excel-files:
   logs:
   esdata:
     driver: local
