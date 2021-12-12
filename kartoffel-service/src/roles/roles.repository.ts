@@ -97,7 +97,7 @@ export class RolesRepository {
       if (C.useFaker) {
         return this.kartoffelFaker.randomRoleArray(getAllRolesRequest.pageSize);
       } else {
-        const res = await this.kartoffelUtils.kartoffelGet(
+        const res: Role[] = await this.kartoffelUtils.kartoffelGet(
           `${C.kartoffelUrl}/api/roles`,
           getAllRolesRequest
         );

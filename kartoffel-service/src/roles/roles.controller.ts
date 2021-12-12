@@ -58,12 +58,12 @@ export async function getRoleIdSuffixByOG(
 export async function getAllRoles(call: any, callback: any): Promise<void> {
   try {
     logger.info(`Call to getAllRoles`, { callRequest: call.request });
-    const roles: RoleArray = await rolesManager.getAllRoles(call.request);
+    const roleArray: RoleArray = await rolesManager.getAllRoles(call.request);
     logger.info(`getAllRoles OK`, {
       callRequest: call.request,
-      response: roles,
+      response: roleArray,
     });
-    callback(null, { roles: roles });
+    callback(null, roleArray);
   } catch (error: any) {
     const status = getStatusCode(error);
     const message = getErrorMessage(error);
