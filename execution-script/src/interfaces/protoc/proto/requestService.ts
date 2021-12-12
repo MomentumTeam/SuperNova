@@ -1345,7 +1345,7 @@ export interface AdditionalParams {
   entityId: string;
   displayName: string;
   domainUsers: string[];
-  akaUnit: string;
+  akaUnit?: string | undefined;
   type: ApproverType;
   personalNumber?: string | undefined;
   identityCard?: string | undefined;
@@ -1622,8 +1622,8 @@ export interface RequestIdArray {
 export interface EntityMin {
   id: string;
   displayName: string;
-  identityCard: string;
-  personalNumber: string;
+  identityCard?: string | undefined;
+  personalNumber?: string | undefined;
 }
 
 export interface SuccessMessage {
@@ -19393,7 +19393,6 @@ const baseAdditionalParams: object = {
   entityId: "",
   displayName: "",
   domainUsers: "",
-  akaUnit: "",
   type: 0,
   directGroup: "",
 };
@@ -19412,7 +19411,7 @@ export const AdditionalParams = {
     for (const v of message.domainUsers) {
       writer.uint32(26).string(v!);
     }
-    if (message.akaUnit !== "") {
+    if (message.akaUnit !== undefined) {
       writer.uint32(34).string(message.akaUnit);
     }
     if (message.type !== 0) {
@@ -19491,7 +19490,7 @@ export const AdditionalParams = {
     if (object.akaUnit !== undefined && object.akaUnit !== null) {
       message.akaUnit = String(object.akaUnit);
     } else {
-      message.akaUnit = "";
+      message.akaUnit = undefined;
     }
     if (object.type !== undefined && object.type !== null) {
       message.type = approverTypeFromJSON(object.type);
@@ -19558,7 +19557,7 @@ export const AdditionalParams = {
     if (object.akaUnit !== undefined && object.akaUnit !== null) {
       message.akaUnit = object.akaUnit;
     } else {
-      message.akaUnit = "";
+      message.akaUnit = undefined;
     }
     if (object.type !== undefined && object.type !== null) {
       message.type = object.type;
@@ -23969,12 +23968,7 @@ export const RequestIdArray = {
   },
 };
 
-const baseEntityMin: object = {
-  id: "",
-  displayName: "",
-  identityCard: "",
-  personalNumber: "",
-};
+const baseEntityMin: object = { id: "", displayName: "" };
 
 export const EntityMin = {
   encode(
@@ -23987,10 +23981,10 @@ export const EntityMin = {
     if (message.displayName !== "") {
       writer.uint32(18).string(message.displayName);
     }
-    if (message.identityCard !== "") {
+    if (message.identityCard !== undefined) {
       writer.uint32(26).string(message.identityCard);
     }
-    if (message.personalNumber !== "") {
+    if (message.personalNumber !== undefined) {
       writer.uint32(34).string(message.personalNumber);
     }
     return writer;
@@ -24038,12 +24032,12 @@ export const EntityMin = {
     if (object.identityCard !== undefined && object.identityCard !== null) {
       message.identityCard = String(object.identityCard);
     } else {
-      message.identityCard = "";
+      message.identityCard = undefined;
     }
     if (object.personalNumber !== undefined && object.personalNumber !== null) {
       message.personalNumber = String(object.personalNumber);
     } else {
-      message.personalNumber = "";
+      message.personalNumber = undefined;
     }
     return message;
   },
@@ -24075,12 +24069,12 @@ export const EntityMin = {
     if (object.identityCard !== undefined && object.identityCard !== null) {
       message.identityCard = object.identityCard;
     } else {
-      message.identityCard = "";
+      message.identityCard = undefined;
     }
     if (object.personalNumber !== undefined && object.personalNumber !== null) {
       message.personalNumber = object.personalNumber;
     } else {
-      message.personalNumber = "";
+      message.personalNumber = undefined;
     }
     return message;
   },

@@ -27,7 +27,10 @@ export default class KartoffelController {
     });
 
     try {
-      const entity = await KartoffelService.getEntityById(getMyUserReq);
+      const entity = await KartoffelService.getEntityById({
+        id: getMyUserReq.id,
+        withPicture: true,
+      });
       res.send(entity);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -295,6 +298,7 @@ export default class KartoffelController {
 
   static async getRolesUnderOG(req: Request, res: Response) {
     const getRolesUnderOGReq: any = { ...req.params, ...req.query };
+    getRolesUnderOGReq['groupId'] = getRolesUnderOGReq.id;
 
     try {
       const roles = await KartoffelService.getRolesUnderOG(getRolesUnderOGReq);

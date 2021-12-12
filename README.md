@@ -12,9 +12,3 @@ docker-compose up
 6. In order to run SuperNovaUI as a container, just run "git clone https://github.com/MomentumTeam/SuperNovaUI.git" (checkout to develop) in the main folder before.
 7. If you get EACCES error related to a container trying to write logs (when using ./logs as volume), just run "sudo chmod -R a+rw ./logs".
 8. In order to generate typescript interfaces by the proto files, run the fllowing commands:  "cd proto-builder && npm i" and "./loadProto.sh".
-# Requirements
-
-```
-sudo mkdir -p /usr/src/app
-sudo git clone https://github.com/MomentumTeam/SuperNovaProto.git /usr/src/app
-```

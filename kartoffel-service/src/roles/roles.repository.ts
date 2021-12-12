@@ -17,19 +17,76 @@ import {
   IsJobTitleAlreadyTakenRes,
   IsRoleAlreadyTakenReq,
   IsRoleAlreadyTakenRes,
+  RoleIdMessage,
+  GetRoleIdSuffixByOGReq,
+  RoleIdSuffix,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { KartoffelFaker } from '../mock/kartoffel.faker';
 import { KartoffelUtils } from '../utils/kartoffel.utils';
 import * as C from '../config';
 import { getSuggestions, jobTitleExists } from '../utils/jobTitles.utils';
 import { cleanUnderscoreFields } from '../utils/json.utils';
+import { GroupsRepository } from '../groups/groups.repository';
 
 export class RolesRepository {
   private kartoffelFaker: KartoffelFaker;
   private kartoffelUtils: KartoffelUtils;
+  private groupsRepository: GroupsRepository;
   constructor(kartoffelUtils: KartoffelUtils, kartoffelFaker: KartoffelFaker) {
     this.kartoffelFaker = kartoffelFaker;
     this.kartoffelUtils = kartoffelUtils;
+    this.groupsRepository = new GroupsRepository(
+      kartoffelUtils,
+      kartoffelFaker
+    );
+  }
+
+  async getRoleIdSuffixByOG(
+    getRoleIdSuffixByOGReq: GetRoleIdSuffixByOGReq
+  ): Promise<RoleIdSuffix> {
+    try {
+      cleanUnderscoreFields(getRoleIdSuffixByOGReq);
+      if (C.useFaker) {
+        return { suffix: C.defaultRoleIdSuffix };
+      } else {
+        let group = await this.groupsRepository.getOGById({
+          id: getRoleIdSuffixByOGReq.id,
+        });
+        let rolesUnderGroup = await this.getRolesUnderOG({
+          direct: true,
+          groupId: group.id,
+          page: 1,
+          pageSize: 10,
+        });
+        while (rolesUnderGroup.roles.length === 0) {
+          if (group.ancestors.length === 0) {
+            break;
+          } else {
+            group = await this.groupsRepository.getOGById({
+              id: group.ancestors[0],
+            });
+            rolesUnderGroup = await this.getRolesUnderOG({
+              direct: true,
+              groupId: group.id,
+              page: 1,
+              pageSize: 10,
+            });
+          }
+        }
+        if (rolesUnderGroup.roles.length === 0) {
+          return { suffix: C.defaultRoleIdSuffix };
+        } else {
+          const firstRole = rolesUnderGroup.roles[0];
+          const suffix = firstRole.roleId.substring(
+            firstRole.roleId.indexOf('@') + 1,
+            firstRole.roleId.length
+          );
+          return { suffix: suffix };
+        }
+      }
+    } catch (error) {
+      throw error;
+    }
   }
 
   async getAllRoles(
@@ -40,28 +97,37 @@ export class RolesRepository {
       if (C.useFaker) {
         return this.kartoffelFaker.randomRoleArray(getAllRolesRequest.pageSize);
       } else {
-        const roles: RoleArray = await this.kartoffelUtils.kartoffelGet(
+        const res = await this.kartoffelUtils.kartoffelGet(
           `${C.kartoffelUrl}/api/roles`,
           getAllRolesRequest
         );
-        return roles;
+
+        return { roles: res } as RoleArray;
       }
     } catch (error) {
       throw error;
     }
   }
 
-  async createRole(createRoleRequest: CreateRoleRequest): Promise<Role> {
+  async createRole(
+    createRoleRequest: CreateRoleRequest
+  ): Promise<RoleIdMessage> {
     try {
       cleanUnderscoreFields(createRoleRequest);
       if (C.useFaker) {
-        return this.kartoffelFaker.randomRole();
+        const role = this.kartoffelFaker.randomRole();
+        return { roleId: role.roleId };
       } else {
-        const role: Role = await this.kartoffelUtils.kartoffelPost(
+        const res = await this.kartoffelUtils.kartoffelPost(
           `${C.kartoffelUrl}/api/roles`,
           createRoleRequest
         );
-        return role;
+
+        if (res === C.kartoffelOK) {
+          return { roleId: createRoleRequest.roleId };
+        } else {
+          throw new Error('res not ok');
+        }
       }
     } catch (error) {
       throw error;
@@ -78,26 +144,40 @@ export class RolesRepository {
           getRolesUnderOGRequest.pageSize
         );
       } else {
+        const groupId = getRolesUnderOGRequest.groupId;
+        const req: any = getRolesUnderOGRequest;
+        delete req.groupId;
+
         const roles: Role[] = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/api/roles/group/${getRolesUnderOGRequest.groupId}`,
-          getRolesUnderOGRequest
+          `${C.kartoffelUrl}/api/roles/group/${groupId}`,
+          req
         );
-        return { roles: roles };
+        return { roles: roles } as RoleArray;
       }
     } catch (error) {
       throw error;
     }
   }
 
-  async deleteRole(deleteRoleRequest: DeleteRoleRequest): Promise<Role> {
+  async deleteRole(
+    deleteRoleRequest: DeleteRoleRequest
+  ): Promise<SuccessMessage> {
     try {
       cleanUnderscoreFields(deleteRoleRequest);
       if (C.useFaker) {
-        return this.kartoffelFaker.randomRole();
+        return { success: true };
       } else {
-        return this.kartoffelUtils.kartoffelDelete(
-          `${C.kartoffelUrl}/api/roles/${deleteRoleRequest.roleId}`
+        const res: any = await this.kartoffelUtils.kartoffelDelete(
+          `${C.kartoffelUrl}/api/roles/${encodeURIComponent(
+            deleteRoleRequest.roleId
+          )}`
         );
+
+        if (res === C.kartoffelOK) {
+          return { success: true };
+        } else {
+          throw new Error('res not ok');
+        }
       }
     } catch (error) {
       throw error;
@@ -115,7 +195,9 @@ export class RolesRepository {
       } else {
         try {
           const entity = await this.kartoffelUtils.kartoffelGet(
-            `${C.kartoffelUrl}/api/entities/role/${isRoleAlreadyTakenRequest.roleId}`,
+            `${C.kartoffelUrl}/api/entities/role/${encodeURIComponent(
+              isRoleAlreadyTakenRequest.roleId
+            )}`,
             { expanded: true }
           );
           if (entity) {
@@ -147,21 +229,29 @@ export class RolesRepository {
         res.suggestions = ['Programmer 1', 'Programmer 2', 'Programmer 3'];
         return res as IsJobTitleAlreadyTakenRes;
       } else {
-        let roleArray: RoleArray = await this.getRolesUnderOG({
-          groupId: isJobTitleAlreadyTakenRequest.directGroup,
-          direct: true,
-          page: 1,
-          pageSize: 100,
-        });
         const jobTitle = isJobTitleAlreadyTakenRequest.jobTitle;
-        if (!jobTitleExists(roleArray, jobTitle)) {
-          return { isJobTitleAlreadyTaken: false, suggestions: [] };
-        } else {
-          return {
-            isJobTitleAlreadyTaken: true,
-            suggestions: getSuggestions(roleArray, jobTitle),
-          };
-        }
+        let roleArray: RoleArray;
+        let pageCounter = 1;
+        let isJobTitleExists = false;
+
+        do {
+          roleArray = await this.getRolesUnderOG({
+            groupId: isJobTitleAlreadyTakenRequest.directGroup,
+            direct: true,
+            page: pageCounter,
+            pageSize: 100,
+          });
+          isJobTitleExists = jobTitleExists(roleArray, jobTitle);
+
+          pageCounter++;
+        } while (roleArray.roles.length > 0 && !isJobTitleExists);
+
+        return {
+          isJobTitleAlreadyTaken: isJobTitleExists,
+          suggestions: isJobTitleExists
+            ? getSuggestions(roleArray, jobTitle)
+            : [],
+        };
       }
     } catch (error) {
       throw error;
@@ -176,11 +266,20 @@ export class RolesRepository {
       if (C.useFaker) {
         return { success: true };
       } else {
-        const data: SuccessMessage = await this.kartoffelUtils.kartoffelPut(
-          `${C.kartoffelUrl}/api/roles/${connectRoleAndDIRequest.roleId}/digitalIdentity/${connectRoleAndDIRequest.uniqueId}`,
+        const res = await this.kartoffelUtils.kartoffelPut(
+          `${C.kartoffelUrl}/api/roles/${encodeURIComponent(
+            connectRoleAndDIRequest.roleId
+          )}/digitalIdentity/${encodeURIComponent(
+            connectRoleAndDIRequest.uniqueId
+          )}`,
           ConnectRoleAndDIRequest
         );
-        return data;
+
+        if (res === C.kartoffelOK) {
+          return { success: true };
+        } else {
+          throw new Error('res not ok');
+        }
       }
     } catch (error) {
       throw error;
@@ -196,7 +295,9 @@ export class RolesRepository {
         return this.kartoffelFaker.randomRole();
       } else {
         const data: Role = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/api/roles/${getRoleByRoleIdRequest.roleId}`
+          `${C.kartoffelUrl}/api/roles/${encodeURIComponent(
+            getRoleByRoleIdRequest.roleId
+          )}`
         );
         return data;
       }
@@ -213,27 +314,45 @@ export class RolesRepository {
       if (C.useFaker) {
         return { success: true };
       } else {
-        const data: SuccessMessage = await this.kartoffelUtils.kartoffelDelete(
-          `${C.kartoffelUrl}/api/roles/${disconnectRoleAndDIRequest.roleId}/digitalIdentity/${disconnectRoleAndDIRequest.uniqueId}`
+        const res = await this.kartoffelUtils.kartoffelDelete(
+          `${C.kartoffelUrl}/api/roles/${encodeURIComponent(
+            disconnectRoleAndDIRequest.roleId
+          )}/digitalIdentity/${encodeURIComponent(
+            disconnectRoleAndDIRequest.uniqueId
+          )}`
         );
-        return data;
+
+        if (res === C.kartoffelOK) {
+          return { success: true };
+        } else {
+          throw new Error('res not ok');
+        }
       }
     } catch (error) {
       throw error;
     }
   }
 
-  async renameRole(RenameRoleRequest: RenameRoleRequest): Promise<Role> {
+  async renameRole(
+    RenameRoleRequest: RenameRoleRequest
+  ): Promise<SuccessMessage> {
     try {
       cleanUnderscoreFields(RenameRoleRequest);
       if (C.useFaker) {
-        return this.kartoffelFaker.randomRole();
+        return { success: true };
       } else {
-        const data: Role = await this.kartoffelUtils.kartoffelPatch(
-          `${C.kartoffelUrl}/api/roles/${RenameRoleRequest.roleId}`,
+        const res = await this.kartoffelUtils.kartoffelPatch(
+          `${C.kartoffelUrl}/api/roles/${encodeURIComponent(
+            RenameRoleRequest.roleId
+          )}`,
           RenameRoleRequest
         );
-        return data;
+
+        if (res === C.kartoffelOK) {
+          return { success: true };
+        } else {
+          throw new Error('res not ok');
+        }
       }
     } catch (error) {
       throw error;
@@ -247,7 +366,9 @@ export class RolesRepository {
         return this.kartoffelFaker.randomRole();
       } else {
         const data: Role = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/api/roles/digitalIdentity/${getRoleByDIRequest.uniqueId}`,
+          `${C.kartoffelUrl}/api/roles/digitalIdentity/${encodeURIComponent(
+            getRoleByDIRequest.uniqueId
+          )}`,
           getRoleByDIRequest
         );
         return data;
@@ -259,34 +380,51 @@ export class RolesRepository {
 
   async getRolesByHierarchy(
     getRolesByHierarchy: GetRolesByHierarchyRequest
-  ): Promise<Role> {
+  ): Promise<RoleArray> {
     try {
       cleanUnderscoreFields(getRolesByHierarchy);
       if (C.useFaker) {
-        return this.kartoffelFaker.randomRole();
-      } else {
-        const data: Role = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/api/roles/hierarchy/${getRolesByHierarchy.hierarchy}`,
-          getRolesByHierarchy
+        return this.kartoffelFaker.randomRoleArray(
+          getRolesByHierarchy.pageSize
         );
-        return data;
+      } else {
+        const hierarchy = getRolesByHierarchy.hierarchy;
+        const req: any = getRolesByHierarchy;
+        delete req.hierarchy;
+
+        const data: Role[] = await this.kartoffelUtils.kartoffelGet(
+          `${C.kartoffelUrl}/api/roles/hierarchy/${encodeURIComponent(
+            hierarchy
+          )}`,
+          req
+        );
+        return { roles: data };
       }
     } catch (error) {
       throw error;
     }
   }
 
-  async changeRoleOG(changeRoleOGRequest: ChangeRoleOGRequest): Promise<Role> {
+  async changeRoleOG(
+    changeRoleOGRequest: ChangeRoleOGRequest
+  ): Promise<SuccessMessage> {
     try {
       cleanUnderscoreFields(changeRoleOGRequest);
       if (C.useFaker) {
-        return this.kartoffelFaker.randomRole();
+        return { success: true };
       } else {
-        const data: Role = await this.kartoffelUtils.kartoffelPut(
-          `${C.kartoffelUrl}/api/roles/${changeRoleOGRequest.roleId}/group/${changeRoleOGRequest.groupId}`,
+        const res = await this.kartoffelUtils.kartoffelPut(
+          `${C.kartoffelUrl}/api/roles/${encodeURIComponent(
+            changeRoleOGRequest.roleId
+          )}/group/${changeRoleOGRequest.groupId}`,
           changeRoleOGRequest
         );
-        return data;
+
+        if (res === C.kartoffelOK) {
+          return { success: true };
+        } else {
+          throw new Error('res not ok');
+        }
       }
     } catch (error) {
       throw error;

@@ -89,10 +89,11 @@ services:
     volumes:
       - logs:/logs
     environment:
-      - KS_USE_FAKER=true
+      - KS_USE_FAKER=false
       - KS_SS_URL=spike-service:8080
-      - KS_ROOT_ID=611b5c58a7a257532f054a4b
+      - KS_ROOT_ID=6184af202da776001134110b
       - KS_DEFAULT_SOURCE=sf_name
+      - KS_DEFAULT_ROLE_ID_SUFFIX=oneTree
       - KS_LOG_PATH=/logs
 
   producer-service:
@@ -290,12 +291,17 @@ services:
     volumes:
       - logs:/logs
     environment:
+      - AS_PORT=8080
       - AS_SHRAGA_URL=https://shraga.shraga.branch-yesodot.org
       - AS_CLIENT_ENDPOINT=http://localhost
+      # - AS_CLIENT_ENDPOINT=http://localhost:3000
       - AS_KS_URL=kartoffel-service:8080
       - AS_APS_URL=approver-service:8080
       - AS_KARTOFFEL_ENRICH=false
       - AS_APPROVER_ENRICH=true
+      - AS_USE_SHRAGA_LOCAL_MAP=true
+      - AS_SHRAGA_LOCAL_MAP_IDS=619e3a6fe4de0300121d78c7,619e406ee4de0300121dc4c8,619e42b6e4de0300121dc4e3,619e5132e4de0300121dc528,619f8aa0e4de0300121dd3f4
+      - AS_SHRAGA_LOCAL_MAP_DIS=t23458789@jello.com,t25458789@jello.com,t25458711@jello.com,gggUser@rabiran.com,e595300134@turtle.com
       - AS_LOG_PATH=/logs
 
   api-gateway:

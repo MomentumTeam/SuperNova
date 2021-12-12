@@ -5,7 +5,7 @@ package Kartoffel;
 service Kartoffel {
 
     //Entities
-    rpc CreateEntity(CreateEntityRequest) returns (Entity){}
+    rpc CreateEntity(CreateEntityRequest) returns (IdMessage){}
     rpc GetEntityByDI(GetEntityByDIRequest) returns (Entity){}
     rpc GetEntityByRoleId(GetEntityByRoleIdRequest) returns (Entity){}
     rpc GetEntitiesUnderOG(GetEntitiesUnderOGRequest) returns (EntityArray){}
@@ -22,7 +22,7 @@ service Kartoffel {
     rpc SearchHighCommandersByFullName(SearchCommandersByFullNameRequest) returns (EntityArray){}
 
     //Groups
-    rpc CreateOG(CreateOGRequest) returns (OrganizationGroup){}        
+    rpc CreateOG(CreateOGRequest) returns (IdMessage){}        
     rpc GetAllOGs(GetAllOGsRequest) returns (OGArray){}        
     rpc GetOGByHierarchyName(GetOGByHierarchyNameRequest) returns (OrganizationGroup){}   
     rpc SearchOG(SearchOGRequest) returns (OGArray) {}          
@@ -37,16 +37,16 @@ service Kartoffel {
     rpc IsOGNameAlreadyTaken(IsOGNameAlreadyTakenReq) returns (IsOGNameAlreadyTakenRes){}
 
     //DI    
-    rpc CreateDI(CreateDIRequest) returns (DigitalIdentity){}
+    rpc CreateDI(CreateDIRequest) returns (UniqueIdMessage){}
     rpc GetAllDIs(GetAllDIsRequest) returns (DigitalIdentities){}
     rpc GetDIByRoleId(GetDIByRoleIdRequest) returns (DigitalIdentity){}
-    rpc SearchDIOrUniqueId(SearchDIOrUniqueIdRequest) returns (DigitalIdentities){}
+    rpc SearchDIByUniqueId(SearchDIByUniqueIdRequest) returns (DigitalIdentities){}
     rpc GetDIByUniqueId(GetDIByUniqueIdRequest) returns (DigitalIdentity){} 
     rpc DeleteDI(DeleteDIRequest) returns (SuccessMessage){}  
     rpc UpdateDI(UpdateDIRequest) returns (SuccessMessage){} 
 
     // Roles
-    rpc CreateRole(CreateRoleRequest) returns (Role){}
+    rpc CreateRole(CreateRoleRequest) returns (RoleIdMessage){}
     rpc GetAllRoles(GetAllRolesRequest) returns (RoleArray){}
     rpc GetRoleByRoleId(GetRoleByRoleIdRequest) returns (Role){}
     rpc GetRolesUnderOG(GetRolesUnderOGRequest) returns (RoleArray){}
@@ -58,6 +58,18 @@ service Kartoffel {
     rpc IsRoleAlreadyTaken(IsRoleAlreadyTakenReq) returns (IsRoleAlreadyTakenRes){}
     rpc IsJobTitleAlreadyTaken(IsJobTitleAlreadyTakenReq) returns (IsJobTitleAlreadyTakenRes){}
     rpc GetRolesByHierarchy(GetRolesByHierarchyRequest) returns (RoleArray){}
+    rpc GetRoleIdSuffixByOG(GetRoleIdSuffixByOGReq) returns (RoleIdSuffix){}
+}
+
+message GetRoleIdSuffixByOGReq{
+    string id = 1;
+}
+message RoleIdSuffix{
+    string suffix = 1;
+}
+
+message IdMessage{
+    string id = 1;
 }
 
 message IsRoleAlreadyTakenReq{
@@ -94,25 +106,25 @@ message SearchCommandersByFullNameRequest{
 }
 
 message GetAllOGsRequest{
-    string source = 1;
-    string akaUnit = 2;
-    string updatedFrom = 3;
+    optional string source = 1;
+    optional string akaUnit = 2;
+    optional string updatedFrom = 3;
     int32 page = 4;
     int32 pageSize = 5;
 }
 
 message UpdateDIRequest{
     string id = 1;
-    bool isRoleAttachable = 2;
-    string mail = 3;
+    optional bool isRoleAttachable = 2;
+    optional string mail = 3;
 }
 
 message GetDIByUniqueIdRequest{
     string id = 1;
 }
 
-message SearchDIOrUniqueIdRequest{
-    string unique_id = 1;
+message SearchDIByUniqueIdRequest{
+    string uniqueId = 1;
 }
 
 message GetDIByRoleIdRequest{
@@ -124,15 +136,15 @@ message DigitalIdentities{
 }
 
 message GetAllDIsRequest{
-    string updatedFrom = 1;
+    optional string updatedFrom = 1;
     int32 page = 2;
     int32 pageSize = 3;
+    optional bool expanded = 4;
 }
 
 message UpdateOGParentRequest{
     string id = 1;
     string parentId =2;
-    string parent = 3;
 }
 
 message GetOGByIdRequest{
@@ -241,6 +253,7 @@ message CreateOGRequest{
     string name = 1;
     string directGroup = 2;
     string source = 3;
+    optional string diPrefix = 4;
 }
 
 // CreateDI
@@ -255,7 +268,7 @@ message CreateDIRequest{
 
 // GetAllRoles
 message GetAllRolesRequest {
-    string updatedFrom = 1;
+    optional string updatedFrom = 1;
     int32 page = 2;
     int32 pageSize = 3;
 }
@@ -339,7 +352,7 @@ message ConnectEntityAndDIRequest{
 
 // CreateEntity
 message CreateEntityRequest{
-    optional string firstName = 1;
+    string firstName = 1;
     optional string lastName = 2;
     optional string identityCard = 3;
     optional string personalNumber = 4;
@@ -350,7 +363,7 @@ message CreateEntityRequest{
     optional string clearance = 9;
     optional string sex = 10;
     optional string birthDate = 11;
-    optional string entityType = 12;
+    string entityType = 12;
     optional string akaUnit = 13;
     optional string dischargeDay = 14;
     optional string rank = 15;
@@ -381,8 +394,8 @@ message DeleteOGRequest{
 // GetChildrenOfOG
 message GetChildrenOfOGRequest{
     string id = 1; //mongoId of OG
-    int32 page = 2;
-    int32 pageSize = 3;
+    optional int32 page = 2;
+    optional int32 pageSize = 3;
     bool direct = 4;
 }
 
@@ -400,8 +413,8 @@ message DeleteDIRequest{
 message GetEntitiesUnderOGRequest{
     string id = 1; //mongoIds of OG
     bool direct = 2;
-    int32 page = 3;
-    int32 pageSize = 4;
+    optional int32 page = 3;
+    optional int32 pageSize = 4;
 }
 
 //SuccessMessage
@@ -423,6 +436,8 @@ message OrganizationGroup{
     string updatedAt = 9;
     repeated Entity directEntities = 10;
     repeated Role directRoles = 11;
+    optional string diPrefix = 12;
+    string directGroup = 13;
 }
 
 message Role{
@@ -436,6 +451,7 @@ message Role{
     string source = 8;
     string createdAt = 9;
     string updatedAt = 10;
+    string displayName = 11;
 }
 
 
@@ -474,9 +490,17 @@ message DigitalIdentity{
     string source = 2;       
     string mail = 3;         
     string uniqueId = 4;      
-    string entityId = 5;      
+    optional string entityId = 5;      
     string createdAt = 6;      
     string updatedAt = 7;    
     bool isRoleAttachable = 8;   
-    Role role = 9;        
+    optional Role role = 9;        
+}
+
+message RoleIdMessage {
+    string roleId = 1;
+}
+
+message UniqueIdMessage {
+    string uniqueId = 1;
 }

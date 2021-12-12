@@ -3,9 +3,11 @@ import {
   DigitalIdentities,
   DigitalIdentity,
   SuccessMessage,
+  UniqueIdMessage,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { logger } from '../logger';
 import { KartoffelFaker } from '../mock/kartoffel.faker';
+import { getErrorMessage, getStatusCode } from '../utils/errors.utils';
 import { KartoffelUtils } from '../utils/kartoffel.utils';
 import { DiManager } from './di.manager';
 
@@ -26,14 +28,17 @@ export async function getAllDIs(call: any, callback: any): Promise<void> {
     });
     callback(null, { digitalIdentities: digitalIdentities });
   } catch (error: any) {
+    const status = getStatusCode(error);
+    const message = getErrorMessage(error);
+
     logger.error(`getAllDIs ERROR`, {
       callRequest: call.request,
-      error: { message: error.message },
+      error: { message },
     });
     callback(
       {
-        code: 400,
-        error: { message: error.message },
+        code: status,
+        message,
         status: grpc.status.CANCELLED,
       },
       null
@@ -44,21 +49,24 @@ export async function getAllDIs(call: any, callback: any): Promise<void> {
 export async function createDI(call: any, callback: any): Promise<void> {
   try {
     logger.info(`Call to createDI`, { callRequest: call.request });
-    const newDI: DigitalIdentity = await diManager.createDI(call.request);
+    const uniqueId: UniqueIdMessage = await diManager.createDI(call.request);
     logger.info(`createDI OK`, {
       callRequest: call.request,
-      response: newDI,
+      response: uniqueId,
     });
-    callback(null, newDI);
+    callback(null, uniqueId);
   } catch (error: any) {
+    const status = getStatusCode(error);
+    const message = getErrorMessage(error);
+
     logger.error(`createDI ERROR`, {
       callRequest: call.request,
-      error: { message: error.message },
+      error: { message },
     });
     callback(
       {
-        code: 400,
-        error: { message: error.message },
+        code: status,
+        message,
         status: grpc.status.CANCELLED,
       },
       null
@@ -76,14 +84,17 @@ export async function getDIByRoleId(call: any, callback: any): Promise<void> {
     });
     callback(null, di);
   } catch (error: any) {
+    const status = getStatusCode(error);
+    const message = getErrorMessage(error);
+
     logger.error(`getDIByRoleId ERROR`, {
       callRequest: call.request,
-      error: { message: error.message },
+      error: { message },
     });
     callback(
       {
-        code: 400,
-        error: { message: error.message },
+        code: status,
+        error: { message },
         status: grpc.status.CANCELLED,
       },
       null
@@ -91,28 +102,31 @@ export async function getDIByRoleId(call: any, callback: any): Promise<void> {
   }
 }
 
-export async function searchDIOrUniqueId(
+export async function searchDIByUniqueId(
   call: any,
   callback: any
 ): Promise<void> {
   try {
-    logger.info(`Call to searchDIOrUniqueId`, { callRequest: call.request });
+    logger.info(`Call to searchDIByUniqueId`, { callRequest: call.request });
     const DigitalIdentities: DigitalIdentities =
-      await diManager.searchDIOrUniqueId(call.request);
-    logger.info(`searchDIOrUniqueId OK`, {
+      await diManager.searchDIByUniqueId(call.request);
+    logger.info(`searchDIByUniqueId OK`, {
       callRequest: call.request,
       response: DigitalIdentities,
     });
     callback(null, { DigitalIdentities: DigitalIdentities });
   } catch (error: any) {
-    logger.error(`searchDIOrUniqueId ERROR`, {
+    const status = getStatusCode(error);
+    const message = getErrorMessage(error);
+
+    logger.error(`searchDIByUniqueId ERROR`, {
       callRequest: call.request,
-      error: { message: error.message },
+      error: { message },
     });
     callback(
       {
-        code: 400,
-        error: { message: error.message },
+        code: status,
+        message,
         status: grpc.status.CANCELLED,
       },
       null
@@ -132,14 +146,17 @@ export async function deleteDI(call: any, callback: any): Promise<void> {
     });
     callback(null, successMessage);
   } catch (error: any) {
+    const status = getStatusCode(error);
+    const message = getErrorMessage(error);
+
     logger.error(`deleteDI ERROR`, {
       callRequest: call.request,
-      error: { message: error.message },
+      error: { message },
     });
     callback(
       {
-        code: 400,
-        error: { message: error.message },
+        code: status,
+        message,
         status: grpc.status.CANCELLED,
       },
       null
@@ -157,14 +174,17 @@ export async function getDIByUniqueId(call: any, callback: any): Promise<void> {
     });
     callback(null, di);
   } catch (error: any) {
+    const status = getStatusCode(error);
+    const message = getErrorMessage(error);
+
     logger.error(`getDIByUniqueId ERROR`, {
       callRequest: call.request,
-      error: { message: error.message },
+      error: { message },
     });
     callback(
       {
-        code: 400,
-        error: { message: error.message },
+        code: status,
+        message,
         status: grpc.status.CANCELLED,
       },
       null
@@ -175,23 +195,24 @@ export async function getDIByUniqueId(call: any, callback: any): Promise<void> {
 export async function updateDI(call: any, callback: any): Promise<void> {
   try {
     logger.info(`Call to updateDI`, { callRequest: call.request });
-    const digitalIdentity: DigitalIdentity = await diManager.updateDI(
-      call.request
-    );
+    const successMessage: SuccessMessage = await diManager.updateDI(call.request);
     logger.info(`updateDI OK`, {
       callRequest: call.request,
-      response: digitalIdentity,
+      response: successMessage,
     });
-    callback(null, { success: true });
+    callback(null, successMessage);
   } catch (error: any) {
+    const status = getStatusCode(error);
+    const message = getErrorMessage(error);
+
     logger.error(`updateDI ERROR`, {
       callRequest: call.request,
-      error: { message: error.message },
+      error: { message },
     });
     callback(
       {
-        code: 400,
-        error: { message: error.message },
+        code: status,
+        message,
         status: grpc.status.CANCELLED,
       },
       null

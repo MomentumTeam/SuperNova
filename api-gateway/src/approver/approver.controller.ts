@@ -9,7 +9,7 @@ import {
   DeleteApproverReq,
   SearchHighCommandersByDisplayNameReq,
   UpdateApproverDecisionReq,
-} from "../interfaces/protoc/proto/approverService";
+} from '../interfaces/protoc/proto/approverService';
 import { ApproverService } from './approver.service';
 import { KartoffelService } from '../kartoffel/kartoffel.service';
 import {
@@ -20,7 +20,9 @@ import {
   ApproverDecision,
   ApproverType,
   Decision,
+  decisionFromJSON,
   EntityMin,
+  IsRequestApprovedRes,
   RequestStatus,
   RequestType,
   requestTypeFromJSON,
@@ -192,38 +194,44 @@ export default class ApproverController {
         typeof request.type === typeof ''
           ? requestTypeFromJSON(request.type)
           : request.type;
+      
+      const decisionType = decisionFromJSON(decision);
+      if (requestType === RequestType.ADD_APPROVER && decisionType !== Decision.DENIED) {
+        const isRequestApproved = await RequestsService.isRequestApproved({id: request.id}) as IsRequestApprovedRes;
 
-      if (requestType === RequestType.ADD_APPROVER) {
-        try {
-          await ApproverService.addApprover({
-            entityId: request.additionalParams?.entityId || '',
-            type: request.additionalParams?.type || ApproverType.UNRECOGNIZED,
-            akaUnit: request.additionalParams?.akaUnit || '',
-            displayName: request.additionalParams?.displayName || '',
-            domainUsers: request.additionalParams?.domainUsers || [],
-            directGroup: request.additionalParams?.directGroup || '',
-          });
-          await RequestsService.updateRequest({
-            id: request.id,
-            requestProperties: {
-              status: RequestStatus.DONE,
-            },
-          } as any);
-        } catch (addApproverError: any) {
-          await RequestsService.updateRequest({
-            id: request.id,
-            requestProperties: {
-              status: RequestStatus.FAILED,
-            },
-          } as any);
+        if (isRequestApproved.isRequestApproved) {
+          try {
+            await ApproverService.addApprover({
+              entityId: request.additionalParams?.entityId || "",
+              type: request.additionalParams?.type || ApproverType.UNRECOGNIZED,
+              akaUnit: request.additionalParams?.akaUnit || "",
+              displayName: request.additionalParams?.displayName || "",
+              domainUsers: request.additionalParams?.domainUsers || [],
+              directGroup: request.additionalParams?.directGroup || "",
+            });
+            await RequestsService.updateRequest({
+              id: request.id,
+              requestProperties: {
+                status: RequestStatus.DONE,
+              },
+            } as any);
+            await ProducerController.produceToADQueue(req.params.id, res); // TODO: ASK BARAK
+          } catch (addApproverError: any) {
+            await RequestsService.updateRequest({
+              id: request.id,
+              requestProperties: {
+                status: RequestStatus.FAILED,
+              },
+            } as any);
+          }
         }
       } else {
         const canPushToQueueRes = await RequestsService.canPushToADQueue({
-          id: req.params.id,
+          id: req.params.requestId,
         });
 
         if (canPushToQueueRes.canPushToQueue) {
-          await ProducerController.produceToADQueue(req.params.id, res);
+          await ProducerController.produceToADQueue(req.params.requestId, res);
         }
       }
       res.send(request);

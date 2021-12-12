@@ -4,7 +4,31 @@ import {
   approverTypeToJSON,
 } from './interfaces/protoc/proto/requestService';
 
-export const config = {
+const useShragaLocalMap = env
+  .get('AS_USE_SHRAGA_LOCAL_MAP')
+  .default('true')
+  .asBool();
+
+let diToId: any = {}; // for user1,user2,user3
+
+if (useShragaLocalMap) {
+  const idArray = process.env.AS_SHRAGA_LOCAL_MAP_IDS
+    ? process.env.AS_SHRAGA_LOCAL_MAP_IDS.split(',')
+    : [
+        '619e3a6fe4de0300121d78c7',
+        '619e406ee4de0300121dc4c8',
+        '619e42b6e4de0300121dc4e3',
+      ];
+
+  const diArray = process.env.AS_SHRAGA_LOCAL_MAP_DIS
+    ? process.env.AS_SHRAGA_LOCAL_MAP_DIS.split(',')
+    : ['t23458789@jello.com', 't25458789@jello.com', 't25458711@jello.com'];
+  for (let i = 0; i < idArray.length; i++) {
+    diToId[diArray[i]] = idArray[i];
+  }
+}
+
+export const config: any = {
   server: {
     port: +(process.env.AS_PORT || 9000),
     name: 'authentication-service',
@@ -41,10 +65,11 @@ export const config = {
     shraga: {
       callbackURL: process.env.AUTH_CALLBACK_URL || '/auth/callback',
       shragaURL:
-        process.env.AS_SHRAGA_URL ||
-        'https://shraga-prod.northeurope.cloudapp.azure.com',
+        process.env.AS_SHRAGA_URL || 'https://shraga.shraga.branch-yesodot.org',
       useEnrichId: process.env.AS_SHRAGA_USE_ENRICH_ID || true,
     },
+    useShragaLocalMap: useShragaLocalMap,
+    diToId: diToId,
     unauthorized: './401/index.html',
   },
   clientEndpoint: process.env.AS_CLIENT_ENDPOINT || 'http://localhost:3000',

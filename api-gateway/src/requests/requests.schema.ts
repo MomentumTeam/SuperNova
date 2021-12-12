@@ -98,8 +98,8 @@ export const updateADStatusSchema = Joi.object({
 export const entityMinObj = Joi.object({
   id: Joi.objectId().required(),
   displayName: Joi.string().required(),
-  identityCard: Joi.string().required(),
-  personalNumber: Joi.string().required(),
+  identityCard: Joi.string().default(''),
+  personalNumber: Joi.string().default(''),
 });
 
 export const ApproverDecisionObj = Joi.object({
@@ -313,7 +313,7 @@ const additionalParamsObj = Joi.object({
   entityId: Joi.string().required(),
   displayName: Joi.string().required(),
   domainUsers: Joi.array().items(Joi.string()),
-  akaUnit: Joi.string().required(),
+  akaUnit: Joi.string().default(''),
   personalNumber: Joi.string().default(''),
   identityCard: Joi.string().default(''),
   type: Joi.string()
