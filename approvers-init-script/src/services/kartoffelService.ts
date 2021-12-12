@@ -4,7 +4,7 @@ import {
   Entity,
   GetEntityByDIRequest,
   GetEntityByRoleIdRequest,
-} from '../interfaces/kartoffelService';
+} from '../interfaces/protoc/proto/kartoffelService';
 import * as C from '../config';
 import { logger } from '../logger';
 import { findPath } from '../utils/path';
@@ -59,7 +59,7 @@ export default class KartoffelService {
               displayName: entity.displayName,
               akaUnit: entity.akaUnit,
               domainUsers: domainUsers,
-              id: entity.id,
+              entityId: entity.id,
               personalNumber: entity.personalNumber,
               identityCard: entity.identityCard,
               directGroup: entity.directGroup,

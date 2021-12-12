@@ -1,4 +1,4 @@
-import { ApproverType } from '../interfaces/requestService';
+import { ApproverType } from '../interfaces/protoc/proto/requestService';
 import ApproverService from '../services/approverService';
 import KartoffelService from '../services/kartoffelService';
 

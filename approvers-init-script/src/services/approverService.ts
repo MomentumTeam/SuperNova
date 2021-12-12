@@ -3,10 +3,12 @@ import * as protoLoader from '@grpc/proto-loader';
 import { findPath } from '../utils/path';
 import * as C from '../config';
 import { logger } from '../logger';
-import { AddApproverReq, Approver } from '../interfaces/approverService';
+import {
+  AddApproverReq,
+  Approver,
+} from '../interfaces/protoc/proto/approverService';
 
-
-const APS_PROTO_PATH = `./proto/approverService.proto`;
+const APS_PROTO_PATH = `${findPath('proto')}/approverService.proto`;
 
 const apsPackageDefinition: protoLoader.PackageDefinition =
   protoLoader.loadSync(APS_PROTO_PATH, {
@@ -26,9 +28,7 @@ const approverClient: any = new apsProtoDescriptor.ApproverService(
 );
 
 export default class ApproverService {
-  static async addApprover(
-    addApproverReq: AddApproverReq
-  ): Promise<Approver> {
+  static async addApprover(addApproverReq: AddApproverReq): Promise<Approver> {
     logger.info(`Call to addApprover in AIS`);
 
     return new Promise((resolve, reject) => {
@@ -42,7 +42,7 @@ export default class ApproverService {
             });
             reject(error);
           } else {
-            logger.info("addApprover OK in AIS", {
+            logger.info('addApprover OK in AIS', {
               addApproverReq,
               approver,
             });

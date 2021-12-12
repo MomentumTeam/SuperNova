@@ -1,5 +1,5 @@
 import { parseExcelFile } from './utils/excel';
-import { ApproverType } from './interfaces/requestService';
+import { ApproverType } from './interfaces/protoc/proto/requestService';
 import { addApprovers, validateApprovers } from './utils/approvers.utils';
 import { logger } from './logger';
 
