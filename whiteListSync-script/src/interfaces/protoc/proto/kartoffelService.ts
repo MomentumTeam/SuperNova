@@ -440,7 +440,7 @@ export interface DigitalIdentity {
   source: string;
   mail: string;
   uniqueId: string;
-  entityId: string;
+  entityId?: string | undefined;
   createdAt: string;
   updatedAt: string;
   isRoleAttachable: boolean;
@@ -7074,7 +7074,6 @@ const baseDigitalIdentity: object = {
   source: "",
   mail: "",
   uniqueId: "",
-  entityId: "",
   createdAt: "",
   updatedAt: "",
   isRoleAttachable: false,
@@ -7097,7 +7096,7 @@ export const DigitalIdentity = {
     if (message.uniqueId !== "") {
       writer.uint32(34).string(message.uniqueId);
     }
-    if (message.entityId !== "") {
+    if (message.entityId !== undefined) {
       writer.uint32(42).string(message.entityId);
     }
     if (message.createdAt !== "") {
@@ -7182,7 +7181,7 @@ export const DigitalIdentity = {
     if (object.entityId !== undefined && object.entityId !== null) {
       message.entityId = String(object.entityId);
     } else {
-      message.entityId = "";
+      message.entityId = undefined;
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = String(object.createdAt);
@@ -7251,7 +7250,7 @@ export const DigitalIdentity = {
     if (object.entityId !== undefined && object.entityId !== null) {
       message.entityId = object.entityId;
     } else {
-      message.entityId = "";
+      message.entityId = undefined;
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = object.createdAt;

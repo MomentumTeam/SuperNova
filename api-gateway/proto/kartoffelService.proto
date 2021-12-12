@@ -490,7 +490,7 @@ message DigitalIdentity{
     string source = 2;       
     string mail = 3;         
     string uniqueId = 4;      
-    string entityId = 5;      
+    optional string entityId = 5;      
     string createdAt = 6;      
     string updatedAt = 7;    
     bool isRoleAttachable = 8;   
