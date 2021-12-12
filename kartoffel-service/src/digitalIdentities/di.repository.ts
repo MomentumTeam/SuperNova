@@ -34,7 +34,7 @@ export class DiRepository {
           await this.kartoffelFaker.randomDiArray(getAllDIsRequest.pageSize);
         return digitalIdentities;
       } else {
-        const res = await this.kartoffelUtils.kartoffelGet(
+        const res: DigitalIdentity[] = await this.kartoffelUtils.kartoffelGet(
           `${C.kartoffelUrl}/api/digitalIdentities`,
           getAllDIsRequest
         );
@@ -103,7 +103,7 @@ export class DiRepository {
           `${C.kartoffelUrl}/api/digitalIdentities/search`,
           searchDIByUniqueIdRequest
         );
-        
+
         return { digitalIdentities: res } as DigitalIdentities;
       }
     } catch (error) {
