@@ -61,6 +61,15 @@ export function requestStatusToJSON(object: RequestStatus): string {
   }
 }
 
+export interface IsApproverValidForOGReq {
+  approverId: string;
+  groupId: string;
+}
+
+export interface IsApproverValidForOGRes {
+  isValid: boolean;
+}
+
 export interface SyncApproverReq {
   approverId: string;
 }
@@ -138,6 +147,161 @@ export interface Approver {
   identityCard: string;
   directGroup: string;
 }
+
+const baseIsApproverValidForOGReq: object = { approverId: "", groupId: "" };
+
+export const IsApproverValidForOGReq = {
+  encode(
+    message: IsApproverValidForOGReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.approverId !== "") {
+      writer.uint32(10).string(message.approverId);
+    }
+    if (message.groupId !== "") {
+      writer.uint32(18).string(message.groupId);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): IsApproverValidForOGReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseIsApproverValidForOGReq,
+    } as IsApproverValidForOGReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.approverId = reader.string();
+          break;
+        case 2:
+          message.groupId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): IsApproverValidForOGReq {
+    const message = {
+      ...baseIsApproverValidForOGReq,
+    } as IsApproverValidForOGReq;
+    if (object.approverId !== undefined && object.approverId !== null) {
+      message.approverId = String(object.approverId);
+    } else {
+      message.approverId = "";
+    }
+    if (object.groupId !== undefined && object.groupId !== null) {
+      message.groupId = String(object.groupId);
+    } else {
+      message.groupId = "";
+    }
+    return message;
+  },
+
+  toJSON(message: IsApproverValidForOGReq): unknown {
+    const obj: any = {};
+    message.approverId !== undefined && (obj.approverId = message.approverId);
+    message.groupId !== undefined && (obj.groupId = message.groupId);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<IsApproverValidForOGReq>
+  ): IsApproverValidForOGReq {
+    const message = {
+      ...baseIsApproverValidForOGReq,
+    } as IsApproverValidForOGReq;
+    if (object.approverId !== undefined && object.approverId !== null) {
+      message.approverId = object.approverId;
+    } else {
+      message.approverId = "";
+    }
+    if (object.groupId !== undefined && object.groupId !== null) {
+      message.groupId = object.groupId;
+    } else {
+      message.groupId = "";
+    }
+    return message;
+  },
+};
+
+const baseIsApproverValidForOGRes: object = { isValid: false };
+
+export const IsApproverValidForOGRes = {
+  encode(
+    message: IsApproverValidForOGRes,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.isValid === true) {
+      writer.uint32(8).bool(message.isValid);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): IsApproverValidForOGRes {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseIsApproverValidForOGRes,
+    } as IsApproverValidForOGRes;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.isValid = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): IsApproverValidForOGRes {
+    const message = {
+      ...baseIsApproverValidForOGRes,
+    } as IsApproverValidForOGRes;
+    if (object.isValid !== undefined && object.isValid !== null) {
+      message.isValid = Boolean(object.isValid);
+    } else {
+      message.isValid = false;
+    }
+    return message;
+  },
+
+  toJSON(message: IsApproverValidForOGRes): unknown {
+    const obj: any = {};
+    message.isValid !== undefined && (obj.isValid = message.isValid);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<IsApproverValidForOGRes>
+  ): IsApproverValidForOGRes {
+    const message = {
+      ...baseIsApproverValidForOGRes,
+    } as IsApproverValidForOGRes;
+    if (object.isValid !== undefined && object.isValid !== null) {
+      message.isValid = object.isValid;
+    } else {
+      message.isValid = false;
+    }
+    return message;
+  },
+};
 
 const baseSyncApproverReq: object = { approverId: "" };
 
@@ -1457,6 +1621,9 @@ export interface ApproverService {
   GetAllApproverIds(request: GetAllApproversReq): Promise<ApproverIdArray>;
   SyncApprover(request: SyncApproverReq): Promise<ApproverArray>;
   DeleteApprover(request: DeleteApproverReq): Promise<SuccessMessage>;
+  IsApproverValidForOG(
+    request: IsApproverValidForOGReq
+  ): Promise<IsApproverValidForOGRes>;
 }
 
 export class ApproverServiceClientImpl implements ApproverService {
@@ -1476,6 +1643,7 @@ export class ApproverServiceClientImpl implements ApproverService {
     this.GetAllApproverIds = this.GetAllApproverIds.bind(this);
     this.SyncApprover = this.SyncApprover.bind(this);
     this.DeleteApprover = this.DeleteApprover.bind(this);
+    this.IsApproverValidForOG = this.IsApproverValidForOG.bind(this);
   }
   AddApprover(request: AddApproverReq): Promise<Approver> {
     const data = AddApproverReq.encode(request).finish();
@@ -1581,6 +1749,20 @@ export class ApproverServiceClientImpl implements ApproverService {
       data
     );
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
+  }
+
+  IsApproverValidForOG(
+    request: IsApproverValidForOGReq
+  ): Promise<IsApproverValidForOGRes> {
+    const data = IsApproverValidForOGReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "ApproverService.ApproverService",
+      "IsApproverValidForOG",
+      data
+    );
+    return promise.then((data) =>
+      IsApproverValidForOGRes.decode(new _m0.Reader(data))
+    );
   }
 }
 

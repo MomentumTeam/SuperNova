@@ -14,7 +14,7 @@ import {
   SortOrder,
   sortOrderFromJSON,
 } from '../interfaces/protoc/proto/requestService';
-const ObjectId = require("mongoose").Types.ObjectId;
+const ObjectId = require('mongoose').Types.ObjectId;
 // export function getIdentifierQuery(
 //   id: string,
 //   personTypeInRequest: PersonTypeInRequest
@@ -86,18 +86,18 @@ export function getIdQuery(
       query = { 'commanders.id': ObjectId(id) };
       break;
     case PersonTypeInRequest.SECURITY_APPROVER:
-      query = { "securityApprovers.id": ObjectId(id) };
+      query = { 'securityApprovers.id': ObjectId(id) };
       break;
     case PersonTypeInRequest.SUPER_SECURITY_APPROVER:
-      query = { "superSecurityApprovers.id": ObjectId(id) };
+      query = { 'superSecurityApprovers.id': ObjectId(id) };
       break;
     case PersonTypeInRequest.APPROVER:
       //PersonTypeInRequest.APPROVER
       query = {
         $or: [
-          { "commanders.id": ObjectId(id) },
-          { "securityApprovers.id": ObjectId(id) },
-          { "superSecurityApprovers.id": ObjectId(id) },
+          { 'commanders.id': ObjectId(id) },
+          { 'securityApprovers.id': ObjectId(id) },
+          { 'superSecurityApprovers.id': ObjectId(id) },
         ],
       };
       break;
@@ -127,7 +127,7 @@ export function getSearchQuery(searchQuery: any) {
       return {
         [field.name]: {
           $regex: searchQuery,
-          $options: "i",
+          $options: 'i',
         },
       };
   });
@@ -145,27 +145,32 @@ export function getSortQuery(sortField: any, sortOrder: any) {
   switch (sortField) {
     case SortField.REQUEST_TYPE:
       return {
-        'type': sortOrder,
-        'sortStatusId': 1
+        type: sortOrder,
+        sortStatusId: 1,
       };
     case SortField.SUBMITTED_BY:
       return {
         'submittedBy.displayName': sortOrder,
-        'sortStatusId': 1,
+        sortStatusId: 1,
       };
     case SortField.CREATED_AT:
-      return  {
-        'createdAt': sortOrder,
-        'sortStatusId': 1,
+      return {
+        createdAt: sortOrder,
+        sortStatusId: 1,
+      };
+    case SortField.UPDATED_AT:
+      return {
+        updatedAt: sortOrder,
+        sortStatusId: 1,
       };
     case SortField.STATUS:
       return {
-        'sortStatusId': sortOrder,
+        sortStatusId: sortOrder,
       };
     default:
       return {
-        'sortStatusId': 1,
-        'createdAt': -1
+        sortStatusId: 1,
+        createdAt: -1,
       };
   }
 }
