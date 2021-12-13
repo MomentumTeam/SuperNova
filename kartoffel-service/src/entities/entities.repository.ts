@@ -265,7 +265,7 @@ export class EntitiesRepository {
           searchCommandersByFullNameRequest.fullName
         )}`;
         for (let rank of C.commanderRanks) {
-          url = url + `&rank=${rank}`;
+          url = url + `&rank=${encodeURIComponent(rank)}`;
         }
         if (searchCommandersByFullNameRequest.source) {
           url = url + `&source=${searchCommandersByFullNameRequest.source}`;
