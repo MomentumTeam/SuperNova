@@ -92,8 +92,11 @@ services:
       - KS_USE_FAKER=false
       - KS_SS_URL=spike-service:8080
       - KS_ROOT_ID=6184af202da776001134110b
-      - KS_DEFAULT_SOURCE=sf_name
+      - KS_DEFAULT_ROLE_SOURCE=sf_name
+      - KS_DEFAULT_DI_SOURCE=sf_name
+      - KS_DI_SOURCES=sf_name,sf_name
       - KS_DEFAULT_ROLE_ID_SUFFIX=oneTree
+      - KS_SEARCH_WITH_RANKS=true
       - KS_LOG_PATH=/logs
 
   producer-service:

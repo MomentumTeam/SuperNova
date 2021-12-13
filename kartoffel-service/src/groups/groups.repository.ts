@@ -132,7 +132,7 @@ export class GroupsRepository {
       } else {
         getAllOGsRequest.source = getAllOGsRequest.source
           ? getAllOGsRequest.source
-          : C.defaultSource;
+          : C.defaultRoleSource;
         const res = await this.kartoffelUtils.kartoffelGet(
           `${C.kartoffelUrl}/api/groups`,
           getAllOGsRequest
