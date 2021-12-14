@@ -1425,6 +1425,7 @@ enum SortField{
     SUBMITTED_BY = 1;
     CREATED_AT = 2;
     STATUS = 3;
+    UPDATED_AT = 4;
 }
 
 enum SortOrder{

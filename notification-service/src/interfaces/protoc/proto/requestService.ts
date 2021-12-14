@@ -519,6 +519,7 @@ export enum SortField {
   SUBMITTED_BY = 1,
   CREATED_AT = 2,
   STATUS = 3,
+  UPDATED_AT = 4,
   UNRECOGNIZED = -1,
 }
 
@@ -536,6 +537,9 @@ export function sortFieldFromJSON(object: any): SortField {
     case 3:
     case "STATUS":
       return SortField.STATUS;
+    case 4:
+    case "UPDATED_AT":
+      return SortField.UPDATED_AT;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -553,6 +557,8 @@ export function sortFieldToJSON(object: SortField): string {
       return "CREATED_AT";
     case SortField.STATUS:
       return "STATUS";
+    case SortField.UPDATED_AT:
+      return "UPDATED_AT";
     default:
       return "UNKNOWN";
   }
