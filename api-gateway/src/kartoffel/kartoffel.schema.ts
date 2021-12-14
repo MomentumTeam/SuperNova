@@ -64,7 +64,7 @@ export const getEntitiesUnderOGSchema = Joi.object({
 export const getEntitiesByHierarchySchema = Joi.object({
   body: {},
   params: {
-    hierarchy: Joi.string().required(), // TODO: is it string?
+    hierarchy: Joi.string().required(),
   },
   query: {
     direct: Joi.boolean().default(true),
@@ -109,7 +109,7 @@ export const searchOGSchema = Joi.object({
   body: {},
   params: {},
   query: {
-    nameAndHierarchy: Joi.string().required(), // TODO: is it string?
+    nameAndHierarchy: Joi.string().required(),
   },
 });
 
