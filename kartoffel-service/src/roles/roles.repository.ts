@@ -430,4 +430,24 @@ export class RolesRepository {
       throw error;
     }
   }
+
+  async searchRolesByRoleId(
+    searchRoleByRoleIdReq: SearchRoleByRoleIdReq
+  ): Promise<RoleArray> {
+    try {
+      cleanUnderscoreFields(searchRoleByRoleIdReq);
+      if (C.useFaker) {
+        return this.kartoffelFaker.randomRoleArray(10);
+      } else {
+         const data: Role[] = await this.kartoffelUtils.kartoffelPut(
+           `${C.kartoffelUrl}/api/roles/search`,
+           searchRoleByRoleIdReq
+         );
+
+         return { roles: data };
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
 }

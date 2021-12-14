@@ -123,4 +123,10 @@ export class RolesManager {
   ): Promise<SuccessMessage> {
     return await this.rolesRepository.changeRoleOG(changeRoleOGRequest);
   }
+
+  async searchRolesByRoleId(
+    searchRoleByRoleIdReq: SearchRoleByRoleIdReq
+  ): Promise<RoleArray> {
+    return await this.rolesRepository.searchRolesByRoleId(changeRoleOGRequest);
+  }
 }
