@@ -329,7 +329,7 @@ services:
       - approver-service
       - tea-service
       - bulk-service
-      # - apm-server
+    # - apm-server
     environment:
       - GATEWAY_KS_URL=kartoffel-service:8080
       - GATEWAY_RS_URL=request-service:8080
