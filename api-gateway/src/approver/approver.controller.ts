@@ -167,7 +167,7 @@ export default class ApproverController {
     };
 
     try {
-      const isApproverValidRes = await ApproverService.isApproverValidForOGReq(
+      const isApproverValidRes = await ApproverService.isApproverValidForOG(
         isApproverValidReq
       );
       res.send(isApproverValidRes);

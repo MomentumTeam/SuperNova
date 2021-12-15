@@ -53,7 +53,7 @@ const approverClient: any = new protoDescriptor.ApproverService(
 );
 
 export class ApproverService {
-  static async isApproverValidForOGReq(
+  static async isApproverValidForOG(
     isApproverValidForOGReq: IsApproverValidForOGReq
   ) {
     logger.info(
@@ -62,7 +62,7 @@ export class ApproverService {
     );
 
     return new Promise((resolve, reject) => {
-      approverClient.IsApproverValidForOGReq(
+      approverClient.IsApproverValidForOG(
         isApproverValidForOGReq,
         (err: any, response: IsApproverValidForOGRes) => {
           if (err) {
