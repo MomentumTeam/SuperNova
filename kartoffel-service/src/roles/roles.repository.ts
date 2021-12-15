@@ -20,6 +20,7 @@ import {
   RoleIdMessage,
   GetRoleIdSuffixByOGReq,
   RoleIdSuffix,
+  SearchRoleByRoleIdReq,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { KartoffelFaker } from '../mock/kartoffel.faker';
 import { KartoffelUtils } from '../utils/kartoffel.utils';
@@ -439,7 +440,7 @@ export class RolesRepository {
       if (C.useFaker) {
         return this.kartoffelFaker.randomRoleArray(10);
       } else {
-         const data: Role[] = await this.kartoffelUtils.kartoffelPut(
+         const data: Role[] = await this.kartoffelUtils.kartoffelGet(
            `${C.kartoffelUrl}/api/roles/search`,
            searchRoleByRoleIdReq
          );

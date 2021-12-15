@@ -107,8 +107,10 @@ export const isOGNameAlreadyTakenSchema = Joi.object({
 
 export const searchOGSchema = Joi.object({
   body: {},
-  params: {},
+  params: {
+  },
   query: {
+    underGroupId: Joi.string(),
     nameAndHierarchy: Joi.string().required(),
   },
 });
@@ -208,4 +210,24 @@ export const GetRolesByHierarchySchema = Joi.object({
     pageSize: Joi.number().default(100),
   },
   query: {},
+});
+
+export const SearchRolesByRoleIdValidSchema = Joi.object({
+  body: {},
+  params: {
+    roleId: Joi.string().required(),
+  },
+  query: {
+    hierarchy: Joi.string(),
+  },
+});
+
+// DI
+export const SearchDIsByUniqueIdValidSchema = Joi.object({
+  body: {},
+  params: {
+    uniqueId: Joi.string().required(),
+  },
+  query: {
+  },
 });
