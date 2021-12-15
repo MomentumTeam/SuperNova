@@ -7,16 +7,19 @@ import {
   GetAllApproversReq,
   GetUserTypeReq,
   GetUserTypeRes,
+  IsApproverValidForOGReq,
   SearchByDisplayNameReq,
   SearchByDomainUserReq,
   SearchHighCommandersByDisplayNameReq,
   SuccessMessage,
   SyncApproverReq,
   UpdateApproverDecisionReq,
+  IsApproverValidForOGRes,
 } from '../interfaces/protoc/proto/approverService';
 import {
   DigitalIdentity,
   Entity,
+  OrganizationGroup,
 } from '../interfaces/protoc/proto/kartoffelService';
 import {
   ApproverType,
@@ -39,8 +42,41 @@ import {
   approverTypeValidation,
 } from '../utils/approver.utils';
 import { hasPermissionToDecide } from '../utils/permission.utils';
+import * as C from '../config';
 
 export class ApproverRepository {
+  async isApproverValidForOG(
+    isApproverValidForOGReq: IsApproverValidForOGReq
+  ): Promise<IsApproverValidForOGRes> {
+    try {
+      const approverEntity: Entity = await KartoffelService.getEntityById({
+        id: isApproverValidForOGReq.approverId,
+      });
+      const group: OrganizationGroup = await KartoffelService.getOGById({
+        id: isApproverValidForOGReq.groupId,
+      });
+      const lastIndex =
+        group.ancestors.length < C.ogValidationDepth
+          ? group.ancestors.length
+          : C.ogValidationDepth;
+      const groupAncestors = group.ancestors.slice(0, lastIndex);
+      if (
+        group.id === approverEntity.directGroup ||
+        groupAncestors.includes(approverEntity.directGroup)
+      ) {
+        return { isValid: true };
+      } else {
+        return { isValid: false };
+      }
+    } catch (error: any) {
+      logger.error('addApprover ERROR', {
+        error: { message: error.message },
+        isApproverValidForOGReq,
+      });
+      throw error;
+    }
+  }
+
   async addApprover(addApproverReq: AddApproverReq) {
     try {
       const approver: any = new ApproverModel(addApproverReq);

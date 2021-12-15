@@ -14,6 +14,9 @@ export const mongoConnectionRetries =
   process.env.MONGO_RECONNECT_ATTEMPTS || '5';
 export const mongoReconnectTimeout =
   process.env.MONGO_RECONNECT_TIMEOUT || '2000';
+export const ogValidationDepth = process.env.APS_OG_VALIDATION_DEPTH
+  ? parseInt(process.env.APS_OG_VALIDATION_DEPTH)
+  : 4;
 
 export const logPath = process.env.APS_LOG_PATH
   ? `${process.env.APS_LOG_PATH}/approver-service`
