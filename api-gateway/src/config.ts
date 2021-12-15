@@ -28,6 +28,10 @@ export const config = {
       .default('http://52.169.23.32:8200')
       .asString(),
     useApm: env.get('GATEWAY_USE_APM').default('false').asBool(),
+    supportLink: env
+      .get('GATEWAY_SUPPORT_LINK')
+      .default('https://www.lego.com/en-us/service')
+      .asString(),
   },
   files: {
     path: env

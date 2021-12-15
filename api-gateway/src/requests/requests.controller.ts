@@ -41,8 +41,18 @@ import { KartoffelService } from '../kartoffel/kartoffel.service';
 import { statusCodeHandler } from '../utils/errors/errorHandlers';
 import { approveUserRequest } from './requests.utils';
 import { GetUserTypeRes } from '../interfaces/protoc/proto/approverService';
+import { config } from '../config';
 
 export default class RequestsController {
+  static async getSupportLink(req: any, res: Response) {
+    try {
+      res.send({ supportGroupLink: config.endpoints.supportLink });
+    } catch (error: any) {
+      const statusCode = statusCodeHandler(error);
+      res.status(statusCode).send(error.message);
+    }
+  }
+
   static async getRequestById(req: any, res: Response) {
     const getRequestByIdReq: GetRequestByIdReq = { id: req.params.id };
 
