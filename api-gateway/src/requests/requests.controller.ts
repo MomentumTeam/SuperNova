@@ -778,8 +778,16 @@ export default class RequestsController {
     });
 
     try {
-      const msg = await RequestsService.deleteRequest(deleteReq);
-      res.status(200).send(msg);
+      const userId = req.user.id;
+      const request: any = await RequestsService.getRequestById({
+        id: deleteReq.id,
+      });
+      if (request.submittedBy.id === userId) {
+        const msg = await RequestsService.deleteRequest(deleteReq);
+        res.status(200).send(msg);
+      } else {
+        res.status(403).send('You do not have the enough permissions!');
+      }
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
