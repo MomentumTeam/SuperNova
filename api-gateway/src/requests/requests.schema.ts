@@ -224,7 +224,7 @@ export const createRoleSchema = Joi.object({
     commanderDecision: ApproverDecisionObj,
     securityDecision: ApproverDecisionObj,
     superSecurityDecision: ApproverDecisionObj,
-    commanders: Joi.array().items(entityMinObj), // TODO: ask liora if required
+    commanders: Joi.array().items(entityMinObj), 
     securityApprovers: Joi.array().items(entityMinObj),
     superSecurityApprovers: Joi.array().items(entityMinObj),
     kartoffelStatus: kartoffelStatusObj,
@@ -414,6 +414,7 @@ export const renameOGSchema = Joi.object({
 const renameRoleKartoffelParamsObj = Joi.object({
   jobTitle: Joi.string().required(),
   roleId: Joi.string().required(),
+  oldJobTitle: Joi.string().required()
 });
 
 const renameRoleADParamsObj = Joi.object({

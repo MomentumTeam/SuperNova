@@ -1307,7 +1307,7 @@ export interface CreateRoleKartoffelParams {
 
 export interface CreateRoleADParams {
   /** T154514... generated automatically by tea-service if not given */
-  samAccountName: string;
+  samAccountName?: string | undefined;
   /** Role's full hierarchy */
   ouDisplayName: string;
   /** name of the role */
@@ -18763,18 +18763,14 @@ export const CreateRoleKartoffelParams = {
   },
 };
 
-const baseCreateRoleADParams: object = {
-  samAccountName: "",
-  ouDisplayName: "",
-  jobTitle: "",
-};
+const baseCreateRoleADParams: object = { ouDisplayName: "", jobTitle: "" };
 
 export const CreateRoleADParams = {
   encode(
     message: CreateRoleADParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.samAccountName !== "") {
+    if (message.samAccountName !== undefined) {
       writer.uint32(10).string(message.samAccountName);
     }
     if (message.ouDisplayName !== "") {
@@ -18815,7 +18811,7 @@ export const CreateRoleADParams = {
     if (object.samAccountName !== undefined && object.samAccountName !== null) {
       message.samAccountName = String(object.samAccountName);
     } else {
-      message.samAccountName = "";
+      message.samAccountName = undefined;
     }
     if (object.ouDisplayName !== undefined && object.ouDisplayName !== null) {
       message.ouDisplayName = String(object.ouDisplayName);
@@ -18845,7 +18841,7 @@ export const CreateRoleADParams = {
     if (object.samAccountName !== undefined && object.samAccountName !== null) {
       message.samAccountName = object.samAccountName;
     } else {
-      message.samAccountName = "";
+      message.samAccountName = undefined;
     }
     if (object.ouDisplayName !== undefined && object.ouDisplayName !== null) {
       message.ouDisplayName = object.ouDisplayName;

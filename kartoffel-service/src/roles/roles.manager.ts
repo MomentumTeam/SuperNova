@@ -19,7 +19,8 @@ import {
   RoleIdMessage,
   GetRoleIdSuffixByOGReq,
   RoleIdSuffix,
-} from '../interfaces/protoc/proto/kartoffelService';
+  SearchRoleByRoleIdReq,
+} from "../interfaces/protoc/proto/kartoffelService";
 import { KartoffelFaker } from '../mock/kartoffel.faker';
 import { KartoffelUtils } from '../utils/kartoffel.utils';
 import { RolesRepository } from './roles.repository';
@@ -122,5 +123,11 @@ export class RolesManager {
     changeRoleOGRequest: ChangeRoleOGRequest
   ): Promise<SuccessMessage> {
     return await this.rolesRepository.changeRoleOG(changeRoleOGRequest);
+  }
+
+  async searchRolesByRoleId(
+    searchRoleByRoleIdReq: SearchRoleByRoleIdReq
+  ): Promise<RoleArray> {
+    return await this.rolesRepository.searchRolesByRoleId(searchRoleByRoleIdReq);
   }
 }

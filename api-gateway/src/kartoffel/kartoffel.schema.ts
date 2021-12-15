@@ -64,7 +64,7 @@ export const getEntitiesUnderOGSchema = Joi.object({
 export const getEntitiesByHierarchySchema = Joi.object({
   body: {},
   params: {
-    hierarchy: Joi.string().required(), // TODO: is it string?
+    hierarchy: Joi.string().required(),
   },
   query: {
     direct: Joi.boolean().default(true),
@@ -107,9 +107,11 @@ export const isOGNameAlreadyTakenSchema = Joi.object({
 
 export const searchOGSchema = Joi.object({
   body: {},
-  params: {},
+  params: {
+  },
   query: {
-    nameAndHierarchy: Joi.string().required(), // TODO: is it string?
+    underGroupId: Joi.string(),
+    nameAndHierarchy: Joi.string().required(),
   },
 });
 
@@ -134,7 +136,11 @@ export const GetOGChildrenSchema = Joi.object({
   params: {
     id: Joi.objectId().required(),
   },
-  query: {},
+  query: {
+    direct: Joi.boolean().default(true),
+    page: Joi.number().default(1).min(1),
+    pageSize: Joi.number().default(100),
+  },
 });
 
 export const GetOGTreeSchema = Joi.object({
@@ -204,4 +210,24 @@ export const GetRolesByHierarchySchema = Joi.object({
     pageSize: Joi.number().default(100),
   },
   query: {},
+});
+
+export const SearchRolesByRoleIdValidSchema = Joi.object({
+  body: {},
+  params: {
+    roleId: Joi.string().required(),
+  },
+  query: {
+    hierarchy: Joi.string(),
+  },
+});
+
+// DI
+export const SearchDIsByUniqueIdValidSchema = Joi.object({
+  body: {},
+  params: {
+    uniqueId: Joi.string().required(),
+  },
+  query: {
+  },
 });

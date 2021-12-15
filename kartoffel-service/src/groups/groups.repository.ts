@@ -23,15 +23,20 @@ import {
   IsOGNameAlreadyTakenRes,
   IdMessage,
   EntityArray,
+  RoleArray,
+  GetRolesUnderOGRequest,
+  Role,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { ogNameExists } from '../utils/ogName.utils';
 import { cleanUnderscoreFields } from '../utils/json.utils';
 import { EntitiesRepository } from '../entities/entities.repository';
+import { getDirectRolesForGroups } from './groups.utils';
 
 export class GroupsRepository {
   private kartoffelFaker: KartoffelFaker;
   private kartoffelUtils: KartoffelUtils;
   private entitiesRepository: EntitiesRepository;
+
   constructor(kartoffelUtils: KartoffelUtils, kartoffelFaker: KartoffelFaker) {
     this.kartoffelFaker = kartoffelFaker;
     this.kartoffelUtils = kartoffelUtils;
@@ -177,7 +182,9 @@ export class GroupsRepository {
           getOGByHierarchyName.hierarchy
         )}`;
         const res = await this.kartoffelUtils.kartoffelGet(url, {});
-        return res as OrganizationGroup;
+        const groupsWithDirectRoles = await getDirectRolesForGroups([res]);
+
+        return groupsWithDirectRoles[0] as OrganizationGroup;
       }
     } catch (error) {
       throw error;
@@ -195,7 +202,11 @@ export class GroupsRepository {
           `${C.kartoffelUrl}/api/groups/search`,
           searchOGRequest
         );
-        return { groups: res as OrganizationGroup[] } as OGArray;
+        const groupsWithDirectRoles = await getDirectRolesForGroups(
+          res as OrganizationGroup[]
+        );
+
+        return { groups: groupsWithDirectRoles } as OGArray;
       }
     } catch (error) {
       throw error;
@@ -252,10 +263,12 @@ export class GroupsRepository {
       } else {
         const queryParams: any = { ...getChildrenOfOGRequest };
         delete queryParams.id;
+
         if (!queryParams.page || !queryParams.pageSize) {
           //get all children
           let page = 1;
           let groups: OrganizationGroup[] = [];
+
           while (true) {
             const currentPage = await this.getChildrenOfOG({
               id: getChildrenOfOGRequest.id,
@@ -266,7 +279,11 @@ export class GroupsRepository {
             if (!currentPage.groups || currentPage.groups.length === 0) {
               break;
             }
-            groups.push(...currentPage.groups);
+
+            const groupsWithDirectRoles = await getDirectRolesForGroups(
+              currentPage.groups
+            );
+            groups.push(...groupsWithDirectRoles);
             page++;
           }
           return { groups: groups } as OGArray;
@@ -275,7 +292,11 @@ export class GroupsRepository {
             `${C.kartoffelUrl}/api/groups/${getChildrenOfOGRequest.id}/children`,
             queryParams
           );
-          return { groups: res as OrganizationGroup[] } as OGArray;
+          const groupsWithDirectRoles = await getDirectRolesForGroups(
+            res as OrganizationGroup[]
+          );
+
+          return { groups: groupsWithDirectRoles } as OGArray;
         }
       }
     } catch (error) {
