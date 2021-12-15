@@ -59,6 +59,7 @@ service Kartoffel {
     rpc IsJobTitleAlreadyTaken(IsJobTitleAlreadyTakenReq) returns (IsJobTitleAlreadyTakenRes){}
     rpc GetRolesByHierarchy(GetRolesByHierarchyRequest) returns (RoleArray){}
     rpc GetRoleIdSuffixByOG(GetRoleIdSuffixByOGReq) returns (RoleIdSuffix){}
+    rpc SearchRoleByRoleId(SearchRoleByRoleIdReq) returns (RoleArray){}
 }
 
 message GetRoleIdSuffixByOGReq{
@@ -125,6 +126,11 @@ message GetDIByUniqueIdRequest{
 
 message SearchDIByUniqueIdRequest{
     string uniqueId = 1;
+}
+
+message SearchRoleByRoleIdReq {
+    string roleId = 1;
+    optional string hierarchy = 2;
 }
 
 message GetDIByRoleIdRequest{
@@ -233,6 +239,7 @@ message OGTree{
 // SearchOG
 message SearchOGRequest{
     string nameAndHierarchy = 1;
+    optional string underGroupId = 2;
 }
 
 message OGArray{

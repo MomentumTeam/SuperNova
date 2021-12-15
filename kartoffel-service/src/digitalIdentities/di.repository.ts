@@ -101,7 +101,7 @@ export class DiRepository {
       } else {
         const res = await this.kartoffelUtils.kartoffelGet(
           `${C.kartoffelUrl}/api/digitalIdentities/search`,
-          searchDIByUniqueIdRequest
+          {...searchDIByUniqueIdRequest, expanded: true }
         );
 
         return { digitalIdentities: res } as DigitalIdentities;

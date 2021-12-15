@@ -20,6 +20,7 @@ import {
   RoleIdMessage,
   GetRoleIdSuffixByOGReq,
   RoleIdSuffix,
+  SearchRoleByRoleIdReq,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { KartoffelFaker } from '../mock/kartoffel.faker';
 import { KartoffelUtils } from '../utils/kartoffel.utils';
@@ -425,6 +426,26 @@ export class RolesRepository {
         } else {
           throw new Error('res not ok');
         }
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async searchRolesByRoleId(
+    searchRoleByRoleIdReq: SearchRoleByRoleIdReq
+  ): Promise<RoleArray> {
+    try {
+      cleanUnderscoreFields(searchRoleByRoleIdReq);
+      if (C.useFaker) {
+        return this.kartoffelFaker.randomRoleArray(10);
+      } else {
+         const data: Role[] = await this.kartoffelUtils.kartoffelGet(
+           `${C.kartoffelUrl}/api/roles/search`,
+           searchRoleByRoleIdReq
+         );
+
+         return { roles: data };
       }
     } catch (error) {
       throw error;

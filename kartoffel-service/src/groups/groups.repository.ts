@@ -23,27 +23,27 @@ import {
   IsOGNameAlreadyTakenRes,
   IdMessage,
   EntityArray,
+  RoleArray,
+  GetRolesUnderOGRequest,
+  Role,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { ogNameExists } from '../utils/ogName.utils';
 import { cleanUnderscoreFields } from '../utils/json.utils';
 import { EntitiesRepository } from '../entities/entities.repository';
+import { getDirectRolesForGroups } from './groups.utils';
 
 export class GroupsRepository {
   private kartoffelFaker: KartoffelFaker;
   private kartoffelUtils: KartoffelUtils;
   private entitiesRepository: EntitiesRepository;
+
   constructor(kartoffelUtils: KartoffelUtils, kartoffelFaker: KartoffelFaker) {
     this.kartoffelFaker = kartoffelFaker;
     this.kartoffelUtils = kartoffelUtils;
-    this.entitiesRepository = new EntitiesRepository(
-      kartoffelUtils,
-      kartoffelFaker
-    );
+    this.entitiesRepository = new EntitiesRepository(kartoffelUtils, kartoffelFaker);
   }
 
-  async isOGNameAlreadyTaken(
-    isOGNameAlreadyTakenReq: IsOGNameAlreadyTakenReq
-  ): Promise<IsOGNameAlreadyTakenRes> {
+  async isOGNameAlreadyTaken(isOGNameAlreadyTakenReq: IsOGNameAlreadyTakenReq): Promise<IsOGNameAlreadyTakenRes> {
     try {
       cleanUnderscoreFields(isOGNameAlreadyTakenReq);
       if (C.useFaker) {
@@ -90,10 +90,7 @@ export class GroupsRepository {
 
         return await this.getTree(
           treeDepth,
-          [
-            organizationGroup.id,
-            ...organizationGroup.ancestors.slice(0, treeDepth),
-          ],
+          [organizationGroup.id, ...organizationGroup.ancestors.slice(0, treeDepth)],
           rootTree
         );
       }
@@ -102,14 +99,12 @@ export class GroupsRepository {
     }
   }
 
-  async getPrefixByOGId(
-    getPrefixByOGIdRequest: GetPrefixByOGIdRequest
-  ): Promise<OGPrefix> {
+  async getPrefixByOGId(getPrefixByOGIdRequest: GetPrefixByOGIdRequest): Promise<OGPrefix> {
     try {
       cleanUnderscoreFields(getPrefixByOGIdRequest);
       if (C.useFaker) {
         const prefix = this.kartoffelFaker.randomNumber(1000, 9999);
-        return { prefix: prefix.toString(), source: 'oneTree' };
+        return { prefix: prefix.toString(), source: "oneTree" };
       } else {
         const res = await this.kartoffelUtils.kartoffelGet(
           `${C.kartoffelUrl}/api/groups/${getPrefixByOGIdRequest.id}/diPrefix`
@@ -125,18 +120,11 @@ export class GroupsRepository {
     try {
       cleanUnderscoreFields(getAllOGsRequest);
       if (C.useFaker) {
-        const ogArray: OGArray = await this.kartoffelFaker.randomOGArray(
-          getAllOGsRequest.pageSize
-        );
+        const ogArray: OGArray = await this.kartoffelFaker.randomOGArray(getAllOGsRequest.pageSize);
         return ogArray;
       } else {
-        getAllOGsRequest.source = getAllOGsRequest.source
-          ? getAllOGsRequest.source
-          : C.defaultSource;
-        const res = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/api/groups`,
-          getAllOGsRequest
-        );
+        getAllOGsRequest.source = getAllOGsRequest.source ? getAllOGsRequest.source : C.defaultSource;
+        const res = await this.kartoffelUtils.kartoffelGet(`${C.kartoffelUrl}/api/groups`, getAllOGsRequest);
         return { groups: res } as OGArray;
       }
     } catch (error) {
@@ -151,10 +139,7 @@ export class GroupsRepository {
         const newOG: OrganizationGroup = await this.kartoffelFaker.randomOG();
         return newOG;
       } else {
-        const res = await this.kartoffelUtils.kartoffelPost(
-          `${C.kartoffelUrl}/api/groups`,
-          createOGRequest
-        );
+        const res = await this.kartoffelUtils.kartoffelPost(`${C.kartoffelUrl}/api/groups`, createOGRequest);
         return { id: res.id } as IdMessage;
       }
     } catch (error) {
@@ -162,22 +147,18 @@ export class GroupsRepository {
     }
   }
 
-  async getOGByHierarchyName(
-    getOGByHierarchyName: GetOGByHierarchyNameRequest
-  ): Promise<OrganizationGroup> {
+  async getOGByHierarchyName(getOGByHierarchyName: GetOGByHierarchyNameRequest): Promise<OrganizationGroup> {
     try {
       cleanUnderscoreFields(getOGByHierarchyName);
       if (C.useFaker) {
         const og: OrganizationGroup = await this.kartoffelFaker.randomOG();
         return og;
       } else {
-        const url = `${
-          C.kartoffelUrl
-        }/api/groups/hierarchy/${encodeURIComponent(
-          getOGByHierarchyName.hierarchy
-        )}`;
+        const url = `${C.kartoffelUrl}/api/groups/hierarchy/${encodeURIComponent(getOGByHierarchyName.hierarchy)}`;
         const res = await this.kartoffelUtils.kartoffelGet(url, {});
-        return res as OrganizationGroup;
+        const groupsWithDirectRoles = await getDirectRolesForGroups([res]);
+
+        return groupsWithDirectRoles[0] as OrganizationGroup;
       }
     } catch (error) {
       throw error;
@@ -191,11 +172,10 @@ export class GroupsRepository {
         const ogArray: OGArray = await this.kartoffelFaker.randomOGArray();
         return ogArray;
       } else {
-        const res = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/api/groups/search`,
-          searchOGRequest
-        );
-        return { groups: res as OrganizationGroup[] } as OGArray;
+        const res = await this.kartoffelUtils.kartoffelGet(`${C.kartoffelUrl}/api/groups/search`, searchOGRequest);
+        const groupsWithDirectRoles = await getDirectRolesForGroups(res as OrganizationGroup[]);
+
+        return { groups: groupsWithDirectRoles } as OGArray;
       }
     } catch (error) {
       throw error;
@@ -209,9 +189,7 @@ export class GroupsRepository {
         const successMessage: SuccessMessage = { success: true };
         return successMessage;
       } else {
-        const res = await this.kartoffelUtils.kartoffelDelete(
-          `${C.kartoffelUrl}/api/groups/${deleteOGRequest.id}`
-        );
+        const res = await this.kartoffelUtils.kartoffelDelete(`${C.kartoffelUrl}/api/groups/${deleteOGRequest.id}`);
         return { success: true } as SuccessMessage;
       }
     } catch (error) {
@@ -219,19 +197,14 @@ export class GroupsRepository {
     }
   }
 
-  async getOGById(
-    getOGByIdRequest: GetOGByIdRequest
-  ): Promise<OrganizationGroup> {
+  async getOGById(getOGByIdRequest: GetOGByIdRequest): Promise<OrganizationGroup> {
     try {
       cleanUnderscoreFields(getOGByIdRequest);
       if (C.useFaker) {
         const og: OrganizationGroup = await this.kartoffelFaker.randomOG();
         return og;
       } else {
-        const res = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/api/groups/${getOGByIdRequest.id}`,
-          {}
-        );
+        const res = await this.kartoffelUtils.kartoffelGet(`${C.kartoffelUrl}/api/groups/${getOGByIdRequest.id}`, {});
         return res as OrganizationGroup;
       }
     } catch (error) {
@@ -239,23 +212,21 @@ export class GroupsRepository {
     }
   }
 
-  async getChildrenOfOG(
-    getChildrenOfOGRequest: GetChildrenOfOGRequest
-  ): Promise<OGArray> {
+  async getChildrenOfOG(getChildrenOfOGRequest: GetChildrenOfOGRequest): Promise<OGArray> {
     try {
       cleanUnderscoreFields(getChildrenOfOGRequest);
       if (C.useFaker) {
-        const ogChildern: OGArray = await this.kartoffelFaker.randomOGArray(
-          getChildrenOfOGRequest.pageSize
-        );
+        const ogChildern: OGArray = await this.kartoffelFaker.randomOGArray(getChildrenOfOGRequest.pageSize);
         return ogChildern;
       } else {
         const queryParams: any = { ...getChildrenOfOGRequest };
         delete queryParams.id;
+
         if (!queryParams.page || !queryParams.pageSize) {
           //get all children
           let page = 1;
           let groups: OrganizationGroup[] = [];
+
           while (true) {
             const currentPage = await this.getChildrenOfOG({
               id: getChildrenOfOGRequest.id,
@@ -266,7 +237,9 @@ export class GroupsRepository {
             if (!currentPage.groups || currentPage.groups.length === 0) {
               break;
             }
-            groups.push(...currentPage.groups);
+
+            const groupsWithDirectRoles = await getDirectRolesForGroups(currentPage.groups);
+            groups.push(...groupsWithDirectRoles);
             page++;
           }
           return { groups: groups } as OGArray;
@@ -275,7 +248,9 @@ export class GroupsRepository {
             `${C.kartoffelUrl}/api/groups/${getChildrenOfOGRequest.id}/children`,
             queryParams
           );
-          return { groups: res as OrganizationGroup[] } as OGArray;
+          const groupsWithDirectRoles = await getDirectRolesForGroups(res as OrganizationGroup[]);
+
+          return { groups: groupsWithDirectRoles } as OGArray;
         }
       }
     } catch (error) {
@@ -300,9 +275,7 @@ export class GroupsRepository {
     }
   }
 
-  async updateOGParent(
-    updateOGParentRequest: UpdateOGParentRequest
-  ): Promise<SuccessMessage> {
+  async updateOGParent(updateOGParentRequest: UpdateOGParentRequest): Promise<SuccessMessage> {
     try {
       cleanUnderscoreFields(updateOGParentRequest);
       if (C.useFaker) {
@@ -343,11 +316,7 @@ export class GroupsRepository {
     }
   }
 
-  async getTree(
-    currentDepth: number,
-    groupsToQuery: Array<String>,
-    currentChild: OrganizationGroup
-  ): Promise<OGTree> {
+  async getTree(currentDepth: number, groupsToQuery: Array<String>, currentChild: OrganizationGroup): Promise<OGTree> {
     if (!groupsToQuery.includes(currentChild.id)) {
       return { id: currentChild.id, label: currentChild.name, children: [] };
     } else {

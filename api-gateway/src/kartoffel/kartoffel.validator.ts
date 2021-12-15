@@ -23,8 +23,10 @@ import {
   IsJobTitleAlreadyTakenSchema,
   isOGNameAlreadyTakenSchema,
   IsRoleAlreadyTakenSchema,
+  SearchDIsByUniqueIdValidSchema,
   searchEntitiesByFullNameSchema,
   searchOGSchema,
+  SearchRolesByRoleIdValidSchema,
 } from './kartoffel.schema';
 export class KartoffelValidator {
   // Entities
@@ -253,6 +255,25 @@ export class KartoffelValidator {
       req,
       validateObject(req, GetRolesByHierarchySchema, { allowUnknown: true })
     );
+    next();
+  }
+
+  static isSearchRolesByRoleIdValid(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    transformRequest(req, validateObject(req, SearchRolesByRoleIdValidSchema, { allowUnknown: true }));
+    next();
+  }
+
+  // DI
+   static isSearchDIsByUniqueIdValid(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    transformRequest(req, validateObject(req, SearchDIsByUniqueIdValidSchema, { allowUnknown: true }));
     next();
   }
 }

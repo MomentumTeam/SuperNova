@@ -414,6 +414,7 @@ export const renameOGSchema = Joi.object({
 const renameRoleKartoffelParamsObj = Joi.object({
   jobTitle: Joi.string().required(),
   roleId: Joi.string().required(),
+  oldJobTitle: Joi.string().required()
 });
 
 const renameRoleADParamsObj = Joi.object({
