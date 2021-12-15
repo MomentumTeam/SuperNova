@@ -264,13 +264,17 @@ export class EntitiesRepository {
         }/api/entities/search?fullName=${encodeURIComponent(
           searchCommandersByFullNameRequest.fullName
         )}`;
-        for (let rank of C.commanderRanks) {
-          url = url + `&rank=${rank}`;
+        if (C.searchWithRanks) {
+          for (let rank of C.commanderRanks) {
+            url = url + `&rank=${encodeURIComponent(rank)}`;
+          }
         }
         if (searchCommandersByFullNameRequest.source) {
-          url = url + `&source=${searchCommandersByFullNameRequest.source}`;
+          url =
+            url +
+            `&digitalIdentity.source=${searchCommandersByFullNameRequest.source}`;
         } else {
-          url = url + `&source=${C.defaultSource}`;
+          url = url + `&digitalIdentity.source=${C.defaultDISource}`;
         }
         url = url + '&expanded=true';
         const data = await this.kartoffelUtils.kartoffelGet(url);
@@ -299,13 +303,17 @@ export class EntitiesRepository {
         }/api/entities/search?fullName=${encodeURIComponent(
           searchCommandersByFullNameRequest.fullName
         )}`;
-        for (let rank of C.highCommanderRanks) {
-          url = url + `&rank=${rank}`;
+        if (C.searchWithRanks) {
+          for (let rank of C.highCommanderRanks) {
+            url = url + `&rank=${encodeURIComponent(rank)}`;
+          }
         }
         if (searchCommandersByFullNameRequest.source) {
-          url = url + `&source=${searchCommandersByFullNameRequest.source}`;
+          url =
+            url +
+            `&digitalIdentity.source=${searchCommandersByFullNameRequest.source}`;
         } else {
-          url = url + `&source=${C.defaultSource}`;
+          url = url + `&digitalIdentity.source=${C.defaultDISource}`;
         }
         url = url + '&expanded=true';
         const data = await this.kartoffelUtils.kartoffelGet(url);

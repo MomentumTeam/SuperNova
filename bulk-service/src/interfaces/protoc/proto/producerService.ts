@@ -6,6 +6,7 @@ export const protobufPackage = "Producer";
 
 export interface ProduceRequest {
   id: string;
+  force?: boolean | undefined;
 }
 
 export interface SuccessMessage {
@@ -23,6 +24,9 @@ export const ProduceRequest = {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
+    if (message.force !== undefined) {
+      writer.uint32(16).bool(message.force);
+    }
     return writer;
   },
 
@@ -35,6 +39,9 @@ export const ProduceRequest = {
       switch (tag >>> 3) {
         case 1:
           message.id = reader.string();
+          break;
+        case 2:
+          message.force = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -51,12 +58,18 @@ export const ProduceRequest = {
     } else {
       message.id = "";
     }
+    if (object.force !== undefined && object.force !== null) {
+      message.force = Boolean(object.force);
+    } else {
+      message.force = undefined;
+    }
     return message;
   },
 
   toJSON(message: ProduceRequest): unknown {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
+    message.force !== undefined && (obj.force = message.force);
     return obj;
   },
 
@@ -66,6 +79,11 @@ export const ProduceRequest = {
       message.id = object.id;
     } else {
       message.id = "";
+    }
+    if (object.force !== undefined && object.force !== null) {
+      message.force = object.force;
+    } else {
+      message.force = undefined;
     }
     return message;
   },

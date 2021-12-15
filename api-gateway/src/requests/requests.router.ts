@@ -23,6 +23,7 @@ RequestsRouter.get(
   RequestValidator.isGetRequestsValid,
   RequestsController.getMyRequestsToApprove
 );
+RequestsRouter.get('/support', RequestsController.getSupportLink);
 
 RequestsRouter.get(
   '/:id',
