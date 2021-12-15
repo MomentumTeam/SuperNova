@@ -33,6 +33,12 @@ ApproverRouter.post(
   ApproverController.addApprover
 );
 
+ApproverRouter.post(
+  '/isValid',
+  ApproverValidator.isApproverValidValid,
+  ApproverController.isApproverValid
+);
+
 // PUT
 ApproverRouter.put(
   '/decision/:requestId',

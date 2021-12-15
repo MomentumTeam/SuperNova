@@ -10,6 +10,8 @@ import {
   GetAllApproversReq,
   GetUserTypeReq,
   GetUserTypeRes,
+  IsApproverValidForOGReq,
+  IsApproverValidForOGRes,
   SearchByDisplayNameReq,
   SearchByDomainUserReq,
   SearchHighCommandersByDisplayNameReq,
@@ -51,6 +53,36 @@ const approverClient: any = new protoDescriptor.ApproverService(
 );
 
 export class ApproverService {
+  static async isApproverValidForOGReq(
+    isApproverValidForOGReq: IsApproverValidForOGReq
+  ) {
+    logger.info(
+      `Call to isApproverValidForOGReq in GTW`,
+      isApproverValidForOGReq
+    );
+
+    return new Promise((resolve, reject) => {
+      approverClient.IsApproverValidForOGReq(
+        isApproverValidForOGReq,
+        (err: any, response: IsApproverValidForOGRes) => {
+          if (err) {
+            logger.error(`isApproverValidForOGReq ERROR in GTW`, {
+              err,
+              callRequest: isApproverValidForOGReq,
+            });
+            reject(err);
+          }
+
+          logger.info(`isApproverValidForOGReq OK in GTW`, {
+            response: response,
+            callRequest: isApproverValidForOGReq,
+          });
+          resolve(response);
+        }
+      );
+    });
+  }
+
   static async getAllApprovers(getAllApproversReq: GetAllApproversReq) {
     logger.info(`Call to GetAllApprovers in GTW`, getAllApproversReq);
 

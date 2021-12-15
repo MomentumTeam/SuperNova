@@ -9,6 +9,7 @@ import {
   getAllApproversSchema,
   getSearchByDisplayName,
   getSearchByDomainUser,
+  isApproverValidSchema,
   searchHighCommandersByDisplayNameValidSchema,
   updateApproverDecisionSchema,
 } from './approver.schema';
@@ -73,7 +74,13 @@ export class ApproverValidator {
     );
     next();
   }
-
+  static isApproverValidValid(req: Request, res: Response, next: NextFunction) {
+    transformRequest(
+      req,
+      validateObject(req, isApproverValidSchema, { allowUnknown: true })
+    );
+    next();
+  }
   // PUT
   static isUpdateApproverDecisionValid(
     req: Request,
