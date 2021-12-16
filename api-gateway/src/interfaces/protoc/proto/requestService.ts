@@ -1443,7 +1443,7 @@ export interface AssignRoleToEntityKartoffelParams {
 }
 
 export interface AssignRoleToEntityADParams {
-  oldSAMAccountName: string;
+  oldSAMAccountName?: string | undefined;
   newSAMAccountName: string;
   upn?: string | undefined;
   firstName: string;
@@ -1473,6 +1473,7 @@ export interface ChangeRoleHierarchyKartoffelParams {
 
 export interface ChangeRoleHierarchyADParams {
   samAccountName?: string | undefined;
+  /** the new one */
   ouDisplayName?: string | undefined;
   newJobTitle?: string | undefined;
 }
@@ -20896,7 +20897,6 @@ export const AssignRoleToEntityKartoffelParams = {
 };
 
 const baseAssignRoleToEntityADParams: object = {
-  oldSAMAccountName: "",
   newSAMAccountName: "",
   firstName: "",
   lastName: "",
@@ -20910,7 +20910,7 @@ export const AssignRoleToEntityADParams = {
     message: AssignRoleToEntityADParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.oldSAMAccountName !== "") {
+    if (message.oldSAMAccountName !== undefined) {
       writer.uint32(10).string(message.oldSAMAccountName);
     }
     if (message.newSAMAccountName !== "") {
@@ -20991,7 +20991,7 @@ export const AssignRoleToEntityADParams = {
     ) {
       message.oldSAMAccountName = String(object.oldSAMAccountName);
     } else {
-      message.oldSAMAccountName = "";
+      message.oldSAMAccountName = undefined;
     }
     if (
       object.newSAMAccountName !== undefined &&
@@ -21062,7 +21062,7 @@ export const AssignRoleToEntityADParams = {
     ) {
       message.oldSAMAccountName = object.oldSAMAccountName;
     } else {
-      message.oldSAMAccountName = "";
+      message.oldSAMAccountName = undefined;
     }
     if (
       object.newSAMAccountName !== undefined &&
