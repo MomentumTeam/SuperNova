@@ -471,10 +471,7 @@ export default class RequestsController {
           ];
         }
       }
-      const request: any = await approveUserRequest(req, assignRoleToEntityReq);
-      const assignRole = await RequestsService.assignRoleToEntityRequest(
-        request
-      );
+      const assignRole = await RequestsService.assignRoleToEntityRequest(assignRoleToEntityReq);
 
       res.status(200).send(assignRole);
     } catch (error: any) {
