@@ -471,7 +471,12 @@ export default class RequestsController {
           ];
         }
       }
-      const assignRole = await RequestsService.assignRoleToEntityRequest(assignRoleToEntityReq);
+      const request: any = assignRoleToEntityReq.kartoffelParams?.needDisconnect
+        ? assignRoleToEntityReq
+        : await approveUserRequest(req, assignRoleToEntityReq);
+      const assignRole = await RequestsService.assignRoleToEntityRequest(
+        request
+      );
 
       res.status(200).send(assignRole);
     } catch (error: any) {
