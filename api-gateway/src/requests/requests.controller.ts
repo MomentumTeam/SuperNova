@@ -481,7 +481,9 @@ export default class RequestsController {
           ];
         }
       }
-      const request: any = await approveUserRequest(req, assignRoleToEntityReq);
+      const request: any = assignRoleToEntityReq.kartoffelParams?.needDisconnect
+        ? assignRoleToEntityReq
+        : await approveUserRequest(req, assignRoleToEntityReq);
       const assignRole = await RequestsService.assignRoleToEntityRequest(
         request
       );

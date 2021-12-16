@@ -1388,15 +1388,15 @@ export interface EditEntityKartoffelParams {
   firstName: string;
   lastName: string;
   identityCard?: string | undefined;
-  personalNumber: string;
-  serviceType: string;
+  personalNumber?: string | undefined;
+  serviceType?: string | undefined;
   phone: string[];
   mobilePhone: string[];
-  address: string;
-  clearance: string;
-  sex: string;
-  birthdate: number;
-  entityType: string;
+  address?: string | undefined;
+  clearance?: string | undefined;
+  sex?: string | undefined;
+  birthdate?: number | undefined;
+  entityType?: string | undefined;
 }
 
 export interface EditEntityADParams {
@@ -1443,7 +1443,7 @@ export interface AssignRoleToEntityKartoffelParams {
 }
 
 export interface AssignRoleToEntityADParams {
-  oldSAMAccountName: string;
+  oldSAMAccountName?: string | undefined;
   newSAMAccountName: string;
   upn?: string | undefined;
   firstName: string;
@@ -1473,6 +1473,7 @@ export interface ChangeRoleHierarchyKartoffelParams {
 
 export interface ChangeRoleHierarchyADParams {
   samAccountName?: string | undefined;
+  /** the new one */
   ouDisplayName?: string | undefined;
   newJobTitle?: string | undefined;
 }
@@ -19956,15 +19957,8 @@ const baseEditEntityKartoffelParams: object = {
   id: "",
   firstName: "",
   lastName: "",
-  personalNumber: "",
-  serviceType: "",
   phone: "",
   mobilePhone: "",
-  address: "",
-  clearance: "",
-  sex: "",
-  birthdate: 0,
-  entityType: "",
 };
 
 export const EditEntityKartoffelParams = {
@@ -19984,10 +19978,10 @@ export const EditEntityKartoffelParams = {
     if (message.identityCard !== undefined) {
       writer.uint32(34).string(message.identityCard);
     }
-    if (message.personalNumber !== "") {
+    if (message.personalNumber !== undefined) {
       writer.uint32(42).string(message.personalNumber);
     }
-    if (message.serviceType !== "") {
+    if (message.serviceType !== undefined) {
       writer.uint32(50).string(message.serviceType);
     }
     for (const v of message.phone) {
@@ -19996,19 +19990,19 @@ export const EditEntityKartoffelParams = {
     for (const v of message.mobilePhone) {
       writer.uint32(66).string(v!);
     }
-    if (message.address !== "") {
+    if (message.address !== undefined) {
       writer.uint32(74).string(message.address);
     }
-    if (message.clearance !== "") {
+    if (message.clearance !== undefined) {
       writer.uint32(82).string(message.clearance);
     }
-    if (message.sex !== "") {
+    if (message.sex !== undefined) {
       writer.uint32(90).string(message.sex);
     }
-    if (message.birthdate !== 0) {
+    if (message.birthdate !== undefined) {
       writer.uint32(96).int64(message.birthdate);
     }
-    if (message.entityType !== "") {
+    if (message.entityType !== undefined) {
       writer.uint32(106).string(message.entityType);
     }
     return writer;
@@ -20104,12 +20098,12 @@ export const EditEntityKartoffelParams = {
     if (object.personalNumber !== undefined && object.personalNumber !== null) {
       message.personalNumber = String(object.personalNumber);
     } else {
-      message.personalNumber = "";
+      message.personalNumber = undefined;
     }
     if (object.serviceType !== undefined && object.serviceType !== null) {
       message.serviceType = String(object.serviceType);
     } else {
-      message.serviceType = "";
+      message.serviceType = undefined;
     }
     if (object.phone !== undefined && object.phone !== null) {
       for (const e of object.phone) {
@@ -20124,27 +20118,27 @@ export const EditEntityKartoffelParams = {
     if (object.address !== undefined && object.address !== null) {
       message.address = String(object.address);
     } else {
-      message.address = "";
+      message.address = undefined;
     }
     if (object.clearance !== undefined && object.clearance !== null) {
       message.clearance = String(object.clearance);
     } else {
-      message.clearance = "";
+      message.clearance = undefined;
     }
     if (object.sex !== undefined && object.sex !== null) {
       message.sex = String(object.sex);
     } else {
-      message.sex = "";
+      message.sex = undefined;
     }
     if (object.birthdate !== undefined && object.birthdate !== null) {
       message.birthdate = Number(object.birthdate);
     } else {
-      message.birthdate = 0;
+      message.birthdate = undefined;
     }
     if (object.entityType !== undefined && object.entityType !== null) {
       message.entityType = String(object.entityType);
     } else {
-      message.entityType = "";
+      message.entityType = undefined;
     }
     return message;
   },
@@ -20209,12 +20203,12 @@ export const EditEntityKartoffelParams = {
     if (object.personalNumber !== undefined && object.personalNumber !== null) {
       message.personalNumber = object.personalNumber;
     } else {
-      message.personalNumber = "";
+      message.personalNumber = undefined;
     }
     if (object.serviceType !== undefined && object.serviceType !== null) {
       message.serviceType = object.serviceType;
     } else {
-      message.serviceType = "";
+      message.serviceType = undefined;
     }
     if (object.phone !== undefined && object.phone !== null) {
       for (const e of object.phone) {
@@ -20229,27 +20223,27 @@ export const EditEntityKartoffelParams = {
     if (object.address !== undefined && object.address !== null) {
       message.address = object.address;
     } else {
-      message.address = "";
+      message.address = undefined;
     }
     if (object.clearance !== undefined && object.clearance !== null) {
       message.clearance = object.clearance;
     } else {
-      message.clearance = "";
+      message.clearance = undefined;
     }
     if (object.sex !== undefined && object.sex !== null) {
       message.sex = object.sex;
     } else {
-      message.sex = "";
+      message.sex = undefined;
     }
     if (object.birthdate !== undefined && object.birthdate !== null) {
       message.birthdate = object.birthdate;
     } else {
-      message.birthdate = 0;
+      message.birthdate = undefined;
     }
     if (object.entityType !== undefined && object.entityType !== null) {
       message.entityType = object.entityType;
     } else {
-      message.entityType = "";
+      message.entityType = undefined;
     }
     return message;
   },
@@ -20903,7 +20897,6 @@ export const AssignRoleToEntityKartoffelParams = {
 };
 
 const baseAssignRoleToEntityADParams: object = {
-  oldSAMAccountName: "",
   newSAMAccountName: "",
   firstName: "",
   lastName: "",
@@ -20917,7 +20910,7 @@ export const AssignRoleToEntityADParams = {
     message: AssignRoleToEntityADParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.oldSAMAccountName !== "") {
+    if (message.oldSAMAccountName !== undefined) {
       writer.uint32(10).string(message.oldSAMAccountName);
     }
     if (message.newSAMAccountName !== "") {
@@ -20998,7 +20991,7 @@ export const AssignRoleToEntityADParams = {
     ) {
       message.oldSAMAccountName = String(object.oldSAMAccountName);
     } else {
-      message.oldSAMAccountName = "";
+      message.oldSAMAccountName = undefined;
     }
     if (
       object.newSAMAccountName !== undefined &&
@@ -21069,7 +21062,7 @@ export const AssignRoleToEntityADParams = {
     ) {
       message.oldSAMAccountName = object.oldSAMAccountName;
     } else {
-      message.oldSAMAccountName = "";
+      message.oldSAMAccountName = undefined;
     }
     if (
       object.newSAMAccountName !== undefined &&
