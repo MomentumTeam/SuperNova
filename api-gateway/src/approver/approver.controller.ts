@@ -9,6 +9,7 @@ import {
   DeleteApproverReq,
   SearchHighCommandersByDisplayNameReq,
   UpdateApproverDecisionReq,
+  IsApproverValidForOGReq,
 } from '../interfaces/protoc/proto/approverService';
 import { ApproverService } from './approver.service';
 import { KartoffelService } from '../kartoffel/kartoffel.service';
@@ -159,6 +160,23 @@ export default class ApproverController {
     }
   }
 
+  static async isApproverValid(req: any, res: Response) {
+    const isApproverValidReq: IsApproverValidForOGReq = {
+      approverId: req.body.approverId,
+      groupId: req.body.groupId,
+    };
+
+    try {
+      const isApproverValidRes = await ApproverService.isApproverValidForOG(
+        isApproverValidReq
+      );
+      res.send(isApproverValidRes);
+    } catch (error: any) {
+      const statusCode = statusCodeHandler(error);
+      res.status(statusCode).send(error.message);
+    }
+  }
+
   // PUT
   static async updateApproverDecision(req: any, res: Response) {
     // Get the current approver
@@ -194,20 +212,25 @@ export default class ApproverController {
         typeof request.type === typeof ''
           ? requestTypeFromJSON(request.type)
           : request.type;
-      
+
       const decisionType = decisionFromJSON(decision);
-      if (requestType === RequestType.ADD_APPROVER && decisionType !== Decision.DENIED) {
-        const isRequestApproved = await RequestsService.isRequestApproved({id: request.id}) as IsRequestApprovedRes;
+      if (
+        requestType === RequestType.ADD_APPROVER &&
+        decisionType !== Decision.DENIED
+      ) {
+        const isRequestApproved = (await RequestsService.isRequestApproved({
+          id: request.id,
+        })) as IsRequestApprovedRes;
 
         if (isRequestApproved.isRequestApproved) {
           try {
             await ApproverService.addApprover({
-              entityId: request.additionalParams?.entityId || "",
+              entityId: request.additionalParams?.entityId || '',
               type: request.additionalParams?.type || ApproverType.UNRECOGNIZED,
-              akaUnit: request.additionalParams?.akaUnit || "",
-              displayName: request.additionalParams?.displayName || "",
+              akaUnit: request.additionalParams?.akaUnit || '',
+              displayName: request.additionalParams?.displayName || '',
               domainUsers: request.additionalParams?.domainUsers || [],
-              directGroup: request.additionalParams?.directGroup || "",
+              directGroup: request.additionalParams?.directGroup || '',
             });
             await RequestsService.updateRequest({
               id: request.id,

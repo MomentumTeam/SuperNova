@@ -1,4 +1,4 @@
-import * as grpc from "@grpc/grpc-js";
+import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 import * as C from './config';
 import { logger } from './logger';
@@ -8,6 +8,7 @@ import {
   getAllApproverIds,
   getAllApprovers,
   getUserType,
+  isApproverValidForOG,
   searchApproverByDisplayName,
   searchApproverByDomainUser,
   searchHighCommandersByDisplayName,
@@ -67,6 +68,7 @@ export class Server {
           GetAllApproverIds: getAllApproverIds,
           SyncApprover: syncApprover,
           DeleteApprover: deleteApprover,
+          IsApproverValidForOG: isApproverValidForOG,
         }
       );
       logger.info(`Grpc services were successfully added to the server`);

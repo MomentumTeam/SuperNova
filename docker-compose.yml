@@ -92,8 +92,11 @@ services:
       - KS_USE_FAKER=false
       - KS_SS_URL=spike-service:8080
       - KS_ROOT_ID=6184af202da776001134110b
-      - KS_DEFAULT_SOURCE=sf_name
+      - KS_DEFAULT_ROLE_SOURCE=sf_name
+      - KS_DEFAULT_DI_SOURCE=sf_name
+      - KS_DI_SOURCES=sf_name,sf_name
       - KS_DEFAULT_ROLE_ID_SUFFIX=oneTree
+      - KS_SEARCH_WITH_RANKS=true
       - KS_LOG_PATH=/logs
 
   producer-service:
@@ -147,6 +150,7 @@ services:
       - APS_MONGO_URL=mongodb://mongo:27017/supernova
       - APS_KS_URL=kartoffel-service:8080
       - APS_RS_URL=request-service:8080
+      - APS_OG_VALIDATION_DEPTH=4
       - APS_LOG_PATH=/logs
 
   tea-service:
@@ -326,7 +330,7 @@ services:
       - approver-service
       - tea-service
       - bulk-service
-      # - apm-server
+    # - apm-server
     environment:
       - GATEWAY_KS_URL=kartoffel-service:8080
       - GATEWAY_RS_URL=request-service:8080
@@ -343,6 +347,7 @@ services:
       - GATEWAY_SPIKE_AUDIENCE_ID=bwwIB0gSS0xay_odirl0OCAJ3gUlXkKMKijbDY_e
       - GATEWAY_SPIKE_PUBLIC_KEY_FULL_PATH=/spikeUtils/publickey.pem
       - GATEWAY_WRITE_SCOPE_NAME=write
+      - GATEWAY_SUPPORT_LINK=https://www.lego.com/en-us/service
       - GATEWAY_LOG_PATH=/logs
 
   supernova-ui:

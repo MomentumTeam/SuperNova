@@ -7,6 +7,8 @@ import {
   GetAllApproversReq,
   GetUserTypeReq,
   GetUserTypeRes,
+  IsApproverValidForOGReq,
+  IsApproverValidForOGRes,
   SearchByDisplayNameReq,
   SearchByDomainUserReq,
   SearchHighCommandersByDisplayNameReq,
@@ -14,9 +16,7 @@ import {
   SyncApproverReq,
   UpdateApproverDecisionReq,
 } from '../interfaces/protoc/proto/approverService';
-import {
-  Request,
-} from '../interfaces/protoc/proto/requestService';
+import { Request } from '../interfaces/protoc/proto/requestService';
 import { ApproverRepository } from './approver.repository';
 
 export class ApproverManager {
@@ -24,7 +24,17 @@ export class ApproverManager {
   constructor() {
     this.approverRepository = new ApproverRepository();
   }
-
+  async isApproverValidForOG(
+    isApproverValidForOGReq: IsApproverValidForOGReq
+  ): Promise<IsApproverValidForOGRes> {
+    try {
+      return (await this.approverRepository.isApproverValidForOG(
+        isApproverValidForOGReq
+      )) as IsApproverValidForOGRes;
+    } catch (error) {
+      throw error;
+    }
+  }
   async addApprover(addApproverReq: AddApproverReq): Promise<Approver> {
     try {
       return (await this.approverRepository.addApprover(

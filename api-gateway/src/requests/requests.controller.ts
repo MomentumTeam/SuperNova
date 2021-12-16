@@ -41,8 +41,18 @@ import { KartoffelService } from '../kartoffel/kartoffel.service';
 import { statusCodeHandler } from '../utils/errors/errorHandlers';
 import { approveUserRequest } from './requests.utils';
 import { GetUserTypeRes } from '../interfaces/protoc/proto/approverService';
+import { config } from '../config';
 
 export default class RequestsController {
+  static async getSupportLink(req: any, res: Response) {
+    try {
+      res.send({ supportGroupLink: config.endpoints.supportLink });
+    } catch (error: any) {
+      const statusCode = statusCodeHandler(error);
+      res.status(statusCode).send(error.message);
+    }
+  }
+
   static async getRequestById(req: any, res: Response) {
     const getRequestByIdReq: GetRequestByIdReq = { id: req.params.id };
 
@@ -780,8 +790,16 @@ export default class RequestsController {
     });
 
     try {
-      const msg = await RequestsService.deleteRequest(deleteReq);
-      res.status(200).send(msg);
+      const userId = req.user.id;
+      const request: any = await RequestsService.getRequestById({
+        id: deleteReq.id,
+      });
+      if (request.submittedBy.id === userId) {
+        const msg = await RequestsService.deleteRequest(deleteReq);
+        res.status(200).send(msg);
+      } else {
+        res.status(403).send('You do not have the enough permissions!');
+      }
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
