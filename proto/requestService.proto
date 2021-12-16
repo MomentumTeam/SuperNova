@@ -852,7 +852,7 @@ message EditEntityKartoffelParams{
     string firstName = 2;
     string lastName = 3;
     optional string identityCard = 4;
-    string personalNumber = 5;
+    optional string personalNumber = 5;
     string serviceType = 6;
     repeated string phone = 7;
     repeated string mobilePhone = 8;
