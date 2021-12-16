@@ -5,7 +5,9 @@ import {
   Entity,
   GetEntityByIdRequest,
   GetPrefixByOGIdRequest,
+  GetRoleIdSuffixByOGReq,
   OGPrefix,
+  RoleIdSuffix,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { findPath } from '../utils/path';
 
@@ -32,6 +34,24 @@ const kartoffelClient: any = new protoDescriptor.Kartoffel(
 );
 
 export default class KartoffelService {
+  static async getRoleIdSuffixByOG(
+    getRoleIdSuffixByOGReq: GetRoleIdSuffixByOGReq
+  ): Promise<RoleIdSuffix> {
+    console.log('getRoleIdSuffixByOG');
+    return new Promise((resolve, reject) => {
+      kartoffelClient.GetRoleIdSuffixByOG(
+        getRoleIdSuffixByOGReq,
+        (err: any, roleIdSuffix: RoleIdSuffix) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(roleIdSuffix);
+          }
+        }
+      );
+    });
+  }
+
   static async getEntityById(
     getEntityById: GetEntityByIdRequest
   ): Promise<Entity> {

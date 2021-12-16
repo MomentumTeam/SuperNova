@@ -33,15 +33,18 @@ export class RequestManager {
       const request: Request = await this.requestService.getRequestById({
         id: produceRequest.id,
       });
+      const force =
+        produceRequest.force && produceRequest.force === true ? true : false;
       let kartoffelStatus = request.kartoffelStatus?.status;
       kartoffelStatus =
         typeof kartoffelStatus === typeof ''
           ? stageStatusFromJSON(kartoffelStatus)
           : kartoffelStatus;
       if (
-        kartoffelStatus === StageStatus.STAGE_DONE ||
-        kartoffelStatus === StageStatus.STAGE_FAILED ||
-        kartoffelStatus === StageStatus.STAGE_IN_PROGRESS
+        !force &&
+        (kartoffelStatus === StageStatus.STAGE_DONE ||
+          kartoffelStatus === StageStatus.STAGE_FAILED ||
+          kartoffelStatus === StageStatus.STAGE_IN_PROGRESS)
       ) {
         return { success: true, message: 'No need' };
       }
@@ -127,15 +130,18 @@ export class RequestManager {
       const request: Request = await this.requestService.getRequestById({
         id: produceRequest.id,
       });
+      const force =
+        produceRequest.force && produceRequest.force === true ? true : false;
       let adStatus = request.adStatus?.status;
       adStatus =
         typeof adStatus === typeof ''
           ? stageStatusFromJSON(adStatus)
           : adStatus;
       if (
-        adStatus === StageStatus.STAGE_DONE ||
-        adStatus === StageStatus.STAGE_FAILED ||
-        adStatus === StageStatus.STAGE_IN_PROGRESS
+        !force &&
+        (adStatus === StageStatus.STAGE_DONE ||
+          adStatus === StageStatus.STAGE_FAILED ||
+          adStatus === StageStatus.STAGE_IN_PROGRESS)
       ) {
         return { success: true, message: 'No need' };
       }

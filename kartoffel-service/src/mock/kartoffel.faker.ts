@@ -47,7 +47,7 @@ export class KartoffelFaker {
     const organizationGroup: OrganizationGroup = {
       id: mongoose.Types.ObjectId().toString(),
       name: faker.company.companyName(),
-      source: C.defaultSource,
+      source: C.defaultRoleSource,
       ancestors: [mongoose.Types.ObjectId().toString()],
       hierarchy: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
       status: 'active',
@@ -151,9 +151,9 @@ export class KartoffelFaker {
 
   randomRole(): Role {
     const source = sample(kartoffelConfig.valueObjects.source.values);
-
     const role: Role = {
-      roleId: faker.internet.email(),
+      // roleId: faker.internet.email(),
+      roleId: `${faker.internet.userName()}@leonardo`,
       jobTitle: faker.name.jobTitle(),
       digitalIdentityUniqueId: faker.internet.email(),
       directGroup: mongoose.Types.ObjectId().toString(),

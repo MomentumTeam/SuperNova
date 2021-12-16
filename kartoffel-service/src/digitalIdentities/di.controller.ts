@@ -26,7 +26,7 @@ export async function getAllDIs(call: any, callback: any): Promise<void> {
       callRequest: call.request,
       response: digitalIdentities,
     });
-    callback(null, { digitalIdentities: digitalIdentities });
+    callback(null, digitalIdentities);
   } catch (error: any) {
     const status = getStatusCode(error);
     const message = getErrorMessage(error);
@@ -108,13 +108,13 @@ export async function searchDIByUniqueId(
 ): Promise<void> {
   try {
     logger.info(`Call to searchDIByUniqueId`, { callRequest: call.request });
-    const DigitalIdentities: DigitalIdentities =
+    const digitalIdentities: DigitalIdentities =
       await diManager.searchDIByUniqueId(call.request);
     logger.info(`searchDIByUniqueId OK`, {
       callRequest: call.request,
       response: DigitalIdentities,
     });
-    callback(null, { DigitalIdentities: DigitalIdentities });
+    callback(null, digitalIdentities);
   } catch (error: any) {
     const status = getStatusCode(error);
     const message = getErrorMessage(error);
@@ -195,7 +195,9 @@ export async function getDIByUniqueId(call: any, callback: any): Promise<void> {
 export async function updateDI(call: any, callback: any): Promise<void> {
   try {
     logger.info(`Call to updateDI`, { callRequest: call.request });
-    const successMessage: SuccessMessage = await diManager.updateDI(call.request);
+    const successMessage: SuccessMessage = await diManager.updateDI(
+      call.request
+    );
     logger.info(`updateDI OK`, {
       callRequest: call.request,
       response: successMessage,

@@ -81,15 +81,17 @@ export class TeaRepository {
       const ogPrefixObj = await KartoffelService.getPrefixByOGId({
         id: retrieveTeaByOGIdReq.id,
       });
+      const roleIdSuffix = await KartoffelService.getRoleIdSuffixByOG({
+        id: retrieveTeaByOGIdReq.id,
+      });
       const prefix = ogPrefixObj.prefix;
-      const source = ogPrefixObj.source ? ogPrefixObj.source : 'oneTree';
       const teaObj = await this.retrieveTeaByPrefix({ prefix: prefix });
       const tea = teaObj.tea;
       return {
         tea: tea,
-        roleId: `${tea}@${source}`,
-        uniqueId: `${tea}@${source}`,
-        samAccountName: `${tea}@${C.oldSuffix}`,
+        roleId: `${tea}@${roleIdSuffix.suffix}`,
+        uniqueId: `${tea}@${C.oldSuffix}`,
+        samAccountName: tea,
         mail: `${tea}@${C.oldSuffix}`,
       };
     } catch (error) {

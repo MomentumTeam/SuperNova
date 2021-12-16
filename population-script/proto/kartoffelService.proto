@@ -58,6 +58,15 @@ service Kartoffel {
     rpc IsRoleAlreadyTaken(IsRoleAlreadyTakenReq) returns (IsRoleAlreadyTakenRes){}
     rpc IsJobTitleAlreadyTaken(IsJobTitleAlreadyTakenReq) returns (IsJobTitleAlreadyTakenRes){}
     rpc GetRolesByHierarchy(GetRolesByHierarchyRequest) returns (RoleArray){}
+    rpc GetRoleIdSuffixByOG(GetRoleIdSuffixByOGReq) returns (RoleIdSuffix){}
+    rpc SearchRoleByRoleId(SearchRoleByRoleIdReq) returns (RoleArray){}
+}
+
+message GetRoleIdSuffixByOGReq{
+    string id = 1;
+}
+message RoleIdSuffix{
+    string suffix = 1;
 }
 
 message IdMessage{
@@ -117,6 +126,11 @@ message GetDIByUniqueIdRequest{
 
 message SearchDIByUniqueIdRequest{
     string uniqueId = 1;
+}
+
+message SearchRoleByRoleIdReq {
+    string roleId = 1;
+    optional string hierarchy = 2;
 }
 
 message GetDIByRoleIdRequest{
@@ -225,6 +239,7 @@ message OGTree{
 // SearchOG
 message SearchOGRequest{
     string nameAndHierarchy = 1;
+    optional string underGroupId = 2;
 }
 
 message OGArray{
@@ -482,7 +497,7 @@ message DigitalIdentity{
     string source = 2;       
     string mail = 3;         
     string uniqueId = 4;      
-    string entityId = 5;      
+    optional string entityId = 5;      
     string createdAt = 6;      
     string updatedAt = 7;    
     bool isRoleAttachable = 8;   

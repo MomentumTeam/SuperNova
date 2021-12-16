@@ -4,8 +4,8 @@ export function fillEntityFields(entity: any): void {
     if (!entity.digitalIdentities || entity.digitalIdentities.length === 0) {
       return;
     }
-    const di = entity.digitalIdentities.find(
-      (di: any) => di.source === C.defaultSource
+    const di = entity.digitalIdentities.find((di: any) =>
+      C.diSources.includes(di.source)
     );
     if (di) {
       const role = di.role;
@@ -24,6 +24,12 @@ export function fillEntityFields(entity: any): void {
           entity.jobTitle && entity.jobTitle.length > 0
             ? entity.jobTitle
             : role.jobTitle;
+        entity.displayName =
+          entity.displayName && entity.displayName.length > 0
+            ? entity.displayName
+            : role.displayName;
+      } else {
+        entity.displayName = entity.fullName;
       }
     }
   } catch (error) {

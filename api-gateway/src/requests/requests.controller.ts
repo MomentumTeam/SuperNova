@@ -41,8 +41,18 @@ import { KartoffelService } from '../kartoffel/kartoffel.service';
 import { statusCodeHandler } from '../utils/errors/errorHandlers';
 import { approveUserRequest } from './requests.utils';
 import { GetUserTypeRes } from '../interfaces/protoc/proto/approverService';
+import { config } from '../config';
 
 export default class RequestsController {
+  static async getSupportLink(req: any, res: Response) {
+    try {
+      res.send({ supportGroupLink: config.endpoints.supportLink });
+    } catch (error: any) {
+      const statusCode = statusCodeHandler(error);
+      res.status(statusCode).send(error.message);
+    }
+  }
+
   static async getRequestById(req: any, res: Response) {
     const getRequestByIdReq: GetRequestByIdReq = { id: req.params.id };
 
@@ -284,47 +294,38 @@ export default class RequestsController {
   static async updateADStatus(req: any, res: Response) {
     const retry: boolean = req.body.Retry;
     const status: boolean = req.body.Status;
-    let stageStatus: StageStatus = StageStatus.STAGE_IN_PROGRESS;
-
-    if (retry === false) {
-      if (status === true) {
-        stageStatus = StageStatus.STAGE_DONE;
-
-        const produceRes = (await ProducerController.produceToKartoffelQueue(
-          req.body.RequestID
-        )) as SuccessMessage;
-
-        if (produceRes.success === true) {
-          //if produce was successful update Kartoffel Status
-          try {
-            const request = await RequestsService.updateKartoffelStatus(
+    let updateADStatus: UpdateADStatusReq = {
+      requestId: req.body.RequestID,
+      status: StageStatus.STAGE_UNKNOWN,
+      message: req.body.ErrorID ? req.body.ErrorID : '',
+    };
+    let request: any;
+    try {
+      if (!retry) {
+        updateADStatus.status = status
+          ? StageStatus.STAGE_DONE
+          : StageStatus.STAGE_FAILED;
+        request = await RequestsService.updateADStatus(updateADStatus);
+        if (status) {
+          const produceRes = (await ProducerController.produceToKartoffelQueue(
+            req.body.RequestID
+          )) as SuccessMessage;
+          if (produceRes.success) {
+            //if produce was successful update Kartoffel Status
+            request = await RequestsService.updateKartoffelStatus(
               req.body.RequestID
             );
-            res.status(200).send(request);
-          } catch (error: any) {
-            const statusCode = statusCodeHandler(error);
-            return res.status(statusCode).send(error.message);
+            return res.send(request);
           }
         }
-      } else if (status === false) {
-        stageStatus = StageStatus.STAGE_FAILED;
-      }
 
-      const updateADStatus: UpdateADStatusReq = {
-        requestId: req.body.RequestID,
-        status: stageStatus,
-        message: req.body.ErrorID,
-      };
-
-      try {
-        const request = await RequestsService.updateADStatus(updateADStatus);
-        res.status(200).send(request);
-      } catch (error: any) {
-        const statusCode = statusCodeHandler(error);
-        res.status(statusCode).send(error.message);
+        return res.send(request);
+      } else {
+        await ProducerController.produceToADQueue(req.body.RequestID, res);
       }
-    } else {
-      await ProducerController.produceToADQueue(req.body.RequestID, res);
+    } catch (error: any) {
+      const statusCode = statusCodeHandler(error);
+      return res.status(statusCode).send(error.message);
     }
   }
 
@@ -787,8 +788,16 @@ export default class RequestsController {
     });
 
     try {
-      const msg = await RequestsService.deleteRequest(deleteReq);
-      res.status(200).send(msg);
+      const userId = req.user.id;
+      const request: any = await RequestsService.getRequestById({
+        id: deleteReq.id,
+      });
+      if (request.submittedBy.id === userId) {
+        const msg = await RequestsService.deleteRequest(deleteReq);
+        res.status(200).send(msg);
+      } else {
+        res.status(403).send('You do not have the enough permissions!');
+      }
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);

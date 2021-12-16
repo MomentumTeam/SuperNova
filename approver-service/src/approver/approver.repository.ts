@@ -7,16 +7,19 @@ import {
   GetAllApproversReq,
   GetUserTypeReq,
   GetUserTypeRes,
+  IsApproverValidForOGReq,
   SearchByDisplayNameReq,
   SearchByDomainUserReq,
   SearchHighCommandersByDisplayNameReq,
   SuccessMessage,
   SyncApproverReq,
   UpdateApproverDecisionReq,
-} from "../interfaces/protoc/proto/approverService";
+  IsApproverValidForOGRes,
+} from '../interfaces/protoc/proto/approverService';
 import {
   DigitalIdentity,
   Entity,
+  OrganizationGroup,
 } from '../interfaces/protoc/proto/kartoffelService';
 import {
   ApproverType,
@@ -26,7 +29,7 @@ import {
   personTypeInRequestFromJSON,
   Request,
   UpdateApproverDecisionReq as UpdateApproverDecisionReqService,
-} from "../interfaces/protoc/proto/requestService";
+} from '../interfaces/protoc/proto/requestService';
 import { logger } from '../logger';
 import { ApproverModel } from '../models/approver.model';
 import KartoffelService from '../services/kartoffelService';
@@ -39,8 +42,41 @@ import {
   approverTypeValidation,
 } from '../utils/approver.utils';
 import { hasPermissionToDecide } from '../utils/permission.utils';
+import * as C from '../config';
 
 export class ApproverRepository {
+  async isApproverValidForOG(
+    isApproverValidForOGReq: IsApproverValidForOGReq
+  ): Promise<IsApproverValidForOGRes> {
+    try {
+      const approverEntity: Entity = await KartoffelService.getEntityById({
+        id: isApproverValidForOGReq.approverId,
+      });
+      const group: OrganizationGroup = await KartoffelService.getOGById({
+        id: isApproverValidForOGReq.groupId,
+      });
+      const lastIndex =
+        group.ancestors.length < C.ogValidationDepth
+          ? group.ancestors.length
+          : C.ogValidationDepth;
+      const groupAncestors = group.ancestors.slice(0, lastIndex);
+      if (
+        group.id === approverEntity.directGroup ||
+        groupAncestors.includes(approverEntity.directGroup)
+      ) {
+        return { isValid: true };
+      } else {
+        return { isValid: false };
+      }
+    } catch (error: any) {
+      logger.error('addApprover ERROR', {
+        error: { message: error.message },
+        isApproverValidForOGReq,
+      });
+      throw error;
+    }
+  }
+
   async addApprover(addApproverReq: AddApproverReq) {
     try {
       const approver: any = new ApproverModel(addApproverReq);
@@ -225,9 +261,10 @@ export class ApproverRepository {
   ): Promise<ApproverArray> {
     try {
       const kartoffelEntities =
-        await KartoffelService.searchCommandersByFullName({
+        await KartoffelService.searchHighCommandersByFullName({
           fullName: searchHighCommandersByDisplayNameReq.displayName,
         });
+
       logger.info('searchHighCommandersByDisplayName kartoffelResults', {
         kartoffelEntities,
         searchHighCommandersByDisplayNameReq,
@@ -256,7 +293,7 @@ export class ApproverRepository {
           type: searchByDisplayNameReq.type,
           displayName: {
             $regex: searchByDisplayNameReq.displayName,
-            $options: "i",
+            $options: 'i',
           },
         },
         {},
@@ -377,7 +414,10 @@ export class ApproverRepository {
   ): Promise<Request> {
     try {
       let updatedRequest: any = undefined;
-      let currentUpdateRequest: UpdateApproverDecisionReqService = {...updateApproverDecisionReq, approverType:PersonTypeInRequest.UNRECOGNIZED};
+      let currentUpdateRequest: UpdateApproverDecisionReqService = {
+        ...updateApproverDecisionReq,
+        approverType: PersonTypeInRequest.UNRECOGNIZED,
+      };
       const approverId: any =
         updateApproverDecisionReq.approverDecision?.approver?.id;
       const hasPermission = await hasPermissionToDecide(approverId);
@@ -395,20 +435,23 @@ export class ApproverRepository {
           types.includes(ApproverType.ADMIN) ||
           types.includes(ApproverType.COMMANDER)
         ) {
-          currentUpdateRequest.approverType = PersonTypeInRequest.COMMANDER_APPROVER;
+          currentUpdateRequest.approverType =
+            PersonTypeInRequest.COMMANDER_APPROVER;
           updatedRequest = await RequestService.updateApproverDecision(
             currentUpdateRequest
           );
         }
 
         if (types.includes(ApproverType.SECURITY)) {
-          currentUpdateRequest.approverType = PersonTypeInRequest.SECURITY_APPROVER;
+          currentUpdateRequest.approverType =
+            PersonTypeInRequest.SECURITY_APPROVER;
           updatedRequest = await RequestService.updateApproverDecision(
             currentUpdateRequest
           );
         }
         if (types.includes(ApproverType.SUPER_SECURITY)) {
-          currentUpdateRequest.approverType = PersonTypeInRequest.SUPER_SECURITY_APPROVER;
+          currentUpdateRequest.approverType =
+            PersonTypeInRequest.SUPER_SECURITY_APPROVER;
           updatedRequest = await RequestService.updateApproverDecision(
             currentUpdateRequest
           );

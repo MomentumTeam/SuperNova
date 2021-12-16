@@ -4,6 +4,14 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "Kartoffel";
 
+export interface GetRoleIdSuffixByOGReq {
+  id: string;
+}
+
+export interface RoleIdSuffix {
+  suffix: string;
+}
+
 export interface IdMessage {
   id: string;
 }
@@ -60,6 +68,11 @@ export interface GetDIByUniqueIdRequest {
 
 export interface SearchDIByUniqueIdRequest {
   uniqueId: string;
+}
+
+export interface SearchRoleByRoleIdReq {
+  roleId: string;
+  hierarchy?: string | undefined;
 }
 
 export interface GetDIByRoleIdRequest {
@@ -168,6 +181,7 @@ export interface OGTree {
 /** SearchOG */
 export interface SearchOGRequest {
   nameAndHierarchy: string;
+  underGroupId?: string | undefined;
 }
 
 export interface OGArray {
@@ -432,7 +446,7 @@ export interface DigitalIdentity {
   source: string;
   mail: string;
   uniqueId: string;
-  entityId: string;
+  entityId?: string | undefined;
   createdAt: string;
   updatedAt: string;
   isRoleAttachable: boolean;
@@ -446,6 +460,127 @@ export interface RoleIdMessage {
 export interface UniqueIdMessage {
   uniqueId: string;
 }
+
+const baseGetRoleIdSuffixByOGReq: object = { id: "" };
+
+export const GetRoleIdSuffixByOGReq = {
+  encode(
+    message: GetRoleIdSuffixByOGReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GetRoleIdSuffixByOGReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseGetRoleIdSuffixByOGReq } as GetRoleIdSuffixByOGReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetRoleIdSuffixByOGReq {
+    const message = { ...baseGetRoleIdSuffixByOGReq } as GetRoleIdSuffixByOGReq;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+
+  toJSON(message: GetRoleIdSuffixByOGReq): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<GetRoleIdSuffixByOGReq>
+  ): GetRoleIdSuffixByOGReq {
+    const message = { ...baseGetRoleIdSuffixByOGReq } as GetRoleIdSuffixByOGReq;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+};
+
+const baseRoleIdSuffix: object = { suffix: "" };
+
+export const RoleIdSuffix = {
+  encode(
+    message: RoleIdSuffix,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.suffix !== "") {
+      writer.uint32(10).string(message.suffix);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): RoleIdSuffix {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseRoleIdSuffix } as RoleIdSuffix;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.suffix = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RoleIdSuffix {
+    const message = { ...baseRoleIdSuffix } as RoleIdSuffix;
+    if (object.suffix !== undefined && object.suffix !== null) {
+      message.suffix = String(object.suffix);
+    } else {
+      message.suffix = "";
+    }
+    return message;
+  },
+
+  toJSON(message: RoleIdSuffix): unknown {
+    const obj: any = {};
+    message.suffix !== undefined && (obj.suffix = message.suffix);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<RoleIdSuffix>): RoleIdSuffix {
+    const message = { ...baseRoleIdSuffix } as RoleIdSuffix;
+    if (object.suffix !== undefined && object.suffix !== null) {
+      message.suffix = object.suffix;
+    } else {
+      message.suffix = "";
+    }
+    return message;
+  },
+};
 
 const baseIdMessage: object = { id: "" };
 
@@ -1429,6 +1564,86 @@ export const SearchDIByUniqueIdRequest = {
       message.uniqueId = object.uniqueId;
     } else {
       message.uniqueId = "";
+    }
+    return message;
+  },
+};
+
+const baseSearchRoleByRoleIdReq: object = { roleId: "" };
+
+export const SearchRoleByRoleIdReq = {
+  encode(
+    message: SearchRoleByRoleIdReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.roleId !== "") {
+      writer.uint32(10).string(message.roleId);
+    }
+    if (message.hierarchy !== undefined) {
+      writer.uint32(18).string(message.hierarchy);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): SearchRoleByRoleIdReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseSearchRoleByRoleIdReq } as SearchRoleByRoleIdReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.roleId = reader.string();
+          break;
+        case 2:
+          message.hierarchy = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SearchRoleByRoleIdReq {
+    const message = { ...baseSearchRoleByRoleIdReq } as SearchRoleByRoleIdReq;
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = String(object.roleId);
+    } else {
+      message.roleId = "";
+    }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = String(object.hierarchy);
+    } else {
+      message.hierarchy = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: SearchRoleByRoleIdReq): unknown {
+    const obj: any = {};
+    message.roleId !== undefined && (obj.roleId = message.roleId);
+    message.hierarchy !== undefined && (obj.hierarchy = message.hierarchy);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<SearchRoleByRoleIdReq>
+  ): SearchRoleByRoleIdReq {
+    const message = { ...baseSearchRoleByRoleIdReq } as SearchRoleByRoleIdReq;
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = object.roleId;
+    } else {
+      message.roleId = "";
+    }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = object.hierarchy;
+    } else {
+      message.hierarchy = undefined;
     }
     return message;
   },
@@ -3129,6 +3344,9 @@ export const SearchOGRequest = {
     if (message.nameAndHierarchy !== "") {
       writer.uint32(10).string(message.nameAndHierarchy);
     }
+    if (message.underGroupId !== undefined) {
+      writer.uint32(18).string(message.underGroupId);
+    }
     return writer;
   },
 
@@ -3141,6 +3359,9 @@ export const SearchOGRequest = {
       switch (tag >>> 3) {
         case 1:
           message.nameAndHierarchy = reader.string();
+          break;
+        case 2:
+          message.underGroupId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -3160,6 +3381,11 @@ export const SearchOGRequest = {
     } else {
       message.nameAndHierarchy = "";
     }
+    if (object.underGroupId !== undefined && object.underGroupId !== null) {
+      message.underGroupId = String(object.underGroupId);
+    } else {
+      message.underGroupId = undefined;
+    }
     return message;
   },
 
@@ -3167,6 +3393,8 @@ export const SearchOGRequest = {
     const obj: any = {};
     message.nameAndHierarchy !== undefined &&
       (obj.nameAndHierarchy = message.nameAndHierarchy);
+    message.underGroupId !== undefined &&
+      (obj.underGroupId = message.underGroupId);
     return obj;
   },
 
@@ -3179,6 +3407,11 @@ export const SearchOGRequest = {
       message.nameAndHierarchy = object.nameAndHierarchy;
     } else {
       message.nameAndHierarchy = "";
+    }
+    if (object.underGroupId !== undefined && object.underGroupId !== null) {
+      message.underGroupId = object.underGroupId;
+    } else {
+      message.underGroupId = undefined;
     }
     return message;
   },
@@ -6945,7 +7178,6 @@ const baseDigitalIdentity: object = {
   source: "",
   mail: "",
   uniqueId: "",
-  entityId: "",
   createdAt: "",
   updatedAt: "",
   isRoleAttachable: false,
@@ -6968,7 +7200,7 @@ export const DigitalIdentity = {
     if (message.uniqueId !== "") {
       writer.uint32(34).string(message.uniqueId);
     }
-    if (message.entityId !== "") {
+    if (message.entityId !== undefined) {
       writer.uint32(42).string(message.entityId);
     }
     if (message.createdAt !== "") {
@@ -7053,7 +7285,7 @@ export const DigitalIdentity = {
     if (object.entityId !== undefined && object.entityId !== null) {
       message.entityId = String(object.entityId);
     } else {
-      message.entityId = "";
+      message.entityId = undefined;
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = String(object.createdAt);
@@ -7122,7 +7354,7 @@ export const DigitalIdentity = {
     if (object.entityId !== undefined && object.entityId !== null) {
       message.entityId = object.entityId;
     } else {
-      message.entityId = "";
+      message.entityId = undefined;
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = object.createdAt;
@@ -7343,6 +7575,8 @@ export interface Kartoffel {
     request: IsJobTitleAlreadyTakenReq
   ): Promise<IsJobTitleAlreadyTakenRes>;
   GetRolesByHierarchy(request: GetRolesByHierarchyRequest): Promise<RoleArray>;
+  GetRoleIdSuffixByOG(request: GetRoleIdSuffixByOGReq): Promise<RoleIdSuffix>;
+  SearchRoleByRoleId(request: SearchRoleByRoleIdReq): Promise<RoleArray>;
 }
 
 export class KartoffelClientImpl implements Kartoffel {
@@ -7398,6 +7632,8 @@ export class KartoffelClientImpl implements Kartoffel {
     this.IsRoleAlreadyTaken = this.IsRoleAlreadyTaken.bind(this);
     this.IsJobTitleAlreadyTaken = this.IsJobTitleAlreadyTaken.bind(this);
     this.GetRolesByHierarchy = this.GetRolesByHierarchy.bind(this);
+    this.GetRoleIdSuffixByOG = this.GetRoleIdSuffixByOG.bind(this);
+    this.SearchRoleByRoleId = this.SearchRoleByRoleId.bind(this);
   }
   CreateEntity(request: CreateEntityRequest): Promise<IdMessage> {
     const data = CreateEntityRequest.encode(request).finish();
@@ -7848,6 +8084,26 @@ export class KartoffelClientImpl implements Kartoffel {
     const promise = this.rpc.request(
       "Kartoffel.Kartoffel",
       "GetRolesByHierarchy",
+      data
+    );
+    return promise.then((data) => RoleArray.decode(new _m0.Reader(data)));
+  }
+
+  GetRoleIdSuffixByOG(request: GetRoleIdSuffixByOGReq): Promise<RoleIdSuffix> {
+    const data = GetRoleIdSuffixByOGReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "GetRoleIdSuffixByOG",
+      data
+    );
+    return promise.then((data) => RoleIdSuffix.decode(new _m0.Reader(data)));
+  }
+
+  SearchRoleByRoleId(request: SearchRoleByRoleIdReq): Promise<RoleArray> {
+    const data = SearchRoleByRoleIdReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "SearchRoleByRoleId",
       data
     );
     return promise.then((data) => RoleArray.decode(new _m0.Reader(data)));

@@ -59,6 +59,8 @@ import {
   changeRoleOG,
   isJobTitleAlreadyTaken,
   isRoleAlreadyTaken,
+  getRoleIdSuffixByOG,
+  searchRolesByRoleId,
 } from './roles/roles.controller';
 
 const PROTO_PATH = `${findPath('proto')}/kartoffelService.proto`;
@@ -157,6 +159,8 @@ export class Server {
         ChangeRoleOG: changeRoleOG,
         IsRoleAlreadyTaken: isRoleAlreadyTaken,
         IsJobTitleAlreadyTaken: isJobTitleAlreadyTaken,
+        GetRoleIdSuffixByOG: getRoleIdSuffixByOG,
+        SearchRoleByRoleId: searchRolesByRoleId,
       });
       logger.info(`Grpc services were successfully added to the server`);
     } catch (error: any) {

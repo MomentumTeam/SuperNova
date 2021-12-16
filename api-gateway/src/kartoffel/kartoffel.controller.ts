@@ -175,7 +175,7 @@ export default class KartoffelController {
   // Groups
 
   static async searchOG(req: Request, res: Response) {
-    const searchOGReq: any = { nameAndHierarchy: req.query.nameAndHierarchy };
+    const searchOGReq: any = { ...req.query, ...req.params };
 
     try {
       const OGarray = await KartoffelService.searchOG(searchOGReq);
@@ -266,8 +266,8 @@ export default class KartoffelController {
   }
 
   static async getOGByHierarchyName(req: Request, res: Response) {
-    const getOGByHierarchyNameReq: GetOGByHierarchyNameRequest = {
-      hierarchy: req.params.hierarchy,
+    const getOGByHierarchyNameReq: any = {
+      hierarchy: req.query.hierarchy,
     };
 
     try {
@@ -298,6 +298,7 @@ export default class KartoffelController {
 
   static async getRolesUnderOG(req: Request, res: Response) {
     const getRolesUnderOGReq: any = { ...req.params, ...req.query };
+    getRolesUnderOGReq['groupId'] = getRolesUnderOGReq.id;
 
     try {
       const roles = await KartoffelService.getRolesUnderOG(getRolesUnderOGReq);
@@ -364,5 +365,30 @@ export default class KartoffelController {
       const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
+  }
+
+    static async searchRolesByRoleId(req: Request, res: Response) {
+      const searchRolesByRoleId: any = {...req.query, ...req.params};
+
+      try {
+        const roles = await KartoffelService.searchRolesByRoleId(searchRolesByRoleId);
+        res.send(roles);
+      } catch (error: any) {
+        const statusCode = statusCodeHandler(error);
+        res.status(statusCode).send(error.message);
+      }
+  }
+
+  // DI
+     static async searchDIsByUniqueId(req: Request, res: Response) {
+      const searchDIsByUniqueId: any = { ...req.query, ...req.params };
+
+      try {
+        const dis = await KartoffelService.searchDIsByUniqueId(searchDIsByUniqueId);
+        res.send(dis);
+      } catch (error: any) {
+        const statusCode = statusCodeHandler(error);
+        res.status(statusCode).send(error.message);
+      }
   }
 }

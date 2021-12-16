@@ -17,7 +17,18 @@ service ApproverService {
     rpc GetAllApproverIds(GetAllApproversReq) returns (ApproverIdArray) {}
     rpc SyncApprover(SyncApproverReq) returns (ApproverArray){}
     rpc DeleteApprover(DeleteApproverReq) returns (SuccessMessage){}
+    rpc IsApproverValidForOG(IsApproverValidForOGReq) returns (IsApproverValidForOGRes){}
 }
+
+message IsApproverValidForOGReq{
+    string approverId = 1;
+    string groupId = 2;
+}
+
+message IsApproverValidForOGRes{
+    bool isValid = 1;
+}
+
 
 message SyncApproverReq{
     string approverId = 1;
@@ -74,7 +85,7 @@ message AddApproverReq{
     string entityId = 1;
     string displayName = 2;
     repeated string domainUsers = 3;
-    string akaUnit = 4;
+    optional string akaUnit = 4;
     RequestService.ApproverType type = 5;
     optional string personalNumber = 6;
     optional string identityCard = 7;

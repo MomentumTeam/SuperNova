@@ -44,8 +44,11 @@ before(async () => {
   randomEntity = await getRandomEntity();
   randomDI = getRandomDI();
   randomRole = getRandomRole();
-
-  await Promise.all([createRandomDI(randomDI), createRandomRole(randomRole)]);
+  try {
+    await Promise.all([createRandomDI(randomDI), createRandomRole(randomRole)]);
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 describe('Entity Manager', () => {
@@ -141,16 +144,27 @@ describe('Entity Manager', () => {
     });
   });
 
-  describe('SearchEntitiesByFullName', () => {
-    // TODO
+  describe('SearchEntitiesByFullName', async () => {
+    it('SearchEntitiesByFullName', async () => {
+      const entities: EntityArray =
+        await entitiesManager.searchEntitiesByFullName({
+          fullName: randomEntity.fullName,
+        });
+
+      expect(entities).to.be.exist;
+      expect(entities.entities).to.be.an('array');
+      expect(entities.entities.map((entity) => entity.id)).to.include(
+        randomEntity.id
+      );
+    });
   });
 
-  describe('SearchCommandersByFullName', () => {
-    // TODO
-  });
-  describe('SearchHighCommandersByFullName', () => {
-    // TODO
-  });
+  // describe('SearchCommandersByFullName', () => {
+  //   // TODO
+  // });
+  // describe('SearchHighCommandersByFullName', () => {
+  //   // TODO
+  // });
 
   describe('ConnectEntityAndDI', () => {
     it('ConnectEntityAndDI', async () => {
@@ -244,9 +258,9 @@ describe('Entity Manager', () => {
     });
   });
 
-  describe('UpdateEntity', () => {
-    // TODO: update and check
-  });
+  // describe('UpdateEntity', () => {
+  //   // TODO: update and check
+  // });
 
   describe('DeleteEntity', () => {
     it('DeleteEntity - valid', async () => {

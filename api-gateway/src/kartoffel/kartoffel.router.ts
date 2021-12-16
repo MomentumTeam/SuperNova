@@ -65,7 +65,7 @@ KartoffelRouter.get(
   KartoffelController.getOGById
 );
 KartoffelRouter.get(
-  '/groups/:hierarchy/hierarchy',
+  '/groups/hierarchy',
   KartoffelValidator.isGetOGByHierarchyNameValid,
   KartoffelController.getOGByHierarchyName
 );
@@ -116,6 +116,18 @@ KartoffelRouter.get(
   '/roles/hierarchy/:hierarchy',
   KartoffelValidator.isGetRolesByHierarchyValid,
   KartoffelController.getRolesByHierarchy
+);
+KartoffelRouter.get(
+  '/roles/search/:roleId',
+  KartoffelValidator.isSearchRolesByRoleIdValid,
+  KartoffelController.searchRolesByRoleId
+);
+
+// DI
+KartoffelRouter.get(
+  "/di/search/:uniqueId",
+  KartoffelValidator.isSearchDIsByUniqueIdValid,
+  KartoffelController.searchDIsByUniqueId
 );
 
 export default KartoffelRouter;

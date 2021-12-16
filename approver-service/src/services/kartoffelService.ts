@@ -8,6 +8,8 @@ import {
   SearchEntitiesByFullNameRequest,
   GetEntityByRoleIdRequest,
   GetEntityByIdRequest,
+  OrganizationGroup,
+  GetOGByIdRequest,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { logger } from '../logger';
 import { findPath } from '../utils/path';
@@ -81,6 +83,10 @@ export default class KartoffelService {
               searchCommandersByFullName,
               entityArray,
             });
+            entityArray.entities = entityArray.entities.filter(
+              (entity) =>
+                entity.digitalIdentities && entity.digitalIdentities.length > 0
+            );
             resolve(entityArray);
           }
         }
@@ -105,6 +111,10 @@ export default class KartoffelService {
             );
             reject(error);
           } else {
+            entityArray.entities = entityArray.entities.filter(
+              (entity) =>
+                entity.digitalIdentities && entity.digitalIdentities.length > 0
+            );
             logger.info('searchHighCommandersByFullName in KartoffelService', {
               searchCommandersByFullName,
               entityArray,
@@ -160,6 +170,31 @@ export default class KartoffelService {
               entity,
             });
             resolve(entity);
+          }
+        }
+      );
+    });
+  }
+
+  static async getOGById(
+    getOGByIdReq: GetOGByIdRequest
+  ): Promise<OrganizationGroup> {
+    return new Promise((resolve, reject) => {
+      kartoffelClient.GetOGById(
+        getOGByIdReq,
+        (error: any, group: OrganizationGroup) => {
+          if (error) {
+            logger.error('getOGById in KartoffelService ERROR', {
+              getOGByIdReq,
+              error: { message: error.message },
+            });
+            reject(error);
+          } else {
+            logger.info('getOGById in KartoffelService', {
+              getOGByIdReq,
+              group,
+            });
+            resolve(group);
           }
         }
       );

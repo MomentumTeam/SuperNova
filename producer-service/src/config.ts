@@ -17,6 +17,7 @@ export const spikeTokenRefreshInHours = process.env.PS_SPIKE_TOKEN_REFRESH_HOURS
   : 24;
 export const oldDomain = process.env.PS_OLD_DOMAIN || 'ADHK';
 export const newDomain = process.env.PS_NEW_DOMAIN || 'newDomain';
+export const defaultSource = process.env.PS_DEFAULT_SOURCE || 'sf_name';
 
 export const shmuelRequestTypes: any = {
   CREATE_OG: 'CreateOU',

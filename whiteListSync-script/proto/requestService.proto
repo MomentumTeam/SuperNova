@@ -771,7 +771,7 @@ message CreateRoleKartoffelParams{
 }
 
 message CreateRoleADParams{
-    string samAccountName = 1; //T154514... generated automatically by tea-service if not given
+    optional string samAccountName = 1; //T154514... generated automatically by tea-service if not given
     string ouDisplayName = 2; // Role's full hierarchy
     string jobTitle = 3; //name of the role
 }
@@ -814,7 +814,7 @@ message AdditionalParams{
     string entityId = 1;
     string displayName = 2;
     repeated string domainUsers = 3;
-    string akaUnit = 4;
+    optional string akaUnit = 4;
     ApproverType type = 5;
     optional string personalNumber = 6;
     optional string identityCard = 7;
@@ -1096,8 +1096,8 @@ message RequestIdArray{
 message EntityMin{
     string id = 1;
     string displayName = 2;
-    string identityCard = 3;
-    string personalNumber = 4;
+    optional string identityCard = 3;
+    optional string personalNumber = 4;
 }
 
 message SuccessMessage{
@@ -1425,6 +1425,7 @@ enum SortField{
     SUBMITTED_BY = 1;
     CREATED_AT = 2;
     STATUS = 3;
+    UPDATED_AT = 4;
 }
 
 enum SortOrder{

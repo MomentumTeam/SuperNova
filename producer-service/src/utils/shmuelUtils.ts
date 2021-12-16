@@ -37,7 +37,7 @@ export class ShmuelUtils {
           throw error;
         }
       }
-      config.headers.Authorization = this.spikeToken;
+      config.headers.Authorization = `Bearer ${this.spikeToken}`;
       return config;
     });
   }

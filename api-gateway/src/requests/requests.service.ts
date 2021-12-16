@@ -30,6 +30,8 @@ import {
   GetRequestByIdReq,
   GetRequestBySerialNumberReq,
   GetRequestsByPersonReq,
+  IsRequestApprovedReq,
+  IsRequestApprovedRes,
   RenameOGReq,
   RenameOGRes,
   RenameRoleReq,
@@ -753,6 +755,30 @@ export class RequestsService {
           resolve(response);
         }
       );
+    });
+  }
+
+  static async isRequestApproved(
+    isRequestApprovedReq: IsRequestApprovedReq
+  ) {
+    logger.info(`Call to isRequestApproved in GTW`, isRequestApprovedReq);
+
+    return new Promise((resolve, reject) => {
+      requestsClient.IsRequestApproved(isRequestApprovedReq, (err: any, response: IsRequestApprovedRes) => {
+        if (err) {
+          logger.error(`isRequestApproved ERROR in GTW`, {
+            err,
+            callRequest: isRequestApprovedReq,
+          });
+          reject(err);
+        }
+
+        logger.info(`isRequestApproved OK in GTW`, {
+          response: response,
+          callRequest: isRequestApprovedReq,
+        });
+        resolve(response);
+      });
     });
   }
 }

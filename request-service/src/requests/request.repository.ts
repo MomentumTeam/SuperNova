@@ -57,10 +57,9 @@ import {
   getPersonQuery,
   getRequestTypeQuery,
   getSearchQuery,
-  getSortArray,
+  getSortQuery,
   getStatusQuery,
   getWaitingForApproveCountQuery,
-  isApproverExists,
 } from '../utils/query';
 import {
   reportTeaFail,
@@ -69,7 +68,6 @@ import {
 } from '../services/teaHelper';
 import { logger } from '../logger';
 import { MailType } from '../interfaces/protoc/proto/mailService';
-import { isEmpty } from 'lodash';
 
 export class RequestRepository {
   async createRequest(
@@ -78,17 +76,13 @@ export class RequestRepository {
   ): Promise<Request> {
     try {
       if (type === RequestType.CREATE_ROLE) {
-        const tea = await retrieveTeaByOGId(
-          createRequestReq.kartoffelParams.directGroup
-        );
+        const tea = await retrieveTeaByOGId(createRequestReq.kartoffelParams.directGroup);
         createRequestReq.kartoffelParams.roleId = tea.roleId;
         createRequestReq.kartoffelParams.uniqueId = tea.uniqueId;
         createRequestReq.kartoffelParams.mail = tea.mail;
         createRequestReq.adParams.samAccountName = tea.samAccountName;
       } else if (type === RequestType.ASSIGN_ROLE_TO_ENTITY) {
-        createRequestReq.adParams.upn = await retrieveUPNByEntityId(
-          createRequestReq.kartoffelParams.id
-        );
+        createRequestReq.adParams.upn = await retrieveUPNByEntityId(createRequestReq.kartoffelParams.id);
       } else if (
         type === RequestType.CREATE_ENTITY ||
         type === RequestType.DELETE_ENTITY ||
@@ -97,13 +91,13 @@ export class RequestRepository {
         // CASES WITH NO NEED FOR AD UPDATE
         createRequestReq.adStatus = {
           status: stageStatusToJSON(StageStatus.STAGE_DONE),
-          message: 'No need for AD update in this case',
+          message: "No need for AD update in this case",
           failedRetries: 0,
         };
 
         createRequestReq.kartoffelStatus = {
           status: stageStatusToJSON(StageStatus.STAGE_WAITING_FOR_AD),
-          message: 'Waiting for push, request type does not require AD update',
+          message: "Waiting for push, request type does not require AD update",
           failedRetries: 0,
         };
       } else if (type === RequestType.EDIT_ENTITY) {
@@ -111,7 +105,7 @@ export class RequestRepository {
         const approverDecision = {
           approver: createRequestReq.submittedBy
             ? createRequestReq.submittedBy
-            : { id: '', displayName: '', personalNumber: '', identityCard: '' },
+            : { id: "", displayName: "", personalNumber: "", identityCard: "" },
           decision: decisionToJSON(Decision.APPROVED),
         };
         createRequestReq.commanderDecision = approverDecision;
@@ -119,17 +113,15 @@ export class RequestRepository {
         createRequestReq.superSecurityDecision = approverDecision;
         createRequestReq.adStatus = {
           status: stageStatusToJSON(StageStatus.STAGE_WAITING_FOR_PUSH),
-          message: '',
+          message: "",
           failedRetries: 0,
         };
         createRequestReq.kartoffelStatus = {
           status: stageStatusToJSON(StageStatus.STAGE_WAITING_FOR_AD),
-          message: '',
+          message: "",
           failedRetries: 0,
         };
-        createRequestReq.status = requestStatusToJSON(
-          RequestStatus.IN_PROGRESS
-        );
+        createRequestReq.status = requestStatusToJSON(RequestStatus.IN_PROGRESS);
       }
       const request: any = new RequestModel(createRequestReq);
       this.setNeedApproversDecisionsValues(request, type);
@@ -137,6 +129,26 @@ export class RequestRepository {
       const createdCreateRequest = await request.save();
       const document = createdCreateRequest.toObject();
       turnObjectIdsToStrings(document);
+
+      // Get current status of the request
+      if (this.isRequestApprovedBySecurity(request)) {
+        await this.updateRequest({
+          id: document.id,
+          requestProperties: {
+            status: requestStatusToJSON(RequestStatus.APPROVED_BY_SECURITY),
+          },
+        });
+      }
+      else if (this.isRequestApprovedByCommander(request)) {
+        await this.updateRequest({
+          id: document.id,
+          requestProperties: {
+            status: requestStatusToJSON(RequestStatus.APPROVED_BY_COMMANDER),
+          },
+        });
+      }
+
+
       const isRequestApproved = await this.isRequestApproved({
         id: document.id,
       });
@@ -148,24 +160,18 @@ export class RequestRepository {
           },
         });
         try {
-          await createNotifications(
-            NotificationType.REQUEST_IN_PROGRESS,
-            document
-          );
+          await createNotifications(NotificationType.REQUEST_IN_PROGRESS, document);
         } catch (notificationError: any) {
-          logger.error('Notification error', {
+          logger.error("Notification error", {
             error: { message: notificationError.message },
           });
         }
       } else {
         try {
-          await createNotifications(
-            NotificationType.REQUEST_SUBMITTED,
-            document
-          );
+          await createNotifications(NotificationType.REQUEST_SUBMITTED, document);
           sendMail(MailType.REQUEST_SUBMITTED, document).then().catch();
         } catch (notificationError: any) {
-          logger.error('Notification error', {
+          logger.error("Notification error", {
             error: { message: notificationError.message },
           });
         }
@@ -176,11 +182,43 @@ export class RequestRepository {
     }
   }
 
+  isRequestApprovedByCommander(request: Request) {
+     let commanderDecision: any = request.commanderDecision?.decision;
+        commanderDecision =
+          typeof commanderDecision === typeof ''
+            ? decisionFromJSON(commanderDecision)
+            : commanderDecision;
+
+      return commanderDecision === Decision.APPROVED
+  }
+
+  isRequestApprovedBySecurity(request: Request) {
+  let securityDecision: any = request.securityDecision?.decision;
+        securityDecision =
+          typeof securityDecision === typeof ''
+            ? decisionFromJSON(securityDecision)
+            : securityDecision;
+        const needSecurityDecision = request.needSecurityDecision;
+
+     return needSecurityDecision && securityDecision === Decision.APPROVED;       
+  }
+
+    isRequestApprovedBySuperSecurity(request: Request) {
+  let superSecurityDecision: any =
+          request.superSecurityDecision?.decision;
+        superSecurityDecision =
+          typeof superSecurityDecision === typeof ''
+            ? decisionFromJSON(superSecurityDecision)
+            : superSecurityDecision;
+
+     return superSecurityDecision === Decision.APPROVED;       
+  }
+
   async isRequestApproved(
     isRequestApprovedReq: IsRequestApprovedReq
   ): Promise<IsRequestApprovedRes> {
     try {
-      const request = await this.getRequestById({
+      const request: Request = await this.getRequestById({
         id: isRequestApprovedReq.id,
       });
       const requestType =
@@ -192,27 +230,12 @@ export class RequestRepository {
       } else {
         const needSecurityDecision = request.needSecurityDecision;
         const needSuperSecurityDecision = request.needSuperSecurityDecision;
-        let commanderDecision: any = request.commanderDecision?.decision;
-        commanderDecision =
-          typeof commanderDecision === typeof ''
-            ? decisionFromJSON(commanderDecision)
-            : commanderDecision;
-        let securityDecision: any = request.securityDecision?.decision;
-        securityDecision =
-          typeof securityDecision === typeof ''
-            ? decisionFromJSON(securityDecision)
-            : securityDecision;
-        let superSecurityDecision: any =
-          request.superSecurityDecision?.decision;
-        superSecurityDecision =
-          typeof superSecurityDecision === typeof ''
-            ? decisionFromJSON(superSecurityDecision)
-            : superSecurityDecision;
+
         if (
-          commanderDecision === Decision.APPROVED &&
-          (!needSecurityDecision || securityDecision === Decision.APPROVED) &&
+          this.isRequestApprovedByCommander(request) &&
+          (!needSecurityDecision || this.isRequestApprovedBySecurity(request)) &&
           (!needSuperSecurityDecision ||
-            superSecurityDecision === Decision.APPROVED)
+            this.isRequestApprovedBySuperSecurity(request))
         ) {
           return { isRequestApproved: true };
         } else {
@@ -327,8 +350,13 @@ export class RequestRepository {
           const isRequestApprovedObj = await this.isRequestApproved({
             id: updateDecisionReq.id,
           });
-          if (isRequestApprovedObj.isRequestApproved)
+          if (isRequestApprovedObj.isRequestApproved) {
             newRequestStatus = RequestStatus.IN_PROGRESS;
+          } else if (approverType === PersonTypeInRequest.COMMANDER_APPROVER) {
+            newRequestStatus = RequestStatus.APPROVED_BY_COMMANDER;
+          } else if (approverType === PersonTypeInRequest.SECURITY_APPROVER) {
+            newRequestStatus = RequestStatus.APPROVED_BY_SECURITY;
+          }
         }
 
         const requestType =
@@ -1040,8 +1068,22 @@ export class RequestRepository {
         break;
 
       case RequestType.ADD_APPROVER:
-        request.needSecurityDecision = true;
-        request.needSuperSecurityDecision = false;
+        const approverType = approverTypeFromJSON(request.additionalParams.type);
+        //TODO: ASK
+        if (approverType === ApproverType.COMMANDER) {
+          request.needSecurityDecision = false;
+          request.needSuperSecurityDecision = false;
+        } else if (approverType === ApproverType.SECURITY) {
+          request.needSecurityDecision = true;
+          request.needSuperSecurityDecision = false;
+        } else if (approverType === ApproverType.SUPER_SECURITY) {
+          request.needSecurityDecision = false;
+          request.needSuperSecurityDecision = true;
+        } else {
+          // TODO: ask about others
+          request.needSecurityDecision = true;
+          request.needSuperSecurityDecision = false;
+        }
         break;
     }
   }
@@ -1131,10 +1173,10 @@ export class RequestRepository {
   async getRequestsByPerson(getRequestsByPersonReq: GetRequestsByPersonReq) {
     try {
       let query: any = {};
-      let sortArray = [
-        ['createdAt', -1],
-        ['status', 1],
-      ];
+      let sortQuery: any = {
+         "sortStatusId": 1, "createdAt": -1
+      }
+       
       let waitingForApproveCount = 0;
 
       const personTypeInRequest: PersonTypeInRequest =
@@ -1174,11 +1216,9 @@ export class RequestRepository {
         query = { ...query, ...requestTypeQuery };
       }
       if (getRequestsByPersonReq.sortField) {
-        sortArray = getSortArray(
+        sortQuery = getSortQuery(
           getRequestsByPersonReq.sortField,
-          getRequestsByPersonReq.sortOrder
-            ? getRequestsByPersonReq.sortOrder
-            : SortOrder.DEC
+          getRequestsByPersonReq.sortOrder ? getRequestsByPersonReq.sortOrder : SortOrder.DEC
         );
       }
       if (getRequestsByPersonReq.searchQuery) {
@@ -1192,14 +1232,32 @@ export class RequestRepository {
       }
 
       const totalCount = await RequestModel.count(query);
-      const requests: any = await RequestModel.find(
-        query,
-        {},
+      const requests: any = await RequestModel.aggregate([
         {
-          skip: getRequestsByPersonReq.from - 1,
-          limit: getRequestsByPersonReq.to - getRequestsByPersonReq.from + 1,
-        }
-      ).sort(sortArray);
+          $addFields: {
+            serialNumberStr: { $toString: "$serialNumber" },
+            sortStatusId: {
+              $switch: {
+                branches: [
+                  { case: { $eq: ["$status", "SUBMITTED"] }, then: 0 },
+                  { case: { $eq: ["$status", "APPROVED_BY_COMMANDER"] }, then: 1 },
+                  { case: { $eq: ["$status", "APPROVED_BY_SECURITY"] }, then: 2 },
+                  { case: { $eq: ["$status", "IN_PROGRESS"] }, then: 3 },
+                  { case: { $eq: ["$status", "FAILED"] }, then: 4 },
+                  { case: { $eq: ["$status", "DECLINED"] }, then: 5 },
+                  { case: { $eq: ["$status", "DONE"] }, then: 6 },
+                ],
+                default: 0,
+              },
+            },
+          },
+        },
+        { $match: query },
+        { $sort: sortQuery },
+        { $skip: getRequestsByPersonReq.from - 1 },
+        { $limit: getRequestsByPersonReq.to - getRequestsByPersonReq.from + 1 },
+      ]);
+
 
       const waitingForApproveCountQuery =
         getWaitingForApproveCountQuery(userType);
@@ -1217,7 +1275,7 @@ export class RequestRepository {
       if (requests) {
         let documents: any = [];
         for (let i = 0; i < requests.length; i++) {
-          const requestObj: any = requests[i].toObject();
+          const requestObj: any = requests[i];
           turnObjectIdsToStrings(requestObj);
           documents.push(requestObj);
         }

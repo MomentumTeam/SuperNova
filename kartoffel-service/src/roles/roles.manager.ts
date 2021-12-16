@@ -17,7 +17,10 @@ import {
   IsRoleAlreadyTakenReq,
   IsRoleAlreadyTakenRes,
   RoleIdMessage,
-} from '../interfaces/protoc/proto/kartoffelService';
+  GetRoleIdSuffixByOGReq,
+  RoleIdSuffix,
+  SearchRoleByRoleIdReq,
+} from "../interfaces/protoc/proto/kartoffelService";
 import { KartoffelFaker } from '../mock/kartoffel.faker';
 import { KartoffelUtils } from '../utils/kartoffel.utils';
 import { RolesRepository } from './roles.repository';
@@ -28,17 +31,29 @@ export class RolesManager {
     this.rolesRepository = new RolesRepository(kartoffelUtils, kartoffelFaker);
   }
 
+  async getRoleIdSuffixByOG(
+    getRoleIdSuffixByOGReq: GetRoleIdSuffixByOGReq
+  ): Promise<RoleIdSuffix> {
+    return await this.rolesRepository.getRoleIdSuffixByOG(
+      getRoleIdSuffixByOGReq
+    );
+  }
+
   async getAllRoles(
     getAllRolesRequest: GetAllRolesRequest
   ): Promise<RoleArray> {
     return await this.rolesRepository.getAllRoles(getAllRolesRequest);
   }
 
-  async createRole(createRoleRequest: CreateRoleRequest): Promise<RoleIdMessage> {
+  async createRole(
+    createRoleRequest: CreateRoleRequest
+  ): Promise<RoleIdMessage> {
     return await this.rolesRepository.createRole(createRoleRequest);
   }
 
-  async deleteRole(deleteRoleRequest: DeleteRoleRequest): Promise<SuccessMessage> {
+  async deleteRole(
+    deleteRoleRequest: DeleteRoleRequest
+  ): Promise<SuccessMessage> {
     return await this.rolesRepository.deleteRole(deleteRoleRequest);
   }
 
@@ -60,7 +75,9 @@ export class RolesManager {
     return await this.rolesRepository.getRolesUnderOG(getRolesUnderOGRequest);
   }
 
-  async renameRole(RenameRoleRequest: RenameRoleRequest): Promise<SuccessMessage> {
+  async renameRole(
+    RenameRoleRequest: RenameRoleRequest
+  ): Promise<SuccessMessage> {
     return await this.rolesRepository.renameRole(RenameRoleRequest);
   }
 
@@ -102,7 +119,15 @@ export class RolesManager {
     return await this.rolesRepository.getRolesByHierarchy(getRolesByHierarchy);
   }
 
-  async changeRoleOG(changeRoleOGRequest: ChangeRoleOGRequest): Promise<SuccessMessage> {
+  async changeRoleOG(
+    changeRoleOGRequest: ChangeRoleOGRequest
+  ): Promise<SuccessMessage> {
     return await this.rolesRepository.changeRoleOG(changeRoleOGRequest);
+  }
+
+  async searchRolesByRoleId(
+    searchRoleByRoleIdReq: SearchRoleByRoleIdReq
+  ): Promise<RoleArray> {
+    return await this.rolesRepository.searchRolesByRoleId(searchRoleByRoleIdReq);
   }
 }
