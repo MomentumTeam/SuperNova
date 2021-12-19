@@ -24,6 +24,11 @@ export const config = {
     request: process.env.KC_RS_URL || '0.0.0.0:8081',
     tea: process.env.KC_TS_URL || '0.0.0.0:8086',
   },
+  defaultRoleSource: process.env.KC_DEFAULT_ROLE_SOURCE || 'OneTree',
+  defaultDISource: process.env.KC_DEFAULT_DI_SOURCE || 'OneTree',
+  diSources: process.env.KC_DI_SOURCES
+    ? process.env.KC_DI_SOURCES.split(',')
+    : ['OneTree'],
   logPath: process.env.KC_LOG_PATH
     ? `${process.env.KC_LOG_PATH}/kartoffel-consumer`
     : './logs/kartoffel-consumer',

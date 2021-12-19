@@ -230,6 +230,9 @@ services:
       - KC_RS_URL=request-service:8080
       - KC_TS_URL=tea-service:8080
       - KC_KS_URL=kartoffel-service:8080
+      - KC_DEFAULT_ROLE_SOURCE=sf_name
+      - KC_DEFAULT_DI_SOURCE=sf_name
+      - KC_DI_SOURCES=sf_name,sf_name
       - KC_KAFKA_HOST=kafka
       - KC_KAFKA_PORT=29092
       - KC_LOG_PATH=/logs
