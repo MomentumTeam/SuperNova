@@ -167,11 +167,14 @@ export default class KartoffelService {
     });
   }
 
-  static async updateEntity(
-    updateEntityRequest: UpdateEntityRequest
-  ): Promise<SuccessMessage> {
+  static async updateEntity(updateEntityRequest: any): Promise<SuccessMessage> {
     logger.info('UpdateEntity');
     return new Promise((resolve, reject) => {
+      for (const key in updateEntityRequest.properties) {
+        if (updateEntityRequest.properties[key] === undefined) {
+          delete updateEntityRequest.properties[key];
+        }
+      }
       kartoffelClient.UpdateEntity(
         updateEntityRequest,
         (err: any, message: SuccessMessage) => {
@@ -275,11 +278,14 @@ export default class KartoffelService {
     });
   }
 
-  static async createEntity(
-    createEntityRequest: CreateEntityRequest
-  ): Promise<Entity> {
+  static async createEntity(createEntityRequest: any): Promise<Entity> {
     logger.info('CreateEntity');
     return new Promise((resolve, reject) => {
+      for (const key in createEntityRequest) {
+        if (createEntityRequest[key] === undefined) {
+          delete createEntityRequest[key];
+        }
+      }
       kartoffelClient.CreateEntity(
         createEntityRequest,
         (err: any, entity: Entity) => {
