@@ -21,6 +21,7 @@ export enum NotificationType {
   AD_STAGE_FAILED = 12,
   REQUEST_DONE = 13,
   REQUEST_FAILED = 14,
+  REQUEST_DELETED = 15,
   UNRECOGNIZED = -1,
 }
 
@@ -71,6 +72,9 @@ export function notificationTypeFromJSON(object: any): NotificationType {
     case 14:
     case "REQUEST_FAILED":
       return NotificationType.REQUEST_FAILED;
+    case 15:
+    case "REQUEST_DELETED":
+      return NotificationType.REQUEST_DELETED;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -110,6 +114,8 @@ export function notificationTypeToJSON(object: NotificationType): string {
       return "REQUEST_DONE";
     case NotificationType.REQUEST_FAILED:
       return "REQUEST_FAILED";
+    case NotificationType.REQUEST_DELETED:
+      return "REQUEST_DELETED";
     default:
       return "UNKNOWN";
   }
