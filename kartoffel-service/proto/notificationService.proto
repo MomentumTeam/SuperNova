@@ -44,6 +44,7 @@ enum NotificationType{
     AD_STAGE_FAILED = 12;
     REQUEST_DONE = 13;
     REQUEST_FAILED = 14;
+    REQUEST_DELETED = 15;
 
 }
 

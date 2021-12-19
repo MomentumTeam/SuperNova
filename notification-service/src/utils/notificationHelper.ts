@@ -112,6 +112,8 @@ export function generateNotifications(
       reason = request.adStatus?.message ? request.adStatus?.message : '';
     } else if (type === NotificationType.REQUEST_DONE) {
       message = `בקשתך ל<b>${requestTypeToHebrew[requestTypeStr]}</b> מספר <b>${request.serialNumber}</b> בוצעה בהצלחה.`;
+    } else if (type === NotificationType.REQUEST_DELETED) {
+      message = `בקשתך ל<b>${requestTypeToHebrew[requestTypeStr]}</b> מספר <b>${request.serialNumber}</b> נמחקה בהצלחה.`;
     } else {
       message = `בקשתך ל<b>${requestTypeToHebrew[requestTypeStr]}</b> מספר <b>${request.serialNumber}</b> נכשלה.`;
       //REQUEST_FAILED
