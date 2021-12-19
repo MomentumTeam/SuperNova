@@ -852,15 +852,15 @@ message EditEntityKartoffelParams{
     string firstName = 2;
     string lastName = 3;
     optional string identityCard = 4;
-    string personalNumber = 5;
-    string serviceType = 6;
+    optional string personalNumber = 5;
+    optional string serviceType = 6;
     repeated string phone = 7;
     repeated string mobilePhone = 8;
-    string address = 9;
-    string clearance = 10;
-    string sex = 11;
-    int64 birthdate = 12;
-    string entityType = 13;
+    optional string address = 9;
+    optional string clearance = 10;
+    optional string sex = 11;
+    optional int64 birthdate = 12;
+    optional string entityType = 13;
 }
 
 message EditEntityADParams{
@@ -908,7 +908,7 @@ message AssignRoleToEntityKartoffelParams{
 }
 
 message AssignRoleToEntityADParams{
-    string oldSAMAccountName = 1;
+    optional string oldSAMAccountName = 1;
     string newSAMAccountName = 2;
     optional string upn = 3;
     string firstName = 4;
@@ -938,7 +938,7 @@ message ChangeRoleHierarchyKartoffelParams{
 
 message ChangeRoleHierarchyADParams{
     optional string samAccountName = 1;
-    optional string ouDisplayName = 2;
+    optional string ouDisplayName = 2; // the new one
     optional string newJobTitle = 3;
 }
 
