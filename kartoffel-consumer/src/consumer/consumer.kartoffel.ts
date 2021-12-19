@@ -19,6 +19,7 @@ import {
   ConnectEntityAndDIRequest,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { logger } from '../utils/logger';
+import { config } from '../config';
 
 export const createOG = async (createOGRequest: any) => {
   try {
@@ -49,7 +50,7 @@ export const createRole = async (data: any) => {
     const newDI: DigitalIdentity = await KartoffelService.createDI({
       isRoleAttachable: isRoleAttachable,
       mail: mail,
-      source: source,
+      source: config.defaultDISource,
       type: type,
       uniqueId: uniqueId,
     });
@@ -151,7 +152,7 @@ export const connectEntityAndDI = async (connectEntityAndDIReq: any) => {
     if (needToDisconnect) {
       const entity: Entity = await KartoffelService.getEntityById({ id: id });
       for (let currentDi of entity.digitalIdentities) {
-        if (currentDi.source === 'oneTree') {
+        if (config.diSources.includes(currentDi.source)) {
           await KartoffelService.disconnectDIFromEntity({
             id: id,
             uniqueId: uniqueId,

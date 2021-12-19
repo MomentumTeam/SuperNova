@@ -384,6 +384,38 @@ export class RequestsService {
     });
   }
 
+  static async canPushToKartoffelQueue(
+    canPushToKartoffelQueueReq: CanPushToQueueReq
+  ): Promise<CanPushToQueueRes> {
+    logger.info(
+      `Call to canPushToKartoffelQueue in GTW`,
+      canPushToKartoffelQueueReq
+    );
+
+    return new Promise((resolve, reject) => {
+      requestsClient.CanPushToKartoffelQueue(
+        canPushToKartoffelQueueReq,
+        (err: any, response: CanPushToQueueRes) => {
+          if (err) {
+            logger.error(`canPushToKartoffelQueue ERROR in GTW`, {
+              err,
+              callRequest: canPushToKartoffelQueueReq,
+            });
+            resolve({
+              canPushToQueue: false, //defalut in case of an error
+            });
+          }
+
+          logger.info(`canPushToKartoffelQueue OK in GTW`, {
+            response: response,
+            callRequest: canPushToKartoffelQueueReq,
+          });
+          resolve(response);
+        }
+      );
+    });
+  }
+
   // POST
   static async createRoleRequest(
     createRoleReq: CreateRoleReq
@@ -758,27 +790,28 @@ export class RequestsService {
     });
   }
 
-  static async isRequestApproved(
-    isRequestApprovedReq: IsRequestApprovedReq
-  ) {
+  static async isRequestApproved(isRequestApprovedReq: IsRequestApprovedReq) {
     logger.info(`Call to isRequestApproved in GTW`, isRequestApprovedReq);
 
     return new Promise((resolve, reject) => {
-      requestsClient.IsRequestApproved(isRequestApprovedReq, (err: any, response: IsRequestApprovedRes) => {
-        if (err) {
-          logger.error(`isRequestApproved ERROR in GTW`, {
-            err,
+      requestsClient.IsRequestApproved(
+        isRequestApprovedReq,
+        (err: any, response: IsRequestApprovedRes) => {
+          if (err) {
+            logger.error(`isRequestApproved ERROR in GTW`, {
+              err,
+              callRequest: isRequestApprovedReq,
+            });
+            reject(err);
+          }
+
+          logger.info(`isRequestApproved OK in GTW`, {
+            response: response,
             callRequest: isRequestApprovedReq,
           });
-          reject(err);
+          resolve(response);
         }
-
-        logger.info(`isRequestApproved OK in GTW`, {
-          response: response,
-          callRequest: isRequestApprovedReq,
-        });
-        resolve(response);
-      });
+      );
     });
   }
 }
