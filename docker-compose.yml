@@ -189,6 +189,7 @@ services:
       - tea-service
     environment:
       - BS_RS_URL=request-service:8080
+      - BS_DEFAULT_ROLE_SOURCE=sf_name
       - BS_FOLDER_PATH=/bulkFiles
       - BS_LOG_PATH=/logs
 

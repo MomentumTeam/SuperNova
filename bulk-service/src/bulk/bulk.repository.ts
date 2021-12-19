@@ -40,8 +40,14 @@ export class BulkRepository {
         typeof isBulkFileValidReq.type === typeof ''
           ? requestTypeFromJSON(isBulkFileValidReq.type)
           : isBulkFileValidReq.type;
-      const requestType = type === BulkType.CHANGE_ROLE_HIERARCHY_REQUEST ? RequestType.CREATE_ROLE_BULK : RequestType.CHANGE_ROLE_HIERARCHY_BULK;
-      const rows = await parseExcelFile(isBulkFileValidReq.fileName, requestType);
+      const requestType =
+        type === BulkType.CHANGE_ROLE_HIERARCHY_REQUEST
+          ? RequestType.CHANGE_ROLE_HIERARCHY_BULK
+          : RequestType.CREATE_ROLE_BULK;
+      const rows = await parseExcelFile(
+        isBulkFileValidReq.fileName,
+        requestType
+      );
       return { isFileValid: true };
     } catch (error: any) {
       throw error;
@@ -79,7 +85,7 @@ export class BulkRepository {
               jobTitle: row.jobTitle,
               clearance: row.clearance,
               type: 'domainUser', //always domainUser
-              source: 'oneTree', //always oneTree
+              source: C.defaultRoleSource, //always oneTree
               isRoleAttachable: true,
               roleEntityType: row.roleEntityType,
             };

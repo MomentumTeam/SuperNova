@@ -89,7 +89,14 @@ export default class BulkController {
         files.map((bulkFile: any) => uploadFile(bulkFile))
       );
 
-      const isValid = await Promise.all(uploadFiles.map((uploadedFileName : any) => BulkService.isBulkFileValid({fileName: uploadedFileName, type: type})));
+      const isValid = await Promise.all(
+        uploadFiles.map((uploadedFileName: any) =>
+          BulkService.isBulkFileValid({
+            fileName: uploadedFileName,
+            type: type,
+          })
+        )
+      );
       res.status(200).send({ uploadFiles });
     } catch (error: any) {
       logger.error(error.message);
