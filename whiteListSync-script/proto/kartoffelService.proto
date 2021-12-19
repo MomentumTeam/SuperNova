@@ -404,6 +404,7 @@ message GetChildrenOfOGRequest{
     optional int32 page = 2;
     optional int32 pageSize = 3;
     bool direct = 4;
+    bool withRoles = 5;
 }
 
 // GetChildrenOfRootOG
