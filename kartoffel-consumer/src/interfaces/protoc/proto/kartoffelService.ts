@@ -356,6 +356,7 @@ export interface GetChildrenOfOGRequest {
   page?: number | undefined;
   pageSize?: number | undefined;
   direct: boolean;
+  withRoles: boolean;
 }
 
 /** GetChildrenOfRootOG */
@@ -5655,7 +5656,11 @@ export const DeleteOGRequest = {
   },
 };
 
-const baseGetChildrenOfOGRequest: object = { id: "", direct: false };
+const baseGetChildrenOfOGRequest: object = {
+  id: "",
+  direct: false,
+  withRoles: false,
+};
 
 export const GetChildrenOfOGRequest = {
   encode(
@@ -5673,6 +5678,9 @@ export const GetChildrenOfOGRequest = {
     }
     if (message.direct === true) {
       writer.uint32(32).bool(message.direct);
+    }
+    if (message.withRoles === true) {
+      writer.uint32(40).bool(message.withRoles);
     }
     return writer;
   },
@@ -5698,6 +5706,9 @@ export const GetChildrenOfOGRequest = {
           break;
         case 4:
           message.direct = reader.bool();
+          break;
+        case 5:
+          message.withRoles = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -5729,6 +5740,11 @@ export const GetChildrenOfOGRequest = {
     } else {
       message.direct = false;
     }
+    if (object.withRoles !== undefined && object.withRoles !== null) {
+      message.withRoles = Boolean(object.withRoles);
+    } else {
+      message.withRoles = false;
+    }
     return message;
   },
 
@@ -5738,6 +5754,7 @@ export const GetChildrenOfOGRequest = {
     message.page !== undefined && (obj.page = message.page);
     message.pageSize !== undefined && (obj.pageSize = message.pageSize);
     message.direct !== undefined && (obj.direct = message.direct);
+    message.withRoles !== undefined && (obj.withRoles = message.withRoles);
     return obj;
   },
 
@@ -5764,6 +5781,11 @@ export const GetChildrenOfOGRequest = {
       message.direct = object.direct;
     } else {
       message.direct = false;
+    }
+    if (object.withRoles !== undefined && object.withRoles !== null) {
+      message.withRoles = object.withRoles;
+    } else {
+      message.withRoles = false;
     }
     return message;
   },
