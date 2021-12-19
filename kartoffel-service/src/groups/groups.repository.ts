@@ -263,6 +263,7 @@ export class GroupsRepository {
       } else {
         const queryParams: any = { ...getChildrenOfOGRequest };
         delete queryParams.id;
+        delete queryParams.withRoles;
 
         if (!queryParams.page || !queryParams.pageSize) {
           //get all children
@@ -275,15 +276,12 @@ export class GroupsRepository {
               direct: getChildrenOfOGRequest.direct,
               page: page,
               pageSize: 100,
+              withRoles: getChildrenOfOGRequest.withRoles,
             });
             if (!currentPage.groups || currentPage.groups.length === 0) {
               break;
             }
 
-            const groupsWithDirectRoles = await getDirectRolesForGroups(
-              currentPage.groups
-            );
-            groups.push(...groupsWithDirectRoles);
             page++;
           }
           return { groups: groups } as OGArray;
@@ -292,11 +290,13 @@ export class GroupsRepository {
             `${C.kartoffelUrl}/api/groups/${getChildrenOfOGRequest.id}/children`,
             queryParams
           );
-          const groupsWithDirectRoles = await getDirectRolesForGroups(
-            res as OrganizationGroup[]
-          );
 
-          return { groups: groupsWithDirectRoles } as OGArray;
+          let groups = res as OrganizationGroup[];
+          if (getChildrenOfOGRequest.withRoles) {
+            groups = await getDirectRolesForGroups(groups);
+          }
+
+          return { groups: groups } as OGArray;
         }
       }
     } catch (error) {
@@ -313,6 +313,7 @@ export class GroupsRepository {
         const ogArray: OGArray = await this.getChildrenOfOG({
           id: C.kartoffelRootID,
           direct: true,
+          withRoles: false
         });
         return ogArray;
       }
@@ -393,6 +394,7 @@ export class GroupsRepository {
           await this.getChildrenOfOG({
             direct: true,
             id: currentChild.id,
+            withRoles: false
           })
         ).groups;
 

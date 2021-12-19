@@ -1069,7 +1069,6 @@ export class RequestRepository {
 
       case RequestType.ADD_APPROVER:
         const approverType = approverTypeFromJSON(request.additionalParams.type);
-        //TODO: ASK
         if (approverType === ApproverType.COMMANDER) {
           request.needSecurityDecision = false;
           request.needSuperSecurityDecision = false;
@@ -1080,7 +1079,6 @@ export class RequestRepository {
           request.needSecurityDecision = false;
           request.needSuperSecurityDecision = true;
         } else {
-          // TODO: ask about others
           request.needSecurityDecision = true;
           request.needSuperSecurityDecision = false;
         }
