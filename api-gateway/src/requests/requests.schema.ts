@@ -245,7 +245,7 @@ const assignRoleToEntityKartoffelParamsObj = Joi.object({
 });
 
 const assignRoleToEntityADParamsObj = Joi.object({
-  oldSAMAccountName: Joi.string().required(),
+  oldSAMAccountName: Joi.string(),
   newSAMAccountName: Joi.string().required(),
   upn: Joi.string(),
   firstName: Joi.string().required(),
@@ -448,15 +448,15 @@ const editEntityKartoffelParamsObj = Joi.object({
   firstName: Joi.string().required(),
   lastName: Joi.string().required(),
   identityCard: Joi.string(),
-  personalNumber: Joi.string().required(),
-  serviceType: Joi.string().required(),
+  personalNumber: Joi.string(),
+  serviceType: Joi.string(),
   phone: Joi.array().items(Joi.string()),
   mobilePhone: Joi.array().items(Joi.string()),
-  address: Joi.string().required(),
-  clearance: Joi.string().required(),
-  sex: Joi.string().required(),
-  birthdate: Joi.number().unsafe().required(),
-  entityType: Joi.string().required(),
+  address: Joi.string(),
+  clearance: Joi.string(),
+  sex: Joi.string(),
+  birthdate: Joi.number().unsafe(),
+  entityType: Joi.string(),
 });
 
 const editEntityADParamsObj = Joi.object({
@@ -495,7 +495,7 @@ const changeRoleHierarchyKartoffelParamsObj = Joi.object({
 
 const changeRoleHierarchyADParamsObj = Joi.object({
   samAccountName: Joi.string(),
-  ouDisplayName: Joi.string(),
+  ouDisplayName: Joi.string(), // the new one
   jobTitle: Joi.string(),
 });
 
