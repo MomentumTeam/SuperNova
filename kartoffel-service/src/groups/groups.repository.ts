@@ -282,6 +282,7 @@ export class GroupsRepository {
               break;
             }
 
+            groups.push(...currentPage.groups);
             page++;
           }
           return { groups: groups } as OGArray;

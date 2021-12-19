@@ -23,8 +23,7 @@ export const searchWithRanks = process.env.KS_SEARCH_WITH_RANKS
   : false;
 
 export const kartoffelOK = 'OK';
-export const kartoffelRootID =
-  process.env.KS_ROOT_ID || '6184af202da776001134110b';
+export const kartoffelRootID = process.env.KS_ROOT_ID || "619e3193f235dc001846bb4f";
 
 export const kartoffelAudience =
   process.env.KS_KARTOFFEL_AUDIENCE || 'kartoffel';
