@@ -56,8 +56,8 @@ export const getEntitiesUnderOGSchema = Joi.object({
   },
   query: {
     direct: Joi.boolean().default(true),
-    page: Joi.number().default(1),
-    pageSize: Joi.number().default(100),
+    page: Joi.number(),
+    pageSize: Joi.number(),
   },
 });
 
@@ -139,8 +139,8 @@ export const GetOGChildrenSchema = Joi.object({
   query: {
     direct: Joi.boolean().default(true),
     withRoles: Joi.boolean().default(false),
-    page: Joi.number().default(1).min(1),
-    pageSize: Joi.number().default(100),
+    page: Joi.number(),
+    pageSize: Joi.number(),
   },
 });
 
@@ -180,8 +180,8 @@ export const GetRolesUnderOGSchema = Joi.object({
   },
   query: {
     direct: Joi.boolean().default(true),
-    page: Joi.number().default(1).min(1),
-    pageSize: Joi.number().default(100),
+    page: Joi.number(),
+    pageSize: Joi.number(),
   },
 });
 

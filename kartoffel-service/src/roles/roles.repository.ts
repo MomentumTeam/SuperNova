@@ -145,15 +145,37 @@ export class RolesRepository {
           getRolesUnderOGRequest.pageSize
         );
       } else {
-        const groupId = getRolesUnderOGRequest.groupId;
-        const req: any = getRolesUnderOGRequest;
-        delete req.groupId;
+        if (!getRolesUnderOGRequest.page || !getRolesUnderOGRequest.pageSize) {
+          //get all children
+          let page = 1;
+          let roles: Role[] = [];
 
-        const roles: Role[] = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/api/roles/group/${groupId}`,
-          req
-        );
-        return { roles: roles } as RoleArray;
+          while (true) {
+            const currentPage = await this.getRolesUnderOG({
+              groupId: getRolesUnderOGRequest.groupId,
+              direct: getRolesUnderOGRequest.direct,
+              page: page,
+              pageSize: 100,
+            });
+            if (!currentPage.roles || currentPage.roles.length === 0) {
+              break;
+            }
+
+            roles.push(...currentPage.roles);
+            page++;
+          }
+          return { roles: roles } as RoleArray;
+        } else {
+          const groupId = getRolesUnderOGRequest.groupId;
+          const req: any = getRolesUnderOGRequest;
+          delete req.groupId;
+
+          const roles: Role[] = await this.kartoffelUtils.kartoffelGet(
+            `${C.kartoffelUrl}/api/roles/group/${groupId}`,
+            req
+          );
+          return { roles: roles } as RoleArray;
+        }
       }
     } catch (error) {
       throw error;
