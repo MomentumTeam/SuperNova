@@ -320,8 +320,8 @@ message GetRoleByRoleIdRequest{
 message GetRolesUnderOGRequest{
     string groupId = 1;
     bool direct = 2;
-    int32 page = 3;
-    int32 pageSize = 4;
+    optional int32 page = 3;
+    optional int32 pageSize = 4;
 }
 
 // GetRolesByDI
