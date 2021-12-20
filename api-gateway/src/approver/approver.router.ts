@@ -25,6 +25,7 @@ ApproverRouter.get(
   ApproverValidator.isSearchHighCommandersByDisplayNameValid,
   ApproverController.searchHighCommandersByDisplayName
 );
+ApproverRouter.get('/userType/:id', ApproverValidator.isGetUserTypeValid, ApproverController.getUserType);
 
 // POST
 ApproverRouter.post(

@@ -105,10 +105,8 @@ export default class ApproverController {
   }
 
   static async getUserType(req: any, res: Response) {
-    if (!req.user && !req.user.id) throw new AuthenticationError();
-
     const getUserTypeReq: GetUserTypeReq = {
-      entityId: req.user.id,
+      entityId: req.params.id,
     };
 
     try {
