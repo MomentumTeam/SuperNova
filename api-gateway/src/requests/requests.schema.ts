@@ -242,6 +242,7 @@ export const createRoleSchema = Joi.object({
 const assignRoleToEntityKartoffelParamsObj = Joi.object({
   id: Joi.string().required(),
   uniqueId: Joi.string().required(),
+  roleId: Joi.string().required(),
 });
 
 const assignRoleToEntityADParamsObj = Joi.object({
