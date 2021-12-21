@@ -94,6 +94,7 @@ describe('Groups Manager', () => {
         await groupsManager.getChildrenOfOG({
           id: directGroupId,
           direct: true,
+          withRoles: false,
         })
       ).groups;
       expect(children).to.be.exist;

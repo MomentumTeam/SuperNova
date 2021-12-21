@@ -10,6 +10,11 @@ export const folderPath =
 
 export const requestServiceUrl = process.env.BS_RS_URL || '0.0.0.0:8081';
 
+export const defaultRoleSource =
+  process.env.BS_DEFAULT_ROLE_SOURCE || 'OneTree';
+
+export const domainUser = process.env.BS_KARTOFFEL_DOMAIN_USER || 'domainUser';
+
 export const hebEntityTypeToKartoffelLang: any = {
   חייל: 'soldier',
   מילואים: 'reserved',

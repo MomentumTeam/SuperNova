@@ -238,7 +238,7 @@ export default class ApproverController {
                 status: RequestStatus.DONE,
               },
             } as any);
-            await ProducerController.produceToADQueue(req.params.id, res); // TODO: ASK BARAK
+            // await ProducerController.produceToADQueue(req.params.id, res); // TODO: ASK BARAK
           } catch (addApproverError: any) {
             await RequestsService.updateRequest({
               id: request.id,
@@ -249,12 +249,25 @@ export default class ApproverController {
           }
         }
       } else {
-        const canPushToQueueRes = await RequestsService.canPushToADQueue({
-          id: req.params.requestId,
-        });
+        const canPushToKartoffelRes =
+          await RequestsService.canPushToKartoffelQueue({
+            id: req.params.requestId,
+          });
+        if (canPushToKartoffelRes.canPushToQueue) {
+          await ProducerController.produceToKartoffelQueue(
+            req.params.requestId
+          );
+        } else {
+          const canPushToADQueueRes = await RequestsService.canPushToADQueue({
+            id: req.params.requestId,
+          });
 
-        if (canPushToQueueRes.canPushToQueue) {
-          await ProducerController.produceToADQueue(req.params.requestId, res);
+          if (canPushToADQueueRes.canPushToQueue) {
+            await ProducerController.produceToADQueue(
+              req.params.requestId,
+              res
+            );
+          }
         }
       }
       res.send(request);

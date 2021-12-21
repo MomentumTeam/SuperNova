@@ -123,7 +123,6 @@ export class RolesRepository {
           `${C.kartoffelUrl}/api/roles`,
           createRoleRequest
         );
-
         if (res === C.kartoffelOK) {
           return { roleId: createRoleRequest.roleId };
         } else {
@@ -440,12 +439,12 @@ export class RolesRepository {
       if (C.useFaker) {
         return this.kartoffelFaker.randomRoleArray(10);
       } else {
-         const data: Role[] = await this.kartoffelUtils.kartoffelGet(
-           `${C.kartoffelUrl}/api/roles/search`,
-           searchRoleByRoleIdReq
-         );
+        const data: Role[] = await this.kartoffelUtils.kartoffelGet(
+          `${C.kartoffelUrl}/api/roles/search`,
+          searchRoleByRoleIdReq
+        );
 
-         return { roles: data };
+        return { roles: data };
       }
     } catch (error) {
       throw error;

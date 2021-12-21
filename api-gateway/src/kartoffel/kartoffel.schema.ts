@@ -138,6 +138,7 @@ export const GetOGChildrenSchema = Joi.object({
   },
   query: {
     direct: Joi.boolean().default(true),
+    withRoles: Joi.boolean().default(false),
     page: Joi.number().default(1).min(1),
     pageSize: Joi.number().default(100),
   },

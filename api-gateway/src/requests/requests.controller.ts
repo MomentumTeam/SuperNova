@@ -97,7 +97,6 @@ export default class RequestsController {
       );
       res.send(requests);
     } catch (error: any) {
-      // TODO : ask barak if we need to return the service's error or always 500
       const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
@@ -134,7 +133,6 @@ export default class RequestsController {
       );
       res.send(requests);
     } catch (error: any) {
-      // TODO : ask barak if we need to return the service's error or always 500
       const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
@@ -172,7 +170,6 @@ export default class RequestsController {
       );
       res.send(requests);
     } catch (error: any) {
-      // TODO : ask barak if we need to return the service's error or always 500
       const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
@@ -208,7 +205,6 @@ export default class RequestsController {
       );
       res.send(requests);
     } catch (error: any) {
-      // TODO : ask barak if we need to return the service's error or always 500
       const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
@@ -382,7 +378,7 @@ export default class RequestsController {
   //     const updateApproverDecisionReq: UpdateApproverDecisionReq = {
   //       id: req.params.id,
   //       approverDecision: req.body.approverDecision, //TODO
-  //       approverType: req.body.approverType, // ASK : liora if she returns person in type request
+  //       approverType: req.body.approverType, 
   //     };
   //
   //     logger.info(`Call to updateApproverDecision in GTW`, {

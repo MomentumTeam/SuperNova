@@ -286,6 +286,7 @@ message CreateRoleRequest{
     string directGroup = 2;
     string source = 3;
     string roleId = 4;
+    optional string clearance = 5;
 }
 
 // DeleteRole
@@ -404,6 +405,7 @@ message GetChildrenOfOGRequest{
     optional int32 page = 2;
     optional int32 pageSize = 3;
     bool direct = 4;
+    bool withRoles = 5;
 }
 
 // GetChildrenOfRootOG

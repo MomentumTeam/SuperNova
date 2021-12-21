@@ -119,6 +119,8 @@ services:
       - PS_SHMUEL_AUDIENCE=shmuel
       - PS_OLD_DOMAIN=oldDomain
       - PS_NEW_DOMAIN=newDomain
+      - PS_UI_CLEARANCES=בלמס,שמור,סודי,סודי ביותר,לבן,אדום,סגול,סגול טאבו,סגול מצומצם,סמצ,כחול
+      - PS_KARTOFFEL_CLEARANCES=0,1,2,3,4,5,6,7,8,9
       - PS_LOG_PATH=/logs
 
   notification-service:
@@ -189,7 +191,9 @@ services:
       - tea-service
     environment:
       - BS_RS_URL=request-service:8080
+      - BS_DEFAULT_ROLE_SOURCE=sf_name
       - BS_FOLDER_PATH=/bulkFiles
+      - BS_KARTOFFEL_DOMAIN_USER=domainUser
       - BS_LOG_PATH=/logs
 
   mail-service:
@@ -230,10 +234,15 @@ services:
       - KC_RS_URL=request-service:8080
       - KC_TS_URL=tea-service:8080
       - KC_KS_URL=kartoffel-service:8080
+      - KC_DEFAULT_ROLE_SOURCE=sf_name
+      - KC_DEFAULT_DI_SOURCE=sf_name
+      - KC_DI_SOURCES=sf_name,sf_name
       - KC_KAFKA_HOST=kafka
       - KC_KAFKA_PORT=29092
-      - KC_LOG_PATH=/logs
       - KC_KAFKA_CONSUMER_TOPIC=requests
+      - KC_KARTOFFEL_GOAL_USER=GoalUser
+      - KC_KARTOFFEL_DOMAIN_USER=domainUser
+      - KC_LOG_PATH=/logs
 
   execution-script:
     image: execution-script
