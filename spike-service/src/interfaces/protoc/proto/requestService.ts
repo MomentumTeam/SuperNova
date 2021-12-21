@@ -1223,6 +1223,7 @@ export interface CreateRoleBulkRes {
 export interface CreateRoleBulkKartoffelParams {
   /** The same for all the rows */
   directGroup: string;
+  hierarchy: string;
 }
 
 export interface CreateRoleBulkADParams {
@@ -1325,6 +1326,7 @@ export interface CreateOGKartoffelParams {
   name: string;
   parent: string;
   source: string;
+  hierarchy: string;
 }
 
 export interface CreateOGADParams {
@@ -17163,7 +17165,10 @@ export const CreateRoleBulkRes = {
   },
 };
 
-const baseCreateRoleBulkKartoffelParams: object = { directGroup: "" };
+const baseCreateRoleBulkKartoffelParams: object = {
+  directGroup: "",
+  hierarchy: "",
+};
 
 export const CreateRoleBulkKartoffelParams = {
   encode(
@@ -17172,6 +17177,9 @@ export const CreateRoleBulkKartoffelParams = {
   ): _m0.Writer {
     if (message.directGroup !== "") {
       writer.uint32(10).string(message.directGroup);
+    }
+    if (message.hierarchy !== "") {
+      writer.uint32(18).string(message.hierarchy);
     }
     return writer;
   },
@@ -17191,6 +17199,9 @@ export const CreateRoleBulkKartoffelParams = {
         case 1:
           message.directGroup = reader.string();
           break;
+        case 2:
+          message.hierarchy = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -17208,6 +17219,11 @@ export const CreateRoleBulkKartoffelParams = {
     } else {
       message.directGroup = "";
     }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = String(object.hierarchy);
+    } else {
+      message.hierarchy = "";
+    }
     return message;
   },
 
@@ -17215,6 +17231,7 @@ export const CreateRoleBulkKartoffelParams = {
     const obj: any = {};
     message.directGroup !== undefined &&
       (obj.directGroup = message.directGroup);
+    message.hierarchy !== undefined && (obj.hierarchy = message.hierarchy);
     return obj;
   },
 
@@ -17228,6 +17245,11 @@ export const CreateRoleBulkKartoffelParams = {
       message.directGroup = object.directGroup;
     } else {
       message.directGroup = "";
+    }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = object.hierarchy;
+    } else {
+      message.hierarchy = "";
     }
     return message;
   },
@@ -18965,6 +18987,7 @@ const baseCreateOGKartoffelParams: object = {
   name: "",
   parent: "",
   source: "",
+  hierarchy: "",
 };
 
 export const CreateOGKartoffelParams = {
@@ -18980,6 +19003,9 @@ export const CreateOGKartoffelParams = {
     }
     if (message.source !== "") {
       writer.uint32(26).string(message.source);
+    }
+    if (message.hierarchy !== "") {
+      writer.uint32(34).string(message.hierarchy);
     }
     return writer;
   },
@@ -19004,6 +19030,9 @@ export const CreateOGKartoffelParams = {
           break;
         case 3:
           message.source = reader.string();
+          break;
+        case 4:
+          message.hierarchy = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -19032,6 +19061,11 @@ export const CreateOGKartoffelParams = {
     } else {
       message.source = "";
     }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = String(object.hierarchy);
+    } else {
+      message.hierarchy = "";
+    }
     return message;
   },
 
@@ -19040,6 +19074,7 @@ export const CreateOGKartoffelParams = {
     message.name !== undefined && (obj.name = message.name);
     message.parent !== undefined && (obj.parent = message.parent);
     message.source !== undefined && (obj.source = message.source);
+    message.hierarchy !== undefined && (obj.hierarchy = message.hierarchy);
     return obj;
   },
 
@@ -19063,6 +19098,11 @@ export const CreateOGKartoffelParams = {
       message.source = object.source;
     } else {
       message.source = "";
+    }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = object.hierarchy;
+    } else {
+      message.hierarchy = "";
     }
     return message;
   },

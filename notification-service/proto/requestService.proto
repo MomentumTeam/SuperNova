@@ -690,6 +690,7 @@ message CreateRoleBulkRes{
 
 message CreateRoleBulkKartoffelParams{
     string directGroup = 1; //The same for all the rows
+    string hierarchy = 2;
 }
 
 message CreateRoleBulkADParams{
@@ -786,6 +787,7 @@ message CreateOGKartoffelParams{
     string name = 1;
     string parent = 2;
     string source = 3;
+    string hierarchy = 4;
 }
 
 message CreateOGADParams{
