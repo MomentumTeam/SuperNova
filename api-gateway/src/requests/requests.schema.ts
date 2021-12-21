@@ -202,6 +202,7 @@ const createRoleKartoffelParamsObj = Joi.object({
   roleId: Joi.string(), //T154514... generated automatically by tea-service if not given
   clearance: Joi.string().required(), //clearance of the role
   akaUnit: Joi.string(),
+  hierarchy: Joi.string().required(),
 
   //forDigitalIdentity
   type: Joi.string().required(), //always domainUser
@@ -491,13 +492,16 @@ export const editEntitySchema = Joi.object({
 const changeRoleHierarchyKartoffelParamsObj = Joi.object({
   roleId: Joi.string().required(),
   directGroup: Joi.string().required(),
-  jobTitle: Joi.string(),
+  currentJobTitle: Joi.string().required(),
+  newJobTitle: Joi.string(),
+  hierarchy: Joi.string().required(),
+  oldHierarchy: Joi.string().required()
 });
 
 const changeRoleHierarchyADParamsObj = Joi.object({
   samAccountName: Joi.string(),
   ouDisplayName: Joi.string(), // the new one
-  jobTitle: Joi.string(),
+  newJobTitle: Joi.string(),
 });
 
 export const changeRoleHierarchyReqSchema = Joi.object({
