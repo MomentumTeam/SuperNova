@@ -1276,10 +1276,15 @@ export interface ChangeRoleHierarchyBulkRes {
 
 export interface ChangeRoleHierarchyBulkKartoffelParams {
   directGroup: string;
+  oldHierarchy: string;
+  hierarchy: string;
 }
 
 export interface ChangeRoleHierarchyBulkADParams {
+  samAccountName?: string | undefined;
+  /** the new one */
   ouDisplayName?: string | undefined;
+  newJobTitle?: string | undefined;
 }
 
 /** 1.CreateRoleRequest */
@@ -1442,6 +1447,7 @@ export interface AssignRoleToEntityKartoffelParams {
   uniqueId: string;
   needDisconnect: boolean;
   roleId: string;
+  hierarchy: string;
 }
 
 export interface AssignRoleToEntityADParams {
@@ -18390,7 +18396,11 @@ export const ChangeRoleHierarchyBulkRes = {
   },
 };
 
-const baseChangeRoleHierarchyBulkKartoffelParams: object = { directGroup: "" };
+const baseChangeRoleHierarchyBulkKartoffelParams: object = {
+  directGroup: "",
+  oldHierarchy: "",
+  hierarchy: "",
+};
 
 export const ChangeRoleHierarchyBulkKartoffelParams = {
   encode(
@@ -18399,6 +18409,12 @@ export const ChangeRoleHierarchyBulkKartoffelParams = {
   ): _m0.Writer {
     if (message.directGroup !== "") {
       writer.uint32(10).string(message.directGroup);
+    }
+    if (message.oldHierarchy !== "") {
+      writer.uint32(18).string(message.oldHierarchy);
+    }
+    if (message.hierarchy !== "") {
+      writer.uint32(26).string(message.hierarchy);
     }
     return writer;
   },
@@ -18418,6 +18434,12 @@ export const ChangeRoleHierarchyBulkKartoffelParams = {
         case 1:
           message.directGroup = reader.string();
           break;
+        case 2:
+          message.oldHierarchy = reader.string();
+          break;
+        case 3:
+          message.hierarchy = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -18435,6 +18457,16 @@ export const ChangeRoleHierarchyBulkKartoffelParams = {
     } else {
       message.directGroup = "";
     }
+    if (object.oldHierarchy !== undefined && object.oldHierarchy !== null) {
+      message.oldHierarchy = String(object.oldHierarchy);
+    } else {
+      message.oldHierarchy = "";
+    }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = String(object.hierarchy);
+    } else {
+      message.hierarchy = "";
+    }
     return message;
   },
 
@@ -18442,6 +18474,9 @@ export const ChangeRoleHierarchyBulkKartoffelParams = {
     const obj: any = {};
     message.directGroup !== undefined &&
       (obj.directGroup = message.directGroup);
+    message.oldHierarchy !== undefined &&
+      (obj.oldHierarchy = message.oldHierarchy);
+    message.hierarchy !== undefined && (obj.hierarchy = message.hierarchy);
     return obj;
   },
 
@@ -18456,6 +18491,16 @@ export const ChangeRoleHierarchyBulkKartoffelParams = {
     } else {
       message.directGroup = "";
     }
+    if (object.oldHierarchy !== undefined && object.oldHierarchy !== null) {
+      message.oldHierarchy = object.oldHierarchy;
+    } else {
+      message.oldHierarchy = "";
+    }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = object.hierarchy;
+    } else {
+      message.hierarchy = "";
+    }
     return message;
   },
 };
@@ -18467,8 +18512,14 @@ export const ChangeRoleHierarchyBulkADParams = {
     message: ChangeRoleHierarchyBulkADParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
+    if (message.samAccountName !== undefined) {
+      writer.uint32(10).string(message.samAccountName);
+    }
     if (message.ouDisplayName !== undefined) {
-      writer.uint32(10).string(message.ouDisplayName);
+      writer.uint32(18).string(message.ouDisplayName);
+    }
+    if (message.newJobTitle !== undefined) {
+      writer.uint32(26).string(message.newJobTitle);
     }
     return writer;
   },
@@ -18486,7 +18537,13 @@ export const ChangeRoleHierarchyBulkADParams = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          message.samAccountName = reader.string();
+          break;
+        case 2:
           message.ouDisplayName = reader.string();
+          break;
+        case 3:
+          message.newJobTitle = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -18500,18 +18557,32 @@ export const ChangeRoleHierarchyBulkADParams = {
     const message = {
       ...baseChangeRoleHierarchyBulkADParams,
     } as ChangeRoleHierarchyBulkADParams;
+    if (object.samAccountName !== undefined && object.samAccountName !== null) {
+      message.samAccountName = String(object.samAccountName);
+    } else {
+      message.samAccountName = undefined;
+    }
     if (object.ouDisplayName !== undefined && object.ouDisplayName !== null) {
       message.ouDisplayName = String(object.ouDisplayName);
     } else {
       message.ouDisplayName = undefined;
+    }
+    if (object.newJobTitle !== undefined && object.newJobTitle !== null) {
+      message.newJobTitle = String(object.newJobTitle);
+    } else {
+      message.newJobTitle = undefined;
     }
     return message;
   },
 
   toJSON(message: ChangeRoleHierarchyBulkADParams): unknown {
     const obj: any = {};
+    message.samAccountName !== undefined &&
+      (obj.samAccountName = message.samAccountName);
     message.ouDisplayName !== undefined &&
       (obj.ouDisplayName = message.ouDisplayName);
+    message.newJobTitle !== undefined &&
+      (obj.newJobTitle = message.newJobTitle);
     return obj;
   },
 
@@ -18521,10 +18592,20 @@ export const ChangeRoleHierarchyBulkADParams = {
     const message = {
       ...baseChangeRoleHierarchyBulkADParams,
     } as ChangeRoleHierarchyBulkADParams;
+    if (object.samAccountName !== undefined && object.samAccountName !== null) {
+      message.samAccountName = object.samAccountName;
+    } else {
+      message.samAccountName = undefined;
+    }
     if (object.ouDisplayName !== undefined && object.ouDisplayName !== null) {
       message.ouDisplayName = object.ouDisplayName;
     } else {
       message.ouDisplayName = undefined;
+    }
+    if (object.newJobTitle !== undefined && object.newJobTitle !== null) {
+      message.newJobTitle = object.newJobTitle;
+    } else {
+      message.newJobTitle = undefined;
     }
     return message;
   },
@@ -20815,6 +20896,7 @@ const baseAssignRoleToEntityKartoffelParams: object = {
   uniqueId: "",
   needDisconnect: false,
   roleId: "",
+  hierarchy: "",
 };
 
 export const AssignRoleToEntityKartoffelParams = {
@@ -20833,6 +20915,9 @@ export const AssignRoleToEntityKartoffelParams = {
     }
     if (message.roleId !== "") {
       writer.uint32(34).string(message.roleId);
+    }
+    if (message.hierarchy !== "") {
+      writer.uint32(42).string(message.hierarchy);
     }
     return writer;
   },
@@ -20860,6 +20945,9 @@ export const AssignRoleToEntityKartoffelParams = {
           break;
         case 4:
           message.roleId = reader.string();
+          break;
+        case 5:
+          message.hierarchy = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -20893,6 +20981,11 @@ export const AssignRoleToEntityKartoffelParams = {
     } else {
       message.roleId = "";
     }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = String(object.hierarchy);
+    } else {
+      message.hierarchy = "";
+    }
     return message;
   },
 
@@ -20903,6 +20996,7 @@ export const AssignRoleToEntityKartoffelParams = {
     message.needDisconnect !== undefined &&
       (obj.needDisconnect = message.needDisconnect);
     message.roleId !== undefined && (obj.roleId = message.roleId);
+    message.hierarchy !== undefined && (obj.hierarchy = message.hierarchy);
     return obj;
   },
 
@@ -20931,6 +21025,11 @@ export const AssignRoleToEntityKartoffelParams = {
       message.roleId = object.roleId;
     } else {
       message.roleId = "";
+    }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = object.hierarchy;
+    } else {
+      message.hierarchy = "";
     }
     return message;
   },
