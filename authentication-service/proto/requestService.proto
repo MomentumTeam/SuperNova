@@ -768,6 +768,7 @@ message CreateRoleKartoffelParams{
     bool isRoleAttachable = 9; //true, if the role is unoccupied
 
     optional string roleEntityType = 10;
+    string hierarchy = 11;
 }
 
 message CreateRoleADParams{
@@ -935,6 +936,8 @@ message ChangeRoleHierarchyKartoffelParams{
     string directGroup = 2;
     string currentJobTitle = 3;
     optional string newJobTitle = 4;
+    string hierarchy = 5;
+    string oldHierarchy = 6;
 }
 
 message ChangeRoleHierarchyADParams{
