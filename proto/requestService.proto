@@ -693,7 +693,9 @@ message CreateRoleBulkKartoffelParams{
 }
 
 message CreateRoleBulkADParams{
-    string ouDisplayName = 1; //The same for all the rows
+    optional string samAccountName = 1;
+    string ouDisplayName = 2; // the new one
+    optional string newJobTitle = 3;
 }
 
 //15.ChangeRoleHierarchyBulkRequest
@@ -743,10 +745,13 @@ message ChangeRoleHierarchyBulkRes{
 
 message ChangeRoleHierarchyBulkKartoffelParams{
     string directGroup = 1;
+    string oldHierarchy = 2;
+    string hierarchy = 3;
 }
 
 message ChangeRoleHierarchyBulkADParams{
     optional string ouDisplayName = 1;
+    string samAccountName 
 }
 
 
@@ -907,6 +912,7 @@ message AssignRoleToEntityKartoffelParams{
     string uniqueId = 2;
     bool needDisconnect = 3;
     string roleId = 4;
+    string hierarchy = 5;
 }
 
 message AssignRoleToEntityADParams{
