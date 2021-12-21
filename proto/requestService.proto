@@ -693,9 +693,7 @@ message CreateRoleBulkKartoffelParams{
 }
 
 message CreateRoleBulkADParams{
-    optional string samAccountName = 1;
-    string ouDisplayName = 2; // the new one
-    optional string newJobTitle = 3;
+    string ouDisplayName = 1; //The same for all the rows
 }
 
 //15.ChangeRoleHierarchyBulkRequest
@@ -750,8 +748,9 @@ message ChangeRoleHierarchyBulkKartoffelParams{
 }
 
 message ChangeRoleHierarchyBulkADParams{
-    optional string ouDisplayName = 1;
-    string samAccountName 
+    optional string samAccountName = 1;
+    optional string ouDisplayName = 2; // the new one
+    optional string newJobTitle = 3;
 }
 
 
