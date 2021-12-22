@@ -1440,6 +1440,7 @@ export interface AssignRoleToEntityKartoffelParams {
   id: string;
   uniqueId: string;
   needDisconnect: boolean;
+  roleId: string;
 }
 
 export interface AssignRoleToEntityADParams {
@@ -20792,6 +20793,7 @@ const baseAssignRoleToEntityKartoffelParams: object = {
   id: "",
   uniqueId: "",
   needDisconnect: false,
+  roleId: "",
 };
 
 export const AssignRoleToEntityKartoffelParams = {
@@ -20807,6 +20809,9 @@ export const AssignRoleToEntityKartoffelParams = {
     }
     if (message.needDisconnect === true) {
       writer.uint32(24).bool(message.needDisconnect);
+    }
+    if (message.roleId !== "") {
+      writer.uint32(34).string(message.roleId);
     }
     return writer;
   },
@@ -20831,6 +20836,9 @@ export const AssignRoleToEntityKartoffelParams = {
           break;
         case 3:
           message.needDisconnect = reader.bool();
+          break;
+        case 4:
+          message.roleId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -20859,6 +20867,11 @@ export const AssignRoleToEntityKartoffelParams = {
     } else {
       message.needDisconnect = false;
     }
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = String(object.roleId);
+    } else {
+      message.roleId = "";
+    }
     return message;
   },
 
@@ -20868,6 +20881,7 @@ export const AssignRoleToEntityKartoffelParams = {
     message.uniqueId !== undefined && (obj.uniqueId = message.uniqueId);
     message.needDisconnect !== undefined &&
       (obj.needDisconnect = message.needDisconnect);
+    message.roleId !== undefined && (obj.roleId = message.roleId);
     return obj;
   },
 
@@ -20891,6 +20905,11 @@ export const AssignRoleToEntityKartoffelParams = {
       message.needDisconnect = object.needDisconnect;
     } else {
       message.needDisconnect = false;
+    }
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = object.roleId;
+    } else {
+      message.roleId = "";
     }
     return message;
   },

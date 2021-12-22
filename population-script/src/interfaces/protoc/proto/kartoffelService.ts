@@ -266,8 +266,8 @@ export interface GetRoleByRoleIdRequest {
 export interface GetRolesUnderOGRequest {
   groupId: string;
   direct: boolean;
-  page: number;
-  pageSize: number;
+  page?: number | undefined;
+  pageSize?: number | undefined;
 }
 
 /** GetRolesByDI */
@@ -4468,12 +4468,7 @@ export const GetRoleByRoleIdRequest = {
   },
 };
 
-const baseGetRolesUnderOGRequest: object = {
-  groupId: "",
-  direct: false,
-  page: 0,
-  pageSize: 0,
-};
+const baseGetRolesUnderOGRequest: object = { groupId: "", direct: false };
 
 export const GetRolesUnderOGRequest = {
   encode(
@@ -4486,10 +4481,10 @@ export const GetRolesUnderOGRequest = {
     if (message.direct === true) {
       writer.uint32(16).bool(message.direct);
     }
-    if (message.page !== 0) {
+    if (message.page !== undefined) {
       writer.uint32(24).int32(message.page);
     }
-    if (message.pageSize !== 0) {
+    if (message.pageSize !== undefined) {
       writer.uint32(32).int32(message.pageSize);
     }
     return writer;
@@ -4540,12 +4535,12 @@ export const GetRolesUnderOGRequest = {
     if (object.page !== undefined && object.page !== null) {
       message.page = Number(object.page);
     } else {
-      message.page = 0;
+      message.page = undefined;
     }
     if (object.pageSize !== undefined && object.pageSize !== null) {
       message.pageSize = Number(object.pageSize);
     } else {
-      message.pageSize = 0;
+      message.pageSize = undefined;
     }
     return message;
   },
@@ -4576,12 +4571,12 @@ export const GetRolesUnderOGRequest = {
     if (object.page !== undefined && object.page !== null) {
       message.page = object.page;
     } else {
-      message.page = 0;
+      message.page = undefined;
     }
     if (object.pageSize !== undefined && object.pageSize !== null) {
       message.pageSize = object.pageSize;
     } else {
-      message.pageSize = 0;
+      message.pageSize = undefined;
     }
     return message;
   },

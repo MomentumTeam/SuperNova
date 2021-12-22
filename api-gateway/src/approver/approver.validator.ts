@@ -9,6 +9,7 @@ import {
   getAllApproversSchema,
   getSearchByDisplayName,
   getSearchByDomainUser,
+  getUserTypeValidSchema,
   isApproverValidSchema,
   searchHighCommandersByDisplayNameValidSchema,
   updateApproverDecisionSchema,
@@ -62,6 +63,18 @@ export class ApproverValidator {
     transformRequest(
       req,
       validateObject(req, getSearchByDomainUser, { allowUnknown: true })
+    );
+    next();
+  }
+
+  static isGetUserTypeValid(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    transformRequest(
+      req,
+      validateObject(req, getUserTypeValidSchema, { allowUnknown: true })
     );
     next();
   }
