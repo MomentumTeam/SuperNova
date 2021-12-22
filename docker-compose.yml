@@ -119,8 +119,6 @@ services:
       - PS_SHMUEL_AUDIENCE=shmuel
       - PS_OLD_DOMAIN=oldDomain
       - PS_NEW_DOMAIN=newDomain
-      - PS_UI_CLEARANCES=בלמס,שמור,סודי,סודי ביותר,לבן,אדום,סגול,סגול טאבו,סגול מצומצם,סמצ,כחול
-      - PS_KARTOFFEL_CLEARANCES=0,1,2,3,4,5,6,7,8,9
       - PS_LOG_PATH=/logs
 
   notification-service:

@@ -23,17 +23,12 @@ export function generateKartoffelQueueMessage(request: Request): any {
       };
       break;
     case RequestType.CREATE_ROLE:
-      const roleUIClearance = kartoffelParams.clearance.replace(/['"]+/g, '');
-      let roleKartoffelClearance = '0';
-      if (C.uiClearances.includes(roleUIClearance)) {
-        roleKartoffelClearance = C.clearanceMap[roleUIClearance];
-      }
       message.data = {
         //for role
         jobTitle: kartoffelParams.jobTitle,
         directGroup: kartoffelParams.directGroup,
         roleId: kartoffelParams.roleId,
-        clearance: roleKartoffelClearance,
+        clearance: kartoffelParams.clearance,
         //for digitalIdentity
         type: kartoffelParams.type ? kartoffelParams.type : 'domainUser',
         source: kartoffelParams.source
@@ -48,11 +43,6 @@ export function generateKartoffelQueueMessage(request: Request): any {
       };
       break;
     case RequestType.CREATE_ENTITY:
-      const entityUIClearance = kartoffelParams.clearance.replace(/['"]+/g, '');
-      let entityKartoffelClearance = '0';
-      if (C.uiClearances.includes(entityUIClearance)) {
-        entityKartoffelClearance = C.clearanceMap[entityUIClearance];
-      }
       message.data = {
         firstName: kartoffelParams.firstName,
         lastName: kartoffelParams.lastName,
@@ -61,7 +51,7 @@ export function generateKartoffelQueueMessage(request: Request): any {
         serviceType: kartoffelParams.serviceType,
         phone: kartoffelParams.phone,
         address: kartoffelParams.address,
-        clearance: entityKartoffelClearance,
+        clearance: kartoffelParams.clearance,
         sex: kartoffelParams.sex,
         birthdate: kartoffelParams.birthdate,
         entityType: kartoffelParams.entityType,

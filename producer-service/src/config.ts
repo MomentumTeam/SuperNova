@@ -23,7 +23,7 @@ export const shmuelRequestTypes: any = {
   CREATE_OG: 'CreateOU',
   CREATE_ROLE: 'CreateRole',
   ASSIGN_ROLE_TO_ENTITY: 'ConnectNewRole',
-  RENAME_OG: 'EditOu',
+  RENAME_OG: 'EditOU',
   RENAME_ROLE: 'EditRoleName',
   EDIT_ENTITY: 'EditSpecialRole',
   DISCONNECT_ROLE: 'DisconnectRole',
@@ -31,29 +31,6 @@ export const shmuelRequestTypes: any = {
   DELETE_ROLE: 'PurgeRole',
 };
 
-export const uiClearances = process.env.PS_UI_CLEARANCES
-  ? process.env.PS_UI_CLEARANCES.split(',')
-  : [
-      'בלמס',
-      'שמור',
-      'סודי',
-      'סודי ביותר',
-      'לבן',
-      'אדום',
-      'סגול',
-      'סגול טאבו',
-      'סגול מצומצם',
-      'סמצ',
-      'כחול',
-    ];
-export const kartoffelClearances = process.env.PS_KARTOFFEL_CLEARANCES
-  ? process.env.PS_KARTOFFEL_CLEARANCES.split(',')
-  : ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-let clearanceMapTemp: any = {};
-uiClearances.forEach((uiClearance, index) => {
-  clearanceMapTemp[uiClearance] = kartoffelClearances[index];
-});
-export const clearanceMap = clearanceMapTemp;
 export const logPath = process.env.PS_LOG_PATH
   ? `${process.env.PS_LOG_PATH}/producer-service`
   : './logs/producer-service';
