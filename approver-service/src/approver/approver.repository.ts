@@ -52,20 +52,31 @@ export class ApproverRepository {
       const approverEntity: Entity = await KartoffelService.getEntityById({
         id: isApproverValidForOGReq.approverId,
       });
-      const group: OrganizationGroup = await KartoffelService.getOGById({
-        id: isApproverValidForOGReq.groupId,
-      });
-      const lastIndex =
-        group.ancestors.length < C.ogValidationDepth
-          ? group.ancestors.length
-          : C.ogValidationDepth;
-      const groupAncestors: any = group.ancestors.slice(0, lastIndex);
-      if (
-        group.id === approverEntity.directGroup ||
-        groupAncestors.includes(approverEntity.directGroup)
-      ) {
-        return { isValid: true };
+      if (!approverEntity.directGroup || approverEntity.directGroup === '') {
+        return { isValid: false };
       } else {
+        const group: OrganizationGroup = await KartoffelService.getOGById({
+          id: isApproverValidForOGReq.groupId,
+        });
+        if (group.id === approverEntity.directGroup) {
+          return { isValid: true };
+        }
+        const approverGroup = await KartoffelService.getOGById({
+          id: approverEntity.directGroup,
+        });
+        const lastIndex =
+          approverGroup.ancestors.length < C.ogValidationDepth
+            ? approverGroup.ancestors.length
+            : C.ogValidationDepth;
+        const approverGroupAncestors: any = approverGroup.ancestors.slice(
+          0,
+          lastIndex
+        );
+        for (let ancestor of approverGroupAncestors) {
+          if (group.ancestors.includes(ancestor)) {
+            return { isValid: true };
+          }
+        }
         return { isValid: false };
       }
     } catch (error: any) {
