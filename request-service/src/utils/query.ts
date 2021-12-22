@@ -83,17 +83,27 @@ export function getIdQuery(
       query = { 'submittedBy.id': id };
       break;
     case PersonTypeInRequest.COMMANDER_APPROVER:
-      query = { 'commanders.id': ObjectId(id) };
+      query = {
+        'submittedBy.id': { $ne: ObjectId(id) },
+        'commanders.id': ObjectId(id),
+      };
       break;
     case PersonTypeInRequest.SECURITY_APPROVER:
-      query = { 'securityApprovers.id': ObjectId(id) };
+      query = {
+        'submittedBy.id': { $ne: ObjectId(id) },
+        'securityApprovers.id': ObjectId(id),
+      };
       break;
     case PersonTypeInRequest.SUPER_SECURITY_APPROVER:
-      query = { 'superSecurityApprovers.id': ObjectId(id) };
+      query = {
+        'submittedBy.id': { $ne: ObjectId(id) },
+        'superSecurityApprovers.id': ObjectId(id),
+      };
       break;
     case PersonTypeInRequest.APPROVER:
       //PersonTypeInRequest.APPROVER
       query = {
+        'submittedBy.id': { $ne: ObjectId(id) },
         $or: [
           { 'commanders.id': ObjectId(id) },
           { 'securityApprovers.id': ObjectId(id) },
@@ -102,7 +112,7 @@ export function getIdQuery(
       };
       break;
     case PersonTypeInRequest.GET_ALL:
-      query = {};
+      query = { 'submittedBy.id': { $ne: ObjectId(id) } };
       break;
   }
   return query;
@@ -231,10 +241,7 @@ export function getPersonQuery(
   userType: ApproverType[]
 ) {
   try {
-    let query: any = {};
-    if (personTypeInRequest !== PersonTypeInRequest.GET_ALL) {
-      query = getIdQuery(id, personTypeInRequest);
-    }
+    let query: any = getIdQuery(id, personTypeInRequest);
     if (personTypeInRequest !== PersonTypeInRequest.SUBMITTER) {
       const approvementQuery: any = getApprovementQuery(
         approvementStatus,

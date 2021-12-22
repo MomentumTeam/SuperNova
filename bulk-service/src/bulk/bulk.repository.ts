@@ -84,7 +84,7 @@ export class BulkRepository {
               ...createRoleRequestReq.kartoffelParams,
               jobTitle: row.jobTitle,
               clearance: row.clearance,
-              type: 'domainUser', //always domainUser
+              type: C.domainUser, //always domainUser
               source: C.defaultRoleSource, //always oneTree
               isRoleAttachable: true,
               roleEntityType: row.roleEntityType,

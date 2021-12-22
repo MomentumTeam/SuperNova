@@ -61,7 +61,28 @@ export class KartoffelUtils {
             error: { message: error.message },
             queryParams: params,
           });
-          reject(error);
+          if (error.response.status === 401) {
+            logger.info(`Refreshing Spike token`);
+            this.spikeService
+              .getSpikeToken()
+              .then((newSpikeToken) => {
+                this.spikeToken = newSpikeToken;
+                this.lastSpikeTokenRecieved = new Date().getTime();
+                this.axiosKartoffel
+                  .get(url, { params })
+                  .then((res) => {
+                    resolve(res.data);
+                  })
+                  .catch((error: any) => {
+                    reject(error);
+                  });
+              })
+              .catch((ssError) => {
+                reject(ssError);
+              });
+          } else {
+            reject(error);
+          }
         });
     });
   }
@@ -83,7 +104,28 @@ export class KartoffelUtils {
             error: { message: error.message },
             queryParams: params,
           });
-          reject(error);
+          if (error.response.status === 401) {
+            logger.info(`Refreshing Spike token`);
+            this.spikeService
+              .getSpikeToken()
+              .then((newSpikeToken) => {
+                this.spikeToken = newSpikeToken;
+                this.lastSpikeTokenRecieved = new Date().getTime();
+                this.axiosKartoffel
+                  .delete(url, { params })
+                  .then((res) => {
+                    resolve(res.data);
+                  })
+                  .catch((error: any) => {
+                    reject(error);
+                  });
+              })
+              .catch((ssError) => {
+                reject(ssError);
+              });
+          } else {
+            reject(error);
+          }
         });
     });
   }
@@ -112,7 +154,28 @@ export class KartoffelUtils {
             queryParams: params,
             error: { message: error.message },
           });
-          reject(error);
+          if (error.response.status === 401) {
+            logger.info(`Refreshing Spike token`);
+            this.spikeService
+              .getSpikeToken()
+              .then((newSpikeToken) => {
+                this.spikeToken = newSpikeToken;
+                this.lastSpikeTokenRecieved = new Date().getTime();
+                this.axiosKartoffel
+                  .put(url, body, { params })
+                  .then((res) => {
+                    resolve(res.data);
+                  })
+                  .catch((error: any) => {
+                    reject(error);
+                  });
+              })
+              .catch((ssError) => {
+                reject(ssError);
+              });
+          } else {
+            reject(error);
+          }
         });
     });
   }
@@ -137,7 +200,28 @@ export class KartoffelUtils {
             error: { message: error.message },
             queryParams: params,
           });
-          reject(error);
+          if (error.response.status === 401) {
+            logger.info(`Refreshing Spike token`);
+            this.spikeService
+              .getSpikeToken()
+              .then((newSpikeToken) => {
+                this.spikeToken = newSpikeToken;
+                this.lastSpikeTokenRecieved = new Date().getTime();
+                this.axiosKartoffel
+                  .post(url, body, { params })
+                  .then((res) => {
+                    resolve(res.data);
+                  })
+                  .catch((error: any) => {
+                    reject(error);
+                  });
+              })
+              .catch((ssError) => {
+                reject(ssError);
+              });
+          } else {
+            reject(error);
+          }
         });
     });
   }
@@ -162,14 +246,35 @@ export class KartoffelUtils {
             error: { message: error.message },
             queryParams: params,
           });
-          reject(error);
+          if (error.response.status === 401) {
+            logger.info(`Refreshing Spike token`);
+            this.spikeService
+              .getSpikeToken()
+              .then((newSpikeToken) => {
+                this.spikeToken = newSpikeToken;
+                this.lastSpikeTokenRecieved = new Date().getTime();
+                this.axiosKartoffel
+                  .patch(url, body, { params })
+                  .then((res) => {
+                    resolve(res.data);
+                  })
+                  .catch((error: any) => {
+                    reject(error);
+                  });
+              })
+              .catch((ssError) => {
+                reject(ssError);
+              });
+          } else {
+            reject(error);
+          }
         });
     });
   }
 
   async kartoffelGetBufferStream(url: string): Promise<any> {
     return new Promise((resolve, reject) => {
-      axios
+      this.axiosKartoffel
         .get(url, {
           responseType: 'arraybuffer',
         })
@@ -184,7 +289,39 @@ export class KartoffelUtils {
           logger.error(`Kartoffel GET Buffer Stream Request to ${url} ERROR`, {
             error: { message: error.message },
           });
-          reject(error);
+          if (error.response.status === 401) {
+            logger.info(`Refreshing Spike token`);
+            this.spikeService
+              .getSpikeToken()
+              .then((newSpikeToken) => {
+                this.spikeToken = newSpikeToken;
+                this.lastSpikeTokenRecieved = new Date().getTime();
+                this.axiosKartoffel
+                  .get(url, {
+                    responseType: 'arraybuffer',
+                  })
+                  .then((res) => {
+                    const result: string = Buffer.from(res.data).toString(
+                      'base64'
+                    );
+                    logger.info(
+                      `Kartoffel GET Buffer Stream Request to ${url} OK`,
+                      {
+                        response: res.data,
+                      }
+                    );
+                    resolve(result);
+                  })
+                  .catch((error: any) => {
+                    reject(error);
+                  });
+              })
+              .catch((ssError) => {
+                reject(ssError);
+              });
+          } else {
+            reject(error);
+          }
         });
     });
   }
