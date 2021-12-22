@@ -1340,14 +1340,14 @@ export interface CreateEntityKartoffelParams {
   firstName: string;
   lastName: string;
   identityCard: string;
-  personalNumber: string;
+  personalNumber?: string | undefined;
   serviceType: string;
   phone: string[];
   mobilePhone: string[];
-  address: string;
+  address?: string | undefined;
   clearance: string;
-  sex: string;
-  birthdate: number;
+  sex?: string | undefined;
+  birthdate?: number | undefined;
   entityType: string;
 }
 
@@ -19209,14 +19209,10 @@ const baseCreateEntityKartoffelParams: object = {
   firstName: "",
   lastName: "",
   identityCard: "",
-  personalNumber: "",
   serviceType: "",
   phone: "",
   mobilePhone: "",
-  address: "",
   clearance: "",
-  sex: "",
-  birthdate: 0,
   entityType: "",
 };
 
@@ -19234,7 +19230,7 @@ export const CreateEntityKartoffelParams = {
     if (message.identityCard !== "") {
       writer.uint32(26).string(message.identityCard);
     }
-    if (message.personalNumber !== "") {
+    if (message.personalNumber !== undefined) {
       writer.uint32(34).string(message.personalNumber);
     }
     if (message.serviceType !== "") {
@@ -19246,16 +19242,16 @@ export const CreateEntityKartoffelParams = {
     for (const v of message.mobilePhone) {
       writer.uint32(58).string(v!);
     }
-    if (message.address !== "") {
+    if (message.address !== undefined) {
       writer.uint32(66).string(message.address);
     }
     if (message.clearance !== "") {
       writer.uint32(74).string(message.clearance);
     }
-    if (message.sex !== "") {
+    if (message.sex !== undefined) {
       writer.uint32(82).string(message.sex);
     }
-    if (message.birthdate !== 0) {
+    if (message.birthdate !== undefined) {
       writer.uint32(88).int64(message.birthdate);
     }
     if (message.entityType !== "") {
@@ -19346,7 +19342,7 @@ export const CreateEntityKartoffelParams = {
     if (object.personalNumber !== undefined && object.personalNumber !== null) {
       message.personalNumber = String(object.personalNumber);
     } else {
-      message.personalNumber = "";
+      message.personalNumber = undefined;
     }
     if (object.serviceType !== undefined && object.serviceType !== null) {
       message.serviceType = String(object.serviceType);
@@ -19366,7 +19362,7 @@ export const CreateEntityKartoffelParams = {
     if (object.address !== undefined && object.address !== null) {
       message.address = String(object.address);
     } else {
-      message.address = "";
+      message.address = undefined;
     }
     if (object.clearance !== undefined && object.clearance !== null) {
       message.clearance = String(object.clearance);
@@ -19376,12 +19372,12 @@ export const CreateEntityKartoffelParams = {
     if (object.sex !== undefined && object.sex !== null) {
       message.sex = String(object.sex);
     } else {
-      message.sex = "";
+      message.sex = undefined;
     }
     if (object.birthdate !== undefined && object.birthdate !== null) {
       message.birthdate = Number(object.birthdate);
     } else {
-      message.birthdate = 0;
+      message.birthdate = undefined;
     }
     if (object.entityType !== undefined && object.entityType !== null) {
       message.entityType = String(object.entityType);
@@ -19445,7 +19441,7 @@ export const CreateEntityKartoffelParams = {
     if (object.personalNumber !== undefined && object.personalNumber !== null) {
       message.personalNumber = object.personalNumber;
     } else {
-      message.personalNumber = "";
+      message.personalNumber = undefined;
     }
     if (object.serviceType !== undefined && object.serviceType !== null) {
       message.serviceType = object.serviceType;
@@ -19465,7 +19461,7 @@ export const CreateEntityKartoffelParams = {
     if (object.address !== undefined && object.address !== null) {
       message.address = object.address;
     } else {
-      message.address = "";
+      message.address = undefined;
     }
     if (object.clearance !== undefined && object.clearance !== null) {
       message.clearance = object.clearance;
@@ -19475,12 +19471,12 @@ export const CreateEntityKartoffelParams = {
     if (object.sex !== undefined && object.sex !== null) {
       message.sex = object.sex;
     } else {
-      message.sex = "";
+      message.sex = undefined;
     }
     if (object.birthdate !== undefined && object.birthdate !== null) {
       message.birthdate = object.birthdate;
     } else {
-      message.birthdate = 0;
+      message.birthdate = undefined;
     }
     if (object.entityType !== undefined && object.entityType !== null) {
       message.entityType = object.entityType;
