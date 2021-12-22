@@ -244,6 +244,8 @@ const assignRoleToEntityKartoffelParamsObj = Joi.object({
   id: Joi.string().required(),
   uniqueId: Joi.string().required(),
   roleId: Joi.string().required(),
+  needDisconnect: Joi.boolean().required(),
+  hierarchy: Joi.string().required(),
 });
 
 const assignRoleToEntityADParamsObj = Joi.object({
@@ -282,6 +284,7 @@ const createOGKartoffelParamsObj = Joi.object({
   name: Joi.string().required(),
   parent: Joi.string().required(),
   source: Joi.string().required(),
+  hierarchy: Joi.string().required(),
 });
 
 const createOGADParamsObj = Joi.object({
@@ -352,7 +355,7 @@ const createEntityKartoffelParamsObj = Joi.object({
   mobilePhone: Joi.array().items(Joi.string()),
   address: Joi.string(),
   clearance: Joi.string().required(),
-  sex: Joi.string().required(),
+  sex: Joi.string(),
   birthdate: Joi.number().unsafe(),
   entityType: Joi.string(),
 });
