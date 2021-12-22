@@ -173,6 +173,7 @@ services:
       - TS_EXCEL_INIT_FILE=initPrefixes.xlsx
       - TS_OLD_SUFFIX=gmail.com
       - TS_NEW_SUFFIX=gmail.com
+      - TS_BROL=brol
 
   bulk-service:
     image: bulk-service
@@ -192,6 +193,12 @@ services:
       - BS_DEFAULT_ROLE_SOURCE=sf_name
       - BS_FOLDER_PATH=/bulkFiles
       - BS_KARTOFFEL_DOMAIN_USER=domainUser
+      - BS_CRH_EXAMPLE_FILE=changeRoleHierarchyBulk.xlsx
+      - BS_CR_EXAMPLE_FILE=createRoleBulk.xlsx
+      - BS_SOLDIER=soldier
+      - BS_RESERVED=reserved
+      - BS_CIVILIAN=civilian
+      - BS_GOAL_USER=goalUser
       - BS_LOG_PATH=/logs
 
   mail-service:

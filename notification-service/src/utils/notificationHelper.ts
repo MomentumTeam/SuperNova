@@ -46,23 +46,34 @@ export function generateNotifications(
     const requestTypeStr = requestTypeToJSON(requestType);
 
     if (type === NotificationType.REQUEST_SUBMITTED) {
-      message = `התקבלה בקשה חדשה מספר <b>${request.serialNumber}</b> לאישורך מאת <b>${request.submittedBy?.displayName}</b> עבור <b>${requestTypeToHebrew[requestTypeStr]}</b>.`;
-
+      const messageForCommander = `התקבלה בקשה חדשה מספר <b>${request.serialNumber}</b> לאישורך מאת <b>${request.submittedBy?.displayName}</b> עבור <b>${requestTypeToHebrew[requestTypeStr]}</b>.`;
+      const messageForSubmitter = `בקשתך ל<b>${requestTypeToHebrew[requestTypeStr]}</b> מספר <b>${request.serialNumber}</b> התקבלה במערכת.`;
+      let submitterId = '';
+      if (request.submittedBy && request.submittedBy.id) {
+        submitterId = request.submittedBy.id;
+        notifications.push({
+          type: type,
+          ownerId: submitterId,
+          ownerType: OwnerType.SUBMITTER,
+          requestId: request.id,
+          message: messageForSubmitter,
+          reason: reason,
+        });
+      }
       if (request.commanders) {
-        const addNotification: CreateCustomNotificationReq[] =
-          request.commanders.map((commander) => {
-            return {
+        request.commanders.forEach((commander) => {
+          if (commander.id !== submitterId) {
+            notifications.push({
               type: type,
               ownerId: commander.id,
               ownerType: OwnerType.COMMANDER,
               requestId: request.id,
-              message: message,
+              message: messageForCommander,
               reason: reason,
-            };
-          });
-        notifications = [...addNotification];
+            });
+          }
+        });
       }
-
       return notifications;
     }
 

@@ -264,7 +264,6 @@ export class RolesRepository {
             pageSize: 100,
           });
           isJobTitleExists = jobTitleExists(roleArray, jobTitle);
-
           pageCounter++;
         } while (roleArray.roles.length > 0 && !isJobTitleExists);
 
