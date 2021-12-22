@@ -35,4 +35,6 @@ export const config = {
   storeLogs: process.env.GLOBAL_STORE_LOGS
     ? process.env.GLOBAL_STORE_LOGS === 'true'
     : false,
+  goalUser: process.env.KC_KARTOFFEL_GOAL_USER || 'GoalUser',
+  domainUser: process.env.KC_KARTOFFEL_DOMAIN_USER || 'domainUser',
 };

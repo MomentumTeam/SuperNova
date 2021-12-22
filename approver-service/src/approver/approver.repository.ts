@@ -59,7 +59,7 @@ export class ApproverRepository {
         group.ancestors.length < C.ogValidationDepth
           ? group.ancestors.length
           : C.ogValidationDepth;
-      const groupAncestors = group.ancestors.slice(0, lastIndex);
+      const groupAncestors: any = group.ancestors.slice(0, lastIndex);
       if (
         group.id === approverEntity.directGroup ||
         groupAncestors.includes(approverEntity.directGroup)

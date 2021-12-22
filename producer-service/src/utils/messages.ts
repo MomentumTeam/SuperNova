@@ -28,6 +28,7 @@ export function generateKartoffelQueueMessage(request: Request): any {
         jobTitle: kartoffelParams.jobTitle,
         directGroup: kartoffelParams.directGroup,
         roleId: kartoffelParams.roleId,
+        clearance: kartoffelParams.clearance,
         //for digitalIdentity
         type: kartoffelParams.type ? kartoffelParams.type : 'domainUser',
         source: kartoffelParams.source
@@ -36,6 +37,7 @@ export function generateKartoffelQueueMessage(request: Request): any {
         uniqueId: kartoffelParams.uniqueId,
         mail: kartoffelParams.mail,
         isRoleAttachable: kartoffelParams.isRoleAttachable,
+
         //in case of goalUser - need to create an entity and assign it to the role
         roleEntityType: kartoffelParams.roleEntityType,
       };

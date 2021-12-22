@@ -227,6 +227,7 @@ export interface CreateRoleRequest {
   directGroup: string;
   source: string;
   roleId: string;
+  clearance?: string | undefined;
 }
 
 /** DeleteRole */
@@ -3991,6 +3992,9 @@ export const CreateRoleRequest = {
     if (message.roleId !== "") {
       writer.uint32(34).string(message.roleId);
     }
+    if (message.clearance !== undefined) {
+      writer.uint32(42).string(message.clearance);
+    }
     return writer;
   },
 
@@ -4012,6 +4016,9 @@ export const CreateRoleRequest = {
           break;
         case 4:
           message.roleId = reader.string();
+          break;
+        case 5:
+          message.clearance = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -4043,6 +4050,11 @@ export const CreateRoleRequest = {
     } else {
       message.roleId = "";
     }
+    if (object.clearance !== undefined && object.clearance !== null) {
+      message.clearance = String(object.clearance);
+    } else {
+      message.clearance = undefined;
+    }
     return message;
   },
 
@@ -4053,6 +4065,7 @@ export const CreateRoleRequest = {
       (obj.directGroup = message.directGroup);
     message.source !== undefined && (obj.source = message.source);
     message.roleId !== undefined && (obj.roleId = message.roleId);
+    message.clearance !== undefined && (obj.clearance = message.clearance);
     return obj;
   },
 
@@ -4077,6 +4090,11 @@ export const CreateRoleRequest = {
       message.roleId = object.roleId;
     } else {
       message.roleId = "";
+    }
+    if (object.clearance !== undefined && object.clearance !== null) {
+      message.clearance = object.clearance;
+    } else {
+      message.clearance = undefined;
     }
     return message;
   },

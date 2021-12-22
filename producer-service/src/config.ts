@@ -23,7 +23,7 @@ export const shmuelRequestTypes: any = {
   CREATE_OG: 'CreateOU',
   CREATE_ROLE: 'CreateRole',
   ASSIGN_ROLE_TO_ENTITY: 'ConnectNewRole',
-  RENAME_OG: 'EditOu',
+  RENAME_OG: 'EditOU',
   RENAME_ROLE: 'EditRoleName',
   EDIT_ENTITY: 'EditSpecialRole',
   DISCONNECT_ROLE: 'DisconnectRole',

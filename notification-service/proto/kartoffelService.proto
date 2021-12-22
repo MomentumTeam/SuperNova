@@ -286,6 +286,7 @@ message CreateRoleRequest{
     string directGroup = 2;
     string source = 3;
     string roleId = 4;
+    optional string clearance = 5;
 }
 
 // DeleteRole
