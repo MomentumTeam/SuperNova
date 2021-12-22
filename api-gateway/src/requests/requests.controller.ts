@@ -425,7 +425,7 @@ export default class RequestsController {
     };
 
     try {
-      const request: any = await approveUserRequest(req, createRoleReq);
+      const request: any = await approveUserRequest(req, createRoleReq, createRoleReq.kartoffelParams?.directGroup);
       const createRole = await RequestsService.createRoleRequest(request);
 
       res.status(200).send(createRole);
@@ -477,9 +477,19 @@ export default class RequestsController {
           ];
         }
       }
+
+      const approveReq = async() => {
+        if (assignRoleToEntityReq.commanders.find(commander => commander.id === req.user.id)) {
+          return await approveUserRequest(req, assignRoleToEntityReq, assignRoleToEntityReq.kartoffelParams?.directGroup);
+        }
+
+        return assignRoleToEntityReq;
+      }
+
       const request: any = assignRoleToEntityReq.kartoffelParams?.needDisconnect
-        ? assignRoleToEntityReq
-        : await approveUserRequest(req, assignRoleToEntityReq);
+        ? await approveReq()
+        : await approveUserRequest(req, assignRoleToEntityReq, assignRoleToEntityReq.kartoffelParams?.directGroup);
+      
       const assignRole = await RequestsService.assignRoleToEntityRequest(
         request
       );
@@ -507,7 +517,7 @@ export default class RequestsController {
     };
 
     try {
-      const request: any = await approveUserRequest(req, createOGReq);
+      const request: any = await approveUserRequest(req, createOGReq, createOGReq.kartoffelParams?.parent);
       const createOGres = await RequestsService.createOGRequest(request);
 
       res.status(200).send(createOGres);
@@ -533,7 +543,7 @@ export default class RequestsController {
     };
 
     try {
-      const request: any = await approveUserRequest(req, createNewApproverReq);
+      const request: any = await approveUserRequest(req, createNewApproverReq, undefined, true);
       const newApprover = await RequestsService.createNewApproverRequest(
         request
       );
@@ -587,7 +597,7 @@ export default class RequestsController {
     };
 
     try {
-      const request: any = await approveUserRequest(req, renameOGReq);
+      const request: any = await approveUserRequest(req, renameOGReq, renameOGReq.kartoffelParams?.id);
       const og = await RequestsService.renameOGRequest(request);
 
       res.status(200).send(og);
@@ -824,7 +834,8 @@ export default class RequestsController {
     try {
       const request: any = await approveUserRequest(
         req,
-        changeRoleHierarchyReq
+        changeRoleHierarchyReq,
+        changeRoleHierarchyReq.kartoffelParams?.directGroup
       );
       const roleHierarchy = await RequestsService.changeRoleHierarchyRequest(
         request

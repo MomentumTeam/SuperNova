@@ -246,6 +246,7 @@ const assignRoleToEntityKartoffelParamsObj = Joi.object({
   roleId: Joi.string().required(),
   needDisconnect: Joi.boolean().required(),
   hierarchy: Joi.string().required(),
+  directGroup: Joi.string().required()
 });
 
 const assignRoleToEntityADParamsObj = Joi.object({
