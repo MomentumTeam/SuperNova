@@ -296,6 +296,8 @@ const RequestSchema = new Schema(
       currentJobTitle: { type: String, default: null },
       newJobTitle: { type: String, default: null },
       oldJobTitle: { type: String, default: null },
+      hierarchy: { type: String, default: null },
+      oldHierarchy: { type: String, default: null },
     },
     adParams: {
       ouDisplayName: { type: String, default: null },
