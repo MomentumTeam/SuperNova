@@ -55,12 +55,12 @@ export class ApproverRepository {
       if (!approverEntity.directGroup || approverEntity.directGroup === '') {
         return { isValid: false };
       } else {
+        if (isApproverValidForOGReq.groupId === approverEntity.directGroup) {
+          return { isValid: true };
+        }
         const group: OrganizationGroup = await KartoffelService.getOGById({
           id: isApproverValidForOGReq.groupId,
         });
-        if (group.id === approverEntity.directGroup) {
-          return { isValid: true };
-        }
         const approverGroup = await KartoffelService.getOGById({
           id: approverEntity.directGroup,
         });

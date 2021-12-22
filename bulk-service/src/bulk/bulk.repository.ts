@@ -38,7 +38,7 @@ export class BulkRepository {
     try {
       const type =
         typeof isBulkFileValidReq.type === typeof ''
-          ? requestTypeFromJSON(isBulkFileValidReq.type)
+          ? bulkTypeFromJSON(isBulkFileValidReq.type)
           : isBulkFileValidReq.type;
       const requestType =
         type === BulkType.CHANGE_ROLE_HIERARCHY_REQUEST
@@ -158,13 +158,13 @@ export class BulkRepository {
 
             changeRoleHierarchyRequestReq.kartoffelParams = {
               ...changeRoleHierarchyRequestReq.kartoffelParams,
-              roleId: row.roleId,
+              roleId: `${row.roleId.split('@')[0]}@${C.defaultRoleSource}`,
               currentJobTitle: row.currentJobTitle,
             };
 
             changeRoleHierarchyRequestReq.adParams = {
               ...changeRoleHierarchyRequestReq.adParams,
-              samAccountName: row.roleId,
+              samAccountName: row.roleId.split('@')[0],
             };
             if (row.newJobTitle) {
               changeRoleHierarchyRequestReq.kartoffelParams.newJobTitle =

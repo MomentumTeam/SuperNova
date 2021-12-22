@@ -18,7 +18,8 @@ export async function parseExcelFile(
         return {
           rowNumber: index + 2,
           roleEntityType: C.hebEntityTypeToKartoffelLang[row[2]],
-          clearance: C.hebClearanceToKartoffelLang[row[1]],
+          // clearance: C.hebClearanceToKartoffelLang[row[1]],
+          clearance: row[1],
           jobTitle: row[0],
         };
       });
