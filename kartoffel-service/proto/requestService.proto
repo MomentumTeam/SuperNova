@@ -914,6 +914,7 @@ message AssignRoleToEntityKartoffelParams{
     bool needDisconnect = 3;
     string roleId = 4;
     string hierarchy = 5;
+    string directGroup = 6;
 }
 
 message AssignRoleToEntityADParams{

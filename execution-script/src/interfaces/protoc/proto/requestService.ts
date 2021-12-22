@@ -1450,6 +1450,7 @@ export interface AssignRoleToEntityKartoffelParams {
   needDisconnect: boolean;
   roleId: string;
   hierarchy: string;
+  directGroup: string;
 }
 
 export interface AssignRoleToEntityADParams {
@@ -20933,6 +20934,7 @@ const baseAssignRoleToEntityKartoffelParams: object = {
   needDisconnect: false,
   roleId: "",
   hierarchy: "",
+  directGroup: "",
 };
 
 export const AssignRoleToEntityKartoffelParams = {
@@ -20954,6 +20956,9 @@ export const AssignRoleToEntityKartoffelParams = {
     }
     if (message.hierarchy !== "") {
       writer.uint32(42).string(message.hierarchy);
+    }
+    if (message.directGroup !== "") {
+      writer.uint32(50).string(message.directGroup);
     }
     return writer;
   },
@@ -20984,6 +20989,9 @@ export const AssignRoleToEntityKartoffelParams = {
           break;
         case 5:
           message.hierarchy = reader.string();
+          break;
+        case 6:
+          message.directGroup = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -21022,6 +21030,11 @@ export const AssignRoleToEntityKartoffelParams = {
     } else {
       message.hierarchy = "";
     }
+    if (object.directGroup !== undefined && object.directGroup !== null) {
+      message.directGroup = String(object.directGroup);
+    } else {
+      message.directGroup = "";
+    }
     return message;
   },
 
@@ -21033,6 +21046,8 @@ export const AssignRoleToEntityKartoffelParams = {
       (obj.needDisconnect = message.needDisconnect);
     message.roleId !== undefined && (obj.roleId = message.roleId);
     message.hierarchy !== undefined && (obj.hierarchy = message.hierarchy);
+    message.directGroup !== undefined &&
+      (obj.directGroup = message.directGroup);
     return obj;
   },
 
@@ -21066,6 +21081,11 @@ export const AssignRoleToEntityKartoffelParams = {
       message.hierarchy = object.hierarchy;
     } else {
       message.hierarchy = "";
+    }
+    if (object.directGroup !== undefined && object.directGroup !== null) {
+      message.directGroup = object.directGroup;
+    } else {
+      message.directGroup = "";
     }
     return message;
   },
