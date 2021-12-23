@@ -106,7 +106,7 @@ export class TeaRepository {
       if (!retrieveUPNByEntityReq.entity) {
         throw new Error('Entity must be inserted!');
       } else {
-        const upn: string = getUPN(retrieveUPNByEntityReq.entity);
+        const upn: string = await getUPN(retrieveUPNByEntityReq.entity);
         return { upn: upn };
       }
     } catch (error) {

@@ -15,11 +15,16 @@ export const defaultRoleSource =
 
 export const domainUser = process.env.BS_KARTOFFEL_DOMAIN_USER || 'domainUser';
 
+export const soldier = process.env.BS_SOLDIER || 'Soldier';
+export const reserved = process.env.BS_RESERVED || 'Reserved';
+export const civilian = process.env.BS_CIVILIAN || 'Civilian';
+export const goalUser = process.env.BS_GOAL_USER || 'GoalUser';
+
 export const hebEntityTypeToKartoffelLang: any = {
-  חייל: 'soldier',
-  מילואים: 'reserved',
-  אזרח: 'civilian',
-  תפקידן: 'goalUser',
+  חייל: soldier,
+  מילואים: reserved,
+  אזרח: civilian,
+  תפקידן: goalUser,
 };
 
 export const hebClearanceToKartoffelLang: any = {
@@ -29,10 +34,10 @@ export const hebClearanceToKartoffelLang: any = {
 };
 
 export const kartoffelEntityTypeToHeb: any = {
-  soldier: 'חייל',
-  reserved: 'מילואים',
-  civilian: 'אזרח',
-  goalUser: 'תפקידן',
+  [soldier]: 'חייל',
+  [reserved]: 'מילואים',
+  [civilian]: 'אזרח',
+  [goalUser]: 'תפקידן',
 };
 
 export const kartoffelClearanceToHeb: any = {
@@ -43,8 +48,8 @@ export const kartoffelClearanceToHeb: any = {
 
 export const exampleFiles = {
   changeRoleHierarchyRequest:
-    process.env.BS_FILE_CRH || 'changeRoleHierarchyBulk.xlsx',
-  createRoleRequest: process.env.BS_FILE_CR || 'createRoleBulk.xlsx',
+    process.env.BS_CRH_EXAMPLE_FILE || 'changeRoleHierarchyBulk.xlsx',
+  createRoleRequest: process.env.BS_CR_EXAMPLE_FILE || 'createRoleBulk.xlsx',
 };
 
 export const logPath = process.env.BS_LOG_PATH

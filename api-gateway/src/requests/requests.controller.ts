@@ -289,6 +289,9 @@ export default class RequestsController {
   }
 
   static async updateADStatus(req: any, res: Response) {
+    logger.info('We received a message from Shmuel', {
+      message: JSON.stringify(req.body),
+    });
     const retry: boolean = req.body.Retry;
     const status: boolean = req.body.Status;
     let updateADStatus: UpdateADStatusReq = {
@@ -315,10 +318,13 @@ export default class RequestsController {
             return res.send(request);
           }
         }
-
         return res.send(request);
       } else {
-        await ProducerController.produceToADQueue(req.body.RequestID, res);
+        await ProducerController.produceToADQueue(
+          req.body.RequestID,
+          res,
+          true
+        );
       }
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -379,7 +385,7 @@ export default class RequestsController {
   //     const updateApproverDecisionReq: UpdateApproverDecisionReq = {
   //       id: req.params.id,
   //       approverDecision: req.body.approverDecision, //TODO
-  //       approverType: req.body.approverType, 
+  //       approverType: req.body.approverType,
   //     };
   //
   //     logger.info(`Call to updateApproverDecision in GTW`, {

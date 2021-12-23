@@ -210,7 +210,7 @@ export class RequestRepository {
         : securityDecision;
     const needSecurityDecision = request.needSecurityDecision;
 
-    return needSecurityDecision && securityDecision === Decision.APPROVED;
+    return securityDecision === Decision.APPROVED;
   }
 
   isRequestApprovedBySuperSecurity(request: Request) {
@@ -390,6 +390,9 @@ export class RequestRepository {
               // NO NEED FOR AD PUSH
               adStatus = StageStatus.STAGE_DONE;
               kartoffelStatus = StageStatus.STAGE_WAITING_FOR_PUSH;
+            } else if (requestType === RequestType.ADD_APPROVER) {
+              adStatus = StageStatus.STAGE_DONE;
+              kartoffelStatus = StageStatus.STAGE_DONE;
             }
             requestProperties['adStatus.status'] = stageStatusToJSON(adStatus);
             requestProperties['kartoffelStatus.status'] =
@@ -832,11 +835,11 @@ export class RequestRepository {
       if (documentAfter) {
         const documentObj = documentAfter.toObject();
         turnObjectIdsToStrings(documentObj);
-        // if bulk
         const requestType: RequestType =
           typeof documentObj.type === typeof ''
             ? requestTypeFromJSON(documentObj.type)
             : documentObj.type;
+        // if bulk
         if (
           (requestType === RequestType.CREATE_ROLE_BULK ||
             requestType === RequestType.CHANGE_ROLE_HIERARCHY_BULK) &&
@@ -985,19 +988,12 @@ export class RequestRepository {
       //   await createNotifications(stageNotificationType, updatedRequest);
       // }
       if (
-        (requestStatus === RequestStatus.DONE ||
-          requestStatus === RequestStatus.FAILED) &&
+        requestStatus === RequestStatus.FAILED &&
         updatedRequest.submittedBy
       ) {
         const notificationType: NotificationType =
-          requestStatus === RequestStatus.DONE
-            ? NotificationType.REQUEST_DONE
-            : NotificationType.REQUEST_FAILED;
-        const mailType: MailType =
-          requestStatus === RequestStatus.DONE
-            ? MailType.REQUEST_DONE
-            : MailType.REQUEST_FAILED;
-
+          NotificationType.REQUEST_FAILED;
+        const mailType: MailType = MailType.REQUEST_FAILED;
         try {
           await createNotifications(notificationType, updatedRequest);
           sendMail(mailType, updatedRequest).then().catch();
@@ -1083,7 +1079,9 @@ export class RequestRepository {
         break;
 
       case RequestType.ADD_APPROVER:
-        const approverType = approverTypeFromJSON(request.additionalParams.type);
+        const approverType = approverTypeFromJSON(
+          request.additionalParams.type
+        );
         if (approverType === ApproverType.COMMANDER) {
           request.needSecurityDecision = false;
           request.needSuperSecurityDecision = false;
@@ -1422,7 +1420,7 @@ export class RequestRepository {
         }
         const requestProperties: any = newStatus
           ? { status: requestStatusToJSON(newStatus), rowErrors: rowErrors }
-          : {};
+          : { rowErrors: rowErrors };
         const updatedBulkRequest = await this.updateRequest({
           id: syncBulkRequestReq.id,
           requestProperties: requestProperties,

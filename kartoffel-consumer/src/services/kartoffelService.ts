@@ -147,7 +147,10 @@ export default class KartoffelService {
     logger.info('UpdateEntity');
     return new Promise((resolve, reject) => {
       for (const key in updateEntityRequest.properties) {
-        if (updateEntityRequest.properties[key] === undefined) {
+        if (
+          updateEntityRequest.properties[key] === undefined ||
+          updateEntityRequest.properties[key] === null
+        ) {
           delete updateEntityRequest.properties[key];
         }
       }
@@ -258,7 +261,10 @@ export default class KartoffelService {
     logger.info('CreateEntity');
     return new Promise((resolve, reject) => {
       for (const key in createEntityRequest) {
-        if (createEntityRequest[key] === undefined) {
+        if (
+          createEntityRequest[key] === undefined ||
+          createEntityRequest[key] === null
+        ) {
           delete createEntityRequest[key];
         }
       }
