@@ -33,7 +33,7 @@ export default class ProducerService {
     const canPushToKartoffel = await RequestService.canPushToKartoffelQueue(
       requestId
     );
-    const canPushToADQ = await RequestService.canPushToADQueue(requestId);
+    const canPushToAD = await RequestService.canPushToADQueue(requestId);
 
     if (canPushToKartoffel.canPushToQueue === true) {
       try {
@@ -46,7 +46,7 @@ export default class ProducerService {
         });
         throw error;
       }
-    } else if (canPushToADQ.canPushToQueue === true) {
+    } else if (canPushToAD.canPushToQueue === true) {
       try {
         logger.info(`Call to ProduceToADQueue in EXS`);
         await ProducerService.produceToADQueue(requestId);

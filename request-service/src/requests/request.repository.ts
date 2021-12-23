@@ -1420,7 +1420,7 @@ export class RequestRepository {
         }
         const requestProperties: any = newStatus
           ? { status: requestStatusToJSON(newStatus), rowErrors: rowErrors }
-          : {};
+          : { rowErrors: rowErrors };
         const updatedBulkRequest = await this.updateRequest({
           id: syncBulkRequestReq.id,
           requestProperties: requestProperties,
