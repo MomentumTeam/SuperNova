@@ -190,6 +190,7 @@ services:
       - tea-service
     environment:
       - BS_RS_URL=request-service:8080
+      - BS_DEFAULT_ROLE_SUFFIX=sf_name
       - BS_DEFAULT_ROLE_SOURCE=sf_name
       - BS_FOLDER_PATH=/bulkFiles
       - BS_KARTOFFEL_DOMAIN_USER=domainUser
@@ -247,6 +248,7 @@ services:
       - KC_KAFKA_CONSUMER_TOPIC=requests
       - KC_KARTOFFEL_GOAL_USER=GoalUser
       - KC_KARTOFFEL_DOMAIN_USER=domainUser
+      - KC_CIVILIAN=Civilian
       - KC_LOG_PATH=/logs
 
   execution-script:
@@ -474,6 +476,7 @@ services:
 volumes:
   bulk-files:
   spike-utils:
+  tea-utils:
   logs:
   esdata:
     driver: local

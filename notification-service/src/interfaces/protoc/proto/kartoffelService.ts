@@ -182,6 +182,7 @@ export interface OGTree {
 export interface SearchOGRequest {
   nameAndHierarchy: string;
   underGroupId?: string | undefined;
+  source?: string | undefined;
 }
 
 export interface OGArray {
@@ -3349,6 +3350,9 @@ export const SearchOGRequest = {
     if (message.underGroupId !== undefined) {
       writer.uint32(18).string(message.underGroupId);
     }
+    if (message.source !== undefined) {
+      writer.uint32(26).string(message.source);
+    }
     return writer;
   },
 
@@ -3364,6 +3368,9 @@ export const SearchOGRequest = {
           break;
         case 2:
           message.underGroupId = reader.string();
+          break;
+        case 3:
+          message.source = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -3388,6 +3395,11 @@ export const SearchOGRequest = {
     } else {
       message.underGroupId = undefined;
     }
+    if (object.source !== undefined && object.source !== null) {
+      message.source = String(object.source);
+    } else {
+      message.source = undefined;
+    }
     return message;
   },
 
@@ -3397,6 +3409,7 @@ export const SearchOGRequest = {
       (obj.nameAndHierarchy = message.nameAndHierarchy);
     message.underGroupId !== undefined &&
       (obj.underGroupId = message.underGroupId);
+    message.source !== undefined && (obj.source = message.source);
     return obj;
   },
 
@@ -3414,6 +3427,11 @@ export const SearchOGRequest = {
       message.underGroupId = object.underGroupId;
     } else {
       message.underGroupId = undefined;
+    }
+    if (object.source !== undefined && object.source !== null) {
+      message.source = object.source;
+    } else {
+      message.source = undefined;
     }
     return message;
   },

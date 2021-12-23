@@ -240,6 +240,7 @@ message OGTree{
 message SearchOGRequest{
     string nameAndHierarchy = 1;
     optional string underGroupId = 2;
+    optional string source = 3;
 }
 
 message OGArray{
