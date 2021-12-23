@@ -11,6 +11,7 @@ import {
   GetEntityByIdentifierRequest,
   GetEntityByIdRequest,
   GetEntityByRoleIdRequest,
+  GetPictureByEntityIdentifierRequest,
   GetPictureByEntityIdRequest,
   IdMessage,
   Image,
@@ -32,13 +33,11 @@ export class EntitiesManager {
     );
   }
 
-  async getPictureByEntityId(
-    getPictureByEntityIdRequest: GetPictureByEntityIdRequest
+  async getPictureByEntityIdentifier(
+    getPictureByEntityIdentifierRequest: GetPictureByEntityIdentifierRequest
   ): Promise<Image> {
     try {
-      return await this.entitiesRepository.getPictureByEntityId(
-        getPictureByEntityIdRequest
-      );
+      return await this.entitiesRepository.getPictureByEntityIdentifier(getPictureByEntityIdentifierRequest);
     } catch (error) {
       throw error;
     }

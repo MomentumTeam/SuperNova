@@ -3,15 +3,14 @@ import { Request, Response } from 'express';
 import { logger } from '../utils/logger/logger';
 import {
   GetEntityByIdRequest,
-  GetPictureByEntityIdRequest,
   GetEntityByIdentifierRequest,
   GetEntityByRoleIdRequest,
   GetEntityByDIRequest,
   GetOGTreeRequest,
   GetOGByIdRequest,
-  GetOGByHierarchyNameRequest,
   GetRoleByRoleIdRequest,
   IsRoleAlreadyTakenReq,
+  GetPictureByEntityIdentifierRequest,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { AuthenticationError } from '../utils/errors/userErrors';
 import { statusCodeHandler } from '../utils/errors/errorHandlers';
@@ -56,15 +55,13 @@ export default class KartoffelController {
   }
 
   static async getMyPicture(req: any, res: Response) {
-    if (!req.user && !req.user.id) throw new AuthenticationError();
-    const getPictureByEntityIdReq: GetPictureByEntityIdRequest = {
-      id: req.user.id,
+    if (!req.user && (!req.user.personalNumber || !req.user.identityCard)) throw new AuthenticationError();
+    const getPictureByEntityIdentifierReq: GetPictureByEntityIdentifierRequest = {
+      identifier: req.user.personalNumber || req.user.identityCard,
     };
 
     try {
-      const userImage = await KartoffelService.getPictureByEntityId(
-        getPictureByEntityIdReq
-      );
+      const userImage = await KartoffelService.getPictureByEntityIdentifier(getPictureByEntityIdentifierReq);
       res.send(userImage);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -72,10 +69,10 @@ export default class KartoffelController {
     }
   }
 
-  static async getPictureByEntityId(req: any, res: Response) {
+  static async getPictureByEntityIdentifier(req: any, res: Response) {
     try {
-      const userImage = await KartoffelService.getPictureByEntityId({
-        id: req.params.id,
+      const userImage = await KartoffelService.getPictureByEntityIdentifier({
+        id: req.params.identifier,
       });
       res.send(userImage);
     } catch (error: any) {
