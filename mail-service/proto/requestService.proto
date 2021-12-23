@@ -802,7 +802,7 @@ message CreateEntityKartoffelParams{
     string lastName = 2;
     string identityCard = 3;
     optional string personalNumber = 4;
-    string serviceType = 5;
+    optional string serviceType = 5;
     repeated string phone = 6;
     repeated string mobilePhone = 7;
     optional string address = 8;
@@ -914,6 +914,7 @@ message AssignRoleToEntityKartoffelParams{
     bool needDisconnect = 3;
     string roleId = 4;
     string hierarchy = 5;
+    string directGroup = 6;
 }
 
 message AssignRoleToEntityADParams{
@@ -1211,8 +1212,9 @@ message KartoffelParams{
 
     //RenameRole
     // ?
-    string oldJobTitle = 28;
-
+    optional string oldJobTitle = 28;
+    optional string hierarchy = 29;
+    optional string oldHierarchy = 30;
     //EditEntity
     // string firstName = 25;
     // string lastName = 26;

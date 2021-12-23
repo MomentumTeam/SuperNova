@@ -13,7 +13,7 @@ service Kartoffel {
     rpc GetEntityByIdentifier(GetEntityByIdentifierRequest) returns (Entity){}
     rpc SearchEntitiesByFullName(SearchEntitiesByFullNameRequest) returns (EntityArray){}
     rpc GetEntityById(GetEntityByIdRequest) returns (Entity){}
-    rpc GetPictureByEntityId(GetPictureByEntityIdRequest) returns (Image){}
+    rpc GetPictureByEntityIdentifier(GetPictureByEntityIdentifierRequest) returns (Image){}
     rpc DeleteEntity(DeleteEntityRequest) returns (SuccessMessage){}
     rpc UpdateEntity(UpdateEntityRequest) returns (Entity){}
     rpc ConnectEntityAndDI(ConnectEntityAndDIRequest) returns (SuccessMessage){}
@@ -209,8 +209,8 @@ message RenameOGRequest{
     string name = 2;
 }
 
-message GetPictureByEntityIdRequest{
-    string id = 1;
+message GetPictureByEntityIdentifierRequest{
+    string identifier = 1;
 }
 message Image {
     string image = 1;

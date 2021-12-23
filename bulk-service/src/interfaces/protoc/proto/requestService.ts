@@ -1341,7 +1341,7 @@ export interface CreateEntityKartoffelParams {
   lastName: string;
   identityCard: string;
   personalNumber?: string | undefined;
-  serviceType: string;
+  serviceType?: string | undefined;
   phone: string[];
   mobilePhone: string[];
   address?: string | undefined;
@@ -1450,6 +1450,7 @@ export interface AssignRoleToEntityKartoffelParams {
   needDisconnect: boolean;
   roleId: string;
   hierarchy: string;
+  directGroup: string;
 }
 
 export interface AssignRoleToEntityADParams {
@@ -1734,7 +1735,25 @@ export interface KartoffelParams {
    * RenameRole
    * ?
    */
-  oldJobTitle: string;
+  oldJobTitle?: string | undefined;
+  hierarchy?: string | undefined;
+  /**
+   * EditEntity
+   * string firstName = 25;
+   * string lastName = 26;
+   * string identityCard = 27;
+   * string personalNumber = 28;
+   * string serviceType = 29;
+   * repeated string phone = 30;
+   * repeated string mobilePhone = 31;
+   * string address = 32;
+   * string clearance = 33;
+   * string sex = 34;
+   * int64 birthdate = 35;
+   * string entityType = 36;
+   * string id =
+   */
+  oldHierarchy?: string | undefined;
 }
 
 export interface ADParams {
@@ -19209,7 +19228,6 @@ const baseCreateEntityKartoffelParams: object = {
   firstName: "",
   lastName: "",
   identityCard: "",
-  serviceType: "",
   phone: "",
   mobilePhone: "",
   clearance: "",
@@ -19233,7 +19251,7 @@ export const CreateEntityKartoffelParams = {
     if (message.personalNumber !== undefined) {
       writer.uint32(34).string(message.personalNumber);
     }
-    if (message.serviceType !== "") {
+    if (message.serviceType !== undefined) {
       writer.uint32(42).string(message.serviceType);
     }
     for (const v of message.phone) {
@@ -19347,7 +19365,7 @@ export const CreateEntityKartoffelParams = {
     if (object.serviceType !== undefined && object.serviceType !== null) {
       message.serviceType = String(object.serviceType);
     } else {
-      message.serviceType = "";
+      message.serviceType = undefined;
     }
     if (object.phone !== undefined && object.phone !== null) {
       for (const e of object.phone) {
@@ -19446,7 +19464,7 @@ export const CreateEntityKartoffelParams = {
     if (object.serviceType !== undefined && object.serviceType !== null) {
       message.serviceType = object.serviceType;
     } else {
-      message.serviceType = "";
+      message.serviceType = undefined;
     }
     if (object.phone !== undefined && object.phone !== null) {
       for (const e of object.phone) {
@@ -20933,6 +20951,7 @@ const baseAssignRoleToEntityKartoffelParams: object = {
   needDisconnect: false,
   roleId: "",
   hierarchy: "",
+  directGroup: "",
 };
 
 export const AssignRoleToEntityKartoffelParams = {
@@ -20954,6 +20973,9 @@ export const AssignRoleToEntityKartoffelParams = {
     }
     if (message.hierarchy !== "") {
       writer.uint32(42).string(message.hierarchy);
+    }
+    if (message.directGroup !== "") {
+      writer.uint32(50).string(message.directGroup);
     }
     return writer;
   },
@@ -20984,6 +21006,9 @@ export const AssignRoleToEntityKartoffelParams = {
           break;
         case 5:
           message.hierarchy = reader.string();
+          break;
+        case 6:
+          message.directGroup = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -21022,6 +21047,11 @@ export const AssignRoleToEntityKartoffelParams = {
     } else {
       message.hierarchy = "";
     }
+    if (object.directGroup !== undefined && object.directGroup !== null) {
+      message.directGroup = String(object.directGroup);
+    } else {
+      message.directGroup = "";
+    }
     return message;
   },
 
@@ -21033,6 +21063,8 @@ export const AssignRoleToEntityKartoffelParams = {
       (obj.needDisconnect = message.needDisconnect);
     message.roleId !== undefined && (obj.roleId = message.roleId);
     message.hierarchy !== undefined && (obj.hierarchy = message.hierarchy);
+    message.directGroup !== undefined &&
+      (obj.directGroup = message.directGroup);
     return obj;
   },
 
@@ -21066,6 +21098,11 @@ export const AssignRoleToEntityKartoffelParams = {
       message.hierarchy = object.hierarchy;
     } else {
       message.hierarchy = "";
+    }
+    if (object.directGroup !== undefined && object.directGroup !== null) {
+      message.directGroup = object.directGroup;
+    } else {
+      message.directGroup = "";
     }
     return message;
   },
@@ -25098,7 +25135,6 @@ const baseKartoffelParams: object = {
   needDisconnect: false,
   phone: "",
   mobilePhone: "",
-  oldJobTitle: "",
 };
 
 export const KartoffelParams = {
@@ -25187,8 +25223,14 @@ export const KartoffelParams = {
     if (message.newJobTitle !== undefined) {
       writer.uint32(218).string(message.newJobTitle);
     }
-    if (message.oldJobTitle !== "") {
+    if (message.oldJobTitle !== undefined) {
       writer.uint32(226).string(message.oldJobTitle);
+    }
+    if (message.hierarchy !== undefined) {
+      writer.uint32(234).string(message.hierarchy);
+    }
+    if (message.oldHierarchy !== undefined) {
+      writer.uint32(242).string(message.oldHierarchy);
     }
     return writer;
   },
@@ -25285,6 +25327,12 @@ export const KartoffelParams = {
           break;
         case 28:
           message.oldJobTitle = reader.string();
+          break;
+        case 29:
+          message.hierarchy = reader.string();
+          break;
+        case 30:
+          message.oldHierarchy = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -25442,7 +25490,17 @@ export const KartoffelParams = {
     if (object.oldJobTitle !== undefined && object.oldJobTitle !== null) {
       message.oldJobTitle = String(object.oldJobTitle);
     } else {
-      message.oldJobTitle = "";
+      message.oldJobTitle = undefined;
+    }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = String(object.hierarchy);
+    } else {
+      message.hierarchy = undefined;
+    }
+    if (object.oldHierarchy !== undefined && object.oldHierarchy !== null) {
+      message.oldHierarchy = String(object.oldHierarchy);
+    } else {
+      message.oldHierarchy = undefined;
     }
     return message;
   },
@@ -25495,6 +25553,9 @@ export const KartoffelParams = {
       (obj.newJobTitle = message.newJobTitle);
     message.oldJobTitle !== undefined &&
       (obj.oldJobTitle = message.oldJobTitle);
+    message.hierarchy !== undefined && (obj.hierarchy = message.hierarchy);
+    message.oldHierarchy !== undefined &&
+      (obj.oldHierarchy = message.oldHierarchy);
     return obj;
   },
 
@@ -25646,7 +25707,17 @@ export const KartoffelParams = {
     if (object.oldJobTitle !== undefined && object.oldJobTitle !== null) {
       message.oldJobTitle = object.oldJobTitle;
     } else {
-      message.oldJobTitle = "";
+      message.oldJobTitle = undefined;
+    }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = object.hierarchy;
+    } else {
+      message.hierarchy = undefined;
+    }
+    if (object.oldHierarchy !== undefined && object.oldHierarchy !== null) {
+      message.oldHierarchy = object.oldHierarchy;
+    } else {
+      message.oldHierarchy = undefined;
     }
     return message;
   },

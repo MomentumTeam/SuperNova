@@ -16,7 +16,7 @@ import {
   GetOGByIdSchema,
   GetOGChildrenSchema,
   GetOGTreeSchema,
-  getPictureByEntityIdSchema,
+  getPictureByEntityIdentifierSchema,
   GetRoleByIdSchema,
   GetRolesByHierarchySchema,
   GetRolesUnderOGSchema,
@@ -116,14 +116,14 @@ export class KartoffelValidator {
     next();
   }
 
-  static isGetPictureByEntityIdValid(
+  static isGetPictureByEntityIdentifierValid(
     req: Request,
     res: Response,
     next: NextFunction
   ) {
     transformRequest(
       req,
-      validateObject(req, getPictureByEntityIdSchema, { allowUnknown: true })
+      validateObject(req, getPictureByEntityIdentifierSchema, { allowUnknown: true })
     );
     next();
   }
