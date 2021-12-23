@@ -72,7 +72,7 @@ export default class KartoffelController {
   static async getPictureByEntityIdentifier(req: any, res: Response) {
     try {
       const userImage = await KartoffelService.getPictureByEntityIdentifier({
-        id: req.params.identifier,
+        identifier: req.params.identifier,
       });
       res.send(userImage);
     } catch (error: any) {

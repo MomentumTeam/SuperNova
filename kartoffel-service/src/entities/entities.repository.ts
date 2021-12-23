@@ -4,7 +4,6 @@ import * as C from '../config';
 import {
   CreateEntityRequest,
   Entity,
-  GetPictureByEntityIdRequest,
   Image,
   GetEntitiesUnderOGRequest,
   EntityArray,

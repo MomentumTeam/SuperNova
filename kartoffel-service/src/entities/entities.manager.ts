@@ -12,7 +12,6 @@ import {
   GetEntityByIdRequest,
   GetEntityByRoleIdRequest,
   GetPictureByEntityIdentifierRequest,
-  GetPictureByEntityIdRequest,
   IdMessage,
   Image,
   SearchCommandersByFullNameRequest,
