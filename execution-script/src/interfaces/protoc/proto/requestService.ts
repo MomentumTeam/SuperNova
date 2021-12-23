@@ -1341,7 +1341,7 @@ export interface CreateEntityKartoffelParams {
   lastName: string;
   identityCard: string;
   personalNumber?: string | undefined;
-  serviceType: string;
+  serviceType?: string | undefined;
   phone: string[];
   mobilePhone: string[];
   address?: string | undefined;
@@ -19210,7 +19210,6 @@ const baseCreateEntityKartoffelParams: object = {
   firstName: "",
   lastName: "",
   identityCard: "",
-  serviceType: "",
   phone: "",
   mobilePhone: "",
   clearance: "",
@@ -19234,7 +19233,7 @@ export const CreateEntityKartoffelParams = {
     if (message.personalNumber !== undefined) {
       writer.uint32(34).string(message.personalNumber);
     }
-    if (message.serviceType !== "") {
+    if (message.serviceType !== undefined) {
       writer.uint32(42).string(message.serviceType);
     }
     for (const v of message.phone) {
@@ -19348,7 +19347,7 @@ export const CreateEntityKartoffelParams = {
     if (object.serviceType !== undefined && object.serviceType !== null) {
       message.serviceType = String(object.serviceType);
     } else {
-      message.serviceType = "";
+      message.serviceType = undefined;
     }
     if (object.phone !== undefined && object.phone !== null) {
       for (const e of object.phone) {
@@ -19447,7 +19446,7 @@ export const CreateEntityKartoffelParams = {
     if (object.serviceType !== undefined && object.serviceType !== null) {
       message.serviceType = object.serviceType;
     } else {
-      message.serviceType = "";
+      message.serviceType = undefined;
     }
     if (object.phone !== undefined && object.phone !== null) {
       for (const e of object.phone) {
