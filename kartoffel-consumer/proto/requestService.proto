@@ -1212,8 +1212,9 @@ message KartoffelParams{
 
     //RenameRole
     // ?
-    string oldJobTitle = 28;
-
+    optional string oldJobTitle = 28;
+    optional string hierarchy = 29;
+    optional string oldHierarchy = 30;
     //EditEntity
     // string firstName = 25;
     // string lastName = 26;
