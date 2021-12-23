@@ -158,7 +158,7 @@ export class BulkRepository {
 
             changeRoleHierarchyRequestReq.kartoffelParams = {
               ...changeRoleHierarchyRequestReq.kartoffelParams,
-              roleId: `${row.roleId.split('@')[0]}@${C.defaultRoleSource}`,
+              roleId: `${row.roleId.split('@')[0]}@${C.defaultRoleSuffix}`,
               currentJobTitle: row.currentJobTitle,
             };
 

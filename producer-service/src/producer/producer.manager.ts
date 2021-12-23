@@ -157,7 +157,7 @@ export class RequestManager {
         const requestIds = request.requestIds;
         const promises = requestIds.map((requestId) => {
           return new Promise((resolve, reject) => {
-            this.produceToADQueue({ id: requestId })
+            this.produceToADQueue({ id: requestId, force: force })
               .then(() => {
                 resolve(true);
               })

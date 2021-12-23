@@ -137,7 +137,7 @@ export class RequestsService {
     return new Promise((resolve, reject) => {
       requestsClient.GetRequestBySerialNumber(
         getRequestBySerialNumberReq,
-        (err: any, response: RequestArray) => {
+        (err: any, response: any) => {
           if (err) {
             logger.error(`getRequestBySerialNumber ERROR in GTW`, {
               err,

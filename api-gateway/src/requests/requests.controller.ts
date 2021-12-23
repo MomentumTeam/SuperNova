@@ -217,10 +217,22 @@ export default class RequestsController {
     };
 
     try {
-      const requests = await RequestsService.getRequestBySerialNumber(
+      const request: any = await RequestsService.getRequestBySerialNumber(
         getRequestBySerialNumberReq
       );
-      res.send(requests);
+      if (request.submittedBy && request.submittedBy.id) {
+        const submitterId = request.submittedBy.id;
+        const userId = req.user.id;
+        if (userId !== submitterId) {
+          res
+            .status(403)
+            .send('You dont have a permission to see this request!');
+        } else {
+          res.send(request);
+        }
+      } else {
+        res.status(403).send('Error');
+      }
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
@@ -228,7 +240,6 @@ export default class RequestsController {
   }
 
   // PUT
-
   static async updateApproversComments(req: any, res: Response) {
     const request: any = await RequestsService.getRequestById({
       id: req.params.id,
