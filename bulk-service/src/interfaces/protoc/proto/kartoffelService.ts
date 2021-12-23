@@ -150,8 +150,8 @@ export interface RenameOGRequest {
   name: string;
 }
 
-export interface GetPictureByEntityIdRequest {
-  id: string;
+export interface GetPictureByEntityIdentifierRequest {
+  identifier: string;
 }
 
 export interface Image {
@@ -2897,15 +2897,15 @@ export const RenameOGRequest = {
   },
 };
 
-const baseGetPictureByEntityIdRequest: object = { id: "" };
+const baseGetPictureByEntityIdentifierRequest: object = { identifier: "" };
 
-export const GetPictureByEntityIdRequest = {
+export const GetPictureByEntityIdentifierRequest = {
   encode(
-    message: GetPictureByEntityIdRequest,
+    message: GetPictureByEntityIdentifierRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
+    if (message.identifier !== "") {
+      writer.uint32(10).string(message.identifier);
     }
     return writer;
   },
@@ -2913,17 +2913,17 @@ export const GetPictureByEntityIdRequest = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): GetPictureByEntityIdRequest {
+  ): GetPictureByEntityIdentifierRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseGetPictureByEntityIdRequest,
-    } as GetPictureByEntityIdRequest;
+      ...baseGetPictureByEntityIdentifierRequest,
+    } as GetPictureByEntityIdentifierRequest;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.id = reader.string();
+          message.identifier = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -2933,34 +2933,34 @@ export const GetPictureByEntityIdRequest = {
     return message;
   },
 
-  fromJSON(object: any): GetPictureByEntityIdRequest {
+  fromJSON(object: any): GetPictureByEntityIdentifierRequest {
     const message = {
-      ...baseGetPictureByEntityIdRequest,
-    } as GetPictureByEntityIdRequest;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
+      ...baseGetPictureByEntityIdentifierRequest,
+    } as GetPictureByEntityIdentifierRequest;
+    if (object.identifier !== undefined && object.identifier !== null) {
+      message.identifier = String(object.identifier);
     } else {
-      message.id = "";
+      message.identifier = "";
     }
     return message;
   },
 
-  toJSON(message: GetPictureByEntityIdRequest): unknown {
+  toJSON(message: GetPictureByEntityIdentifierRequest): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
+    message.identifier !== undefined && (obj.identifier = message.identifier);
     return obj;
   },
 
   fromPartial(
-    object: DeepPartial<GetPictureByEntityIdRequest>
-  ): GetPictureByEntityIdRequest {
+    object: DeepPartial<GetPictureByEntityIdentifierRequest>
+  ): GetPictureByEntityIdentifierRequest {
     const message = {
-      ...baseGetPictureByEntityIdRequest,
-    } as GetPictureByEntityIdRequest;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
+      ...baseGetPictureByEntityIdentifierRequest,
+    } as GetPictureByEntityIdentifierRequest;
+    if (object.identifier !== undefined && object.identifier !== null) {
+      message.identifier = object.identifier;
     } else {
-      message.id = "";
+      message.identifier = "";
     }
     return message;
   },
@@ -7548,7 +7548,9 @@ export interface Kartoffel {
     request: SearchEntitiesByFullNameRequest
   ): Promise<EntityArray>;
   GetEntityById(request: GetEntityByIdRequest): Promise<Entity>;
-  GetPictureByEntityId(request: GetPictureByEntityIdRequest): Promise<Image>;
+  GetPictureByEntityIdentifier(
+    request: GetPictureByEntityIdentifierRequest
+  ): Promise<Image>;
   DeleteEntity(request: DeleteEntityRequest): Promise<SuccessMessage>;
   UpdateEntity(request: UpdateEntityRequest): Promise<Entity>;
   ConnectEntityAndDI(
@@ -7626,7 +7628,8 @@ export class KartoffelClientImpl implements Kartoffel {
     this.GetEntityByIdentifier = this.GetEntityByIdentifier.bind(this);
     this.SearchEntitiesByFullName = this.SearchEntitiesByFullName.bind(this);
     this.GetEntityById = this.GetEntityById.bind(this);
-    this.GetPictureByEntityId = this.GetPictureByEntityId.bind(this);
+    this.GetPictureByEntityIdentifier =
+      this.GetPictureByEntityIdentifier.bind(this);
     this.DeleteEntity = this.DeleteEntity.bind(this);
     this.UpdateEntity = this.UpdateEntity.bind(this);
     this.ConnectEntityAndDI = this.ConnectEntityAndDI.bind(this);
@@ -7756,11 +7759,13 @@ export class KartoffelClientImpl implements Kartoffel {
     return promise.then((data) => Entity.decode(new _m0.Reader(data)));
   }
 
-  GetPictureByEntityId(request: GetPictureByEntityIdRequest): Promise<Image> {
-    const data = GetPictureByEntityIdRequest.encode(request).finish();
+  GetPictureByEntityIdentifier(
+    request: GetPictureByEntityIdentifierRequest
+  ): Promise<Image> {
+    const data = GetPictureByEntityIdentifierRequest.encode(request).finish();
     const promise = this.rpc.request(
       "Kartoffel.Kartoffel",
-      "GetPictureByEntityId",
+      "GetPictureByEntityIdentifier",
       data
     );
     return promise.then((data) => Image.decode(new _m0.Reader(data)));
