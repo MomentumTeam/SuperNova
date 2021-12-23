@@ -358,7 +358,7 @@ const createEntityKartoffelParamsObj = Joi.object({
   clearance: Joi.string().required(),
   sex: Joi.string(),
   birthdate: Joi.number().unsafe(),
-  entityType: Joi.string(),
+  entityType: Joi.string().required(),
 });
 const createEntityADParamsObj = Joi.object({
   //NO PARAMETERS NEEDED

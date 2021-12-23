@@ -367,9 +367,10 @@ services:
     ports:
       - '3000:80'
     environment:
-      - REACT_APP_BASE_URL=http://localhost:2000
-      - REACT_TOKEN_NAME=sp-token
-
+      - UI_REACT_APP_BASE_URL=http://localhost:2000
+      - UI_REACT_TOKEN_NAME=sp-token
+      - UI_USER_SOURCE_DI=sf_name
+      
   # Kafka GUI
   kouncil:
     image: consdata/kouncil:latest

@@ -34,12 +34,13 @@ import {
   approverTypeFromJSON,
   ApproverType,
   ApproversComments,
+  ApproverDecision,
 } from '../interfaces/protoc/proto/requestService';
 import { RequestsService } from './requests.service';
 import { AuthenticationError } from '../utils/errors/userErrors';
 import { KartoffelService } from '../kartoffel/kartoffel.service';
 import { statusCodeHandler } from '../utils/errors/errorHandlers';
-import { approveUserRequest } from './requests.utils';
+import { approveUserRequest, getApprovedDecision, getEntityFromConnectedUser } from './requests.utils';
 import { GetUserTypeRes } from '../interfaces/protoc/proto/approverService';
 import { config } from '../config';
 
@@ -480,7 +481,16 @@ export default class RequestsController {
 
       const approveReq = async() => {
         if (assignRoleToEntityReq.commanders.find(commander => commander.id === req.user.id)) {
-          return await approveUserRequest(req, assignRoleToEntityReq, assignRoleToEntityReq.kartoffelParams?.directGroup);
+           const response: any = await ApproverService.isApproverValidForOG({
+             approverId: req.user.id,
+             groupId: assignRoleToEntityReq.kartoffelParams?.directGroup || "",
+           });
+          
+           if (response.isValid) {
+             const entityUser = getEntityFromConnectedUser(req);
+             const decision = getApprovedDecision(entityUser);
+             assignRoleToEntityReq.commanderDecision = decision;
+           }
         }
 
         return assignRoleToEntityReq;
