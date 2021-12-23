@@ -24,7 +24,7 @@ export class AuthManager {
     const kartoffelUser: IUser = await AuthManager.extractKartoffelUser(
       genesisId
     );
-    const { displayName, identityCard, personalNumber, fullName } =
+    const { displayName, identityCard, personalNumber, fullName, rank } =
       kartoffelUser;
 
     const types = config.approver.enrich
@@ -41,6 +41,7 @@ export class AuthManager {
       identityCard,
       personalNumber,
       types,
+      rank
     };
     let userInformation = { ...userToken };
 
