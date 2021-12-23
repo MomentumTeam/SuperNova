@@ -20,6 +20,14 @@ async function main() {
         approverDIs: excelArray.superSecurity,
         type: ApproverType.SUPER_SECURITY,
       },
+      {
+        approverDIs: excelArray.bulkService,
+        type: ApproverType.BULK,
+      },
+      {
+        approverDIs: excelArray.admin,
+        type: ApproverType.ADMIN,
+      },
     ];
 
     approversToAdd.forEach(async (approversToAdd) => {
