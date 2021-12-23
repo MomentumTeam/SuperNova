@@ -15,12 +15,12 @@ import {
   getEntityById,
   getEntityByIdentifier,
   getEntityByRoleId,
-  getPictureByEntityId,
+  getPictureByEntityIdentifier,
   searchCommandersByFullName,
   searchEntitiesByFullName,
   searchHighCommandersByFullName,
   updateEntity,
-} from './entities/entities.controller';
+} from "./entities/entities.controller";
 import {
   getAllOGs,
   createOG,
@@ -117,7 +117,7 @@ export class Server {
         GetEntityById: getEntityById,
         DeleteEntity: deleteEntity,
         DisconnectDIFromEntity: disconnectDIFromEntity,
-        GetPictureByEntityId: getPictureByEntityId,
+        GetPictureByEntityIdentifier: getPictureByEntityIdentifier,
         ConnectEntityAndDI: connectEntityAndDI,
         UpdateEntity: updateEntity,
         SearchCommandersByFullName: searchCommandersByFullName,

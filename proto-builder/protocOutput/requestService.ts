@@ -1735,7 +1735,25 @@ export interface KartoffelParams {
    * RenameRole
    * ?
    */
-  oldJobTitle: string;
+  oldJobTitle?: string | undefined;
+  hierarchy?: string | undefined;
+  /**
+   * EditEntity
+   * string firstName = 25;
+   * string lastName = 26;
+   * string identityCard = 27;
+   * string personalNumber = 28;
+   * string serviceType = 29;
+   * repeated string phone = 30;
+   * repeated string mobilePhone = 31;
+   * string address = 32;
+   * string clearance = 33;
+   * string sex = 34;
+   * int64 birthdate = 35;
+   * string entityType = 36;
+   * string id =
+   */
+  oldHierarchy?: string | undefined;
 }
 
 export interface ADParams {
@@ -25117,7 +25135,6 @@ const baseKartoffelParams: object = {
   needDisconnect: false,
   phone: "",
   mobilePhone: "",
-  oldJobTitle: "",
 };
 
 export const KartoffelParams = {
@@ -25206,8 +25223,14 @@ export const KartoffelParams = {
     if (message.newJobTitle !== undefined) {
       writer.uint32(218).string(message.newJobTitle);
     }
-    if (message.oldJobTitle !== "") {
+    if (message.oldJobTitle !== undefined) {
       writer.uint32(226).string(message.oldJobTitle);
+    }
+    if (message.hierarchy !== undefined) {
+      writer.uint32(234).string(message.hierarchy);
+    }
+    if (message.oldHierarchy !== undefined) {
+      writer.uint32(242).string(message.oldHierarchy);
     }
     return writer;
   },
@@ -25304,6 +25327,12 @@ export const KartoffelParams = {
           break;
         case 28:
           message.oldJobTitle = reader.string();
+          break;
+        case 29:
+          message.hierarchy = reader.string();
+          break;
+        case 30:
+          message.oldHierarchy = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -25461,7 +25490,17 @@ export const KartoffelParams = {
     if (object.oldJobTitle !== undefined && object.oldJobTitle !== null) {
       message.oldJobTitle = String(object.oldJobTitle);
     } else {
-      message.oldJobTitle = "";
+      message.oldJobTitle = undefined;
+    }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = String(object.hierarchy);
+    } else {
+      message.hierarchy = undefined;
+    }
+    if (object.oldHierarchy !== undefined && object.oldHierarchy !== null) {
+      message.oldHierarchy = String(object.oldHierarchy);
+    } else {
+      message.oldHierarchy = undefined;
     }
     return message;
   },
@@ -25514,6 +25553,9 @@ export const KartoffelParams = {
       (obj.newJobTitle = message.newJobTitle);
     message.oldJobTitle !== undefined &&
       (obj.oldJobTitle = message.oldJobTitle);
+    message.hierarchy !== undefined && (obj.hierarchy = message.hierarchy);
+    message.oldHierarchy !== undefined &&
+      (obj.oldHierarchy = message.oldHierarchy);
     return obj;
   },
 
@@ -25665,7 +25707,17 @@ export const KartoffelParams = {
     if (object.oldJobTitle !== undefined && object.oldJobTitle !== null) {
       message.oldJobTitle = object.oldJobTitle;
     } else {
-      message.oldJobTitle = "";
+      message.oldJobTitle = undefined;
+    }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = object.hierarchy;
+    } else {
+      message.hierarchy = undefined;
+    }
+    if (object.oldHierarchy !== undefined && object.oldHierarchy !== null) {
+      message.oldHierarchy = object.oldHierarchy;
+    } else {
+      message.oldHierarchy = undefined;
     }
     return message;
   },

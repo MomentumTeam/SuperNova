@@ -2,10 +2,10 @@ const Joi = require('joi');
 Joi.objectId = require('joi-objectid')(Joi);
 
 // Entities
-export const getPictureByEntityIdSchema = Joi.object({
+export const getPictureByEntityIdentifierSchema = Joi.object({
   body: {},
   params: {
-    id: Joi.objectId().required(),
+    identifier: Joi.string().required(),
   },
   query: {},
 });
