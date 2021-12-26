@@ -16,7 +16,10 @@ export const config = {
     name: 'api-gatway',
   },
   fields: {
-    highCommandersRanks: env.get('GATEWAY_HIGH_COMMANDER_RANKS').default(["rookie", "champion"]).asArray()
+    highCommandersRanks: env
+      .get('GATEWAY_HIGH_COMMANDER_RANKS')
+      .default(['rookie', 'champion'])
+      .asArray(),
   },
   endpoints: {
     request: env.get('GATEWAY_RS_URL').default('0.0.0.0:8081').asString(),

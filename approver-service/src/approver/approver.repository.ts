@@ -49,6 +49,11 @@ export class ApproverRepository {
     isApproverValidForOGReq: IsApproverValidForOGReq
   ): Promise<IsApproverValidForOGRes> {
     try {
+      if (
+        C.alwaysValidCommanders.includes(isApproverValidForOGReq.approverId)
+      ) {
+        return { isValid: true };
+      }
       const approverEntity: Entity = await KartoffelService.getEntityById({
         id: isApproverValidForOGReq.approverId,
       });

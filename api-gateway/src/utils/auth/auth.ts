@@ -56,7 +56,7 @@ export class Authenticator {
     if (Authenticator.isPubliclyAvailablePath(req)) return next();
 
     return Authenticator.isSpikeProtectedPath(req)
-      ? validateSpikeWriteScope
+      ? validateSpikeWriteScope(req, res, next)
       : passport.authenticate('jwt', { session: false })(req, res, next);
   }
 }
