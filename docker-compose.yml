@@ -119,6 +119,7 @@ services:
       - PS_SHMUEL_AUDIENCE=shmuel
       - PS_OLD_DOMAIN=oldDomain
       - PS_NEW_DOMAIN=newDomain
+      - PS_KARTOFFEL_ONLY_SUBMITTERS=1111,2222,3333,4444
       - PS_LOG_PATH=/logs
 
   notification-service:
@@ -151,6 +152,7 @@ services:
       - APS_KS_URL=kartoffel-service:8080
       - APS_RS_URL=request-service:8080
       - APS_OG_VALIDATION_DEPTH=4
+      - APS_ALWAYS_VALID_COMMANDERS=1111,2222,3333,4444
       - APS_LOG_PATH=/logs
 
   tea-service:
@@ -379,7 +381,7 @@ services:
       - UI_REACT_APP_BASE_URL=http://localhost:2000
       - UI_REACT_TOKEN_NAME=sp-token
       - UI_USER_SOURCE_DI=sf_name
-      
+
   # Kafka GUI
   kouncil:
     image: consdata/kouncil:latest

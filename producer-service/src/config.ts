@@ -31,6 +31,10 @@ export const shmuelRequestTypes: any = {
   DELETE_ROLE: 'PurgeRole',
 };
 
+export const kartoffelOnlySubmitters = process.env.PS_KARTOFFEL_ONLY_SUBMITTERS
+  ? process.env.PS_KARTOFFEL_ONLY_SUBMITTERS.split(',')
+  : [];
+
 export const logPath = process.env.PS_LOG_PATH
   ? `${process.env.PS_LOG_PATH}/producer-service`
   : './logs/producer-service';
