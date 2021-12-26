@@ -265,6 +265,7 @@ export default class KartoffelController {
   static async getOGByHierarchyName(req: Request, res: Response) {
     const getOGByHierarchyNameReq: any = {
       hierarchy: req.query.hierarchy,
+      withRoles: req.query.withRoles
     };
 
     try {

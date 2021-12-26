@@ -107,11 +107,11 @@ export const isOGNameAlreadyTakenSchema = Joi.object({
 
 export const searchOGSchema = Joi.object({
   body: {},
-  params: {
-  },
+  params: {},
   query: {
     underGroupId: Joi.string(),
     nameAndHierarchy: Joi.string().required(),
+    withRoles: Joi.boolean().default(false)
   },
 });
 
@@ -128,6 +128,7 @@ export const GetOGByHierarchyNameSchema = Joi.object({
   params: {},
   query: {
     hierarchy: Joi.string().required(),
+    withRoles: Joi.boolean().default(false),
   },
 });
 

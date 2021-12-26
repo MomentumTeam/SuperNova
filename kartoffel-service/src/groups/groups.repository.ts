@@ -190,9 +190,13 @@ export class GroupsRepository {
           getOGByHierarchyName.hierarchy
         )}`;
         const res = await this.kartoffelUtils.kartoffelGet(url, {});
-        const groupsWithDirectRoles = await getDirectRolesForGroups([res]);
 
-        return groupsWithDirectRoles[0] as OrganizationGroup;
+        let group = res[0];
+        if (getOGByHierarchyName.withRoles) {
+          group = await getDirectRolesForGroups([res]);
+        }
+
+        return group as OrganizationGroup;
       }
     } catch (error) {
       throw error;
@@ -210,11 +214,13 @@ export class GroupsRepository {
           `${C.kartoffelUrl}/api/groups/search`,
           searchOGRequest
         );
-        const groupsWithDirectRoles = await getDirectRolesForGroups(
-          res as OrganizationGroup[]
-        );
 
-        return { groups: groupsWithDirectRoles } as OGArray;
+        let groups = res as OrganizationGroup[];
+        if (searchOGRequest.withRoles) {
+          groups = await getDirectRolesForGroups(groups);
+        }
+
+        return { groups: groups } as OGArray;
       }
     } catch (error) {
       throw error;

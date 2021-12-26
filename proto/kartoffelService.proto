@@ -159,6 +159,7 @@ message GetOGByIdRequest{
 
 message GetOGByHierarchyNameRequest{
     string hierarchy = 1;
+    bool withRoles = 2;
 }
 
 message DeleteEntityRequest{
@@ -240,6 +241,7 @@ message OGTree{
 message SearchOGRequest{
     string nameAndHierarchy = 1;
     optional string underGroupId = 2;
+    bool withRoles = 3;
 }
 
 message OGArray{
