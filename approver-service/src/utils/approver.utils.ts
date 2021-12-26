@@ -26,6 +26,7 @@ export function turnObjectIdsToStrings(document: any): void {
   //entityId
   if (document.entityId) {
     document.entityId = document.entityId.toString();
+    document.id = document.entityId.toString(); // Critical
   }
 
   //type

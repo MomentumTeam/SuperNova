@@ -40,7 +40,11 @@ import { RequestsService } from './requests.service';
 import { AuthenticationError } from '../utils/errors/userErrors';
 import { KartoffelService } from '../kartoffel/kartoffel.service';
 import { statusCodeHandler } from '../utils/errors/errorHandlers';
-import { approveUserRequest, getApprovedDecision, getEntityFromConnectedUser } from './requests.utils';
+import {
+  approveUserRequest,
+  getApprovedDecision,
+  getEntityFromConnectedUser,
+} from './requests.utils';
 import { GetUserTypeRes } from '../interfaces/protoc/proto/approverService';
 import { config } from '../config';
 
@@ -392,37 +396,6 @@ export default class RequestsController {
     }
   }
 
-  //   static async updateApproverDecision(req: any, res: Response) {
-  //     const updateApproverDecisionReq: UpdateApproverDecisionReq = {
-  //       id: req.params.id,
-  //       approverDecision: req.body.approverDecision, //TODO
-  //       approverType: req.body.approverType,
-  //     };
-  //
-  //     logger.info(`Call to updateApproverDecision in GTW`, {
-  //       callRequest: updateApproverDecisionReq,
-  //     });
-  //
-  //     try {
-  //       const request = await RequestsService.updateApproverDecision(
-  //         updateApproverDecisionReq
-  //       );
-  //
-  //       const canPushToQueueRes = await RequestsService.canPushToADQueue({
-  //         id: req.params.id,
-  //       });
-  //
-  //       if (canPushToQueueRes.canPushToQueue) {
-  //         await ProducerController.produceToADQueue(req.params.id, res);
-  //       }
-  //
-  //       res.status(200).send(request);
-  //     } catch (error: any) {
-  //       const statusCode = statusCodeHandler(error);
-  //       res.status(statusCode).send(error.message);
-  //     }
-  //   }
-
   static async createRoleRequest(req: any, res: Response) {
     if (!req.user && !req.user.id) throw new AuthenticationError();
 
@@ -443,9 +416,13 @@ export default class RequestsController {
     };
 
     try {
-      const request: any = await approveUserRequest(req, createRoleReq, createRoleReq.kartoffelParams?.directGroup);
-      const createRole = await RequestsService.createRoleRequest(request);
-
+      const request: any = await approveUserRequest(
+        req,
+        createRoleReq,
+        createRoleReq.kartoffelParams?.directGroup
+      );
+      const createRole: any = await RequestsService.createRoleRequest(request);
+      await RequestsService.executeRequestIfNeeded(createRole);
       res.status(200).send(createRole);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -496,31 +473,39 @@ export default class RequestsController {
         }
       }
 
-      const approveReq = async() => {
-        if (assignRoleToEntityReq.commanders.find(commander => commander.id === req.user.id)) {
-           const response: any = await ApproverService.isApproverValidForOG({
-             approverId: req.user.id,
-             groupId: assignRoleToEntityReq.kartoffelParams?.directGroup || "",
-           });
-          
-           if (response.isValid) {
-             const entityUser = getEntityFromConnectedUser(req);
-             const decision = getApprovedDecision(entityUser);
-             assignRoleToEntityReq.commanderDecision = decision;
-           }
+      const approveReq = async () => {
+        if (
+          assignRoleToEntityReq.commanders.find(
+            (commander) => commander.id === req.user.id
+          )
+        ) {
+          const response: any = await ApproverService.isApproverValidForOG({
+            approverId: req.user.id,
+            groupId: assignRoleToEntityReq.kartoffelParams?.directGroup || '',
+          });
+
+          if (response.isValid) {
+            const entityUser = getEntityFromConnectedUser(req);
+            const decision = getApprovedDecision(entityUser);
+            assignRoleToEntityReq.commanderDecision = decision;
+          }
         }
 
         return assignRoleToEntityReq;
-      }
+      };
 
       const request: any = assignRoleToEntityReq.kartoffelParams?.needDisconnect
         ? await approveReq()
-        : await approveUserRequest(req, assignRoleToEntityReq, assignRoleToEntityReq.kartoffelParams?.directGroup);
-      
+        : await approveUserRequest(
+            req,
+            assignRoleToEntityReq,
+            assignRoleToEntityReq.kartoffelParams?.directGroup
+          );
+
       const assignRole = await RequestsService.assignRoleToEntityRequest(
         request
       );
-
+      await RequestsService.executeRequestIfNeeded(assignRole);
       res.status(200).send(assignRole);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -544,9 +529,13 @@ export default class RequestsController {
     };
 
     try {
-      const request: any = await approveUserRequest(req, createOGReq, createOGReq.kartoffelParams?.parent);
-      const createOGres = await RequestsService.createOGRequest(request);
-
+      const request: any = await approveUserRequest(
+        req,
+        createOGReq,
+        createOGReq.kartoffelParams?.parent
+      );
+      const createOGres: any = await RequestsService.createOGRequest(request);
+      await RequestsService.executeRequestIfNeeded(createOGres);
       res.status(200).send(createOGres);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -570,11 +559,16 @@ export default class RequestsController {
     };
 
     try {
-      const request: any = await approveUserRequest(req, createNewApproverReq, undefined, true);
+      const request: any = await approveUserRequest(
+        req,
+        createNewApproverReq,
+        undefined,
+        true
+      );
       const newApprover = await RequestsService.createNewApproverRequest(
         request
       );
-
+      await RequestsService.executeRequestIfNeeded(newApprover);
       res.status(200).send(newApprover);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -600,7 +594,7 @@ export default class RequestsController {
     try {
       const request: any = await approveUserRequest(req, createEntityReq);
       const entity = await RequestsService.createEntityRequest(request);
-
+      await RequestsService.executeRequestIfNeeded(entity);
       res.status(200).send(entity);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -624,9 +618,13 @@ export default class RequestsController {
     };
 
     try {
-      const request: any = await approveUserRequest(req, renameOGReq, renameOGReq.kartoffelParams?.id);
+      const request: any = await approveUserRequest(
+        req,
+        renameOGReq,
+        renameOGReq.kartoffelParams?.id
+      );
       const og = await RequestsService.renameOGRequest(request);
-
+      await RequestsService.executeRequestIfNeeded(og);
       res.status(200).send(og);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -652,7 +650,7 @@ export default class RequestsController {
     try {
       const request: any = await approveUserRequest(req, renameRoleReq);
       const entity = await RequestsService.renameRoleRequest(request);
-
+      await RequestsService.executeRequestIfNeeded(entity);
       res.status(200).send(entity);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -678,7 +676,7 @@ export default class RequestsController {
     try {
       const request: any = await approveUserRequest(req, editEntityReq);
       const entity = await RequestsService.editEntityRequest(request);
-
+      await RequestsService.executeRequestIfNeeded(entity);
       res.status(200).send(entity);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -708,7 +706,7 @@ export default class RequestsController {
     try {
       const request: any = await approveUserRequest(req, deleteRoleReq);
       const deletedRole = await RequestsService.deleteRoleRequest(request);
-
+      await RequestsService.executeRequestIfNeeded(deletedRole);
       res.status(200).send(deletedRole);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -738,7 +736,7 @@ export default class RequestsController {
     try {
       const request: any = await approveUserRequest(req, deleteOGReq);
       const deletedOG = await RequestsService.deleteOGRequest(request);
-
+      await RequestsService.executeRequestIfNeeded(deletedOG);
       res.status(200).send(deletedOG);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -768,7 +766,7 @@ export default class RequestsController {
     try {
       const request: any = await approveUserRequest(req, deleteEntityReq);
       const deletedEntity = await RequestsService.deleteEntityRequest(request);
-
+      await RequestsService.executeRequestIfNeeded(deletedEntity);
       res.status(200).send(deletedEntity);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -807,7 +805,7 @@ export default class RequestsController {
       );
       const disconectRole =
         await RequestsService.disconectRoleFromEntityRequest(request);
-
+      await RequestsService.executeRequestIfNeeded(disconectRole);
       res.status(200).send(disconectRole);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -867,7 +865,7 @@ export default class RequestsController {
       const roleHierarchy = await RequestsService.changeRoleHierarchyRequest(
         request
       );
-
+      await RequestsService.executeRequestIfNeeded(roleHierarchy);
       res.status(200).send(roleHierarchy);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
