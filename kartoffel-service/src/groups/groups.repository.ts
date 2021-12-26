@@ -190,9 +190,14 @@ export class GroupsRepository {
           getOGByHierarchyName.hierarchy
         )}`;
         const res = await this.kartoffelUtils.kartoffelGet(url, {});
-        const groupsWithDirectRoles = await getDirectRolesForGroups([res]);
 
-        return groupsWithDirectRoles[0] as OrganizationGroup;
+        let group = res;
+        if (getOGByHierarchyName.withRoles) {
+          let groupwithroles = await getDirectRolesForGroups([res]);
+          group = groupwithroles[0];
+        }
+
+        return group as OrganizationGroup;
       }
     } catch (error) {
       throw error;
@@ -209,15 +214,17 @@ export class GroupsRepository {
         searchOGRequest.source = searchOGRequest.source
           ? searchOGRequest.source
           : C.defaultRoleSource;
-        const res = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/api/groups/search`,
-          searchOGRequest
-        );
-        const groupsWithDirectRoles = await getDirectRolesForGroups(
-          res as OrganizationGroup[]
-        );
+        const queryParams: any = { ...searchOGRequest };
+        delete queryParams.withRoles;
 
-        return { groups: groupsWithDirectRoles } as OGArray;
+        const res = await this.kartoffelUtils.kartoffelGet(`${C.kartoffelUrl}/api/groups/search`, queryParams);
+
+        let groups = res as OrganizationGroup[];
+        if (searchOGRequest.withRoles) {
+          groups = await getDirectRolesForGroups(groups);
+        }
+
+        return { groups: groups } as OGArray;
       }
     } catch (error) {
       throw error;
@@ -302,7 +309,7 @@ export class GroupsRepository {
             `${C.kartoffelUrl}/api/groups/${getChildrenOfOGRequest.id}/children`,
             queryParams
           );
-
+            
           let groups = res as OrganizationGroup[];
           if (getChildrenOfOGRequest.withRoles) {
             groups = await getDirectRolesForGroups(groups);
