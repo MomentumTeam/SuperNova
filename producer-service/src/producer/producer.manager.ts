@@ -1,3 +1,4 @@
+import * as C from '../config';
 import {
   ProduceRequest,
   SuccessMessage,
@@ -130,6 +131,18 @@ export class RequestManager {
       const request: Request = await this.requestService.getRequestById({
         id: produceRequest.id,
       });
+      const submitterId: any = request.submittedBy?.id;
+      if (C.kartoffelOnlySubmitters.includes(submitterId)) {
+        await this.requestService.updateADStatus({
+          requestId: produceRequest.id,
+          status: StageStatus.STAGE_DONE,
+          message: `User ${submitterId} is a kartoffelOnly member, AD stage has not been performed`,
+        });
+        const kartoffelSuccessMessage = await this.produceToKartoffelQueue(
+          produceRequest
+        );
+        return kartoffelSuccessMessage;
+      }
       const force =
         produceRequest.force && produceRequest.force === true ? true : false;
       let adStatus = request.adStatus?.status;
