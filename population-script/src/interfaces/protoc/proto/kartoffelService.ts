@@ -101,6 +101,7 @@ export interface GetOGByIdRequest {
 
 export interface GetOGByHierarchyNameRequest {
   hierarchy: string;
+  withRoles: boolean;
 }
 
 export interface DeleteEntityRequest {
@@ -183,6 +184,7 @@ export interface SearchOGRequest {
   nameAndHierarchy: string;
   underGroupId?: string | undefined;
   source?: string | undefined;
+  withRoles: boolean;
 }
 
 export interface OGArray {
@@ -2036,7 +2038,10 @@ export const GetOGByIdRequest = {
   },
 };
 
-const baseGetOGByHierarchyNameRequest: object = { hierarchy: "" };
+const baseGetOGByHierarchyNameRequest: object = {
+  hierarchy: "",
+  withRoles: false,
+};
 
 export const GetOGByHierarchyNameRequest = {
   encode(
@@ -2045,6 +2050,9 @@ export const GetOGByHierarchyNameRequest = {
   ): _m0.Writer {
     if (message.hierarchy !== "") {
       writer.uint32(10).string(message.hierarchy);
+    }
+    if (message.withRoles === true) {
+      writer.uint32(16).bool(message.withRoles);
     }
     return writer;
   },
@@ -2064,6 +2072,9 @@ export const GetOGByHierarchyNameRequest = {
         case 1:
           message.hierarchy = reader.string();
           break;
+        case 2:
+          message.withRoles = reader.bool();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -2081,12 +2092,18 @@ export const GetOGByHierarchyNameRequest = {
     } else {
       message.hierarchy = "";
     }
+    if (object.withRoles !== undefined && object.withRoles !== null) {
+      message.withRoles = Boolean(object.withRoles);
+    } else {
+      message.withRoles = false;
+    }
     return message;
   },
 
   toJSON(message: GetOGByHierarchyNameRequest): unknown {
     const obj: any = {};
     message.hierarchy !== undefined && (obj.hierarchy = message.hierarchy);
+    message.withRoles !== undefined && (obj.withRoles = message.withRoles);
     return obj;
   },
 
@@ -2100,6 +2117,11 @@ export const GetOGByHierarchyNameRequest = {
       message.hierarchy = object.hierarchy;
     } else {
       message.hierarchy = "";
+    }
+    if (object.withRoles !== undefined && object.withRoles !== null) {
+      message.withRoles = object.withRoles;
+    } else {
+      message.withRoles = false;
     }
     return message;
   },
@@ -3337,7 +3359,7 @@ export const OGTree = {
   },
 };
 
-const baseSearchOGRequest: object = { nameAndHierarchy: "" };
+const baseSearchOGRequest: object = { nameAndHierarchy: "", withRoles: false };
 
 export const SearchOGRequest = {
   encode(
@@ -3352,6 +3374,9 @@ export const SearchOGRequest = {
     }
     if (message.source !== undefined) {
       writer.uint32(26).string(message.source);
+    }
+    if (message.withRoles === true) {
+      writer.uint32(32).bool(message.withRoles);
     }
     return writer;
   },
@@ -3371,6 +3396,9 @@ export const SearchOGRequest = {
           break;
         case 3:
           message.source = reader.string();
+          break;
+        case 4:
+          message.withRoles = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -3400,6 +3428,11 @@ export const SearchOGRequest = {
     } else {
       message.source = undefined;
     }
+    if (object.withRoles !== undefined && object.withRoles !== null) {
+      message.withRoles = Boolean(object.withRoles);
+    } else {
+      message.withRoles = false;
+    }
     return message;
   },
 
@@ -3410,6 +3443,7 @@ export const SearchOGRequest = {
     message.underGroupId !== undefined &&
       (obj.underGroupId = message.underGroupId);
     message.source !== undefined && (obj.source = message.source);
+    message.withRoles !== undefined && (obj.withRoles = message.withRoles);
     return obj;
   },
 
@@ -3432,6 +3466,11 @@ export const SearchOGRequest = {
       message.source = object.source;
     } else {
       message.source = undefined;
+    }
+    if (object.withRoles !== undefined && object.withRoles !== null) {
+      message.withRoles = object.withRoles;
+    } else {
+      message.withRoles = false;
     }
     return message;
   },
