@@ -15,9 +15,11 @@ import ApproverService from './services/approverService';
 import * as config from './config';
 import {
   Request,
+  RequestStatus,
   RequestType,
   requestTypeFromJSON,
 } from './interfaces/protoc/proto/requestService';
+import { resolveProjectReferencePath } from 'typescript';
 const schedule = require('node-schedule');
 
 async function main() {
@@ -51,10 +53,26 @@ async function execute() {
       if (request.type === RequestType.ADD_APPROVER) {
         ApproverService.addApprover(request.id, request.additionalParams)
           .then(() => {
-            resolve(true);
+            RequestService.updateRequest(request.id, {
+              status: RequestStatus.DONE,
+            })
+              .then(() => {
+                resolve(true);
+              })
+              .catch((updateError) => {
+                reject(updateError);
+              });
           })
           .catch((error) => {
-            reject(error);
+            RequestService.updateRequest(request.id, {
+              status: RequestStatus.FAILED,
+            })
+              .then(() => {
+                reject(error);
+              })
+              .catch((updateError) => {
+                reject(updateError);
+              });
           });
       } else if (
         request.type === RequestType.CREATE_ROLE_BULK ||
