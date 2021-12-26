@@ -241,7 +241,8 @@ message OGTree{
 message SearchOGRequest{
     string nameAndHierarchy = 1;
     optional string underGroupId = 2;
-    bool withRoles = 3;
+    optional string source = 3;
+    bool withRoles = 4;
 }
 
 message OGArray{

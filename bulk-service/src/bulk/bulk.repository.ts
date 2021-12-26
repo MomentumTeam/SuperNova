@@ -158,7 +158,7 @@ export class BulkRepository {
 
             changeRoleHierarchyRequestReq.kartoffelParams = {
               ...changeRoleHierarchyRequestReq.kartoffelParams,
-              roleId: `${row.roleId.split('@')[0]}@${C.defaultRoleSource}`,
+              roleId: `${row.roleId.split('@')[0]}@${C.defaultRoleSuffix}`,
               currentJobTitle: row.currentJobTitle,
             };
 
@@ -259,9 +259,7 @@ export class BulkRepository {
               ? requestUnderBulk.kartoffelParams?.jobTitle
               : '',
             clearance: requestUnderBulk.kartoffelParams?.clearance
-              ? C.kartoffelClearanceToHeb[
-                  requestUnderBulk.kartoffelParams?.clearance
-                ]
+              ? requestUnderBulk.kartoffelParams?.clearance
               : '',
             roleEntityType: requestUnderBulk.kartoffelParams?.roleEntityType
               ? C.kartoffelEntityTypeToHeb[

@@ -38,6 +38,8 @@ import {
   RenameRoleRes,
   Request,
   RequestArray,
+  RequestType,
+  requestTypeFromJSON,
   StageStatus,
   SuccessMessage,
   TransferRequestToApproversReq,
@@ -48,6 +50,8 @@ import {
   UpdateReq,
 } from '../interfaces/protoc/proto/requestService';
 import { logger } from '../utils/logger/logger';
+import { ApproverService } from '../approver/approver.service';
+import ProducerService from '../producer/producer.service';
 
 const PROTO_PATH = __dirname.includes('dist')
   ? path.join(__dirname, '../../../proto/requestService.proto')
@@ -74,6 +78,27 @@ export const requestsClient: any = new protoDescriptor.RequestService(
 );
 
 export class RequestsService {
+  static async executeRequestIfNeeded(request: any) {
+    try {
+      request.type =
+        typeof request.type === typeof ''
+          ? requestTypeFromJSON(request.type)
+          : request.type;
+      const isRequestApprovedRes: any = await RequestsService.isRequestApproved(
+        { id: request.id }
+      );
+      if (isRequestApprovedRes.isRequestApproved) {
+        if (request.type === RequestType.ADD_APPROVER) {
+          await ApproverService.addApprover(request.additionalParams);
+        } else {
+          await ProducerService.executeRequest(request.id);
+        }
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
   static async getRequestById(getRequestByIdReq: GetRequestByIdReq) {
     logger.info(`Call to getRequestById in GTW`, getRequestByIdReq);
 
@@ -137,7 +162,7 @@ export class RequestsService {
     return new Promise((resolve, reject) => {
       requestsClient.GetRequestBySerialNumber(
         getRequestBySerialNumberReq,
-        (err: any, response: RequestArray) => {
+        (err: any, response: any) => {
           if (err) {
             logger.error(`getRequestBySerialNumber ERROR in GTW`, {
               err,

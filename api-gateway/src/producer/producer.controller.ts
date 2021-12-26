@@ -5,6 +5,7 @@ import path from 'path';
 import { config } from '../config';
 import { logger } from '../utils/logger/logger';
 import { SuccessMessage } from '../interfaces/protoc/proto/producerService';
+import { RequestsService } from '../requests/requests.service';
 
 const PROTO_PATH = __dirname.includes('dist')
   ? path.join(__dirname, '../../../proto/producerService.proto')

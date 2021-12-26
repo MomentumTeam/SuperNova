@@ -210,6 +210,9 @@ export class GroupsRepository {
         const ogArray: OGArray = await this.kartoffelFaker.randomOGArray();
         return ogArray;
       } else {
+        searchOGRequest.source = searchOGRequest.source
+          ? searchOGRequest.source
+          : C.defaultRoleSource;
         const res = await this.kartoffelUtils.kartoffelGet(
           `${C.kartoffelUrl}/api/groups/search`,
           searchOGRequest

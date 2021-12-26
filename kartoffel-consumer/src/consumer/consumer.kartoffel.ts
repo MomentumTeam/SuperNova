@@ -127,17 +127,12 @@ export const createEntity = async (
       lastName: lastName,
       identityCard: identityCard,
       personalNumber: personalNumber,
-      serviceType: serviceType,
       phone: phone,
       mobilePhone: mobilePhone,
-      address: address,
       clearance: clearance,
       sex: sex,
       birthDate: birthDate,
-      entityType: entityType,
-      akaUnit: akaUnit,
-      dischargeDay: dischargeDay,
-      rank: rank,
+      entityType: config.civilian,
     });
     logger.info('Successfuly created Entity', createdEntity);
     return createdEntity.id;
