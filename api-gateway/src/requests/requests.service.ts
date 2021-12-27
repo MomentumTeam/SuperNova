@@ -80,7 +80,7 @@ export const requestsClient: any = new protoDescriptor.RequestService(
 export class RequestsService {
   static async executeRequestIfNeeded(request: any) {
     try {
-      request.type =
+      const requestType =
         typeof request.type === typeof ''
           ? requestTypeFromJSON(request.type)
           : request.type;
@@ -88,7 +88,7 @@ export class RequestsService {
         { id: request.id }
       );
       if (isRequestApprovedRes.isRequestApproved) {
-        if (request.type === RequestType.ADD_APPROVER) {
+        if (requestType === RequestType.ADD_APPROVER) {
           await ApproverService.addApprover(request.additionalParams);
         } else {
           await ProducerService.executeRequest(request.id);
