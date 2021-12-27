@@ -28,10 +28,10 @@ async function main() {
     if (config.cronJob) {
       schedule.scheduleJob(`* */${config.everyHour} * * *`, async function () {
         //run script every x hour
-        execute();
+        await execute();
       });
     } else {
-      execute();
+      await execute();
     }
   } catch (error: any) {
     logger.error(
@@ -118,4 +118,4 @@ async function execute() {
     });
 }
 
-main();
+main().then().catch();

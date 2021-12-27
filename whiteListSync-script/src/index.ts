@@ -17,14 +17,15 @@ const schedule = require('node-schedule');
 async function main() {
   try {
     if (config.cronJob) {
-     schedule.scheduleJob(
-    `${config.minute} ${config.hour} * * *`,
-    async function () {
-    // run script at midnight - 00:00
-        execute();
-      });
+      schedule.scheduleJob(
+        `${config.minute} ${config.hour} * * *`,
+        async function () {
+          // run script at midnight - 00:00
+          await execute();
+        }
+      );
     } else {
-      execute();
+      await execute();
     }
   } catch (error: any) {
     logger.error(
@@ -36,31 +37,31 @@ async function main() {
 async function execute() {
   logger.info(`WhiteList-Script started successfully!`);
 
-    const approversArray = (await getAllApproverIds()) as ApproverIdArray;
+  const approversArray = (await getAllApproverIds()) as ApproverIdArray;
 
-    const promises = approversArray.approverIds.map(
-      async (approverId: string) => {
-        return new Promise((resolve, reject) => {
-          sync(approverId)
-            .then(() => {
-              resolve(true);
-            })
-            .catch((error) => {
-              reject(error);
-            });
-        });
-      }
-    );
-
-    Promise.all(promises)
-      .then((values) => {
-        logger.info(`Promises were finished successfully`);
-      })
-      .catch((error: any) => {
-        logger.error(`Promises sync failed`, {
-          error: { message: error.message },
-        });
+  const promises = approversArray.approverIds.map(
+    async (approverId: string) => {
+      return new Promise((resolve, reject) => {
+        sync(approverId)
+          .then(() => {
+            resolve(true);
+          })
+          .catch((error) => {
+            reject(error);
+          });
       });
+    }
+  );
+
+  Promise.all(promises)
+    .then((values) => {
+      logger.info(`Promises were finished successfully`);
+    })
+    .catch((error: any) => {
+      logger.error(`Promises sync failed`, {
+        error: { message: error.message },
+      });
+    });
 }
 
-main();
+main().then().catch();
