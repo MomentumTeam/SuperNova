@@ -132,11 +132,11 @@ export class RequestManager {
         id: produceRequest.id,
       });
       const submitterId: any = request.submittedBy?.id;
-      if (C.kartoffelOnlySubmitters.includes(submitterId)) {
+      if (C.restrictADAccess && !C.adAllowedSubmitters.includes(submitterId)) {
         await this.requestService.updateADStatus({
           requestId: produceRequest.id,
           status: StageStatus.STAGE_DONE,
-          message: `User ${submitterId} is a kartoffelOnly member, AD stage has not been performed`,
+          message: `User ${submitterId} is not AD allowed submitter, AD stage has not been performed`,
         });
         const kartoffelSuccessMessage = await this.produceToKartoffelQueue(
           produceRequest

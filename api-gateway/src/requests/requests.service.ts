@@ -3,6 +3,7 @@ import { config } from '../config';
 import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 import {
+  ApproverType,
   AssignRoleToEntityReq,
   AssignRoleToEntityRes,
   CanPushToQueueReq,
@@ -89,7 +90,16 @@ export class RequestsService {
       );
       if (isRequestApprovedRes.isRequestApproved) {
         if (requestType === RequestType.ADD_APPROVER) {
-          await ApproverService.addApprover(request.additionalParams);
+          await ApproverService.addApprover({
+            entityId: request.additionalParams?.entityId || '',
+            type: request.additionalParams?.type || ApproverType.UNRECOGNIZED,
+            akaUnit: request.additionalParams?.akaUnit || '',
+            displayName: request.additionalParams?.displayName || '',
+            domainUsers: request.additionalParams?.domainUsers || [],
+            directGroup: request.additionalParams?.directGroup || '',
+            identityCard: request.additionalParams?.identityCard || '',
+            personalNumber: request.additionalParams?.personalNumber || '',
+          });
         } else {
           await ProducerService.executeRequest(request.id);
         }

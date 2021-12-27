@@ -229,6 +229,8 @@ export default class ApproverController {
               displayName: request.additionalParams?.displayName || '',
               domainUsers: request.additionalParams?.domainUsers || [],
               directGroup: request.additionalParams?.directGroup || '',
+              identityCard: request.additionalParams?.identityCard || '',
+              personalNumber: request.additionalParams?.personalNumber || '',
             });
             await RequestsService.updateRequest({
               id: request.id,

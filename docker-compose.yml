@@ -120,7 +120,8 @@ services:
       - PS_SHMUEL_AUDIENCE=shmuel
       - PS_OLD_DOMAIN=oldDomain
       - PS_NEW_DOMAIN=newDomain
-      - PS_KARTOFFEL_ONLY_SUBMITTERS=1111,2222,3333,4444
+      - PS_RESTRICT_AD_ACCESS=false
+      - PS_AD_ALLOWED_SUBMITTERS=1111,2222,3333,4444
       - PS_LOG_PATH=/logs
 
   notification-service:
