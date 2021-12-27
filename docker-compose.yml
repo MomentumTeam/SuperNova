@@ -94,6 +94,7 @@ services:
       - KS_ROOT_ID=6184af202da776001134110b
       - KS_DEFAULT_ROLE_SOURCE=sf_name
       - KS_DEFAULT_DI_SOURCE=sf_name
+      - KS_DEFAULT_OG_SOURCE=sf_name
       - KS_DI_SOURCES=sf_name,sf_name
       - KS_DEFAULT_ROLE_ID_SUFFIX=oneTree
       - KS_SEARCH_WITH_RANKS=true
@@ -119,7 +120,8 @@ services:
       - PS_SHMUEL_AUDIENCE=shmuel
       - PS_OLD_DOMAIN=oldDomain
       - PS_NEW_DOMAIN=newDomain
-      - PS_KARTOFFEL_ONLY_SUBMITTERS=1111,2222,3333,4444
+      - PS_RESTRICT_AD_ACCESS=false
+      - PS_AD_ALLOWED_SUBMITTERS=1111,2222,3333,4444
       - PS_LOG_PATH=/logs
 
   notification-service:

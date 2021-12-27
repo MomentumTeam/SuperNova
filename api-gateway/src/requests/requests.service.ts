@@ -3,6 +3,7 @@ import { config } from '../config';
 import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 import {
+  ApproverType,
   AssignRoleToEntityReq,
   AssignRoleToEntityRes,
   CanPushToQueueReq,
@@ -80,7 +81,7 @@ export const requestsClient: any = new protoDescriptor.RequestService(
 export class RequestsService {
   static async executeRequestIfNeeded(request: any) {
     try {
-      request.type =
+      const requestType =
         typeof request.type === typeof ''
           ? requestTypeFromJSON(request.type)
           : request.type;
@@ -88,8 +89,17 @@ export class RequestsService {
         { id: request.id }
       );
       if (isRequestApprovedRes.isRequestApproved) {
-        if (request.type === RequestType.ADD_APPROVER) {
-          await ApproverService.addApprover(request.additionalParams);
+        if (requestType === RequestType.ADD_APPROVER) {
+          await ApproverService.addApprover({
+            entityId: request.additionalParams?.entityId || '',
+            type: request.additionalParams?.type || ApproverType.UNRECOGNIZED,
+            akaUnit: request.additionalParams?.akaUnit || '',
+            displayName: request.additionalParams?.displayName || '',
+            domainUsers: request.additionalParams?.domainUsers || [],
+            directGroup: request.additionalParams?.directGroup || '',
+            identityCard: request.additionalParams?.identityCard || '',
+            personalNumber: request.additionalParams?.personalNumber || '',
+          });
         } else {
           await ProducerService.executeRequest(request.id);
         }
