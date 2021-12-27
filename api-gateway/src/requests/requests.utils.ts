@@ -24,12 +24,20 @@ export const approveUserRequest = async (req: any, request: any, groupId?: strin
             ? [...request.securityApprovers, entityUser]
             : [entityUser];
           request.securityDecision = decision;
+          request.securityApprovers = request.securityApprovers.filter(
+            (v: any, i: any, a: any) => a.findIndex((t: any) => t.id === v.id) === i
+          );
+
           break;
         case PersonTypeInRequest.SUPER_SECURITY_APPROVER:
           request.superSecurityApprovers = request.superSecurityApprovers
             ? [...request.superSecurityApprovers, entityUser]
             : [entityUser];
           request.superSecurityDecision = decision;
+          request.superSecurityApprovers = request.superSecurityApprovers.filter(
+            (v: any, i: any, a: any) => a.findIndex((t: any) => t.id === v.id) === i
+          );
+
           break;
 
         case PersonTypeInRequest.COMMANDER_APPROVER:
@@ -51,6 +59,10 @@ export const approveUserRequest = async (req: any, request: any, groupId?: strin
           if (valid) {
             request.commanders = request.commanders ? [...request.commanders, entityUser] : [entityUser];
             request.commanderDecision = decision;
+            request.commanders = request.commanders.filter(
+              (v: any, i: any, a: any) => a.findIndex((t: any) => t.id === v.id) === i
+            );
+
           }
           break;
 

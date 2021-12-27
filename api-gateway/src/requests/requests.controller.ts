@@ -468,6 +468,10 @@ export default class RequestsController {
                 : '',
             },
           ];
+
+           assignRoleToEntityReq.commanders = assignRoleToEntityReq.commanders.filter(
+             (v: any, i: any, a: any) => a.findIndex((t: any) => t.id === v.id) === i
+           );
         }
       }
 
