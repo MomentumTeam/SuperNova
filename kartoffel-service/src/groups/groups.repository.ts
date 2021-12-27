@@ -213,11 +213,14 @@ export class GroupsRepository {
       } else {
         searchOGRequest.source = searchOGRequest.source
           ? searchOGRequest.source
-          : C.defaultRoleSource;
+          : C.defaultOGSource;
         const queryParams: any = { ...searchOGRequest };
         delete queryParams.withRoles;
 
-        const res = await this.kartoffelUtils.kartoffelGet(`${C.kartoffelUrl}/api/groups/search`, queryParams);
+        const res = await this.kartoffelUtils.kartoffelGet(
+          `${C.kartoffelUrl}/api/groups/search`,
+          queryParams
+        );
 
         let groups = res as OrganizationGroup[];
         if (searchOGRequest.withRoles) {
@@ -309,7 +312,7 @@ export class GroupsRepository {
             `${C.kartoffelUrl}/api/groups/${getChildrenOfOGRequest.id}/children`,
             queryParams
           );
-            
+
           let groups = res as OrganizationGroup[];
           if (getChildrenOfOGRequest.withRoles) {
             groups = await getDirectRolesForGroups(groups);

@@ -228,9 +228,7 @@ export default class RequestsController {
         const submitterId = request.submittedBy.id;
         const userId = req.user.id;
         if (userId !== submitterId) {
-          res
-            .status(403)
-            .send('You dont have a permission to see this request!');
+          res.status(404).send('NOT FOUND');
         } else {
           res.send(request);
         }

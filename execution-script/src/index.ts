@@ -14,6 +14,7 @@ import ProducerService from './services/producerService';
 import ApproverService from './services/approverService';
 import * as config from './config';
 import {
+  ApproverType,
   Request,
   RequestStatus,
   RequestType,
@@ -51,7 +52,16 @@ async function execute() {
   const promises = requestsArray.requests.map(async (request: any) => {
     return new Promise((resolve, reject) => {
       if (request.type === RequestType.ADD_APPROVER) {
-        ApproverService.addApprover(request.id, request.additionalParams)
+        ApproverService.addApprover(request.id, {
+          entityId: request.additionalParams?.entityId || '',
+          type: request.additionalParams?.type || ApproverType.UNRECOGNIZED,
+          akaUnit: request.additionalParams?.akaUnit || '',
+          displayName: request.additionalParams?.displayName || '',
+          domainUsers: request.additionalParams?.domainUsers || [],
+          directGroup: request.additionalParams?.directGroup || '',
+          identityCard: request.additionalParams?.identityCard || '',
+          personalNumber: request.additionalParams?.personalNumber || '',
+        })
           .then(() => {
             RequestService.updateRequest(request.id, {
               status: RequestStatus.DONE,

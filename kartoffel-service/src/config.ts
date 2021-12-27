@@ -23,7 +23,8 @@ export const searchWithRanks = process.env.KS_SEARCH_WITH_RANKS
   : false;
 
 export const kartoffelOK = 'OK';
-export const kartoffelRootID = process.env.KS_ROOT_ID || "619e3193f235dc001846bb4f";
+export const kartoffelRootID =
+  process.env.KS_ROOT_ID || '619e3193f235dc001846bb4f';
 
 export const kartoffelAudience =
   process.env.KS_KARTOFFEL_AUDIENCE || 'kartoffel';
@@ -53,6 +54,7 @@ export const storeLogs = process.env.GLOBAL_STORE_LOGS
 
 export const defaultRoleSource =
   process.env.KS_DEFAULT_ROLE_SOURCE || 'OneTree';
+export const defaultOGSource = process.env.KS_DEFAULT_OG_SOURCE || 'OneTree';
 export const defaultDISource = process.env.KS_DEFAULT_DI_SOURCE || 'OneTree';
 export const diSources = process.env.KS_DI_SOURCES
   ? process.env.KS_DI_SOURCES.split(',')
