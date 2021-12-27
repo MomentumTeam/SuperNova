@@ -9,6 +9,7 @@ import {
   CanPushToQueueRes,
   ChangeRoleHierarchyReq,
   ChangeRoleHierarchyRes,
+  CreateEntityReq,
   CreateEntityRes,
   CreateNewApproverReq,
   CreateNewApproverRes,
@@ -554,7 +555,7 @@ export class RequestsService {
     });
   }
 
-  static async createEntityRequest(createEntityReq: CreateNewApproverReq) {
+  static async createEntityRequest(createEntityReq: CreateEntityReq) {
     logger.info(`Call to createEntityRequest in GTW`, createEntityReq);
 
     return new Promise((resolve, reject) => {
