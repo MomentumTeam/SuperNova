@@ -31,26 +31,29 @@ export async function parseExcelFile() {
         (element: any) =>
           element && element !== null && EmailValidator.validate(element)
       );
-      let bulkService: Array<string> = rows.map((row:any)=>{
+    let bulk: Array<string> = rows
+      .map((row: any) => {
         return row[3];
       })
-      .filter((elment: any)=>{
-        elment && elment !== null && EmailValidator.validate(elment)
-      });
-      let admin: Array<string> = rows
-      .map((row: any)=>{
-        return row[4]
+      .filter(
+        (element: any) =>
+          element && element !== null && EmailValidator.validate(element)
+      );
+    let admin: Array<string> = rows
+      .map((row: any) => {
+        return row[4];
       })
-      .filter((element: any)=>{
-        element && element !== null && EmailValidator.validate(element)
-      });
+      .filter(
+        (element: any) =>
+          element && element !== null && EmailValidator.validate(element)
+      );
 
     return {
       commanders,
       security,
       superSecurity,
-      bulkService,
-      admin
+      bulk,
+      admin,
     };
   } catch (error: any) {
     throw Error;

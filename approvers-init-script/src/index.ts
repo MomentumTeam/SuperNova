@@ -21,7 +21,7 @@ async function main() {
         type: ApproverType.SUPER_SECURITY,
       },
       {
-        approverDIs: excelArray.bulkService,
+        approverDIs: excelArray.bulk,
         type: ApproverType.BULK,
       },
       {
