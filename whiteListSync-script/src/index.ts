@@ -16,6 +16,7 @@ const schedule = require('node-schedule');
 
 async function main() {
   try {
+    await execute();
     if (config.cronJob) {
       schedule.scheduleJob(
         `${config.minute} ${config.hour} * * *`,
@@ -24,8 +25,6 @@ async function main() {
           await execute();
         }
       );
-    } else {
-      await execute();
     }
   } catch (error: any) {
     logger.error(
