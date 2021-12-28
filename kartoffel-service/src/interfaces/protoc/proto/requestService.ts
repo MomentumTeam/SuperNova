@@ -1633,6 +1633,14 @@ export interface GetRequestsUnderBulkReq {
   id: string;
 }
 
+export interface AreAllSubRequestsFinishedReq {
+  id: string;
+}
+
+export interface AreAllSubRequestsFinishedRes {
+  areAllSubRequestsFinished: boolean;
+}
+
 /** ---------------------------------------------Other Objects------------------------------------------------------------ */
 export interface RequestIdArray {
   requestIds: string[];
@@ -24130,6 +24138,155 @@ export const GetRequestsUnderBulkReq = {
   },
 };
 
+const baseAreAllSubRequestsFinishedReq: object = { id: "" };
+
+export const AreAllSubRequestsFinishedReq = {
+  encode(
+    message: AreAllSubRequestsFinishedReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): AreAllSubRequestsFinishedReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseAreAllSubRequestsFinishedReq,
+    } as AreAllSubRequestsFinishedReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): AreAllSubRequestsFinishedReq {
+    const message = {
+      ...baseAreAllSubRequestsFinishedReq,
+    } as AreAllSubRequestsFinishedReq;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+
+  toJSON(message: AreAllSubRequestsFinishedReq): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<AreAllSubRequestsFinishedReq>
+  ): AreAllSubRequestsFinishedReq {
+    const message = {
+      ...baseAreAllSubRequestsFinishedReq,
+    } as AreAllSubRequestsFinishedReq;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+};
+
+const baseAreAllSubRequestsFinishedRes: object = {
+  areAllSubRequestsFinished: false,
+};
+
+export const AreAllSubRequestsFinishedRes = {
+  encode(
+    message: AreAllSubRequestsFinishedRes,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.areAllSubRequestsFinished === true) {
+      writer.uint32(8).bool(message.areAllSubRequestsFinished);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): AreAllSubRequestsFinishedRes {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseAreAllSubRequestsFinishedRes,
+    } as AreAllSubRequestsFinishedRes;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.areAllSubRequestsFinished = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): AreAllSubRequestsFinishedRes {
+    const message = {
+      ...baseAreAllSubRequestsFinishedRes,
+    } as AreAllSubRequestsFinishedRes;
+    if (
+      object.areAllSubRequestsFinished !== undefined &&
+      object.areAllSubRequestsFinished !== null
+    ) {
+      message.areAllSubRequestsFinished = Boolean(
+        object.areAllSubRequestsFinished
+      );
+    } else {
+      message.areAllSubRequestsFinished = false;
+    }
+    return message;
+  },
+
+  toJSON(message: AreAllSubRequestsFinishedRes): unknown {
+    const obj: any = {};
+    message.areAllSubRequestsFinished !== undefined &&
+      (obj.areAllSubRequestsFinished = message.areAllSubRequestsFinished);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<AreAllSubRequestsFinishedRes>
+  ): AreAllSubRequestsFinishedRes {
+    const message = {
+      ...baseAreAllSubRequestsFinishedRes,
+    } as AreAllSubRequestsFinishedRes;
+    if (
+      object.areAllSubRequestsFinished !== undefined &&
+      object.areAllSubRequestsFinished !== null
+    ) {
+      message.areAllSubRequestsFinished = object.areAllSubRequestsFinished;
+    } else {
+      message.areAllSubRequestsFinished = false;
+    }
+    return message;
+  },
+};
+
 const baseRequestIdArray: object = { requestIds: "", count: 0 };
 
 export const RequestIdArray = {
@@ -27498,6 +27655,9 @@ export interface RequestService {
   ): Promise<RequestIdArray>;
   PushError(request: PushErrorReq): Promise<Request>;
   SyncBulkRequest(request: SyncBulkRequestReq): Promise<Request>;
+  AreAllSubRequestsFinished(
+    request: AreAllSubRequestsFinishedReq
+  ): Promise<AreAllSubRequestsFinishedRes>;
   GetRequestsByPerson(
     request: GetRequestsByPersonReq
   ): Promise<GetRequestsByPersonRes>;
@@ -27551,6 +27711,7 @@ export class RequestServiceClientImpl implements RequestService {
       this.GetRequestIdsInProgressByDue.bind(this);
     this.PushError = this.PushError.bind(this);
     this.SyncBulkRequest = this.SyncBulkRequest.bind(this);
+    this.AreAllSubRequestsFinished = this.AreAllSubRequestsFinished.bind(this);
     this.GetRequestsByPerson = this.GetRequestsByPerson.bind(this);
     this.TransferRequestToApprovers =
       this.TransferRequestToApprovers.bind(this);
@@ -27945,6 +28106,20 @@ export class RequestServiceClientImpl implements RequestService {
       data
     );
     return promise.then((data) => Request.decode(new _m0.Reader(data)));
+  }
+
+  AreAllSubRequestsFinished(
+    request: AreAllSubRequestsFinishedReq
+  ): Promise<AreAllSubRequestsFinishedRes> {
+    const data = AreAllSubRequestsFinishedReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "AreAllSubRequestsFinished",
+      data
+    );
+    return promise.then((data) =>
+      AreAllSubRequestsFinishedRes.decode(new _m0.Reader(data))
+    );
   }
 
   GetRequestsByPerson(

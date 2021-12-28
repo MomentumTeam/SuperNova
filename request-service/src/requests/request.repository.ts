@@ -43,6 +43,8 @@ import {
   RowError,
   TransferRequestToApproversReq,
   SortOrder,
+  AreAllSubRequestsFinishedReq,
+  AreAllSubRequestsFinishedRes,
 } from '../interfaces/protoc/proto/requestService';
 import { createNotifications } from '../services/notificationHelper';
 import { sendMail } from '../services/mailHelper';
@@ -1381,6 +1383,43 @@ export class RequestRepository {
       }
       return rowErrors;
     } catch (error: any) {
+      throw error;
+    }
+  }
+
+  async areAllSubRequestsFinished(
+    areAllSubRequestsFinishedReq: AreAllSubRequestsFinishedReq
+  ): Promise<AreAllSubRequestsFinishedRes> {
+    try {
+      const documents: any = await RequestModel.find({
+        bulkRequestId: areAllSubRequestsFinishedReq.id,
+      });
+      if (documents) {
+        let smallRequests: any = [];
+        for (let i = 0; i < documents.length; i++) {
+          const requestObj: any = documents[i].toObject();
+          turnObjectIdsToStrings(requestObj);
+          smallRequests.push(requestObj);
+        }
+        for (let smallRequest of smallRequests) {
+          const smallRequestStatus =
+            typeof smallRequest.status === typeof ''
+              ? requestStatusFromJSON(smallRequest.status)
+              : smallRequest.status;
+          if (
+            smallRequestStatus !== RequestStatus.DONE &&
+            smallRequestStatus !== RequestStatus.FAILED
+          ) {
+            return { areAllSubRequestsFinished: false };
+          }
+        }
+        return { areAllSubRequestsFinished: true };
+      } else {
+        throw new Error(
+          `No bulk request with id=${areAllSubRequestsFinishedReq.id}`
+        );
+      }
+    } catch (error) {
       throw error;
     }
   }
