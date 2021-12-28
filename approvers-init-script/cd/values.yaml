@@ -1,4 +1,4 @@
-name: "approvers-init-script"
+name: 'approvers-init-script'
 # If you want to overide the full name you can include the 'fullnameOverride' value
 #fullname:
 replicaCount: 1
@@ -7,11 +7,17 @@ images:
   PullSecrets:
     name: momentumacr
   repository: momentumacr.azurecr.io/approvers-init-script
-  tag: "latest"
+  tag: 'latest'
 service:
   ports:
-  - name: http
-    port: "8080"
+    - name: http
+      port: '8080'
 config:
   configmaps:
-      name: momentum-configmap
+    name: momentum-configmap
+volume:
+  - name: ais-utils
+    mountPath: /excelFiles
+    secretName: azure-secret
+    shareName: momentum/ais-utils
+    type: azurefile

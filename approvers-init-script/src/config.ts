@@ -8,7 +8,7 @@ export const logPath = process.env.AIS_LOG_PATH
   : './logs/approvers-init-script';
 export const excelFilePath =
   process.env.AIS_EXCEL_FILE_PATH ||
-  `${findPath('excelFiles')}/aisExcelFile.xlsx`;
+  `${findPath('excelFiles')}/AISExcelFile.xlsx`;
 export const storeLogs = process.env.GLOBAL_STORE_LOGS
   ? process.env.GLOBAL_STORE_LOGS === 'true'
   : false;

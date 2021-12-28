@@ -280,7 +280,7 @@ services:
     environment:
       - AIS_KS_URL=kartoffel-service:8080
       - AIS_APS_URL=approver-service:8080
-      - AIS_EXCEL_FILE_PATH=/excelFiles/aisExcelFile.xlsx
+      - AIS_EXCEL_FILE_PATH=/excelFiles/AISExcelFile.xlsx
       - AIS_LOG_PATH=/logs
 
   population-script:
