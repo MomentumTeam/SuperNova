@@ -853,8 +853,22 @@ export class RequestRepository {
             { bulkRequestId: updateReq.id },
             { $set: requestUpdate }
           );
+        } else if (
+          documentObj.isPartOfBulk &&
+          documentObj.bulkRequestId &&
+          (requestUpdate.kartoffelStatus !== undefined ||
+            requestUpdate.adStatus !== undefined ||
+            requestUpdate['kartoffelStatus.status'] !== undefined ||
+            requestUpdate['adStatus.status'] !== undefined)
+        ) {
+          // Sync bulk request if all sub-requests are finished
+          const bulkRequestId = documentObj.bulkRequestId;
+          const areAllSubRequestsFinishedRes =
+            await this.areAllSubRequestsFinished({ id: bulkRequestId });
+          if (areAllSubRequestsFinishedRes.areAllSubRequestsFinished) {
+            await this.syncBulkRequest({ id: bulkRequestId });
+          }
         }
-
         return documentObj as Request;
       } else {
         throw new Error(`A request with {_id: ${updateReq.id}} was not found!`);
@@ -1000,7 +1014,7 @@ export class RequestRepository {
           await createNotifications(notificationType, updatedRequest);
           sendMail(mailType, updatedRequest).then().catch();
         } catch (notificationError: any) {
-          logger.error('Notificatoin error', {
+          logger.error('Notification error', {
             error: { message: notificationError.message },
           });
         }
