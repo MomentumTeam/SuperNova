@@ -25,13 +25,12 @@ const schedule = require('node-schedule');
 
 async function main() {
   try {
+    await execute();
     if (config.cronJob) {
       schedule.scheduleJob(`* */${config.everyHour} * * *`, async function () {
         //run script every x hour
         await execute();
       });
-    } else {
-      await execute();
     }
   } catch (error: any) {
     logger.error(
