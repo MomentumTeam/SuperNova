@@ -1,9 +1,9 @@
 import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 import { findPath } from '../utils/path';
-import * as config from '../config';
-import { logger } from '../logger';
-import RequestService from './requestService';
+import { config } from '../config';
+import { logger } from '../utils/logger/logger';
+import { RequestsService } from '../requests/requests.service';
 import { SuccessMessage } from '../interfaces/protoc/proto/producerService';
 
 const PS_PROTO_PATH = `${findPath('proto')}/producerService.proto`;
@@ -23,24 +23,26 @@ const psProtoDescriptor: any =
   grpc.loadPackageDefinition(psPackageDefinition).Producer;
 
 const producerClient: any = new psProtoDescriptor.Producer(
-  config.producerServiceUrl,
+  config.endpoints.producer,
   grpc.credentials.createInsecure(),
   { 'grpc.keepalive_timeout_ms': 5000 }
 );
 
 export default class ProducerService {
   static async executeRequest(requestId: string) {
-    const canPushToKartoffel = await RequestService.canPushToKartoffelQueue(
-      requestId
-    );
-    const canPushToAD = await RequestService.canPushToADQueue(requestId);
+    const canPushToKartoffel = await RequestsService.canPushToKartoffelQueue({
+      id: requestId,
+    });
+    const canPushToAD = await RequestsService.canPushToADQueue({
+      id: requestId,
+    });
 
     if (canPushToKartoffel.canPushToQueue === true) {
       try {
-        logger.info(`Call to ProduceToKartoffelQueue in EXS`);
+        logger.info(`Call to ProduceToKartoffelQueue in ProducerService`);
         await ProducerService.produceToKartoffelQueue(requestId);
       } catch (error: any) {
-        logger.error(`ProduceToKartoffelQueue ERROR in EXS`, {
+        logger.error(`ProduceToKartoffelQueue ERROR in ProducerService`, {
           error: { message: error.message },
           callRequest: { id: requestId },
         });
@@ -48,10 +50,10 @@ export default class ProducerService {
       }
     } else if (canPushToAD.canPushToQueue === true) {
       try {
-        logger.info(`Call to ProduceToADQueue in EXS`);
+        logger.info(`Call to ProduceToADQueue in ProducerService`);
         await ProducerService.produceToADQueue(requestId);
       } catch (error: any) {
-        logger.error(`ProduceToADQueue ERROR in EXS`, {
+        logger.error(`ProduceToADQueue ERROR in ProducerService`, {
           error: { message: error.message },
           callRequest: { id: requestId },
         });
@@ -62,7 +64,7 @@ export default class ProducerService {
 
   static async produceToKartoffelQueue(requestId: string) {
     return new Promise((resolve, reject) => {
-      logger.info(`Call to produceToKartoffelQueue in EXS`, {
+      logger.info(`Call to produceToKartoffelQueue in ProducerService`, {
         callRequest: { id: requestId },
       });
 
@@ -70,14 +72,14 @@ export default class ProducerService {
         { id: requestId },
         (error: any, response: SuccessMessage) => {
           if (error) {
-            logger.error(`produceToKartoffelQueue ERROR in EXS`, {
+            logger.error(`produceToKartoffelQueue ERROR in ProducerService`, {
               error: { message: error.message },
               callRequest: { id: requestId },
             });
             reject(error);
           }
 
-          logger.info(`produceToKartoffelQueue OK in EXS`, {
+          logger.info(`produceToKartoffelQueue OK in ProducerService`, {
             response: response,
             callRequest: { id: requestId },
           });
@@ -89,7 +91,7 @@ export default class ProducerService {
 
   static async produceToADQueue(requestId: string) {
     return new Promise((resolve, reject) => {
-      logger.info(`Call to produceToADQueue in EXS`, {
+      logger.info(`Call to produceToADQueue in ProducerService`, {
         callRequest: { id: requestId },
       });
 
@@ -97,14 +99,14 @@ export default class ProducerService {
         { id: requestId },
         (error: any, response: SuccessMessage) => {
           if (error) {
-            logger.error(`produceToADQueue ERROR in EXS`, {
+            logger.error(`produceToADQueue ERROR in ProducerService`, {
               error: { message: error.message },
               callRequest: { id: requestId },
             });
             reject(error);
           }
 
-          logger.info(`produceToADQueue OK in EXS`, {
+          logger.info(`produceToADQueue OK in ProducerService`, {
             response: response,
             callRequest: { id: requestId },
           });

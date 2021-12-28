@@ -5,6 +5,24 @@ import {
 } from '../interfaces/protoc/proto/requestService';
 import * as C from '../config';
 
+function isValidMobilePhone(mobilePhone: any) {
+  if (mobilePhone.length === 0) {
+    return true;
+  } else {
+    const re = /^\d{2,3}-?\d{7}$/;
+    return re.test(mobilePhone[0]);
+  }
+}
+
+function isValidPhone(phone: any) {
+  if (phone.length === 0) {
+    return true;
+  } else {
+    const re = /^\d{1,2}-?\d{6,7}$|^\*\d{3}$|^\d{4,5}$/;
+    return re.test(phone[0]);
+  }
+}
+
 export function generateKartoffelQueueMessage(request: Request): any {
   const message: any = {
     id: request.id,
@@ -28,6 +46,7 @@ export function generateKartoffelQueueMessage(request: Request): any {
         jobTitle: kartoffelParams.jobTitle,
         directGroup: kartoffelParams.directGroup,
         roleId: kartoffelParams.roleId,
+        clearance: kartoffelParams.clearance,
         //for digitalIdentity
         type: kartoffelParams.type ? kartoffelParams.type : 'domainUser',
         source: kartoffelParams.source
@@ -36,6 +55,7 @@ export function generateKartoffelQueueMessage(request: Request): any {
         uniqueId: kartoffelParams.uniqueId,
         mail: kartoffelParams.mail,
         isRoleAttachable: kartoffelParams.isRoleAttachable,
+
         //in case of goalUser - need to create an entity and assign it to the role
         roleEntityType: kartoffelParams.roleEntityType,
       };
@@ -45,15 +65,19 @@ export function generateKartoffelQueueMessage(request: Request): any {
         firstName: kartoffelParams.firstName,
         lastName: kartoffelParams.lastName,
         identityCard: kartoffelParams.identityCard,
-        personalNumber: kartoffelParams.firstName,
-        serviceType: kartoffelParams.serviceType,
-        phone: kartoffelParams.phone,
-        address: kartoffelParams.address,
         clearance: kartoffelParams.clearance,
-        sex: kartoffelParams.sex,
+        sex:
+          !kartoffelParams.sex || kartoffelParams.sex === ''
+            ? undefined
+            : kartoffelParams.sex,
         birthdate: kartoffelParams.birthdate,
         entityType: kartoffelParams.entityType,
       };
+      if (isValidPhone(kartoffelParams.phone)) {
+        message.data.phone = kartoffelParams.phone;
+      } else if (isValidMobilePhone(kartoffelParams.mobilePhone)) {
+        message.data.mobilePhone = kartoffelParams.phone;
+      }
       break;
     case RequestType.ASSIGN_ROLE_TO_ENTITY:
       message.data = {
@@ -61,6 +85,13 @@ export function generateKartoffelQueueMessage(request: Request): any {
         uniqueId: kartoffelParams.uniqueId,
         needDisconnect: kartoffelParams.needDisconnect,
       };
+      if (
+        !kartoffelParams.needDisconnect ||
+        kartoffelParams.needDisconnect === undefined ||
+        kartoffelParams.needDisconnect === null
+      ) {
+        message.data.needDisconnect = false;
+      }
       break;
     case RequestType.RENAME_OG:
       message.data = {
@@ -80,17 +111,14 @@ export function generateKartoffelQueueMessage(request: Request): any {
         properties: {
           firstName: kartoffelParams.firstName,
           lastName: kartoffelParams.lastName,
-          identityCard: kartoffelParams.identityCard,
-          personalNumber: kartoffelParams.firstName,
-          serviceType: kartoffelParams.serviceType,
-          phone: kartoffelParams.phone,
-          address: kartoffelParams.address,
-          clearance: kartoffelParams.clearance,
-          sex: kartoffelParams.sex,
-          birthdate: kartoffelParams.birthdate,
-          entityType: kartoffelParams.entityType,
         },
       };
+      if (isValidMobilePhone(kartoffelParams.mobilePhone)) {
+        message.data.mobilePhone = kartoffelParams.phone;
+      }
+      if (kartoffelParams.birthdate) {
+        message.data.birthdate = kartoffelParams.birthdate;
+      }
       break;
     case RequestType.DELETE_OG:
       message.data = {

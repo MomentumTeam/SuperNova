@@ -425,3 +425,33 @@ export async function renameRole(call: any, callback: any): Promise<void> {
     );
   }
 }
+
+// TODO: ADD TESTS
+export async function searchRolesByRoleId(call: any, callback: any): Promise<void> {
+  try {
+    logger.info(`Call to searchRolesByRoleId`, { callRequest: call.request });
+    const roleArray: RoleArray = await rolesManager.searchRolesByRoleId(call.request);
+    logger.info(`searchRolesByRoleId OK`, {
+      callRequest: call.request,
+      response: roleArray,
+    });
+    callback(null, roleArray);
+  } catch (error: any) {
+    const status = getStatusCode(error);
+    const message = getErrorMessage(error);
+
+    logger.error(`searchRolesByRoleId ERROR`, {
+      callRequest: call.request,
+      error: { message },
+    });
+    callback(
+      {
+        code: status,
+        message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+

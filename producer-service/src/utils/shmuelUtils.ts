@@ -37,7 +37,7 @@ export class ShmuelUtils {
           throw error;
         }
       }
-      config.headers.Authorization = this.spikeToken;
+      config.headers.Authorization = `Bearer ${this.spikeToken}`;
       return config;
     });
   }
@@ -62,7 +62,28 @@ export class ShmuelUtils {
             error: { message: error.message },
             queryParams: params,
           });
-          reject(error);
+          if (error.response.status === 401) {
+            logger.info(`Refreshing Spike token`);
+            this.spikeService
+              .getSpikeToken()
+              .then((newSpikeToken) => {
+                this.spikeToken = newSpikeToken;
+                this.lastSpikeTokenRecieved = new Date().getTime();
+                this.axiosShmuel
+                  .post(url, body, { params })
+                  .then((res) => {
+                    resolve(res.data);
+                  })
+                  .catch((error: any) => {
+                    reject(error);
+                  });
+              })
+              .catch((ssError) => {
+                reject(ssError);
+              });
+          } else {
+            reject(error);
+          }
         });
     });
   }

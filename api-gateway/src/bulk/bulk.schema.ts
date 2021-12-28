@@ -16,6 +16,7 @@ Joi.objectId = require('joi-objectid')(Joi);
 // OBJ
 const createRoleBulkKartoffelParamsObj = Joi.object({
   directGroup: Joi.string().required(),
+  hierarchy: Joi.string().required(),
 });
 
 const createRoleBulkADParamsObj = Joi.object({
@@ -32,10 +33,14 @@ const rowErrorObj = Joi.object({
 
 const changeRoleHierarchyBulkKartoffelParamsObj = Joi.object({
   directGroup: Joi.string().required(),
+  hierarchy: Joi.string().required(),
+  oldHierarchy: Joi.string().required(),
 });
 
 const changeRoleHierarchyBulkADParamsObj = Joi.object({
   ouDisplayName: Joi.string().required(),
+  samAccountName: Joi.string(),
+  newJobTitle: Joi.string(),
 });
 
 // POST

@@ -4,6 +4,7 @@ import {
   ApproverArray,
   ApproverIdArray,
   GetUserTypeRes,
+  IsApproverValidForOGRes,
   SuccessMessage,
 } from '../interfaces/protoc/proto/approverService';
 import { Request } from '../interfaces/protoc/proto/requestService';
@@ -11,6 +12,37 @@ import { logger } from '../logger';
 import { ApproverManager } from './approver.manager';
 
 const approverManager: ApproverManager = new ApproverManager();
+
+export async function isApproverValidForOG(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    logger.info(`Call to isApproverValidForOG`, {
+      callRequest: call.request,
+    });
+    const isApproverValidForOGRes: IsApproverValidForOGRes =
+      await approverManager.isApproverValidForOG(call.request);
+    logger.info(`isApproverValidForOG OK`, {
+      response: isApproverValidForOGRes,
+      callRequest: call.request,
+    });
+    callback(null, isApproverValidForOGRes);
+  } catch (error: any) {
+    logger.error(`isApproverValidForOG ERROR`, {
+      callRequest: call.request,
+      error: { message: error.message },
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
 
 export async function addApprover(call: any, callback: any): Promise<void> {
   try {

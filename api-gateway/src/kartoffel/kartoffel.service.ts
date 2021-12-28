@@ -4,6 +4,7 @@ import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 import { logger } from '../utils/logger/logger';
 import {
+  DigitalIdentities,
   Entity,
   EntityArray,
   GetAllOGsRequest,
@@ -19,7 +20,7 @@ import {
   GetOGByHierarchyNameRequest,
   GetOGByIdRequest,
   GetOGTreeRequest,
-  GetPictureByEntityIdRequest,
+  GetPictureByEntityIdentifierRequest,
   GetRoleByRoleIdRequest,
   GetRolesByHierarchyRequest,
   GetRolesUnderOGRequest,
@@ -34,8 +35,10 @@ import {
   OrganizationGroup,
   Role,
   RoleArray,
+  SearchDIByUniqueIdRequest,
   SearchEntitiesByFullNameRequest,
   SearchOGRequest,
+  SearchRoleByRoleIdReq,
 } from '../interfaces/protoc/proto/kartoffelService';
 
 const PROTO_PATH = __dirname.includes('dist')
@@ -90,30 +93,28 @@ export class KartoffelService {
       );
     });
   }
-  static async getPictureByEntityId(
-    getPictureByEntityIdReq: GetPictureByEntityIdRequest
+  static async getPictureByEntityIdentifier(
+    getPictureByEntityIdentifierReq: GetPictureByEntityIdentifierRequest
+
   ) {
-    logger.info(`Call to getPictureByEntityId in GTW`, getPictureByEntityIdReq);
+    logger.info(`Call to getPictureByEntityIdentifier in GTW`, getPictureByEntityIdentifierReq);
 
     return new Promise((resolve, reject) => {
-      kartoffelClient.GetPictureByEntityId(
-        getPictureByEntityIdReq,
-        (err: any, response: Image) => {
-          if (err) {
-            logger.error(`getPictureByEntityId ERROR in GTW`, {
-              err,
-              callRequest: getPictureByEntityIdReq,
-            });
-            reject(err);
-          }
-
-          logger.info(`getPictureByEntityId OK in GTW`, {
-            response: response,
-            callRequest: getPictureByEntityIdReq,
+      kartoffelClient.GetPictureByEntityIdentifier(getPictureByEntityIdentifierReq, (err: any, response: Image) => {
+        if (err) {
+          logger.error(`getPictureByEntityIdentifier ERROR in GTW`, {
+            err,
+            callRequest: getPictureByEntityIdentifierReq,
           });
-          resolve(response);
+          reject(err);
         }
-      );
+
+        logger.info(`getPictureByEntityIdentifier OK in GTW`, {
+          response: response,
+          callRequest: getPictureByEntityIdentifierReq,
+        });
+        resolve(response);
+      });
     });
   }
   static async searchEntitiesByFullName(
@@ -635,6 +636,55 @@ export class KartoffelService {
           resolve(response);
         }
       );
+    });
+  }
+
+   static async searchRolesByRoleId(
+    searchRoleByRoleIdReq: SearchRoleByRoleIdReq
+  ) {
+    logger.info(`Call to searchRoleByRoleIdReq in GTW`, searchRoleByRoleIdReq);
+
+    return new Promise((resolve, reject) => {
+      kartoffelClient.SearchRoleByRoleId(searchRoleByRoleIdReq, (err: any, response: RoleArray) => {
+        if (err) {
+          logger.error(`searchRoleByRoleIdReq ERROR in GTW`, {
+            err,
+            callRequest: searchRoleByRoleIdReq,
+          });
+          reject(err);
+        }
+
+        logger.info(`searchRoleByRoleIdReq OK in GTW`, {
+          response: response,
+          callRequest: searchRoleByRoleIdReq,
+        });
+        resolve(response);
+      });
+    });
+  }
+
+  // DI
+   static async searchDIsByUniqueId(
+    searchDIsByUniqueIdRequest: SearchDIByUniqueIdRequest
+  ) {
+    logger.info(`Call to searchDIsByUniqueId in GTW`, searchDIsByUniqueIdRequest);
+
+    return new Promise((resolve, reject) => {
+      kartoffelClient.SearchDIByUniqueId(searchDIsByUniqueIdRequest, (err: any, response: DigitalIdentities) => {
+        if (err) {
+          logger.error(`searchDIsByUniqueId ERROR in GTW`, {
+            err,
+            callRequest: searchDIsByUniqueIdRequest,
+          });
+          reject(err);
+        }
+
+        logger.info(`searchDIsByUniqueId OK in GTW`, {
+          response: response,
+          callRequest: searchDIsByUniqueIdRequest,
+        });
+        resolve(response);
+      });
     });
   }
 }

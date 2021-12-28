@@ -17,7 +17,18 @@ service ApproverService {
     rpc GetAllApproverIds(GetAllApproversReq) returns (ApproverIdArray) {}
     rpc SyncApprover(SyncApproverReq) returns (ApproverArray){}
     rpc DeleteApprover(DeleteApproverReq) returns (SuccessMessage){}
+    rpc IsApproverValidForOG(IsApproverValidForOGReq) returns (IsApproverValidForOGRes){}
 }
+
+message IsApproverValidForOGReq{
+    string approverId = 1;
+    string groupId = 2;
+}
+
+message IsApproverValidForOGRes{
+    bool isValid = 1;
+}
+
 
 message SyncApproverReq{
     string approverId = 1;

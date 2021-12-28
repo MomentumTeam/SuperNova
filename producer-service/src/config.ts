@@ -23,13 +23,20 @@ export const shmuelRequestTypes: any = {
   CREATE_OG: 'CreateOU',
   CREATE_ROLE: 'CreateRole',
   ASSIGN_ROLE_TO_ENTITY: 'ConnectNewRole',
-  RENAME_OG: 'EditOu',
+  RENAME_OG: 'EditOU',
   RENAME_ROLE: 'EditRoleName',
   EDIT_ENTITY: 'EditSpecialRole',
   DISCONNECT_ROLE: 'DisconnectRole',
   CHANGE_ROLE_HIERARCHY: 'ChangeRole',
   DELETE_ROLE: 'PurgeRole',
 };
+
+export const adAllowedSubmitters = process.env.PS_AD_ALLOWED_SUBMITTERS
+  ? process.env.PS_AD_ALLOWED_SUBMITTERS.split(',')
+  : [];
+export const restrictADAccess = process.env.PS_RESTRICT_AD_ACCESS
+  ? process.env.PS_RESTRICT_AD_ACCESS === 'true'
+  : false;
 
 export const logPath = process.env.PS_LOG_PATH
   ? `${process.env.PS_LOG_PATH}/producer-service`

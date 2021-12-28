@@ -18,13 +18,17 @@ export class AuthManager {
       AuthManager.extractShragaUser(populatedShragaUser);
     let { genesisId, id, adfsId, iat, exp } = shragaUser;
     if (config.authentication.useShragaLocalMap) {
-      genesisId = config.authentication.diToId[adfsId];
-      id = config.authentication.diToId[adfsId];
+      genesisId = config.authentication.diToId[adfsId]
+        ? config.authentication.diToId[adfsId]
+        : genesisId;
+      id = config.authentication.diToId[adfsId]
+        ? config.authentication.diToId[adfsId]
+        : id;
     }
     const kartoffelUser: IUser = await AuthManager.extractKartoffelUser(
       genesisId
     );
-    const { displayName, identityCard, personalNumber, fullName } =
+    const { displayName, identityCard, personalNumber, fullName, rank } =
       kartoffelUser;
 
     const types = config.approver.enrich
@@ -41,6 +45,7 @@ export class AuthManager {
       identityCard,
       personalNumber,
       types,
+      rank,
     };
     let userInformation = { ...userToken };
 

@@ -9,6 +9,8 @@ import {
   getAllApproversSchema,
   getSearchByDisplayName,
   getSearchByDomainUser,
+  getUserTypeValidSchema,
+  isApproverValidSchema,
   searchHighCommandersByDisplayNameValidSchema,
   updateApproverDecisionSchema,
 } from './approver.schema';
@@ -65,6 +67,18 @@ export class ApproverValidator {
     next();
   }
 
+  static isGetUserTypeValid(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    transformRequest(
+      req,
+      validateObject(req, getUserTypeValidSchema, { allowUnknown: true })
+    );
+    next();
+  }
+
   // POST
   static isAddApproverValid(req: Request, res: Response, next: NextFunction) {
     transformRequest(
@@ -73,7 +87,13 @@ export class ApproverValidator {
     );
     next();
   }
-
+  static isApproverValidValid(req: Request, res: Response, next: NextFunction) {
+    transformRequest(
+      req,
+      validateObject(req, isApproverValidSchema, { allowUnknown: true })
+    );
+    next();
+  }
   // PUT
   static isUpdateApproverDecisionValid(
     req: Request,

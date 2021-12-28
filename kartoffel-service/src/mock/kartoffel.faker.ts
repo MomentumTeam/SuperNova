@@ -47,7 +47,7 @@ export class KartoffelFaker {
     const organizationGroup: OrganizationGroup = {
       id: mongoose.Types.ObjectId().toString(),
       name: faker.company.companyName(),
-      source: C.defaultSource,
+      source: C.defaultRoleSource,
       ancestors: [mongoose.Types.ObjectId().toString()],
       hierarchy: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
       status: 'active',

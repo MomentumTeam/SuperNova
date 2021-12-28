@@ -5,6 +5,7 @@ import path from 'path';
 import { config } from '../config';
 import { logger } from '../utils/logger/logger';
 import { SuccessMessage } from '../interfaces/protoc/proto/producerService';
+import { RequestsService } from '../requests/requests.service';
 
 const PROTO_PATH = __dirname.includes('dist')
   ? path.join(__dirname, '../../../proto/producerService.proto')
@@ -58,13 +59,17 @@ export default class ProducerController {
     });
   }
 
-  static async produceToADQueue(requestId: string, res: Response) {
+  static async produceToADQueue(
+    requestId: string,
+    res: Response,
+    force = false
+  ) {
     logger.info(`Call to produceToADQueue in GTW`, {
       callRequest: { id: requestId },
     });
 
     producerClient.ProduceToADQueue(
-      { id: requestId },
+      { id: requestId, force: force },
       (err: any, response: SuccessMessage) => {
         if (err) {
           logger.error(`produceToADQueue ERROR in GTW`, {

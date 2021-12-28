@@ -4,8 +4,8 @@ export function fillEntityFields(entity: any): void {
     if (!entity.digitalIdentities || entity.digitalIdentities.length === 0) {
       return;
     }
-    const di = entity.digitalIdentities.find(
-      (di: any) => di.source === C.defaultSource
+    const di = entity.digitalIdentities.find((di: any) =>
+      C.diSources.includes(di.source)
     );
     if (di) {
       const role = di.role;

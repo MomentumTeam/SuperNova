@@ -66,7 +66,11 @@ export class BulkService {
             response: response,
             callRequest: isBulkFileValidReq,
           });
-          resolve(response);
+          if (response.isFileValid) {
+            resolve(response);
+          } else {
+            reject(new Error('File is invalid!'));
+          }
         }
       );
     });

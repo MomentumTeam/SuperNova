@@ -2,11 +2,9 @@ import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 import { config } from '../config';
 import {
-  EntityArray,
   Entity,
   GetEntityByRoleIdRequest,
   OGArray,
-  SearchOGRequest,
   CreateOGRequest,
   OrganizationGroup,
   CreateDIRequest,
@@ -19,23 +17,17 @@ import {
   GetRolesUnderOGRequest,
   RoleArray,
   ConnectEntityAndDIRequest,
-  CreateEntityRequest,
   DisconnectDIFromEntityRequest,
   DeleteOGRequest,
   DeleteRoleRequest,
   DeleteDIRequest,
   GetOGTreeRequest,
   OGTree,
-  GetEntitiesUnderOGRequest,
-  GetPictureByEntityIdRequest,
-  Image,
   GetChildrenOfOGRequest,
-  GetEntityByIdentifierRequest,
   GetEntityByDIRequest,
   RenameRoleRequest,
   RenameOGRequest,
   GetEntityByIdRequest,
-  UpdateEntityRequest,
   DisconnectRoleAndDIRequest,
   DeleteEntityRequest,
   ChangeRoleOGRequest,
@@ -66,22 +58,6 @@ const kartoffelClient: any = new protoDescriptor.Kartoffel(
 );
 
 export default class KartoffelService {
-  static async searchOG(searchOGRequest: SearchOGRequest): Promise<OGArray> {
-    logger.info('searchOG');
-    return new Promise((resolve, reject) => {
-      kartoffelClient.SearchOG(
-        searchOGRequest,
-        (err: any, ogArray: OGArray) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(ogArray);
-          }
-        }
-      );
-    });
-  }
-
   static async createOG(
     createOGRequest: CreateOGRequest
   ): Promise<OrganizationGroup> {
@@ -167,11 +143,17 @@ export default class KartoffelService {
     });
   }
 
-  static async updateEntity(
-    updateEntityRequest: UpdateEntityRequest
-  ): Promise<SuccessMessage> {
+  static async updateEntity(updateEntityRequest: any): Promise<SuccessMessage> {
     logger.info('UpdateEntity');
     return new Promise((resolve, reject) => {
+      for (const key in updateEntityRequest.properties) {
+        if (
+          updateEntityRequest.properties[key] === undefined ||
+          updateEntityRequest.properties[key] === null
+        ) {
+          delete updateEntityRequest.properties[key];
+        }
+      }
       kartoffelClient.UpdateEntity(
         updateEntityRequest,
         (err: any, message: SuccessMessage) => {
@@ -206,9 +188,9 @@ export default class KartoffelService {
   static async disconnectRoleAndDI(
     disconnectRoleAndDIRequest: DisconnectRoleAndDIRequest
   ): Promise<SuccessMessage> {
-    logger.info('ConnectRoleAndDI');
+    logger.info('DisconnectRoleAndDI');
     return new Promise((resolve, reject) => {
-      kartoffelClient.ConnectRoleAndDI(
+      kartoffelClient.DisconnectRoleAndDI(
         disconnectRoleAndDIRequest,
         (err: any, successMessage: SuccessMessage) => {
           if (err) {
@@ -275,11 +257,17 @@ export default class KartoffelService {
     });
   }
 
-  static async createEntity(
-    createEntityRequest: CreateEntityRequest
-  ): Promise<Entity> {
+  static async createEntity(createEntityRequest: any): Promise<Entity> {
     logger.info('CreateEntity');
     return new Promise((resolve, reject) => {
+      for (const key in createEntityRequest) {
+        if (
+          createEntityRequest[key] === undefined ||
+          createEntityRequest[key] === null
+        ) {
+          delete createEntityRequest[key];
+        }
+      }
       kartoffelClient.CreateEntity(
         createEntityRequest,
         (err: any, entity: Entity) => {
@@ -299,7 +287,7 @@ export default class KartoffelService {
     logger.info('DisconnectDIFromEntity');
     return new Promise((resolve, reject) => {
       kartoffelClient.DisconnectDIFromEntity(
-        DisconnectDIFromEntityRequest,
+        disconnectDIFromEntityRequest,
         (err: any, successMessage: SuccessMessage) => {
           if (err) {
             reject(err);
@@ -452,48 +440,12 @@ export default class KartoffelService {
     });
   }
 
-  static async getEntityByIdNumber(
-    getEntityByIdNumberRequest: GetEntityByIdentifierRequest
-  ): Promise<Entity> {
-    logger.info('GetEntityByIdNumber');
-    return new Promise((resolve, reject) => {
-      kartoffelClient.GetEntityByIdNumber(
-        getEntityByIdNumberRequest,
-        (err: any, entity: Entity) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(entity);
-          }
-        }
-      );
-    });
-  }
-
-  static async getEntitiesUnderOG(
-    getEntitiesUnderOGRequest: GetEntitiesUnderOGRequest
-  ): Promise<EntityArray> {
-    logger.info('GetEntitiesUnderOG');
-    return new Promise((resolve, reject) => {
-      kartoffelClient.GetEntitiesUnderOG(
-        getEntitiesUnderOGRequest,
-        (err: any, entityArray: EntityArray) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(entityArray);
-          }
-        }
-      );
-    });
-  }
-
-  static async getEntityByDigitalIdentity(
+  static async getEntityByDI(
     getEntityByDIRequest: GetEntityByDIRequest
   ): Promise<Entity> {
-    logger.info('GetEntityByDigitalIdentity');
+    logger.info('getEntityByDI');
     return new Promise((resolve, reject) => {
-      kartoffelClient.GetEntityByDigitalIdentity(
+      kartoffelClient.GetEntityByDI(
         getEntityByDIRequest,
         (err: any, entity: Entity) => {
           if (err) {
@@ -505,25 +457,6 @@ export default class KartoffelService {
       );
     });
   }
-
-  static async getPictureByEntityId(
-    getPictureByEntityIdRequest: GetPictureByEntityIdRequest
-  ): Promise<Image> {
-    logger.info('GetPictureByEntityId');
-    return new Promise((resolve, reject) => {
-      kartoffelClient.GetPictureByEntityId(
-        getPictureByEntityIdRequest,
-        (err: any, image: Image) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(image);
-          }
-        }
-      );
-    });
-  }
-
   static async changeRoleOG(
     changeRoleOG: ChangeRoleOGRequest
   ): Promise<SuccessMessage> {

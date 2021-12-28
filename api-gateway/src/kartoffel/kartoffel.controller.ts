@@ -3,15 +3,14 @@ import { Request, Response } from 'express';
 import { logger } from '../utils/logger/logger';
 import {
   GetEntityByIdRequest,
-  GetPictureByEntityIdRequest,
   GetEntityByIdentifierRequest,
   GetEntityByRoleIdRequest,
   GetEntityByDIRequest,
   GetOGTreeRequest,
   GetOGByIdRequest,
-  GetOGByHierarchyNameRequest,
   GetRoleByRoleIdRequest,
   IsRoleAlreadyTakenReq,
+  GetPictureByEntityIdentifierRequest,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { AuthenticationError } from '../utils/errors/userErrors';
 import { statusCodeHandler } from '../utils/errors/errorHandlers';
@@ -56,15 +55,13 @@ export default class KartoffelController {
   }
 
   static async getMyPicture(req: any, res: Response) {
-    if (!req.user && !req.user.id) throw new AuthenticationError();
-    const getPictureByEntityIdReq: GetPictureByEntityIdRequest = {
-      id: req.user.id,
+    if (!req.user && (!req.user.personalNumber || !req.user.identityCard)) throw new AuthenticationError();
+    const getPictureByEntityIdentifierReq: GetPictureByEntityIdentifierRequest = {
+      identifier: req.user.personalNumber || req.user.identityCard,
     };
 
     try {
-      const userImage = await KartoffelService.getPictureByEntityId(
-        getPictureByEntityIdReq
-      );
+      const userImage = await KartoffelService.getPictureByEntityIdentifier(getPictureByEntityIdentifierReq);
       res.send(userImage);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -72,10 +69,10 @@ export default class KartoffelController {
     }
   }
 
-  static async getPictureByEntityId(req: any, res: Response) {
+  static async getPictureByEntityIdentifier(req: any, res: Response) {
     try {
-      const userImage = await KartoffelService.getPictureByEntityId({
-        id: req.params.id,
+      const userImage = await KartoffelService.getPictureByEntityIdentifier({
+        identifier: req.params.identifier,
       });
       res.send(userImage);
     } catch (error: any) {
@@ -175,7 +172,7 @@ export default class KartoffelController {
   // Groups
 
   static async searchOG(req: Request, res: Response) {
-    const searchOGReq: any = { nameAndHierarchy: req.query.nameAndHierarchy };
+    const searchOGReq: any = { ...req.query, ...req.params };
 
     try {
       const OGarray = await KartoffelService.searchOG(searchOGReq);
@@ -266,8 +263,9 @@ export default class KartoffelController {
   }
 
   static async getOGByHierarchyName(req: Request, res: Response) {
-    const getOGByHierarchyNameReq: GetOGByHierarchyNameRequest = {
-      hierarchy: req.params.hierarchy,
+    const getOGByHierarchyNameReq: any = {
+      hierarchy: req.query.hierarchy,
+      withRoles: req.query.withRoles
     };
 
     try {
@@ -365,5 +363,30 @@ export default class KartoffelController {
       const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
     }
+  }
+
+    static async searchRolesByRoleId(req: Request, res: Response) {
+      const searchRolesByRoleId: any = {...req.query, ...req.params};
+
+      try {
+        const roles = await KartoffelService.searchRolesByRoleId(searchRolesByRoleId);
+        res.send(roles);
+      } catch (error: any) {
+        const statusCode = statusCodeHandler(error);
+        res.status(statusCode).send(error.message);
+      }
+  }
+
+  // DI
+     static async searchDIsByUniqueId(req: Request, res: Response) {
+      const searchDIsByUniqueId: any = { ...req.query, ...req.params };
+
+      try {
+        const dis = await KartoffelService.searchDIsByUniqueId(searchDIsByUniqueId);
+        res.send(dis);
+      } catch (error: any) {
+        const statusCode = statusCodeHandler(error);
+        res.status(statusCode).send(error.message);
+      }
   }
 }

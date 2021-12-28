@@ -38,10 +38,16 @@ export class BulkRepository {
     try {
       const type =
         typeof isBulkFileValidReq.type === typeof ''
-          ? requestTypeFromJSON(isBulkFileValidReq.type)
+          ? bulkTypeFromJSON(isBulkFileValidReq.type)
           : isBulkFileValidReq.type;
-      const requestType = type === BulkType.CHANGE_ROLE_HIERARCHY_REQUEST ? RequestType.CREATE_ROLE_BULK : RequestType.CHANGE_ROLE_HIERARCHY_BULK;
-      const rows = await parseExcelFile(isBulkFileValidReq.fileName, requestType);
+      const requestType =
+        type === BulkType.CHANGE_ROLE_HIERARCHY_REQUEST
+          ? RequestType.CHANGE_ROLE_HIERARCHY_BULK
+          : RequestType.CREATE_ROLE_BULK;
+      const rows = await parseExcelFile(
+        isBulkFileValidReq.fileName,
+        requestType
+      );
       return { isFileValid: true };
     } catch (error: any) {
       throw error;
@@ -78,8 +84,8 @@ export class BulkRepository {
               ...createRoleRequestReq.kartoffelParams,
               jobTitle: row.jobTitle,
               clearance: row.clearance,
-              type: 'domainUser', //always domainUser
-              source: 'oneTree', //always oneTree
+              type: C.domainUser, //always domainUser
+              source: C.defaultRoleSource, //always oneTree
               isRoleAttachable: true,
               roleEntityType: row.roleEntityType,
             };
@@ -152,13 +158,13 @@ export class BulkRepository {
 
             changeRoleHierarchyRequestReq.kartoffelParams = {
               ...changeRoleHierarchyRequestReq.kartoffelParams,
-              roleId: row.roleId,
+              roleId: `${row.roleId.split('@')[0]}@${C.defaultRoleSuffix}`,
               currentJobTitle: row.currentJobTitle,
             };
 
             changeRoleHierarchyRequestReq.adParams = {
               ...changeRoleHierarchyRequestReq.adParams,
-              samAccountName: row.roleId,
+              samAccountName: row.roleId.split('@')[0],
             };
             if (row.newJobTitle) {
               changeRoleHierarchyRequestReq.kartoffelParams.newJobTitle =
@@ -253,9 +259,7 @@ export class BulkRepository {
               ? requestUnderBulk.kartoffelParams?.jobTitle
               : '',
             clearance: requestUnderBulk.kartoffelParams?.clearance
-              ? C.kartoffelClearanceToHeb[
-                  requestUnderBulk.kartoffelParams?.clearance
-                ]
+              ? requestUnderBulk.kartoffelParams?.clearance
               : '',
             roleEntityType: requestUnderBulk.kartoffelParams?.roleEntityType
               ? C.kartoffelEntityTypeToHeb[

@@ -92,8 +92,12 @@ services:
       - KS_USE_FAKER=false
       - KS_SS_URL=spike-service:8080
       - KS_ROOT_ID=6184af202da776001134110b
-      - KS_DEFAULT_SOURCE=sf_name
+      - KS_DEFAULT_ROLE_SOURCE=sf_name
+      - KS_DEFAULT_DI_SOURCE=sf_name
+      - KS_DEFAULT_OG_SOURCE=sf_name
+      - KS_DI_SOURCES=sf_name,sf_name
       - KS_DEFAULT_ROLE_ID_SUFFIX=oneTree
+      - KS_SEARCH_WITH_RANKS=true
       - KS_LOG_PATH=/logs
 
   producer-service:
@@ -116,6 +120,8 @@ services:
       - PS_SHMUEL_AUDIENCE=shmuel
       - PS_OLD_DOMAIN=oldDomain
       - PS_NEW_DOMAIN=newDomain
+      - PS_RESTRICT_AD_ACCESS=false
+      - PS_AD_ALLOWED_SUBMITTERS=1111,2222,3333,4444
       - PS_LOG_PATH=/logs
 
   notification-service:
@@ -147,6 +153,8 @@ services:
       - APS_MONGO_URL=mongodb://mongo:27017/supernova
       - APS_KS_URL=kartoffel-service:8080
       - APS_RS_URL=request-service:8080
+      - APS_OG_VALIDATION_DEPTH=4
+      - APS_ALWAYS_VALID_COMMANDERS=1111,2222,3333,4444
       - APS_LOG_PATH=/logs
 
   tea-service:
@@ -169,6 +177,7 @@ services:
       - TS_EXCEL_INIT_FILE=initPrefixes.xlsx
       - TS_OLD_SUFFIX=gmail.com
       - TS_NEW_SUFFIX=gmail.com
+      - TS_BROL=brol
 
   bulk-service:
     image: bulk-service
@@ -185,7 +194,16 @@ services:
       - tea-service
     environment:
       - BS_RS_URL=request-service:8080
+      - BS_DEFAULT_ROLE_SUFFIX=sf_name
+      - BS_DEFAULT_ROLE_SOURCE=sf_name
       - BS_FOLDER_PATH=/bulkFiles
+      - BS_KARTOFFEL_DOMAIN_USER=domainUser
+      - BS_CRH_EXAMPLE_FILE=changeRoleHierarchyBulk.xlsx
+      - BS_CR_EXAMPLE_FILE=createRoleBulk.xlsx
+      - BS_SOLDIER=soldier
+      - BS_RESERVED=reserved
+      - BS_CIVILIAN=civilian
+      - BS_GOAL_USER=goalUser
       - BS_LOG_PATH=/logs
 
   mail-service:
@@ -226,10 +244,16 @@ services:
       - KC_RS_URL=request-service:8080
       - KC_TS_URL=tea-service:8080
       - KC_KS_URL=kartoffel-service:8080
+      - KC_DEFAULT_ROLE_SOURCE=sf_name
+      - KC_DEFAULT_DI_SOURCE=sf_name
+      - KC_DI_SOURCES=sf_name,sf_name
       - KC_KAFKA_HOST=kafka
       - KC_KAFKA_PORT=29092
-      - KC_LOG_PATH=/logs
       - KC_KAFKA_CONSUMER_TOPIC=requests
+      - KC_KARTOFFEL_GOAL_USER=GoalUser
+      - KC_KARTOFFEL_DOMAIN_USER=domainUser
+      - KC_CIVILIAN=Civilian
+      - KC_LOG_PATH=/logs
 
   execution-script:
     image: execution-script
@@ -344,7 +368,7 @@ services:
       - approver-service
       - tea-service
       - bulk-service
-      # - apm-server
+    # - apm-server
     environment:
       - GATEWAY_KS_URL=kartoffel-service:8080
       - GATEWAY_RS_URL=request-service:8080
@@ -361,6 +385,7 @@ services:
       - GATEWAY_SPIKE_AUDIENCE_ID=bwwIB0gSS0xay_odirl0OCAJ3gUlXkKMKijbDY_e
       - GATEWAY_SPIKE_PUBLIC_KEY_FULL_PATH=/spikeUtils/publickey.pem
       - GATEWAY_WRITE_SCOPE_NAME=write
+      - GATEWAY_SUPPORT_LINK=https://www.lego.com/en-us/service
       - GATEWAY_LOG_PATH=/logs
 
   supernova-ui:
@@ -373,8 +398,9 @@ services:
     ports:
       - '3000:80'
     environment:
-      - REACT_APP_BASE_URL=http://localhost:2000
-      - REACT_TOKEN_NAME=sp-token
+      - UI_REACT_APP_BASE_URL=http://localhost:2000
+      - UI_REACT_TOKEN_NAME=sp-token
+      - UI_USER_SOURCE_DI=sf_name
 
   # Kafka GUI
   kouncil:
@@ -474,6 +500,7 @@ volumes:
   bulk-files:
   spike-utils:
   ais-excel-files:
+  tea-utils:
   logs:
   esdata:
     driver: local

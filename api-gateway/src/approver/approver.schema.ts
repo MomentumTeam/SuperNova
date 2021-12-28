@@ -50,7 +50,25 @@ export const getSearchByDomainUser = Joi.object({
   },
 });
 
+export const getUserTypeValidSchema = Joi.object({
+  body: {},
+  params: {
+    id: Joi.objectId().required(),
+  },
+  query: {},
+});
+
+
 // POST
+export const isApproverValidSchema = Joi.object({
+  body: {
+    approverId: Joi.objectId().required(),
+    groupId: Joi.objectId().required(),
+  },
+  params: {},
+  query: {},
+});
+
 export const addApproverSchema = Joi.object({
   body: {
     entityId: Joi.objectId().required(),

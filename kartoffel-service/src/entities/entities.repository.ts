@@ -4,7 +4,6 @@ import * as C from '../config';
 import {
   CreateEntityRequest,
   Entity,
-  GetPictureByEntityIdRequest,
   Image,
   GetEntitiesUnderOGRequest,
   EntityArray,
@@ -21,6 +20,7 @@ import {
   GetEntityByIdentifierRequest,
   SearchCommandersByFullNameRequest,
   IdMessage,
+  GetPictureByEntityIdentifierRequest,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { cleanUnderscoreFields } from '../utils/json.utils';
 import { logger } from '../logger';
@@ -149,26 +149,24 @@ export class EntitiesRepository {
     }
   }
 
-  async getPictureByEntityId(
-    getPictureByEntityIdRequest: GetPictureByEntityIdRequest
+  async getPictureByEntityIdentifier(
+    getPictureByEntityIdentifierRequest: GetPictureByEntityIdentifierRequest
   ): Promise<Image> {
     try {
-      cleanUnderscoreFields(getPictureByEntityIdRequest);
+      cleanUnderscoreFields(getPictureByEntityIdentifierRequest);
       if (C.useFaker) {
         const image: Image = await this.kartoffelFaker.randomPicture();
         return image;
       } else {
-        const image: string =
-          await this.kartoffelUtils.kartoffelGetBufferStream(
-            `${C.kartoffelUrl}/api/entities/${getPictureByEntityIdRequest.id}/pictures/profile`
-          );
+        const image: string = await this.kartoffelUtils.kartoffelGetBufferStream(
+          `${C.kartoffelUrl}/api/entities/${getPictureByEntityIdentifierRequest.identifier}/pictures/profile`
+        );
         return { image: image };
       }
     } catch (error: any) {
-      logger.error(
-        `Error while downloading image for id=${getPictureByEntityIdRequest.id}`,
-        { error: { message: error.message } }
-      );
+      logger.error(`Error while downloading image for id=${getPictureByEntityIdentifierRequest.identifier}`, {
+        error: { message: error.message },
+      });
       return { image: C.defaultImage };
     }
   }
@@ -264,13 +262,17 @@ export class EntitiesRepository {
         }/api/entities/search?fullName=${encodeURIComponent(
           searchCommandersByFullNameRequest.fullName
         )}`;
-        for (let rank of C.commanderRanks) {
-          url = url + `&rank=${rank}`;
+        if (C.searchWithRanks) {
+          for (let rank of C.commanderRanks) {
+            url = url + `&rank=${encodeURIComponent(rank)}`;
+          }
         }
         if (searchCommandersByFullNameRequest.source) {
-          url = url + `&source=${searchCommandersByFullNameRequest.source}`;
+          url =
+            url +
+            `&digitalIdentity.source=${searchCommandersByFullNameRequest.source}`;
         } else {
-          url = url + `&source=${C.defaultSource}`;
+          url = url + `&digitalIdentity.source=${C.defaultDISource}`;
         }
         url = url + '&expanded=true';
         const data = await this.kartoffelUtils.kartoffelGet(url);
@@ -299,13 +301,17 @@ export class EntitiesRepository {
         }/api/entities/search?fullName=${encodeURIComponent(
           searchCommandersByFullNameRequest.fullName
         )}`;
-        for (let rank of C.highCommanderRanks) {
-          url = url + `&rank=${rank}`;
+        if (C.searchWithRanks) {
+          for (let rank of C.highCommanderRanks) {
+            url = url + `&rank=${encodeURIComponent(rank)}`;
+          }
         }
         if (searchCommandersByFullNameRequest.source) {
-          url = url + `&source=${searchCommandersByFullNameRequest.source}`;
+          url =
+            url +
+            `&digitalIdentity.source=${searchCommandersByFullNameRequest.source}`;
         } else {
-          url = url + `&source=${C.defaultSource}`;
+          url = url + `&digitalIdentity.source=${C.defaultDISource}`;
         }
         url = url + '&expanded=true';
         const data = await this.kartoffelUtils.kartoffelGet(url);
@@ -369,8 +375,8 @@ export class EntitiesRepository {
         );
         delete data.picture;
         if (withPicture) {
-          const picture = await this.getPictureByEntityId({
-            id: getEntityByIdRequest.id,
+          const picture = await this.getPictureByEntityIdentifier({
+            identifier: data.personalNumber || data.identityCard,
           });
           data.picture = picture.image;
         }

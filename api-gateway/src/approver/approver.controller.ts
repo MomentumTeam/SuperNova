@@ -9,6 +9,7 @@ import {
   DeleteApproverReq,
   SearchHighCommandersByDisplayNameReq,
   UpdateApproverDecisionReq,
+  IsApproverValidForOGReq,
 } from '../interfaces/protoc/proto/approverService';
 import { ApproverService } from './approver.service';
 import { KartoffelService } from '../kartoffel/kartoffel.service';
@@ -104,10 +105,8 @@ export default class ApproverController {
   }
 
   static async getUserType(req: any, res: Response) {
-    if (!req.user && !req.user.id) throw new AuthenticationError();
-
     const getUserTypeReq: GetUserTypeReq = {
-      entityId: req.user.id,
+      entityId: req.params.id,
     };
 
     try {
@@ -159,6 +158,23 @@ export default class ApproverController {
     }
   }
 
+  static async isApproverValid(req: any, res: Response) {
+    const isApproverValidReq: IsApproverValidForOGReq = {
+      approverId: req.body.approverId,
+      groupId: req.body.groupId,
+    };
+
+    try {
+      const isApproverValidRes = await ApproverService.isApproverValidForOG(
+        isApproverValidReq
+      );
+      res.send(isApproverValidRes);
+    } catch (error: any) {
+      const statusCode = statusCodeHandler(error);
+      res.status(statusCode).send(error.message);
+    }
+  }
+
   // PUT
   static async updateApproverDecision(req: any, res: Response) {
     // Get the current approver
@@ -194,20 +210,27 @@ export default class ApproverController {
         typeof request.type === typeof ''
           ? requestTypeFromJSON(request.type)
           : request.type;
-      
+
       const decisionType = decisionFromJSON(decision);
-      if (requestType === RequestType.ADD_APPROVER && decisionType !== Decision.DENIED) {
-        const isRequestApproved = await RequestsService.isRequestApproved({id: request.id}) as IsRequestApprovedRes;
+      if (
+        requestType === RequestType.ADD_APPROVER &&
+        decisionType !== Decision.DENIED
+      ) {
+        const isRequestApproved = (await RequestsService.isRequestApproved({
+          id: request.id,
+        })) as IsRequestApprovedRes;
 
         if (isRequestApproved.isRequestApproved) {
           try {
             await ApproverService.addApprover({
-              entityId: request.additionalParams?.entityId || "",
+              entityId: request.additionalParams?.entityId || '',
               type: request.additionalParams?.type || ApproverType.UNRECOGNIZED,
-              akaUnit: request.additionalParams?.akaUnit || "",
-              displayName: request.additionalParams?.displayName || "",
+              akaUnit: request.additionalParams?.akaUnit || '',
+              displayName: request.additionalParams?.displayName || '',
               domainUsers: request.additionalParams?.domainUsers || [],
-              directGroup: request.additionalParams?.directGroup || "",
+              directGroup: request.additionalParams?.directGroup || '',
+              identityCard: request.additionalParams?.identityCard || '',
+              personalNumber: request.additionalParams?.personalNumber || '',
             });
             await RequestsService.updateRequest({
               id: request.id,
@@ -215,7 +238,7 @@ export default class ApproverController {
                 status: RequestStatus.DONE,
               },
             } as any);
-            await ProducerController.produceToADQueue(req.params.id, res); // TODO: ASK BARAK
+            // await ProducerController.produceToADQueue(req.params.id, res); // TODO: ASK BARAK
           } catch (addApproverError: any) {
             await RequestsService.updateRequest({
               id: request.id,
@@ -226,12 +249,25 @@ export default class ApproverController {
           }
         }
       } else {
-        const canPushToQueueRes = await RequestsService.canPushToADQueue({
-          id: req.params.requestId,
-        });
+        const canPushToKartoffelRes =
+          await RequestsService.canPushToKartoffelQueue({
+            id: req.params.requestId,
+          });
+        if (canPushToKartoffelRes.canPushToQueue) {
+          await ProducerController.produceToKartoffelQueue(
+            req.params.requestId
+          );
+        } else {
+          const canPushToADQueueRes = await RequestsService.canPushToADQueue({
+            id: req.params.requestId,
+          });
 
-        if (canPushToQueueRes.canPushToQueue) {
-          await ProducerController.produceToADQueue(req.params.requestId, res);
+          if (canPushToADQueueRes.canPushToQueue) {
+            await ProducerController.produceToADQueue(
+              req.params.requestId,
+              res
+            );
+          }
         }
       }
       res.send(request);

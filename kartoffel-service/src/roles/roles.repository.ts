@@ -20,6 +20,7 @@ import {
   RoleIdMessage,
   GetRoleIdSuffixByOGReq,
   RoleIdSuffix,
+  SearchRoleByRoleIdReq,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { KartoffelFaker } from '../mock/kartoffel.faker';
 import { KartoffelUtils } from '../utils/kartoffel.utils';
@@ -122,7 +123,6 @@ export class RolesRepository {
           `${C.kartoffelUrl}/api/roles`,
           createRoleRequest
         );
-
         if (res === C.kartoffelOK) {
           return { roleId: createRoleRequest.roleId };
         } else {
@@ -144,15 +144,37 @@ export class RolesRepository {
           getRolesUnderOGRequest.pageSize
         );
       } else {
-        const groupId = getRolesUnderOGRequest.groupId;
-        const req: any = getRolesUnderOGRequest;
-        delete req.groupId;
+        if (!getRolesUnderOGRequest.page || !getRolesUnderOGRequest.pageSize) {
+          //get all children
+          let page = 1;
+          let roles: Role[] = [];
 
-        const roles: Role[] = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/api/roles/group/${groupId}`,
-          req
-        );
-        return { roles: roles } as RoleArray;
+          while (true) {
+            const currentPage = await this.getRolesUnderOG({
+              groupId: getRolesUnderOGRequest.groupId,
+              direct: getRolesUnderOGRequest.direct,
+              page: page,
+              pageSize: 100,
+            });
+            if (!currentPage.roles || currentPage.roles.length === 0) {
+              break;
+            }
+
+            roles.push(...currentPage.roles);
+            page++;
+          }
+          return { roles: roles } as RoleArray;
+        } else {
+          const groupId = getRolesUnderOGRequest.groupId;
+          const req: any = getRolesUnderOGRequest;
+          delete req.groupId;
+
+          const roles: Role[] = await this.kartoffelUtils.kartoffelGet(
+            `${C.kartoffelUrl}/api/roles/group/${groupId}`,
+            req
+          );
+          return { roles: roles } as RoleArray;
+        }
       }
     } catch (error) {
       throw error;
@@ -242,7 +264,6 @@ export class RolesRepository {
             pageSize: 100,
           });
           isJobTitleExists = jobTitleExists(roleArray, jobTitle);
-
           pageCounter++;
         } while (roleArray.roles.length > 0 && !isJobTitleExists);
 
@@ -425,6 +446,26 @@ export class RolesRepository {
         } else {
           throw new Error('res not ok');
         }
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async searchRolesByRoleId(
+    searchRoleByRoleIdReq: SearchRoleByRoleIdReq
+  ): Promise<RoleArray> {
+    try {
+      cleanUnderscoreFields(searchRoleByRoleIdReq);
+      if (C.useFaker) {
+        return this.kartoffelFaker.randomRoleArray(10);
+      } else {
+        const data: Role[] = await this.kartoffelUtils.kartoffelGet(
+          `${C.kartoffelUrl}/api/roles/search`,
+          searchRoleByRoleIdReq
+        );
+
+        return { roles: data };
       }
     } catch (error) {
       throw error;

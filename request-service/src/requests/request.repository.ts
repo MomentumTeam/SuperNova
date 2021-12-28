@@ -43,6 +43,8 @@ import {
   RowError,
   TransferRequestToApproversReq,
   SortOrder,
+  AreAllSubRequestsFinishedReq,
+  AreAllSubRequestsFinishedRes,
 } from '../interfaces/protoc/proto/requestService';
 import { createNotifications } from '../services/notificationHelper';
 import { sendMail } from '../services/mailHelper';
@@ -76,13 +78,17 @@ export class RequestRepository {
   ): Promise<Request> {
     try {
       if (type === RequestType.CREATE_ROLE) {
-        const tea = await retrieveTeaByOGId(createRequestReq.kartoffelParams.directGroup);
+        const tea = await retrieveTeaByOGId(
+          createRequestReq.kartoffelParams.directGroup
+        );
         createRequestReq.kartoffelParams.roleId = tea.roleId;
         createRequestReq.kartoffelParams.uniqueId = tea.uniqueId;
         createRequestReq.kartoffelParams.mail = tea.mail;
         createRequestReq.adParams.samAccountName = tea.samAccountName;
       } else if (type === RequestType.ASSIGN_ROLE_TO_ENTITY) {
-        createRequestReq.adParams.upn = await retrieveUPNByEntityId(createRequestReq.kartoffelParams.id);
+        createRequestReq.adParams.upn = await retrieveUPNByEntityId(
+          createRequestReq.kartoffelParams.id
+        );
       } else if (
         type === RequestType.CREATE_ENTITY ||
         type === RequestType.DELETE_ENTITY ||
@@ -91,13 +97,13 @@ export class RequestRepository {
         // CASES WITH NO NEED FOR AD UPDATE
         createRequestReq.adStatus = {
           status: stageStatusToJSON(StageStatus.STAGE_DONE),
-          message: "No need for AD update in this case",
+          message: 'No need for AD update in this case',
           failedRetries: 0,
         };
 
         createRequestReq.kartoffelStatus = {
           status: stageStatusToJSON(StageStatus.STAGE_WAITING_FOR_AD),
-          message: "Waiting for push, request type does not require AD update",
+          message: 'Waiting for push, request type does not require AD update',
           failedRetries: 0,
         };
       } else if (type === RequestType.EDIT_ENTITY) {
@@ -105,7 +111,7 @@ export class RequestRepository {
         const approverDecision = {
           approver: createRequestReq.submittedBy
             ? createRequestReq.submittedBy
-            : { id: "", displayName: "", personalNumber: "", identityCard: "" },
+            : { id: '', displayName: '', personalNumber: '', identityCard: '' },
           decision: decisionToJSON(Decision.APPROVED),
         };
         createRequestReq.commanderDecision = approverDecision;
@@ -113,15 +119,17 @@ export class RequestRepository {
         createRequestReq.superSecurityDecision = approverDecision;
         createRequestReq.adStatus = {
           status: stageStatusToJSON(StageStatus.STAGE_WAITING_FOR_PUSH),
-          message: "",
+          message: '',
           failedRetries: 0,
         };
         createRequestReq.kartoffelStatus = {
           status: stageStatusToJSON(StageStatus.STAGE_WAITING_FOR_AD),
-          message: "",
+          message: '',
           failedRetries: 0,
         };
-        createRequestReq.status = requestStatusToJSON(RequestStatus.IN_PROGRESS);
+        createRequestReq.status = requestStatusToJSON(
+          RequestStatus.IN_PROGRESS
+        );
       }
       const request: any = new RequestModel(createRequestReq);
       this.setNeedApproversDecisionsValues(request, type);
@@ -138,8 +146,7 @@ export class RequestRepository {
             status: requestStatusToJSON(RequestStatus.APPROVED_BY_SECURITY),
           },
         });
-      }
-      else if (this.isRequestApprovedByCommander(request)) {
+      } else if (this.isRequestApprovedByCommander(request)) {
         await this.updateRequest({
           id: document.id,
           requestProperties: {
@@ -147,7 +154,6 @@ export class RequestRepository {
           },
         });
       }
-
 
       const isRequestApproved = await this.isRequestApproved({
         id: document.id,
@@ -160,18 +166,24 @@ export class RequestRepository {
           },
         });
         try {
-          await createNotifications(NotificationType.REQUEST_IN_PROGRESS, document);
+          await createNotifications(
+            NotificationType.REQUEST_IN_PROGRESS,
+            document
+          );
         } catch (notificationError: any) {
-          logger.error("Notification error", {
+          logger.error('Notification error', {
             error: { message: notificationError.message },
           });
         }
       } else {
         try {
-          await createNotifications(NotificationType.REQUEST_SUBMITTED, document);
+          await createNotifications(
+            NotificationType.REQUEST_SUBMITTED,
+            document
+          );
           sendMail(MailType.REQUEST_SUBMITTED, document).then().catch();
         } catch (notificationError: any) {
-          logger.error("Notification error", {
+          logger.error('Notification error', {
             error: { message: notificationError.message },
           });
         }
@@ -183,35 +195,34 @@ export class RequestRepository {
   }
 
   isRequestApprovedByCommander(request: Request) {
-     let commanderDecision: any = request.commanderDecision?.decision;
-        commanderDecision =
-          typeof commanderDecision === typeof ''
-            ? decisionFromJSON(commanderDecision)
-            : commanderDecision;
+    let commanderDecision: any = request.commanderDecision?.decision;
+    commanderDecision =
+      typeof commanderDecision === typeof ''
+        ? decisionFromJSON(commanderDecision)
+        : commanderDecision;
 
-      return commanderDecision === Decision.APPROVED
+    return commanderDecision === Decision.APPROVED;
   }
 
   isRequestApprovedBySecurity(request: Request) {
-  let securityDecision: any = request.securityDecision?.decision;
-        securityDecision =
-          typeof securityDecision === typeof ''
-            ? decisionFromJSON(securityDecision)
-            : securityDecision;
-        const needSecurityDecision = request.needSecurityDecision;
+    let securityDecision: any = request.securityDecision?.decision;
+    securityDecision =
+      typeof securityDecision === typeof ''
+        ? decisionFromJSON(securityDecision)
+        : securityDecision;
+    const needSecurityDecision = request.needSecurityDecision;
 
-     return needSecurityDecision && securityDecision === Decision.APPROVED;       
+    return securityDecision === Decision.APPROVED;
   }
 
-    isRequestApprovedBySuperSecurity(request: Request) {
-  let superSecurityDecision: any =
-          request.superSecurityDecision?.decision;
-        superSecurityDecision =
-          typeof superSecurityDecision === typeof ''
-            ? decisionFromJSON(superSecurityDecision)
-            : superSecurityDecision;
+  isRequestApprovedBySuperSecurity(request: Request) {
+    let superSecurityDecision: any = request.superSecurityDecision?.decision;
+    superSecurityDecision =
+      typeof superSecurityDecision === typeof ''
+        ? decisionFromJSON(superSecurityDecision)
+        : superSecurityDecision;
 
-     return superSecurityDecision === Decision.APPROVED;       
+    return superSecurityDecision === Decision.APPROVED;
   }
 
   async isRequestApproved(
@@ -233,7 +244,8 @@ export class RequestRepository {
 
         if (
           this.isRequestApprovedByCommander(request) &&
-          (!needSecurityDecision || this.isRequestApprovedBySecurity(request)) &&
+          (!needSecurityDecision ||
+            this.isRequestApprovedBySecurity(request)) &&
           (!needSuperSecurityDecision ||
             this.isRequestApprovedBySuperSecurity(request))
         ) {
@@ -380,6 +392,9 @@ export class RequestRepository {
               // NO NEED FOR AD PUSH
               adStatus = StageStatus.STAGE_DONE;
               kartoffelStatus = StageStatus.STAGE_WAITING_FOR_PUSH;
+            } else if (requestType === RequestType.ADD_APPROVER) {
+              adStatus = StageStatus.STAGE_DONE;
+              kartoffelStatus = StageStatus.STAGE_DONE;
             }
             requestProperties['adStatus.status'] = stageStatusToJSON(adStatus);
             requestProperties['kartoffelStatus.status'] =
@@ -791,6 +806,7 @@ export class RequestRepository {
 
   async deleteRequest(deleteReq: DeleteReq): Promise<SuccessMessage> {
     try {
+      const requestBefore = await this.getRequestById({ id: deleteReq.id });
       await RequestModel.deleteMany({
         $or: [{ _id: deleteReq.id }, { bulkRequestId: deleteReq.id }],
       });
@@ -798,6 +814,10 @@ export class RequestRepository {
         success: true,
         message: `Request ${deleteReq.id} was deleted successfully`,
       };
+      await createNotifications(
+        NotificationType.REQUEST_DELETED,
+        requestBefore
+      );
       return res;
     } catch (error) {
       throw error;
@@ -817,11 +837,11 @@ export class RequestRepository {
       if (documentAfter) {
         const documentObj = documentAfter.toObject();
         turnObjectIdsToStrings(documentObj);
-        // if bulk
         const requestType: RequestType =
           typeof documentObj.type === typeof ''
             ? requestTypeFromJSON(documentObj.type)
             : documentObj.type;
+        // if bulk
         if (
           (requestType === RequestType.CREATE_ROLE_BULK ||
             requestType === RequestType.CHANGE_ROLE_HIERARCHY_BULK) &&
@@ -833,8 +853,22 @@ export class RequestRepository {
             { bulkRequestId: updateReq.id },
             { $set: requestUpdate }
           );
+        } else if (
+          documentObj.isPartOfBulk &&
+          documentObj.bulkRequestId &&
+          (requestUpdate.kartoffelStatus !== undefined ||
+            requestUpdate.adStatus !== undefined ||
+            requestUpdate['kartoffelStatus.status'] !== undefined ||
+            requestUpdate['adStatus.status'] !== undefined)
+        ) {
+          // Sync bulk request if all sub-requests are finished
+          const bulkRequestId = documentObj.bulkRequestId;
+          const areAllSubRequestsFinishedRes =
+            await this.areAllSubRequestsFinished({ id: bulkRequestId });
+          if (areAllSubRequestsFinishedRes.areAllSubRequestsFinished) {
+            await this.syncBulkRequest({ id: bulkRequestId });
+          }
         }
-
         return documentObj as Request;
       } else {
         throw new Error(`A request with {_id: ${updateReq.id}} was not found!`);
@@ -914,7 +948,7 @@ export class RequestRepository {
           await createNotifications(notificationType, updatedRequest);
           sendMail(mailType, updatedRequest).then().catch();
         } catch (notificationError: any) {
-          logger.error('Notificatoin error', {
+          logger.error('Notification error', {
             error: { message: notificationError.message },
           });
         }
@@ -970,24 +1004,17 @@ export class RequestRepository {
       //   await createNotifications(stageNotificationType, updatedRequest);
       // }
       if (
-        (requestStatus === RequestStatus.DONE ||
-          requestStatus === RequestStatus.FAILED) &&
+        requestStatus === RequestStatus.FAILED &&
         updatedRequest.submittedBy
       ) {
         const notificationType: NotificationType =
-          requestStatus === RequestStatus.DONE
-            ? NotificationType.REQUEST_DONE
-            : NotificationType.REQUEST_FAILED;
-        const mailType: MailType =
-          requestStatus === RequestStatus.DONE
-            ? MailType.REQUEST_DONE
-            : MailType.REQUEST_FAILED;
-
+          NotificationType.REQUEST_FAILED;
+        const mailType: MailType = MailType.REQUEST_FAILED;
         try {
           await createNotifications(notificationType, updatedRequest);
           sendMail(mailType, updatedRequest).then().catch();
         } catch (notificationError: any) {
-          logger.error('Notificatoin error', {
+          logger.error('Notification error', {
             error: { message: notificationError.message },
           });
         }
@@ -1068,8 +1095,9 @@ export class RequestRepository {
         break;
 
       case RequestType.ADD_APPROVER:
-        const approverType = approverTypeFromJSON(request.additionalParams.type);
-        //TODO: ASK
+        const approverType = approverTypeFromJSON(
+          request.additionalParams.type
+        );
         if (approverType === ApproverType.COMMANDER) {
           request.needSecurityDecision = false;
           request.needSuperSecurityDecision = false;
@@ -1080,7 +1108,6 @@ export class RequestRepository {
           request.needSecurityDecision = false;
           request.needSuperSecurityDecision = true;
         } else {
-          // TODO: ask about others
           request.needSecurityDecision = true;
           request.needSuperSecurityDecision = false;
         }
@@ -1174,9 +1201,10 @@ export class RequestRepository {
     try {
       let query: any = {};
       let sortQuery: any = {
-         "sortStatusId": 1, "createdAt": -1
-      }
-       
+        sortStatusId: 1,
+        createdAt: -1,
+      };
+
       let waitingForApproveCount = 0;
 
       const personTypeInRequest: PersonTypeInRequest =
@@ -1218,7 +1246,9 @@ export class RequestRepository {
       if (getRequestsByPersonReq.sortField) {
         sortQuery = getSortQuery(
           getRequestsByPersonReq.sortField,
-          getRequestsByPersonReq.sortOrder ? getRequestsByPersonReq.sortOrder : SortOrder.DEC
+          getRequestsByPersonReq.sortOrder
+            ? getRequestsByPersonReq.sortOrder
+            : SortOrder.DEC
         );
       }
       if (getRequestsByPersonReq.searchQuery) {
@@ -1235,17 +1265,23 @@ export class RequestRepository {
       const requests: any = await RequestModel.aggregate([
         {
           $addFields: {
-            serialNumberStr: { $toString: "$serialNumber" },
+            serialNumberStr: { $toString: '$serialNumber' },
             sortStatusId: {
               $switch: {
                 branches: [
-                  { case: { $eq: ["$status", "SUBMITTED"] }, then: 0 },
-                  { case: { $eq: ["$status", "APPROVED_BY_COMMANDER"] }, then: 1 },
-                  { case: { $eq: ["$status", "APPROVED_BY_SECURITY"] }, then: 2 },
-                  { case: { $eq: ["$status", "IN_PROGRESS"] }, then: 3 },
-                  { case: { $eq: ["$status", "FAILED"] }, then: 4 },
-                  { case: { $eq: ["$status", "DECLINED"] }, then: 5 },
-                  { case: { $eq: ["$status", "DONE"] }, then: 6 },
+                  { case: { $eq: ['$status', 'SUBMITTED'] }, then: 0 },
+                  {
+                    case: { $eq: ['$status', 'APPROVED_BY_COMMANDER'] },
+                    then: 1,
+                  },
+                  {
+                    case: { $eq: ['$status', 'APPROVED_BY_SECURITY'] },
+                    then: 2,
+                  },
+                  { case: { $eq: ['$status', 'IN_PROGRESS'] }, then: 3 },
+                  { case: { $eq: ['$status', 'FAILED'] }, then: 4 },
+                  { case: { $eq: ['$status', 'DECLINED'] }, then: 5 },
+                  { case: { $eq: ['$status', 'DONE'] }, then: 6 },
                 ],
                 default: 0,
               },
@@ -1257,7 +1293,6 @@ export class RequestRepository {
         { $skip: getRequestsByPersonReq.from - 1 },
         { $limit: getRequestsByPersonReq.to - getRequestsByPersonReq.from + 1 },
       ]);
-
 
       const waitingForApproveCountQuery =
         getWaitingForApproveCountQuery(userType);
@@ -1366,6 +1401,43 @@ export class RequestRepository {
     }
   }
 
+  async areAllSubRequestsFinished(
+    areAllSubRequestsFinishedReq: AreAllSubRequestsFinishedReq
+  ): Promise<AreAllSubRequestsFinishedRes> {
+    try {
+      const documents: any = await RequestModel.find({
+        bulkRequestId: areAllSubRequestsFinishedReq.id,
+      });
+      if (documents) {
+        let smallRequests: any = [];
+        for (let i = 0; i < documents.length; i++) {
+          const requestObj: any = documents[i].toObject();
+          turnObjectIdsToStrings(requestObj);
+          smallRequests.push(requestObj);
+        }
+        for (let smallRequest of smallRequests) {
+          const smallRequestStatus =
+            typeof smallRequest.status === typeof ''
+              ? requestStatusFromJSON(smallRequest.status)
+              : smallRequest.status;
+          if (
+            smallRequestStatus !== RequestStatus.DONE &&
+            smallRequestStatus !== RequestStatus.FAILED
+          ) {
+            return { areAllSubRequestsFinished: false };
+          }
+        }
+        return { areAllSubRequestsFinished: true };
+      } else {
+        throw new Error(
+          `No bulk request with id=${areAllSubRequestsFinishedReq.id}`
+        );
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async syncBulkRequest(
     syncBulkRequestReq: SyncBulkRequestReq
   ): Promise<Request> {
@@ -1401,7 +1473,7 @@ export class RequestRepository {
         }
         const requestProperties: any = newStatus
           ? { status: requestStatusToJSON(newStatus), rowErrors: rowErrors }
-          : {};
+          : { rowErrors: rowErrors };
         const updatedBulkRequest = await this.updateRequest({
           id: syncBulkRequestReq.id,
           requestProperties: requestProperties,

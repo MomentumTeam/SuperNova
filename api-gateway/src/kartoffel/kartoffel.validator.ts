@@ -16,15 +16,17 @@ import {
   GetOGByIdSchema,
   GetOGChildrenSchema,
   GetOGTreeSchema,
-  getPictureByEntityIdSchema,
+  getPictureByEntityIdentifierSchema,
   GetRoleByIdSchema,
   GetRolesByHierarchySchema,
   GetRolesUnderOGSchema,
   IsJobTitleAlreadyTakenSchema,
   isOGNameAlreadyTakenSchema,
   IsRoleAlreadyTakenSchema,
+  SearchDIsByUniqueIdValidSchema,
   searchEntitiesByFullNameSchema,
   searchOGSchema,
+  SearchRolesByRoleIdValidSchema,
 } from './kartoffel.schema';
 export class KartoffelValidator {
   // Entities
@@ -114,14 +116,14 @@ export class KartoffelValidator {
     next();
   }
 
-  static isGetPictureByEntityIdValid(
+  static isGetPictureByEntityIdentifierValid(
     req: Request,
     res: Response,
     next: NextFunction
   ) {
     transformRequest(
       req,
-      validateObject(req, getPictureByEntityIdSchema, { allowUnknown: true })
+      validateObject(req, getPictureByEntityIdentifierSchema, { allowUnknown: true })
     );
     next();
   }
@@ -253,6 +255,25 @@ export class KartoffelValidator {
       req,
       validateObject(req, GetRolesByHierarchySchema, { allowUnknown: true })
     );
+    next();
+  }
+
+  static isSearchRolesByRoleIdValid(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    transformRequest(req, validateObject(req, SearchRolesByRoleIdValidSchema, { allowUnknown: true }));
+    next();
+  }
+
+  // DI
+   static isSearchDIsByUniqueIdValid(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    transformRequest(req, validateObject(req, SearchDIsByUniqueIdValidSchema, { allowUnknown: true }));
     next();
   }
 }

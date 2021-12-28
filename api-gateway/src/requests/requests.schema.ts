@@ -202,6 +202,7 @@ const createRoleKartoffelParamsObj = Joi.object({
   roleId: Joi.string(), //T154514... generated automatically by tea-service if not given
   clearance: Joi.string().required(), //clearance of the role
   akaUnit: Joi.string(),
+  hierarchy: Joi.string().required(),
 
   //forDigitalIdentity
   type: Joi.string().required(), //always domainUser
@@ -224,7 +225,7 @@ export const createRoleSchema = Joi.object({
     commanderDecision: ApproverDecisionObj,
     securityDecision: ApproverDecisionObj,
     superSecurityDecision: ApproverDecisionObj,
-    commanders: Joi.array().items(entityMinObj), // TODO: ask liora if required
+    commanders: Joi.array().items(entityMinObj), 
     securityApprovers: Joi.array().items(entityMinObj),
     superSecurityApprovers: Joi.array().items(entityMinObj),
     kartoffelStatus: kartoffelStatusObj,
@@ -242,10 +243,14 @@ export const createRoleSchema = Joi.object({
 const assignRoleToEntityKartoffelParamsObj = Joi.object({
   id: Joi.string().required(),
   uniqueId: Joi.string().required(),
+  roleId: Joi.string().required(),
+  needDisconnect: Joi.boolean().required(),
+  hierarchy: Joi.string().required(),
+  directGroup: Joi.string().required()
 });
 
 const assignRoleToEntityADParamsObj = Joi.object({
-  oldSAMAccountName: Joi.string().required(),
+  oldSAMAccountName: Joi.string(),
   newSAMAccountName: Joi.string().required(),
   upn: Joi.string(),
   firstName: Joi.string().required(),
@@ -280,6 +285,7 @@ const createOGKartoffelParamsObj = Joi.object({
   name: Joi.string().required(),
   parent: Joi.string().required(),
   source: Joi.string().required(),
+  hierarchy: Joi.string().required(),
 });
 
 const createOGADParamsObj = Joi.object({
@@ -350,9 +356,9 @@ const createEntityKartoffelParamsObj = Joi.object({
   mobilePhone: Joi.array().items(Joi.string()),
   address: Joi.string(),
   clearance: Joi.string().required(),
-  sex: Joi.string().required(),
+  sex: Joi.string(),
   birthdate: Joi.number().unsafe(),
-  entityType: Joi.string(),
+  entityType: Joi.string().required(),
 });
 const createEntityADParamsObj = Joi.object({
   //NO PARAMETERS NEEDED
@@ -414,6 +420,7 @@ export const renameOGSchema = Joi.object({
 const renameRoleKartoffelParamsObj = Joi.object({
   jobTitle: Joi.string().required(),
   roleId: Joi.string().required(),
+  oldJobTitle: Joi.string().required()
 });
 
 const renameRoleADParamsObj = Joi.object({
@@ -447,15 +454,15 @@ const editEntityKartoffelParamsObj = Joi.object({
   firstName: Joi.string().required(),
   lastName: Joi.string().required(),
   identityCard: Joi.string(),
-  personalNumber: Joi.string().required(),
-  serviceType: Joi.string().required(),
+  personalNumber: Joi.string(),
+  serviceType: Joi.string(),
   phone: Joi.array().items(Joi.string()),
   mobilePhone: Joi.array().items(Joi.string()),
-  address: Joi.string().required(),
-  clearance: Joi.string().required(),
-  sex: Joi.string().required(),
-  birthdate: Joi.number().unsafe().required(),
-  entityType: Joi.string().required(),
+  address: Joi.string(),
+  clearance: Joi.string(),
+  sex: Joi.string(),
+  birthdate: Joi.number().unsafe(),
+  entityType: Joi.string(),
 });
 
 const editEntityADParamsObj = Joi.object({
@@ -489,13 +496,16 @@ export const editEntitySchema = Joi.object({
 const changeRoleHierarchyKartoffelParamsObj = Joi.object({
   roleId: Joi.string().required(),
   directGroup: Joi.string().required(),
-  jobTitle: Joi.string(),
+  currentJobTitle: Joi.string().required(),
+  newJobTitle: Joi.string(),
+  hierarchy: Joi.string().required(),
+  oldHierarchy: Joi.string().required()
 });
 
 const changeRoleHierarchyADParamsObj = Joi.object({
   samAccountName: Joi.string(),
-  ouDisplayName: Joi.string(),
-  jobTitle: Joi.string(),
+  ouDisplayName: Joi.string(), // the new one
+  newJobTitle: Joi.string(),
 });
 
 export const changeRoleHierarchyReqSchema = Joi.object({

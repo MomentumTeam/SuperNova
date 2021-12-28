@@ -72,6 +72,7 @@ describe('Groups Manager', () => {
     it('get groups by hierarchy', async () => {
       const ogByHierarchy = await groupsManager.getOGByHierarchyName({
         hierarchy: `${randomOG.hierarchy}/${randomOG.name}`,
+        withRoles: false
       });
       expect(ogByHierarchy).to.be.exist;
       expect(ogByHierarchy.id).to.equal(randomOGId);
@@ -81,7 +82,7 @@ describe('Groups Manager', () => {
   describe('SearchOG', () => {
     it('search groups', async () => {
       const searchOGArray = (
-        await groupsManager.searchOG({ nameAndHierarchy: randomOG.hierarchy })
+        await groupsManager.searchOG({ nameAndHierarchy: randomOG.hierarchy, withRoles: false })
       ).groups;
       expect(searchOGArray).to.have.length.greaterThanOrEqual(1);
       expect(searchOGArray.map((og) => og.id)).to.include(randomOGId);
@@ -94,6 +95,7 @@ describe('Groups Manager', () => {
         await groupsManager.getChildrenOfOG({
           id: directGroupId,
           direct: true,
+          withRoles: false,
         })
       ).groups;
       expect(children).to.be.exist;

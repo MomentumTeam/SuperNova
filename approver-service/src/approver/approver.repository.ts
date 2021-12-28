@@ -7,16 +7,19 @@ import {
   GetAllApproversReq,
   GetUserTypeReq,
   GetUserTypeRes,
+  IsApproverValidForOGReq,
   SearchByDisplayNameReq,
   SearchByDomainUserReq,
   SearchHighCommandersByDisplayNameReq,
   SuccessMessage,
   SyncApproverReq,
   UpdateApproverDecisionReq,
+  IsApproverValidForOGRes,
 } from '../interfaces/protoc/proto/approverService';
 import {
   DigitalIdentity,
   Entity,
+  OrganizationGroup,
 } from '../interfaces/protoc/proto/kartoffelService';
 import {
   ApproverType,
@@ -39,8 +42,57 @@ import {
   approverTypeValidation,
 } from '../utils/approver.utils';
 import { hasPermissionToDecide } from '../utils/permission.utils';
+import * as C from '../config';
 
 export class ApproverRepository {
+  async isApproverValidForOG(
+    isApproverValidForOGReq: IsApproverValidForOGReq
+  ): Promise<IsApproverValidForOGRes> {
+    try {
+      if (
+        C.alwaysValidCommanders.includes(isApproverValidForOGReq.approverId)
+      ) {
+        return { isValid: true };
+      }
+      const approverEntity: Entity = await KartoffelService.getEntityById({
+        id: isApproverValidForOGReq.approverId,
+      });
+      if (!approverEntity.directGroup || approverEntity.directGroup === '') {
+        return { isValid: false };
+      } else {
+        if (isApproverValidForOGReq.groupId === approverEntity.directGroup) {
+          return { isValid: true };
+        }
+        const group: OrganizationGroup = await KartoffelService.getOGById({
+          id: isApproverValidForOGReq.groupId,
+        });
+        const approverGroup = await KartoffelService.getOGById({
+          id: approverEntity.directGroup,
+        });
+        const lastIndex =
+          approverGroup.ancestors.length < C.ogValidationDepth
+            ? approverGroup.ancestors.length
+            : C.ogValidationDepth;
+        const approverGroupAncestors: any = approverGroup.ancestors.slice(
+          0,
+          lastIndex
+        );
+        for (let ancestor of approverGroupAncestors) {
+          if (group.ancestors.includes(ancestor)) {
+            return { isValid: true };
+          }
+        }
+        return { isValid: false };
+      }
+    } catch (error: any) {
+      logger.error('addApprover ERROR', {
+        error: { message: error.message },
+        isApproverValidForOGReq,
+      });
+      throw error;
+    }
+  }
+
   async addApprover(addApproverReq: AddApproverReq) {
     try {
       const approver: any = new ApproverModel(addApproverReq);
