@@ -18,6 +18,10 @@ export const ogValidationDepth = process.env.APS_OG_VALIDATION_DEPTH
   ? parseInt(process.env.APS_OG_VALIDATION_DEPTH)
   : 4;
 
+export const alwaysValidCommanders = process.env.APS_ALWAYS_VALID_COMMANDERS
+  ? process.env.APS_ALWAYS_VALID_COMMANDERS.split(',')
+  : [];
+
 export const logPath = process.env.APS_LOG_PATH
   ? `${process.env.APS_LOG_PATH}/approver-service`
   : './logs/approver-service';

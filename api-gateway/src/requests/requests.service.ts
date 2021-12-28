@@ -3,12 +3,14 @@ import { config } from '../config';
 import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 import {
+  ApproverType,
   AssignRoleToEntityReq,
   AssignRoleToEntityRes,
   CanPushToQueueReq,
   CanPushToQueueRes,
   ChangeRoleHierarchyReq,
   ChangeRoleHierarchyRes,
+  CreateEntityReq,
   CreateEntityRes,
   CreateNewApproverReq,
   CreateNewApproverRes,
@@ -38,6 +40,8 @@ import {
   RenameRoleRes,
   Request,
   RequestArray,
+  RequestType,
+  requestTypeFromJSON,
   StageStatus,
   SuccessMessage,
   TransferRequestToApproversReq,
@@ -48,6 +52,8 @@ import {
   UpdateReq,
 } from '../interfaces/protoc/proto/requestService';
 import { logger } from '../utils/logger/logger';
+import { ApproverService } from '../approver/approver.service';
+import ProducerService from '../producer/producer.service';
 
 const PROTO_PATH = __dirname.includes('dist')
   ? path.join(__dirname, '../../../proto/requestService.proto')
@@ -74,6 +80,36 @@ export const requestsClient: any = new protoDescriptor.RequestService(
 );
 
 export class RequestsService {
+  static async executeRequestIfNeeded(request: any) {
+    try {
+      const requestType =
+        typeof request.type === typeof ''
+          ? requestTypeFromJSON(request.type)
+          : request.type;
+      const isRequestApprovedRes: any = await RequestsService.isRequestApproved(
+        { id: request.id }
+      );
+      if (isRequestApprovedRes.isRequestApproved) {
+        if (requestType === RequestType.ADD_APPROVER) {
+          await ApproverService.addApprover({
+            entityId: request.additionalParams?.entityId || '',
+            type: request.additionalParams?.type || ApproverType.UNRECOGNIZED,
+            akaUnit: request.additionalParams?.akaUnit || '',
+            displayName: request.additionalParams?.displayName || '',
+            domainUsers: request.additionalParams?.domainUsers || [],
+            directGroup: request.additionalParams?.directGroup || '',
+            identityCard: request.additionalParams?.identityCard || '',
+            personalNumber: request.additionalParams?.personalNumber || '',
+          });
+        } else {
+          await ProducerService.executeRequest(request.id);
+        }
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
   static async getRequestById(getRequestByIdReq: GetRequestByIdReq) {
     logger.info(`Call to getRequestById in GTW`, getRequestByIdReq);
 
@@ -137,7 +173,7 @@ export class RequestsService {
     return new Promise((resolve, reject) => {
       requestsClient.GetRequestBySerialNumber(
         getRequestBySerialNumberReq,
-        (err: any, response: RequestArray) => {
+        (err: any, response: any) => {
           if (err) {
             logger.error(`getRequestBySerialNumber ERROR in GTW`, {
               err,
@@ -529,7 +565,7 @@ export class RequestsService {
     });
   }
 
-  static async createEntityRequest(createEntityReq: CreateNewApproverReq) {
+  static async createEntityRequest(createEntityReq: CreateEntityReq) {
     logger.info(`Call to createEntityRequest in GTW`, createEntityReq);
 
     return new Promise((resolve, reject) => {

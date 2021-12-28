@@ -3,6 +3,7 @@ protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./protocO
 cp -r ./protocOutput/* ../execution-script/src/interfaces/protoc/proto
 cp -r ./protocOutput/* ../whiteListSync-script/src/interfaces/protoc/proto
 cp -r ./protocOutput/* ../population-script/src/interfaces/protoc/proto
+cp -r ./protocOutput/* ../approvers-init-script/src/interfaces/protoc/proto
 
 cp -r ./protocOutput/* ../kartoffel-consumer/src/interfaces/protoc/proto
 

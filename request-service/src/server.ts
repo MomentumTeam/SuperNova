@@ -26,6 +26,7 @@ import {
   pushError,
   getRequestsUnderBulk,
   transferRequestToApprovers,
+  areAllSubRequestsFinished,
 } from './requests/request.controller';
 import { RequestType } from './interfaces/protoc/proto/requestService';
 import { findPath } from './utils/path';
@@ -114,6 +115,7 @@ export class Server {
         SyncBulkRequest: syncBulkRequest,
         PushError: pushError,
         GetRequestsUnderBulk: getRequestsUnderBulk,
+        AreAllSubRequestsFinished: areAllSubRequestsFinished,
       });
       logger.info(`Grpc services were successfully added to the server`);
     } catch (error: any) {

@@ -202,6 +202,7 @@ const createRoleKartoffelParamsObj = Joi.object({
   roleId: Joi.string(), //T154514... generated automatically by tea-service if not given
   clearance: Joi.string().required(), //clearance of the role
   akaUnit: Joi.string(),
+  hierarchy: Joi.string().required(),
 
   //forDigitalIdentity
   type: Joi.string().required(), //always domainUser
@@ -242,6 +243,10 @@ export const createRoleSchema = Joi.object({
 const assignRoleToEntityKartoffelParamsObj = Joi.object({
   id: Joi.string().required(),
   uniqueId: Joi.string().required(),
+  roleId: Joi.string().required(),
+  needDisconnect: Joi.boolean().required(),
+  hierarchy: Joi.string().required(),
+  directGroup: Joi.string().required()
 });
 
 const assignRoleToEntityADParamsObj = Joi.object({
@@ -280,6 +285,7 @@ const createOGKartoffelParamsObj = Joi.object({
   name: Joi.string().required(),
   parent: Joi.string().required(),
   source: Joi.string().required(),
+  hierarchy: Joi.string().required(),
 });
 
 const createOGADParamsObj = Joi.object({
@@ -350,9 +356,9 @@ const createEntityKartoffelParamsObj = Joi.object({
   mobilePhone: Joi.array().items(Joi.string()),
   address: Joi.string(),
   clearance: Joi.string().required(),
-  sex: Joi.string().required(),
+  sex: Joi.string(),
   birthdate: Joi.number().unsafe(),
-  entityType: Joi.string(),
+  entityType: Joi.string().required(),
 });
 const createEntityADParamsObj = Joi.object({
   //NO PARAMETERS NEEDED
@@ -490,13 +496,16 @@ export const editEntitySchema = Joi.object({
 const changeRoleHierarchyKartoffelParamsObj = Joi.object({
   roleId: Joi.string().required(),
   directGroup: Joi.string().required(),
-  jobTitle: Joi.string(),
+  currentJobTitle: Joi.string().required(),
+  newJobTitle: Joi.string(),
+  hierarchy: Joi.string().required(),
+  oldHierarchy: Joi.string().required()
 });
 
 const changeRoleHierarchyADParamsObj = Joi.object({
   samAccountName: Joi.string(),
   ouDisplayName: Joi.string(), // the new one
-  jobTitle: Joi.string(),
+  newJobTitle: Joi.string(),
 });
 
 export const changeRoleHierarchyReqSchema = Joi.object({

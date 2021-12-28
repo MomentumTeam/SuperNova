@@ -20,16 +20,11 @@ const entitiesManager: EntitiesManager = new EntitiesManager(
   kartoffelFaker
 );
 
-export async function getPictureByEntityId(
-  call: any,
-  callback: any
-): Promise<void> {
+export async function getPictureByEntityIdentifier(call: any, callback: any): Promise<void> {
   try {
-    logger.info(`Call to getPictureByEntityId`, { callRequest: call.request });
-    const image: Image = await entitiesManager.getPictureByEntityId(
-      call.request
-    );
-    logger.info(`getPictureByEntityId OK`, {
+    logger.info(`Call to getPictureByEntityIdentifier`, { callRequest: call.request });
+    const image: Image = await entitiesManager.getPictureByEntityIdentifier(call.request);
+    logger.info(`getPictureByEntityIdentifier OK`, {
       callRequest: call.request,
       response: image,
     });
@@ -38,7 +33,7 @@ export async function getPictureByEntityId(
     const code = getStatusCode(error);
     const message = getErrorMessage(error);
 
-    logger.error(`getPictureByEntityId ERROR`, {
+    logger.error(`getPictureByEntityIdentifier ERROR`, {
       callRequest: call.request,
       error: { message },
     });

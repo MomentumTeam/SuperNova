@@ -1223,6 +1223,7 @@ export interface CreateRoleBulkRes {
 export interface CreateRoleBulkKartoffelParams {
   /** The same for all the rows */
   directGroup: string;
+  hierarchy: string;
 }
 
 export interface CreateRoleBulkADParams {
@@ -1276,10 +1277,15 @@ export interface ChangeRoleHierarchyBulkRes {
 
 export interface ChangeRoleHierarchyBulkKartoffelParams {
   directGroup: string;
+  oldHierarchy: string;
+  hierarchy: string;
 }
 
 export interface ChangeRoleHierarchyBulkADParams {
+  samAccountName?: string | undefined;
+  /** the new one */
   ouDisplayName?: string | undefined;
+  newJobTitle?: string | undefined;
 }
 
 /** 1.CreateRoleRequest */
@@ -1303,6 +1309,7 @@ export interface CreateRoleKartoffelParams {
   /** true, if the role is unoccupied */
   isRoleAttachable: boolean;
   roleEntityType?: string | undefined;
+  hierarchy: string;
 }
 
 export interface CreateRoleADParams {
@@ -1319,6 +1326,7 @@ export interface CreateOGKartoffelParams {
   name: string;
   parent: string;
   source: string;
+  hierarchy: string;
 }
 
 export interface CreateOGADParams {
@@ -1332,14 +1340,14 @@ export interface CreateEntityKartoffelParams {
   firstName: string;
   lastName: string;
   identityCard: string;
-  personalNumber: string;
-  serviceType: string;
+  personalNumber?: string | undefined;
+  serviceType?: string | undefined;
   phone: string[];
   mobilePhone: string[];
-  address: string;
+  address?: string | undefined;
   clearance: string;
-  sex: string;
-  birthdate: number;
+  sex?: string | undefined;
+  birthdate?: number | undefined;
   entityType: string;
 }
 
@@ -1440,6 +1448,9 @@ export interface AssignRoleToEntityKartoffelParams {
   id: string;
   uniqueId: string;
   needDisconnect: boolean;
+  roleId: string;
+  hierarchy: string;
+  directGroup: string;
 }
 
 export interface AssignRoleToEntityADParams {
@@ -1469,6 +1480,8 @@ export interface ChangeRoleHierarchyKartoffelParams {
   directGroup: string;
   currentJobTitle: string;
   newJobTitle?: string | undefined;
+  hierarchy: string;
+  oldHierarchy: string;
 }
 
 export interface ChangeRoleHierarchyADParams {
@@ -1620,6 +1633,14 @@ export interface GetRequestsUnderBulkReq {
   id: string;
 }
 
+export interface AreAllSubRequestsFinishedReq {
+  id: string;
+}
+
+export interface AreAllSubRequestsFinishedRes {
+  areAllSubRequestsFinished: boolean;
+}
+
 /** ---------------------------------------------Other Objects------------------------------------------------------------ */
 export interface RequestIdArray {
   requestIds: string[];
@@ -1722,7 +1743,25 @@ export interface KartoffelParams {
    * RenameRole
    * ?
    */
-  oldJobTitle: string;
+  oldJobTitle?: string | undefined;
+  hierarchy?: string | undefined;
+  /**
+   * EditEntity
+   * string firstName = 25;
+   * string lastName = 26;
+   * string identityCard = 27;
+   * string personalNumber = 28;
+   * string serviceType = 29;
+   * repeated string phone = 30;
+   * repeated string mobilePhone = 31;
+   * string address = 32;
+   * string clearance = 33;
+   * string sex = 34;
+   * int64 birthdate = 35;
+   * string entityType = 36;
+   * string id =
+   */
+  oldHierarchy?: string | undefined;
 }
 
 export interface ADParams {
@@ -17153,7 +17192,10 @@ export const CreateRoleBulkRes = {
   },
 };
 
-const baseCreateRoleBulkKartoffelParams: object = { directGroup: "" };
+const baseCreateRoleBulkKartoffelParams: object = {
+  directGroup: "",
+  hierarchy: "",
+};
 
 export const CreateRoleBulkKartoffelParams = {
   encode(
@@ -17162,6 +17204,9 @@ export const CreateRoleBulkKartoffelParams = {
   ): _m0.Writer {
     if (message.directGroup !== "") {
       writer.uint32(10).string(message.directGroup);
+    }
+    if (message.hierarchy !== "") {
+      writer.uint32(18).string(message.hierarchy);
     }
     return writer;
   },
@@ -17181,6 +17226,9 @@ export const CreateRoleBulkKartoffelParams = {
         case 1:
           message.directGroup = reader.string();
           break;
+        case 2:
+          message.hierarchy = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -17198,6 +17246,11 @@ export const CreateRoleBulkKartoffelParams = {
     } else {
       message.directGroup = "";
     }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = String(object.hierarchy);
+    } else {
+      message.hierarchy = "";
+    }
     return message;
   },
 
@@ -17205,6 +17258,7 @@ export const CreateRoleBulkKartoffelParams = {
     const obj: any = {};
     message.directGroup !== undefined &&
       (obj.directGroup = message.directGroup);
+    message.hierarchy !== undefined && (obj.hierarchy = message.hierarchy);
     return obj;
   },
 
@@ -17218,6 +17272,11 @@ export const CreateRoleBulkKartoffelParams = {
       message.directGroup = object.directGroup;
     } else {
       message.directGroup = "";
+    }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = object.hierarchy;
+    } else {
+      message.hierarchy = "";
     }
     return message;
   },
@@ -18386,7 +18445,11 @@ export const ChangeRoleHierarchyBulkRes = {
   },
 };
 
-const baseChangeRoleHierarchyBulkKartoffelParams: object = { directGroup: "" };
+const baseChangeRoleHierarchyBulkKartoffelParams: object = {
+  directGroup: "",
+  oldHierarchy: "",
+  hierarchy: "",
+};
 
 export const ChangeRoleHierarchyBulkKartoffelParams = {
   encode(
@@ -18395,6 +18458,12 @@ export const ChangeRoleHierarchyBulkKartoffelParams = {
   ): _m0.Writer {
     if (message.directGroup !== "") {
       writer.uint32(10).string(message.directGroup);
+    }
+    if (message.oldHierarchy !== "") {
+      writer.uint32(18).string(message.oldHierarchy);
+    }
+    if (message.hierarchy !== "") {
+      writer.uint32(26).string(message.hierarchy);
     }
     return writer;
   },
@@ -18414,6 +18483,12 @@ export const ChangeRoleHierarchyBulkKartoffelParams = {
         case 1:
           message.directGroup = reader.string();
           break;
+        case 2:
+          message.oldHierarchy = reader.string();
+          break;
+        case 3:
+          message.hierarchy = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -18431,6 +18506,16 @@ export const ChangeRoleHierarchyBulkKartoffelParams = {
     } else {
       message.directGroup = "";
     }
+    if (object.oldHierarchy !== undefined && object.oldHierarchy !== null) {
+      message.oldHierarchy = String(object.oldHierarchy);
+    } else {
+      message.oldHierarchy = "";
+    }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = String(object.hierarchy);
+    } else {
+      message.hierarchy = "";
+    }
     return message;
   },
 
@@ -18438,6 +18523,9 @@ export const ChangeRoleHierarchyBulkKartoffelParams = {
     const obj: any = {};
     message.directGroup !== undefined &&
       (obj.directGroup = message.directGroup);
+    message.oldHierarchy !== undefined &&
+      (obj.oldHierarchy = message.oldHierarchy);
+    message.hierarchy !== undefined && (obj.hierarchy = message.hierarchy);
     return obj;
   },
 
@@ -18452,6 +18540,16 @@ export const ChangeRoleHierarchyBulkKartoffelParams = {
     } else {
       message.directGroup = "";
     }
+    if (object.oldHierarchy !== undefined && object.oldHierarchy !== null) {
+      message.oldHierarchy = object.oldHierarchy;
+    } else {
+      message.oldHierarchy = "";
+    }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = object.hierarchy;
+    } else {
+      message.hierarchy = "";
+    }
     return message;
   },
 };
@@ -18463,8 +18561,14 @@ export const ChangeRoleHierarchyBulkADParams = {
     message: ChangeRoleHierarchyBulkADParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
+    if (message.samAccountName !== undefined) {
+      writer.uint32(10).string(message.samAccountName);
+    }
     if (message.ouDisplayName !== undefined) {
-      writer.uint32(10).string(message.ouDisplayName);
+      writer.uint32(18).string(message.ouDisplayName);
+    }
+    if (message.newJobTitle !== undefined) {
+      writer.uint32(26).string(message.newJobTitle);
     }
     return writer;
   },
@@ -18482,7 +18586,13 @@ export const ChangeRoleHierarchyBulkADParams = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          message.samAccountName = reader.string();
+          break;
+        case 2:
           message.ouDisplayName = reader.string();
+          break;
+        case 3:
+          message.newJobTitle = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -18496,18 +18606,32 @@ export const ChangeRoleHierarchyBulkADParams = {
     const message = {
       ...baseChangeRoleHierarchyBulkADParams,
     } as ChangeRoleHierarchyBulkADParams;
+    if (object.samAccountName !== undefined && object.samAccountName !== null) {
+      message.samAccountName = String(object.samAccountName);
+    } else {
+      message.samAccountName = undefined;
+    }
     if (object.ouDisplayName !== undefined && object.ouDisplayName !== null) {
       message.ouDisplayName = String(object.ouDisplayName);
     } else {
       message.ouDisplayName = undefined;
+    }
+    if (object.newJobTitle !== undefined && object.newJobTitle !== null) {
+      message.newJobTitle = String(object.newJobTitle);
+    } else {
+      message.newJobTitle = undefined;
     }
     return message;
   },
 
   toJSON(message: ChangeRoleHierarchyBulkADParams): unknown {
     const obj: any = {};
+    message.samAccountName !== undefined &&
+      (obj.samAccountName = message.samAccountName);
     message.ouDisplayName !== undefined &&
       (obj.ouDisplayName = message.ouDisplayName);
+    message.newJobTitle !== undefined &&
+      (obj.newJobTitle = message.newJobTitle);
     return obj;
   },
 
@@ -18517,10 +18641,20 @@ export const ChangeRoleHierarchyBulkADParams = {
     const message = {
       ...baseChangeRoleHierarchyBulkADParams,
     } as ChangeRoleHierarchyBulkADParams;
+    if (object.samAccountName !== undefined && object.samAccountName !== null) {
+      message.samAccountName = object.samAccountName;
+    } else {
+      message.samAccountName = undefined;
+    }
     if (object.ouDisplayName !== undefined && object.ouDisplayName !== null) {
       message.ouDisplayName = object.ouDisplayName;
     } else {
       message.ouDisplayName = undefined;
+    }
+    if (object.newJobTitle !== undefined && object.newJobTitle !== null) {
+      message.newJobTitle = object.newJobTitle;
+    } else {
+      message.newJobTitle = undefined;
     }
     return message;
   },
@@ -18533,6 +18667,7 @@ const baseCreateRoleKartoffelParams: object = {
   type: "",
   source: "",
   isRoleAttachable: false,
+  hierarchy: "",
 };
 
 export const CreateRoleKartoffelParams = {
@@ -18569,6 +18704,9 @@ export const CreateRoleKartoffelParams = {
     }
     if (message.roleEntityType !== undefined) {
       writer.uint32(82).string(message.roleEntityType);
+    }
+    if (message.hierarchy !== "") {
+      writer.uint32(90).string(message.hierarchy);
     }
     return writer;
   },
@@ -18614,6 +18752,9 @@ export const CreateRoleKartoffelParams = {
           break;
         case 10:
           message.roleEntityType = reader.string();
+          break;
+        case 11:
+          message.hierarchy = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -18680,6 +18821,11 @@ export const CreateRoleKartoffelParams = {
     } else {
       message.roleEntityType = undefined;
     }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = String(object.hierarchy);
+    } else {
+      message.hierarchy = "";
+    }
     return message;
   },
 
@@ -18698,6 +18844,7 @@ export const CreateRoleKartoffelParams = {
       (obj.isRoleAttachable = message.isRoleAttachable);
     message.roleEntityType !== undefined &&
       (obj.roleEntityType = message.roleEntityType);
+    message.hierarchy !== undefined && (obj.hierarchy = message.hierarchy);
     return obj;
   },
 
@@ -18759,6 +18906,11 @@ export const CreateRoleKartoffelParams = {
       message.roleEntityType = object.roleEntityType;
     } else {
       message.roleEntityType = undefined;
+    }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = object.hierarchy;
+    } else {
+      message.hierarchy = "";
     }
     return message;
   },
@@ -18862,6 +19014,7 @@ const baseCreateOGKartoffelParams: object = {
   name: "",
   parent: "",
   source: "",
+  hierarchy: "",
 };
 
 export const CreateOGKartoffelParams = {
@@ -18877,6 +19030,9 @@ export const CreateOGKartoffelParams = {
     }
     if (message.source !== "") {
       writer.uint32(26).string(message.source);
+    }
+    if (message.hierarchy !== "") {
+      writer.uint32(34).string(message.hierarchy);
     }
     return writer;
   },
@@ -18901,6 +19057,9 @@ export const CreateOGKartoffelParams = {
           break;
         case 3:
           message.source = reader.string();
+          break;
+        case 4:
+          message.hierarchy = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -18929,6 +19088,11 @@ export const CreateOGKartoffelParams = {
     } else {
       message.source = "";
     }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = String(object.hierarchy);
+    } else {
+      message.hierarchy = "";
+    }
     return message;
   },
 
@@ -18937,6 +19101,7 @@ export const CreateOGKartoffelParams = {
     message.name !== undefined && (obj.name = message.name);
     message.parent !== undefined && (obj.parent = message.parent);
     message.source !== undefined && (obj.source = message.source);
+    message.hierarchy !== undefined && (obj.hierarchy = message.hierarchy);
     return obj;
   },
 
@@ -18960,6 +19125,11 @@ export const CreateOGKartoffelParams = {
       message.source = object.source;
     } else {
       message.source = "";
+    }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = object.hierarchy;
+    } else {
+      message.hierarchy = "";
     }
     return message;
   },
@@ -19066,14 +19236,9 @@ const baseCreateEntityKartoffelParams: object = {
   firstName: "",
   lastName: "",
   identityCard: "",
-  personalNumber: "",
-  serviceType: "",
   phone: "",
   mobilePhone: "",
-  address: "",
   clearance: "",
-  sex: "",
-  birthdate: 0,
   entityType: "",
 };
 
@@ -19091,10 +19256,10 @@ export const CreateEntityKartoffelParams = {
     if (message.identityCard !== "") {
       writer.uint32(26).string(message.identityCard);
     }
-    if (message.personalNumber !== "") {
+    if (message.personalNumber !== undefined) {
       writer.uint32(34).string(message.personalNumber);
     }
-    if (message.serviceType !== "") {
+    if (message.serviceType !== undefined) {
       writer.uint32(42).string(message.serviceType);
     }
     for (const v of message.phone) {
@@ -19103,16 +19268,16 @@ export const CreateEntityKartoffelParams = {
     for (const v of message.mobilePhone) {
       writer.uint32(58).string(v!);
     }
-    if (message.address !== "") {
+    if (message.address !== undefined) {
       writer.uint32(66).string(message.address);
     }
     if (message.clearance !== "") {
       writer.uint32(74).string(message.clearance);
     }
-    if (message.sex !== "") {
+    if (message.sex !== undefined) {
       writer.uint32(82).string(message.sex);
     }
-    if (message.birthdate !== 0) {
+    if (message.birthdate !== undefined) {
       writer.uint32(88).int64(message.birthdate);
     }
     if (message.entityType !== "") {
@@ -19203,12 +19368,12 @@ export const CreateEntityKartoffelParams = {
     if (object.personalNumber !== undefined && object.personalNumber !== null) {
       message.personalNumber = String(object.personalNumber);
     } else {
-      message.personalNumber = "";
+      message.personalNumber = undefined;
     }
     if (object.serviceType !== undefined && object.serviceType !== null) {
       message.serviceType = String(object.serviceType);
     } else {
-      message.serviceType = "";
+      message.serviceType = undefined;
     }
     if (object.phone !== undefined && object.phone !== null) {
       for (const e of object.phone) {
@@ -19223,7 +19388,7 @@ export const CreateEntityKartoffelParams = {
     if (object.address !== undefined && object.address !== null) {
       message.address = String(object.address);
     } else {
-      message.address = "";
+      message.address = undefined;
     }
     if (object.clearance !== undefined && object.clearance !== null) {
       message.clearance = String(object.clearance);
@@ -19233,12 +19398,12 @@ export const CreateEntityKartoffelParams = {
     if (object.sex !== undefined && object.sex !== null) {
       message.sex = String(object.sex);
     } else {
-      message.sex = "";
+      message.sex = undefined;
     }
     if (object.birthdate !== undefined && object.birthdate !== null) {
       message.birthdate = Number(object.birthdate);
     } else {
-      message.birthdate = 0;
+      message.birthdate = undefined;
     }
     if (object.entityType !== undefined && object.entityType !== null) {
       message.entityType = String(object.entityType);
@@ -19302,12 +19467,12 @@ export const CreateEntityKartoffelParams = {
     if (object.personalNumber !== undefined && object.personalNumber !== null) {
       message.personalNumber = object.personalNumber;
     } else {
-      message.personalNumber = "";
+      message.personalNumber = undefined;
     }
     if (object.serviceType !== undefined && object.serviceType !== null) {
       message.serviceType = object.serviceType;
     } else {
-      message.serviceType = "";
+      message.serviceType = undefined;
     }
     if (object.phone !== undefined && object.phone !== null) {
       for (const e of object.phone) {
@@ -19322,7 +19487,7 @@ export const CreateEntityKartoffelParams = {
     if (object.address !== undefined && object.address !== null) {
       message.address = object.address;
     } else {
-      message.address = "";
+      message.address = undefined;
     }
     if (object.clearance !== undefined && object.clearance !== null) {
       message.clearance = object.clearance;
@@ -19332,12 +19497,12 @@ export const CreateEntityKartoffelParams = {
     if (object.sex !== undefined && object.sex !== null) {
       message.sex = object.sex;
     } else {
-      message.sex = "";
+      message.sex = undefined;
     }
     if (object.birthdate !== undefined && object.birthdate !== null) {
       message.birthdate = object.birthdate;
     } else {
-      message.birthdate = 0;
+      message.birthdate = undefined;
     }
     if (object.entityType !== undefined && object.entityType !== null) {
       message.entityType = object.entityType;
@@ -20792,6 +20957,9 @@ const baseAssignRoleToEntityKartoffelParams: object = {
   id: "",
   uniqueId: "",
   needDisconnect: false,
+  roleId: "",
+  hierarchy: "",
+  directGroup: "",
 };
 
 export const AssignRoleToEntityKartoffelParams = {
@@ -20807,6 +20975,15 @@ export const AssignRoleToEntityKartoffelParams = {
     }
     if (message.needDisconnect === true) {
       writer.uint32(24).bool(message.needDisconnect);
+    }
+    if (message.roleId !== "") {
+      writer.uint32(34).string(message.roleId);
+    }
+    if (message.hierarchy !== "") {
+      writer.uint32(42).string(message.hierarchy);
+    }
+    if (message.directGroup !== "") {
+      writer.uint32(50).string(message.directGroup);
     }
     return writer;
   },
@@ -20831,6 +21008,15 @@ export const AssignRoleToEntityKartoffelParams = {
           break;
         case 3:
           message.needDisconnect = reader.bool();
+          break;
+        case 4:
+          message.roleId = reader.string();
+          break;
+        case 5:
+          message.hierarchy = reader.string();
+          break;
+        case 6:
+          message.directGroup = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -20859,6 +21045,21 @@ export const AssignRoleToEntityKartoffelParams = {
     } else {
       message.needDisconnect = false;
     }
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = String(object.roleId);
+    } else {
+      message.roleId = "";
+    }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = String(object.hierarchy);
+    } else {
+      message.hierarchy = "";
+    }
+    if (object.directGroup !== undefined && object.directGroup !== null) {
+      message.directGroup = String(object.directGroup);
+    } else {
+      message.directGroup = "";
+    }
     return message;
   },
 
@@ -20868,6 +21069,10 @@ export const AssignRoleToEntityKartoffelParams = {
     message.uniqueId !== undefined && (obj.uniqueId = message.uniqueId);
     message.needDisconnect !== undefined &&
       (obj.needDisconnect = message.needDisconnect);
+    message.roleId !== undefined && (obj.roleId = message.roleId);
+    message.hierarchy !== undefined && (obj.hierarchy = message.hierarchy);
+    message.directGroup !== undefined &&
+      (obj.directGroup = message.directGroup);
     return obj;
   },
 
@@ -20891,6 +21096,21 @@ export const AssignRoleToEntityKartoffelParams = {
       message.needDisconnect = object.needDisconnect;
     } else {
       message.needDisconnect = false;
+    }
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = object.roleId;
+    } else {
+      message.roleId = "";
+    }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = object.hierarchy;
+    } else {
+      message.hierarchy = "";
+    }
+    if (object.directGroup !== undefined && object.directGroup !== null) {
+      message.directGroup = object.directGroup;
+    } else {
+      message.directGroup = "";
     }
     return message;
   },
@@ -21269,6 +21489,8 @@ const baseChangeRoleHierarchyKartoffelParams: object = {
   roleId: "",
   directGroup: "",
   currentJobTitle: "",
+  hierarchy: "",
+  oldHierarchy: "",
 };
 
 export const ChangeRoleHierarchyKartoffelParams = {
@@ -21287,6 +21509,12 @@ export const ChangeRoleHierarchyKartoffelParams = {
     }
     if (message.newJobTitle !== undefined) {
       writer.uint32(34).string(message.newJobTitle);
+    }
+    if (message.hierarchy !== "") {
+      writer.uint32(42).string(message.hierarchy);
+    }
+    if (message.oldHierarchy !== "") {
+      writer.uint32(50).string(message.oldHierarchy);
     }
     return writer;
   },
@@ -21314,6 +21542,12 @@ export const ChangeRoleHierarchyKartoffelParams = {
           break;
         case 4:
           message.newJobTitle = reader.string();
+          break;
+        case 5:
+          message.hierarchy = reader.string();
+          break;
+        case 6:
+          message.oldHierarchy = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -21350,6 +21584,16 @@ export const ChangeRoleHierarchyKartoffelParams = {
     } else {
       message.newJobTitle = undefined;
     }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = String(object.hierarchy);
+    } else {
+      message.hierarchy = "";
+    }
+    if (object.oldHierarchy !== undefined && object.oldHierarchy !== null) {
+      message.oldHierarchy = String(object.oldHierarchy);
+    } else {
+      message.oldHierarchy = "";
+    }
     return message;
   },
 
@@ -21362,6 +21606,9 @@ export const ChangeRoleHierarchyKartoffelParams = {
       (obj.currentJobTitle = message.currentJobTitle);
     message.newJobTitle !== undefined &&
       (obj.newJobTitle = message.newJobTitle);
+    message.hierarchy !== undefined && (obj.hierarchy = message.hierarchy);
+    message.oldHierarchy !== undefined &&
+      (obj.oldHierarchy = message.oldHierarchy);
     return obj;
   },
 
@@ -21393,6 +21640,16 @@ export const ChangeRoleHierarchyKartoffelParams = {
       message.newJobTitle = object.newJobTitle;
     } else {
       message.newJobTitle = undefined;
+    }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = object.hierarchy;
+    } else {
+      message.hierarchy = "";
+    }
+    if (object.oldHierarchy !== undefined && object.oldHierarchy !== null) {
+      message.oldHierarchy = object.oldHierarchy;
+    } else {
+      message.oldHierarchy = "";
     }
     return message;
   },
@@ -23881,6 +24138,155 @@ export const GetRequestsUnderBulkReq = {
   },
 };
 
+const baseAreAllSubRequestsFinishedReq: object = { id: "" };
+
+export const AreAllSubRequestsFinishedReq = {
+  encode(
+    message: AreAllSubRequestsFinishedReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): AreAllSubRequestsFinishedReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseAreAllSubRequestsFinishedReq,
+    } as AreAllSubRequestsFinishedReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): AreAllSubRequestsFinishedReq {
+    const message = {
+      ...baseAreAllSubRequestsFinishedReq,
+    } as AreAllSubRequestsFinishedReq;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+
+  toJSON(message: AreAllSubRequestsFinishedReq): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<AreAllSubRequestsFinishedReq>
+  ): AreAllSubRequestsFinishedReq {
+    const message = {
+      ...baseAreAllSubRequestsFinishedReq,
+    } as AreAllSubRequestsFinishedReq;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+};
+
+const baseAreAllSubRequestsFinishedRes: object = {
+  areAllSubRequestsFinished: false,
+};
+
+export const AreAllSubRequestsFinishedRes = {
+  encode(
+    message: AreAllSubRequestsFinishedRes,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.areAllSubRequestsFinished === true) {
+      writer.uint32(8).bool(message.areAllSubRequestsFinished);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): AreAllSubRequestsFinishedRes {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseAreAllSubRequestsFinishedRes,
+    } as AreAllSubRequestsFinishedRes;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.areAllSubRequestsFinished = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): AreAllSubRequestsFinishedRes {
+    const message = {
+      ...baseAreAllSubRequestsFinishedRes,
+    } as AreAllSubRequestsFinishedRes;
+    if (
+      object.areAllSubRequestsFinished !== undefined &&
+      object.areAllSubRequestsFinished !== null
+    ) {
+      message.areAllSubRequestsFinished = Boolean(
+        object.areAllSubRequestsFinished
+      );
+    } else {
+      message.areAllSubRequestsFinished = false;
+    }
+    return message;
+  },
+
+  toJSON(message: AreAllSubRequestsFinishedRes): unknown {
+    const obj: any = {};
+    message.areAllSubRequestsFinished !== undefined &&
+      (obj.areAllSubRequestsFinished = message.areAllSubRequestsFinished);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<AreAllSubRequestsFinishedRes>
+  ): AreAllSubRequestsFinishedRes {
+    const message = {
+      ...baseAreAllSubRequestsFinishedRes,
+    } as AreAllSubRequestsFinishedRes;
+    if (
+      object.areAllSubRequestsFinished !== undefined &&
+      object.areAllSubRequestsFinished !== null
+    ) {
+      message.areAllSubRequestsFinished = object.areAllSubRequestsFinished;
+    } else {
+      message.areAllSubRequestsFinished = false;
+    }
+    return message;
+  },
+};
+
 const baseRequestIdArray: object = { requestIds: "", count: 0 };
 
 export const RequestIdArray = {
@@ -24886,7 +25292,6 @@ const baseKartoffelParams: object = {
   needDisconnect: false,
   phone: "",
   mobilePhone: "",
-  oldJobTitle: "",
 };
 
 export const KartoffelParams = {
@@ -24975,8 +25380,14 @@ export const KartoffelParams = {
     if (message.newJobTitle !== undefined) {
       writer.uint32(218).string(message.newJobTitle);
     }
-    if (message.oldJobTitle !== "") {
+    if (message.oldJobTitle !== undefined) {
       writer.uint32(226).string(message.oldJobTitle);
+    }
+    if (message.hierarchy !== undefined) {
+      writer.uint32(234).string(message.hierarchy);
+    }
+    if (message.oldHierarchy !== undefined) {
+      writer.uint32(242).string(message.oldHierarchy);
     }
     return writer;
   },
@@ -25073,6 +25484,12 @@ export const KartoffelParams = {
           break;
         case 28:
           message.oldJobTitle = reader.string();
+          break;
+        case 29:
+          message.hierarchy = reader.string();
+          break;
+        case 30:
+          message.oldHierarchy = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -25230,7 +25647,17 @@ export const KartoffelParams = {
     if (object.oldJobTitle !== undefined && object.oldJobTitle !== null) {
       message.oldJobTitle = String(object.oldJobTitle);
     } else {
-      message.oldJobTitle = "";
+      message.oldJobTitle = undefined;
+    }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = String(object.hierarchy);
+    } else {
+      message.hierarchy = undefined;
+    }
+    if (object.oldHierarchy !== undefined && object.oldHierarchy !== null) {
+      message.oldHierarchy = String(object.oldHierarchy);
+    } else {
+      message.oldHierarchy = undefined;
     }
     return message;
   },
@@ -25283,6 +25710,9 @@ export const KartoffelParams = {
       (obj.newJobTitle = message.newJobTitle);
     message.oldJobTitle !== undefined &&
       (obj.oldJobTitle = message.oldJobTitle);
+    message.hierarchy !== undefined && (obj.hierarchy = message.hierarchy);
+    message.oldHierarchy !== undefined &&
+      (obj.oldHierarchy = message.oldHierarchy);
     return obj;
   },
 
@@ -25434,7 +25864,17 @@ export const KartoffelParams = {
     if (object.oldJobTitle !== undefined && object.oldJobTitle !== null) {
       message.oldJobTitle = object.oldJobTitle;
     } else {
-      message.oldJobTitle = "";
+      message.oldJobTitle = undefined;
+    }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = object.hierarchy;
+    } else {
+      message.hierarchy = undefined;
+    }
+    if (object.oldHierarchy !== undefined && object.oldHierarchy !== null) {
+      message.oldHierarchy = object.oldHierarchy;
+    } else {
+      message.oldHierarchy = undefined;
     }
     return message;
   },
@@ -27215,6 +27655,9 @@ export interface RequestService {
   ): Promise<RequestIdArray>;
   PushError(request: PushErrorReq): Promise<Request>;
   SyncBulkRequest(request: SyncBulkRequestReq): Promise<Request>;
+  AreAllSubRequestsFinished(
+    request: AreAllSubRequestsFinishedReq
+  ): Promise<AreAllSubRequestsFinishedRes>;
   GetRequestsByPerson(
     request: GetRequestsByPersonReq
   ): Promise<GetRequestsByPersonRes>;
@@ -27268,6 +27711,7 @@ export class RequestServiceClientImpl implements RequestService {
       this.GetRequestIdsInProgressByDue.bind(this);
     this.PushError = this.PushError.bind(this);
     this.SyncBulkRequest = this.SyncBulkRequest.bind(this);
+    this.AreAllSubRequestsFinished = this.AreAllSubRequestsFinished.bind(this);
     this.GetRequestsByPerson = this.GetRequestsByPerson.bind(this);
     this.TransferRequestToApprovers =
       this.TransferRequestToApprovers.bind(this);
@@ -27662,6 +28106,20 @@ export class RequestServiceClientImpl implements RequestService {
       data
     );
     return promise.then((data) => Request.decode(new _m0.Reader(data)));
+  }
+
+  AreAllSubRequestsFinished(
+    request: AreAllSubRequestsFinishedReq
+  ): Promise<AreAllSubRequestsFinishedRes> {
+    const data = AreAllSubRequestsFinishedReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "AreAllSubRequestsFinished",
+      data
+    );
+    return promise.then((data) =>
+      AreAllSubRequestsFinishedRes.decode(new _m0.Reader(data))
+    );
   }
 
   GetRequestsByPerson(

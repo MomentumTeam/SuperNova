@@ -20,7 +20,7 @@ import {
   GetOGByHierarchyNameRequest,
   GetOGByIdRequest,
   GetOGTreeRequest,
-  GetPictureByEntityIdRequest,
+  GetPictureByEntityIdentifierRequest,
   GetRoleByRoleIdRequest,
   GetRolesByHierarchyRequest,
   GetRolesUnderOGRequest,
@@ -93,30 +93,28 @@ export class KartoffelService {
       );
     });
   }
-  static async getPictureByEntityId(
-    getPictureByEntityIdReq: GetPictureByEntityIdRequest
+  static async getPictureByEntityIdentifier(
+    getPictureByEntityIdentifierReq: GetPictureByEntityIdentifierRequest
+
   ) {
-    logger.info(`Call to getPictureByEntityId in GTW`, getPictureByEntityIdReq);
+    logger.info(`Call to getPictureByEntityIdentifier in GTW`, getPictureByEntityIdentifierReq);
 
     return new Promise((resolve, reject) => {
-      kartoffelClient.GetPictureByEntityId(
-        getPictureByEntityIdReq,
-        (err: any, response: Image) => {
-          if (err) {
-            logger.error(`getPictureByEntityId ERROR in GTW`, {
-              err,
-              callRequest: getPictureByEntityIdReq,
-            });
-            reject(err);
-          }
-
-          logger.info(`getPictureByEntityId OK in GTW`, {
-            response: response,
-            callRequest: getPictureByEntityIdReq,
+      kartoffelClient.GetPictureByEntityIdentifier(getPictureByEntityIdentifierReq, (err: any, response: Image) => {
+        if (err) {
+          logger.error(`getPictureByEntityIdentifier ERROR in GTW`, {
+            err,
+            callRequest: getPictureByEntityIdentifierReq,
           });
-          resolve(response);
+          reject(err);
         }
-      );
+
+        logger.info(`getPictureByEntityIdentifier OK in GTW`, {
+          response: response,
+          callRequest: getPictureByEntityIdentifierReq,
+        });
+        resolve(response);
+      });
     });
   }
   static async searchEntitiesByFullName(

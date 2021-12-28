@@ -14,10 +14,13 @@ import ProducerService from './services/producerService';
 import ApproverService from './services/approverService';
 import * as config from './config';
 import {
+  ApproverType,
   Request,
+  RequestStatus,
   RequestType,
   requestTypeFromJSON,
 } from './interfaces/protoc/proto/requestService';
+import { resolveProjectReferencePath } from 'typescript';
 const schedule = require('node-schedule');
 
 async function main() {
@@ -25,10 +28,10 @@ async function main() {
     if (config.cronJob) {
       schedule.scheduleJob(`* */${config.everyHour} * * *`, async function () {
         //run script every x hour
-        execute();
+        await execute();
       });
     } else {
-      execute();
+      await execute();
     }
   } catch (error: any) {
     logger.error(
@@ -49,12 +52,37 @@ async function execute() {
   const promises = requestsArray.requests.map(async (request: any) => {
     return new Promise((resolve, reject) => {
       if (request.type === RequestType.ADD_APPROVER) {
-        ApproverService.addApprover(request.id, request.additionalParams)
+        ApproverService.addApprover(request.id, {
+          entityId: request.additionalParams?.entityId || '',
+          type: request.additionalParams?.type || ApproverType.UNRECOGNIZED,
+          akaUnit: request.additionalParams?.akaUnit || '',
+          displayName: request.additionalParams?.displayName || '',
+          domainUsers: request.additionalParams?.domainUsers || [],
+          directGroup: request.additionalParams?.directGroup || '',
+          identityCard: request.additionalParams?.identityCard || '',
+          personalNumber: request.additionalParams?.personalNumber || '',
+        })
           .then(() => {
-            resolve(true);
+            RequestService.updateRequest(request.id, {
+              status: RequestStatus.DONE,
+            })
+              .then(() => {
+                resolve(true);
+              })
+              .catch((updateError) => {
+                reject(updateError);
+              });
           })
           .catch((error) => {
-            reject(error);
+            RequestService.updateRequest(request.id, {
+              status: RequestStatus.FAILED,
+            })
+              .then(() => {
+                reject(error);
+              })
+              .catch((updateError) => {
+                reject(updateError);
+              });
           });
       } else if (
         request.type === RequestType.CREATE_ROLE_BULK ||
@@ -90,4 +118,4 @@ async function execute() {
     });
 }
 
-main();
+main().then().catch();

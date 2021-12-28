@@ -43,9 +43,9 @@ KartoffelRouter.get(
   KartoffelController.getEntityByDI
 );
 KartoffelRouter.get(
-  '/entities/picture/:id',
-  KartoffelValidator.isGetPictureByEntityIdValid,
-  KartoffelController.getPictureByEntityId
+  '/entities/picture/:identifier',
+  KartoffelValidator.isGetPictureByEntityIdentifierValid,
+  KartoffelController.getPictureByEntityIdentifier
 );
 
 // Groups

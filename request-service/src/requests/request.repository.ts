@@ -43,6 +43,8 @@ import {
   RowError,
   TransferRequestToApproversReq,
   SortOrder,
+  AreAllSubRequestsFinishedReq,
+  AreAllSubRequestsFinishedRes,
 } from '../interfaces/protoc/proto/requestService';
 import { createNotifications } from '../services/notificationHelper';
 import { sendMail } from '../services/mailHelper';
@@ -210,7 +212,7 @@ export class RequestRepository {
         : securityDecision;
     const needSecurityDecision = request.needSecurityDecision;
 
-    return needSecurityDecision && securityDecision === Decision.APPROVED;
+    return securityDecision === Decision.APPROVED;
   }
 
   isRequestApprovedBySuperSecurity(request: Request) {
@@ -390,6 +392,9 @@ export class RequestRepository {
               // NO NEED FOR AD PUSH
               adStatus = StageStatus.STAGE_DONE;
               kartoffelStatus = StageStatus.STAGE_WAITING_FOR_PUSH;
+            } else if (requestType === RequestType.ADD_APPROVER) {
+              adStatus = StageStatus.STAGE_DONE;
+              kartoffelStatus = StageStatus.STAGE_DONE;
             }
             requestProperties['adStatus.status'] = stageStatusToJSON(adStatus);
             requestProperties['kartoffelStatus.status'] =
@@ -832,11 +837,11 @@ export class RequestRepository {
       if (documentAfter) {
         const documentObj = documentAfter.toObject();
         turnObjectIdsToStrings(documentObj);
-        // if bulk
         const requestType: RequestType =
           typeof documentObj.type === typeof ''
             ? requestTypeFromJSON(documentObj.type)
             : documentObj.type;
+        // if bulk
         if (
           (requestType === RequestType.CREATE_ROLE_BULK ||
             requestType === RequestType.CHANGE_ROLE_HIERARCHY_BULK) &&
@@ -848,8 +853,22 @@ export class RequestRepository {
             { bulkRequestId: updateReq.id },
             { $set: requestUpdate }
           );
+        } else if (
+          documentObj.isPartOfBulk &&
+          documentObj.bulkRequestId &&
+          (requestUpdate.kartoffelStatus !== undefined ||
+            requestUpdate.adStatus !== undefined ||
+            requestUpdate['kartoffelStatus.status'] !== undefined ||
+            requestUpdate['adStatus.status'] !== undefined)
+        ) {
+          // Sync bulk request if all sub-requests are finished
+          const bulkRequestId = documentObj.bulkRequestId;
+          const areAllSubRequestsFinishedRes =
+            await this.areAllSubRequestsFinished({ id: bulkRequestId });
+          if (areAllSubRequestsFinishedRes.areAllSubRequestsFinished) {
+            await this.syncBulkRequest({ id: bulkRequestId });
+          }
         }
-
         return documentObj as Request;
       } else {
         throw new Error(`A request with {_id: ${updateReq.id}} was not found!`);
@@ -985,24 +1004,17 @@ export class RequestRepository {
       //   await createNotifications(stageNotificationType, updatedRequest);
       // }
       if (
-        (requestStatus === RequestStatus.DONE ||
-          requestStatus === RequestStatus.FAILED) &&
+        requestStatus === RequestStatus.FAILED &&
         updatedRequest.submittedBy
       ) {
         const notificationType: NotificationType =
-          requestStatus === RequestStatus.DONE
-            ? NotificationType.REQUEST_DONE
-            : NotificationType.REQUEST_FAILED;
-        const mailType: MailType =
-          requestStatus === RequestStatus.DONE
-            ? MailType.REQUEST_DONE
-            : MailType.REQUEST_FAILED;
-
+          NotificationType.REQUEST_FAILED;
+        const mailType: MailType = MailType.REQUEST_FAILED;
         try {
           await createNotifications(notificationType, updatedRequest);
           sendMail(mailType, updatedRequest).then().catch();
         } catch (notificationError: any) {
-          logger.error('Notificatoin error', {
+          logger.error('Notification error', {
             error: { message: notificationError.message },
           });
         }
@@ -1083,7 +1095,9 @@ export class RequestRepository {
         break;
 
       case RequestType.ADD_APPROVER:
-        const approverType = approverTypeFromJSON(request.additionalParams.type);
+        const approverType = approverTypeFromJSON(
+          request.additionalParams.type
+        );
         if (approverType === ApproverType.COMMANDER) {
           request.needSecurityDecision = false;
           request.needSuperSecurityDecision = false;
@@ -1387,6 +1401,43 @@ export class RequestRepository {
     }
   }
 
+  async areAllSubRequestsFinished(
+    areAllSubRequestsFinishedReq: AreAllSubRequestsFinishedReq
+  ): Promise<AreAllSubRequestsFinishedRes> {
+    try {
+      const documents: any = await RequestModel.find({
+        bulkRequestId: areAllSubRequestsFinishedReq.id,
+      });
+      if (documents) {
+        let smallRequests: any = [];
+        for (let i = 0; i < documents.length; i++) {
+          const requestObj: any = documents[i].toObject();
+          turnObjectIdsToStrings(requestObj);
+          smallRequests.push(requestObj);
+        }
+        for (let smallRequest of smallRequests) {
+          const smallRequestStatus =
+            typeof smallRequest.status === typeof ''
+              ? requestStatusFromJSON(smallRequest.status)
+              : smallRequest.status;
+          if (
+            smallRequestStatus !== RequestStatus.DONE &&
+            smallRequestStatus !== RequestStatus.FAILED
+          ) {
+            return { areAllSubRequestsFinished: false };
+          }
+        }
+        return { areAllSubRequestsFinished: true };
+      } else {
+        throw new Error(
+          `No bulk request with id=${areAllSubRequestsFinishedReq.id}`
+        );
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async syncBulkRequest(
     syncBulkRequestReq: SyncBulkRequestReq
   ): Promise<Request> {
@@ -1422,7 +1473,7 @@ export class RequestRepository {
         }
         const requestProperties: any = newStatus
           ? { status: requestStatusToJSON(newStatus), rowErrors: rowErrors }
-          : {};
+          : { rowErrors: rowErrors };
         const updatedBulkRequest = await this.updateRequest({
           id: syncBulkRequestReq.id,
           requestProperties: requestProperties,

@@ -2,10 +2,10 @@ const Joi = require('joi');
 Joi.objectId = require('joi-objectid')(Joi);
 
 // Entities
-export const getPictureByEntityIdSchema = Joi.object({
+export const getPictureByEntityIdentifierSchema = Joi.object({
   body: {},
   params: {
-    id: Joi.objectId().required(),
+    identifier: Joi.string().required(),
   },
   query: {},
 });
@@ -56,8 +56,8 @@ export const getEntitiesUnderOGSchema = Joi.object({
   },
   query: {
     direct: Joi.boolean().default(true),
-    page: Joi.number().default(1),
-    pageSize: Joi.number().default(100),
+    page: Joi.number(),
+    pageSize: Joi.number(),
   },
 });
 
@@ -107,11 +107,11 @@ export const isOGNameAlreadyTakenSchema = Joi.object({
 
 export const searchOGSchema = Joi.object({
   body: {},
-  params: {
-  },
+  params: {},
   query: {
     underGroupId: Joi.string(),
     nameAndHierarchy: Joi.string().required(),
+    withRoles: Joi.boolean().default(false)
   },
 });
 
@@ -128,6 +128,7 @@ export const GetOGByHierarchyNameSchema = Joi.object({
   params: {},
   query: {
     hierarchy: Joi.string().required(),
+    withRoles: Joi.boolean().default(false),
   },
 });
 
@@ -139,8 +140,8 @@ export const GetOGChildrenSchema = Joi.object({
   query: {
     direct: Joi.boolean().default(true),
     withRoles: Joi.boolean().default(false),
-    page: Joi.number().default(1).min(1),
-    pageSize: Joi.number().default(100),
+    page: Joi.number(),
+    pageSize: Joi.number(),
   },
 });
 
@@ -180,8 +181,8 @@ export const GetRolesUnderOGSchema = Joi.object({
   },
   query: {
     direct: Joi.boolean().default(true),
-    page: Joi.number().default(1).min(1),
-    pageSize: Joi.number().default(100),
+    page: Joi.number(),
+    pageSize: Joi.number(),
   },
 });
 

@@ -1,3 +1,4 @@
+import * as C from '../config';
 import {
   ProduceRequest,
   SuccessMessage,
@@ -98,6 +99,11 @@ export class RequestManager {
       } else {
         const message = generateKartoffelQueueMessage(request);
         logger.info(
+          `produceToKafkaQueue generated queue message : ${JSON.stringify(
+            message
+          )}`
+        );
+        logger.info(
           'produceToKartoffelQueue received request successfully and generated queue message',
           {
             produceRequest,
@@ -130,6 +136,18 @@ export class RequestManager {
       const request: Request = await this.requestService.getRequestById({
         id: produceRequest.id,
       });
+      const submitterId: any = request.submittedBy?.id;
+      if (C.restrictADAccess && !C.adAllowedSubmitters.includes(submitterId)) {
+        await this.requestService.updateADStatus({
+          requestId: produceRequest.id,
+          status: StageStatus.STAGE_DONE,
+          message: `User ${submitterId} is not AD allowed submitter, AD stage has not been performed`,
+        });
+        const kartoffelSuccessMessage = await this.produceToKartoffelQueue(
+          produceRequest
+        );
+        return kartoffelSuccessMessage;
+      }
       const force =
         produceRequest.force && produceRequest.force === true ? true : false;
       let adStatus = request.adStatus?.status;
@@ -157,7 +175,7 @@ export class RequestManager {
         const requestIds = request.requestIds;
         const promises = requestIds.map((requestId) => {
           return new Promise((resolve, reject) => {
-            this.produceToADQueue({ id: requestId })
+            this.produceToADQueue({ id: requestId, force: force })
               .then(() => {
                 resolve(true);
               })
@@ -210,6 +228,11 @@ export class RequestManager {
         };
       } else {
         const message = generateADQueueMessage(request);
+        logger.info(
+          `produceToADQueue generated queue message : ${JSON.stringify(
+            message
+          )}`
+        );
         logger.info(
           'produceToADQueue received request successfully and generated queue message',
           {
