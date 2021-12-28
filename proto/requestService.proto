@@ -41,6 +41,7 @@ service RequestService {
     rpc GetRequestIdsInProgressByDue(GetRequestsInProgressByDueReq) returns (RequestIdArray){}
     rpc PushError(PushErrorReq) returns (Request){}
     rpc SyncBulkRequest(SyncBulkRequestReq) returns (Request){}
+    rpc AreAllSubRequestsFinished(AreAllSubRequestsFinishedReq) returns (AreAllSubRequestsFinishedRes){}
 
     rpc GetRequestsByPerson(GetRequestsByPersonReq) returns (GetRequestsByPersonRes){}
     rpc TransferRequestToApprovers(TransferRequestToApproversReq) returns (Request){}
@@ -1097,6 +1098,14 @@ message PushErrorReq{
 
 message GetRequestsUnderBulkReq{
     string id = 1;
+}
+
+message AreAllSubRequestsFinishedReq{
+    string id =1;
+}
+
+message AreAllSubRequestsFinishedRes{
+    bool areAllSubRequestsFinished = 1;
 }
 
 // ---------------------------------------------Other Objects------------------------------------------------------------

@@ -43,7 +43,7 @@ export const requestProcessor = async (incomingRequest: any) => {
     requestObject = fromStringToObject(incomingRequest.value.toString());
     logger.info('requestProcessor received request', {
       incomingRequest: incomingRequest,
-      requestObject: requestObject,
+      requestObject: JSON.stringify(requestObject),
     });
 
     if (requestObject && requestObject.type) {

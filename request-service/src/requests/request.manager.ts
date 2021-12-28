@@ -25,6 +25,8 @@ import {
   SyncBulkRequestReq,
   GetRequestsUnderBulkReq,
   TransferRequestToApproversReq,
+  AreAllSubRequestsFinishedReq,
+  AreAllSubRequestsFinishedRes,
 } from '../interfaces/protoc/proto/requestService';
 import { RequestRepository } from './request.repository';
 export class RequestManager {
@@ -42,6 +44,18 @@ export class RequestManager {
         createRequest,
         type
       )) as Request;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async areAllSubRequestsFinished(
+    areAllSubRequestsFinishedReq: AreAllSubRequestsFinishedReq
+  ): Promise<AreAllSubRequestsFinishedRes> {
+    try {
+      return (await this.requestRepository.areAllSubRequestsFinished(
+        areAllSubRequestsFinishedReq
+      )) as AreAllSubRequestsFinishedRes;
     } catch (error) {
       throw error;
     }

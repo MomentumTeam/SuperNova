@@ -99,6 +99,11 @@ export class RequestManager {
       } else {
         const message = generateKartoffelQueueMessage(request);
         logger.info(
+          `produceToKafkaQueue generated queue message : ${JSON.stringify(
+            message
+          )}`
+        );
+        logger.info(
           'produceToKartoffelQueue received request successfully and generated queue message',
           {
             produceRequest,
@@ -223,6 +228,11 @@ export class RequestManager {
         };
       } else {
         const message = generateADQueueMessage(request);
+        logger.info(
+          `produceToADQueue generated queue message : ${JSON.stringify(
+            message
+          )}`
+        );
         logger.info(
           'produceToADQueue received request successfully and generated queue message',
           {
