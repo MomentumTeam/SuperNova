@@ -27,8 +27,8 @@ async function main() {
   try {
     await execute();
     if (config.cronJob) {
-      schedule.scheduleJob(`* */${config.everyHour} * * *`, async function () {
-        //run script every x hour
+      schedule.scheduleJob(`*/${config.minute} * * * *`, async function () {
+        //run script every x minutes
         await execute();
       });
     }

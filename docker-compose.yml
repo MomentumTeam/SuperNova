@@ -269,7 +269,7 @@ services:
       - EXS_RS_URL=request-service:8080
       - EXS_PS_URL=producer-service:8080
       - EXS_APS_URL=approver-service:8080
-      - EXS_EVERY_HOUR=1
+      - EXS_MINUTE=5
       - EXS_CRON_JOB=false
       - EXS_LOG_PATH=/logs
 

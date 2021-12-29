@@ -40,6 +40,7 @@ import {
   RenameRoleRes,
   Request,
   RequestArray,
+  RequestStatus,
   RequestType,
   requestTypeFromJSON,
   StageStatus,
@@ -91,16 +92,27 @@ export class RequestsService {
       );
       if (isRequestApprovedRes.isRequestApproved) {
         if (requestType === RequestType.ADD_APPROVER) {
-          await ApproverService.addApprover({
-            entityId: request.additionalParams?.entityId || '',
-            type: request.additionalParams?.type || ApproverType.UNRECOGNIZED,
-            akaUnit: request.additionalParams?.akaUnit || '',
-            displayName: request.additionalParams?.displayName || '',
-            domainUsers: request.additionalParams?.domainUsers || [],
-            directGroup: request.additionalParams?.directGroup || '',
-            identityCard: request.additionalParams?.identityCard || '',
-            personalNumber: request.additionalParams?.personalNumber || '',
-          });
+          try {
+            await ApproverService.addApprover({
+              entityId: request.additionalParams?.entityId || '',
+              type: request.additionalParams?.type || ApproverType.UNRECOGNIZED,
+              akaUnit: request.additionalParams?.akaUnit || '',
+              displayName: request.additionalParams?.displayName || '',
+              domainUsers: request.additionalParams?.domainUsers || [],
+              directGroup: request.additionalParams?.directGroup || '',
+              identityCard: request.additionalParams?.identityCard || '',
+              personalNumber: request.additionalParams?.personalNumber || '',
+            });
+            await RequestsService.updateRequest({
+              id: request.id,
+              requestProperties: { status: RequestStatus.DONE },
+            });
+          } catch (addApproverError) {
+            await RequestsService.updateRequest({
+              id: request.id,
+              requestProperties: { status: RequestStatus.FAILED },
+            });
+          }
         } else {
           await ProducerService.executeRequest(request.id);
         }
@@ -281,7 +293,7 @@ export class RequestsService {
     });
   }
 
-  static async updateRequest(updateRequestReq: UpdateReq) {
+  static async updateRequest(updateRequestReq: any) {
     logger.info(`Call to updateRequest in GTW`, updateRequestReq);
 
     return new Promise((resolve, reject) => {
