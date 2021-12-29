@@ -857,10 +857,7 @@ export class RequestRepository {
         } else if (
           documentObj.isPartOfBulk &&
           documentObj.bulkRequestId &&
-          (requestUpdate.kartoffelStatus !== undefined ||
-            requestUpdate.adStatus !== undefined ||
-            requestUpdate['kartoffelStatus.status'] !== undefined ||
-            requestUpdate['adStatus.status'] !== undefined)
+          requestUpdate.status !== undefined
         ) {
           // Sync bulk request if all sub-requests are finished
           const bulkRequestId = documentObj.bulkRequestId;
