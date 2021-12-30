@@ -41,6 +41,7 @@ service RequestService {
     rpc GetRequestIdsInProgressByDue(GetRequestsInProgressByDueReq) returns (RequestIdArray){}
     rpc PushError(PushErrorReq) returns (Request){}
     rpc SyncBulkRequest(SyncBulkRequestReq) returns (Request){}
+    rpc AreAllSubRequestsFinished(AreAllSubRequestsFinishedReq) returns (AreAllSubRequestsFinishedRes){}
 
     rpc GetRequestsByPerson(GetRequestsByPersonReq) returns (GetRequestsByPersonRes){}
     rpc TransferRequestToApprovers(TransferRequestToApproversReq) returns (Request){}
@@ -690,6 +691,7 @@ message CreateRoleBulkRes{
 
 message CreateRoleBulkKartoffelParams{
     string directGroup = 1; //The same for all the rows
+    string hierarchy = 2;
 }
 
 message CreateRoleBulkADParams{
@@ -743,10 +745,14 @@ message ChangeRoleHierarchyBulkRes{
 
 message ChangeRoleHierarchyBulkKartoffelParams{
     string directGroup = 1;
+    string oldHierarchy = 2;
+    string hierarchy = 3;
 }
 
 message ChangeRoleHierarchyBulkADParams{
-    optional string ouDisplayName = 1;
+    optional string samAccountName = 1;
+    optional string ouDisplayName = 2; // the new one
+    optional string newJobTitle = 3;
 }
 
 
@@ -768,10 +774,11 @@ message CreateRoleKartoffelParams{
     bool isRoleAttachable = 9; //true, if the role is unoccupied
 
     optional string roleEntityType = 10;
+    string hierarchy = 11;
 }
 
 message CreateRoleADParams{
-    string samAccountName = 1; //T154514... generated automatically by tea-service if not given
+    optional string samAccountName = 1; //T154514... generated automatically by tea-service if not given
     string ouDisplayName = 2; // Role's full hierarchy
     string jobTitle = 3; //name of the role
 }
@@ -781,6 +788,7 @@ message CreateOGKartoffelParams{
     string name = 1;
     string parent = 2;
     string source = 3;
+    string hierarchy = 4;
 }
 
 message CreateOGADParams{
@@ -794,14 +802,14 @@ message CreateEntityKartoffelParams{
     string firstName = 1;
     string lastName = 2;
     string identityCard = 3;
-    string personalNumber = 4;
-    string serviceType = 5;
+    optional string personalNumber = 4;
+    optional string serviceType = 5;
     repeated string phone = 6;
     repeated string mobilePhone = 7;
-    string address = 8;
+    optional string address = 8;
     string clearance = 9;
-    string sex = 10;
-    int64 birthdate = 11;
+    optional string sex = 10;
+    optional int64 birthdate = 11;
     string entityType = 12;
 }
 
@@ -825,6 +833,8 @@ message AdditionalParams{
 message RenameOGKartoffelParams{
     string id = 1;
     string name = 2;
+    string hierarchy = 3;
+    string oldHierarchy = 4;
 }
 
 message RenameOGADParams{
@@ -852,15 +862,15 @@ message EditEntityKartoffelParams{
     string firstName = 2;
     string lastName = 3;
     optional string identityCard = 4;
-    string personalNumber = 5;
-    string serviceType = 6;
+    optional string personalNumber = 5;
+    optional string serviceType = 6;
     repeated string phone = 7;
     repeated string mobilePhone = 8;
-    string address = 9;
-    string clearance = 10;
-    string sex = 11;
-    int64 birthdate = 12;
-    string entityType = 13;
+    optional string address = 9;
+    optional string clearance = 10;
+    optional string sex = 11;
+    optional int64 birthdate = 12;
+    optional string entityType = 13;
 }
 
 message EditEntityADParams{
@@ -905,10 +915,13 @@ message AssignRoleToEntityKartoffelParams{
     string id = 1;
     string uniqueId = 2;
     bool needDisconnect = 3;
+    string roleId = 4;
+    string hierarchy = 5;
+    string directGroup = 6;
 }
 
 message AssignRoleToEntityADParams{
-    string oldSAMAccountName = 1;
+    optional string oldSAMAccountName = 1;
     string newSAMAccountName = 2;
     optional string upn = 3;
     string firstName = 4;
@@ -934,11 +947,13 @@ message ChangeRoleHierarchyKartoffelParams{
     string directGroup = 2;
     string currentJobTitle = 3;
     optional string newJobTitle = 4;
+    string hierarchy = 5;
+    string oldHierarchy = 6;
 }
 
 message ChangeRoleHierarchyADParams{
     optional string samAccountName = 1;
-    optional string ouDisplayName = 2;
+    optional string ouDisplayName = 2; // the new one
     optional string newJobTitle = 3;
 }
 
@@ -1087,6 +1102,14 @@ message GetRequestsUnderBulkReq{
     string id = 1;
 }
 
+message AreAllSubRequestsFinishedReq{
+    string id =1;
+}
+
+message AreAllSubRequestsFinishedRes{
+    bool areAllSubRequestsFinished = 1;
+}
+
 // ---------------------------------------------Other Objects------------------------------------------------------------
 message RequestIdArray{
     repeated string requestIds = 1;
@@ -1200,8 +1223,9 @@ message KartoffelParams{
 
     //RenameRole
     // ?
-    string oldJobTitle = 28;
-
+    optional string oldJobTitle = 28;
+    optional string hierarchy = 29;
+    optional string oldHierarchy = 30;
     //EditEntity
     // string firstName = 25;
     // string lastName = 26;
@@ -1425,6 +1449,7 @@ enum SortField{
     SUBMITTED_BY = 1;
     CREATED_AT = 2;
     STATUS = 3;
+    UPDATED_AT = 4;
 }
 
 enum SortOrder{
