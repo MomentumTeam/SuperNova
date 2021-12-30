@@ -388,6 +388,8 @@ export const createEntitySchema = Joi.object({
 const renameOGKartoffelParamsObj = Joi.object({
   id: Joi.string().required(),
   name: Joi.string().required(),
+  hierarchy: Joi.string().required(),
+  oldHierarchy: Joi.string().required(),
 });
 
 const renameOGADParamsObj = Joi.object({
