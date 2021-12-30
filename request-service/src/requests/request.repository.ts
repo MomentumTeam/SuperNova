@@ -89,6 +89,7 @@ export class RequestRepository {
         createRequestReq.adParams.upn = await retrieveUPNByEntityId(
           createRequestReq.kartoffelParams.id
         );
+        createRequestReq.kartoffelParams.upn = createRequestReq.adParams.upn;
       } else if (
         type === RequestType.CREATE_ENTITY ||
         type === RequestType.DELETE_ENTITY ||

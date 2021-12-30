@@ -92,6 +92,9 @@ export function generateKartoffelQueueMessage(request: Request): any {
       ) {
         message.data.needDisconnect = false;
       }
+      if (kartoffelParams.upn !== undefined) {
+        message.data.upn = kartoffelParams.upn;
+      }
       break;
     case RequestType.RENAME_OG:
       message.data = {

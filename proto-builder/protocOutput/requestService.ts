@@ -1451,6 +1451,7 @@ export interface AssignRoleToEntityKartoffelParams {
   roleId: string;
   hierarchy: string;
   directGroup: string;
+  upn?: string | undefined;
 }
 
 export interface AssignRoleToEntityADParams {
@@ -1745,6 +1746,7 @@ export interface KartoffelParams {
    */
   oldJobTitle?: string | undefined;
   hierarchy?: string | undefined;
+  oldHierarchy?: string | undefined;
   /**
    * EditEntity
    * string firstName = 25;
@@ -1761,7 +1763,7 @@ export interface KartoffelParams {
    * string entityType = 36;
    * string id =
    */
-  oldHierarchy?: string | undefined;
+  upn?: string | undefined;
 }
 
 export interface ADParams {
@@ -20985,6 +20987,9 @@ export const AssignRoleToEntityKartoffelParams = {
     if (message.directGroup !== "") {
       writer.uint32(50).string(message.directGroup);
     }
+    if (message.upn !== undefined) {
+      writer.uint32(58).string(message.upn);
+    }
     return writer;
   },
 
@@ -21017,6 +21022,9 @@ export const AssignRoleToEntityKartoffelParams = {
           break;
         case 6:
           message.directGroup = reader.string();
+          break;
+        case 7:
+          message.upn = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -21060,6 +21068,11 @@ export const AssignRoleToEntityKartoffelParams = {
     } else {
       message.directGroup = "";
     }
+    if (object.upn !== undefined && object.upn !== null) {
+      message.upn = String(object.upn);
+    } else {
+      message.upn = undefined;
+    }
     return message;
   },
 
@@ -21073,6 +21086,7 @@ export const AssignRoleToEntityKartoffelParams = {
     message.hierarchy !== undefined && (obj.hierarchy = message.hierarchy);
     message.directGroup !== undefined &&
       (obj.directGroup = message.directGroup);
+    message.upn !== undefined && (obj.upn = message.upn);
     return obj;
   },
 
@@ -21111,6 +21125,11 @@ export const AssignRoleToEntityKartoffelParams = {
       message.directGroup = object.directGroup;
     } else {
       message.directGroup = "";
+    }
+    if (object.upn !== undefined && object.upn !== null) {
+      message.upn = object.upn;
+    } else {
+      message.upn = undefined;
     }
     return message;
   },
@@ -25389,6 +25408,9 @@ export const KartoffelParams = {
     if (message.oldHierarchy !== undefined) {
       writer.uint32(242).string(message.oldHierarchy);
     }
+    if (message.upn !== undefined) {
+      writer.uint32(250).string(message.upn);
+    }
     return writer;
   },
 
@@ -25490,6 +25512,9 @@ export const KartoffelParams = {
           break;
         case 30:
           message.oldHierarchy = reader.string();
+          break;
+        case 31:
+          message.upn = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -25659,6 +25684,11 @@ export const KartoffelParams = {
     } else {
       message.oldHierarchy = undefined;
     }
+    if (object.upn !== undefined && object.upn !== null) {
+      message.upn = String(object.upn);
+    } else {
+      message.upn = undefined;
+    }
     return message;
   },
 
@@ -25713,6 +25743,7 @@ export const KartoffelParams = {
     message.hierarchy !== undefined && (obj.hierarchy = message.hierarchy);
     message.oldHierarchy !== undefined &&
       (obj.oldHierarchy = message.oldHierarchy);
+    message.upn !== undefined && (obj.upn = message.upn);
     return obj;
   },
 
@@ -25875,6 +25906,11 @@ export const KartoffelParams = {
       message.oldHierarchy = object.oldHierarchy;
     } else {
       message.oldHierarchy = undefined;
+    }
+    if (object.upn !== undefined && object.upn !== null) {
+      message.upn = object.upn;
+    } else {
+      message.upn = undefined;
     }
     return message;
   },
