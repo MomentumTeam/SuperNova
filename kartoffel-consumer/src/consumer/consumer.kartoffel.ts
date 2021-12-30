@@ -148,7 +148,7 @@ export const connectEntityAndDI = async (connectEntityAndDIReq: any) => {
       connectEntityAndDIReq
     );
 
-    const { id, uniqueId, needDisconnect } = connectEntityAndDIReq;
+    const { id, uniqueId, needDisconnect, upn } = connectEntityAndDIReq;
     try {
       const currentEntityWithUniqueId = await KartoffelService.getEntityByDI({
         uniqueId: uniqueId,
@@ -174,11 +174,15 @@ export const connectEntityAndDI = async (connectEntityAndDIReq: any) => {
         }
       }
     }
+    const body: any = {
+      id: id,
+      uniqueId: uniqueId,
+    };
+    if (upn !== undefined) {
+      body.upn = upn;
+    }
     const successMessage: SuccessMessage =
-      await KartoffelService.connectEntityAndDI({
-        id: id,
-        uniqueId: uniqueId,
-      });
+      await KartoffelService.connectEntityAndDI(body);
     logger.info('Successfuly assigned role to entity', successMessage);
   } catch (error) {
     throw error;
