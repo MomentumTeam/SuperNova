@@ -833,6 +833,8 @@ message AdditionalParams{
 message RenameOGKartoffelParams{
     string id = 1;
     string name = 2;
+    string hierarchy = 3;
+    string oldHierarchy = 4;
 }
 
 message RenameOGADParams{

@@ -1370,6 +1370,8 @@ export interface AdditionalParams {
 export interface RenameOGKartoffelParams {
   id: string;
   name: string;
+  hierarchy: string;
+  oldHierarchy: string;
 }
 
 export interface RenameOGADParams {
@@ -19753,7 +19755,12 @@ export const AdditionalParams = {
   },
 };
 
-const baseRenameOGKartoffelParams: object = { id: "", name: "" };
+const baseRenameOGKartoffelParams: object = {
+  id: "",
+  name: "",
+  hierarchy: "",
+  oldHierarchy: "",
+};
 
 export const RenameOGKartoffelParams = {
   encode(
@@ -19765,6 +19772,12 @@ export const RenameOGKartoffelParams = {
     }
     if (message.name !== "") {
       writer.uint32(18).string(message.name);
+    }
+    if (message.hierarchy !== "") {
+      writer.uint32(26).string(message.hierarchy);
+    }
+    if (message.oldHierarchy !== "") {
+      writer.uint32(34).string(message.oldHierarchy);
     }
     return writer;
   },
@@ -19786,6 +19799,12 @@ export const RenameOGKartoffelParams = {
           break;
         case 2:
           message.name = reader.string();
+          break;
+        case 3:
+          message.hierarchy = reader.string();
+          break;
+        case 4:
+          message.oldHierarchy = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -19809,6 +19828,16 @@ export const RenameOGKartoffelParams = {
     } else {
       message.name = "";
     }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = String(object.hierarchy);
+    } else {
+      message.hierarchy = "";
+    }
+    if (object.oldHierarchy !== undefined && object.oldHierarchy !== null) {
+      message.oldHierarchy = String(object.oldHierarchy);
+    } else {
+      message.oldHierarchy = "";
+    }
     return message;
   },
 
@@ -19816,6 +19845,9 @@ export const RenameOGKartoffelParams = {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
     message.name !== undefined && (obj.name = message.name);
+    message.hierarchy !== undefined && (obj.hierarchy = message.hierarchy);
+    message.oldHierarchy !== undefined &&
+      (obj.oldHierarchy = message.oldHierarchy);
     return obj;
   },
 
@@ -19834,6 +19866,16 @@ export const RenameOGKartoffelParams = {
       message.name = object.name;
     } else {
       message.name = "";
+    }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = object.hierarchy;
+    } else {
+      message.hierarchy = "";
+    }
+    if (object.oldHierarchy !== undefined && object.oldHierarchy !== null) {
+      message.oldHierarchy = object.oldHierarchy;
+    } else {
+      message.oldHierarchy = "";
     }
     return message;
   },
