@@ -35,6 +35,7 @@ import {
   ApproverType,
   ApproversComments,
   ApproverDecision,
+  approverTypeToJSON,
 } from '../interfaces/protoc/proto/requestService';
 import { RequestsService } from './requests.service';
 import { AuthenticationError } from '../utils/errors/userErrors';
@@ -132,6 +133,16 @@ export default class RequestsController {
     if (req.query.sortOrder) {
       getRequestsByPersonReq.sortOrder = req.query.sortOrder;
     }
+
+    if (req.user.types.includes(approverTypeToJSON(ApproverType.ADMIN))) {
+      const approver = await ApproverService.getApproverByEntityId({
+        entityId: req.user.id,
+      });
+      if (approver.groupInChargeId) {
+        getRequestsByPersonReq.groupInChargeId = approver.groupInChargeId;
+      }
+    }
+
     try {
       const requests = await RequestsService.getRequestsByPerson(
         getRequestsByPersonReq
@@ -406,6 +417,8 @@ export default class RequestsController {
       displayName: req.user.displayName,
       identityCard: req.user.identityCard,
       personalNumber: req.user.personalNumber,
+      directGroup: req.user.directGroup,
+      ancestors: req.user.ancestors,
     };
 
     const createRoleReq: CreateRoleReq = {
@@ -434,11 +447,13 @@ export default class RequestsController {
   static async assignRoleToEntityRequest(req: any, res: Response) {
     if (!req.user && !req.user.id) throw new AuthenticationError();
 
-    const submittedBy: EntityMin = {
+    const submittedBy: any = {
       id: req.user.id,
       displayName: req.user.displayName,
       identityCard: req.user.identityCard,
       personalNumber: req.user.personalNumber,
+      directGroup: req.user.directGroup,
+      ancestors: req.user.ancestors,
     };
 
     const assignRoleToEntityReq: AssignRoleToEntityReq = {
@@ -469,6 +484,7 @@ export default class RequestsController {
               personalNumber: entityWithRole.personalNumber
                 ? entityWithRole.personalNumber
                 : '',
+              ancestors: [],
             },
           ];
 
@@ -526,11 +542,13 @@ export default class RequestsController {
   static async createOGRequest(req: any, res: Response) {
     if (!req.user && !req.user.id) throw new AuthenticationError();
 
-    const submittedBy: EntityMin = {
+    const submittedBy: any = {
       id: req.user.id,
       displayName: req.user.displayName,
       identityCard: req.user.identityCard,
       personalNumber: req.user.personalNumber,
+      directGroup: req.user.directGroup,
+      ancestors: req.user.ancestors,
     };
 
     const createOGReq: CreateOGReq = {
@@ -564,6 +582,8 @@ export default class RequestsController {
       displayName: req.user.displayName,
       identityCard: req.user.identityCard,
       personalNumber: req.user.personalNumber,
+      directGroup: req.user.directGroup,
+      ancestors: req.user.ancestors,
     };
 
     const createNewApproverReq: CreateNewApproverReq = {
@@ -600,6 +620,8 @@ export default class RequestsController {
       displayName: req.user.displayName,
       identityCard: req.user.identityCard,
       personalNumber: req.user.personalNumber,
+      directGroup: req.user.directGroup,
+      ancestors: req.user.ancestors,
     };
 
     const createEntityReq: CreateEntityReq = {
@@ -628,6 +650,8 @@ export default class RequestsController {
       displayName: req.user.displayName,
       identityCard: req.user.identityCard,
       personalNumber: req.user.personalNumber,
+      directGroup: req.user.directGroup,
+      ancestors: req.user.ancestors,
     };
 
     const renameOGReq: RenameOGReq = {
@@ -660,6 +684,8 @@ export default class RequestsController {
       displayName: req.user.displayName,
       identityCard: req.user.identityCard,
       personalNumber: req.user.personalNumber,
+      directGroup: req.user.directGroup,
+      ancestors: req.user.ancestors,
     };
 
     const renameRoleReq: RenameRoleReq = {
@@ -688,6 +714,8 @@ export default class RequestsController {
       displayName: req.user.displayName,
       identityCard: req.user.identityCard,
       personalNumber: req.user.personalNumber,
+      directGroup: req.user.directGroup,
+      ancestors: req.user.ancestors,
     };
 
     const editEntityReq: EditEntityReq = {
@@ -720,6 +748,8 @@ export default class RequestsController {
       displayName: req.user.displayName,
       identityCard: req.user.identityCard,
       personalNumber: req.user.personalNumber,
+      directGroup: req.user.directGroup,
+      ancestors: req.user.ancestors,
     };
 
     const deleteRoleReq: DeleteRoleReq = {
@@ -752,6 +782,8 @@ export default class RequestsController {
       displayName: req.user.displayName,
       identityCard: req.user.identityCard,
       personalNumber: req.user.personalNumber,
+      directGroup: req.user.directGroup,
+      ancestors: req.user.ancestors,
     };
 
     const deleteOGReq: DeleteOGReq = {
@@ -784,6 +816,8 @@ export default class RequestsController {
       displayName: req.user.displayName,
       identityCard: req.user.identityCard,
       personalNumber: req.user.personalNumber,
+      directGroup: req.user.directGroup,
+      ancestors: req.user.ancestors,
     };
 
     const deleteEntityReq: DeleteEntityReq = {
@@ -821,6 +855,8 @@ export default class RequestsController {
       displayName: req.user.displayName,
       identityCard: req.user.identityCard,
       personalNumber: req.user.personalNumber,
+      directGroup: req.user.directGroup,
+      ancestors: req.user.ancestors,
     };
 
     const disconectRoleFromEntityReq: DisconectRoleFromEntityReq = {
@@ -881,6 +917,8 @@ export default class RequestsController {
       displayName: req.user.displayName,
       identityCard: req.user.identityCard,
       personalNumber: req.user.personalNumber,
+      directGroup: req.user.directGroup,
+      ancestors: req.user.ancestors,
     };
 
     const changeRoleHierarchyReq: ChangeRoleHierarchyReq = {

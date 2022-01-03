@@ -1,3 +1,4 @@
+import { config } from '../config';
 import {
   PersonTypeInRequest,
   PersonInfoType,
@@ -155,7 +156,7 @@ export const updateApproversCommentsSchema = Joi.object({
       .required(),
     commentForApprovers: Joi.string(),
   },
-  params: {id: Joi.objectId().required() },
+  params: { id: Joi.objectId().required() },
   query: {},
 });
 
@@ -225,7 +226,7 @@ export const createRoleSchema = Joi.object({
     commanderDecision: ApproverDecisionObj,
     securityDecision: ApproverDecisionObj,
     superSecurityDecision: ApproverDecisionObj,
-    commanders: Joi.array().items(entityMinObj), 
+    commanders: Joi.array().items(entityMinObj),
     securityApprovers: Joi.array().items(entityMinObj),
     superSecurityApprovers: Joi.array().items(entityMinObj),
     kartoffelStatus: kartoffelStatusObj,
@@ -246,7 +247,7 @@ const assignRoleToEntityKartoffelParamsObj = Joi.object({
   roleId: Joi.string().required(),
   needDisconnect: Joi.boolean().required(),
   hierarchy: Joi.string().required(),
-  directGroup: Joi.string().required()
+  directGroup: Joi.string().required(),
 });
 
 const assignRoleToEntityADParamsObj = Joi.object({
@@ -326,6 +327,7 @@ const additionalParamsObj = Joi.object({
     .valid(...Object.keys(ApproverType))
     .required(),
   directGroup: Joi.string().default(''),
+  groupInChargeId: Joi.string().default(config.fields.rootId),
 });
 
 export const createNewApproverSchema = Joi.object({
@@ -420,7 +422,7 @@ export const renameOGSchema = Joi.object({
 const renameRoleKartoffelParamsObj = Joi.object({
   jobTitle: Joi.string().required(),
   roleId: Joi.string().required(),
-  oldJobTitle: Joi.string().required()
+  oldJobTitle: Joi.string().required(),
 });
 
 const renameRoleADParamsObj = Joi.object({
@@ -499,7 +501,7 @@ const changeRoleHierarchyKartoffelParamsObj = Joi.object({
   currentJobTitle: Joi.string().required(),
   newJobTitle: Joi.string(),
   hierarchy: Joi.string().required(),
-  oldHierarchy: Joi.string().required()
+  oldHierarchy: Joi.string().required(),
 });
 
 const changeRoleHierarchyADParamsObj = Joi.object({

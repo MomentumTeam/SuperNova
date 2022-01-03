@@ -115,6 +115,8 @@ export default class BulkController {
       displayName: req.user.displayName,
       identityCard: req.user.identityCard,
       personalNumber: req.user.personalNumber,
+      directGroup: req.user.directGroup,
+      ancestors: req.user.ancestors,
     };
 
     const createRoleBulkReq: CreateRoleBulkReq = {
@@ -149,6 +151,8 @@ export default class BulkController {
       displayName: req.user.displayName,
       identityCard: req.user.identityCard,
       personalNumber: req.user.personalNumber,
+      directGroup: req.user.directGroup,
+      ancestors: req.user.ancestors,
     };
 
     const changeRoleHierarchyBulkReq: ChangeRoleHierarchyBulkReq = {

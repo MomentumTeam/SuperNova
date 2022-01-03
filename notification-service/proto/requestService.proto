@@ -827,6 +827,7 @@ message AdditionalParams{
     optional string personalNumber = 6;
     optional string identityCard = 7;
     string directGroup = 8;
+    optional string groupInChargeId = 9;
 }
 
 //5.RenameOGRequest
@@ -1035,6 +1036,7 @@ message GetRequestsByPersonReq{
     optional RequestType type = 10;
     optional SortField sortField = 11;
     optional SortOrder sortOrder = 12;
+    optional string groupInChargeId = 13;
     
 }
 
@@ -1120,6 +1122,8 @@ message EntityMin{
     string displayName = 2;
     optional string identityCard = 3;
     optional string personalNumber = 4;
+    optional string directGroup = 5;
+    repeated string ancestors = 6;
 }
 
 message SuccessMessage{

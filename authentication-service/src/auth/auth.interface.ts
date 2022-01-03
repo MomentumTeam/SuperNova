@@ -10,8 +10,9 @@ export interface IUserToken {
   personalNumber: string;
   displayName: string;
   fullName: string;
-  rank: string; 
-  
+  rank: string;
+  directGroup: string;
+  ancestors: string[];
   // APPROVER
   types: string[];
 }

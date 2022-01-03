@@ -12,6 +12,7 @@ export const maxQueueRetries = process.env.RS_MAX_QUEUE_RETRIES
 export const notificationServiceUrl = process.env.RS_NS_URL || '0.0.0.0:8084';
 export const teaServiceUrl = process.env.RS_TS_URL || '0.0.0.0:8086';
 export const mailServiceUrl = process.env.RS_MS_URL || '0.0.0.0:8088';
+export const rootId = process.env.RS_ROOT_ID || '619e3193f235dc001846bb4f';
 export const mongoConnectionRetries =
   process.env.MONGO_RECONNECT_ATTEMPTS || '5';
 export const mongoReconnectTimeout =
@@ -25,17 +26,17 @@ export const storeLogs = process.env.GLOBAL_STORE_LOGS
   : false;
 
 export const searchFields = [
-  { name: "submittedBy.displayName" },
-  { name: "submittedBy.personalNumber" },
-  { name: "submittedBy.identityCard" },
-  { name: "commanders.displayName" },
-  { name: "commanders.personalNumber" },
-  { name: "commanders.identityCard" },
-  { name: "securityApprovers.displayName" },
-  { name: "securityApprovers.personalNumber" },
-  { name: "securityApprovers.identityCard" },
-  { name: "superSecurityApprovers.displayName" },
-  { name: "superSecurityApprovers.personalNumber" },
-  { name: "superSecurityApprovers.identityCard" },
-  { name: "serialNumberStr" },
+  { name: 'submittedBy.displayName' },
+  { name: 'submittedBy.personalNumber' },
+  { name: 'submittedBy.identityCard' },
+  { name: 'commanders.displayName' },
+  { name: 'commanders.personalNumber' },
+  { name: 'commanders.identityCard' },
+  { name: 'securityApprovers.displayName' },
+  { name: 'securityApprovers.personalNumber' },
+  { name: 'securityApprovers.identityCard' },
+  { name: 'superSecurityApprovers.displayName' },
+  { name: 'superSecurityApprovers.personalNumber' },
+  { name: 'superSecurityApprovers.identityCard' },
+  { name: 'serialNumberStr' },
 ];

@@ -28,8 +28,15 @@ export class AuthManager {
     const kartoffelUser: IUser = await AuthManager.extractKartoffelUser(
       genesisId
     );
-    const { displayName, identityCard, personalNumber, fullName, rank } =
-      kartoffelUser;
+    const {
+      displayName,
+      identityCard,
+      personalNumber,
+      fullName,
+      rank,
+      directGroup,
+      ancestors,
+    } = kartoffelUser;
 
     const types = config.approver.enrich
       ? await AuthManager.extractUserType(genesisId)
@@ -46,6 +53,8 @@ export class AuthManager {
       personalNumber,
       types,
       rank,
+      directGroup,
+      ancestors,
     };
     let userInformation = { ...userToken };
 
@@ -72,7 +81,12 @@ export class AuthManager {
   }
 
   private static async extractKartoffelUser(genesisId: string) {
-    const kartoffelUser = await KartoffelService.getEntityById(genesisId);
+    const kartoffelUser: any = await KartoffelService.getEntityById(genesisId);
+    if (kartoffelUser.directGroup) {
+      const group = await KartoffelService.getOGById(kartoffelUser.directGroup);
+      kartoffelUser.ancestors = group.ancestors;
+    }
+
     return kartoffelUser as IUser;
   }
 
