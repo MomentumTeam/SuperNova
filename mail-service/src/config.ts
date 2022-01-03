@@ -52,3 +52,6 @@ export const requestTypeToHebrew = {
   [requestTypeToJSON(RequestType.DISCONNECT_ROLE)]: 'ניתוק תפקיד',
   [requestTypeToJSON(RequestType.ADD_APPROVER)]: 'הוספת גורם מאשר',
 };
+
+export const legoAddress =
+  process.env.MS_LEGO_ADDRESS || 'http://localhost:3000';
