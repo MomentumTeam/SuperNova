@@ -463,36 +463,43 @@ export default class RequestsController {
 
     try {
       if (assignRoleToEntityReq.kartoffelParams?.needDisconnect) {
-        const entityWithRole: any = await KartoffelService.getEntityByDI({
-          uniqueId: assignRoleToEntityReq.kartoffelParams?.uniqueId,
-        });
-        const entityUserTypeRes: GetUserTypeRes =
-          await ApproverService.getUserType({
-            entityId: entityWithRole.id,
+        try {
+          //adding the user with role to commanders if he is a commander
+          const entityWithRole: any = await KartoffelService.getEntityByDI({
+            uniqueId: assignRoleToEntityReq.kartoffelParams?.uniqueId,
           });
-        const entityUserType = entityUserTypeRes.type.map((type) => {
-          return typeof type === typeof '' ? approverTypeFromJSON(type) : type;
-        });
-        if (entityUserType.includes(ApproverType.COMMANDER)) {
-          assignRoleToEntityReq.commanders = [
-            {
-              id: entityWithRole.id,
-              displayName: entityWithRole.displayName,
-              identityCard: entityWithRole.identityCard
-                ? entityWithRole.identityCard
-                : '',
-              personalNumber: entityWithRole.personalNumber
-                ? entityWithRole.personalNumber
-                : '',
-              ancestors: [],
-            },
-          ];
+          const entityUserTypeRes: GetUserTypeRes =
+            await ApproverService.getUserType({
+              entityId: entityWithRole.id,
+            });
+          const entityUserType = entityUserTypeRes.type.map((type) => {
+            return typeof type === typeof ''
+              ? approverTypeFromJSON(type)
+              : type;
+          });
+          if (entityUserType.includes(ApproverType.COMMANDER)) {
+            assignRoleToEntityReq.commanders = [
+              {
+                id: entityWithRole.id,
+                displayName: entityWithRole.displayName,
+                identityCard: entityWithRole.identityCard
+                  ? entityWithRole.identityCard
+                  : '',
+                personalNumber: entityWithRole.personalNumber
+                  ? entityWithRole.personalNumber
+                  : '',
+                ancestors: [],
+              },
+            ];
 
-          assignRoleToEntityReq.commanders =
-            assignRoleToEntityReq.commanders.filter(
-              (v: any, i: any, a: any) =>
-                a.findIndex((t: any) => t.id === v.id) === i
-            );
+            assignRoleToEntityReq.commanders =
+              assignRoleToEntityReq.commanders.filter(
+                (v: any, i: any, a: any) =>
+                  a.findIndex((t: any) => t.id === v.id) === i
+              );
+          }
+        } catch (entityError) {
+          //probably role is not attached to entity
         }
       }
 
