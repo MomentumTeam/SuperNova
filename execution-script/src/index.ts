@@ -60,6 +60,8 @@ async function execute() {
           directGroup: request.additionalParams?.directGroup || '',
           identityCard: request.additionalParams?.identityCard || '',
           personalNumber: request.additionalParams?.personalNumber || '',
+          groupInChargeId:
+            request.additionalParams?.groupInChargeId || config.rootId,
         })
           .then(() => {
             RequestService.updateRequest(request.id, {

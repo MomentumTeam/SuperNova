@@ -58,7 +58,6 @@ export const getUserTypeValidSchema = Joi.object({
   query: {},
 });
 
-
 // POST
 export const isApproverValidSchema = Joi.object({
   body: {

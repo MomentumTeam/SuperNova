@@ -7,6 +7,7 @@ export const cronJob = process.env.EXS_CRON_JOB
     ? true
     : false
   : true;
+export const rootId = process.env.EXS_ROOT_ID || '619e3193f235dc001846bb4f';
 
 export const logPath = process.env.EXS_LOG_PATH
   ? `${process.env.EXS_LOG_PATH}/execution-script`

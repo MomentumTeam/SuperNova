@@ -130,6 +130,15 @@ export function getRequestTypeQuery(type: any) {
   return { type: type };
 }
 
+export function getAncestorsQuery(groupInChargeId: any) {
+  return {
+    $or: [
+      { 'submittedBy.ancestors': groupInChargeId },
+      { 'submittedBy.directGroup': groupInChargeId },
+    ],
+  };
+}
+
 export function getSearchQuery(searchQuery: any) {
   let orArray = [];
   orArray = searchFields.map((field) => {
@@ -262,7 +271,18 @@ export function getApprovementQuery(
 ) {
   switch (approvementStatus) {
     case ApprovementStatus.COMMANDER_APPROVE:
-      return {};
+      return {
+        $or: [
+          {
+            'commanderDecision.decision': {
+              $ne: decisionToJSON(Decision.APPROVED),
+            },
+          },
+          {
+            'commanderDecision.decision': decisionToJSON(Decision.APPROVED),
+          },
+        ],
+      };
     case ApprovementStatus.SECURITY_APPROVE:
       return {
         $and: [
@@ -297,8 +317,13 @@ export function getApprovementQuery(
 
 export function getApprovementQueryByUserType(userType: ApproverType[]) {
   let or: any = [];
+  let commanderInserted: boolean = false;
   for (let type of userType) {
-    if (type === ApproverType.COMMANDER || type === ApproverType.ADMIN) {
+    if (
+      (type === ApproverType.COMMANDER || type === ApproverType.ADMIN) &&
+      !commanderInserted
+    ) {
+      commanderInserted = true;
       or.push(
         getApprovementQuery(ApprovementStatus.COMMANDER_APPROVE, userType)
       );

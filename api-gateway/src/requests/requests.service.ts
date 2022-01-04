@@ -102,6 +102,9 @@ export class RequestsService {
               directGroup: request.additionalParams?.directGroup || '',
               identityCard: request.additionalParams?.identityCard || '',
               personalNumber: request.additionalParams?.personalNumber || '',
+              groupInChargeId:
+                request.additionalParams?.groupInChargeId ||
+                config.fields.rootId,
             });
             await RequestsService.updateRequest({
               id: request.id,

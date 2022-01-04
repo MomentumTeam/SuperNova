@@ -8,6 +8,7 @@ import {
   ApproverArray,
   DeleteApproverReq,
   GetAllApproversReq,
+  GetApproverByEntityIdReq,
   GetUserTypeReq,
   GetUserTypeRes,
   IsApproverValidForOGReq,
@@ -53,6 +54,36 @@ const approverClient: any = new protoDescriptor.ApproverService(
 );
 
 export class ApproverService {
+  static async getApproverByEntityId(
+    getApproverByEntityIdReq: GetApproverByEntityIdReq
+  ): Promise<Approver> {
+    logger.info(
+      `Call to getApproverByEntityId in GTW`,
+      getApproverByEntityIdReq
+    );
+
+    return new Promise((resolve, reject) => {
+      approverClient.GetApproverByEntityId(
+        getApproverByEntityIdReq,
+        (err: any, response: Approver) => {
+          if (err) {
+            logger.error(`getApproverByEntityId ERROR in GTW`, {
+              err,
+              callRequest: getApproverByEntityIdReq,
+            });
+            reject(err);
+          }
+
+          logger.info(`getApproverByEntityId OK in GTW`, {
+            response: response,
+            callRequest: getApproverByEntityIdReq,
+          });
+          resolve(response);
+        }
+      );
+    });
+  }
+
   static async isApproverValidForOG(
     isApproverValidForOGReq: IsApproverValidForOGReq
   ) {

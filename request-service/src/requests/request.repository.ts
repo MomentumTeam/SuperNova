@@ -56,6 +56,7 @@ import {
 } from '../services/requestHelper';
 import { NotificationType } from '../interfaces/protoc/proto/notificationService';
 import {
+  getAncestorsQuery,
   getPersonQuery,
   getRequestTypeQuery,
   getSearchQuery,
@@ -1250,6 +1251,7 @@ export class RequestRepository {
             : SortOrder.DEC
         );
       }
+
       if (getRequestsByPersonReq.searchQuery) {
         const searchQuery = getSearchQuery(getRequestsByPersonReq.searchQuery);
         if (query['$or']) {
@@ -1257,6 +1259,22 @@ export class RequestRepository {
           delete query['$or'];
         } else {
           query = { ...query, ...searchQuery };
+        }
+      }
+
+      if (
+        approvementStatus === ApprovementStatus.BY_USER_TYPE &&
+        getRequestsByPersonReq.groupInChargeId &&
+        userType.includes(ApproverType.ADMIN)
+      ) {
+        const ancestorsQuery = getAncestorsQuery(
+          getRequestsByPersonReq.groupInChargeId
+        );
+        if (query['$or']) {
+          query['$and'] = [{ $or: query['$or'] }, ancestorsQuery];
+          delete query['$or'];
+        } else {
+          query = { ...query, ...ancestorsQuery };
         }
       }
 

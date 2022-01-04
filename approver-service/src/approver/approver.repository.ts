@@ -15,6 +15,7 @@ import {
   SyncApproverReq,
   UpdateApproverDecisionReq,
   IsApproverValidForOGRes,
+  GetApproverByEntityIdReq,
 } from '../interfaces/protoc/proto/approverService';
 import {
   DigitalIdentity,
@@ -42,6 +43,7 @@ import {
   approverTypeValidation,
 } from '../utils/approver.utils';
 import { hasPermissionToDecide } from '../utils/permission.utils';
+import { getApproverByEntity } from '../utils/approver.utils';
 import * as C from '../config';
 
 export class ApproverRepository {
@@ -211,6 +213,37 @@ export class ApproverRepository {
     } catch (error: any) {
       logger.error('syncApprover ERROR', {
         syncApproverReq,
+        error: { message: error.message },
+      });
+      throw error;
+    }
+  }
+
+  async getApproverByEntityId(
+    getApproverByEntityIdReq: GetApproverByEntityIdReq
+  ): Promise<Approver> {
+    try {
+      const approver = await ApproverModel.findOne({
+        entityId: getApproverByEntityIdReq.entityId,
+      });
+      if (approver) {
+        const document = approver.toObject();
+        turnObjectIdsToStrings(document);
+        document.type = ApproverType.UNKNOWN;
+        return document as Approver;
+      } else {
+        const entity = await KartoffelService.getEntityById({
+          id: getApproverByEntityIdReq.entityId,
+        });
+        if (hasCommanderRank(entity)) {
+          return getApproverByEntity(entity, ApproverType.COMMANDER);
+        } else {
+          return getApproverByEntity(entity, ApproverType.SOLDIER);
+        }
+      }
+    } catch (error: any) {
+      logger.error('getApproverByEntityId ERROR', {
+        getApproverByEntityIdReq,
         error: { message: error.message },
       });
       throw error;
