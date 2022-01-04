@@ -255,6 +255,7 @@ services:
       - KC_KARTOFFEL_GOAL_USER=GoalUser
       - KC_KARTOFFEL_DOMAIN_USER=domainUser
       - KC_CIVILIAN=Civilian
+      - KC_SEND_UPN_TO_KARTOFFEL=true
       - KC_LOG_PATH=/logs
 
   execution-script:
