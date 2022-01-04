@@ -71,6 +71,9 @@ export class ApproverRepository {
         const approverGroup = await KartoffelService.getOGById({
           id: approverEntity.directGroup,
         });
+        // OneTree is not considered
+        approverGroup.ancestors.pop();
+        group.ancestors.pop();
         const lastIndex =
           approverGroup.ancestors.length < C.ogValidationDepth
             ? approverGroup.ancestors.length
@@ -84,6 +87,12 @@ export class ApproverRepository {
             return { isValid: true };
           }
         }
+        for (let groupAncestor of group.ancestors) {
+          if (groupAncestor === approverEntity.directGroup) {
+            return { isValid: true };
+          }
+        }
+
         return { isValid: false };
       }
     } catch (error: any) {
