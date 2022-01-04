@@ -178,7 +178,7 @@ export const connectEntityAndDI = async (connectEntityAndDIReq: any) => {
       id: id,
       uniqueId: uniqueId,
     };
-    if (upn !== undefined) {
+    if (upn !== undefined && config.sendUPNToKartoffel) {
       body.upn = upn;
     }
     const successMessage: SuccessMessage =
