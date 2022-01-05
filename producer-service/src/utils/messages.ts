@@ -190,30 +190,33 @@ export function generateADQueueMessage(request: Request): any {
       };
       break;
     case RequestType.ASSIGN_ROLE_TO_ENTITY: //reviewed with Orin
-      if (request.kartoffelParams?.needDisconnect) {
+      if (
+        request.kartoffelParams?.needDisconnect &&
+        adParams.oldSAMAccountName
+      ) {
         //MoveRole
         message.data = {
           samAccountName: adParams.oldSAMAccountName,
           toSamAccountName: adParams.newSAMAccountName,
-          upn: adParams.upn,
+          upn: `${adParams.upn}@${C.upnSuffix}`,
           firstName: adParams.firstName,
           lastName: adParams.lastName,
           fullName: adParams.fullName,
           nickname: adParams.fullName,
           rank: adParams.rank,
-          jobNumber: adParams.roleSerialCode,
+          jobNumber: '0',
         };
       } else {
         //ConnectNewRole
         message.data = {
           userID: adParams.newSAMAccountName,
-          UPN: adParams.upn,
+          UPN: `${adParams.upn}@${C.upnSuffix}`,
           firstName: adParams.firstName,
           lastName: adParams.lastName,
           fullName: adParams.fullName,
           rank: adParams.rank,
-          ID: adParams.newSAMAccountName, //?
-          pdoName: adParams.roleSerialCode, //?
+          ID: adParams.newSAMAccountName,
+          pdoName: 'x',
         };
       }
       break;

@@ -10,6 +10,8 @@ export const devMode = process.env.PS_DEV_MODE
   ? process.env.PS_DEV_MODE === 'true'
   : true;
 
+export const upnSuffix = process.env.PS_AD_UPN_SUFFIX || 'gmail.com';
+
 export const shmuelAudience = process.env.PS_SHMUEL_AUDIENCE || 'shmuel';
 export const spikeServiceUrl = process.env.PS_SS_URL || '0.0.0.0:8080';
 export const spikeTokenRefreshInHours = process.env.PS_SPIKE_TOKEN_REFRESH_HOURS
