@@ -146,7 +146,7 @@ export class DiRepository {
       } else {
         const res = await this.kartoffelUtils.kartoffelGet(
           `${C.kartoffelUrl}/api/digitalIdentities/${encodeURIComponent(
-            getDIByUniqueIdRequest.id
+            getDIByUniqueIdRequest.uniqueId
           )}`
         );
         return res as DigitalIdentity;

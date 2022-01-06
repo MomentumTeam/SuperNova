@@ -121,7 +121,7 @@ message UpdateDIRequest{
 }
 
 message GetDIByUniqueIdRequest{
-    string id = 1;
+    string uniqueId = 1;
 }
 
 message SearchDIByUniqueIdRequest{

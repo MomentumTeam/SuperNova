@@ -198,7 +198,7 @@ message CreateNewApproverReq{
     optional ApproverDecision commanderDecision = 3;
     optional ApproverDecision securityDecision = 4;
     optional ApproverDecision superSecurityDecision = 5;
-    repeated EntityMin commanders = 6;  
+    repeated EntityMin commanders = 6;
     repeated EntityMin securityApprovers = 7;
     repeated EntityMin superSecurityApprovers = 8;
     optional AdditionalParams additionalParams = 9;

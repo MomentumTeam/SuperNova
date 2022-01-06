@@ -63,7 +63,7 @@ export interface UpdateDIRequest {
 }
 
 export interface GetDIByUniqueIdRequest {
-  id: string;
+  uniqueId: string;
 }
 
 export interface SearchDIByUniqueIdRequest {
@@ -1445,15 +1445,15 @@ export const UpdateDIRequest = {
   },
 };
 
-const baseGetDIByUniqueIdRequest: object = { id: "" };
+const baseGetDIByUniqueIdRequest: object = { uniqueId: "" };
 
 export const GetDIByUniqueIdRequest = {
   encode(
     message: GetDIByUniqueIdRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
+    if (message.uniqueId !== "") {
+      writer.uint32(10).string(message.uniqueId);
     }
     return writer;
   },
@@ -1469,7 +1469,7 @@ export const GetDIByUniqueIdRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.id = reader.string();
+          message.uniqueId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -1481,17 +1481,17 @@ export const GetDIByUniqueIdRequest = {
 
   fromJSON(object: any): GetDIByUniqueIdRequest {
     const message = { ...baseGetDIByUniqueIdRequest } as GetDIByUniqueIdRequest;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
+    if (object.uniqueId !== undefined && object.uniqueId !== null) {
+      message.uniqueId = String(object.uniqueId);
     } else {
-      message.id = "";
+      message.uniqueId = "";
     }
     return message;
   },
 
   toJSON(message: GetDIByUniqueIdRequest): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
+    message.uniqueId !== undefined && (obj.uniqueId = message.uniqueId);
     return obj;
   },
 
@@ -1499,10 +1499,10 @@ export const GetDIByUniqueIdRequest = {
     object: DeepPartial<GetDIByUniqueIdRequest>
   ): GetDIByUniqueIdRequest {
     const message = { ...baseGetDIByUniqueIdRequest } as GetDIByUniqueIdRequest;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
+    if (object.uniqueId !== undefined && object.uniqueId !== null) {
+      message.uniqueId = object.uniqueId;
     } else {
-      message.id = "";
+      message.uniqueId = "";
     }
     return message;
   },

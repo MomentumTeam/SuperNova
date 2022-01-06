@@ -198,7 +198,7 @@ message CreateNewApproverReq{
     optional ApproverDecision commanderDecision = 3;
     optional ApproverDecision securityDecision = 4;
     optional ApproverDecision superSecurityDecision = 5;
-    repeated EntityMin commanders = 6;  
+    repeated EntityMin commanders = 6;
     repeated EntityMin securityApprovers = 7;
     repeated EntityMin superSecurityApprovers = 8;
     optional AdditionalParams additionalParams = 9;
@@ -827,6 +827,7 @@ message AdditionalParams{
     optional string personalNumber = 6;
     optional string identityCard = 7;
     string directGroup = 8;
+    optional string groupInChargeId = 9;
 }
 
 //5.RenameOGRequest
@@ -918,6 +919,7 @@ message AssignRoleToEntityKartoffelParams{
     string roleId = 4;
     string hierarchy = 5;
     string directGroup = 6;
+    optional string upn = 7;
 }
 
 message AssignRoleToEntityADParams{
@@ -1036,6 +1038,7 @@ message GetRequestsByPersonReq{
     optional RequestType type = 10;
     optional SortField sortField = 11;
     optional SortOrder sortOrder = 12;
+    optional string groupInChargeId = 13;
     
 }
 
@@ -1121,6 +1124,8 @@ message EntityMin{
     string displayName = 2;
     optional string identityCard = 3;
     optional string personalNumber = 4;
+    optional string directGroup = 5;
+    repeated string ancestors = 6;
 }
 
 message SuccessMessage{
@@ -1226,6 +1231,7 @@ message KartoffelParams{
     optional string oldJobTitle = 28;
     optional string hierarchy = 29;
     optional string oldHierarchy = 30;
+    optional string upn = 31;
     //EditEntity
     // string firstName = 25;
     // string lastName = 26;

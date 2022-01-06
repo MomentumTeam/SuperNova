@@ -66,14 +66,14 @@ describe('DI Manager', () => {
   describe('GetDIByUniqueId', () => {
     it('should get 1 di', async () => {
       const di: DigitalIdentity = await diManager.getDIByUniqueId({
-        id: randomDI.uniqueId,
+        uniqueId: randomDI.uniqueId,
       });
       expect(di).to.exist;
       expect(di.uniqueId.toLowerCase()).to.equal(randomDIUniqueId);
     });
     it('invalid id', async () => {
       try {
-        const res = await diManager.getDIByUniqueId({ id: 'blalalala' });
+        const res = await diManager.getDIByUniqueId({ uniqueId: 'blalalala' });
       } catch (error: any) {
         expect(error.response.data.status).to.equal(404);
       }
@@ -92,7 +92,7 @@ describe('DI Manager', () => {
 
     before((done) => setTimeout(done, timeout));
     it('get the same role', async () => {
-      const di = await diManager.getDIByUniqueId({ id: randomDI.uniqueId });
+      const di = await diManager.getDIByUniqueId({ uniqueId: randomDI.uniqueId });
       expect(di).to.be.exist;
       expect(di.uniqueId.toLowerCase()).to.be.equal(randomDIUniqueId);
       expect(di.isRoleAttachable).to.be.false;
@@ -111,7 +111,7 @@ describe('DI Manager', () => {
     before((done) => setTimeout(done, timeout));
     it('check if deleted', async () => {
       try {
-        const di = await diManager.getDIByUniqueId({ id: randomDI.uniqueId });
+        const di = await diManager.getDIByUniqueId({ uniqueId: randomDI.uniqueId });
       } catch (error: any) {
         expect(error.response.data.status).to.equal(404);
       }
