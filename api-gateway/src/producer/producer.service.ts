@@ -22,11 +22,20 @@ const psPackageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(
 const psProtoDescriptor: any =
   grpc.loadPackageDefinition(psPackageDefinition).Producer;
 
-const producerClient: any = new psProtoDescriptor.Producer(
-  config.endpoints.producer,
-  grpc.credentials.createInsecure(),
-  { 'grpc.keepalive_timeout_ms': 5000 }
-);
+const clients: any = [];
+for (let i = 0; i < config.fields.grpcPoolSize; i++) {
+  clients.push(
+    new psProtoDescriptor.Producer(
+      config.endpoints.producer,
+      grpc.credentials.createInsecure(),
+      { 'grpc.keepalive_timeout_ms': 5000 }
+    )
+  );
+}
+
+function randomClient(): any {
+  return clients[Math.floor(Math.random() * clients.length)];
+}
 
 export default class ProducerService {
   static async executeRequest(requestId: string) {
@@ -68,7 +77,7 @@ export default class ProducerService {
         callRequest: { id: requestId },
       });
 
-      producerClient.ProduceToKartoffelQueue(
+      randomClient().ProduceToKartoffelQueue(
         { id: requestId },
         (error: any, response: SuccessMessage) => {
           if (error) {
@@ -95,7 +104,7 @@ export default class ProducerService {
         callRequest: { id: requestId },
       });
 
-      producerClient.ProduceToADQueue(
+      randomClient().ProduceToADQueue(
         { id: requestId },
         (error: any, response: SuccessMessage) => {
           if (error) {

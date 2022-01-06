@@ -25,6 +25,10 @@ export const storeLogs = process.env.GLOBAL_STORE_LOGS
   ? process.env.GLOBAL_STORE_LOGS === 'true'
   : false;
 
+export const grpcPoolSize = process.env.GLOBAL_GRPC_POOL_SIZE
+  ? parseInt(process.env.GLOBAL_GRPC_POOL_SIZE)
+  : 2;
+
 export const searchFields = [
   { name: 'submittedBy.displayName' },
   { name: 'submittedBy.personalNumber' },

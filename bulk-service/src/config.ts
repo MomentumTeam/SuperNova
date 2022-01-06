@@ -58,6 +58,11 @@ export const exampleFiles = {
 export const logPath = process.env.BS_LOG_PATH
   ? `${process.env.BS_LOG_PATH}/bulk-service`
   : './logs/bulk-service';
+
+export const grpcPoolSize = process.env.GLOBAL_GRPC_POOL_SIZE
+  ? parseInt(process.env.GLOBAL_GRPC_POOL_SIZE)
+  : 2;
+
 export const storeLogs = process.env.GLOBAL_STORE_LOGS
   ? process.env.GLOBAL_STORE_LOGS === 'true'
   : false;

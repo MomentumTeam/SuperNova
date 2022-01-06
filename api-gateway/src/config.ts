@@ -24,6 +24,7 @@ export const config = {
       .get('GATEWAY_ROOT_ID')
       .default('619e3193f235dc001846bb4f')
       .asString(),
+    grpcPoolSize: env.get('GLOBAL_GRPC_POOL_SIZE').default('3').asInt(),
   },
   endpoints: {
     request: env.get('GATEWAY_RS_URL').default('0.0.0.0:8081').asString(),

@@ -74,11 +74,20 @@ const packageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(
 const protoDescriptor: any =
   grpc.loadPackageDefinition(packageDefinition).RequestService;
 
-export const requestsClient: any = new protoDescriptor.RequestService(
-  config.endpoints.request,
-  grpc.credentials.createInsecure(),
-  { 'grpc.keepalive_timeout_ms': 5000 }
-);
+const clients: any = [];
+for (let i = 0; i < config.fields.grpcPoolSize; i++) {
+  clients.push(
+    new protoDescriptor.RequestService(
+      config.endpoints.request,
+      grpc.credentials.createInsecure(),
+      { 'grpc.keepalive_timeout_ms': 5000 }
+    )
+  );
+}
+
+function randomClient(): any {
+  return clients[Math.floor(Math.random() * clients.length)];
+}
 
 export class RequestsService {
   static async executeRequestIfNeeded(request: any) {
@@ -129,7 +138,7 @@ export class RequestsService {
     logger.info(`Call to getRequestById in GTW`, getRequestByIdReq);
 
     return new Promise((resolve, reject) => {
-      requestsClient.GetRequestById(
+      randomClient().GetRequestById(
         getRequestByIdReq,
         (err: any, response: Request) => {
           if (err) {
@@ -156,7 +165,7 @@ export class RequestsService {
     logger.info(`Call to getRequestsByPerson in GTW`, getRequestsByPersonReq);
 
     return new Promise((resolve, reject) => {
-      requestsClient.GetRequestsByPerson(
+      randomClient().GetRequestsByPerson(
         getRequestsByPersonReq,
         (err: any, response: RequestArray) => {
           if (err) {
@@ -186,7 +195,7 @@ export class RequestsService {
     );
 
     return new Promise((resolve, reject) => {
-      requestsClient.GetRequestBySerialNumber(
+      randomClient().GetRequestBySerialNumber(
         getRequestBySerialNumberReq,
         (err: any, response: any) => {
           if (err) {
@@ -217,7 +226,7 @@ export class RequestsService {
     );
 
     return new Promise((resolve, reject) => {
-      requestsClient.TransferRequestToApprovers(
+      randomClient().TransferRequestToApprovers(
         transferRequestToApproversReq,
         (err: any, response: Request) => {
           if (err) {
@@ -242,7 +251,7 @@ export class RequestsService {
     logger.info(`Call to updateADStatus in GTW`, updateADStatus);
 
     return new Promise((resolve, reject) => {
-      requestsClient.UpdateADStatus(
+      randomClient().UpdateADStatus(
         updateADStatus,
         (err: any, response: Request) => {
           if (err) {
@@ -275,7 +284,7 @@ export class RequestsService {
     );
 
     return new Promise((resolve, reject) => {
-      requestsClient.UpdateKartoffelStatus(
+      randomClient().UpdateKartoffelStatus(
         updateKartoffelStatusReq,
         (err: any, response: Request) => {
           if (err) {
@@ -300,7 +309,7 @@ export class RequestsService {
     logger.info(`Call to updateRequest in GTW`, updateRequestReq);
 
     return new Promise((resolve, reject) => {
-      requestsClient.UpdateRequest(
+      randomClient().UpdateRequest(
         updateRequestReq,
         (err: any, response: Request) => {
           if (err) {
@@ -325,7 +334,7 @@ export class RequestsService {
     logger.info(`Call to updateCommanders in GTW`, updateCommandersReq);
 
     return new Promise((resolve, reject) => {
-      requestsClient.UpdateCommanders(
+      randomClient().UpdateCommanders(
         updateCommandersReq,
         (err: any, response: Request) => {
           if (err) {
@@ -355,7 +364,7 @@ export class RequestsService {
     );
 
     return new Promise((resolve, reject) => {
-      requestsClient.UpdateSecurityApprovers(
+      randomClient().UpdateSecurityApprovers(
         updateSecurityApproversReq,
         (err: any, response: Request) => {
           if (err) {
@@ -385,7 +394,7 @@ export class RequestsService {
     );
 
     return new Promise((resolve, reject) => {
-      requestsClient.UpdateApproverDecision(
+      randomClient().UpdateApproverDecision(
         updateApproverDecisionReq,
         (err: any, response: Request) => {
           if (err) {
@@ -412,7 +421,7 @@ export class RequestsService {
     logger.info(`Call to canPushToADQueue in GTW`, canPushToADQueueReq);
 
     return new Promise((resolve, reject) => {
-      requestsClient.CanPushToADQueue(
+      randomClient().CanPushToADQueue(
         canPushToADQueueReq,
         (err: any, response: CanPushToQueueRes) => {
           if (err) {
@@ -444,7 +453,7 @@ export class RequestsService {
     );
 
     return new Promise((resolve, reject) => {
-      requestsClient.CanPushToKartoffelQueue(
+      randomClient().CanPushToKartoffelQueue(
         canPushToKartoffelQueueReq,
         (err: any, response: CanPushToQueueRes) => {
           if (err) {
@@ -474,7 +483,7 @@ export class RequestsService {
     logger.info(`Call to createRoleRequest in GTW`, createRoleReq);
 
     return new Promise((resolve, reject) => {
-      requestsClient.CreateRoleRequest(
+      randomClient().CreateRoleRequest(
         createRoleReq,
         (err: any, response: CreateRoleRes) => {
           if (err) {
@@ -504,7 +513,7 @@ export class RequestsService {
     );
 
     return new Promise((resolve, reject) => {
-      requestsClient.AssignRoleToEntityRequest(
+      randomClient().AssignRoleToEntityRequest(
         assignRoleToEntityReq,
         (err: any, response: AssignRoleToEntityRes) => {
           if (err) {
@@ -529,7 +538,7 @@ export class RequestsService {
     logger.info(`Call to createOGRequest in GTW`, createOGReq);
 
     return new Promise((resolve, reject) => {
-      requestsClient.CreateOGRequest(
+      randomClient().CreateOGRequest(
         createOGReq,
         (err: any, response: CreateOGRes) => {
           if (err) {
@@ -559,7 +568,7 @@ export class RequestsService {
     );
 
     return new Promise((resolve, reject) => {
-      requestsClient.CreateNewApproverRequest(
+      randomClient().CreateNewApproverRequest(
         createNewApproverReq,
         (err: any, response: CreateNewApproverRes) => {
           if (err) {
@@ -584,7 +593,7 @@ export class RequestsService {
     logger.info(`Call to createEntityRequest in GTW`, createEntityReq);
 
     return new Promise((resolve, reject) => {
-      requestsClient.CreateEntityRequest(
+      randomClient().CreateEntityRequest(
         createEntityReq,
         (err: any, response: CreateEntityRes) => {
           if (err) {
@@ -609,7 +618,7 @@ export class RequestsService {
     logger.info(`Call to renameOGRequest in GTW`, renameOGReq);
 
     return new Promise((resolve, reject) => {
-      requestsClient.RenameOGRequest(
+      randomClient().RenameOGRequest(
         renameOGReq,
         (err: any, response: RenameOGRes) => {
           if (err) {
@@ -634,7 +643,7 @@ export class RequestsService {
     logger.info(`Call to renameRoleRequest in GTW`, renameRoleReq);
 
     return new Promise((resolve, reject) => {
-      requestsClient.RenameRoleRequest(
+      randomClient().RenameRoleRequest(
         renameRoleReq,
         (err: any, response: RenameRoleRes) => {
           if (err) {
@@ -659,7 +668,7 @@ export class RequestsService {
     logger.info(`Call to editEntityRequest in GTW`, editEntityReq);
 
     return new Promise((resolve, reject) => {
-      requestsClient.EditEntityRequest(
+      randomClient().EditEntityRequest(
         editEntityReq,
         (err: any, response: EditEntityRes) => {
           if (err) {
@@ -689,7 +698,7 @@ export class RequestsService {
     );
 
     return new Promise((resolve, reject) => {
-      requestsClient.ChangeRoleHierarchyRequest(
+      randomClient().ChangeRoleHierarchyRequest(
         changeRoleHierarchyRequest,
         (err: any, response: ChangeRoleHierarchyRes) => {
           if (err) {
@@ -715,7 +724,7 @@ export class RequestsService {
     logger.info(`Call to deleteRoleRequest in GTW`, deleteRoleReq);
 
     return new Promise((resolve, reject) => {
-      requestsClient.DeleteRoleRequest(
+      randomClient().DeleteRoleRequest(
         deleteRoleReq,
         (err: any, response: DeleteRoleRes) => {
           if (err) {
@@ -740,7 +749,7 @@ export class RequestsService {
     logger.info(`Call to deleteOGRequest in GTW`, deleteOGReq);
 
     return new Promise((resolve, reject) => {
-      requestsClient.DeleteOGRequest(
+      randomClient().DeleteOGRequest(
         deleteOGReq,
         (err: any, response: DeleteOGRes) => {
           if (err) {
@@ -765,7 +774,7 @@ export class RequestsService {
     logger.info(`Call to deleteEntityRequest in GTW`, deleteEntityRequest);
 
     return new Promise((resolve, reject) => {
-      requestsClient.DeleteEntityRequest(
+      randomClient().DeleteEntityRequest(
         deleteEntityRequest,
         (err: any, response: DeleteEntityRes) => {
           if (err) {
@@ -795,7 +804,7 @@ export class RequestsService {
     );
 
     return new Promise((resolve, reject) => {
-      requestsClient.DisconectRoleFromEntityRequest(
+      randomClient().DisconectRoleFromEntityRequest(
         disconectRoleFromEntityReq,
         (err: any, response: DisconectRoleFromEntityRes) => {
           if (err) {
@@ -820,7 +829,7 @@ export class RequestsService {
     logger.info(`Call to deleteRequest in GTW`, deleteReq);
 
     return new Promise((resolve, reject) => {
-      requestsClient.DeleteRequest(
+      randomClient().DeleteRequest(
         deleteReq,
         (err: any, response: SuccessMessage) => {
           if (err) {
@@ -845,7 +854,7 @@ export class RequestsService {
     logger.info(`Call to isRequestApproved in GTW`, isRequestApprovedReq);
 
     return new Promise((resolve, reject) => {
-      requestsClient.IsRequestApproved(
+      randomClient().IsRequestApproved(
         isRequestApprovedReq,
         (err: any, response: IsRequestApprovedRes) => {
           if (err) {

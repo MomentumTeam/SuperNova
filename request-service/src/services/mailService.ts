@@ -24,11 +24,20 @@ const packageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(
 const protoDescriptor: any =
   grpc.loadPackageDefinition(packageDefinition).MailService;
 
-const notificationClient: any = new protoDescriptor.MailService(
-  config.mailServiceUrl,
-  grpc.credentials.createInsecure(),
-  { 'grpc.keepalive_timeout_ms': 5000 }
-);
+const clients: any = [];
+for (let i = 0; i < config.grpcPoolSize; i++) {
+  clients.push(
+    new protoDescriptor.MailService(
+      config.mailServiceUrl,
+      grpc.credentials.createInsecure(),
+      { 'grpc.keepalive_timeout_ms': 5000 }
+    )
+  );
+}
+
+function randomClient(): any {
+  return clients[Math.floor(Math.random() * clients.length)];
+}
 
 export default class MailService {
   static async sendCustomMail(
@@ -36,7 +45,7 @@ export default class MailService {
   ): Promise<SuccessMessage> {
     console.log('sendCustomMail');
     return new Promise((resolve, reject) => {
-      notificationClient.SendCustomMail(
+      randomClient().SendCustomMail(
         sendCustomMailReq,
         (err: any, successMessage: SuccessMessage) => {
           if (err) {
@@ -52,7 +61,7 @@ export default class MailService {
   static async sendMail(sendMailReq: SendMailReq): Promise<SuccessMessage> {
     console.log('sendMail');
     return new Promise((resolve, reject) => {
-      notificationClient.SendMail(
+      randomClient().SendMail(
         sendMailReq,
         (err: any, successMessage: SuccessMessage) => {
           if (err) {
