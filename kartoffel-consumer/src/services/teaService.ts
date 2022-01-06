@@ -23,31 +23,43 @@ const packageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(
 
 const protoDescriptor: any = grpc.loadPackageDefinition(packageDefinition).Tea;
 
-const teaClient: any = new protoDescriptor.Tea(
-  config.endpoints.tea,
-  grpc.credentials.createInsecure(),
-  { 'grpc.keepalive_timeout_ms': 5000 }
-);
+const clients: any = [];
+for (let i = 0; i < config.grpcPoolSize; i++) {
+  clients.push(
+    new protoDescriptor.Tea(
+      config.endpoints.tea,
+      grpc.credentials.createInsecure(),
+      { 'grpc.keepalive_timeout_ms': 5000 }
+    )
+  );
+}
+
+function randomClient(): any {
+  return clients[Math.floor(Math.random() * clients.length)];
+}
 
 export default class TeaService {
   static async throwTea(throwTeaReq: ReportTeaReq): Promise<SuccessMessage> {
     return new Promise((resolve, reject) => {
       logger.info(`Call to throwTea in KC`, throwTeaReq);
-      teaClient.ThrowTea(throwTeaReq, (err: any, response: SuccessMessage) => {
-        if (err) {
-          logger.error(`throwTea ERROR in KC`, {
-            err,
-            callRequest: throwTeaReq,
-          });
-          reject(err);
-        } else {
-          logger.info(`throwTea OK in KC`, {
-            response: response,
-            callRequest: throwTeaReq,
-          });
-          resolve(response);
+      randomClient().ThrowTea(
+        throwTeaReq,
+        (err: any, response: SuccessMessage) => {
+          if (err) {
+            logger.error(`throwTea ERROR in KC`, {
+              err,
+              callRequest: throwTeaReq,
+            });
+            reject(err);
+          } else {
+            logger.info(`throwTea OK in KC`, {
+              response: response,
+              callRequest: throwTeaReq,
+            });
+            resolve(response);
+          }
         }
-      });
+      );
     });
   }
 
@@ -56,7 +68,7 @@ export default class TeaService {
   ): Promise<SuccessMessage> {
     return new Promise((resolve, reject) => {
       logger.info(`Call to reportTeaSuccess in KC`, reportTeaSuccessReq);
-      teaClient.ReportTeaSuccess(
+      randomClient().ReportTeaSuccess(
         reportTeaSuccessReq,
         (err: any, response: SuccessMessage) => {
           if (err) {
@@ -82,7 +94,7 @@ export default class TeaService {
   ): Promise<SuccessMessage> {
     return new Promise((resolve, reject) => {
       logger.info(`Call to reportTeaFail in KC`, reportTeaFailReq);
-      teaClient.ReportTeaFail(
+      randomClient().ReportTeaFail(
         reportTeaFailReq,
         (err: any, response: SuccessMessage) => {
           if (err) {

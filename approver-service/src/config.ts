@@ -23,6 +23,10 @@ export const alwaysValidCommanders = process.env.APS_ALWAYS_VALID_COMMANDERS
   ? process.env.APS_ALWAYS_VALID_COMMANDERS.split(',')
   : [];
 
+export const grpcPoolSize = process.env.GLOBAL_GRPC_POOL_SIZE
+  ? parseInt(process.env.GLOBAL_GRPC_POOL_SIZE)
+  : 2;
+
 export const logPath = process.env.APS_LOG_PATH
   ? `${process.env.APS_LOG_PATH}/approver-service`
   : './logs/approver-service';

@@ -30,18 +30,27 @@ const packageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(
 const protoDescriptor: any =
   grpc.loadPackageDefinition(packageDefinition).Kartoffel;
 
-const kartoffelClient: any = new protoDescriptor.Kartoffel(
-  config.kartoffelServiceUrl,
-  grpc.credentials.createInsecure(),
-  { 'grpc.keepalive_timeout_ms': 5000 }
-);
+const clients: any = [];
+for (let i = 0; i < config.grpcPoolSize; i++) {
+  clients.push(
+    new protoDescriptor.Kartoffel(
+      config.kartoffelServiceUrl,
+      grpc.credentials.createInsecure(),
+      { 'grpc.keepalive_timeout_ms': 5000 }
+    )
+  );
+}
+
+function randomClient(): any {
+  return clients[Math.floor(Math.random() * clients.length)];
+}
 
 export default class KartoffelService {
   static async searchEntitiesByFullName(
     searchEntitiesByFullName: SearchEntitiesByFullNameRequest
   ): Promise<EntityArray> {
     return new Promise((resolve, reject) => {
-      kartoffelClient.SearchEntitiesByFullName(
+      randomClient().SearchEntitiesByFullName(
         searchEntitiesByFullName,
         (error: any, entityArray: EntityArray) => {
           if (error) {
@@ -66,7 +75,7 @@ export default class KartoffelService {
     searchCommandersByFullName: SearchEntitiesByFullNameRequest
   ): Promise<EntityArray> {
     return new Promise((resolve, reject) => {
-      kartoffelClient.SearchCommandersByFullName(
+      randomClient().SearchCommandersByFullName(
         searchCommandersByFullName,
         (error: any, entityArray: EntityArray) => {
           if (error) {
@@ -98,7 +107,7 @@ export default class KartoffelService {
     searchCommandersByFullName: SearchEntitiesByFullNameRequest
   ): Promise<EntityArray> {
     return new Promise((resolve, reject) => {
-      kartoffelClient.SearchHighCommandersByFullName(
+      randomClient().SearchHighCommandersByFullName(
         searchCommandersByFullName,
         (error: any, entityArray: EntityArray) => {
           if (error) {
@@ -130,7 +139,7 @@ export default class KartoffelService {
     getEntityByRoleId: GetEntityByRoleIdRequest
   ): Promise<Entity> {
     return new Promise((resolve, reject) => {
-      kartoffelClient.GetEntityByRoleId(
+      randomClient().GetEntityByRoleId(
         getEntityByRoleId,
         (error: any, entity: Entity) => {
           if (error) {
@@ -155,7 +164,7 @@ export default class KartoffelService {
     getEntityById: GetEntityByIdRequest
   ): Promise<Entity> {
     return new Promise((resolve, reject) => {
-      kartoffelClient.GetEntityById(
+      randomClient().GetEntityById(
         getEntityById,
         (error: any, entity: Entity) => {
           if (error) {
@@ -180,7 +189,7 @@ export default class KartoffelService {
     getOGByIdReq: GetOGByIdRequest
   ): Promise<OrganizationGroup> {
     return new Promise((resolve, reject) => {
-      kartoffelClient.GetOGById(
+      randomClient().GetOGById(
         getOGByIdReq,
         (error: any, group: OrganizationGroup) => {
           if (error) {

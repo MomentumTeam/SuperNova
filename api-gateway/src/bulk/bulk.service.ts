@@ -36,13 +36,22 @@ const packageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(
 const protoDescriptor: any =
   grpc.loadPackageDefinition(packageDefinition).BulkService;
 
-const bulkClient: any = new protoDescriptor.BulkService(
-  config.endpoints.bulk,
-  grpc.credentials.createInsecure(),
-  {
-    'grpc.keepalive_timeout_ms': 5000,
-  }
-);
+const clients: any = [];
+for (let i = 0; i < config.fields.grpcPoolSize; i++) {
+  clients.push(
+    new protoDescriptor.BulkService(
+      config.endpoints.bulk,
+      grpc.credentials.createInsecure(),
+      {
+        'grpc.keepalive_timeout_ms': 5000,
+      }
+    )
+  );
+}
+
+function randomClient(): any {
+  return clients[Math.floor(Math.random() * clients.length)];
+}
 
 export class BulkService {
   // POST
@@ -51,7 +60,7 @@ export class BulkService {
     logger.info(`Call to isBulkFileValid in GTW`, isBulkFileValidReq);
 
     return new Promise((resolve, reject) => {
-      bulkClient.IsBulkFileValid(
+      randomClient().IsBulkFileValid(
         isBulkFileValidReq,
         (err: any, response: IsBulkFileValidRes) => {
           if (err) {
@@ -80,7 +89,7 @@ export class BulkService {
     logger.info(`Call to createRoleBulkRequest in GTW`, createRoleBulkReq);
 
     return new Promise((resolve, reject) => {
-      bulkClient.CreateRoleBulkRequest(
+      randomClient().CreateRoleBulkRequest(
         createRoleBulkReq,
         (err: any, response: CreateRoleBulkRes) => {
           if (err) {
@@ -111,7 +120,7 @@ export class BulkService {
     );
 
     return new Promise((resolve, reject) => {
-      bulkClient.ChangeRoleHierarchyBulkRequest(
+      randomClient().ChangeRoleHierarchyBulkRequest(
         changeRoleHierarchyBulkReq,
         (err: any, response: ChangeRoleHierarchyBulkRes) => {
           if (err) {
@@ -142,7 +151,7 @@ export class BulkService {
     );
 
     return new Promise((resolve, reject) => {
-      bulkClient.GetBulkRequestExample(
+      randomClient().GetBulkRequestExample(
         getBulkRequestExampleReq,
         (err: any, response: GetBulkRequestExampleRes) => {
           if (err) {
@@ -173,7 +182,7 @@ export class BulkService {
     );
 
     return new Promise((resolve, reject) => {
-      bulkClient.GetCreateRoleBulkRequestById(
+      randomClient().GetCreateRoleBulkRequestById(
         getBulkRequestByIdReq,
         (err: any, response: DetailedCreateRoleBulkRequest) => {
           if (err) {
@@ -204,7 +213,7 @@ export class BulkService {
     );
 
     return new Promise((resolve, reject) => {
-      bulkClient.GetChangeRoleHierarchyBulkRequestById(
+      randomClient().GetChangeRoleHierarchyBulkRequestById(
         getBulkRequestByIdReq,
         (err: any, response: DetailedCreateRoleBulkRequest) => {
           if (err) {

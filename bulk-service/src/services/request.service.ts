@@ -20,15 +20,20 @@ import { logger } from '../logger';
 const PROTO_PATH = `${findPath('proto')}/requestService.proto`;
 
 export class RequestService {
-  client: any;
+  clients: any[];
   constructor() {
-    this.client = this.initClient();
+    this.clients = [];
+    this.initClients();
+  }
+
+  randomClient(): any {
+    return this.clients[Math.floor(Math.random() * this.clients.length)];
   }
 
   async getRequestById(req: any): Promise<any> {
     logger.info('getRequestById in RequestService', { req });
     return new Promise((resolve, reject) => {
-      this.client.GetRequestById(req, (error: any, res: any) => {
+      this.randomClient().GetRequestById(req, (error: any, res: any) => {
         if (error) {
           logger.error('getRequestById in RequestService ERROR', {
             error: { message: error.message },
@@ -48,7 +53,7 @@ export class RequestService {
   async getRequestsUnderBulk(req: any): Promise<any> {
     logger.info('getRequestsUnderBulk in RequestService', { req });
     return new Promise((resolve, reject) => {
-      this.client.GetRequestsUnderBulk(req, (error: any, res: any) => {
+      this.randomClient().GetRequestsUnderBulk(req, (error: any, res: any) => {
         if (error) {
           logger.error('getRequestsUnderBulk in RequestService ERROR', {
             error: { message: error.message },
@@ -67,7 +72,7 @@ export class RequestService {
   async updateRequest(req: any): Promise<any> {
     logger.info('updateRequest in RequestService', { req });
     return new Promise((resolve, reject) => {
-      this.client.UpdateRequest(req, (error: any, res: any) => {
+      this.randomClient().UpdateRequest(req, (error: any, res: any) => {
         if (error) {
           logger.error('updateRequest in RequestService ERROR', {
             error: { message: error.message },
@@ -87,7 +92,7 @@ export class RequestService {
   async deleteRequest(req: any): Promise<SuccessMessage> {
     logger.info('deleteRequest in RequestService', { req });
     return new Promise((resolve, reject) => {
-      this.client.DeleteRequest(req, (error: any, res: any) => {
+      this.randomClient().DeleteRequest(req, (error: any, res: any) => {
         if (error) {
           logger.error('deleteRequest in RequestService ERROR', {
             error: { message: error.message },
@@ -106,7 +111,7 @@ export class RequestService {
   async createRoleRequest(req: CreateRoleReq): Promise<Request> {
     logger.info('createRoleRequest in RequestService', { req });
     return new Promise((resolve, reject) => {
-      this.client.CreateRoleRequest(req, (error: any, res: any) => {
+      this.randomClient().CreateRoleRequest(req, (error: any, res: any) => {
         if (error) {
           logger.error('createRoleRequest in RequestService ERROR', {
             error: { message: error.message },
@@ -126,27 +131,30 @@ export class RequestService {
   async changeRoleHierarchyRequest(req: CreateRoleReq): Promise<Request> {
     logger.info('changeRoleHierarchyRequest in RequestService', { req });
     return new Promise((resolve, reject) => {
-      this.client.ChangeRoleHierarchyRequest(req, (error: any, res: any) => {
-        if (error) {
-          logger.error('changeRoleHierarchyRequest in RequestService ERROR', {
-            error: { message: error.message },
-          });
-          reject(error);
-        } else {
-          logger.info('changeRoleHierarchyRequest in RequestService OK', {
-            res,
-          });
-          res.type = RequestType[res.type];
-          resolve(res as Request);
+      this.randomClient().ChangeRoleHierarchyRequest(
+        req,
+        (error: any, res: any) => {
+          if (error) {
+            logger.error('changeRoleHierarchyRequest in RequestService ERROR', {
+              error: { message: error.message },
+            });
+            reject(error);
+          } else {
+            logger.info('changeRoleHierarchyRequest in RequestService OK', {
+              res,
+            });
+            res.type = RequestType[res.type];
+            resolve(res as Request);
+          }
         }
-      });
+      );
     });
   }
 
   async createRoleBulkRequest(req: CreateRoleBulkReq): Promise<Request> {
     logger.info('createRoleBulkRequest in RequestService', { req });
     return new Promise((resolve, reject) => {
-      this.client.CreateRoleBulkRequest(req, (error: any, res: any) => {
+      this.randomClient().CreateRoleBulkRequest(req, (error: any, res: any) => {
         if (error) {
           logger.error('createRoleBulkRequest in RequestService ERROR', {
             error: { message: error.message },
@@ -168,7 +176,7 @@ export class RequestService {
   ): Promise<Request> {
     logger.info('changeRoleHierarchyBulkRequest in RequestService', { req });
     return new Promise((resolve, reject) => {
-      this.client.ChangeRoleHierarchyBulkRequest(
+      this.randomClient().ChangeRoleHierarchyBulkRequest(
         req,
         (error: any, res: any) => {
           if (error) {
@@ -191,8 +199,9 @@ export class RequestService {
     });
   }
 
-  private initClient(): any {
+  private initClients() {
     try {
+      this.clients = [];
       const packageDefinition: protoLoader.PackageDefinition =
         protoLoader.loadSync(PROTO_PATH, {
           keepCase: true,
@@ -204,13 +213,17 @@ export class RequestService {
       const protoDescriptor: any =
         grpc.loadPackageDefinition(packageDefinition).RequestService;
 
-      const client: any = new protoDescriptor.RequestService(
-        C.requestServiceUrl,
-        grpc.credentials.createInsecure(),
-        { 'grpc.keepalive_timeout_ms': 5000 }
-      );
-      logger.info('Client initialized successfully in RequestService');
-      return client;
+      for (let i = 0; i < C.grpcPoolSize; i++) {
+        this.clients.push(
+          new protoDescriptor.RequestService(
+            C.requestServiceUrl,
+            grpc.credentials.createInsecure(),
+            { 'grpc.keepalive_timeout_ms': 5000 }
+          )
+        );
+      }
+
+      logger.info('Clients initialized successfully in RequestService');
     } catch (error: any) {
       logger.error('Error while initializing RequestService client', {
         error: { message: error.message },

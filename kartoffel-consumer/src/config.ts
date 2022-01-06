@@ -41,4 +41,7 @@ export const config = {
   sendUPNToKartoffel: process.env.KC_SEND_UPN_TO_KARTOFFEL
     ? process.env.KC_SEND_UPN_TO_KARTOFFEL === 'true'
     : true,
+  grpcPoolSize: process.env.GLOBAL_GRPC_POOL_SIZE
+    ? parseInt(process.env.GLOBAL_GRPC_POOL_SIZE)
+    : 2,
 };
