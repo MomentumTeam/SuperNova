@@ -20,7 +20,7 @@ export async function parseExcelFile(
           roleEntityType: C.hebEntityTypeToKartoffelLang[row[2]],
           // clearance: C.hebClearanceToKartoffelLang[row[1]],
           clearance: row[1],
-          jobTitle: row[0],
+          jobTitle: row[0].trim(),
         };
       });
     } else {
@@ -32,7 +32,7 @@ export async function parseExcelFile(
           roleId: row[0],
         };
         if (row[2] != null && row[2] != undefined) {
-          res.newJobTitle = row[2];
+          res.newJobTitle = row[2].trim();
         }
         return res;
       });
@@ -85,12 +85,12 @@ export function containsLegalValues(rows: any, type: RequestType) {
     }
     return true;
   } else {
-    for (let i in rows) {
-      const email = rows[i][0].toString();
-      if (!EmailValidator.validate(email)) {
-        return false;
-      }
-    }
+    // for (let i in rows) {
+    //   const email = rows[i][0].toString();
+    //   if (!EmailValidator.validate(email)) {
+    //     return false;
+    //   }
+    // }
     return true;
   }
 }

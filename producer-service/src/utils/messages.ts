@@ -6,6 +6,9 @@ import {
 import * as C from '../config';
 
 function isValidMobilePhone(mobilePhone: any) {
+  if (mobilePhone === undefined || mobilePhone === null) {
+    return false;
+  }
   if (mobilePhone.length === 0) {
     return true;
   } else {
@@ -15,6 +18,9 @@ function isValidMobilePhone(mobilePhone: any) {
 }
 
 function isValidPhone(phone: any) {
+  if (phone === undefined || phone === null) {
+    return false;
+  }
   if (phone.length === 0) {
     return true;
   } else {
@@ -70,7 +76,7 @@ export function generateKartoffelQueueMessage(request: Request): any {
           !kartoffelParams.sex || kartoffelParams.sex === ''
             ? undefined
             : kartoffelParams.sex,
-        birthdate: kartoffelParams.birthdate,
+        birthDate: kartoffelParams.birthdate,
         entityType: kartoffelParams.entityType,
       };
       if (isValidPhone(kartoffelParams.phone)) {
@@ -117,10 +123,10 @@ export function generateKartoffelQueueMessage(request: Request): any {
         },
       };
       if (isValidMobilePhone(kartoffelParams.mobilePhone)) {
-        message.data.mobilePhone = kartoffelParams.phone;
+        message.data.properties.mobilePhone = kartoffelParams.mobilePhone;
       }
       if (kartoffelParams.birthdate) {
-        message.data.birthdate = kartoffelParams.birthdate;
+        message.data.properties.birthDate = kartoffelParams.birthdate;
       }
       break;
     case RequestType.DELETE_OG:
