@@ -233,3 +233,11 @@ export const SearchDIsByUniqueIdValidSchema = Joi.object({
   query: {
   },
 });
+
+export const GetDIByUniqueIdValidSchema = Joi.object({
+  body: {},
+  params: {
+    uniqueId: Joi.string().required(),
+  },
+  query: {},
+});

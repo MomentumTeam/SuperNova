@@ -389,4 +389,16 @@ export default class KartoffelController {
         res.status(statusCode).send(error.message);
       }
   }
+
+     static async getDIByUniqueId(req: Request, res: Response) {
+      const getDIByUniqueId: any = { ...req.query, ...req.params };
+
+      try {
+        const dis = await KartoffelService.getDIByUniqueId(getDIByUniqueId);
+        res.send(dis);
+      } catch (error: any) {
+        const statusCode = statusCodeHandler(error);
+        res.status(statusCode).send(error.message);
+      }
+  }
 }

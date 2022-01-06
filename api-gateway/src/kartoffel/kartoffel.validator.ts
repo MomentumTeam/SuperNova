@@ -6,6 +6,7 @@ import {
 import {
   getAllOGsSchema,
   getAllRolesSchema,
+  GetDIByUniqueIdValidSchema,
   getEntitiesByHierarchySchema,
   getEntitiesUnderOGSchema,
   getEntityByDIRequestSchema,
@@ -274,6 +275,15 @@ export class KartoffelValidator {
     next: NextFunction
   ) {
     transformRequest(req, validateObject(req, SearchDIsByUniqueIdValidSchema, { allowUnknown: true }));
+    next();
+  }
+
+  static isGetDIByUniqueIdValid(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    transformRequest(req, validateObject(req, GetDIByUniqueIdValidSchema, { allowUnknown: true }));
     next();
   }
 }

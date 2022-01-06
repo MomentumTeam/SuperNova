@@ -5,12 +5,14 @@ import * as protoLoader from '@grpc/proto-loader';
 import { logger } from '../utils/logger/logger';
 import {
   DigitalIdentities,
+  DigitalIdentity,
   Entity,
   EntityArray,
   GetAllOGsRequest,
   GetAllRolesRequest,
   GetChildrenOfOGRequest,
   GetChildrenOfRootOGRequest,
+  GetDIByUniqueIdRequest,
   GetEntitiesByHierarchyRequest,
   GetEntitiesUnderOGRequest,
   GetEntityByDIRequest,
@@ -682,6 +684,30 @@ export class KartoffelService {
         logger.info(`searchDIsByUniqueId OK in GTW`, {
           response: response,
           callRequest: searchDIsByUniqueIdRequest,
+        });
+        resolve(response);
+      });
+    });
+  }
+
+   static async getDIByUniqueId(
+    getDIByUniqueIdRequest: GetDIByUniqueIdRequest
+  ) {
+    logger.info(`Call to getDIByUniqueId in GTW`, getDIByUniqueIdRequest);
+
+    return new Promise((resolve, reject) => {
+      kartoffelClient.GetDIByUniqueId(getDIByUniqueIdRequest, (err: any, response: DigitalIdentity) => {
+        if (err) {
+          logger.error(`getDIByUniqueId ERROR in GTW`, {
+            err,
+            callRequest: getDIByUniqueIdRequest,
+          });
+          reject(err);
+        }
+
+        logger.info(`getDIByUniqueId OK in GTW`, {
+          response: response,
+          callRequest: getDIByUniqueIdRequest,
         });
         resolve(response);
       });
