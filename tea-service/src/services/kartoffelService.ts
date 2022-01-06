@@ -27,11 +27,20 @@ const packageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(
 const protoDescriptor: any =
   grpc.loadPackageDefinition(packageDefinition).Kartoffel;
 
-const kartoffelClient: any = new protoDescriptor.Kartoffel(
-  config.kartoffelServiceUrl,
-  grpc.credentials.createInsecure(),
-  { 'grpc.keepalive_timeout_ms': 5000 }
-);
+const clients: any = [];
+for (let i = 0; i < config.grpcPoolSize; i++) {
+  clients.push(
+    new protoDescriptor.Kartoffel(
+      config.kartoffelServiceUrl,
+      grpc.credentials.createInsecure(),
+      { 'grpc.keepalive_timeout_ms': 5000 }
+    )
+  );
+}
+
+function randomClient(): any {
+  return clients[Math.floor(Math.random() * clients.length)];
+}
 
 export default class KartoffelService {
   static async getRoleIdSuffixByOG(
@@ -39,7 +48,7 @@ export default class KartoffelService {
   ): Promise<RoleIdSuffix> {
     console.log('getRoleIdSuffixByOG');
     return new Promise((resolve, reject) => {
-      kartoffelClient.GetRoleIdSuffixByOG(
+      randomClient().GetRoleIdSuffixByOG(
         getRoleIdSuffixByOGReq,
         (err: any, roleIdSuffix: RoleIdSuffix) => {
           if (err) {
@@ -57,7 +66,7 @@ export default class KartoffelService {
   ): Promise<Entity> {
     console.log('getEntityById');
     return new Promise((resolve, reject) => {
-      kartoffelClient.GetEntityById(
+      randomClient().GetEntityById(
         getEntityById,
         (err: any, entity: Entity) => {
           if (err) {
@@ -75,7 +84,7 @@ export default class KartoffelService {
   ): Promise<OGPrefix> {
     console.log('getPrefixByOGId');
     return new Promise((resolve, reject) => {
-      kartoffelClient.GetPrefixByOGId(
+      randomClient().GetPrefixByOGId(
         getPrefixByOGIdRequest,
         (err: any, prefix: OGPrefix) => {
           if (err) {

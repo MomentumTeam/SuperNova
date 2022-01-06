@@ -59,11 +59,20 @@ const packageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(
 const protoDescriptor: any =
   grpc.loadPackageDefinition(packageDefinition).Kartoffel;
 
-const kartoffelClient: any = new protoDescriptor.Kartoffel(
-  config.endpoints.kartoffel,
-  grpc.credentials.createInsecure(),
-  { 'grpc.keepalive_timeout_ms': 5000 }
-);
+const clients: any = [];
+for (let i = 0; i < config.fields.grpcPoolSize; i++) {
+  clients.push(
+    new protoDescriptor.Kartoffel(
+      config.endpoints.kartoffel,
+      grpc.credentials.createInsecure(),
+      { 'grpc.keepalive_timeout_ms': 5000 }
+    )
+  );
+}
+
+function randomClient(): any {
+  return clients[Math.floor(Math.random() * clients.length)];
+}
 
 export class KartoffelService {
   // Entity
@@ -73,7 +82,7 @@ export class KartoffelService {
     logger.info(`Call to getEntityById in GTW`, getEntityByIdReq);
 
     return new Promise((resolve, reject) => {
-      kartoffelClient.GetEntityById(
+      randomClient().GetEntityById(
         getEntityByIdReq,
         (err: any, response: Entity) => {
           if (err) {
@@ -95,26 +104,31 @@ export class KartoffelService {
   }
   static async getPictureByEntityIdentifier(
     getPictureByEntityIdentifierReq: GetPictureByEntityIdentifierRequest
-
   ) {
-    logger.info(`Call to getPictureByEntityIdentifier in GTW`, getPictureByEntityIdentifierReq);
+    logger.info(
+      `Call to getPictureByEntityIdentifier in GTW`,
+      getPictureByEntityIdentifierReq
+    );
 
     return new Promise((resolve, reject) => {
-      kartoffelClient.GetPictureByEntityIdentifier(getPictureByEntityIdentifierReq, (err: any, response: Image) => {
-        if (err) {
-          logger.error(`getPictureByEntityIdentifier ERROR in GTW`, {
-            err,
+      randomClient().GetPictureByEntityIdentifier(
+        getPictureByEntityIdentifierReq,
+        (err: any, response: Image) => {
+          if (err) {
+            logger.error(`getPictureByEntityIdentifier ERROR in GTW`, {
+              err,
+              callRequest: getPictureByEntityIdentifierReq,
+            });
+            reject(err);
+          }
+
+          logger.info(`getPictureByEntityIdentifier OK in GTW`, {
+            response: response,
             callRequest: getPictureByEntityIdentifierReq,
           });
-          reject(err);
+          resolve(response);
         }
-
-        logger.info(`getPictureByEntityIdentifier OK in GTW`, {
-          response: response,
-          callRequest: getPictureByEntityIdentifierReq,
-        });
-        resolve(response);
-      });
+      );
     });
   }
   static async searchEntitiesByFullName(
@@ -126,7 +140,7 @@ export class KartoffelService {
     );
 
     return new Promise((resolve, reject) => {
-      kartoffelClient.SearchEntitiesByFullName(
+      randomClient().SearchEntitiesByFullName(
         searchEntitiesByFullNameReq,
         (err: any, response: EntityArray) => {
           if (err) {
@@ -155,7 +169,7 @@ export class KartoffelService {
     );
 
     return new Promise((resolve, reject) => {
-      kartoffelClient.GetEntityByIdentifier(
+      randomClient().GetEntityByIdentifier(
         getEntityByIdentifierReq,
         (err: any, response: Entity) => {
           if (err) {
@@ -181,7 +195,7 @@ export class KartoffelService {
     logger.info(`Call to getEntityByRoleId in GTW`, getEntityByRoleIdReq);
 
     return new Promise((resolve, reject) => {
-      kartoffelClient.GetEntityByRoleId(
+      randomClient().GetEntityByRoleId(
         getEntityByRoleIdReq,
         (err: any, response: Entity) => {
           if (err) {
@@ -207,7 +221,7 @@ export class KartoffelService {
     logger.info(`Call to getEntitiesUnderOG in GTW`, getEntitiesUnderOGReq);
 
     return new Promise((resolve, reject) => {
-      kartoffelClient.GetEntitiesUnderOG(
+      randomClient().GetEntitiesUnderOG(
         getEntitiesUnderOGReq,
         (err: any, response: EntityArray) => {
           if (err) {
@@ -236,7 +250,7 @@ export class KartoffelService {
     );
 
     return new Promise((resolve, reject) => {
-      kartoffelClient.GetEntitiesByHierarchy(
+      randomClient().GetEntitiesByHierarchy(
         getEntitiesByHierarchyReq,
         (err: any, response: EntityArray) => {
           if (err) {
@@ -260,7 +274,7 @@ export class KartoffelService {
     logger.info(`Call to getEntityByDI in GTW`, getEntityByDIReq);
 
     return new Promise((resolve, reject) => {
-      kartoffelClient.GetEntityByDI(
+      randomClient().GetEntityByDI(
         getEntityByDIReq,
         (err: any, response: EntityArray) => {
           if (err) {
@@ -286,7 +300,7 @@ export class KartoffelService {
     logger.info(`Call to searchOG in GTW`, searchOGReq);
 
     return new Promise((resolve, reject) => {
-      kartoffelClient.SearchOG(searchOGReq, (err: any, response: OGArray) => {
+      randomClient().SearchOG(searchOGReq, (err: any, response: OGArray) => {
         if (err) {
           logger.error(`searchOG ERROR in GTW`, {
             err,
@@ -310,7 +324,7 @@ export class KartoffelService {
     logger.info(`Call to isOGNameAlreadyTaken in GTW`, isOGNameAlreadyTakenReq);
 
     return new Promise((resolve, reject) => {
-      kartoffelClient.IsOGNameAlreadyTaken(
+      randomClient().IsOGNameAlreadyTaken(
         isOGNameAlreadyTakenReq,
         (err: any, response: OGArray) => {
           if (err) {
@@ -337,7 +351,7 @@ export class KartoffelService {
     logger.info(`Call to getOGRootChildren in GTW`, getOGRootChildrenReq);
 
     return new Promise((resolve, reject) => {
-      kartoffelClient.GetChildrenOfRootOG(
+      randomClient().GetChildrenOfRootOG(
         getOGRootChildrenReq,
         (err: any, response: OGArray) => {
           if (err) {
@@ -362,7 +376,7 @@ export class KartoffelService {
     logger.info(`Call to getOGChildren in GTW`, getOGChildrenReq);
 
     return new Promise((resolve, reject) => {
-      kartoffelClient.GetChildrenOfOG(
+      randomClient().GetChildrenOfOG(
         getOGChildrenReq,
         (err: any, response: OGArray) => {
           if (err) {
@@ -387,7 +401,7 @@ export class KartoffelService {
     logger.info(`Call to getOGTree in GTW`, getOGTreeReq);
 
     return new Promise((resolve, reject) => {
-      kartoffelClient.GetOGTree(getOGTreeReq, (err: any, response: OGTree) => {
+      randomClient().GetOGTree(getOGTreeReq, (err: any, response: OGTree) => {
         if (err) {
           logger.error(`getOGTree ERROR in GTW`, {
             err,
@@ -409,7 +423,7 @@ export class KartoffelService {
     logger.info(`Call to getAllOGs in GTW`, getAllOGsReq);
 
     return new Promise((resolve, reject) => {
-      kartoffelClient.GetAllOGs(getAllOGsReq, (err: any, response: OGArray) => {
+      randomClient().GetAllOGs(getAllOGsReq, (err: any, response: OGArray) => {
         if (err) {
           logger.error(`getAllOGs ERROR in GTW`, {
             err,
@@ -431,7 +445,7 @@ export class KartoffelService {
     logger.info(`Call to getOGById in GTW`, getOGByIdReq);
 
     return new Promise((resolve, reject) => {
-      kartoffelClient.GetOGById(
+      randomClient().GetOGById(
         getOGByIdReq,
         (err: any, response: OrganizationGroup) => {
           if (err) {
@@ -458,7 +472,7 @@ export class KartoffelService {
     logger.info(`Call to getOGByHierarchyName in GTW`, getOGByHierarchyNameReq);
 
     return new Promise((resolve, reject) => {
-      kartoffelClient.GetOGByHierarchyName(
+      randomClient().GetOGByHierarchyName(
         getOGByHierarchyNameReq,
         (err: any, response: OrganizationGroup) => {
           if (err) {
@@ -484,7 +498,7 @@ export class KartoffelService {
     logger.info(`Call to getRoleById in GTW`, getRoleByIdReq);
 
     return new Promise((resolve, reject) => {
-      kartoffelClient.GetRoleByRoleId(
+      randomClient().GetRoleByRoleId(
         getRoleByIdReq,
         (err: any, response: Role) => {
           if (err) {
@@ -509,7 +523,7 @@ export class KartoffelService {
     logger.info(`Call to getRolesUnderOG in GTW`, getRolesUnderOGReq);
 
     return new Promise((resolve, reject) => {
-      kartoffelClient.GetRolesUnderOG(
+      randomClient().GetRolesUnderOG(
         getRolesUnderOGReq,
         (err: any, response: RoleArray) => {
           if (err) {
@@ -534,7 +548,7 @@ export class KartoffelService {
     logger.info(`Call to getAllRoles in GTW`, getAllRolesReq);
 
     return new Promise((resolve, reject) => {
-      kartoffelClient.GetAllRoles(
+      randomClient().GetAllRoles(
         getAllRolesReq,
         (err: any, response: RoleArray) => {
           if (err) {
@@ -561,7 +575,7 @@ export class KartoffelService {
     logger.info(`Call to getRolesByHierarchy in GTW`, getRolesByHierarchyReq);
 
     return new Promise((resolve, reject) => {
-      kartoffelClient.GetRolesByHierarchy(
+      randomClient().GetRolesByHierarchy(
         getRolesByHierarchyReq,
         (err: any, response: RoleArray) => {
           if (err) {
@@ -588,7 +602,7 @@ export class KartoffelService {
     logger.info(`Call to isRoleAlreadyTaken in GTW`, isRoleAlreadyTakenReq);
 
     return new Promise((resolve, reject) => {
-      kartoffelClient.IsRoleAlreadyTaken(
+      randomClient().IsRoleAlreadyTaken(
         isRoleAlreadyTakenReq,
         (err: any, response: IsRoleAlreadyTakenRes) => {
           if (err) {
@@ -618,7 +632,7 @@ export class KartoffelService {
     );
 
     return new Promise((resolve, reject) => {
-      kartoffelClient.IsJobTitleAlreadyTaken(
+      randomClient().IsJobTitleAlreadyTaken(
         isJobTitleAlreadyTakenReq,
         (err: any, response: IsJobTitleAlreadyTakenRes) => {
           if (err) {
@@ -639,52 +653,61 @@ export class KartoffelService {
     });
   }
 
-   static async searchRolesByRoleId(
+  static async searchRolesByRoleId(
     searchRoleByRoleIdReq: SearchRoleByRoleIdReq
   ) {
     logger.info(`Call to searchRoleByRoleIdReq in GTW`, searchRoleByRoleIdReq);
 
     return new Promise((resolve, reject) => {
-      kartoffelClient.SearchRoleByRoleId(searchRoleByRoleIdReq, (err: any, response: RoleArray) => {
-        if (err) {
-          logger.error(`searchRoleByRoleIdReq ERROR in GTW`, {
-            err,
+      randomClient().SearchRoleByRoleId(
+        searchRoleByRoleIdReq,
+        (err: any, response: RoleArray) => {
+          if (err) {
+            logger.error(`searchRoleByRoleIdReq ERROR in GTW`, {
+              err,
+              callRequest: searchRoleByRoleIdReq,
+            });
+            reject(err);
+          }
+
+          logger.info(`searchRoleByRoleIdReq OK in GTW`, {
+            response: response,
             callRequest: searchRoleByRoleIdReq,
           });
-          reject(err);
+          resolve(response);
         }
-
-        logger.info(`searchRoleByRoleIdReq OK in GTW`, {
-          response: response,
-          callRequest: searchRoleByRoleIdReq,
-        });
-        resolve(response);
-      });
+      );
     });
   }
 
   // DI
-   static async searchDIsByUniqueId(
+  static async searchDIsByUniqueId(
     searchDIsByUniqueIdRequest: SearchDIByUniqueIdRequest
   ) {
-    logger.info(`Call to searchDIsByUniqueId in GTW`, searchDIsByUniqueIdRequest);
+    logger.info(
+      `Call to searchDIsByUniqueId in GTW`,
+      searchDIsByUniqueIdRequest
+    );
 
     return new Promise((resolve, reject) => {
-      kartoffelClient.SearchDIByUniqueId(searchDIsByUniqueIdRequest, (err: any, response: DigitalIdentities) => {
-        if (err) {
-          logger.error(`searchDIsByUniqueId ERROR in GTW`, {
-            err,
+      randomClient().SearchDIByUniqueId(
+        searchDIsByUniqueIdRequest,
+        (err: any, response: DigitalIdentities) => {
+          if (err) {
+            logger.error(`searchDIsByUniqueId ERROR in GTW`, {
+              err,
+              callRequest: searchDIsByUniqueIdRequest,
+            });
+            reject(err);
+          }
+
+          logger.info(`searchDIsByUniqueId OK in GTW`, {
+            response: response,
             callRequest: searchDIsByUniqueIdRequest,
           });
-          reject(err);
+          resolve(response);
         }
-
-        logger.info(`searchDIsByUniqueId OK in GTW`, {
-          response: response,
-          callRequest: searchDIsByUniqueIdRequest,
-        });
-        resolve(response);
-      });
+      );
     });
   }
 }

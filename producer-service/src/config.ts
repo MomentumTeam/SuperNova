@@ -40,6 +40,10 @@ export const restrictADAccess = process.env.PS_RESTRICT_AD_ACCESS
   ? process.env.PS_RESTRICT_AD_ACCESS === 'true'
   : false;
 
+export const grpcPoolSize = process.env.GLOBAL_GRPC_POOL_SIZE
+  ? parseInt(process.env.GLOBAL_GRPC_POOL_SIZE)
+  : 2;
+
 export const logPath = process.env.PS_LOG_PATH
   ? `${process.env.PS_LOG_PATH}/producer-service`
   : './logs/producer-service';
