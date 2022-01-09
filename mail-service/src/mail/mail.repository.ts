@@ -8,23 +8,51 @@ import {
 import { Entity } from '../interfaces/protoc/proto/kartoffelService';
 import KartoffelService from '../services/kartoffelService';
 import { generateMail, sendMail } from '../utils/mailer';
+import {
+  MailType,
+  mailTypeFromJSON,
+} from '../interfaces/protoc/proto/mailService';
 
 export class MailRepository {
   async sendMail(sendMailReq: SendMailReq): Promise<SuccessMessage> {
     try {
-      const message: string = generateMail(
-        sendMailReq.type,
-        sendMailReq.request!
-      );
+      const mailType =
+        typeof sendMailReq.type == typeof ''
+          ? mailTypeFromJSON(sendMailReq.type)
+          : sendMailReq.type;
+
+      const relatedToSpecificReqeustsRelated =
+        mailType !== MailType.REQUEST_NEW_USER &&
+        mailType !== MailType.REQUEST_TOO_OLD;
+
+      const message: string = generateMail(mailType, sendMailReq.request!);
+
       const html = `<div style="justify-content: center; align-items: center; text-align: center; font-family: Arial, Helvetica, sans-serif; direction: rtl;">
-            <p style="font-size: 18px; text-align: right;">שלום ${sendMailReq.request?.submittedBy?.displayName},</p>
+            <p style="font-size: 18px; text-align: right;">שלום ${
+              sendMailReq.request?.submittedBy?.displayName
+            },</p>
             <p style="font-size: 18px; text-align: right;">${message}</p>
+
+            ${
+              relatedToSpecificReqeustsRelated
+                ? `<p style="font-size: 18px; text-align: right;"> לצפיה בפרטי הבקשה וסטטוס עדכני לחץ 
+              <a href=${C.legoAddress}>
+                כאן
+              </a>`
+                : `<p style="font-size: 18px; text-align: right;"> לכניסה למערכת לגו לחץ 
+              <a href=${C.legoAddress}>
+                כאן
+              </a>`
+            }
+            
             <br />
             </div>`;
 
       const sendCustomMailReq: SendCustomMailReq = {
         entityId: sendMailReq.request!.submittedBy!.id,
-        title: `${sendMailReq.request!.serialNumber} הודעה בקשר לבקשתך מספר`,
+        title: relatedToSpecificReqeustsRelated
+          ? `${sendMailReq.request!.serialNumber} הודעה בקשר לבקשתך מספר`
+          : `מערכת לגו:`,
         message: message,
         html: html,
       };

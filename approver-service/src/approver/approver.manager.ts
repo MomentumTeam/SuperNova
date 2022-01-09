@@ -5,6 +5,7 @@ import {
   ApproverIdArray,
   DeleteApproverReq,
   GetAllApproversReq,
+  GetApproverByEntityIdReq,
   GetUserTypeReq,
   GetUserTypeRes,
   IsApproverValidForOGReq,
@@ -35,6 +36,19 @@ export class ApproverManager {
       throw error;
     }
   }
+
+  async getApproverByEntityId(
+    getApproverByEntityIdReq: GetApproverByEntityIdReq
+  ): Promise<Approver> {
+    try {
+      return (await this.approverRepository.getApproverByEntityId(
+        getApproverByEntityIdReq
+      )) as Approver;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async addApprover(addApproverReq: AddApproverReq): Promise<Approver> {
     try {
       return (await this.approverRepository.addApprover(

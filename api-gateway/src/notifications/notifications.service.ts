@@ -29,11 +29,20 @@ const packageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(
 const protoDescriptor: any =
   grpc.loadPackageDefinition(packageDefinition).NotificationService;
 
-const notificationsClient: any = new protoDescriptor.NotificationService(
-  config.endpoints.notification,
-  grpc.credentials.createInsecure(),
-  { 'grpc.keepalive_timeout_ms': 5000 }
-);
+const clients: any = [];
+for (let i = 0; i < config.fields.grpcPoolSize; i++) {
+  clients.push(
+    new protoDescriptor.NotificationService(
+      config.endpoints.notification,
+      grpc.credentials.createInsecure(),
+      { 'grpc.keepalive_timeout_ms': 5000 }
+    )
+  );
+}
+
+function randomClient(): any {
+  return clients[Math.floor(Math.random() * clients.length)];
+}
 
 export class NotificationService {
   static async getNotificationsByOwnerId(
@@ -45,7 +54,7 @@ export class NotificationService {
     );
 
     return new Promise((resolve, reject) => {
-      notificationsClient.GetNotificationsByOwnerId(
+      randomClient().GetNotificationsByOwnerId(
         getNotificationsByOwnerIdReq,
         (err: any, response: NotificationArray) => {
           if (err) {
@@ -70,7 +79,7 @@ export class NotificationService {
     logger.info(`Call to markAsRead in GTW`, markAsReadReq);
 
     return new Promise((resolve, reject) => {
-      notificationsClient.MarkAsRead(
+      randomClient().MarkAsRead(
         markAsReadReq,
         (err: any, response: SuccessMessage) => {
           if (err) {
@@ -95,7 +104,7 @@ export class NotificationService {
     logger.info(`Call to markAllAsRead in GTW`, markAllAsReadReq);
 
     return new Promise((resolve, reject) => {
-      notificationsClient.MarkAllAsRead(
+      randomClient().MarkAllAsRead(
         markAllAsReadReq,
         (err: any, response: SuccessMessage) => {
           if (err) {

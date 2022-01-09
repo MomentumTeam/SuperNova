@@ -44,3 +44,7 @@ export const brol = process.env.TS_BROL || 'brol';
 export const initExcelFolder = process.env.TS_EXCEL_INIT_FOLDER || '/teaUtils';
 
 export const initExcelFileFullPath = `${initExcelFolder}/${initExcelFile}`;
+
+export const grpcPoolSize = process.env.GLOBAL_GRPC_POOL_SIZE
+  ? parseInt(process.env.GLOBAL_GRPC_POOL_SIZE)
+  : 2;

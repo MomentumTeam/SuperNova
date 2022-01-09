@@ -25,13 +25,12 @@ const schedule = require('node-schedule');
 
 async function main() {
   try {
+    await execute();
     if (config.cronJob) {
-      schedule.scheduleJob(`* */${config.everyHour} * * *`, async function () {
-        //run script every x hour
+      schedule.scheduleJob(`*/${config.minute} * * * *`, async function () {
+        //run script every x minutes
         await execute();
       });
-    } else {
-      await execute();
     }
   } catch (error: any) {
     logger.error(
@@ -61,6 +60,8 @@ async function execute() {
           directGroup: request.additionalParams?.directGroup || '',
           identityCard: request.additionalParams?.identityCard || '',
           personalNumber: request.additionalParams?.personalNumber || '',
+          groupInChargeId:
+            request.additionalParams?.groupInChargeId || config.rootId,
         })
           .then(() => {
             RequestService.updateRequest(request.id, {

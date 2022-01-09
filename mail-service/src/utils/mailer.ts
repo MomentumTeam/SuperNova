@@ -34,8 +34,6 @@ export function sendMail(mailOptions: any) {
 export function generateMail(mailType: any, request: Request) {
   let message = '';
   try {
-    mailType =
-      typeof mailType == typeof '' ? mailTypeFromJSON(mailType) : mailType;
     const requestType: any =
       typeof request.type == typeof ''
         ? requestTypeFromJSON(request.type)

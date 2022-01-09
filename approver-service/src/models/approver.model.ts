@@ -1,5 +1,6 @@
 import * as mongoose from 'mongoose';
 import { ApproverType } from '../interfaces/protoc/proto/requestService';
+import * as C from '../config';
 const { Schema } = mongoose;
 
 export const ApproverSchema = new Schema(
@@ -12,6 +13,7 @@ export const ApproverSchema = new Schema(
     type: { type: String, enum: ApproverType, default: ApproverType.SOLDIER },
     akaUnit: { type: String, default: '' },
     directGroup: { type: String, default: '' },
+    groupInChargeId: { type: String, default: C.rootId },
   },
   { strict: false }
 );

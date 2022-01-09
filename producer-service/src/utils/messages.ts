@@ -6,6 +6,9 @@ import {
 import * as C from '../config';
 
 function isValidMobilePhone(mobilePhone: any) {
+  if (mobilePhone === undefined || mobilePhone === null) {
+    return false;
+  }
   if (mobilePhone.length === 0) {
     return true;
   } else {
@@ -15,6 +18,9 @@ function isValidMobilePhone(mobilePhone: any) {
 }
 
 function isValidPhone(phone: any) {
+  if (phone === undefined || phone === null) {
+    return false;
+  }
   if (phone.length === 0) {
     return true;
   } else {
@@ -70,7 +76,7 @@ export function generateKartoffelQueueMessage(request: Request): any {
           !kartoffelParams.sex || kartoffelParams.sex === ''
             ? undefined
             : kartoffelParams.sex,
-        birthdate: kartoffelParams.birthdate,
+        birthDate: kartoffelParams.birthdate,
         entityType: kartoffelParams.entityType,
       };
       if (isValidPhone(kartoffelParams.phone)) {
@@ -91,6 +97,9 @@ export function generateKartoffelQueueMessage(request: Request): any {
         kartoffelParams.needDisconnect === null
       ) {
         message.data.needDisconnect = false;
+      }
+      if (kartoffelParams.upn !== undefined) {
+        message.data.upn = kartoffelParams.upn;
       }
       break;
     case RequestType.RENAME_OG:
@@ -114,10 +123,10 @@ export function generateKartoffelQueueMessage(request: Request): any {
         },
       };
       if (isValidMobilePhone(kartoffelParams.mobilePhone)) {
-        message.data.mobilePhone = kartoffelParams.phone;
+        message.data.properties.mobilePhone = kartoffelParams.mobilePhone;
       }
       if (kartoffelParams.birthdate) {
-        message.data.birthdate = kartoffelParams.birthdate;
+        message.data.properties.birthDate = kartoffelParams.birthdate;
       }
       break;
     case RequestType.DELETE_OG:
@@ -187,30 +196,33 @@ export function generateADQueueMessage(request: Request): any {
       };
       break;
     case RequestType.ASSIGN_ROLE_TO_ENTITY: //reviewed with Orin
-      if (request.kartoffelParams?.needDisconnect) {
+      if (
+        request.kartoffelParams?.needDisconnect &&
+        adParams.oldSAMAccountName
+      ) {
         //MoveRole
         message.data = {
           samAccountName: adParams.oldSAMAccountName,
           toSamAccountName: adParams.newSAMAccountName,
-          upn: adParams.upn,
+          upn: `${adParams.upn}@${C.upnSuffix}`,
           firstName: adParams.firstName,
           lastName: adParams.lastName,
           fullName: adParams.fullName,
           nickname: adParams.fullName,
           rank: adParams.rank,
-          jobNumber: adParams.roleSerialCode,
+          jobNumber: '0',
         };
       } else {
         //ConnectNewRole
         message.data = {
           userID: adParams.newSAMAccountName,
-          UPN: adParams.upn,
+          UPN: `${adParams.upn}@${C.upnSuffix}`,
           firstName: adParams.firstName,
           lastName: adParams.lastName,
           fullName: adParams.fullName,
           rank: adParams.rank,
-          ID: adParams.newSAMAccountName, //?
-          pdoName: adParams.roleSerialCode, //?
+          ID: adParams.newSAMAccountName,
+          pdoName: 'x',
         };
       }
       break;

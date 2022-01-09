@@ -64,25 +64,31 @@ export function approverTypeValidation(type: ApproverType): ApproverType {
   return type;
 }
 
+export function getApproverByEntity(entity: Entity, type: ApproverType) {
+  return {
+    entityId: entity.id,
+    displayName: entity.displayName,
+    domainUsers: entity.digitalIdentities
+      ? entity.digitalIdentities.map((di: DigitalIdentity) => {
+          return di.uniqueId;
+        })
+      : [], //entity may have multiple emails
+    type: type,
+    akaUnit: entity.akaUnit,
+    id: entity.id,
+    personalNumber: entity.personalNumber,
+    identityCard: entity.identityCard,
+    directGroup: entity.directGroup,
+  };
+}
+
 export function getApproverArrayByEntityArray(
   entityArray: EntityArray,
   type: ApproverType
 ): Approver[] {
   try {
     return entityArray.entities.map((entity: Entity) => {
-      return {
-        entityId: entity.id,
-        displayName: entity.displayName,
-        domainUsers: entity.digitalIdentities.map((di: DigitalIdentity) => {
-          return di.uniqueId;
-        }), //entity may have multiple emails
-        type: type,
-        akaUnit: entity.akaUnit,
-        id: entity.id,
-        personalNumber: entity.personalNumber,
-        identityCard: entity.identityCard,
-        directGroup: entity.directGroup,
-      };
+      return getApproverByEntity(entity, type);
     });
   } catch (error) {
     throw error;

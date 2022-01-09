@@ -20,6 +20,8 @@ import {
   GetBulkRequestExampleReq,
 } from '../interfaces/protoc/proto/bulkService';
 import { checkIfFileExist, ensureFileExists } from './bulk.utils';
+import { approveUserRequest } from '../requests/requests.utils';
+import { RequestsService } from '../requests/requests.service';
 
 const uploadPath = config.files.path;
 
@@ -113,6 +115,8 @@ export default class BulkController {
       displayName: req.user.displayName,
       identityCard: req.user.identityCard,
       personalNumber: req.user.personalNumber,
+      directGroup: req.user.directGroup,
+      ancestors: req.user.ancestors,
     };
 
     const createRoleBulkReq: CreateRoleBulkReq = {
@@ -121,9 +125,16 @@ export default class BulkController {
     };
 
     try {
-      const roleBulk = await BulkService.createRoleBulkRequest(
-        createRoleBulkReq
+      const request: any = await approveUserRequest(
+        req,
+        createRoleBulkReq,
+        createRoleBulkReq.kartoffelParams?.directGroup
       );
+      const roleBulk = await BulkService.createRoleBulkRequest(request);
+      try {
+        await RequestsService.executeRequestIfNeeded(roleBulk);
+      } catch (executeError) {}
+
       res.send(roleBulk);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -140,6 +151,8 @@ export default class BulkController {
       displayName: req.user.displayName,
       identityCard: req.user.identityCard,
       personalNumber: req.user.personalNumber,
+      directGroup: req.user.directGroup,
+      ancestors: req.user.ancestors,
     };
 
     const changeRoleHierarchyBulkReq: ChangeRoleHierarchyBulkReq = {
@@ -148,10 +161,17 @@ export default class BulkController {
     };
 
     try {
+      const request: any = await approveUserRequest(
+        req,
+        changeRoleHierarchyBulkReq,
+        changeRoleHierarchyBulkReq.kartoffelParams?.directGroup
+      );
       const roleHierarchyBulk =
-        await BulkService.changeRoleHierarchyBulkRequest(
-          changeRoleHierarchyBulkReq
-        );
+        await BulkService.changeRoleHierarchyBulkRequest(request);
+      try {
+        await RequestsService.executeRequestIfNeeded(roleHierarchyBulk);
+      } catch (executeError) {}
+
       res.send(roleHierarchyBulk);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);

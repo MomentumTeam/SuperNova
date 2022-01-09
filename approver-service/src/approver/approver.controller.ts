@@ -13,6 +13,38 @@ import { ApproverManager } from './approver.manager';
 
 const approverManager: ApproverManager = new ApproverManager();
 
+export async function getApproverByEntityId(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    logger.info(`Call to getApproverByEntityId`, {
+      callRequest: call.request,
+    });
+    const approver: Approver = await approverManager.getApproverByEntityId(
+      call.request
+    );
+    logger.info(`getApproverByEntityId OK`, {
+      response: approver,
+      callRequest: call.request,
+    });
+    callback(null, approver);
+  } catch (error: any) {
+    logger.error(`getApproverByEntityId ERROR`, {
+      callRequest: call.request,
+      error: { message: error.message },
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
 export async function isApproverValidForOG(
   call: any,
   callback: any

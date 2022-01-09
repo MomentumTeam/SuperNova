@@ -15,6 +15,7 @@ import {
 } from '../interfaces/protoc/proto/requestService';
 const { Schema } = mongoose;
 import autoIncrement from 'mongoose-auto-increment';
+import * as C from '../config';
 
 autoIncrement.initialize(mongoose.connection);
 
@@ -54,12 +55,16 @@ const RequestSchema = new Schema(
         displayName: { type: String, default: '' },
         identityCard: { type: String, default: '' },
         personalNumber: { type: String, default: '' },
+        directGroup: { type: String, default: '' },
+        ancestors: { type: [String], default: [C.rootId] },
       },
       default: {
         id: null,
         displayName: '',
         identityCard: '',
         personalNumber: '',
+        directGroup: '',
+        ancestors: [C.rootId],
       },
     },
     status: {
@@ -199,6 +204,8 @@ const RequestSchema = new Schema(
         displayName: { type: String, default: '' },
         identityCard: { type: String, default: '' },
         personalNumber: { type: String, default: '' },
+        directGroup: { type: String, default: '' },
+        // ancestors: { type: [String], default: [C.rootId] },
       },
     ],
     securityApprovers: [
@@ -207,6 +214,8 @@ const RequestSchema = new Schema(
         displayName: { type: String, default: '' },
         identityCard: { type: String, default: '' },
         personalNumber: { type: String, default: '' },
+        directGroup: { type: String, default: '' },
+        // ancestors: { type: [String], default: [C.rootId] },
       },
     ],
     superSecurityApprovers: [
@@ -215,6 +224,8 @@ const RequestSchema = new Schema(
         displayName: { type: String, default: '' },
         identityCard: { type: String, default: '' },
         personalNumber: { type: String, default: '' },
+        directGroup: { type: String, default: '' },
+        // ancestors: { type: [String], default: [C.rootId] },
       },
     ],
     kartoffelStatus: {
@@ -298,6 +309,7 @@ const RequestSchema = new Schema(
       oldJobTitle: { type: String, default: null },
       hierarchy: { type: String, default: null },
       oldHierarchy: { type: String, default: null },
+      upn: { type: String, default: null },
     },
     adParams: {
       ouDisplayName: { type: String, default: null },
@@ -332,6 +344,7 @@ const RequestSchema = new Schema(
       personalNumber: { type: String, default: null },
       identityCard: { type: String, default: null },
       directGroup: { type: String, default: null },
+      groupInChargeId: { type: String, default: C.rootId },
     },
     isPartOfBulk: { type: Boolean, default: false },
     bulkRequestId: { type: mongoose.Schema.Types.ObjectId, default: null },
@@ -366,6 +379,13 @@ RequestSchema.pre<any>('save', function (next) {
     object.commanderDecision.date = new Date().getTime();
     object.securityDecision.date = new Date().getTime();
     object.superSecurityDecision.date = new Date().getTime();
+    if (
+      object.submittedBy &&
+      (!object.submittedBy.ancestors ||
+        object.submittedBy.ancestors.length === 0)
+    ) {
+      object.submittedBy.ancestors = [C.rootId];
+    }
   };
   func(this);
   return next();

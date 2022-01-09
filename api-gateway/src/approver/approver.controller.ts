@@ -32,6 +32,7 @@ import { AuthenticationError } from '../utils/errors/userErrors';
 import { statusCodeHandler } from '../utils/errors/errorHandlers';
 import { RequestsService } from '../requests/requests.service';
 import ProducerController from '../producer/producer.controller';
+import { config } from '../config';
 
 export default class ApproverController {
   // GET
@@ -120,6 +121,7 @@ export default class ApproverController {
 
   // POST
   static async addApprover(req: any, res: Response) {
+    //NOT IN USE
     logger.info(`Call to AddApprover in GTW`, {
       entityId: req.body.entityId,
       type: req.body.type,
@@ -147,6 +149,7 @@ export default class ApproverController {
         (digitalIdentity) => digitalIdentity.uniqueId
       ),
       directGroup: req.body.directGroup,
+      groupInChargeId: req.body.groupInChargeId || config.fields.rootId,
     };
 
     try {
@@ -185,6 +188,7 @@ export default class ApproverController {
       displayName: req.user.displayName,
       identityCard: req.user.identityCard,
       personalNumber: req.user.personalNumber,
+      ancestors: [],
     };
 
     const { decision, reason, date } = req.body.decision;
@@ -231,6 +235,9 @@ export default class ApproverController {
               directGroup: request.additionalParams?.directGroup || '',
               identityCard: request.additionalParams?.identityCard || '',
               personalNumber: request.additionalParams?.personalNumber || '',
+              groupInChargeId:
+                request.additionalParams?.groupInChargeId ||
+                config.fields.rootId,
             });
             await RequestsService.updateRequest({
               id: request.id,

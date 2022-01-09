@@ -8,6 +8,7 @@ import {
   ApproverArray,
   DeleteApproverReq,
   GetAllApproversReq,
+  GetApproverByEntityIdReq,
   GetUserTypeReq,
   GetUserTypeRes,
   IsApproverValidForOGReq,
@@ -46,13 +47,52 @@ const packageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(
 const protoDescriptor: any =
   grpc.loadPackageDefinition(packageDefinition).ApproverService;
 
-const approverClient: any = new protoDescriptor.ApproverService(
-  config.endpoints.approver,
-  grpc.credentials.createInsecure(),
-  { 'grpc.keepalive_timeout_ms': 5000 }
-);
+const approverClients: any = [];
+for (let i = 0; i < config.fields.grpcPoolSize; i++) {
+  approverClients.push(
+    new protoDescriptor.ApproverService(
+      config.endpoints.approver,
+      grpc.credentials.createInsecure(),
+      { 'grpc.keepalive_timeout_ms': 5000 }
+    )
+  );
+}
+
+function randomClient(): any {
+  return approverClients[Math.floor(Math.random() * approverClients.length)];
+}
 
 export class ApproverService {
+  static async getApproverByEntityId(
+    getApproverByEntityIdReq: GetApproverByEntityIdReq
+  ): Promise<Approver> {
+    logger.info(
+      `Call to getApproverByEntityId in GTW`,
+      getApproverByEntityIdReq
+    );
+
+    return new Promise((resolve, reject) => {
+      randomClient().GetApproverByEntityId(
+        getApproverByEntityIdReq,
+        (err: any, response: Approver) => {
+          if (err) {
+            logger.error(`getApproverByEntityId ERROR in GTW`, {
+              err,
+              callRequest: getApproverByEntityIdReq,
+            });
+            reject(err);
+          }
+
+          logger.info(`getApproverByEntityId OK in GTW`, {
+            response: response,
+            callRequest: getApproverByEntityIdReq,
+          });
+          resolve(response);
+        }
+      );
+    });
+  }
+
   static async isApproverValidForOG(
     isApproverValidForOGReq: IsApproverValidForOGReq
   ) {
@@ -62,7 +102,7 @@ export class ApproverService {
     );
 
     return new Promise((resolve, reject) => {
-      approverClient.IsApproverValidForOG(
+      randomClient().IsApproverValidForOG(
         isApproverValidForOGReq,
         (err: any, response: IsApproverValidForOGRes) => {
           if (err) {
@@ -87,7 +127,7 @@ export class ApproverService {
     logger.info(`Call to GetAllApprovers in GTW`, getAllApproversReq);
 
     return new Promise((resolve, reject) => {
-      approverClient.GetAllApprovers(
+      randomClient().GetAllApprovers(
         getAllApproversReq,
         (err: any, response: ApproverArray) => {
           if (err) {
@@ -117,7 +157,7 @@ export class ApproverService {
     );
 
     return new Promise((resolve, reject) => {
-      approverClient.SearchHighCommandersByDisplayName(
+      randomClient().SearchHighCommandersByDisplayName(
         searchHighCommandersByDisplayNameReq,
         (err: any, response: ApproverArray) => {
           if (err) {
@@ -147,7 +187,7 @@ export class ApproverService {
     );
 
     return new Promise((resolve, reject) => {
-      approverClient.SearchApproverByDisplayName(
+      randomClient().SearchApproverByDisplayName(
         searchByDisplayNameReq,
         (err: any, response: ApproverArray) => {
           if (err) {
@@ -177,7 +217,7 @@ export class ApproverService {
     );
 
     return new Promise((resolve, reject) => {
-      approverClient.SearchApproverByDomainUser(
+      randomClient().SearchApproverByDomainUser(
         searchByDomainUserReq,
         (err: any, response: ApproverArray) => {
           if (err) {
@@ -204,7 +244,7 @@ export class ApproverService {
     logger.info(`Call to getUserTypeReq in GTW`, getUserTypeReq);
 
     return new Promise((resolve, reject) => {
-      approverClient.GetUserType(
+      randomClient().GetUserType(
         getUserTypeReq,
         (err: any, response: GetUserTypeRes) => {
           if (err) {
@@ -229,7 +269,7 @@ export class ApproverService {
     logger.info(`Call to AddApprover in GTW`, addApproverReq);
 
     return new Promise((resolve, reject) => {
-      approverClient.AddApprover(
+      randomClient().AddApprover(
         addApproverReq,
         (err: any, response: Approver) => {
           if (err) {
@@ -259,7 +299,7 @@ export class ApproverService {
     );
 
     return new Promise((resolve, reject) => {
-      approverClient.UpdateApproverDecision(
+      randomClient().UpdateApproverDecision(
         updateApproverDecisionReq,
         (err: any, response: Request) => {
           if (err) {
@@ -284,7 +324,7 @@ export class ApproverService {
     logger.info(`Call to deleteApprover in GTW`, deleteApproverReq);
 
     return new Promise((resolve, reject) => {
-      approverClient.DeleteApprover(
+      randomClient().DeleteApprover(
         deleteApproverReq,
         (err: any, response: Approver) => {
           if (err) {

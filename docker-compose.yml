@@ -75,6 +75,7 @@ services:
       - RS_NS_URL=notification-service:8080
       - RS_TS_URL=tea-service:8080
       - RS_MS_URL=mail-service:8080
+      - RS_ROOT_ID=619e3193f235dc001846bb4f
       - RS_LOG_PATH=/logs
 
   kartoffel-service:
@@ -122,6 +123,7 @@ services:
       - PS_NEW_DOMAIN=newDomain
       - PS_RESTRICT_AD_ACCESS=false
       - PS_AD_ALLOWED_SUBMITTERS=1111,2222,3333,4444
+      - PS_AD_UPN_SUFFIX=gmail.com
       - PS_LOG_PATH=/logs
 
   notification-service:
@@ -228,6 +230,7 @@ services:
       - MS_MAIL_SERVER_SECURE=false
       - MS_IS_TEST=true
       - MS_EMAILS_FOR_TEST=enterEmailForTest
+      - MS_LEGO_ADDRESS=http://localhost:3000
 
   kartoffel-consumer:
     image: kartoffel-consumer
@@ -253,6 +256,7 @@ services:
       - KC_KARTOFFEL_GOAL_USER=GoalUser
       - KC_KARTOFFEL_DOMAIN_USER=domainUser
       - KC_CIVILIAN=Civilian
+      - KC_SEND_UPN_TO_KARTOFFEL=true
       - KC_LOG_PATH=/logs
 
   execution-script:
@@ -269,8 +273,9 @@ services:
       - EXS_RS_URL=request-service:8080
       - EXS_PS_URL=producer-service:8080
       - EXS_APS_URL=approver-service:8080
-      - EXS_EVERY_HOUR=1
+      - EXS_MINUTE=5
       - EXS_CRON_JOB=false
+      - EXS_ROOT_ID=619e3193f235dc001846bb4f
       - EXS_LOG_PATH=/logs
 
   whiteListSync-script:
@@ -386,6 +391,7 @@ services:
       - GATEWAY_SPIKE_PUBLIC_KEY_FULL_PATH=/spikeUtils/publickey.pem
       - GATEWAY_WRITE_SCOPE_NAME=write
       - GATEWAY_SUPPORT_LINK=https://www.lego.com/en-us/service
+      - GATEWAY_ROOT_ID=619e3193f235dc001846bb4f
       - GATEWAY_LOG_PATH=/logs
 
   supernova-ui:

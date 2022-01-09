@@ -35,6 +35,7 @@ import {
   ApproverType,
   ApproversComments,
   ApproverDecision,
+  approverTypeToJSON,
 } from '../interfaces/protoc/proto/requestService';
 import { RequestsService } from './requests.service';
 import { AuthenticationError } from '../utils/errors/userErrors';
@@ -132,6 +133,16 @@ export default class RequestsController {
     if (req.query.sortOrder) {
       getRequestsByPersonReq.sortOrder = req.query.sortOrder;
     }
+
+    if (req.user.types.includes(approverTypeToJSON(ApproverType.ADMIN))) {
+      const approver = await ApproverService.getApproverByEntityId({
+        entityId: req.user.id,
+      });
+      if (approver.groupInChargeId) {
+        getRequestsByPersonReq.groupInChargeId = approver.groupInChargeId;
+      }
+    }
+
     try {
       const requests = await RequestsService.getRequestsByPerson(
         getRequestsByPersonReq
@@ -406,6 +417,8 @@ export default class RequestsController {
       displayName: req.user.displayName,
       identityCard: req.user.identityCard,
       personalNumber: req.user.personalNumber,
+      directGroup: req.user.directGroup,
+      ancestors: req.user.ancestors,
     };
 
     const createRoleReq: CreateRoleReq = {
@@ -420,7 +433,10 @@ export default class RequestsController {
         createRoleReq.kartoffelParams?.directGroup
       );
       const createRole: any = await RequestsService.createRoleRequest(request);
-      await RequestsService.executeRequestIfNeeded(createRole);
+      try {
+        await RequestsService.executeRequestIfNeeded(createRole);
+      } catch (executeError) {}
+
       res.status(200).send(createRole);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -431,11 +447,13 @@ export default class RequestsController {
   static async assignRoleToEntityRequest(req: any, res: Response) {
     if (!req.user && !req.user.id) throw new AuthenticationError();
 
-    const submittedBy: EntityMin = {
+    const submittedBy: any = {
       id: req.user.id,
       displayName: req.user.displayName,
       identityCard: req.user.identityCard,
       personalNumber: req.user.personalNumber,
+      directGroup: req.user.directGroup,
+      ancestors: req.user.ancestors,
     };
 
     const assignRoleToEntityReq: AssignRoleToEntityReq = {
@@ -445,33 +463,43 @@ export default class RequestsController {
 
     try {
       if (assignRoleToEntityReq.kartoffelParams?.needDisconnect) {
-        const entityWithRole: any = await KartoffelService.getEntityByDI({
-          uniqueId: assignRoleToEntityReq.kartoffelParams?.uniqueId,
-        });
-        const entityUserTypeRes: GetUserTypeRes =
-          await ApproverService.getUserType({
-            entityId: entityWithRole.id,
+        try {
+          //adding the user with role to commanders if he is a commander
+          const entityWithRole: any = await KartoffelService.getEntityByDI({
+            uniqueId: assignRoleToEntityReq.kartoffelParams?.uniqueId,
           });
-        const entityUserType = entityUserTypeRes.type.map((type) => {
-          return typeof type === typeof '' ? approverTypeFromJSON(type) : type;
-        });
-        if (entityUserType.includes(ApproverType.COMMANDER)) {
-          assignRoleToEntityReq.commanders = [
-            {
-              id: entityWithRole.id,
-              displayName: entityWithRole.displayName,
-              identityCard: entityWithRole.identityCard
-                ? entityWithRole.identityCard
-                : '',
-              personalNumber: entityWithRole.personalNumber
-                ? entityWithRole.personalNumber
-                : '',
-            },
-          ];
+          const entityUserTypeRes: GetUserTypeRes =
+            await ApproverService.getUserType({
+              entityId: entityWithRole.id,
+            });
+          const entityUserType = entityUserTypeRes.type.map((type) => {
+            return typeof type === typeof ''
+              ? approverTypeFromJSON(type)
+              : type;
+          });
+          if (entityUserType.includes(ApproverType.COMMANDER)) {
+            assignRoleToEntityReq.commanders = [
+              {
+                id: entityWithRole.id,
+                displayName: entityWithRole.displayName,
+                identityCard: entityWithRole.identityCard
+                  ? entityWithRole.identityCard
+                  : '',
+                personalNumber: entityWithRole.personalNumber
+                  ? entityWithRole.personalNumber
+                  : '',
+                ancestors: [],
+              },
+            ];
 
-           assignRoleToEntityReq.commanders = assignRoleToEntityReq.commanders.filter(
-             (v: any, i: any, a: any) => a.findIndex((t: any) => t.id === v.id) === i
-           );
+            assignRoleToEntityReq.commanders =
+              assignRoleToEntityReq.commanders.filter(
+                (v: any, i: any, a: any) =>
+                  a.findIndex((t: any) => t.id === v.id) === i
+              );
+          }
+        } catch (entityError) {
+          //probably role is not attached to entity
         }
       }
 
@@ -507,7 +535,10 @@ export default class RequestsController {
       const assignRole = await RequestsService.assignRoleToEntityRequest(
         request
       );
-      await RequestsService.executeRequestIfNeeded(assignRole);
+      try {
+        await RequestsService.executeRequestIfNeeded(assignRole);
+      } catch (executeError) {}
+
       res.status(200).send(assignRole);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -518,11 +549,13 @@ export default class RequestsController {
   static async createOGRequest(req: any, res: Response) {
     if (!req.user && !req.user.id) throw new AuthenticationError();
 
-    const submittedBy: EntityMin = {
+    const submittedBy: any = {
       id: req.user.id,
       displayName: req.user.displayName,
       identityCard: req.user.identityCard,
       personalNumber: req.user.personalNumber,
+      directGroup: req.user.directGroup,
+      ancestors: req.user.ancestors,
     };
 
     const createOGReq: CreateOGReq = {
@@ -537,7 +570,10 @@ export default class RequestsController {
         createOGReq.kartoffelParams?.parent
       );
       const createOGres: any = await RequestsService.createOGRequest(request);
-      await RequestsService.executeRequestIfNeeded(createOGres);
+      try {
+        await RequestsService.executeRequestIfNeeded(createOGres);
+      } catch (executeError) {}
+
       res.status(200).send(createOGres);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -553,6 +589,8 @@ export default class RequestsController {
       displayName: req.user.displayName,
       identityCard: req.user.identityCard,
       personalNumber: req.user.personalNumber,
+      directGroup: req.user.directGroup,
+      ancestors: req.user.ancestors,
     };
 
     const createNewApproverReq: CreateNewApproverReq = {
@@ -570,7 +608,10 @@ export default class RequestsController {
       const newApprover = await RequestsService.createNewApproverRequest(
         request
       );
-      await RequestsService.executeRequestIfNeeded(newApprover);
+      try {
+        await RequestsService.executeRequestIfNeeded(newApprover);
+      } catch (executeError) {}
+
       res.status(200).send(newApprover);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -586,6 +627,8 @@ export default class RequestsController {
       displayName: req.user.displayName,
       identityCard: req.user.identityCard,
       personalNumber: req.user.personalNumber,
+      directGroup: req.user.directGroup,
+      ancestors: req.user.ancestors,
     };
 
     const createEntityReq: CreateEntityReq = {
@@ -596,7 +639,9 @@ export default class RequestsController {
     try {
       const request: any = await approveUserRequest(req, createEntityReq);
       const entity = await RequestsService.createEntityRequest(request);
-      await RequestsService.executeRequestIfNeeded(entity);
+      try {
+        await RequestsService.executeRequestIfNeeded(entity);
+      } catch (executeError) {}
       res.status(200).send(entity);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -612,6 +657,8 @@ export default class RequestsController {
       displayName: req.user.displayName,
       identityCard: req.user.identityCard,
       personalNumber: req.user.personalNumber,
+      directGroup: req.user.directGroup,
+      ancestors: req.user.ancestors,
     };
 
     const renameOGReq: RenameOGReq = {
@@ -626,7 +673,9 @@ export default class RequestsController {
         renameOGReq.kartoffelParams?.id
       );
       const og = await RequestsService.renameOGRequest(request);
-      await RequestsService.executeRequestIfNeeded(og);
+      try {
+        await RequestsService.executeRequestIfNeeded(og);
+      } catch (executeError) {}
       res.status(200).send(og);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -642,6 +691,8 @@ export default class RequestsController {
       displayName: req.user.displayName,
       identityCard: req.user.identityCard,
       personalNumber: req.user.personalNumber,
+      directGroup: req.user.directGroup,
+      ancestors: req.user.ancestors,
     };
 
     const renameRoleReq: RenameRoleReq = {
@@ -652,7 +703,9 @@ export default class RequestsController {
     try {
       const request: any = await approveUserRequest(req, renameRoleReq);
       const entity = await RequestsService.renameRoleRequest(request);
-      await RequestsService.executeRequestIfNeeded(entity);
+      try {
+        await RequestsService.executeRequestIfNeeded(entity);
+      } catch (executeError) {}
       res.status(200).send(entity);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -668,6 +721,8 @@ export default class RequestsController {
       displayName: req.user.displayName,
       identityCard: req.user.identityCard,
       personalNumber: req.user.personalNumber,
+      directGroup: req.user.directGroup,
+      ancestors: req.user.ancestors,
     };
 
     const editEntityReq: EditEntityReq = {
@@ -678,7 +733,9 @@ export default class RequestsController {
     try {
       const request: any = await approveUserRequest(req, editEntityReq);
       const entity = await RequestsService.editEntityRequest(request);
-      await RequestsService.executeRequestIfNeeded(entity);
+      try {
+        await RequestsService.executeRequestIfNeeded(entity);
+      } catch (executeError) {}
       res.status(200).send(entity);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -698,6 +755,8 @@ export default class RequestsController {
       displayName: req.user.displayName,
       identityCard: req.user.identityCard,
       personalNumber: req.user.personalNumber,
+      directGroup: req.user.directGroup,
+      ancestors: req.user.ancestors,
     };
 
     const deleteRoleReq: DeleteRoleReq = {
@@ -708,7 +767,9 @@ export default class RequestsController {
     try {
       const request: any = await approveUserRequest(req, deleteRoleReq);
       const deletedRole = await RequestsService.deleteRoleRequest(request);
-      await RequestsService.executeRequestIfNeeded(deletedRole);
+      try {
+        await RequestsService.executeRequestIfNeeded(deletedRole);
+      } catch (executeError) {}
       res.status(200).send(deletedRole);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -728,6 +789,8 @@ export default class RequestsController {
       displayName: req.user.displayName,
       identityCard: req.user.identityCard,
       personalNumber: req.user.personalNumber,
+      directGroup: req.user.directGroup,
+      ancestors: req.user.ancestors,
     };
 
     const deleteOGReq: DeleteOGReq = {
@@ -738,7 +801,9 @@ export default class RequestsController {
     try {
       const request: any = await approveUserRequest(req, deleteOGReq);
       const deletedOG = await RequestsService.deleteOGRequest(request);
-      await RequestsService.executeRequestIfNeeded(deletedOG);
+      try {
+        await RequestsService.executeRequestIfNeeded(deletedOG);
+      } catch (executeError) {}
       res.status(200).send(deletedOG);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -758,6 +823,8 @@ export default class RequestsController {
       displayName: req.user.displayName,
       identityCard: req.user.identityCard,
       personalNumber: req.user.personalNumber,
+      directGroup: req.user.directGroup,
+      ancestors: req.user.ancestors,
     };
 
     const deleteEntityReq: DeleteEntityReq = {
@@ -768,7 +835,9 @@ export default class RequestsController {
     try {
       const request: any = await approveUserRequest(req, deleteEntityReq);
       const deletedEntity = await RequestsService.deleteEntityRequest(request);
-      await RequestsService.executeRequestIfNeeded(deletedEntity);
+      try {
+        await RequestsService.executeRequestIfNeeded(deletedEntity);
+      } catch (executeError) {}
       res.status(200).send(deletedEntity);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -793,6 +862,8 @@ export default class RequestsController {
       displayName: req.user.displayName,
       identityCard: req.user.identityCard,
       personalNumber: req.user.personalNumber,
+      directGroup: req.user.directGroup,
+      ancestors: req.user.ancestors,
     };
 
     const disconectRoleFromEntityReq: DisconectRoleFromEntityReq = {
@@ -807,7 +878,9 @@ export default class RequestsController {
       );
       const disconectRole =
         await RequestsService.disconectRoleFromEntityRequest(request);
-      await RequestsService.executeRequestIfNeeded(disconectRole);
+      try {
+        await RequestsService.executeRequestIfNeeded(disconectRole);
+      } catch (executeError) {}
       res.status(200).send(disconectRole);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -851,6 +924,8 @@ export default class RequestsController {
       displayName: req.user.displayName,
       identityCard: req.user.identityCard,
       personalNumber: req.user.personalNumber,
+      directGroup: req.user.directGroup,
+      ancestors: req.user.ancestors,
     };
 
     const changeRoleHierarchyReq: ChangeRoleHierarchyReq = {
@@ -867,7 +942,9 @@ export default class RequestsController {
       const roleHierarchy = await RequestsService.changeRoleHierarchyRequest(
         request
       );
-      await RequestsService.executeRequestIfNeeded(roleHierarchy);
+      try {
+        await RequestsService.executeRequestIfNeeded(roleHierarchy);
+      } catch (executeError) {}
       res.status(200).send(roleHierarchy);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);

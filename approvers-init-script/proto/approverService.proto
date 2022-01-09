@@ -8,6 +8,7 @@ service ApproverService {
     rpc GetUserType(GetUserTypeReq) returns (GetUserTypeRes) {}
     rpc SearchApproverByDisplayName(SearchByDisplayNameReq) returns (ApproverArray) {}
     rpc SearchApproverByDomainUser(SearchByDomainUserReq) returns (ApproverArray) {}
+    rpc GetApproverByEntityId(GetApproverByEntityIdReq) returns (Approver){}
     
     rpc UpdateApproverDecision(UpdateApproverDecisionReq) returns (RequestService.Request) {}
 
@@ -17,7 +18,22 @@ service ApproverService {
     rpc GetAllApproverIds(GetAllApproversReq) returns (ApproverIdArray) {}
     rpc SyncApprover(SyncApproverReq) returns (ApproverArray){}
     rpc DeleteApprover(DeleteApproverReq) returns (SuccessMessage){}
+    rpc IsApproverValidForOG(IsApproverValidForOGReq) returns (IsApproverValidForOGRes){}
 }
+
+message IsApproverValidForOGReq{
+    string approverId = 1;
+    string groupId = 2;
+}
+
+message IsApproverValidForOGRes{
+    bool isValid = 1;
+}
+
+message GetApproverByEntityIdReq{
+    string entityId = 1;
+}
+
 
 message SyncApproverReq{
     string approverId = 1;
@@ -79,6 +95,7 @@ message AddApproverReq{
     optional string personalNumber = 6;
     optional string identityCard = 7;
     string directGroup = 8;
+    optional string groupInChargeId = 9;
 }
 
 message UpdateApproverDecisionReq{
@@ -96,6 +113,7 @@ message Approver{
     string personalNumber = 7;
     string identityCard = 8;
     string directGroup = 9;
+    optional string groupInChargeId = 10;
 }
 
 enum RequestStatus{

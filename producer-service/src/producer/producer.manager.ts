@@ -112,11 +112,19 @@ export class RequestManager {
           }
         );
         await this.producerRepository.pushIntoKartoffelQueue(message);
+        logger.info(
+          `produceToADQueue pushed successfully into Kartoffel queue for ${
+            produceRequest.id
+          }: ${JSON.stringify(message)}`
+        );
         await this.requestService.updateKartoffelStatus({
           requestId: produceRequest.id,
           status: StageStatus.STAGE_IN_PROGRESS,
           message: `Pushed into kartoffel queue at ${new Date().toString()}`,
         });
+        logger.info(
+          `produceToADQueue successfully updated kartoffelStatus of ${produceRequest.id}`
+        );
         const response = {
           success: true,
           message: 'Message pushed to Kartoffel queue successfully',
@@ -242,11 +250,19 @@ export class RequestManager {
           }
         );
         await this.producerRepository.pushIntoADQueue(message);
+        logger.info(
+          `produceToADQueue pushed successfully into AD queue for ${
+            produceRequest.id
+          }: ${JSON.stringify(message)}`
+        );
         await this.requestService.updateADStatus({
           requestId: produceRequest.id,
           status: StageStatus.STAGE_IN_PROGRESS,
           message: `Pushed into AD queue at ${new Date().toString()}`,
         });
+        logger.info(
+          `produceToADQueue successfully updated adStatus of ${produceRequest.id}`
+        );
         const response = {
           success: true,
           message: 'Message pushed to AD queue successfully',

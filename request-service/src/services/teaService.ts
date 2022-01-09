@@ -27,11 +27,20 @@ const packageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(
 
 const protoDescriptor: any = grpc.loadPackageDefinition(packageDefinition).Tea;
 
-const teaClient: any = new protoDescriptor.Tea(
-  config.teaServiceUrl,
-  grpc.credentials.createInsecure(),
-  { 'grpc.keepalive_timeout_ms': 5000 }
-);
+const clients: any = [];
+for (let i = 0; i < config.grpcPoolSize; i++) {
+  clients.push(
+    new protoDescriptor.Tea(
+      config.teaServiceUrl,
+      grpc.credentials.createInsecure(),
+      { 'grpc.keepalive_timeout_ms': 5000 }
+    )
+  );
+}
+
+function randomClient(): any {
+  return clients[Math.floor(Math.random() * clients.length)];
+}
 
 export default class TeaService {
   static async reportTeaFail(
@@ -39,7 +48,7 @@ export default class TeaService {
   ): Promise<SuccessMessage> {
     console.log('reportTeaFail');
     return new Promise((resolve, reject) => {
-      teaClient.ReportTeaFail(
+      randomClient().ReportTeaFail(
         reportTeaReq,
         (err: any, successMessage: SuccessMessage) => {
           if (err) {
@@ -57,7 +66,7 @@ export default class TeaService {
   ): Promise<TeaMessage> {
     console.log('retrieveTeaByOGId');
     return new Promise((resolve, reject) => {
-      teaClient.RetrieveTeaByOGId(
+      randomClient().RetrieveTeaByOGId(
         retrieveTeaByOGIdReq,
         (err: any, teaMessage: TeaMessage) => {
           if (err) {
@@ -75,7 +84,7 @@ export default class TeaService {
   ): Promise<UPNMessage> {
     console.log('retrieveUPNByEntity');
     return new Promise((resolve, reject) => {
-      teaClient.RetrieveUPNByEntity(
+      randomClient().RetrieveUPNByEntity(
         retrieveUPNByEntityReq,
         (err: any, upnMessage: UPNMessage) => {
           if (err) {
@@ -93,7 +102,7 @@ export default class TeaService {
   ): Promise<UPNMessage> {
     console.log('retrieveUPNByEntityId');
     return new Promise((resolve, reject) => {
-      teaClient.RetrieveUPNByEntityId(
+      randomClient().RetrieveUPNByEntityId(
         retrieveUPNByEntityIdReq,
         (err: any, upnMessage: UPNMessage) => {
           if (err) {

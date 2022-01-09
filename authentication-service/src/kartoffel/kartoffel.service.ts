@@ -1,6 +1,9 @@
 import { config } from '../config';
 import { logger } from '../logger';
-import { GetEntityByIdRequest } from '../interfaces/protoc/proto/kartoffelService';
+import {
+  GetEntityByIdRequest,
+  GetOGByIdRequest,
+} from '../interfaces/protoc/proto/kartoffelService';
 import { findPath } from '../utils/path';
 
 const grpc = require('@grpc/grpc-js');
@@ -52,6 +55,35 @@ export class KartoffelService {
           resolve(res);
         }
       );
+    });
+  }
+
+  static async getOGById(id: string): Promise<any> {
+    logger.info(`Call to getOGById in AS`, {
+      callRequest: { id: id },
+    });
+
+    const getOGByIdReq: GetOGByIdRequest = {
+      id,
+    };
+    return new Promise((resolve, reject) => {
+      kartoffelClient.GetOGById(getOGByIdReq, (err: any, res: any) => {
+        if (err) {
+          logger.error(`getOGById ERROR in AS`, {
+            err,
+            callRequest: getOGByIdReq,
+          });
+          reject(err);
+          return;
+        }
+
+        logger.info(`getOGById OK in AS`, {
+          response: res,
+          callRequest: getOGByIdReq,
+        });
+
+        resolve(res);
+      });
     });
   }
 }

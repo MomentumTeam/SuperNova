@@ -130,4 +130,5 @@ KartoffelRouter.get(
   KartoffelController.searchDIsByUniqueId
 );
 
+KartoffelRouter.get("/di/:uniqueId", KartoffelValidator.isGetDIByUniqueIdValid, KartoffelController.getDIByUniqueId);
 export default KartoffelRouter;

@@ -7,6 +7,7 @@ import {
   deleteApprover,
   getAllApproverIds,
   getAllApprovers,
+  getApproverByEntityId,
   getUserType,
   isApproverValidForOG,
   searchApproverByDisplayName,
@@ -69,6 +70,7 @@ export class Server {
           SyncApprover: syncApprover,
           DeleteApprover: deleteApprover,
           IsApproverValidForOG: isApproverValidForOG,
+          GetApproverByEntityId: getApproverByEntityId,
         }
       );
       logger.info(`Grpc services were successfully added to the server`);

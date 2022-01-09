@@ -27,30 +27,42 @@ const packageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(
 const protoDescriptor: any =
   grpc.loadPackageDefinition(packageDefinition).RequestService;
 
-const requestClient: any = new protoDescriptor.RequestService(
-  config.requestServiceUrl,
-  grpc.credentials.createInsecure(),
-  { 'grpc.keepalive_timeout_ms': 5000 }
-);
+const clients: any = [];
+for (let i = 0; i < config.grpcPoolSize; i++) {
+  clients.push(
+    new protoDescriptor.RequestService(
+      config.requestServiceUrl,
+      grpc.credentials.createInsecure(),
+      { 'grpc.keepalive_timeout_ms': 5000 }
+    )
+  );
+}
+
+function randomClient(): any {
+  return clients[Math.floor(Math.random() * clients.length)];
+}
 
 export default class RequestService {
   static async updateRequest(updateReq: UpdateReq): Promise<Request> {
     return new Promise((resolve, reject) => {
-      requestClient.UpdateRequest(updateReq, (error: any, request: Request) => {
-        if (error) {
-          logger.error('updateRequest in RequestService ERROR', {
-            updateReq,
-            error: { message: error.message },
-          });
-          reject(error);
-        } else {
-          logger.info('updateRequest in RequestService', {
-            updateReq,
-            request,
-          });
-          resolve(request);
+      randomClient().UpdateRequest(
+        updateReq,
+        (error: any, request: Request) => {
+          if (error) {
+            logger.error('updateRequest in RequestService ERROR', {
+              updateReq,
+              error: { message: error.message },
+            });
+            reject(error);
+          } else {
+            logger.info('updateRequest in RequestService', {
+              updateReq,
+              request,
+            });
+            resolve(request);
+          }
         }
-      });
+      );
     });
   }
 
@@ -59,7 +71,7 @@ export default class RequestService {
   ): Promise<Request> {
     console.log('updateApproverDecision');
     return new Promise((resolve, reject) => {
-      requestClient.UpdateApproverDecision(
+      randomClient().UpdateApproverDecision(
         updateApproverDecisionReq,
         (error: any, request: Request) => {
           if (error) {
@@ -84,7 +96,7 @@ export default class RequestService {
     canPushToADQueueReq: CanPushToQueueReq
   ): Promise<CanPushToQueueRes> {
     return new Promise((resolve, reject) => {
-      requestClient.CanPushToADQueue(
+      randomClient().CanPushToADQueue(
         canPushToADQueueReq,
         (error: any, request: CanPushToQueueRes) => {
           if (error) {

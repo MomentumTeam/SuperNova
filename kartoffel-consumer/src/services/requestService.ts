@@ -25,11 +25,20 @@ const packageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(
 const protoDescriptor: any =
   grpc.loadPackageDefinition(packageDefinition).RequestService;
 
-const requestClient: any = new protoDescriptor.RequestService(
-  config.endpoints.request,
-  grpc.credentials.createInsecure(),
-  { 'grpc.keepalive_timeout_ms': 5000 }
-);
+const clients: any = [];
+for (let i = 0; i < config.grpcPoolSize; i++) {
+  clients.push(
+    new protoDescriptor.RequestService(
+      config.endpoints.request,
+      grpc.credentials.createInsecure(),
+      { 'grpc.keepalive_timeout_ms': 5000 }
+    )
+  );
+}
+
+function randomClient(): any {
+  return clients[Math.floor(Math.random() * clients.length)];
+}
 
 export default class RequestService {
   static async UpdateKartoffelStatus(
@@ -40,7 +49,7 @@ export default class RequestService {
         `Call to UpdateKartoffelStatus in KC`,
         updateKartoffelStatusReq
       );
-      requestClient.UpdateKartoffelStatus(
+      randomClient().UpdateKartoffelStatus(
         updateKartoffelStatusReq,
         (err: any, response: Request) => {
           if (err) {
@@ -69,7 +78,7 @@ export default class RequestService {
         `Call to IncrementKartoffelRetries in KC`,
         incrementKartoffelRetries
       );
-      requestClient.IncrementKartoffelRetries(
+      randomClient().IncrementKartoffelRetries(
         IncrementRetriesReq,
         (err: any, response: Request) => {
           if (err) {

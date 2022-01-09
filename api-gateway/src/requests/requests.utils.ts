@@ -115,6 +115,8 @@ export const getEntityFromConnectedUser = (req: any): EntityMin => {
     id: req.user.id,
     identityCard: req.user.identityCard,
     personalNumber: req.user.personalNumber,
+    directGroup: req.user.directGroup || '',
+    ancestors: [config.fields.rootId],
   };
 
   return entityUser;

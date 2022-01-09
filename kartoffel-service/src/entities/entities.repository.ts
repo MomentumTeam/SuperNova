@@ -158,15 +158,19 @@ export class EntitiesRepository {
         const image: Image = await this.kartoffelFaker.randomPicture();
         return image;
       } else {
-        const image: string = await this.kartoffelUtils.kartoffelGetBufferStream(
-          `${C.kartoffelUrl}/api/entities/${getPictureByEntityIdentifierRequest.identifier}/pictures/profile`
-        );
+        const image: string =
+          await this.kartoffelUtils.kartoffelGetBufferStream(
+            `${C.kartoffelUrl}/api/entities/${getPictureByEntityIdentifierRequest.identifier}/pictures/profile`
+          );
         return { image: image };
       }
     } catch (error: any) {
-      logger.error(`Error while downloading image for id=${getPictureByEntityIdentifierRequest.identifier}`, {
-        error: { message: error.message },
-      });
+      logger.error(
+        `Error while downloading image for id=${getPictureByEntityIdentifierRequest.identifier}`,
+        {
+          error: { message: error.message },
+        }
+      );
       return { image: C.defaultImage };
     }
   }
@@ -460,15 +464,20 @@ export class EntitiesRepository {
       if (C.useFaker) {
         return { success: true };
       } else {
+        const body: any = {
+          digitalIdentityUniqueId: connectEntityAndDIRequest.uniqueId,
+        };
+        if (connectEntityAndDIRequest.upn !== undefined) {
+          body.upn = connectEntityAndDIRequest.upn;
+        }
+
         const data = await this.kartoffelUtils.kartoffelPut(
           `${C.kartoffelUrl}/api/entities/${
             connectEntityAndDIRequest.id
           }/digitalIdentity/${encodeURIComponent(
             connectEntityAndDIRequest.uniqueId
           )}`,
-          {
-            digitalIdentityUniqueId: connectEntityAndDIRequest.uniqueId,
-          }
+          body
         );
         return { success: true };
       }

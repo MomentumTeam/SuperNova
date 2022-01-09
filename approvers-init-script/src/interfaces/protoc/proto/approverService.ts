@@ -61,6 +61,19 @@ export function requestStatusToJSON(object: RequestStatus): string {
   }
 }
 
+export interface IsApproverValidForOGReq {
+  approverId: string;
+  groupId: string;
+}
+
+export interface IsApproverValidForOGRes {
+  isValid: boolean;
+}
+
+export interface GetApproverByEntityIdReq {
+  entityId: string;
+}
+
 export interface SyncApproverReq {
   approverId: string;
 }
@@ -119,6 +132,7 @@ export interface AddApproverReq {
   personalNumber?: string | undefined;
   identityCard?: string | undefined;
   directGroup: string;
+  groupInChargeId?: string | undefined;
 }
 
 export interface UpdateApproverDecisionReq {
@@ -137,7 +151,232 @@ export interface Approver {
   personalNumber: string;
   identityCard: string;
   directGroup: string;
+  groupInChargeId?: string | undefined;
 }
+
+const baseIsApproverValidForOGReq: object = { approverId: "", groupId: "" };
+
+export const IsApproverValidForOGReq = {
+  encode(
+    message: IsApproverValidForOGReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.approverId !== "") {
+      writer.uint32(10).string(message.approverId);
+    }
+    if (message.groupId !== "") {
+      writer.uint32(18).string(message.groupId);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): IsApproverValidForOGReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseIsApproverValidForOGReq,
+    } as IsApproverValidForOGReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.approverId = reader.string();
+          break;
+        case 2:
+          message.groupId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): IsApproverValidForOGReq {
+    const message = {
+      ...baseIsApproverValidForOGReq,
+    } as IsApproverValidForOGReq;
+    if (object.approverId !== undefined && object.approverId !== null) {
+      message.approverId = String(object.approverId);
+    } else {
+      message.approverId = "";
+    }
+    if (object.groupId !== undefined && object.groupId !== null) {
+      message.groupId = String(object.groupId);
+    } else {
+      message.groupId = "";
+    }
+    return message;
+  },
+
+  toJSON(message: IsApproverValidForOGReq): unknown {
+    const obj: any = {};
+    message.approverId !== undefined && (obj.approverId = message.approverId);
+    message.groupId !== undefined && (obj.groupId = message.groupId);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<IsApproverValidForOGReq>
+  ): IsApproverValidForOGReq {
+    const message = {
+      ...baseIsApproverValidForOGReq,
+    } as IsApproverValidForOGReq;
+    if (object.approverId !== undefined && object.approverId !== null) {
+      message.approverId = object.approverId;
+    } else {
+      message.approverId = "";
+    }
+    if (object.groupId !== undefined && object.groupId !== null) {
+      message.groupId = object.groupId;
+    } else {
+      message.groupId = "";
+    }
+    return message;
+  },
+};
+
+const baseIsApproverValidForOGRes: object = { isValid: false };
+
+export const IsApproverValidForOGRes = {
+  encode(
+    message: IsApproverValidForOGRes,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.isValid === true) {
+      writer.uint32(8).bool(message.isValid);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): IsApproverValidForOGRes {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseIsApproverValidForOGRes,
+    } as IsApproverValidForOGRes;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.isValid = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): IsApproverValidForOGRes {
+    const message = {
+      ...baseIsApproverValidForOGRes,
+    } as IsApproverValidForOGRes;
+    if (object.isValid !== undefined && object.isValid !== null) {
+      message.isValid = Boolean(object.isValid);
+    } else {
+      message.isValid = false;
+    }
+    return message;
+  },
+
+  toJSON(message: IsApproverValidForOGRes): unknown {
+    const obj: any = {};
+    message.isValid !== undefined && (obj.isValid = message.isValid);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<IsApproverValidForOGRes>
+  ): IsApproverValidForOGRes {
+    const message = {
+      ...baseIsApproverValidForOGRes,
+    } as IsApproverValidForOGRes;
+    if (object.isValid !== undefined && object.isValid !== null) {
+      message.isValid = object.isValid;
+    } else {
+      message.isValid = false;
+    }
+    return message;
+  },
+};
+
+const baseGetApproverByEntityIdReq: object = { entityId: "" };
+
+export const GetApproverByEntityIdReq = {
+  encode(
+    message: GetApproverByEntityIdReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.entityId !== "") {
+      writer.uint32(10).string(message.entityId);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GetApproverByEntityIdReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseGetApproverByEntityIdReq,
+    } as GetApproverByEntityIdReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.entityId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetApproverByEntityIdReq {
+    const message = {
+      ...baseGetApproverByEntityIdReq,
+    } as GetApproverByEntityIdReq;
+    if (object.entityId !== undefined && object.entityId !== null) {
+      message.entityId = String(object.entityId);
+    } else {
+      message.entityId = "";
+    }
+    return message;
+  },
+
+  toJSON(message: GetApproverByEntityIdReq): unknown {
+    const obj: any = {};
+    message.entityId !== undefined && (obj.entityId = message.entityId);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<GetApproverByEntityIdReq>
+  ): GetApproverByEntityIdReq {
+    const message = {
+      ...baseGetApproverByEntityIdReq,
+    } as GetApproverByEntityIdReq;
+    if (object.entityId !== undefined && object.entityId !== null) {
+      message.entityId = object.entityId;
+    } else {
+      message.entityId = "";
+    }
+    return message;
+  },
+};
 
 const baseSyncApproverReq: object = { approverId: "" };
 
@@ -963,6 +1202,9 @@ export const AddApproverReq = {
     if (message.directGroup !== "") {
       writer.uint32(66).string(message.directGroup);
     }
+    if (message.groupInChargeId !== undefined) {
+      writer.uint32(74).string(message.groupInChargeId);
+    }
     return writer;
   },
 
@@ -997,6 +1239,9 @@ export const AddApproverReq = {
           break;
         case 8:
           message.directGroup = reader.string();
+          break;
+        case 9:
+          message.groupInChargeId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -1049,6 +1294,14 @@ export const AddApproverReq = {
     } else {
       message.directGroup = "";
     }
+    if (
+      object.groupInChargeId !== undefined &&
+      object.groupInChargeId !== null
+    ) {
+      message.groupInChargeId = String(object.groupInChargeId);
+    } else {
+      message.groupInChargeId = undefined;
+    }
     return message;
   },
 
@@ -1070,6 +1323,8 @@ export const AddApproverReq = {
       (obj.identityCard = message.identityCard);
     message.directGroup !== undefined &&
       (obj.directGroup = message.directGroup);
+    message.groupInChargeId !== undefined &&
+      (obj.groupInChargeId = message.groupInChargeId);
     return obj;
   },
 
@@ -1115,6 +1370,14 @@ export const AddApproverReq = {
       message.directGroup = object.directGroup;
     } else {
       message.directGroup = "";
+    }
+    if (
+      object.groupInChargeId !== undefined &&
+      object.groupInChargeId !== null
+    ) {
+      message.groupInChargeId = object.groupInChargeId;
+    } else {
+      message.groupInChargeId = undefined;
     }
     return message;
   },
@@ -1269,6 +1532,9 @@ export const Approver = {
     if (message.directGroup !== "") {
       writer.uint32(74).string(message.directGroup);
     }
+    if (message.groupInChargeId !== undefined) {
+      writer.uint32(82).string(message.groupInChargeId);
+    }
     return writer;
   },
 
@@ -1306,6 +1572,9 @@ export const Approver = {
           break;
         case 9:
           message.directGroup = reader.string();
+          break;
+        case 10:
+          message.groupInChargeId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -1363,6 +1632,14 @@ export const Approver = {
     } else {
       message.directGroup = "";
     }
+    if (
+      object.groupInChargeId !== undefined &&
+      object.groupInChargeId !== null
+    ) {
+      message.groupInChargeId = String(object.groupInChargeId);
+    } else {
+      message.groupInChargeId = undefined;
+    }
     return message;
   },
 
@@ -1385,6 +1662,8 @@ export const Approver = {
       (obj.identityCard = message.identityCard);
     message.directGroup !== undefined &&
       (obj.directGroup = message.directGroup);
+    message.groupInChargeId !== undefined &&
+      (obj.groupInChargeId = message.groupInChargeId);
     return obj;
   },
 
@@ -1436,6 +1715,14 @@ export const Approver = {
     } else {
       message.directGroup = "";
     }
+    if (
+      object.groupInChargeId !== undefined &&
+      object.groupInChargeId !== null
+    ) {
+      message.groupInChargeId = object.groupInChargeId;
+    } else {
+      message.groupInChargeId = undefined;
+    }
     return message;
   },
 };
@@ -1449,6 +1736,7 @@ export interface ApproverService {
   SearchApproverByDomainUser(
     request: SearchByDomainUserReq
   ): Promise<ApproverArray>;
+  GetApproverByEntityId(request: GetApproverByEntityIdReq): Promise<Approver>;
   UpdateApproverDecision(request: UpdateApproverDecisionReq): Promise<Request>;
   SearchHighCommandersByDisplayName(
     request: SearchHighCommandersByDisplayNameReq
@@ -1457,6 +1745,9 @@ export interface ApproverService {
   GetAllApproverIds(request: GetAllApproversReq): Promise<ApproverIdArray>;
   SyncApprover(request: SyncApproverReq): Promise<ApproverArray>;
   DeleteApprover(request: DeleteApproverReq): Promise<SuccessMessage>;
+  IsApproverValidForOG(
+    request: IsApproverValidForOGReq
+  ): Promise<IsApproverValidForOGRes>;
 }
 
 export class ApproverServiceClientImpl implements ApproverService {
@@ -1469,6 +1760,7 @@ export class ApproverServiceClientImpl implements ApproverService {
       this.SearchApproverByDisplayName.bind(this);
     this.SearchApproverByDomainUser =
       this.SearchApproverByDomainUser.bind(this);
+    this.GetApproverByEntityId = this.GetApproverByEntityId.bind(this);
     this.UpdateApproverDecision = this.UpdateApproverDecision.bind(this);
     this.SearchHighCommandersByDisplayName =
       this.SearchHighCommandersByDisplayName.bind(this);
@@ -1476,6 +1768,7 @@ export class ApproverServiceClientImpl implements ApproverService {
     this.GetAllApproverIds = this.GetAllApproverIds.bind(this);
     this.SyncApprover = this.SyncApprover.bind(this);
     this.DeleteApprover = this.DeleteApprover.bind(this);
+    this.IsApproverValidForOG = this.IsApproverValidForOG.bind(this);
   }
   AddApprover(request: AddApproverReq): Promise<Approver> {
     const data = AddApproverReq.encode(request).finish();
@@ -1519,6 +1812,16 @@ export class ApproverServiceClientImpl implements ApproverService {
       data
     );
     return promise.then((data) => ApproverArray.decode(new _m0.Reader(data)));
+  }
+
+  GetApproverByEntityId(request: GetApproverByEntityIdReq): Promise<Approver> {
+    const data = GetApproverByEntityIdReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "ApproverService.ApproverService",
+      "GetApproverByEntityId",
+      data
+    );
+    return promise.then((data) => Approver.decode(new _m0.Reader(data)));
   }
 
   UpdateApproverDecision(request: UpdateApproverDecisionReq): Promise<Request> {
@@ -1581,6 +1884,20 @@ export class ApproverServiceClientImpl implements ApproverService {
       data
     );
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
+  }
+
+  IsApproverValidForOG(
+    request: IsApproverValidForOGReq
+  ): Promise<IsApproverValidForOGRes> {
+    const data = IsApproverValidForOGReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "ApproverService.ApproverService",
+      "IsApproverValidForOG",
+      data
+    );
+    return promise.then((data) =>
+      IsApproverValidForOGRes.decode(new _m0.Reader(data))
+    );
   }
 }
 

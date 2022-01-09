@@ -56,6 +56,7 @@ import {
 } from '../services/requestHelper';
 import { NotificationType } from '../interfaces/protoc/proto/notificationService';
 import {
+  getAncestorsQuery,
   getPersonQuery,
   getRequestTypeQuery,
   getSearchQuery,
@@ -89,6 +90,7 @@ export class RequestRepository {
         createRequestReq.adParams.upn = await retrieveUPNByEntityId(
           createRequestReq.kartoffelParams.id
         );
+        createRequestReq.kartoffelParams.upn = createRequestReq.adParams.upn;
       } else if (
         type === RequestType.CREATE_ENTITY ||
         type === RequestType.DELETE_ENTITY ||
@@ -847,7 +849,8 @@ export class RequestRepository {
             requestType === RequestType.CHANGE_ROLE_HIERARCHY_BULK) &&
           (requestUpdate.commanderDecision ||
             requestUpdate.securityDecision ||
-            requestUpdate.superSecurityDecision)
+            requestUpdate.superSecurityDecision ||
+            requestUpdate.status)
         ) {
           await RequestModel.updateMany(
             { bulkRequestId: updateReq.id },
@@ -856,10 +859,7 @@ export class RequestRepository {
         } else if (
           documentObj.isPartOfBulk &&
           documentObj.bulkRequestId &&
-          (requestUpdate.kartoffelStatus !== undefined ||
-            requestUpdate.adStatus !== undefined ||
-            requestUpdate['kartoffelStatus.status'] !== undefined ||
-            requestUpdate['adStatus.status'] !== undefined)
+          requestUpdate.status !== undefined
         ) {
           // Sync bulk request if all sub-requests are finished
           const bulkRequestId = documentObj.bulkRequestId;
@@ -1251,6 +1251,7 @@ export class RequestRepository {
             : SortOrder.DEC
         );
       }
+
       if (getRequestsByPersonReq.searchQuery) {
         const searchQuery = getSearchQuery(getRequestsByPersonReq.searchQuery);
         if (query['$or']) {
@@ -1258,6 +1259,22 @@ export class RequestRepository {
           delete query['$or'];
         } else {
           query = { ...query, ...searchQuery };
+        }
+      }
+
+      if (
+        approvementStatus === ApprovementStatus.BY_USER_TYPE &&
+        getRequestsByPersonReq.groupInChargeId &&
+        userType.includes(ApproverType.ADMIN)
+      ) {
+        const ancestorsQuery = getAncestorsQuery(
+          getRequestsByPersonReq.groupInChargeId
+        );
+        if (query['$or']) {
+          query['$and'] = [{ $or: query['$or'] }, ancestorsQuery];
+          delete query['$or'];
+        } else {
+          query = { ...query, ...ancestorsQuery };
         }
       }
 

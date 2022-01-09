@@ -25,11 +25,20 @@ const packageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(
 const protoDescriptor: any =
   grpc.loadPackageDefinition(packageDefinition).NotificationService;
 
-const notificationClient: any = new protoDescriptor.NotificationService(
-  config.notificationServiceUrl,
-  grpc.credentials.createInsecure(),
-  { 'grpc.keepalive_timeout_ms': 5000 }
-);
+const clients: any = [];
+for (let i = 0; i < config.grpcPoolSize; i++) {
+  clients.push(
+    new protoDescriptor.NotificationService(
+      config.notificationServiceUrl,
+      grpc.credentials.createInsecure(),
+      { 'grpc.keepalive_timeout_ms': 5000 }
+    )
+  );
+}
+
+function randomClient(): any {
+  return clients[Math.floor(Math.random() * clients.length)];
+}
 
 export default class NotificationService {
   static async createCustomNotification(
@@ -37,7 +46,7 @@ export default class NotificationService {
   ): Promise<Notification> {
     console.log('createCustomNotification');
     return new Promise((resolve, reject) => {
-      notificationClient.CreateCustomNotification(
+      randomClient().CreateCustomNotification(
         createCustomNotificationReq,
         (err: any, notification: Notification) => {
           if (err) {
@@ -55,7 +64,7 @@ export default class NotificationService {
   ): Promise<NotificationArray> {
     console.log('createNotifications');
     return new Promise((resolve, reject) => {
-      notificationClient.CreateNotifications(
+      randomClient().CreateNotifications(
         createNotificationsReq,
         (err: any, notificationArray: NotificationArray) => {
           if (err) {
