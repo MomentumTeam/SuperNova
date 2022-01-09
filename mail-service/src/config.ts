@@ -49,8 +49,13 @@ export const requestTypeToHebrew = {
   [requestTypeToJSON(RequestType.EDIT_ENTITY)]: 'עריכת ישות',
   [requestTypeToJSON(RequestType.DELETE_OG)]: 'מחיקת היררכיה',
   [requestTypeToJSON(RequestType.DELETE_ROLE)]: 'מחיקת תפקיד',
+  [requestTypeToJSON(RequestType.DELETE_ENTITY)]: 'מחיקת ישות',
   [requestTypeToJSON(RequestType.DISCONNECT_ROLE)]: 'ניתוק תפקיד',
   [requestTypeToJSON(RequestType.ADD_APPROVER)]: 'הוספת גורם מאשר',
+  [requestTypeToJSON(RequestType.CHANGE_ROLE_HIERARCHY)]: 'מעבר היררכיה',
+  [requestTypeToJSON(RequestType.CREATE_ROLE_BULK)]: 'יצירת תפקידים',
+  [requestTypeToJSON(RequestType.CHANGE_ROLE_HIERARCHY_BULK)]:
+    'שינוי היררכיות לתפקידים',
 };
 
 export const legoAddress =

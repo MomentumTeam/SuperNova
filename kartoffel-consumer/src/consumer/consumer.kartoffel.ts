@@ -99,26 +99,18 @@ export const createRole = async (data: any) => {
   }
 };
 
-export const createEntity = async (
-  createEntityRequest: CreateEntityRequest
-) => {
+export const createEntity = async (createEntityRequest: any) => {
   try {
     const {
       firstName,
       lastName,
       identityCard,
       personalNumber,
-      serviceType,
       phone,
       mobilePhone,
-      address,
       clearance,
       sex,
       birthDate,
-      entityType,
-      akaUnit,
-      dischargeDay,
-      rank,
     } = createEntityRequest;
     logger.info('createEntity request received', createEntityRequest);
 
