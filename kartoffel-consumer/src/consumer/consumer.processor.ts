@@ -134,7 +134,7 @@ export const requestProcessor = async (incomingRequest: any) => {
       if (requestObject && requestObject.id) {
         const updatedRequest = await RequestService.IncrementKartoffelRetries({
           id: requestObject.id,
-          message: error.message,
+          message: error.message ? error.message.toString() : 'Kartoffel Error',
         });
         const updatedStatus =
           typeof updatedRequest.status === typeof ''
