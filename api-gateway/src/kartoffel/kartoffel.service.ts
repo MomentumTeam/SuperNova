@@ -719,7 +719,7 @@ export class KartoffelService {
     logger.info(`Call to getDIByUniqueId in GTW`, getDIByUniqueIdRequest);
 
     return new Promise((resolve, reject) => {
-      kartoffelClient.GetDIByUniqueId(getDIByUniqueIdRequest, (err: any, response: DigitalIdentity) => {
+      randomClient().GetDIByUniqueId(getDIByUniqueIdRequest, (err: any, response: DigitalIdentity) => {
         if (err) {
           logger.error(`getDIByUniqueId ERROR in GTW`, {
             err,
