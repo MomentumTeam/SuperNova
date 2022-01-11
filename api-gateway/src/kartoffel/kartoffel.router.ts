@@ -54,6 +54,7 @@ KartoffelRouter.get(
   KartoffelValidator.isGetAllOGsValid,
   KartoffelController.getAllOGs
 );
+KartoffelRouter.get('/groups/me', KartoffelController.getMyOG);
 KartoffelRouter.get(
   '/groups/search',
   KartoffelValidator.isSearchOGValid,
@@ -125,10 +126,14 @@ KartoffelRouter.get(
 
 // DI
 KartoffelRouter.get(
-  "/di/search/:uniqueId",
+  '/di/search/:uniqueId',
   KartoffelValidator.isSearchDIsByUniqueIdValid,
   KartoffelController.searchDIsByUniqueId
 );
 
-KartoffelRouter.get("/di/:uniqueId", KartoffelValidator.isGetDIByUniqueIdValid, KartoffelController.getDIByUniqueId);
+KartoffelRouter.get(
+  '/di/:uniqueId',
+  KartoffelValidator.isGetDIByUniqueIdValid,
+  KartoffelController.getDIByUniqueId
+);
 export default KartoffelRouter;
