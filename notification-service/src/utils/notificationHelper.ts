@@ -7,8 +7,11 @@ import {
 } from '../interfaces/protoc/proto/notificationService';
 import {
   Request,
+  RequestType,
   requestTypeFromJSON,
   requestTypeToJSON,
+  StageStatus,
+  stageStatusFromJSON,
 } from '../interfaces/protoc/proto/requestService';
 
 export function cleanUnderscoreFields(document: any): void {
@@ -127,6 +130,32 @@ export function generateNotifications(
       message = `בקשתך ל<b>${requestTypeToHebrew[requestTypeStr]}</b> מספר <b>${request.serialNumber}</b> נמחקה בהצלחה.`;
     } else {
       message = `בקשתך ל<b>${requestTypeToHebrew[requestTypeStr]}</b> מספר <b>${request.serialNumber}</b> נכשלה.`;
+      if (requestType !== RequestType.ADD_APPROVER) {
+        const adStageStatus =
+          typeof request.adStatus?.status == typeof ''
+            ? stageStatusFromJSON(request.adStatus?.status)
+            : request.adStatus?.status;
+        const kartoffelStageStatus =
+          typeof request.kartoffelStatus?.status == typeof ''
+            ? stageStatusFromJSON(request.kartoffelStatus?.status)
+            : request.kartoffelStatus?.status;
+        if (
+          adStageStatus === StageStatus.STAGE_FAILED &&
+          request.adStatus?.message &&
+          request.adStatus?.message.length > 0
+        ) {
+          message =
+            message + ` השגיאה שהתקבלה מתשתיות: ${request.adStatus?.message}.`;
+        } else if (
+          kartoffelStageStatus === StageStatus.STAGE_FAILED &&
+          request.kartoffelStatus?.message &&
+          request.kartoffelStatus?.message.length > 0
+        ) {
+          message =
+            message +
+            ` השגיאה שהתקבלה משירות המשתמשים: ${request.kartoffelStatus?.message}.`;
+        }
+      }
       //REQUEST_FAILED
     }
 

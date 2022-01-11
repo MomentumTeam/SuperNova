@@ -79,7 +79,7 @@ export default class RequestService {
         incrementKartoffelRetries
       );
       randomClient().IncrementKartoffelRetries(
-        IncrementRetriesReq,
+        incrementKartoffelRetries,
         (err: any, response: Request) => {
           if (err) {
             logger.error(`IncrementKartoffelRetries ERROR in KC`, {
