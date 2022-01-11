@@ -21,6 +21,13 @@ volume:
     secretName: azure-secret
     shareName: momentum/bulk-files
 
+  - name: logs
+    mountPath: /logs
+    secretName: azure-secret
+    shareName: momentum/logs
+    type: azurefile
+
+
 config:
   configmaps:
       name: momentum-configmap

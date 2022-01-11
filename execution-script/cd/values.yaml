@@ -8,10 +8,18 @@ images:
     name: momentumacr
   repository: momentumacr.azurecr.io/execution-script
   tag: "latest"
+  
 service:
   ports:
   - name: http
     port: "8080"
+
+volume: 
+  - name: logs
+    mountPath: /logs
+    secretName: azure-secret
+    shareName: momentum/logs
+    type: azurefile
 
 config:
   configmaps:
