@@ -125,7 +125,7 @@ export class KartoffelService {
           }
 
           logger.info(`getPictureByEntityIdentifier OK in GTW`, {
-            response: response,
+            // response: response,
             callRequest: getPictureByEntityIdentifierReq,
           });
           resolve(response);
@@ -713,27 +713,28 @@ export class KartoffelService {
     });
   }
 
-   static async getDIByUniqueId(
-    getDIByUniqueIdRequest: GetDIByUniqueIdRequest
-  ) {
+  static async getDIByUniqueId(getDIByUniqueIdRequest: GetDIByUniqueIdRequest) {
     logger.info(`Call to getDIByUniqueId in GTW`, getDIByUniqueIdRequest);
 
     return new Promise((resolve, reject) => {
-      randomClient().GetDIByUniqueId(getDIByUniqueIdRequest, (err: any, response: DigitalIdentity) => {
-        if (err) {
-          logger.error(`getDIByUniqueId ERROR in GTW`, {
-            err,
+      randomClient().GetDIByUniqueId(
+        getDIByUniqueIdRequest,
+        (err: any, response: DigitalIdentity) => {
+          if (err) {
+            logger.error(`getDIByUniqueId ERROR in GTW`, {
+              err,
+              callRequest: getDIByUniqueIdRequest,
+            });
+            reject(err);
+          }
+
+          logger.info(`getDIByUniqueId OK in GTW`, {
+            response: response,
             callRequest: getDIByUniqueIdRequest,
           });
-          reject(err);
+          resolve(response);
         }
-
-        logger.info(`getDIByUniqueId OK in GTW`, {
-          response: response,
-          callRequest: getDIByUniqueIdRequest,
-        });
-        resolve(response);
-      });
+      );
     });
   }
 }

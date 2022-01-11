@@ -83,7 +83,7 @@ export const createRole = async (data: any) => {
       //If goal user
       const goalUserEntity = await KartoffelService.createEntity({
         firstName: jobTitle,
-        lastName: '',
+        lastName: jobTitle,
         entityType: config.goalUser,
         phone: [],
         mobilePhone: [],
@@ -99,32 +99,24 @@ export const createRole = async (data: any) => {
   }
 };
 
-export const createEntity = async (
-  createEntityRequest: CreateEntityRequest
-) => {
+export const createEntity = async (createEntityRequest: any) => {
   try {
     const {
       firstName,
       lastName,
       identityCard,
       personalNumber,
-      serviceType,
       phone,
       mobilePhone,
-      address,
       clearance,
       sex,
       birthDate,
-      entityType,
-      akaUnit,
-      dischargeDay,
-      rank,
     } = createEntityRequest;
     logger.info('createEntity request received', createEntityRequest);
 
     const createdEntity: Entity = await KartoffelService.createEntity({
       firstName: firstName,
-      lastName: lastName,
+      lastName: lastName && lastName !== '' ? lastName : firstName,
       identityCard: identityCard,
       personalNumber: personalNumber,
       phone: phone,
