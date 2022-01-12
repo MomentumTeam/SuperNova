@@ -315,17 +315,19 @@ export class GroupsRepository {
           }
           return { groups: groups } as OGArray;
         } else {
-          const res = await this.kartoffelUtils.kartoffelGet(
-            `${C.kartoffelUrl}/api/groups/${getChildrenOfOGRequest.id}/children`,
-            queryParams
-          );
-          let groups = res as OrganizationGroup[];
+          let groups = [];
           if (getChildrenOfOGRequest.withParent) {
             const parent = await this.getOGById({
               id: getChildrenOfOGRequest.id,
             });
             groups.push(parent);
           }
+          const res = await this.kartoffelUtils.kartoffelGet(
+            `${C.kartoffelUrl}/api/groups/${getChildrenOfOGRequest.id}/children`,
+            queryParams
+          );
+          let resGroups = res as OrganizationGroup[];
+          groups.push(...resGroups);
 
           if (getChildrenOfOGRequest.withRoles) {
             groups = await getDirectRolesForGroups(groups);
