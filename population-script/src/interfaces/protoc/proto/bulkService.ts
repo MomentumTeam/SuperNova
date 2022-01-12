@@ -3,10 +3,13 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import {
   Request,
+  RequestStatus,
   CreateRoleBulkRes,
   ChangeRoleHierarchyBulkRes,
   CreateRoleBulkReq,
   ChangeRoleHierarchyBulkReq,
+  requestStatusFromJSON,
+  requestStatusToJSON,
 } from "./requestService";
 
 export const protobufPackage = "BulkService";
@@ -80,6 +83,7 @@ export interface CreateRoleRow {
   clearance: string;
   roleEntityType: string;
   rowNumber: string;
+  status?: RequestStatus | undefined;
 }
 
 export interface ChangeRoleHierarchyRow {
@@ -88,6 +92,7 @@ export interface ChangeRoleHierarchyRow {
   currentJobTitle: string;
   newJobTitle: string;
   rowNumber: string;
+  status?: RequestStatus | undefined;
 }
 
 const baseIsBulkFileValidReq: object = { fileName: "", type: 0 };
@@ -653,6 +658,9 @@ export const CreateRoleRow = {
     if (message.rowNumber !== "") {
       writer.uint32(42).string(message.rowNumber);
     }
+    if (message.status !== undefined) {
+      writer.uint32(48).int32(message.status);
+    }
     return writer;
   },
 
@@ -677,6 +685,9 @@ export const CreateRoleRow = {
           break;
         case 5:
           message.rowNumber = reader.string();
+          break;
+        case 6:
+          message.status = reader.int32() as any;
           break;
         default:
           reader.skipType(tag & 7);
@@ -713,6 +724,11 @@ export const CreateRoleRow = {
     } else {
       message.rowNumber = "";
     }
+    if (object.status !== undefined && object.status !== null) {
+      message.status = requestStatusFromJSON(object.status);
+    } else {
+      message.status = undefined;
+    }
     return message;
   },
 
@@ -724,6 +740,11 @@ export const CreateRoleRow = {
     message.roleEntityType !== undefined &&
       (obj.roleEntityType = message.roleEntityType);
     message.rowNumber !== undefined && (obj.rowNumber = message.rowNumber);
+    message.status !== undefined &&
+      (obj.status =
+        message.status !== undefined
+          ? requestStatusToJSON(message.status)
+          : undefined);
     return obj;
   },
 
@@ -753,6 +774,11 @@ export const CreateRoleRow = {
       message.rowNumber = object.rowNumber;
     } else {
       message.rowNumber = "";
+    }
+    if (object.status !== undefined && object.status !== null) {
+      message.status = object.status;
+    } else {
+      message.status = undefined;
     }
     return message;
   },
@@ -786,6 +812,9 @@ export const ChangeRoleHierarchyRow = {
     if (message.rowNumber !== "") {
       writer.uint32(42).string(message.rowNumber);
     }
+    if (message.status !== undefined) {
+      writer.uint32(48).int32(message.status);
+    }
     return writer;
   },
 
@@ -813,6 +842,9 @@ export const ChangeRoleHierarchyRow = {
           break;
         case 5:
           message.rowNumber = reader.string();
+          break;
+        case 6:
+          message.status = reader.int32() as any;
           break;
         default:
           reader.skipType(tag & 7);
@@ -852,6 +884,11 @@ export const ChangeRoleHierarchyRow = {
     } else {
       message.rowNumber = "";
     }
+    if (object.status !== undefined && object.status !== null) {
+      message.status = requestStatusFromJSON(object.status);
+    } else {
+      message.status = undefined;
+    }
     return message;
   },
 
@@ -864,6 +901,11 @@ export const ChangeRoleHierarchyRow = {
     message.newJobTitle !== undefined &&
       (obj.newJobTitle = message.newJobTitle);
     message.rowNumber !== undefined && (obj.rowNumber = message.rowNumber);
+    message.status !== undefined &&
+      (obj.status =
+        message.status !== undefined
+          ? requestStatusToJSON(message.status)
+          : undefined);
     return obj;
   },
 
@@ -898,6 +940,11 @@ export const ChangeRoleHierarchyRow = {
       message.rowNumber = object.rowNumber;
     } else {
       message.rowNumber = "";
+    }
+    if (object.status !== undefined && object.status !== null) {
+      message.status = object.status;
+    } else {
+      message.status = undefined;
     }
     return message;
   },
