@@ -363,6 +363,7 @@ export interface GetChildrenOfOGRequest {
   pageSize?: number | undefined;
   direct: boolean;
   withRoles: boolean;
+  withParent?: boolean | undefined;
 }
 
 /** GetChildrenOfRootOG */
@@ -5772,6 +5773,9 @@ export const GetChildrenOfOGRequest = {
     if (message.withRoles === true) {
       writer.uint32(40).bool(message.withRoles);
     }
+    if (message.withParent !== undefined) {
+      writer.uint32(48).bool(message.withParent);
+    }
     return writer;
   },
 
@@ -5799,6 +5803,9 @@ export const GetChildrenOfOGRequest = {
           break;
         case 5:
           message.withRoles = reader.bool();
+          break;
+        case 6:
+          message.withParent = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -5835,6 +5842,11 @@ export const GetChildrenOfOGRequest = {
     } else {
       message.withRoles = false;
     }
+    if (object.withParent !== undefined && object.withParent !== null) {
+      message.withParent = Boolean(object.withParent);
+    } else {
+      message.withParent = undefined;
+    }
     return message;
   },
 
@@ -5845,6 +5857,7 @@ export const GetChildrenOfOGRequest = {
     message.pageSize !== undefined && (obj.pageSize = message.pageSize);
     message.direct !== undefined && (obj.direct = message.direct);
     message.withRoles !== undefined && (obj.withRoles = message.withRoles);
+    message.withParent !== undefined && (obj.withParent = message.withParent);
     return obj;
   },
 
@@ -5876,6 +5889,11 @@ export const GetChildrenOfOGRequest = {
       message.withRoles = object.withRoles;
     } else {
       message.withRoles = false;
+    }
+    if (object.withParent !== undefined && object.withParent !== null) {
+      message.withParent = object.withParent;
+    } else {
+      message.withParent = undefined;
     }
     return message;
   },
