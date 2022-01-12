@@ -285,6 +285,7 @@ export class GroupsRepository {
         const queryParams: any = { ...getChildrenOfOGRequest };
         delete queryParams.id;
         delete queryParams.withRoles;
+        delete queryParams.withParent;
 
         if (!queryParams.page || !queryParams.pageSize) {
           //get all children
