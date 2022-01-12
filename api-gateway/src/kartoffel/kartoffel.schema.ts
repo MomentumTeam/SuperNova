@@ -111,7 +111,7 @@ export const searchOGSchema = Joi.object({
   query: {
     underGroupId: Joi.string(),
     nameAndHierarchy: Joi.string().required(),
-    withRoles: Joi.boolean().default(false)
+    withRoles: Joi.boolean().default(false),
   },
 });
 
@@ -142,6 +142,7 @@ export const GetOGChildrenSchema = Joi.object({
     withRoles: Joi.boolean().default(false),
     page: Joi.number(),
     pageSize: Joi.number(),
+    withParent: Joi.boolean().default(false),
   },
 });
 
@@ -230,8 +231,7 @@ export const SearchDIsByUniqueIdValidSchema = Joi.object({
   params: {
     uniqueId: Joi.string().required(),
   },
-  query: {
-  },
+  query: {},
 });
 
 export const GetDIByUniqueIdValidSchema = Joi.object({

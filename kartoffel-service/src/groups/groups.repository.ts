@@ -290,6 +290,12 @@ export class GroupsRepository {
           //get all children
           let page = 1;
           let groups: OrganizationGroup[] = [];
+          if (getChildrenOfOGRequest.withParent) {
+            const parent = await this.getOGById({
+              id: getChildrenOfOGRequest.id,
+            });
+            groups.push(parent);
+          }
 
           while (true) {
             const currentPage = await this.getChildrenOfOG({
@@ -312,12 +318,17 @@ export class GroupsRepository {
             `${C.kartoffelUrl}/api/groups/${getChildrenOfOGRequest.id}/children`,
             queryParams
           );
-
           let groups = res as OrganizationGroup[];
+          if (getChildrenOfOGRequest.withParent) {
+            const parent = await this.getOGById({
+              id: getChildrenOfOGRequest.id,
+            });
+            groups.push(parent);
+          }
+
           if (getChildrenOfOGRequest.withRoles) {
             groups = await getDirectRolesForGroups(groups);
           }
-
           return { groups: groups } as OGArray;
         }
       }
