@@ -11,6 +11,31 @@ import { logger } from '../logger';
 
 const teaManager: TeaManager = new TeaManager();
 
+export async function retrieveBrol(call: any, callback: any): Promise<void> {
+  try {
+    logger.info('Call to retrieveBrol', { request: call.request });
+    const upnMessage: UPNMessage = await teaManager.retrieveBrol(call.request);
+    logger.info('retrieveBrol OK', {
+      response: upnMessage,
+      request: call.request,
+    });
+    callback(null, upnMessage);
+  } catch (error: any) {
+    logger.error('retrieveBrol ERROR', {
+      error: { message: error.message },
+      request: call.request,
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
 export async function retrieveTeaByPrefix(
   call: any,
   callback: any

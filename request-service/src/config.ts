@@ -28,6 +28,7 @@ export const storeLogs = process.env.GLOBAL_STORE_LOGS
 export const grpcPoolSize = process.env.GLOBAL_GRPC_POOL_SIZE
   ? parseInt(process.env.GLOBAL_GRPC_POOL_SIZE)
   : 2;
+export const goalUser = process.env.RS_KARTOFFEL_GOAL_USER || 'GoalUser';
 
 export const searchFields = [
   { name: 'submittedBy.displayName' },

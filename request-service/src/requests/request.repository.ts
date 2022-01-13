@@ -66,6 +66,7 @@ import {
 } from '../utils/query';
 import {
   reportTeaFail,
+  retrieveBrol,
   retrieveTeaByOGId,
   retrieveUPNByEntityId,
 } from '../services/teaHelper';
@@ -86,6 +87,13 @@ export class RequestRepository {
         createRequestReq.kartoffelParams.uniqueId = tea.uniqueId;
         createRequestReq.kartoffelParams.mail = tea.mail;
         createRequestReq.adParams.samAccountName = tea.samAccountName;
+        if (
+          createRequestReq.kartoffelParams.roleEntityType &&
+          createRequestReq.kartoffelParams.roleEntityType === C.goalUser
+        ) {
+          createRequestReq.adParams.upn = await retrieveBrol();
+          createRequestReq.kartoffelParams.upn = createRequestReq.adParams.upn;
+        }
       } else if (type === RequestType.ASSIGN_ROLE_TO_ENTITY) {
         createRequestReq.adParams.upn = await retrieveUPNByEntityId(
           createRequestReq.kartoffelParams.id

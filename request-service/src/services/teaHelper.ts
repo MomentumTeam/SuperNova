@@ -32,3 +32,8 @@ export async function retrieveUPNByEntityId(id: string) {
   );
   return upnMessage.upn;
 }
+
+export async function retrieveBrol() {
+  const upnMessage = await TeaService.retrieveBrol();
+  return upnMessage.upn;
+}
