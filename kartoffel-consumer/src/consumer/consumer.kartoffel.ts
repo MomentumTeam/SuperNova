@@ -51,6 +51,7 @@ export const createRole = async (data: any) => {
       isRoleAttachable,
       roleEntityType,
       clearance,
+      upn,
     } = data;
     const newDI: DigitalIdentity = await KartoffelService.createDI({
       isRoleAttachable: isRoleAttachable,
@@ -79,7 +80,7 @@ export const createRole = async (data: any) => {
       });
     logger.info('Successfuly connected role and DI', successMessageKartoffel);
 
-    if (roleEntityType === config.goalUser) {
+    if (roleEntityType === config.goalUser && upn) {
       //If goal user
       const goalUserEntity = await KartoffelService.createEntity({
         firstName: jobTitle,
@@ -91,6 +92,7 @@ export const createRole = async (data: any) => {
       await KartoffelService.connectEntityAndDI({
         id: goalUserEntity.id,
         uniqueId: newDI.uniqueId,
+        upn: upn,
       });
     }
     return newRole.roleId;
