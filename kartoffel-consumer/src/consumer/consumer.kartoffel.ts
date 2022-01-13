@@ -127,6 +127,7 @@ export const createEntity = async (createEntityRequest: any) => {
       sex: sex,
       birthDate: birthDate,
       entityType: config.civilian,
+      rank: config.civilianDefaultRank,
     });
     logger.info('Successfuly created Entity', createdEntity);
     return createdEntity.id;
