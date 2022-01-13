@@ -600,10 +600,14 @@ export default class RequestsController {
     };
 
     try {
+      let groupId = undefined;
+      if (createNewApproverReq.additionalParams?.groupInChargeId) {
+        groupId = createNewApproverReq.additionalParams?.groupInChargeId;
+      }
       const request: any = await approveUserRequest(
         req,
         createNewApproverReq,
-        undefined,
+        groupId,
         true
       );
       const newApprover = await RequestsService.createNewApproverRequest(
