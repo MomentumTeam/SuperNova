@@ -410,6 +410,7 @@ message GetChildrenOfOGRequest{
     optional int32 pageSize = 3;
     bool direct = 4;
     bool withRoles = 5;
+    optional bool withParent = 6;
 }
 
 // GetChildrenOfRootOG

@@ -55,13 +55,17 @@ export default class KartoffelController {
   }
 
   static async getMyPicture(req: any, res: Response) {
-    if (!req.user && (!req.user.personalNumber || !req.user.identityCard)) throw new AuthenticationError();
-    const getPictureByEntityIdentifierReq: GetPictureByEntityIdentifierRequest = {
-      identifier: req.user.personalNumber || req.user.identityCard,
-    };
+    if (!req.user && (!req.user.personalNumber || !req.user.identityCard))
+      throw new AuthenticationError();
+    const getPictureByEntityIdentifierReq: GetPictureByEntityIdentifierRequest =
+      {
+        identifier: req.user.personalNumber || req.user.identityCard,
+      };
 
     try {
-      const userImage = await KartoffelService.getPictureByEntityIdentifier(getPictureByEntityIdentifierReq);
+      const userImage = await KartoffelService.getPictureByEntityIdentifier(
+        getPictureByEntityIdentifierReq
+      );
       res.send(userImage);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -171,6 +175,17 @@ export default class KartoffelController {
 
   // Groups
 
+  static async getMyOG(req: any, res: Response) {
+    const getOGByIdReq: GetOGByIdRequest = { id: req.user.directGroup };
+    try {
+      const organizationGroup = await KartoffelService.getOGById(getOGByIdReq);
+      res.send(organizationGroup);
+    } catch (error: any) {
+      const statusCode = statusCodeHandler(error);
+      res.status(statusCode).send(error.message);
+    }
+  }
+
   static async searchOG(req: Request, res: Response) {
     const searchOGReq: any = { ...req.query, ...req.params };
 
@@ -265,7 +280,7 @@ export default class KartoffelController {
   static async getOGByHierarchyName(req: Request, res: Response) {
     const getOGByHierarchyNameReq: any = {
       hierarchy: req.query.hierarchy,
-      withRoles: req.query.withRoles
+      withRoles: req.query.withRoles,
     };
 
     try {
@@ -365,40 +380,44 @@ export default class KartoffelController {
     }
   }
 
-    static async searchRolesByRoleId(req: Request, res: Response) {
-      const searchRolesByRoleId: any = {...req.query, ...req.params};
+  static async searchRolesByRoleId(req: Request, res: Response) {
+    const searchRolesByRoleId: any = { ...req.query, ...req.params };
 
-      try {
-        const roles = await KartoffelService.searchRolesByRoleId(searchRolesByRoleId);
-        res.send(roles);
-      } catch (error: any) {
-        const statusCode = statusCodeHandler(error);
-        res.status(statusCode).send(error.message);
-      }
+    try {
+      const roles = await KartoffelService.searchRolesByRoleId(
+        searchRolesByRoleId
+      );
+      res.send(roles);
+    } catch (error: any) {
+      const statusCode = statusCodeHandler(error);
+      res.status(statusCode).send(error.message);
+    }
   }
 
   // DI
-     static async searchDIsByUniqueId(req: Request, res: Response) {
-      const searchDIsByUniqueId: any = { ...req.query, ...req.params };
+  static async searchDIsByUniqueId(req: Request, res: Response) {
+    const searchDIsByUniqueId: any = { ...req.query, ...req.params };
 
-      try {
-        const dis = await KartoffelService.searchDIsByUniqueId(searchDIsByUniqueId);
-        res.send(dis);
-      } catch (error: any) {
-        const statusCode = statusCodeHandler(error);
-        res.status(statusCode).send(error.message);
-      }
+    try {
+      const dis = await KartoffelService.searchDIsByUniqueId(
+        searchDIsByUniqueId
+      );
+      res.send(dis);
+    } catch (error: any) {
+      const statusCode = statusCodeHandler(error);
+      res.status(statusCode).send(error.message);
+    }
   }
 
-     static async getDIByUniqueId(req: Request, res: Response) {
-      const getDIByUniqueId: any = { ...req.query, ...req.params };
+  static async getDIByUniqueId(req: Request, res: Response) {
+    const getDIByUniqueId: any = { ...req.query, ...req.params };
 
-      try {
-        const dis = await KartoffelService.getDIByUniqueId(getDIByUniqueId);
-        res.send(dis);
-      } catch (error: any) {
-        const statusCode = statusCodeHandler(error);
-        res.status(statusCode).send(error.message);
-      }
+    try {
+      const dis = await KartoffelService.getDIByUniqueId(getDIByUniqueId);
+      res.send(dis);
+    } catch (error: any) {
+      const statusCode = statusCodeHandler(error);
+      res.status(statusCode).send(error.message);
+    }
   }
 }

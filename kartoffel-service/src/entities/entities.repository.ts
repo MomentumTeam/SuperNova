@@ -464,9 +464,7 @@ export class EntitiesRepository {
       if (C.useFaker) {
         return { success: true };
       } else {
-        const body: any = {
-          digitalIdentityUniqueId: connectEntityAndDIRequest.uniqueId,
-        };
+        const body: any = {};
         if (connectEntityAndDIRequest.upn !== undefined) {
           body.upn = connectEntityAndDIRequest.upn;
         }
