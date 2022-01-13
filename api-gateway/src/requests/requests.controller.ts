@@ -567,7 +567,8 @@ export default class RequestsController {
       const request: any = await approveUserRequest(
         req,
         createOGReq,
-        createOGReq.kartoffelParams?.parent
+        createOGReq.kartoffelParams?.parent,
+        true
       );
       const createOGres: any = await RequestsService.createOGRequest(request);
       try {
@@ -937,7 +938,8 @@ export default class RequestsController {
       const request: any = await approveUserRequest(
         req,
         changeRoleHierarchyReq,
-        changeRoleHierarchyReq.kartoffelParams?.directGroup
+        changeRoleHierarchyReq.kartoffelParams?.directGroup,
+        true
       );
       const roleHierarchy = await RequestsService.changeRoleHierarchyRequest(
         request
