@@ -1310,6 +1310,7 @@ export interface CreateRoleKartoffelParams {
   isRoleAttachable: boolean;
   roleEntityType?: string | undefined;
   hierarchy: string;
+  upn?: string | undefined;
 }
 
 export interface CreateRoleADParams {
@@ -1319,6 +1320,7 @@ export interface CreateRoleADParams {
   ouDisplayName: string;
   /** name of the role */
   jobTitle: string;
+  upn?: string | undefined;
 }
 
 /** 2.CreateOGRequest */
@@ -1464,7 +1466,7 @@ export interface AssignRoleToEntityADParams {
   firstName: string;
   lastName: string;
   fullName: string;
-  rank: string;
+  rank?: string | undefined;
   roleSerialCode: string;
 }
 
@@ -18716,6 +18718,9 @@ export const CreateRoleKartoffelParams = {
     if (message.hierarchy !== "") {
       writer.uint32(90).string(message.hierarchy);
     }
+    if (message.upn !== undefined) {
+      writer.uint32(98).string(message.upn);
+    }
     return writer;
   },
 
@@ -18763,6 +18768,9 @@ export const CreateRoleKartoffelParams = {
           break;
         case 11:
           message.hierarchy = reader.string();
+          break;
+        case 12:
+          message.upn = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -18834,6 +18842,11 @@ export const CreateRoleKartoffelParams = {
     } else {
       message.hierarchy = "";
     }
+    if (object.upn !== undefined && object.upn !== null) {
+      message.upn = String(object.upn);
+    } else {
+      message.upn = undefined;
+    }
     return message;
   },
 
@@ -18853,6 +18866,7 @@ export const CreateRoleKartoffelParams = {
     message.roleEntityType !== undefined &&
       (obj.roleEntityType = message.roleEntityType);
     message.hierarchy !== undefined && (obj.hierarchy = message.hierarchy);
+    message.upn !== undefined && (obj.upn = message.upn);
     return obj;
   },
 
@@ -18920,6 +18934,11 @@ export const CreateRoleKartoffelParams = {
     } else {
       message.hierarchy = "";
     }
+    if (object.upn !== undefined && object.upn !== null) {
+      message.upn = object.upn;
+    } else {
+      message.upn = undefined;
+    }
     return message;
   },
 };
@@ -18940,6 +18959,9 @@ export const CreateRoleADParams = {
     if (message.jobTitle !== "") {
       writer.uint32(26).string(message.jobTitle);
     }
+    if (message.upn !== undefined) {
+      writer.uint32(34).string(message.upn);
+    }
     return writer;
   },
 
@@ -18958,6 +18980,9 @@ export const CreateRoleADParams = {
           break;
         case 3:
           message.jobTitle = reader.string();
+          break;
+        case 4:
+          message.upn = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -18984,6 +19009,11 @@ export const CreateRoleADParams = {
     } else {
       message.jobTitle = "";
     }
+    if (object.upn !== undefined && object.upn !== null) {
+      message.upn = String(object.upn);
+    } else {
+      message.upn = undefined;
+    }
     return message;
   },
 
@@ -18994,6 +19024,7 @@ export const CreateRoleADParams = {
     message.ouDisplayName !== undefined &&
       (obj.ouDisplayName = message.ouDisplayName);
     message.jobTitle !== undefined && (obj.jobTitle = message.jobTitle);
+    message.upn !== undefined && (obj.upn = message.upn);
     return obj;
   },
 
@@ -19013,6 +19044,11 @@ export const CreateRoleADParams = {
       message.jobTitle = object.jobTitle;
     } else {
       message.jobTitle = "";
+    }
+    if (object.upn !== undefined && object.upn !== null) {
+      message.upn = object.upn;
+    } else {
+      message.upn = undefined;
     }
     return message;
   },
@@ -21210,7 +21246,6 @@ const baseAssignRoleToEntityADParams: object = {
   firstName: "",
   lastName: "",
   fullName: "",
-  rank: "",
   roleSerialCode: "",
 };
 
@@ -21237,7 +21272,7 @@ export const AssignRoleToEntityADParams = {
     if (message.fullName !== "") {
       writer.uint32(50).string(message.fullName);
     }
-    if (message.rank !== "") {
+    if (message.rank !== undefined) {
       writer.uint32(58).string(message.rank);
     }
     if (message.roleSerialCode !== "") {
@@ -21333,7 +21368,7 @@ export const AssignRoleToEntityADParams = {
     if (object.rank !== undefined && object.rank !== null) {
       message.rank = String(object.rank);
     } else {
-      message.rank = "";
+      message.rank = undefined;
     }
     if (object.roleSerialCode !== undefined && object.roleSerialCode !== null) {
       message.roleSerialCode = String(object.roleSerialCode);
@@ -21404,7 +21439,7 @@ export const AssignRoleToEntityADParams = {
     if (object.rank !== undefined && object.rank !== null) {
       message.rank = object.rank;
     } else {
-      message.rank = "";
+      message.rank = undefined;
     }
     if (object.roleSerialCode !== undefined && object.roleSerialCode !== null) {
       message.roleSerialCode = object.roleSerialCode;
