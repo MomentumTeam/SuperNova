@@ -327,6 +327,7 @@ export interface CreateEntityRequest {
   akaUnit?: string | undefined;
   dischargeDay?: string | undefined;
   rank?: string | undefined;
+  goalUserId?: string | undefined;
 }
 
 /** GetEntityByRoleId */
@@ -5193,6 +5194,9 @@ export const CreateEntityRequest = {
     if (message.rank !== undefined) {
       writer.uint32(122).string(message.rank);
     }
+    if (message.goalUserId !== undefined) {
+      writer.uint32(130).string(message.goalUserId);
+    }
     return writer;
   },
 
@@ -5249,6 +5253,9 @@ export const CreateEntityRequest = {
           break;
         case 15:
           message.rank = reader.string();
+          break;
+        case 16:
+          message.goalUserId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -5337,6 +5344,11 @@ export const CreateEntityRequest = {
     } else {
       message.rank = undefined;
     }
+    if (object.goalUserId !== undefined && object.goalUserId !== null) {
+      message.goalUserId = String(object.goalUserId);
+    } else {
+      message.goalUserId = undefined;
+    }
     return message;
   },
 
@@ -5369,6 +5381,7 @@ export const CreateEntityRequest = {
     message.dischargeDay !== undefined &&
       (obj.dischargeDay = message.dischargeDay);
     message.rank !== undefined && (obj.rank = message.rank);
+    message.goalUserId !== undefined && (obj.goalUserId = message.goalUserId);
     return obj;
   },
 
@@ -5450,6 +5463,11 @@ export const CreateEntityRequest = {
       message.rank = object.rank;
     } else {
       message.rank = undefined;
+    }
+    if (object.goalUserId !== undefined && object.goalUserId !== null) {
+      message.goalUserId = object.goalUserId;
+    } else {
+      message.goalUserId = undefined;
     }
     return message;
   },
