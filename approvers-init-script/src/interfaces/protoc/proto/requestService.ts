@@ -1413,7 +1413,7 @@ export interface EditEntityKartoffelParams {
 }
 
 export interface EditEntityADParams {
-  samAccountName: string;
+  samAccountName?: string | undefined;
   firstName: string;
   lastName: string;
   fullName: string;
@@ -20523,7 +20523,6 @@ export const EditEntityKartoffelParams = {
 };
 
 const baseEditEntityADParams: object = {
-  samAccountName: "",
   firstName: "",
   lastName: "",
   fullName: "",
@@ -20534,7 +20533,7 @@ export const EditEntityADParams = {
     message: EditEntityADParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.samAccountName !== "") {
+    if (message.samAccountName !== undefined) {
       writer.uint32(10).string(message.samAccountName);
     }
     if (message.firstName !== "") {
@@ -20581,7 +20580,7 @@ export const EditEntityADParams = {
     if (object.samAccountName !== undefined && object.samAccountName !== null) {
       message.samAccountName = String(object.samAccountName);
     } else {
-      message.samAccountName = "";
+      message.samAccountName = undefined;
     }
     if (object.firstName !== undefined && object.firstName !== null) {
       message.firstName = String(object.firstName);
@@ -20616,7 +20615,7 @@ export const EditEntityADParams = {
     if (object.samAccountName !== undefined && object.samAccountName !== null) {
       message.samAccountName = object.samAccountName;
     } else {
-      message.samAccountName = "";
+      message.samAccountName = undefined;
     }
     if (object.firstName !== undefined && object.firstName !== null) {
       message.firstName = object.firstName;
