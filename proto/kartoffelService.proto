@@ -379,6 +379,7 @@ message CreateEntityRequest{
     optional string akaUnit = 13;
     optional string dischargeDay = 14;
     optional string rank = 15;
+    optional string goalUserId = 16;
 }
 
 // GetEntityByRoleId
