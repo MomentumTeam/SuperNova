@@ -83,10 +83,10 @@ export function generateKartoffelQueueMessage(request: Request): any {
         birthDate: kartoffelParams.birthdate,
         entityType: kartoffelParams.entityType,
       };
-      if (isValidPhone(kartoffelParams.phone)) {
-        message.data.phone = kartoffelParams.phone;
-      } else if (isValidMobilePhone(kartoffelParams.mobilePhone)) {
+      if (isValidMobilePhone(kartoffelParams.mobilePhone)) {
         message.data.mobilePhone = kartoffelParams.phone;
+      } else if (isValidPhone(kartoffelParams.phone)) {
+        message.data.phone = kartoffelParams.phone;
       }
       break;
     case RequestType.ASSIGN_ROLE_TO_ENTITY:
@@ -214,7 +214,7 @@ export function generateADQueueMessage(request: Request): any {
           lastName: adParams.lastName,
           fullName: adParams.fullName,
           nickname: adParams.fullName,
-          rank: adParams.rank,
+          rank: adParams.rank ? adParams.rank : 'לא ידוע',
           jobNumber: '0',
         };
       } else {
@@ -225,7 +225,7 @@ export function generateADQueueMessage(request: Request): any {
           firstName: adParams.firstName,
           lastName: adParams.lastName,
           fullName: adParams.fullName,
-          rank: adParams.rank,
+          rank: adParams.rank ? adParams.rank : 'לא ידוע',
           ID: adParams.newSAMAccountName,
           pdoName: 'x',
         };
