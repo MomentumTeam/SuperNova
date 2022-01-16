@@ -877,7 +877,7 @@ message EditEntityKartoffelParams{
 }
 
 message EditEntityADParams{
-    string samAccountName = 1;
+    optional string samAccountName = 1;
     string firstName = 2;
     string lastName = 3;
     string fullName = 4;
