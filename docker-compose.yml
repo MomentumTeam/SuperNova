@@ -125,6 +125,7 @@ services:
       - PS_RESTRICT_AD_ACCESS=false
       - PS_AD_ALLOWED_SUBMITTERS=1111,2222,3333,4444
       - PS_AD_UPN_SUFFIX=gmail.com
+      - PS_KARTOFFEL_GOAL_USER=GoalUser
       - PS_LOG_PATH=/logs
 
   notification-service:

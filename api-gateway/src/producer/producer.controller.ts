@@ -62,14 +62,21 @@ export default class ProducerController {
   static async produceToADQueue(
     requestId: string,
     res: Response,
-    force = false
+    force = false,
+    adStage: any = undefined
   ) {
     logger.info(`Call to produceToADQueue in GTW`, {
       callRequest: { id: requestId },
     });
-
+    const produceRequest: any = {
+      id: requestId,
+      force: force,
+    };
+    if (adStage !== undefined) {
+      produceRequest.adStage = adStage;
+    }
     producerClient.ProduceToADQueue(
-      { id: requestId, force: force },
+      produceRequest,
       (err: any, response: SuccessMessage) => {
         if (err) {
           logger.error(`produceToADQueue ERROR in GTW`, {
