@@ -289,7 +289,7 @@ export class KartoffelUtils {
           logger.error(`Kartoffel GET Buffer Stream Request to ${url} ERROR`, {
             error: { message: error.message },
           });
-          if (error.response.status === 401) {
+          if (error?.response && error.response?.status === 401) {
             logger.info(`Refreshing Spike token`);
             this.spikeService
               .getSpikeToken()

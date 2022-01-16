@@ -22,7 +22,7 @@ export const requestTypeToHebrew = {
   [requestTypeToJSON(RequestType.ASSIGN_ROLE_TO_ENTITY)]: 'מעבר תפקיד',
   [requestTypeToJSON(RequestType.CREATE_ENTITY)]: 'יצירת משתמש מיוחד',
   [requestTypeToJSON(RequestType.RENAME_OG)]: 'שינוי שם היררכיה',
-  [requestTypeToJSON(RequestType.RENAME_ROLE)]: 'שינוי שם תפקיד',
+  [requestTypeToJSON(RequestType.RENAME_ROLE)]: 'עריכת תפקיד',
   [requestTypeToJSON(RequestType.EDIT_ENTITY)]: 'עריכת משתמש מיוחד',
   [requestTypeToJSON(RequestType.DELETE_OG)]: 'מחיקת היררכיה',
   [requestTypeToJSON(RequestType.DELETE_ROLE)]: 'מחיקת תפקיד',
