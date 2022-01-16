@@ -151,9 +151,9 @@ export class RequestManager {
           status: StageStatus.STAGE_DONE,
           message: `User ${submitterId} is not AD allowed submitter, AD stage has not been performed`,
         });
-        const kartoffelSuccessMessage = await this.produceToKartoffelQueue(
-          produceRequest
-        );
+        const kartoffelSuccessMessage = await this.produceToKartoffelQueue({
+          id: produceRequest.id,
+        });
         return kartoffelSuccessMessage;
       }
       const force =
@@ -244,9 +244,9 @@ export class RequestManager {
           status: StageStatus.STAGE_DONE,
           message: `Entity does not have samAccountName, ADStage is not required!`,
         });
-        const kartoffelSuccessMessage = await this.produceToKartoffelQueue(
-          produceRequest
-        );
+        const kartoffelSuccessMessage = await this.produceToKartoffelQueue({
+          id: produceRequest.id,
+        });
         return kartoffelSuccessMessage;
       } else {
         const message = generateADQueueMessage(request);
