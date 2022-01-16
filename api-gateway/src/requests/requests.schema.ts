@@ -257,7 +257,7 @@ const assignRoleToEntityADParamsObj = Joi.object({
   firstName: Joi.string().required(),
   lastName: Joi.string().required(),
   fullName: Joi.string().required(),
-  rank: Joi.string().required(),
+  rank: Joi.string(),
   roleSerialCode: Joi.string().required(),
 });
 
