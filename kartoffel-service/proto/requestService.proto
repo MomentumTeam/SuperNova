@@ -775,12 +775,14 @@ message CreateRoleKartoffelParams{
 
     optional string roleEntityType = 10;
     string hierarchy = 11;
+    optional string upn = 12;
 }
 
 message CreateRoleADParams{
     optional string samAccountName = 1; //T154514... generated automatically by tea-service if not given
     string ouDisplayName = 2; // Role's full hierarchy
     string jobTitle = 3; //name of the role
+    optional string upn = 4;
 }
 
 //2.CreateOGRequest
