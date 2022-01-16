@@ -65,7 +65,7 @@ export function generateKartoffelQueueMessage(request: Request): any {
         //in case of goalUser - need to create an entity and assign it to the role
         roleEntityType: kartoffelParams.roleEntityType,
       };
-      if (kartoffelParams.upn) {
+      if (kartoffelParams.upn !== undefined) {
         // the brol
         message.data.upn = kartoffelParams.upn;
       }

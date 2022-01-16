@@ -283,6 +283,7 @@ export class RequestRepository {
           ? transferRequestToApproverReq.commentForApprovers
           : '';
       switch (type) {
+        case ApproverType.ADMIN:
         case ApproverType.COMMANDER:
           updateSetQuery = {
             commanders: transferRequestToApproverReq.approvers,
