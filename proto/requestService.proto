@@ -931,7 +931,7 @@ message AssignRoleToEntityADParams{
     string firstName = 4;
     string lastName = 5;
     string fullName = 6;
-    string rank = 7;
+    optional string rank = 7;
     string roleSerialCode = 8;
 }
 
