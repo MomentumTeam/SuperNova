@@ -9,6 +9,7 @@ import {
   getPrefix,
   reportTeaFail,
   reportTeaSuccess,
+  retrieveBrol,
   retrieveTeaByOGId,
   retrieveTeaByPrefix,
   retrieveUPNByEntity,
@@ -68,6 +69,7 @@ export class Server {
         UpdatePrefix: updatePrefix,
         DeletePrefix: deletePrefix,
         GetAllPrefixes: getAllPrefixes,
+        RetrieveBrol: retrieveBrol,
       });
       logger.info(`Grpc services were successfully added to the server`);
     } catch (error: any) {

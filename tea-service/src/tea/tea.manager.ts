@@ -5,6 +5,7 @@ import {
   GetPrefixReq,
   Prefix,
   PrefixArray,
+  RetrieveBrolReq,
   RetrieveTeaByOGIdReq,
   RetrieveTeaByPrefixReq,
   SuccessMessage,
@@ -23,6 +24,14 @@ export class TeaManager {
   private teaRepository: TeaRepository;
   constructor() {
     this.teaRepository = new TeaRepository();
+  }
+
+  async retrieveBrol(retrieveBrolReq: RetrieveBrolReq): Promise<UPNMessage> {
+    try {
+      return await this.teaRepository.retrieveBrol(retrieveBrolReq);
+    } catch (error) {
+      throw error;
+    }
   }
 
   async retrieveTeaByPrefix(

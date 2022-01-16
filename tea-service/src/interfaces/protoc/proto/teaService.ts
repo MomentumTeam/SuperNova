@@ -36,6 +36,8 @@ export function domainToJSON(object: Domain): string {
   }
 }
 
+export interface RetrieveBrolReq {}
+
 export interface RetrieveTeaByOGIdReq {
   id: string;
 }
@@ -124,6 +126,47 @@ export interface EntityMin {
   firstName?: string | undefined;
   lastName?: string | undefined;
 }
+
+const baseRetrieveBrolReq: object = {};
+
+export const RetrieveBrolReq = {
+  encode(
+    _: RetrieveBrolReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): RetrieveBrolReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseRetrieveBrolReq } as RetrieveBrolReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): RetrieveBrolReq {
+    const message = { ...baseRetrieveBrolReq } as RetrieveBrolReq;
+    return message;
+  },
+
+  toJSON(_: RetrieveBrolReq): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(_: DeepPartial<RetrieveBrolReq>): RetrieveBrolReq {
+    const message = { ...baseRetrieveBrolReq } as RetrieveBrolReq;
+    return message;
+  },
+};
 
 const baseRetrieveTeaByOGIdReq: object = { id: "" };
 
@@ -1552,6 +1595,7 @@ export interface Tea {
   UpdatePrefix(request: UpdatePrefixReq): Promise<Prefix>;
   DeletePrefix(request: DeletePrefixReq): Promise<SuccessMessage>;
   GetAllPrefixes(request: GetAllPrefixesReq): Promise<PrefixArray>;
+  RetrieveBrol(request: RetrieveBrolReq): Promise<UPNMessage>;
 }
 
 export class TeaClientImpl implements Tea {
@@ -1570,6 +1614,7 @@ export class TeaClientImpl implements Tea {
     this.UpdatePrefix = this.UpdatePrefix.bind(this);
     this.DeletePrefix = this.DeletePrefix.bind(this);
     this.GetAllPrefixes = this.GetAllPrefixes.bind(this);
+    this.RetrieveBrol = this.RetrieveBrol.bind(this);
   }
   RetrieveTeaByOGId(request: RetrieveTeaByOGIdReq): Promise<TeaMessage> {
     const data = RetrieveTeaByOGIdReq.encode(request).finish();
@@ -1641,6 +1686,12 @@ export class TeaClientImpl implements Tea {
     const data = GetAllPrefixesReq.encode(request).finish();
     const promise = this.rpc.request("Tea.Tea", "GetAllPrefixes", data);
     return promise.then((data) => PrefixArray.decode(new _m0.Reader(data)));
+  }
+
+  RetrieveBrol(request: RetrieveBrolReq): Promise<UPNMessage> {
+    const data = RetrieveBrolReq.encode(request).finish();
+    const promise = this.rpc.request("Tea.Tea", "RetrieveBrol", data);
+    return promise.then((data) => UPNMessage.decode(new _m0.Reader(data)));
   }
 }
 
