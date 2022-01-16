@@ -15,8 +15,9 @@ import {
   UpdatePrefixReq,
   DeletePrefixReq,
   RetrieveTeaByOGIdReq,
+  RetrieveBrolReq,
 } from '../interfaces/protoc/proto/teaService';
-import { getUPN } from '../utils/upn';
+import { getBrol, getUPN } from '../utils/upn';
 import { Entity } from '../interfaces/protoc/proto/kartoffelService';
 import KartoffelService from '../services/kartoffelService';
 import * as C from '../config';
@@ -25,6 +26,15 @@ import { PrefixModel } from '../models/prefix.model';
 export class TeaRepository {
   zeroPad(num: any, places: any) {
     return String(num).padStart(places, '0');
+  }
+
+  async retrieveBrol(retrieveBrolReq: RetrieveBrolReq): Promise<UPNMessage> {
+    try {
+      const upn: string = await getBrol();
+      return { upn: upn };
+    } catch (error) {
+      throw error;
+    }
   }
 
   async retrieveTeaByPrefix(

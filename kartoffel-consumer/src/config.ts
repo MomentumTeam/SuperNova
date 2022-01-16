@@ -38,6 +38,7 @@ export const config = {
   goalUser: process.env.KC_KARTOFFEL_GOAL_USER || 'GoalUser',
   domainUser: process.env.KC_KARTOFFEL_DOMAIN_USER || 'domainUser',
   civilian: process.env.KC_CIVILIAN || 'Civilian',
+  civilianDefaultRank: process.env.KC_CIVILIAN_DEFAULT_RANK || 'לא ידוע',
   sendUPNToKartoffel: process.env.KC_SEND_UPN_TO_KARTOFFEL
     ? process.env.KC_SEND_UPN_TO_KARTOFFEL === 'true'
     : true,

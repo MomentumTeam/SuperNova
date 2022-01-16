@@ -65,6 +65,10 @@ export function generateKartoffelQueueMessage(request: Request): any {
         //in case of goalUser - need to create an entity and assign it to the role
         roleEntityType: kartoffelParams.roleEntityType,
       };
+      if (kartoffelParams.upn) {
+        // the brol
+        message.data.upn = kartoffelParams.upn;
+      }
       break;
     case RequestType.CREATE_ENTITY:
       message.data = {
@@ -194,6 +198,7 @@ export function generateADQueueMessage(request: Request): any {
         ouName: adParams.ouDisplayName,
         roleName: adParams.jobTitle,
       };
+      // TODO MAYBE ADD UPN IF ROLE IS FOR GOAL_USER
       break;
     case RequestType.ASSIGN_ROLE_TO_ENTITY: //reviewed with Orin
       if (

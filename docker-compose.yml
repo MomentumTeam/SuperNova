@@ -76,6 +76,7 @@ services:
       - RS_TS_URL=tea-service:8080
       - RS_MS_URL=mail-service:8080
       - RS_ROOT_ID=619e3193f235dc001846bb4f
+      - RS_KARTOFFEL_GOAL_USER=GoalUser
       - RS_LOG_PATH=/logs
 
   kartoffel-service:
@@ -257,6 +258,7 @@ services:
       - KC_KARTOFFEL_DOMAIN_USER=domainUser
       - KC_CIVILIAN=Civilian
       - KC_SEND_UPN_TO_KARTOFFEL=true
+      - KC_CIVILIAN_DEFAULT_RANK=לא ידוע
       - KC_LOG_PATH=/logs
 
   execution-script:

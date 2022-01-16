@@ -4,6 +4,7 @@ import * as config from '../config';
 import { findPath } from '../utils/path';
 import {
   ReportTeaReq,
+  RetrieveBrolReq,
   RetrieveByEntityIdReq,
   RetrieveByEntityReq,
   RetrieveTeaByOGIdReq,
@@ -76,6 +77,19 @@ export default class TeaService {
           }
         }
       );
+    });
+  }
+
+  static async retrieveBrol(): Promise<UPNMessage> {
+    console.log('retrieveBrol');
+    return new Promise((resolve, reject) => {
+      randomClient().RetrieveBrol({}, (err: any, upnMessage: UPNMessage) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(upnMessage);
+        }
+      });
     });
   }
 
