@@ -234,6 +234,20 @@ export class RequestManager {
           success: true,
           message: requestTypeToJSON(requestType),
         };
+      } else if (
+        requestType === RequestType.EDIT_ENTITY &&
+        (request.adParams?.samAccountName === undefined ||
+          request.adParams?.samAccountName === null)
+      ) {
+        await this.requestService.updateADStatus({
+          requestId: produceRequest.id,
+          status: StageStatus.STAGE_DONE,
+          message: `Entity does not have samAccountName, ADStage is not required!`,
+        });
+        const kartoffelSuccessMessage = await this.produceToKartoffelQueue(
+          produceRequest
+        );
+        return kartoffelSuccessMessage;
       } else {
         const message = generateADQueueMessage(request);
         logger.info(

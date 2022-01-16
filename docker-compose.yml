@@ -245,15 +245,17 @@ services:
     volumes:
       - logs:/logs
     environment:
+      - KC_KAFKA_HOSTS=google.com:9092,amazon.com:9092,ebay.com:9092
+      - KC_KAFKA_GROUP_ID=kafka-kartoffel
+      - KC_KAFKA_TOPIC=baraktest
+      - KC_KAFKA_USERNAME=guest
+      - KC_KAFKA_PASSWORD=password
       - KC_RS_URL=request-service:8080
       - KC_TS_URL=tea-service:8080
       - KC_KS_URL=kartoffel-service:8080
       - KC_DEFAULT_ROLE_SOURCE=sf_name
       - KC_DEFAULT_DI_SOURCE=sf_name
       - KC_DI_SOURCES=sf_name,sf_name
-      - KC_KAFKA_HOST=kafka
-      - KC_KAFKA_PORT=29092
-      - KC_KAFKA_CONSUMER_TOPIC=requests
       - KC_KARTOFFEL_GOAL_USER=GoalUser
       - KC_KARTOFFEL_DOMAIN_USER=domainUser
       - KC_CIVILIAN=Civilian
