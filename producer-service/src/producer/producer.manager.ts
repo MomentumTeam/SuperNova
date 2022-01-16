@@ -249,7 +249,10 @@ export class RequestManager {
         });
         return kartoffelSuccessMessage;
       } else {
-        const message = generateADQueueMessage(request);
+        const adStage: any = produceRequest.adStage
+          ? produceRequest.adStage
+          : undefined;
+        const message = generateADQueueMessage(request, adStage);
         logger.info(
           `produceToADQueue generated queue message : ${JSON.stringify(
             message

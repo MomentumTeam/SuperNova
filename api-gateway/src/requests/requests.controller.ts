@@ -1,7 +1,10 @@
 import { Response } from 'express';
 import { logger } from '../utils/logger/logger';
 import ProducerController from '../producer/producer.controller';
-import { SuccessMessage } from '../interfaces/protoc/proto/producerService';
+import {
+  ADStage,
+  SuccessMessage,
+} from '../interfaces/protoc/proto/producerService';
 import { ApproverService } from '../approver/approver.service';
 import {
   StageStatus,
@@ -48,6 +51,7 @@ import {
 } from './requests.utils';
 import { GetUserTypeRes } from '../interfaces/protoc/proto/approverService';
 import { config } from '../config';
+import ProducerService from '../producer/producer.service';
 
 export default class RequestsController {
   static async getSupportLink(req: any, res: Response) {
@@ -318,8 +322,13 @@ export default class RequestsController {
     });
     const retry: boolean = req.body.Retry;
     const status: boolean = req.body.Status;
+    // When the first stage of CreateRole with roleEntityType=GoalUser
+    const specialCase: boolean = req.body.RequestID.indexOf('@') !== -1;
+    const requestId = specialCase
+      ? req.body.RequestID.split('@')[0]
+      : req.body.RequestID;
     let updateADStatus: UpdateADStatusReq = {
-      requestId: req.body.RequestID,
+      requestId: requestId,
       status: StageStatus.STAGE_UNKNOWN,
       message: req.body.ErrorID ? req.body.ErrorID : '',
     };
@@ -329,26 +338,36 @@ export default class RequestsController {
         updateADStatus.status = status
           ? StageStatus.STAGE_DONE
           : StageStatus.STAGE_FAILED;
-        request = await RequestsService.updateADStatus(updateADStatus);
+        if (
+          updateADStatus.status === StageStatus.STAGE_FAILED ||
+          !specialCase
+        ) {
+          request = await RequestsService.updateADStatus(updateADStatus);
+        }
         if (status) {
-          const produceRes = (await ProducerController.produceToKartoffelQueue(
-            req.body.RequestID
-          )) as SuccessMessage;
-          if (produceRes.success) {
-            //if produce was successful update Kartoffel Status
-            request = await RequestsService.updateKartoffelStatus(
-              req.body.RequestID
+          if (specialCase) {
+            await ProducerController.produceToADQueue(
+              requestId,
+              res,
+              true,
+              ADStage.SECOND_AD_STAGE
             );
-            return res.send(request);
+          } else {
+            //need to send to kartoffel
+            const produceRes =
+              (await ProducerController.produceToKartoffelQueue(
+                requestId
+              )) as SuccessMessage;
+            if (produceRes.success) {
+              //if produce was successful update Kartoffel Status
+              request = await RequestsService.updateKartoffelStatus(requestId);
+              return res.send(request);
+            }
           }
         }
         return res.send(request);
       } else {
-        await ProducerController.produceToADQueue(
-          req.body.RequestID,
-          res,
-          true
-        );
+        await ProducerController.produceToADQueue(requestId, res, true);
       }
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
