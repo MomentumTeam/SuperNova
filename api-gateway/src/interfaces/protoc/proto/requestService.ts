@@ -1387,7 +1387,8 @@ export interface RenameOGADParams {
 export interface RenameRoleKartoffelParams {
   jobTitle: string;
   roleId: string;
-  oldJobTitle: string;
+  oldJobTitle?: string | undefined;
+  clearance?: string | undefined;
 }
 
 export interface RenameRoleADParams {
@@ -20042,11 +20043,7 @@ export const RenameOGADParams = {
   },
 };
 
-const baseRenameRoleKartoffelParams: object = {
-  jobTitle: "",
-  roleId: "",
-  oldJobTitle: "",
-};
+const baseRenameRoleKartoffelParams: object = { jobTitle: "", roleId: "" };
 
 export const RenameRoleKartoffelParams = {
   encode(
@@ -20059,8 +20056,11 @@ export const RenameRoleKartoffelParams = {
     if (message.roleId !== "") {
       writer.uint32(18).string(message.roleId);
     }
-    if (message.oldJobTitle !== "") {
+    if (message.oldJobTitle !== undefined) {
       writer.uint32(26).string(message.oldJobTitle);
+    }
+    if (message.clearance !== undefined) {
+      writer.uint32(34).string(message.clearance);
     }
     return writer;
   },
@@ -20085,6 +20085,9 @@ export const RenameRoleKartoffelParams = {
           break;
         case 3:
           message.oldJobTitle = reader.string();
+          break;
+        case 4:
+          message.clearance = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -20111,7 +20114,12 @@ export const RenameRoleKartoffelParams = {
     if (object.oldJobTitle !== undefined && object.oldJobTitle !== null) {
       message.oldJobTitle = String(object.oldJobTitle);
     } else {
-      message.oldJobTitle = "";
+      message.oldJobTitle = undefined;
+    }
+    if (object.clearance !== undefined && object.clearance !== null) {
+      message.clearance = String(object.clearance);
+    } else {
+      message.clearance = undefined;
     }
     return message;
   },
@@ -20122,6 +20130,7 @@ export const RenameRoleKartoffelParams = {
     message.roleId !== undefined && (obj.roleId = message.roleId);
     message.oldJobTitle !== undefined &&
       (obj.oldJobTitle = message.oldJobTitle);
+    message.clearance !== undefined && (obj.clearance = message.clearance);
     return obj;
   },
 
@@ -20144,7 +20153,12 @@ export const RenameRoleKartoffelParams = {
     if (object.oldJobTitle !== undefined && object.oldJobTitle !== null) {
       message.oldJobTitle = object.oldJobTitle;
     } else {
-      message.oldJobTitle = "";
+      message.oldJobTitle = undefined;
+    }
+    if (object.clearance !== undefined && object.clearance !== null) {
+      message.clearance = object.clearance;
+    } else {
+      message.clearance = undefined;
     }
     return message;
   },

@@ -851,7 +851,8 @@ message RenameOGADParams{
 message RenameRoleKartoffelParams{
     string jobTitle = 1;
     string roleId = 2;
-    string oldJobTitle=3;
+    optional string oldJobTitle=3;
+    optional string clearance=4;
 }
 
 message RenameRoleADParams{
