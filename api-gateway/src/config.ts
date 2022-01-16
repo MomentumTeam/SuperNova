@@ -51,7 +51,7 @@ export const config = {
     PAGE_SIZE: env.get("UI_REACT_PAGE_SIZE").default(10).asInt(),
     ITEMS_IN_PAGE: env.get("UI_REACT_ITEMS_IN_PAGE").default(6).asInt(),
     FIRST_PAGE: env.get("UI_REACT_FIRST_PAGE").default(0).asInt(),
-    USER_CITIZEN_ENTITY_TYPE: env.get("UI_USER_CITIZEN_ENTITY_TYPE").default("Civilian").asString(),
+    USER_CITIZEN_ENTITY_TYPE: env.get("UI_USER_CITIZEN_ENTITY_TYPE").default("digimon").asString(),
     USER_CLEARANCE: env.get("UI_USER_CLEARANCE").default("1,2,3,4,5,6").asString()?.split(","),
     USER_SOURCE_DI: env.get("UI_USER_SOURCE_DI").default("sf_name").asString(),
     USER_NO_PICTURE: env.get("UI_USER_NO_PICTURE_STRING").default("pictureUrl").asString(),

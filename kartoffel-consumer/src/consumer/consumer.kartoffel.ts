@@ -227,10 +227,11 @@ export const deleteEntity = async (
 export const renameRole = async (renameRoleRequest: RenameRoleRequest) => {
   try {
     logger.info('renameRole request received', renameRoleRequest);
-    const { jobTitle, roleId } = renameRoleRequest;
+    const { jobTitle, roleId, clearance } = renameRoleRequest;
     const successMessage: SuccessMessage = await KartoffelService.renameRole({
-      roleId: roleId,
-      jobTitle: jobTitle,
+      roleId,
+      jobTitle,
+      clearance,
     });
     logger.info('Successfuly renamed role', successMessage);
   } catch (error) {
