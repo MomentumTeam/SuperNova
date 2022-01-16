@@ -4,9 +4,42 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "Producer";
 
+export enum ADStage {
+  FIRST_AD_STAGE = 0,
+  SECOND_AD_STAGE = 1,
+  UNRECOGNIZED = -1,
+}
+
+export function aDStageFromJSON(object: any): ADStage {
+  switch (object) {
+    case 0:
+    case "FIRST_AD_STAGE":
+      return ADStage.FIRST_AD_STAGE;
+    case 1:
+    case "SECOND_AD_STAGE":
+      return ADStage.SECOND_AD_STAGE;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return ADStage.UNRECOGNIZED;
+  }
+}
+
+export function aDStageToJSON(object: ADStage): string {
+  switch (object) {
+    case ADStage.FIRST_AD_STAGE:
+      return "FIRST_AD_STAGE";
+    case ADStage.SECOND_AD_STAGE:
+      return "SECOND_AD_STAGE";
+    default:
+      return "UNKNOWN";
+  }
+}
+
 export interface ProduceRequest {
   id: string;
   force?: boolean | undefined;
+  adStage?: ADStage | undefined;
 }
 
 export interface SuccessMessage {
@@ -27,6 +60,9 @@ export const ProduceRequest = {
     if (message.force !== undefined) {
       writer.uint32(16).bool(message.force);
     }
+    if (message.adStage !== undefined) {
+      writer.uint32(24).int32(message.adStage);
+    }
     return writer;
   },
 
@@ -42,6 +78,9 @@ export const ProduceRequest = {
           break;
         case 2:
           message.force = reader.bool();
+          break;
+        case 3:
+          message.adStage = reader.int32() as any;
           break;
         default:
           reader.skipType(tag & 7);
@@ -63,6 +102,11 @@ export const ProduceRequest = {
     } else {
       message.force = undefined;
     }
+    if (object.adStage !== undefined && object.adStage !== null) {
+      message.adStage = aDStageFromJSON(object.adStage);
+    } else {
+      message.adStage = undefined;
+    }
     return message;
   },
 
@@ -70,6 +114,11 @@ export const ProduceRequest = {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
     message.force !== undefined && (obj.force = message.force);
+    message.adStage !== undefined &&
+      (obj.adStage =
+        message.adStage !== undefined
+          ? aDStageToJSON(message.adStage)
+          : undefined);
     return obj;
   },
 
@@ -84,6 +133,11 @@ export const ProduceRequest = {
       message.force = object.force;
     } else {
       message.force = undefined;
+    }
+    if (object.adStage !== undefined && object.adStage !== null) {
+      message.adStage = object.adStage;
+    } else {
+      message.adStage = undefined;
     }
     return message;
   },

@@ -88,6 +88,7 @@ export const createRole = async (data: any) => {
         entityType: config.goalUser,
         phone: [],
         mobilePhone: [],
+        goalUserId: newDI.uniqueId,
       });
       await KartoffelService.connectEntityAndDI({
         id: goalUserEntity.id,

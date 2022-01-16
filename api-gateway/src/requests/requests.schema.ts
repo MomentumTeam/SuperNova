@@ -327,7 +327,8 @@ const additionalParamsObj = Joi.object({
     .valid(...Object.keys(ApproverType))
     .required(),
   directGroup: Joi.string().default(''),
-  groupInChargeId: Joi.string().default(config.fields.rootId),
+  groupInChargeId: Joi.string(),
+  // groupInChargeId: Joi.string().default(config.fields.rootId),
 });
 
 export const createNewApproverSchema = Joi.object({

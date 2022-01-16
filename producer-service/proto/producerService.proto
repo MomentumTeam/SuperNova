@@ -10,9 +10,15 @@ service Producer {
 message ProduceRequest{
     string id = 1;
     optional bool force = 2;
+    optional ADStage adStage = 3;
 }
 
 message SuccessMessage{
     bool success = 1;
     string message = 2;
+}
+
+enum ADStage{
+    FIRST_AD_STAGE = 0;
+    SECOND_AD_STAGE = 1;
 }

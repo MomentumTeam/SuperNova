@@ -4,6 +4,7 @@ import {
   requestTypeToJSON,
 } from '../interfaces/protoc/proto/requestService';
 import * as C from '../config';
+import { ADStage } from '../interfaces/protoc/proto/producerService';
 
 function isValidMobilePhone(mobilePhone: any) {
   if (mobilePhone === undefined || mobilePhone === null) {
@@ -172,7 +173,10 @@ export function generateKartoffelQueueMessage(request: Request): any {
   return message;
 }
 
-export function generateADQueueMessage(request: Request): any {
+export function generateADQueueMessage(
+  request: Request,
+  adStage: any = undefined
+): any {
   const message: any = {
     id: request.id,
     type: C.shmuelRequestTypes[requestTypeToJSON(request.type)],
@@ -194,12 +198,43 @@ export function generateADQueueMessage(request: Request): any {
       };
       break;
     case RequestType.CREATE_ROLE: //reviewed with Orin, CreateRole
-      message.data = {
-        userID: adParams.samAccountName,
-        ouName: adParams.ouDisplayName,
-        roleName: adParams.jobTitle,
-      };
-      // TODO MAYBE ADD UPN IF ROLE IS FOR GOAL_USER
+      if (
+        request.adParams &&
+        request.adParams.upn !== undefined &&
+        request.adParams.upn !== null
+      ) {
+        if (adStage === undefined || adStage === ADStage.FIRST_AD_STAGE) {
+          //First Stage - Create Role
+          message.id = `${message.id}@1`;
+          message.data = {
+            userID: adParams.samAccountName,
+            ouName: adParams.ouDisplayName,
+            roleName: adParams.jobTitle,
+          };
+        } else {
+          //secondStage - treat it like ConnectNewRole
+          message.type =
+            C.shmuelRequestTypes[
+              requestTypeToJSON(RequestType.ASSIGN_ROLE_TO_ENTITY)
+            ];
+          message.data = {
+            userID: adParams.samAccountName,
+            UPN: `${adParams.upn}@${C.upnSuffix}`,
+            firstName: adParams.jobTitle,
+            lastName: adParams.jobTitle,
+            fullName: adParams.jobTitle,
+            rank: 'לא ידוע',
+            ID: adParams.samAccountName,
+            pdoName: 'x',
+          };
+        }
+      } else {
+        message.data = {
+          userID: adParams.samAccountName,
+          ouName: adParams.ouDisplayName,
+          roleName: adParams.jobTitle,
+        };
+      }
       break;
     case RequestType.ASSIGN_ROLE_TO_ENTITY: //reviewed with Orin
       if (
