@@ -99,8 +99,8 @@ export const updateADStatusSchema = Joi.object({
 export const entityMinObj = Joi.object({
   id: Joi.objectId().required(),
   displayName: Joi.string().required(),
-  identityCard: Joi.string().default(''),
-  personalNumber: Joi.string().default(''),
+  identityCard: Joi.string().default('').allow('', null),
+  personalNumber: Joi.string().default('').allow('', null),
 });
 
 export const ApproverDecisionObj = Joi.object({
@@ -257,7 +257,7 @@ const assignRoleToEntityADParamsObj = Joi.object({
   firstName: Joi.string().required(),
   lastName: Joi.string().required(),
   fullName: Joi.string().required(),
-  rank: Joi.string().required(),
+  rank: Joi.string(),
   roleSerialCode: Joi.string().required(),
 });
 
@@ -322,7 +322,7 @@ const additionalParamsObj = Joi.object({
   domainUsers: Joi.array().items(Joi.string()),
   akaUnit: Joi.string().default(''),
   personalNumber: Joi.string().default(''),
-  identityCard: Joi.string().default(''),
+  identityCard: Joi.string().default('').allow('', null),
   type: Joi.string()
     .valid(...Object.keys(ApproverType))
     .required(),
@@ -353,7 +353,7 @@ const createEntityKartoffelParamsObj = Joi.object({
   firstName: Joi.string().required(),
   lastName: Joi.string().required(),
   identityCard: Joi.string().required(),
-  personalNumber: Joi.string(),
+  personalNumber: Joi.string().allow('', null),
   serviceType: Joi.string(),
   phone: Joi.array().items(Joi.string()),
   mobilePhone: Joi.array().items(Joi.string()),
@@ -425,7 +425,8 @@ export const renameOGSchema = Joi.object({
 const renameRoleKartoffelParamsObj = Joi.object({
   jobTitle: Joi.string().required(),
   roleId: Joi.string().required(),
-  oldJobTitle: Joi.string().required(),
+  oldJobTitle: Joi.string(),
+  clearance: Joi.string()
 });
 
 const renameRoleADParamsObj = Joi.object({
@@ -458,11 +459,11 @@ const editEntityKartoffelParamsObj = Joi.object({
   id: Joi.string().required(),
   firstName: Joi.string().required(),
   lastName: Joi.string().required(),
-  identityCard: Joi.string(),
-  personalNumber: Joi.string(),
+  identityCard: Joi.string().allow("", null),
+  personalNumber: Joi.string().allow("", null),
   serviceType: Joi.string(),
-  phone: Joi.array().items(Joi.string()),
-  mobilePhone: Joi.array().items(Joi.string()),
+  phone: Joi.array().items(Joi.string().allow("")),
+  mobilePhone: Joi.array().items(Joi.string().allow("")),
   address: Joi.string(),
   clearance: Joi.string(),
   sex: Joi.string(),
@@ -471,7 +472,7 @@ const editEntityKartoffelParamsObj = Joi.object({
 });
 
 const editEntityADParamsObj = Joi.object({
-  samAccountName: Joi.string().required(),
+  samAccountName: Joi.string().allow("", null),
   firstName: Joi.string().required(),
   lastName: Joi.string().required(),
   fullName: Joi.string().required(),

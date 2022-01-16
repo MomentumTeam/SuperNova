@@ -26,7 +26,13 @@ export const approveUserRequest = async (
 
         switch (approverType) {
           case PersonTypeInRequest.APPROVER: //ADMIN
+            request.commanders = request.commanders ? [...request.commanders, entityUser] : [entityUser];
             request.commanderDecision = decision;
+
+            // remove duplicate commanders
+            request.commanders = request.commanders.filter(
+              (v: any, i: any, a: any) => a.findIndex((t: any) => t.id === v.id) === i
+            );
             break;
           case PersonTypeInRequest.SECURITY_APPROVER:
             request.securityApprovers = request.securityApprovers
@@ -34,8 +40,7 @@ export const approveUserRequest = async (
               : [entityUser];
             request.securityDecision = decision;
             request.securityApprovers = request.securityApprovers.filter(
-              (v: any, i: any, a: any) =>
-                a.findIndex((t: any) => t.id === v.id) === i
+              (v: any, i: any, a: any) => a.findIndex((t: any) => t.id === v.id) === i
             );
 
             break;
@@ -44,14 +49,11 @@ export const approveUserRequest = async (
               ? [...request.superSecurityApprovers, entityUser]
               : [entityUser];
             request.superSecurityDecision = decision;
-            request.superSecurityApprovers =
-              request.superSecurityApprovers.filter(
-                (v: any, i: any, a: any) =>
-                  a.findIndex((t: any) => t.id === v.id) === i
-              );
+            request.superSecurityApprovers = request.superSecurityApprovers.filter(
+              (v: any, i: any, a: any) => a.findIndex((t: any) => t.id === v.id) === i
+            );
 
             break;
-
           case PersonTypeInRequest.COMMANDER_APPROVER:
             let valid = true;
             if (groupId) {
@@ -63,22 +65,18 @@ export const approveUserRequest = async (
             }
 
             if (highCommander) {
-              if (
-                !req.user?.rank ||
-                !config.fields.highCommandersRanks.includes(req.user.rank)
-              ) {
+              if (!req.user?.rank || !config.fields.highCommandersRanks.includes(req.user.rank)) {
                 valid = false;
               }
             }
 
             if (valid) {
-              request.commanders = request.commanders
-                ? [...request.commanders, entityUser]
-                : [entityUser];
+              request.commanders = request.commanders ? [...request.commanders, entityUser] : [entityUser];
               request.commanderDecision = decision;
+
+              // remove duplicate commanders
               request.commanders = request.commanders.filter(
-                (v: any, i: any, a: any) =>
-                  a.findIndex((t: any) => t.id === v.id) === i
+                (v: any, i: any, a: any) => a.findIndex((t: any) => t.id === v.id) === i
               );
             }
             break;

@@ -1387,7 +1387,8 @@ export interface RenameOGADParams {
 export interface RenameRoleKartoffelParams {
   jobTitle: string;
   roleId: string;
-  oldJobTitle: string;
+  oldJobTitle?: string | undefined;
+  clearance?: string | undefined;
 }
 
 export interface RenameRoleADParams {
@@ -1413,7 +1414,7 @@ export interface EditEntityKartoffelParams {
 }
 
 export interface EditEntityADParams {
-  samAccountName: string;
+  samAccountName?: string | undefined;
   firstName: string;
   lastName: string;
   fullName: string;
@@ -1466,7 +1467,7 @@ export interface AssignRoleToEntityADParams {
   firstName: string;
   lastName: string;
   fullName: string;
-  rank: string;
+  rank?: string | undefined;
   roleSerialCode: string;
 }
 
@@ -20042,11 +20043,7 @@ export const RenameOGADParams = {
   },
 };
 
-const baseRenameRoleKartoffelParams: object = {
-  jobTitle: "",
-  roleId: "",
-  oldJobTitle: "",
-};
+const baseRenameRoleKartoffelParams: object = { jobTitle: "", roleId: "" };
 
 export const RenameRoleKartoffelParams = {
   encode(
@@ -20059,8 +20056,11 @@ export const RenameRoleKartoffelParams = {
     if (message.roleId !== "") {
       writer.uint32(18).string(message.roleId);
     }
-    if (message.oldJobTitle !== "") {
+    if (message.oldJobTitle !== undefined) {
       writer.uint32(26).string(message.oldJobTitle);
+    }
+    if (message.clearance !== undefined) {
+      writer.uint32(34).string(message.clearance);
     }
     return writer;
   },
@@ -20085,6 +20085,9 @@ export const RenameRoleKartoffelParams = {
           break;
         case 3:
           message.oldJobTitle = reader.string();
+          break;
+        case 4:
+          message.clearance = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -20111,7 +20114,12 @@ export const RenameRoleKartoffelParams = {
     if (object.oldJobTitle !== undefined && object.oldJobTitle !== null) {
       message.oldJobTitle = String(object.oldJobTitle);
     } else {
-      message.oldJobTitle = "";
+      message.oldJobTitle = undefined;
+    }
+    if (object.clearance !== undefined && object.clearance !== null) {
+      message.clearance = String(object.clearance);
+    } else {
+      message.clearance = undefined;
     }
     return message;
   },
@@ -20122,6 +20130,7 @@ export const RenameRoleKartoffelParams = {
     message.roleId !== undefined && (obj.roleId = message.roleId);
     message.oldJobTitle !== undefined &&
       (obj.oldJobTitle = message.oldJobTitle);
+    message.clearance !== undefined && (obj.clearance = message.clearance);
     return obj;
   },
 
@@ -20144,7 +20153,12 @@ export const RenameRoleKartoffelParams = {
     if (object.oldJobTitle !== undefined && object.oldJobTitle !== null) {
       message.oldJobTitle = object.oldJobTitle;
     } else {
-      message.oldJobTitle = "";
+      message.oldJobTitle = undefined;
+    }
+    if (object.clearance !== undefined && object.clearance !== null) {
+      message.clearance = object.clearance;
+    } else {
+      message.clearance = undefined;
     }
     return message;
   },
@@ -20523,7 +20537,6 @@ export const EditEntityKartoffelParams = {
 };
 
 const baseEditEntityADParams: object = {
-  samAccountName: "",
   firstName: "",
   lastName: "",
   fullName: "",
@@ -20534,7 +20547,7 @@ export const EditEntityADParams = {
     message: EditEntityADParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.samAccountName !== "") {
+    if (message.samAccountName !== undefined) {
       writer.uint32(10).string(message.samAccountName);
     }
     if (message.firstName !== "") {
@@ -20581,7 +20594,7 @@ export const EditEntityADParams = {
     if (object.samAccountName !== undefined && object.samAccountName !== null) {
       message.samAccountName = String(object.samAccountName);
     } else {
-      message.samAccountName = "";
+      message.samAccountName = undefined;
     }
     if (object.firstName !== undefined && object.firstName !== null) {
       message.firstName = String(object.firstName);
@@ -20616,7 +20629,7 @@ export const EditEntityADParams = {
     if (object.samAccountName !== undefined && object.samAccountName !== null) {
       message.samAccountName = object.samAccountName;
     } else {
-      message.samAccountName = "";
+      message.samAccountName = undefined;
     }
     if (object.firstName !== undefined && object.firstName !== null) {
       message.firstName = object.firstName;
@@ -21246,7 +21259,6 @@ const baseAssignRoleToEntityADParams: object = {
   firstName: "",
   lastName: "",
   fullName: "",
-  rank: "",
   roleSerialCode: "",
 };
 
@@ -21273,7 +21285,7 @@ export const AssignRoleToEntityADParams = {
     if (message.fullName !== "") {
       writer.uint32(50).string(message.fullName);
     }
-    if (message.rank !== "") {
+    if (message.rank !== undefined) {
       writer.uint32(58).string(message.rank);
     }
     if (message.roleSerialCode !== "") {
@@ -21369,7 +21381,7 @@ export const AssignRoleToEntityADParams = {
     if (object.rank !== undefined && object.rank !== null) {
       message.rank = String(object.rank);
     } else {
-      message.rank = "";
+      message.rank = undefined;
     }
     if (object.roleSerialCode !== undefined && object.roleSerialCode !== null) {
       message.roleSerialCode = String(object.roleSerialCode);
@@ -21440,7 +21452,7 @@ export const AssignRoleToEntityADParams = {
     if (object.rank !== undefined && object.rank !== null) {
       message.rank = object.rank;
     } else {
-      message.rank = "";
+      message.rank = undefined;
     }
     if (object.roleSerialCode !== undefined && object.roleSerialCode !== null) {
       message.roleSerialCode = object.roleSerialCode;

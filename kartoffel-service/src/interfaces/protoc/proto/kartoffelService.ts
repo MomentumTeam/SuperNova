@@ -242,6 +242,7 @@ export interface DeleteRoleRequest {
 export interface RenameRoleRequest {
   roleId: string;
   jobTitle: string;
+  clearance?: string | undefined;
 }
 
 /** ConnectRoleAndDI */
@@ -4233,6 +4234,9 @@ export const RenameRoleRequest = {
     if (message.jobTitle !== "") {
       writer.uint32(18).string(message.jobTitle);
     }
+    if (message.clearance !== undefined) {
+      writer.uint32(26).string(message.clearance);
+    }
     return writer;
   },
 
@@ -4248,6 +4252,9 @@ export const RenameRoleRequest = {
           break;
         case 2:
           message.jobTitle = reader.string();
+          break;
+        case 3:
+          message.clearance = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -4269,6 +4276,11 @@ export const RenameRoleRequest = {
     } else {
       message.jobTitle = "";
     }
+    if (object.clearance !== undefined && object.clearance !== null) {
+      message.clearance = String(object.clearance);
+    } else {
+      message.clearance = undefined;
+    }
     return message;
   },
 
@@ -4276,6 +4288,7 @@ export const RenameRoleRequest = {
     const obj: any = {};
     message.roleId !== undefined && (obj.roleId = message.roleId);
     message.jobTitle !== undefined && (obj.jobTitle = message.jobTitle);
+    message.clearance !== undefined && (obj.clearance = message.clearance);
     return obj;
   },
 
@@ -4290,6 +4303,11 @@ export const RenameRoleRequest = {
       message.jobTitle = object.jobTitle;
     } else {
       message.jobTitle = "";
+    }
+    if (object.clearance !== undefined && object.clearance !== null) {
+      message.clearance = object.clearance;
+    } else {
+      message.clearance = undefined;
     }
     return message;
   },

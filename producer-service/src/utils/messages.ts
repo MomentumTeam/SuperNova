@@ -117,6 +117,7 @@ export function generateKartoffelQueueMessage(request: Request): any {
       message.data = {
         roleId: kartoffelParams.roleId,
         jobTitle: kartoffelParams.jobTitle,
+        clearance: kartoffelParams.clearance,
       };
       break;
     case RequestType.EDIT_ENTITY:

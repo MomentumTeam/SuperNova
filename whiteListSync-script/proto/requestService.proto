@@ -851,7 +851,8 @@ message RenameOGADParams{
 message RenameRoleKartoffelParams{
     string jobTitle = 1;
     string roleId = 2;
-    string oldJobTitle=3;
+    optional string oldJobTitle=3;
+    optional string clearance=4;
 }
 
 message RenameRoleADParams{
@@ -877,7 +878,7 @@ message EditEntityKartoffelParams{
 }
 
 message EditEntityADParams{
-    string samAccountName = 1;
+    optional string samAccountName = 1;
     string firstName = 2;
     string lastName = 3;
     string fullName = 4;
@@ -931,7 +932,7 @@ message AssignRoleToEntityADParams{
     string firstName = 4;
     string lastName = 5;
     string fullName = 6;
-    string rank = 7;
+    optional string rank = 7;
     string roleSerialCode = 8;
 }
 

@@ -128,7 +128,8 @@ export default class BulkController {
       const request: any = await approveUserRequest(
         req,
         createRoleBulkReq,
-        createRoleBulkReq.kartoffelParams?.directGroup
+        createRoleBulkReq.kartoffelParams?.directGroup,
+        true
       );
       const roleBulk = await BulkService.createRoleBulkRequest(request);
       try {

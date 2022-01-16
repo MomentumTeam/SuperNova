@@ -694,7 +694,8 @@ export default class RequestsController {
       const request: any = await approveUserRequest(
         req,
         renameOGReq,
-        renameOGReq.kartoffelParams?.id
+        renameOGReq.kartoffelParams?.id,
+        true
       );
       const og = await RequestsService.renameOGRequest(request);
       try {
