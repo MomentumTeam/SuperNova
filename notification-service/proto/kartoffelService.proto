@@ -60,6 +60,9 @@ service Kartoffel {
     rpc GetRolesByHierarchy(GetRolesByHierarchyRequest) returns (RoleArray){}
     rpc GetRoleIdSuffixByOG(GetRoleIdSuffixByOGReq) returns (RoleIdSuffix){}
     rpc SearchRoleByRoleId(SearchRoleByRoleIdReq) returns (RoleArray){}
+
+    // Health
+    rpc GetIsHealthy(GetIsHealthyReq) returns (GetIsHealthyRes){}
 }
 
 message GetRoleIdSuffixByOGReq{
@@ -436,6 +439,15 @@ message GetEntitiesUnderOGRequest{
 //SuccessMessage
 message SuccessMessage{
     bool success = 1;
+}
+
+// GetIsHealthyReq
+message GetIsHealthyReq{
+
+}
+
+message GetIsHealthyRes {
+    bool isHealthy = 1;
 }
 
 // Kartoffel messages

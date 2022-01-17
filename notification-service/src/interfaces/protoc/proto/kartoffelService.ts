@@ -391,6 +391,13 @@ export interface SuccessMessage {
   success: boolean;
 }
 
+/** GetIsHealthyReq */
+export interface GetIsHealthyReq {}
+
+export interface GetIsHealthyRes {
+  isHealthy: boolean;
+}
+
 export interface OrganizationGroup {
   id: string;
   name: string;
@@ -6223,6 +6230,105 @@ export const SuccessMessage = {
   },
 };
 
+const baseGetIsHealthyReq: object = {};
+
+export const GetIsHealthyReq = {
+  encode(
+    _: GetIsHealthyReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): GetIsHealthyReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseGetIsHealthyReq } as GetIsHealthyReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): GetIsHealthyReq {
+    const message = { ...baseGetIsHealthyReq } as GetIsHealthyReq;
+    return message;
+  },
+
+  toJSON(_: GetIsHealthyReq): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(_: DeepPartial<GetIsHealthyReq>): GetIsHealthyReq {
+    const message = { ...baseGetIsHealthyReq } as GetIsHealthyReq;
+    return message;
+  },
+};
+
+const baseGetIsHealthyRes: object = { isHealthy: false };
+
+export const GetIsHealthyRes = {
+  encode(
+    message: GetIsHealthyRes,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.isHealthy === true) {
+      writer.uint32(8).bool(message.isHealthy);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): GetIsHealthyRes {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseGetIsHealthyRes } as GetIsHealthyRes;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.isHealthy = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetIsHealthyRes {
+    const message = { ...baseGetIsHealthyRes } as GetIsHealthyRes;
+    if (object.isHealthy !== undefined && object.isHealthy !== null) {
+      message.isHealthy = Boolean(object.isHealthy);
+    } else {
+      message.isHealthy = false;
+    }
+    return message;
+  },
+
+  toJSON(message: GetIsHealthyRes): unknown {
+    const obj: any = {};
+    message.isHealthy !== undefined && (obj.isHealthy = message.isHealthy);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<GetIsHealthyRes>): GetIsHealthyRes {
+    const message = { ...baseGetIsHealthyRes } as GetIsHealthyRes;
+    if (object.isHealthy !== undefined && object.isHealthy !== null) {
+      message.isHealthy = object.isHealthy;
+    } else {
+      message.isHealthy = false;
+    }
+    return message;
+  },
+};
+
 const baseOrganizationGroup: object = {
   id: "",
   name: "",
@@ -7762,6 +7868,8 @@ export interface Kartoffel {
   GetRolesByHierarchy(request: GetRolesByHierarchyRequest): Promise<RoleArray>;
   GetRoleIdSuffixByOG(request: GetRoleIdSuffixByOGReq): Promise<RoleIdSuffix>;
   SearchRoleByRoleId(request: SearchRoleByRoleIdReq): Promise<RoleArray>;
+  /** Health */
+  GetIsHealthy(request: GetIsHealthyReq): Promise<GetIsHealthyRes>;
 }
 
 export class KartoffelClientImpl implements Kartoffel {
@@ -7820,6 +7928,7 @@ export class KartoffelClientImpl implements Kartoffel {
     this.GetRolesByHierarchy = this.GetRolesByHierarchy.bind(this);
     this.GetRoleIdSuffixByOG = this.GetRoleIdSuffixByOG.bind(this);
     this.SearchRoleByRoleId = this.SearchRoleByRoleId.bind(this);
+    this.GetIsHealthy = this.GetIsHealthy.bind(this);
   }
   CreateEntity(request: CreateEntityRequest): Promise<IdMessage> {
     const data = CreateEntityRequest.encode(request).finish();
@@ -8295,6 +8404,16 @@ export class KartoffelClientImpl implements Kartoffel {
       data
     );
     return promise.then((data) => RoleArray.decode(new _m0.Reader(data)));
+  }
+
+  GetIsHealthy(request: GetIsHealthyReq): Promise<GetIsHealthyRes> {
+    const data = GetIsHealthyReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "GetIsHealthy",
+      data
+    );
+    return promise.then((data) => GetIsHealthyRes.decode(new _m0.Reader(data)));
   }
 }
 
