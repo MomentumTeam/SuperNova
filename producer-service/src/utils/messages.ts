@@ -4,7 +4,10 @@ import {
   requestTypeToJSON,
 } from '../interfaces/protoc/proto/requestService';
 import * as C from '../config';
-import { ADStage } from '../interfaces/protoc/proto/producerService';
+import {
+  ADStage,
+  aDStageFromJSON,
+} from '../interfaces/protoc/proto/producerService';
 
 function isValidMobilePhone(mobilePhone: any) {
   if (mobilePhone === undefined || mobilePhone === null) {
@@ -177,6 +180,9 @@ export function generateADQueueMessage(
   request: Request,
   adStage: any = undefined
 ): any {
+  if (adStage !== undefined) {
+    adStage = typeof adStage === typeof '' ? aDStageFromJSON(adStage) : adStage;
+  }
   const message: any = {
     id: request.id,
     type: C.shmuelRequestTypes[requestTypeToJSON(request.type)],
@@ -212,6 +218,7 @@ export function generateADQueueMessage(
             roleName: adParams.jobTitle,
           };
         } else {
+          message.id = `${message.id}@2`;
           //secondStage - treat it like ConnectNewRole
           message.type =
             C.shmuelRequestTypes[
