@@ -327,6 +327,9 @@ export default class RequestsController {
     const requestId = specialCase
       ? req.body.RequestID.split('@')[0]
       : req.body.RequestID;
+    const adStageSuffix = specialCase
+      ? req.body.RequestID.split('@')[1]
+      : undefined;
     let updateADStatus: UpdateADStatusReq = {
       requestId: requestId,
       status: StageStatus.STAGE_UNKNOWN,
@@ -340,12 +343,13 @@ export default class RequestsController {
           : StageStatus.STAGE_FAILED;
         if (
           updateADStatus.status === StageStatus.STAGE_FAILED ||
-          !specialCase
+          adStageSuffix === '2'
         ) {
           request = await RequestsService.updateADStatus(updateADStatus);
         }
         if (status) {
-          if (specialCase) {
+          if (adStageSuffix === '1') {
+            //First part is done, need to do second part
             await ProducerController.produceToADQueue(
               requestId,
               res,
@@ -367,7 +371,23 @@ export default class RequestsController {
         }
         return res.send(request);
       } else {
-        await ProducerController.produceToADQueue(requestId, res, true);
+        if (adStageSuffix === '1') {
+          await ProducerController.produceToADQueue(
+            requestId,
+            res,
+            true,
+            ADStage.FIRST_AD_STAGE
+          );
+        } else if (adStageSuffix === '2') {
+          await ProducerController.produceToADQueue(
+            requestId,
+            res,
+            true,
+            ADStage.SECOND_AD_STAGE
+          );
+        } else {
+          await ProducerController.produceToADQueue(requestId, res, true);
+        }
       }
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
