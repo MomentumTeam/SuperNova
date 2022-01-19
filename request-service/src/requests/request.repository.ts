@@ -1211,7 +1211,7 @@ export class RequestRepository {
       let query: any = {};
       let sortQuery: any = {
         sortStatusId: 1,
-        createdAt: -1,
+        createdAt: 1,
       };
 
       let waitingForApproveCount = 0;

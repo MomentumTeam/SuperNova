@@ -420,4 +420,14 @@ export default class KartoffelController {
       res.status(statusCode).send(error.message);
     }
   }
+
+  static async getIsHealthy(req: Request, res: Response) {
+    try {
+      const isHealthy = await KartoffelService.getIsHealthy({});
+      res.send(isHealthy);
+    } catch (error: any) {
+      const statusCode = statusCodeHandler(error);
+      res.status(statusCode).send(error.message);
+    }
+  }
 }

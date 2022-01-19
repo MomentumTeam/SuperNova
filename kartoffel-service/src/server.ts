@@ -62,6 +62,7 @@ import {
   getRoleIdSuffixByOG,
   searchRolesByRoleId,
 } from './roles/roles.controller';
+import { getIsHealthy } from './health/health.controller';
 
 const PROTO_PATH = `${findPath('proto')}/kartoffelService.proto`;
 
@@ -161,6 +162,9 @@ export class Server {
         IsJobTitleAlreadyTaken: isJobTitleAlreadyTaken,
         GetRoleIdSuffixByOG: getRoleIdSuffixByOG,
         SearchRoleByRoleId: searchRolesByRoleId,
+
+        // Health
+        GetIsHealthy: getIsHealthy
       });
       logger.info(`Grpc services were successfully added to the server`);
     } catch (error: any) {

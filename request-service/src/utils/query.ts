@@ -189,7 +189,7 @@ export function getSortQuery(sortField: any, sortOrder: any) {
     default:
       return {
         sortStatusId: 1,
-        createdAt: -1,
+        createdAt: 1,
       };
   }
 }
