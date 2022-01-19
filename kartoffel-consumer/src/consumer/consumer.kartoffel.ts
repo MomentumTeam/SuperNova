@@ -80,7 +80,7 @@ export const createRole = async (data: any) => {
       });
     logger.info('Successfuly connected role and DI', successMessageKartoffel);
 
-    if (roleEntityType === config.goalUser && upn) {
+    if (roleEntityType === config.goalUser && upn !== undefined) {
       //If goal user
       const goalUserEntity = await KartoffelService.createEntity({
         firstName: jobTitle,
