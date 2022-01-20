@@ -102,12 +102,12 @@ export const config = {
       .get('UI_ROLE_ENTITY_TYPE')
       .default('goalUser')
       .asString(),
-    SECUIRTY_MAIL: env
-      .get('SECUIRTY_MAIL')
+    SECURITY_MAIL: env
+      .get('UI_SECURITY_MAIL')
       .default('T82130201@gmail.com')
       .asString(),
-    SUPER_SECUIRTY_MAIL: env
-      .get('SUPER_SECUIRTY_MAIL')
+    SUPER_SECURITY_MAIL: env
+      .get('UI_SUPER_SECURITY_MAIL')
       .default('T02250B49@gmail.com')
       .asString(),
   },
