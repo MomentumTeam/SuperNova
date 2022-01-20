@@ -343,7 +343,7 @@ export default class RequestsController {
           : StageStatus.STAGE_FAILED;
         if (
           updateADStatus.status === StageStatus.STAGE_FAILED ||
-          adStageSuffix === '2'
+          adStageSuffix !== '1'
         ) {
           request = await RequestsService.updateADStatus(updateADStatus);
         }
