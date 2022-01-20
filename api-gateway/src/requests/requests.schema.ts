@@ -241,6 +241,16 @@ export const createRoleSchema = Joi.object({
   query: {},
 });
 
+export const roleKartoffelObj = Joi.object({
+  roleId: Joi.string().required(),
+  jobTitle: Joi.string().required(),
+  digitalIdentityUniqueId: Joi.string().allow(''),
+  directGroup: Joi.string().allow(''),
+  clearance: Joi.string().allow(''),
+  source: Joi.string().required(),
+  displayName: Joi.string().allow(''),
+});
+
 const assignRoleToEntityKartoffelParamsObj = Joi.object({
   id: Joi.string().required(),
   uniqueId: Joi.string().required(),
@@ -248,6 +258,7 @@ const assignRoleToEntityKartoffelParamsObj = Joi.object({
   needDisconnect: Joi.boolean().required(),
   hierarchy: Joi.string().required(),
   directGroup: Joi.string().required(),
+  role: roleKartoffelObj.required(),
 });
 
 const assignRoleToEntityADParamsObj = Joi.object({
@@ -367,6 +378,7 @@ const createEntityADParamsObj = Joi.object({
   //NO PARAMETERS NEEDED
 });
 
+
 export const createEntitySchema = Joi.object({
   body: {
     status: Joi.string().valid(...Object.keys(RequestStatus)),
@@ -393,6 +405,7 @@ const renameOGKartoffelParamsObj = Joi.object({
   name: Joi.string().required(),
   hierarchy: Joi.string().required(),
   oldHierarchy: Joi.string().required(),
+  role: roleKartoffelObj.required(),
 });
 
 const renameOGADParamsObj = Joi.object({
@@ -426,7 +439,8 @@ const renameRoleKartoffelParamsObj = Joi.object({
   jobTitle: Joi.string().required(),
   roleId: Joi.string().required(),
   oldJobTitle: Joi.string(),
-  clearance: Joi.string()
+  clearance: Joi.string(),
+  role: roleKartoffelObj.required(),
 });
 
 const renameRoleADParamsObj = Joi.object({

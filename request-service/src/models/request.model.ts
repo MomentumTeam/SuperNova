@@ -310,6 +310,7 @@ const RequestSchema = new Schema(
       hierarchy: { type: String, default: null },
       oldHierarchy: { type: String, default: null },
       upn: { type: String, default: null },
+      role: { type: Object, default: null}
     },
     adParams: {
       ouDisplayName: { type: String, default: null },
