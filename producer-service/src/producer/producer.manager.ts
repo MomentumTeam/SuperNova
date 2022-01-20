@@ -114,7 +114,7 @@ export class RequestManager {
         );
         await this.producerRepository.pushIntoKartoffelQueue(message);
         logger.info(
-          `produceToADQueue pushed successfully into Kartoffel queue for ${
+          `produceToKartoffelQueue pushed successfully into Kartoffel queue for ${
             produceRequest.id
           }: ${JSON.stringify(message)}`
         );
@@ -124,7 +124,7 @@ export class RequestManager {
           message: `Pushed into kartoffel queue at ${new Date().toString()}`,
         });
         logger.info(
-          `produceToADQueue successfully updated kartoffelStatus of ${produceRequest.id}`
+          `produceToKartoffelQueue successfully updated kartoffelStatus of ${produceRequest.id}`
         );
         const response = {
           success: true,

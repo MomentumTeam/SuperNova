@@ -27,6 +27,7 @@ import {
   TransferRequestToApproversReq,
   AreAllSubRequestsFinishedReq,
   AreAllSubRequestsFinishedRes,
+  SendSubmissionMailReq,
 } from '../interfaces/protoc/proto/requestService';
 import { RequestRepository } from './request.repository';
 export class RequestManager {
@@ -43,6 +44,18 @@ export class RequestManager {
       return (await this.requestRepository.createRequest(
         createRequest,
         type
+      )) as Request;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async sendSubmissionMail(
+    sendSubmissionMailReq: SendSubmissionMailReq
+  ): Promise<Request> {
+    try {
+      return (await this.requestRepository.sendSubmissionMail(
+        sendSubmissionMailReq
       )) as Request;
     } catch (error) {
       throw error;

@@ -76,10 +76,14 @@ export class MailRepository {
           return { mail: email } as any;
         });
       }
-      entity.digitalIdentities.forEach((digitalEntity) => {
+      const mails = entity.digitalIdentities.map(
+        (digitalIdentity) => digitalIdentity.mail
+      );
+      const uniqueMails = [...new Set(mails)];
+      uniqueMails.forEach((mail) => {
         const options = {
           from: C.fromAddress,
-          to: digitalEntity.mail, //digitalIdentitie.mail,
+          to: mail, //digitalIdentitie.mail,
           subject: sendCustomMailReq.title,
           text: sendCustomMailReq.message,
           html: sendCustomMailReq.html,
@@ -99,11 +103,7 @@ export class MailRepository {
 
       await Promise.all(promises);
 
-      const emails = entity.digitalIdentities.map(
-        (digitalIdentity) => digitalIdentity.mail
-      );
-
-      return { success: true, message: emails.toString() };
+      return { success: true, message: uniqueMails.toString() };
     } catch (error) {
       throw error;
     }

@@ -45,6 +45,7 @@ import {
   SortOrder,
   AreAllSubRequestsFinishedReq,
   AreAllSubRequestsFinishedRes,
+  SendSubmissionMailReq,
 } from '../interfaces/protoc/proto/requestService';
 import { createNotifications } from '../services/notificationHelper';
 import { sendMail } from '../services/mailHelper';
@@ -175,30 +176,55 @@ export class RequestRepository {
             status: requestStatusToJSON(RequestStatus.IN_PROGRESS),
           },
         });
-        try {
-          await createNotifications(
-            NotificationType.REQUEST_IN_PROGRESS,
-            document
-          );
-        } catch (notificationError: any) {
-          logger.error('Notification error', {
-            error: { message: notificationError.message },
-          });
+        if (
+          type !== RequestType.CHANGE_ROLE_HIERARCHY_BULK &&
+          type !== RequestType.CREATE_ROLE_BULK
+        ) {
+          try {
+            await createNotifications(
+              NotificationType.REQUEST_IN_PROGRESS,
+              document
+            );
+          } catch (notificationError: any) {
+            logger.error('Notification error', {
+              error: { message: notificationError.message },
+            });
+          }
         }
       } else {
-        try {
-          await createNotifications(
-            NotificationType.REQUEST_SUBMITTED,
-            document
-          );
-          sendMail(MailType.REQUEST_SUBMITTED, document).then().catch();
-        } catch (notificationError: any) {
-          logger.error('Notification error', {
-            error: { message: notificationError.message },
-          });
+        if (
+          type !== RequestType.CHANGE_ROLE_HIERARCHY_BULK &&
+          type !== RequestType.CREATE_ROLE_BULK
+        ) {
+          try {
+            await createNotifications(
+              NotificationType.REQUEST_SUBMITTED,
+              document
+            );
+            sendMail(MailType.REQUEST_SUBMITTED, document).then().catch();
+          } catch (notificationError: any) {
+            logger.error('Notification error', {
+              error: { message: notificationError.message },
+            });
+          }
         }
       }
       return document as Request;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async sendSubmissionMail(
+    sendSubmissionMailReq: SendSubmissionMailReq
+  ): Promise<Request> {
+    try {
+      const request: Request = await this.getRequestById({
+        id: sendSubmissionMailReq.id,
+      });
+      await createNotifications(NotificationType.REQUEST_SUBMITTED, request);
+      await sendMail(MailType.REQUEST_SUBMITTED, request);
+      return request;
     } catch (error) {
       throw error;
     }

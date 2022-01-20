@@ -50,6 +50,25 @@ export class RequestService {
     });
   }
 
+  async sendSubmissionMail(req: any): Promise<any> {
+    logger.info('sendSubmissionMail in RequestService', { req });
+    return new Promise((resolve, reject) => {
+      this.randomClient().SendSubmissionMail(req, (error: any, res: any) => {
+        if (error) {
+          logger.error('sendSubmissionMail in RequestService ERROR', {
+            error: { message: error.message },
+          });
+          reject(error);
+        } else {
+          logger.info('sendSubmissionMail in RequestService OK', {
+            res,
+          });
+          resolve(res as Request);
+        }
+      });
+    });
+  }
+
   async getRequestsUnderBulk(req: any): Promise<any> {
     logger.info('getRequestsUnderBulk in RequestService', { req });
     return new Promise((resolve, reject) => {

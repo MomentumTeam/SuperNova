@@ -1289,6 +1289,10 @@ export interface ChangeRoleHierarchyBulkADParams {
   newJobTitle?: string | undefined;
 }
 
+export interface SendSubmissionMailReq {
+  id: string;
+}
+
 /** 1.CreateRoleRequest */
 export interface CreateRoleKartoffelParams {
   /** for role */
@@ -18676,6 +18680,69 @@ export const ChangeRoleHierarchyBulkADParams = {
   },
 };
 
+const baseSendSubmissionMailReq: object = { id: "" };
+
+export const SendSubmissionMailReq = {
+  encode(
+    message: SendSubmissionMailReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): SendSubmissionMailReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseSendSubmissionMailReq } as SendSubmissionMailReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SendSubmissionMailReq {
+    const message = { ...baseSendSubmissionMailReq } as SendSubmissionMailReq;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+
+  toJSON(message: SendSubmissionMailReq): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<SendSubmissionMailReq>
+  ): SendSubmissionMailReq {
+    const message = { ...baseSendSubmissionMailReq } as SendSubmissionMailReq;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+};
+
 const baseCreateRoleKartoffelParams: object = {
   jobTitle: "",
   directGroup: "",
@@ -27961,6 +28028,7 @@ export interface RequestService {
   TransferRequestToApprovers(
     request: TransferRequestToApproversReq
   ): Promise<Request>;
+  SendSubmissionMail(request: SendSubmissionMailReq): Promise<Request>;
 }
 
 export class RequestServiceClientImpl implements RequestService {
@@ -28012,6 +28080,7 @@ export class RequestServiceClientImpl implements RequestService {
     this.GetRequestsByPerson = this.GetRequestsByPerson.bind(this);
     this.TransferRequestToApprovers =
       this.TransferRequestToApprovers.bind(this);
+    this.SendSubmissionMail = this.SendSubmissionMail.bind(this);
   }
   CreateRoleRequest(request: CreateRoleReq): Promise<CreateRoleRes> {
     const data = CreateRoleReq.encode(request).finish();
@@ -28440,6 +28509,16 @@ export class RequestServiceClientImpl implements RequestService {
     const promise = this.rpc.request(
       "RequestService.RequestService",
       "TransferRequestToApprovers",
+      data
+    );
+    return promise.then((data) => Request.decode(new _m0.Reader(data)));
+  }
+
+  SendSubmissionMail(request: SendSubmissionMailReq): Promise<Request> {
+    const data = SendSubmissionMailReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "SendSubmissionMail",
       data
     );
     return promise.then((data) => Request.decode(new _m0.Reader(data)));

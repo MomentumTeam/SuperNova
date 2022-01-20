@@ -74,17 +74,42 @@ export const config = {
       .asString(),
   },
   ui: {
-    TOKEN_NAME: env.get("GATEWAY_TOKEN").default("sp-token").asString(),
-    PAGE_SIZE: env.get("UI_REACT_PAGE_SIZE").default(10).asInt(),
-    ITEMS_IN_PAGE: env.get("UI_REACT_ITEMS_IN_PAGE").default(6).asInt(),
-    FIRST_PAGE: env.get("UI_REACT_FIRST_PAGE").default(0).asInt(),
-    USER_CITIZEN_ENTITY_TYPE: env.get("UI_USER_CITIZEN_ENTITY_TYPE").default("digimon").asString(),
-    USER_CLEARANCE: env.get("UI_USER_CLEARANCE").default("1,2,3,4,5,6").asString()?.split(","),
-    USER_SOURCE_DI: env.get("UI_USER_SOURCE_DI").default("sf_name").asString(),
-    USER_NO_PICTURE: env.get("UI_USER_NO_PICTURE_STRING").default("pictureUrl").asString(),
-    USER_HIGH_COMMANDER_RANKS: env.get("UI_HIGH_COMMANDER_RANKS").default("rookie,champion").asString()?.split(","),
-    USER_DI_TYPE: env.get("UI_DI_TYPE").default("domainUser").asString(),
-    USER_ROLE_ENTITY_TYPE: env.get("UI_ROLE_ENTITY_TYPE").default("goalUser").asString(),
+    TOKEN_NAME: env.get('GATEWAY_TOKEN').default('sp-token').asString(),
+    PAGE_SIZE: env.get('UI_REACT_PAGE_SIZE').default(10).asInt(),
+    ITEMS_IN_PAGE: env.get('UI_REACT_ITEMS_IN_PAGE').default(6).asInt(),
+    FIRST_PAGE: env.get('UI_REACT_FIRST_PAGE').default(0).asInt(),
+    USER_CITIZEN_ENTITY_TYPE: env
+      .get('UI_USER_CITIZEN_ENTITY_TYPE')
+      .default('digimon')
+      .asString(),
+    USER_CLEARANCE: env
+      .get('UI_USER_CLEARANCE')
+      .default('1,2,3,4,5,6')
+      .asString()
+      ?.split(','),
+    USER_SOURCE_DI: env.get('UI_USER_SOURCE_DI').default('sf_name').asString(),
+    USER_NO_PICTURE: env
+      .get('UI_USER_NO_PICTURE_STRING')
+      .default('pictureUrl')
+      .asString(),
+    USER_HIGH_COMMANDER_RANKS: env
+      .get('UI_HIGH_COMMANDER_RANKS')
+      .default('rookie,champion')
+      .asString()
+      ?.split(','),
+    USER_DI_TYPE: env.get('UI_DI_TYPE').default('domainUser').asString(),
+    USER_ROLE_ENTITY_TYPE: env
+      .get('UI_ROLE_ENTITY_TYPE')
+      .default('goalUser')
+      .asString(),
+    SECUIRTY_MAIL: env
+      .get('SECUIRTY_MAIL')
+      .default('T82130201@gmail.com')
+      .asString(),
+    SUPER_SECUIRTY_MAIL: env
+      .get('SUPER_SECUIRTY_MAIL')
+      .default('T02250B49@gmail.com')
+      .asString(),
   },
   logs: {
     storeLogs: env.get('GLOBAL_STORE_LOGS').default('true').asBool(),
