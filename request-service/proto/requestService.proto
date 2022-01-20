@@ -45,6 +45,8 @@ service RequestService {
 
     rpc GetRequestsByPerson(GetRequestsByPersonReq) returns (GetRequestsByPersonRes){}
     rpc TransferRequestToApprovers(TransferRequestToApproversReq) returns (Request){}
+
+    rpc SendSubmissionMail(SendSubmissionMailReq) returns (Request){}
 }
 
 // ---------------------------------------------LEGO Requests------------------------------------------------------------
@@ -755,6 +757,9 @@ message ChangeRoleHierarchyBulkADParams{
     optional string newJobTitle = 3;
 }
 
+message SendSubmissionMailReq{
+    string id = 1;
+}
 
 // -------------------------------------------------------Params-------------------------------------------------------------------------
 

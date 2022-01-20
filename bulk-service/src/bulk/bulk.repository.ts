@@ -111,6 +111,11 @@ export class BulkRepository {
                 id: bulkRequestId,
                 requestProperties: { requestIds: requestIds },
               });
+            try {
+              await this.requestService.sendSubmissionMail({
+                id: bulkRequestId,
+              });
+            } catch (notificationError) {}
             createRoleBulkResolve(updatedBulkRequest);
           })
           .catch(async (error) => {
@@ -190,6 +195,11 @@ export class BulkRepository {
                 id: bulkRequestId,
                 requestProperties: { requestIds: requestIds },
               });
+            try {
+              await this.requestService.sendSubmissionMail({
+                id: bulkRequestId,
+              });
+            } catch (notificationError) {}
             createRoleBulkResolve(updatedBulkRequest);
           })
           .catch(async (error) => {
@@ -268,7 +278,9 @@ export class BulkRepository {
             rowNumber: requestUnderBulk.rowNumber
               ? requestUnderBulk.rowNumber
               : '-',
-            status: requestUnderBulk.status? requestUnderBulk.status: undefined
+            status: requestUnderBulk.status
+              ? requestUnderBulk.status
+              : undefined,
           };
         }
       );
@@ -305,7 +317,9 @@ export class BulkRepository {
             rowNumber: requestUnderBulk.rowNumber
               ? requestUnderBulk.rowNumber
               : '-',
-            status: requestUnderBulk.status? requestUnderBulk.status: undefined
+            status: requestUnderBulk.status
+              ? requestUnderBulk.status
+              : undefined,
           };
         }
       );
