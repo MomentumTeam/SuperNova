@@ -884,8 +884,7 @@ export class RequestRepository {
             requestType === RequestType.CHANGE_ROLE_HIERARCHY_BULK) &&
           (requestUpdate.commanderDecision ||
             requestUpdate.securityDecision ||
-            requestUpdate.superSecurityDecision ||
-            requestUpdate.status)
+            requestUpdate.superSecurityDecision)
         ) {
           await RequestModel.updateMany(
             { bulkRequestId: updateReq.id },
