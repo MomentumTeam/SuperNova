@@ -860,6 +860,7 @@ message RenameRoleKartoffelParams{
     optional string oldJobTitle=3;
     optional string clearance=4;
     Kartoffel.Role role = 5;
+    optional string entityId = 6;
 }
 
 message RenameRoleADParams{
@@ -931,6 +932,7 @@ message AssignRoleToEntityKartoffelParams{
     string directGroup = 6;
     optional string upn = 7;
     Kartoffel.Role role = 8;
+    optional string entityId = 9;
 }
 
 message AssignRoleToEntityADParams{
@@ -1245,6 +1247,7 @@ message KartoffelParams{
     optional string oldHierarchy = 30;
     optional string upn = 31;
     optional Kartoffel.Role role = 32;
+    optional string entityId = 33;
     //EditEntity
     // string firstName = 25;
     // string lastName = 26;
