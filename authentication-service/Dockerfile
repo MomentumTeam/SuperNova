@@ -25,7 +25,7 @@ RUN mkdir -p /logs/authentication-service && chown -R node:node /logs/authentica
 RUN mkdir -p /usr/src/app && chown -R node:node /usr/src/app
 WORKDIR /usr/src/app
 COPY --chown=node:node ./package*.json ./
-COPY --chown=node:node ./401 ./
+COPY --chown=node:node ./401 ./401
 RUN npm ci --production && npm cache clean --force
 COPY --from=builder --chown=node:node /app/dist .
 COPY --from=builder --chown=node:node /app/proto proto
