@@ -1466,7 +1466,8 @@ export interface AssignRoleToEntityKartoffelParams {
   directGroup: string;
   upn?: string | undefined;
   role: Role | undefined;
-  entityId?: string | undefined;
+  /** currentroleat name */
+  name?: string | undefined;
 }
 
 export interface AssignRoleToEntityADParams {
@@ -21222,8 +21223,8 @@ export const AssignRoleToEntityKartoffelParams = {
     if (message.role !== undefined) {
       Role.encode(message.role, writer.uint32(66).fork()).ldelim();
     }
-    if (message.entityId !== undefined) {
-      writer.uint32(74).string(message.entityId);
+    if (message.name !== undefined) {
+      writer.uint32(74).string(message.name);
     }
     return writer;
   },
@@ -21265,7 +21266,7 @@ export const AssignRoleToEntityKartoffelParams = {
           message.role = Role.decode(reader, reader.uint32());
           break;
         case 9:
-          message.entityId = reader.string();
+          message.name = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -21319,10 +21320,10 @@ export const AssignRoleToEntityKartoffelParams = {
     } else {
       message.role = undefined;
     }
-    if (object.entityId !== undefined && object.entityId !== null) {
-      message.entityId = String(object.entityId);
+    if (object.name !== undefined && object.name !== null) {
+      message.name = String(object.name);
     } else {
-      message.entityId = undefined;
+      message.name = undefined;
     }
     return message;
   },
@@ -21340,7 +21341,7 @@ export const AssignRoleToEntityKartoffelParams = {
     message.upn !== undefined && (obj.upn = message.upn);
     message.role !== undefined &&
       (obj.role = message.role ? Role.toJSON(message.role) : undefined);
-    message.entityId !== undefined && (obj.entityId = message.entityId);
+    message.name !== undefined && (obj.name = message.name);
     return obj;
   },
 
@@ -21390,10 +21391,10 @@ export const AssignRoleToEntityKartoffelParams = {
     } else {
       message.role = undefined;
     }
-    if (object.entityId !== undefined && object.entityId !== null) {
-      message.entityId = object.entityId;
+    if (object.name !== undefined && object.name !== null) {
+      message.name = object.name;
     } else {
-      message.entityId = undefined;
+      message.name = undefined;
     }
     return message;
   },

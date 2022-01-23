@@ -932,7 +932,7 @@ message AssignRoleToEntityKartoffelParams{
     string directGroup = 6;
     optional string upn = 7;
     Kartoffel.Role role = 8;
-    optional string entityId = 9;
+    optional string name = 9; // currentroleat name
 }
 
 message AssignRoleToEntityADParams{
