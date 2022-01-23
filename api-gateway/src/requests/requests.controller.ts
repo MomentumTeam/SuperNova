@@ -51,7 +51,6 @@ import {
 } from './requests.utils';
 import { GetUserTypeRes } from '../interfaces/protoc/proto/approverService';
 import { config } from '../config';
-import ProducerService from '../producer/producer.service';
 
 export default class RequestsController {
   static async getSupportLink(req: any, res: Response) {
@@ -516,26 +515,20 @@ export default class RequestsController {
               ? approverTypeFromJSON(type)
               : type;
           });
-          if (entityUserType.includes(ApproverType.COMMANDER)) {
+          if (entityUserType.includes(ApproverType.COMMANDER) || entityUserType.includes(ApproverType.ADMIN)) {
             assignRoleToEntityReq.commanders = [
               {
                 id: entityWithRole.id,
                 displayName: entityWithRole.displayName,
-                identityCard: entityWithRole.identityCard
-                  ? entityWithRole.identityCard
-                  : '',
-                personalNumber: entityWithRole.personalNumber
-                  ? entityWithRole.personalNumber
-                  : '',
+                identityCard: entityWithRole.identityCard ? entityWithRole.identityCard : "",
+                personalNumber: entityWithRole.personalNumber ? entityWithRole.personalNumber : "",
                 ancestors: [],
               },
             ];
 
-            assignRoleToEntityReq.commanders =
-              assignRoleToEntityReq.commanders.filter(
-                (v: any, i: any, a: any) =>
-                  a.findIndex((t: any) => t.id === v.id) === i
-              );
+            assignRoleToEntityReq.commanders = assignRoleToEntityReq.commanders.filter(
+              (v: any, i: any, a: any) => a.findIndex((t: any) => t.id === v.id) === i
+            );
           }
         } catch (entityError) {
           //probably role is not attached to entity
