@@ -6,7 +6,6 @@ RUN apk add --no-cache git ca-certificates
 # copy configs to /app folder
 COPY --chown=node:node ./package*.json ./
 COPY --chown=node:node ./tsconfig.json ./
-COPY --chown=node:node ./401 ./
 
 # copy source code to /app/src folder
 COPY . .
@@ -25,8 +24,8 @@ RUN mkdir -p /logs/authentication-service && chown -R node:node /logs/authentica
 RUN mkdir -p /usr/src/app && chown -R node:node /usr/src/app
 WORKDIR /usr/src/app
 COPY --chown=node:node ./package*.json ./
-COPY --chown=node:node ./401 ./401
 RUN npm ci --production && npm cache clean --force
+COPY --from=builder --chown=node:node /app/401 401
 COPY --from=builder --chown=node:node /app/dist .
 COPY --from=builder --chown=node:node /app/proto proto
 USER node
