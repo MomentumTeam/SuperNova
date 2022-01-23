@@ -6,11 +6,10 @@ RUN apk add --no-cache git ca-certificates
 # copy configs to /app folder
 COPY --chown=node:node ./package*.json ./
 COPY --chown=node:node ./tsconfig.json ./
+COPY --chown=node:node ./401 ./
 
 # copy source code to /app/src folder
 COPY . .
-COPY ./401 ./
-# RUN rm -rf /app/proto && git clone https://github.com/MomentumTeam/SuperNovaProto.git /app/proto
 
 RUN npm i && npm cache clean --force
 RUN npm run build
@@ -26,10 +25,10 @@ RUN mkdir -p /logs/authentication-service && chown -R node:node /logs/authentica
 RUN mkdir -p /usr/src/app && chown -R node:node /usr/src/app
 WORKDIR /usr/src/app
 COPY --chown=node:node ./package*.json ./
+COPY --chown=node:node ./401 ./
 RUN npm ci --production && npm cache clean --force
 COPY --from=builder --chown=node:node /app/dist .
 COPY --from=builder --chown=node:node /app/proto proto
-COPY --chown=node:node ./401 ./
 USER node
 EXPOSE 8080
 ENV NODE_ENV=production
