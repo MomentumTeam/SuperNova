@@ -57,7 +57,7 @@ export class Server {
   }
 
   private initializeRouters() {
-    this.app.get('/isAlive', KartoffelController.getIsHealthy);
+    this.app.get('/api/isAlive', KartoffelController.getIsHealthy);
 
     this.app.use(
       '/api-docs',
