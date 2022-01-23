@@ -7,6 +7,8 @@ RUN apk add --no-cache git ca-certificates
 COPY --chown=node:node ./package*.json ./
 COPY --chown=node:node ./tsconfig.json ./
 
+# 
+COPY --chown=node:node ./tslint.json ./
 # copy source code to /app/src folder
 COPY . .
 
