@@ -1395,6 +1395,7 @@ export interface RenameRoleKartoffelParams {
   oldJobTitle?: string | undefined;
   clearance?: string | undefined;
   role: Role | undefined;
+  entityId?: string | undefined;
 }
 
 export interface RenameRoleADParams {
@@ -1465,6 +1466,8 @@ export interface AssignRoleToEntityKartoffelParams {
   directGroup: string;
   upn?: string | undefined;
   role: Role | undefined;
+  /** currentroleat name */
+  name?: string | undefined;
 }
 
 export interface AssignRoleToEntityADParams {
@@ -1765,6 +1768,7 @@ export interface KartoffelParams {
   hierarchy?: string | undefined;
   oldHierarchy?: string | undefined;
   upn?: string | undefined;
+  role?: Role | undefined;
   /**
    * EditEntity
    * string firstName = 25;
@@ -1781,7 +1785,7 @@ export interface KartoffelParams {
    * string entityType = 36;
    * string id =
    */
-  role?: Role | undefined;
+  entityId?: string | undefined;
 }
 
 export interface ADParams {
@@ -20137,6 +20141,9 @@ export const RenameRoleKartoffelParams = {
     if (message.role !== undefined) {
       Role.encode(message.role, writer.uint32(42).fork()).ldelim();
     }
+    if (message.entityId !== undefined) {
+      writer.uint32(50).string(message.entityId);
+    }
     return writer;
   },
 
@@ -20166,6 +20173,9 @@ export const RenameRoleKartoffelParams = {
           break;
         case 5:
           message.role = Role.decode(reader, reader.uint32());
+          break;
+        case 6:
+          message.entityId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -20204,6 +20214,11 @@ export const RenameRoleKartoffelParams = {
     } else {
       message.role = undefined;
     }
+    if (object.entityId !== undefined && object.entityId !== null) {
+      message.entityId = String(object.entityId);
+    } else {
+      message.entityId = undefined;
+    }
     return message;
   },
 
@@ -20216,6 +20231,7 @@ export const RenameRoleKartoffelParams = {
     message.clearance !== undefined && (obj.clearance = message.clearance);
     message.role !== undefined &&
       (obj.role = message.role ? Role.toJSON(message.role) : undefined);
+    message.entityId !== undefined && (obj.entityId = message.entityId);
     return obj;
   },
 
@@ -20249,6 +20265,11 @@ export const RenameRoleKartoffelParams = {
       message.role = Role.fromPartial(object.role);
     } else {
       message.role = undefined;
+    }
+    if (object.entityId !== undefined && object.entityId !== null) {
+      message.entityId = object.entityId;
+    } else {
+      message.entityId = undefined;
     }
     return message;
   },
@@ -21202,6 +21223,9 @@ export const AssignRoleToEntityKartoffelParams = {
     if (message.role !== undefined) {
       Role.encode(message.role, writer.uint32(66).fork()).ldelim();
     }
+    if (message.name !== undefined) {
+      writer.uint32(74).string(message.name);
+    }
     return writer;
   },
 
@@ -21240,6 +21264,9 @@ export const AssignRoleToEntityKartoffelParams = {
           break;
         case 8:
           message.role = Role.decode(reader, reader.uint32());
+          break;
+        case 9:
+          message.name = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -21293,6 +21320,11 @@ export const AssignRoleToEntityKartoffelParams = {
     } else {
       message.role = undefined;
     }
+    if (object.name !== undefined && object.name !== null) {
+      message.name = String(object.name);
+    } else {
+      message.name = undefined;
+    }
     return message;
   },
 
@@ -21309,6 +21341,7 @@ export const AssignRoleToEntityKartoffelParams = {
     message.upn !== undefined && (obj.upn = message.upn);
     message.role !== undefined &&
       (obj.role = message.role ? Role.toJSON(message.role) : undefined);
+    message.name !== undefined && (obj.name = message.name);
     return obj;
   },
 
@@ -21357,6 +21390,11 @@ export const AssignRoleToEntityKartoffelParams = {
       message.role = Role.fromPartial(object.role);
     } else {
       message.role = undefined;
+    }
+    if (object.name !== undefined && object.name !== null) {
+      message.name = object.name;
+    } else {
+      message.name = undefined;
     }
     return message;
   },
@@ -25724,6 +25762,9 @@ export const KartoffelParams = {
     if (message.role !== undefined) {
       Role.encode(message.role, writer.uint32(258).fork()).ldelim();
     }
+    if (message.entityId !== undefined) {
+      writer.uint32(266).string(message.entityId);
+    }
     return writer;
   },
 
@@ -25831,6 +25872,9 @@ export const KartoffelParams = {
           break;
         case 32:
           message.role = Role.decode(reader, reader.uint32());
+          break;
+        case 33:
+          message.entityId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -26010,6 +26054,11 @@ export const KartoffelParams = {
     } else {
       message.role = undefined;
     }
+    if (object.entityId !== undefined && object.entityId !== null) {
+      message.entityId = String(object.entityId);
+    } else {
+      message.entityId = undefined;
+    }
     return message;
   },
 
@@ -26067,6 +26116,7 @@ export const KartoffelParams = {
     message.upn !== undefined && (obj.upn = message.upn);
     message.role !== undefined &&
       (obj.role = message.role ? Role.toJSON(message.role) : undefined);
+    message.entityId !== undefined && (obj.entityId = message.entityId);
     return obj;
   },
 
@@ -26239,6 +26289,11 @@ export const KartoffelParams = {
       message.role = Role.fromPartial(object.role);
     } else {
       message.role = undefined;
+    }
+    if (object.entityId !== undefined && object.entityId !== null) {
+      message.entityId = object.entityId;
+    } else {
+      message.entityId = undefined;
     }
     return message;
   },

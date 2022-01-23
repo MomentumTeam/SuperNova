@@ -259,6 +259,7 @@ const assignRoleToEntityKartoffelParamsObj = Joi.object({
   hierarchy: Joi.string().required(),
   directGroup: Joi.string().required(),
   role: roleKartoffelObj.required(),
+  name: Joi.string().allow(''), // old entity if there is
 });
 
 const assignRoleToEntityADParamsObj = Joi.object({
@@ -405,7 +406,6 @@ const renameOGKartoffelParamsObj = Joi.object({
   name: Joi.string().required(),
   hierarchy: Joi.string().required(),
   oldHierarchy: Joi.string().required(),
-  role: roleKartoffelObj.required(),
 });
 
 const renameOGADParamsObj = Joi.object({
@@ -520,6 +520,7 @@ const changeRoleHierarchyKartoffelParamsObj = Joi.object({
   newJobTitle: Joi.string(),
   hierarchy: Joi.string().required(),
   oldHierarchy: Joi.string().required(),
+  role: roleKartoffelObj.required(),
 });
 
 const changeRoleHierarchyADParamsObj = Joi.object({
