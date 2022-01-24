@@ -895,11 +895,12 @@ export class RequestRepository {
                 requestStatusToJSON(RequestStatus.FAILED) &&
               requestUpdate.status !== RequestStatus.DONE &&
               requestUpdate.status !== RequestStatus.FAILED)
-          )
+          ) {
             await RequestModel.updateMany(
               { bulkRequestId: updateReq.id },
               { $set: requestUpdate }
             );
+          }
         } else if (
           documentObj.isPartOfBulk &&
           documentObj.bulkRequestId &&
