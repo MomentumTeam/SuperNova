@@ -11,6 +11,7 @@ import {
 } from '../interfaces/protoc/proto/requestService';
 import { IShragaUser } from '../passport/passport.interface';
 import { IUserToken } from './auth.interface';
+import { timeout } from '../utils/timeout';
 
 export class AuthManager {
   static async createToken(populatedShragaUser: IShragaUser) {
@@ -81,7 +82,10 @@ export class AuthManager {
   }
 
   private static async extractKartoffelUser(genesisId: string) {
-    const kartoffelUser: any = await KartoffelService.getEntityById(genesisId);
+    const kartoffelUser: any = await timeout(
+      KartoffelService.getEntityById(genesisId),
+      config.kartoffel.timeout
+    );
     if (kartoffelUser.directGroup) {
       const group = await KartoffelService.getOGById(kartoffelUser.directGroup);
       kartoffelUser.ancestors = group.ancestors;
