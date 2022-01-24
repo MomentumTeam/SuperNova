@@ -128,8 +128,7 @@ export default class BulkController {
       const request: any = await approveUserRequest(
         req,
         createRoleBulkReq,
-        createRoleBulkReq.kartoffelParams?.directGroup,
-        true
+        createRoleBulkReq.kartoffelParams?.directGroup
       );
       const roleBulk = await BulkService.createRoleBulkRequest(request);
       try {
@@ -165,7 +164,8 @@ export default class BulkController {
       const request: any = await approveUserRequest(
         req,
         changeRoleHierarchyBulkReq,
-        changeRoleHierarchyBulkReq.kartoffelParams?.directGroup
+        changeRoleHierarchyBulkReq.kartoffelParams?.directGroup,
+        true
       );
       const roleHierarchyBulk =
         await BulkService.changeRoleHierarchyBulkRequest(request);
