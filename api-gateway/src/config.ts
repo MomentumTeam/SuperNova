@@ -110,6 +110,12 @@ export const config = {
       .get('UI_SUPER_SECURITY_MAIL')
       .default('T02250B49@gmail.com')
       .asString(),
+    INSTRUCTION_VIDEOS: env
+      .get('UI_INSTRUCTION_VIDEOS')
+      .default(
+        'https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley'
+      )
+      .asString(),
   },
   logs: {
     storeLogs: env.get('GLOBAL_STORE_LOGS').default('true').asBool(),
