@@ -884,12 +884,22 @@ export class RequestRepository {
             requestType === RequestType.CHANGE_ROLE_HIERARCHY_BULK) &&
           (requestUpdate.commanderDecision ||
             requestUpdate.securityDecision ||
-            requestUpdate.superSecurityDecision)
+            requestUpdate.superSecurityDecision ||
+            requestUpdate.status)
         ) {
-          await RequestModel.updateMany(
-            { bulkRequestId: updateReq.id },
-            { $set: requestUpdate }
-          );
+          if (
+            requestUpdate.status === undefined ||
+            requestUpdate.status === null ||
+            (requestUpdate.status !== requestStatusToJSON(RequestStatus.DONE) &&
+              requestUpdate.status !==
+                requestStatusToJSON(RequestStatus.FAILED) &&
+              requestUpdate.status !== RequestStatus.DONE &&
+              requestUpdate.status !== RequestStatus.FAILED)
+          )
+            await RequestModel.updateMany(
+              { bulkRequestId: updateReq.id },
+              { $set: requestUpdate }
+            );
         } else if (
           documentObj.isPartOfBulk &&
           documentObj.bulkRequestId &&
