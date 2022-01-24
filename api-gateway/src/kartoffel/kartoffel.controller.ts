@@ -14,6 +14,8 @@ import {
 } from '../interfaces/protoc/proto/kartoffelService';
 import { AuthenticationError } from '../utils/errors/userErrors';
 import { statusCodeHandler } from '../utils/errors/errorHandlers';
+import { timeout } from '../utils/timeout';
+import { config } from '../config';
 
 export default class KartoffelController {
   // Entities
@@ -423,7 +425,7 @@ export default class KartoffelController {
 
   static async getIsHealthy(req: Request, res: Response) {
     try {
-      const isHealthy = await KartoffelService.getIsHealthy({});
+      const isHealthy = await timeout(KartoffelService.getIsHealthy({}), config.server.healthCheckTimeout);
       res.send(isHealthy);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
