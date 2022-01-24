@@ -24,7 +24,7 @@ export async function getUPN(entity: EntityMin): Promise<string> {
           throw new Error(`Failed to get current brol counter`);
         }
         const prefixAfterInc: any = documentAfterInc.toObject();
-        return `brol_${zeroPad(prefixAfterInc.currentCounter, 6)}`;
+        return `${C.brol}_${zeroPad(prefixAfterInc.currentCounter, 6)}`;
     }
     return '';
   } catch (error) {
@@ -41,7 +41,7 @@ export async function getBrol(): Promise<string> {
       throw new Error(`Failed to get current brol counter`);
     }
     const prefixAfterInc: any = documentAfterInc.toObject();
-    return `brol_${zeroPad(prefixAfterInc.currentCounter, 6)}`;
+    return `${C.brol}_${zeroPad(prefixAfterInc.currentCounter, 6)}`;
   } catch (error) {
     throw error;
   }
