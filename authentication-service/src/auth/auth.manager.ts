@@ -5,9 +5,7 @@ import { KartoffelService } from '../kartoffel/kartoffel.service';
 import { IUser } from '../kartoffel/kartoffel.interface';
 import { logger } from '../logger';
 import { ApproverService } from '../approver/approver.service';
-import {
-  approverTypeToJSON,
-} from '../interfaces/protoc/proto/requestService';
+import { approverTypeToJSON } from '../interfaces/protoc/proto/requestService';
 import { IShragaUser } from '../passport/passport.interface';
 import { IUserToken } from './auth.interface';
 import { timeout } from '../utils/timeout';
@@ -17,14 +15,20 @@ export class AuthManager {
     const shragaUser: IShragaUser =
       AuthManager.extractShragaUser(populatedShragaUser);
     let { genesisId, id, adfsId, iat, exp } = shragaUser;
-    
+
     if (config.authentication.useShragaLocalMap) {
-      genesisId = config.authentication.diToId[adfsId]
-        ? config.authentication.diToId[adfsId]
-        : genesisId;
-      id = config.authentication.diToId[adfsId]
-        ? config.authentication.diToId[adfsId]
-        : id;
+      if (config.authentication.getEntityByAdfsId) {
+        adfsId = config.authentication.diToId[adfsId]
+          ? config.authentication.diToId[adfsId]
+          : adfsId;
+      } else {
+        genesisId = config.authentication.diToId[adfsId]
+          ? config.authentication.diToId[adfsId]
+          : genesisId;
+        id = config.authentication.diToId[adfsId]
+          ? config.authentication.diToId[adfsId]
+          : id;
+      }
     }
 
     const kartoffelUser: IUser = config.authentication.getEntityByAdfsId
@@ -97,15 +101,18 @@ export class AuthManager {
   }
 
   private static async extractKartoffelUserByAdfsId(roleId: string) {
-  const kartoffelUser: any = await timeout(KartoffelService.getEntityByRoleId(roleId), config.kartoffel.timeout);
+    const kartoffelUser: any = await timeout(
+      KartoffelService.getEntityByRoleId(roleId),
+      config.kartoffel.timeout
+    );
 
-  if (kartoffelUser.directGroup) {
-    const group = await KartoffelService.getOGById(kartoffelUser.directGroup);
-    kartoffelUser.ancestors = group.ancestors;
+    if (kartoffelUser.directGroup) {
+      const group = await KartoffelService.getOGById(kartoffelUser.directGroup);
+      kartoffelUser.ancestors = group.ancestors;
+    }
+
+    return kartoffelUser as IUser;
   }
-
-  return kartoffelUser as IUser;
-}
 
   private static async extractUserType(genesisId: string) {
     const userWithType: any = { types: config.defaultUserTypes };
