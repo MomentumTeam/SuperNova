@@ -2,6 +2,7 @@ import { config } from '../config';
 import { logger } from '../logger';
 import {
   GetEntityByIdRequest,
+  GetEntityByRoleIdRequest,
   GetOGByIdRequest,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { findPath } from '../utils/path';
@@ -27,7 +28,7 @@ const kartoffelClient: any = new protoDescriptor.Kartoffel(
 export class KartoffelService {
   static async getEntityById(id: string): Promise<any> {
     logger.info(`Call to getEntityById in AS`, {
-      callRequest: { id: id },
+      callRequest: { id },
     });
 
     const getEntityByIdRequest: GetEntityByIdRequest = {
@@ -35,26 +36,50 @@ export class KartoffelService {
       withPicture: false,
     };
     return new Promise((resolve, reject) => {
-      kartoffelClient.GetEntityById(
-        getEntityByIdRequest,
-        (err: any, res: any) => {
-          if (err) {
-            logger.error(`getEntityById ERROR in AS`, {
-              err,
-              callRequest: getEntityByIdRequest,
-            });
-            reject(err);
-            return;
-          }
-
-          logger.info(`getEntityById OK in AS`, {
-            response: res,
+      kartoffelClient.GetEntityById(getEntityByIdRequest, (err: any, res: any) => {
+        if (err) {
+          logger.error(`getEntityById ERROR in AS`, {
+            err,
             callRequest: getEntityByIdRequest,
           });
-
-          resolve(res);
+          reject(err);
+          return;
         }
-      );
+
+        logger.info(`getEntityById OK in AS`, {
+          response: res,
+          callRequest: getEntityByIdRequest,
+        });
+
+        resolve(res);
+      });
+    });
+  }
+
+  static async getEntityByRoleId(roleId: string): Promise<any> {
+    logger.info(`Call to getEntityByRoleId in AS`, {
+      callRequest: { roleId },
+    });
+
+    const getEntityByRoleIdRequest: GetEntityByRoleIdRequest = {roleId};
+    return new Promise((resolve, reject) => {
+      kartoffelClient.GetEntityByRoleId(getEntityByRoleIdRequest, (err: any, res: any) => {
+        if (err) {
+          logger.error(`getEntityByRoleId ERROR in AS`, {
+            err,
+            callRequest: getEntityByRoleIdRequest,
+          });
+          reject(err);
+          return;
+        }
+
+        logger.info(`getEntityByRoleId OK in AS`, {
+          response: res,
+          callRequest: getEntityByRoleIdRequest,
+        });
+
+        resolve(res);
+      });
     });
   }
 

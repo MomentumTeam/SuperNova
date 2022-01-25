@@ -6,7 +6,6 @@ import { IUser } from '../kartoffel/kartoffel.interface';
 import { logger } from '../logger';
 import { ApproverService } from '../approver/approver.service';
 import {
-  ApproverType,
   approverTypeToJSON,
 } from '../interfaces/protoc/proto/requestService';
 import { IShragaUser } from '../passport/passport.interface';
@@ -18,6 +17,7 @@ export class AuthManager {
     const shragaUser: IShragaUser =
       AuthManager.extractShragaUser(populatedShragaUser);
     let { genesisId, id, adfsId, iat, exp } = shragaUser;
+    
     if (config.authentication.useShragaLocalMap) {
       genesisId = config.authentication.diToId[adfsId]
         ? config.authentication.diToId[adfsId]
@@ -26,9 +26,11 @@ export class AuthManager {
         ? config.authentication.diToId[adfsId]
         : id;
     }
-    const kartoffelUser: IUser = await AuthManager.extractKartoffelUser(
-      genesisId
-    );
+
+    const kartoffelUser: IUser = config.authentication.getEntityByAdfsId
+      ? await AuthManager.extractKartoffelUserByAdfsId(adfsId)
+      : await AuthManager.extractKartoffelUserByGenesisId(genesisId);
+
     const {
       displayName,
       identityCard,
@@ -81,7 +83,7 @@ export class AuthManager {
     return user;
   }
 
-  private static async extractKartoffelUser(genesisId: string) {
+  private static async extractKartoffelUserByGenesisId(genesisId: string) {
     const kartoffelUser: any = await timeout(
       KartoffelService.getEntityById(genesisId),
       config.kartoffel.timeout
@@ -93,6 +95,17 @@ export class AuthManager {
 
     return kartoffelUser as IUser;
   }
+
+  private static async extractKartoffelUserByAdfsId(roleId: string) {
+  const kartoffelUser: any = await timeout(KartoffelService.getEntityByRoleId(roleId), config.kartoffel.timeout);
+
+  if (kartoffelUser.directGroup) {
+    const group = await KartoffelService.getOGById(kartoffelUser.directGroup);
+    kartoffelUser.ancestors = group.ancestors;
+  }
+
+  return kartoffelUser as IUser;
+}
 
   private static async extractUserType(genesisId: string) {
     const userWithType: any = { types: config.defaultUserTypes };
