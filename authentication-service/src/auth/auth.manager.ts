@@ -14,20 +14,13 @@ export class AuthManager {
   static async createToken(populatedShragaUser: IShragaUser) {
     const shragaUser: IShragaUser =
       AuthManager.extractShragaUser(populatedShragaUser);
-    let { genesisId, id, adfsId, iat, exp } = shragaUser;
+    let { genesisId, adfsId, iat, exp } = shragaUser;
 
     if (config.authentication.useShragaLocalMap) {
       if (config.authentication.getEntityByAdfsId) {
-        adfsId = config.authentication.diToId[adfsId]
-          ? config.authentication.diToId[adfsId]
-          : adfsId;
+        adfsId = config.authentication.diToId[adfsId] ? config.authentication.diToId[adfsId] : adfsId;
       } else {
-        genesisId = config.authentication.diToId[adfsId]
-          ? config.authentication.diToId[adfsId]
-          : genesisId;
-        id = config.authentication.diToId[adfsId]
-          ? config.authentication.diToId[adfsId]
-          : id;
+        genesisId = config.authentication.diToId[adfsId] ? config.authentication.diToId[adfsId] : genesisId;
       }
     }
 
@@ -36,6 +29,7 @@ export class AuthManager {
       : await AuthManager.extractKartoffelUserByGenesisId(genesisId);
 
     const {
+      id,
       displayName,
       identityCard,
       personalNumber,
@@ -46,7 +40,7 @@ export class AuthManager {
     } = kartoffelUser;
 
     const types = config.approver.enrich
-      ? await AuthManager.extractUserType(genesisId)
+      ? await AuthManager.extractUserType(id)
       : {};
 
     const userToken: IUserToken = {
