@@ -38,6 +38,11 @@ export const useRedis = process.env.USE_REDIS
   ? process.env.USE_REDIS === 'true'
   : true;
 
+export const sleepBetweenRetries = process.env.SS_SLEEP_BETWEEN_RETRIES
+  ? parseInt(process.env.SS_SLEEP_BETWEEN_RETRIES)
+  : 1000;
+export const retries = process.env.SS_RETRIES_AMOUNT ? parseInt(process.env.SS_RETRIES_AMOUNT) : 3;
+
 export const kartoffelSpikeOptions = {
   redisHost: redisFullUrl,
   ClientId: clientId,
@@ -47,7 +52,9 @@ export const kartoffelSpikeOptions = {
   tokenAudience: kartoffelAudience,
   spikePublicKeyFullPath: localSpikePublicKeyFullPath,
   useRedis: useRedis,
-  tokenRedisKeyName: 'kartoffelSpikeToken',
+  tokenRedisKeyName: "kartoffelSpikeToken",
+  retries: retries,
+  sleepBetweenRetries: sleepBetweenRetries,
 };
 
 export const shmuelSpikeOptions = {
@@ -59,7 +66,9 @@ export const shmuelSpikeOptions = {
   tokenAudience: shmuelAudience,
   spikePublicKeyFullPath: localSpikePublicKeyFullPath,
   useRedis: useRedis,
-  tokenRedisKeyName: 'shmuelSpikeToken',
+  tokenRedisKeyName: "shmuelSpikeToken",
+  retries: retries,
+  sleepBetweenRetries: sleepBetweenRetries,
 };
 
 export const logPath = process.env.SS_LOG_PATH

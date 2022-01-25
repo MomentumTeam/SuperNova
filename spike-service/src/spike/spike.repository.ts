@@ -1,6 +1,7 @@
 import * as C from '../config';
 import { GetSpikeTokenRequest } from '../interfaces/protoc/proto/spikeService';
-const getTokenCreator = require('spike-get-token');
+import getTokenCreator from "spike-token-manager";
+
 const kartoffelGetToken = getTokenCreator(C.kartoffelSpikeOptions);
 const shmuelGetToken = getTokenCreator(C.shmuelSpikeOptions);
 import { logger } from '../logger';
