@@ -21,7 +21,7 @@
     "dotenv": "^10.0.0",
     "grpc-js-health-check": "^1.0.2",
     "nodemon": "^2.0.7",
-    "spike-get-token": "^1.1.13",
+    "spike-token-manager": "^0.0.5",
     "ts-node": "^10.0.0",
     "typescript": "^4.3.2",
     "winston": "^3.3.3",
