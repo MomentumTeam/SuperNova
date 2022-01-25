@@ -3,6 +3,7 @@ import { config } from '../config';
 import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 import { logger } from '../utils/logger/logger';
+
 import {
   DigitalIdentities,
   DigitalIdentity,
@@ -19,6 +20,8 @@ import {
   GetEntityByIdentifierRequest,
   GetEntityByIdRequest,
   GetEntityByRoleIdRequest,
+  GetIsHealthyReq,
+  GetIsHealthyRes,
   GetOGByHierarchyNameRequest,
   GetOGByIdRequest,
   GetOGTreeRequest,
@@ -60,6 +63,7 @@ const packageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(
 
 const protoDescriptor: any =
   grpc.loadPackageDefinition(packageDefinition).Kartoffel;
+
 
 const clients: any = [];
 for (let i = 0; i < config.fields.grpcPoolSize; i++) {
@@ -735,6 +739,28 @@ export class KartoffelService {
           resolve(response);
         }
       );
+    });
+  }
+
+  static async getIsHealthy(getIsHealthyReq: GetIsHealthyReq) {
+    logger.info(`Call to getIsHealthy in GTW`, getIsHealthyReq);
+
+    return new Promise((resolve, reject) => {
+      randomClient().GetIsHealthy(getIsHealthyReq, (err: any, response: GetIsHealthyRes) => {
+        if (err) {
+          logger.error(`getIsHealthy ERROR in GTW`, {
+            err,
+            callRequest: getIsHealthyReq,
+          });
+          reject(err);
+        }
+
+        logger.info(`getIsHealthy OK in GTW`, {
+          response: response,
+          callRequest: getIsHealthyReq,
+        });
+        resolve(response);
+      });
     });
   }
 }

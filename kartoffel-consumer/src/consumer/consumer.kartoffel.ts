@@ -51,6 +51,7 @@ export const createRole = async (data: any) => {
       isRoleAttachable,
       roleEntityType,
       clearance,
+      upn,
     } = data;
     const newDI: DigitalIdentity = await KartoffelService.createDI({
       isRoleAttachable: isRoleAttachable,
@@ -79,7 +80,7 @@ export const createRole = async (data: any) => {
       });
     logger.info('Successfuly connected role and DI', successMessageKartoffel);
 
-    if (roleEntityType === config.goalUser) {
+    if (roleEntityType === config.goalUser && upn !== undefined) {
       //If goal user
       const goalUserEntity = await KartoffelService.createEntity({
         firstName: jobTitle,
@@ -87,10 +88,12 @@ export const createRole = async (data: any) => {
         entityType: config.goalUser,
         phone: [],
         mobilePhone: [],
+        goalUserId: newDI.uniqueId,
       });
       await KartoffelService.connectEntityAndDI({
         id: goalUserEntity.id,
         uniqueId: newDI.uniqueId,
+        upn: upn,
       });
     }
     return newRole.roleId;
@@ -125,6 +128,7 @@ export const createEntity = async (createEntityRequest: any) => {
       sex: sex,
       birthDate: birthDate,
       entityType: config.civilian,
+      rank: config.civilianDefaultRank,
     });
     logger.info('Successfuly created Entity', createdEntity);
     return createdEntity.id;
@@ -224,10 +228,11 @@ export const deleteEntity = async (
 export const renameRole = async (renameRoleRequest: RenameRoleRequest) => {
   try {
     logger.info('renameRole request received', renameRoleRequest);
-    const { jobTitle, roleId } = renameRoleRequest;
+    const { jobTitle, roleId, clearance } = renameRoleRequest;
     const successMessage: SuccessMessage = await KartoffelService.renameRole({
-      roleId: roleId,
-      jobTitle: jobTitle,
+      roleId,
+      jobTitle,
+      clearance,
     });
     logger.info('Successfuly renamed role', successMessage);
   } catch (error) {

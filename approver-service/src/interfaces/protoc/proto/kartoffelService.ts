@@ -242,6 +242,7 @@ export interface DeleteRoleRequest {
 export interface RenameRoleRequest {
   roleId: string;
   jobTitle: string;
+  clearance?: string | undefined;
 }
 
 /** ConnectRoleAndDI */
@@ -327,6 +328,7 @@ export interface CreateEntityRequest {
   akaUnit?: string | undefined;
   dischargeDay?: string | undefined;
   rank?: string | undefined;
+  goalUserId?: string | undefined;
 }
 
 /** GetEntityByRoleId */
@@ -363,6 +365,7 @@ export interface GetChildrenOfOGRequest {
   pageSize?: number | undefined;
   direct: boolean;
   withRoles: boolean;
+  withParent?: boolean | undefined;
 }
 
 /** GetChildrenOfRootOG */
@@ -386,6 +389,13 @@ export interface GetEntitiesUnderOGRequest {
 /** SuccessMessage */
 export interface SuccessMessage {
   success: boolean;
+}
+
+/** GetIsHealthyReq */
+export interface GetIsHealthyReq {}
+
+export interface GetIsHealthyRes {
+  isHealthy: boolean;
 }
 
 export interface OrganizationGroup {
@@ -4231,6 +4241,9 @@ export const RenameRoleRequest = {
     if (message.jobTitle !== "") {
       writer.uint32(18).string(message.jobTitle);
     }
+    if (message.clearance !== undefined) {
+      writer.uint32(26).string(message.clearance);
+    }
     return writer;
   },
 
@@ -4246,6 +4259,9 @@ export const RenameRoleRequest = {
           break;
         case 2:
           message.jobTitle = reader.string();
+          break;
+        case 3:
+          message.clearance = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -4267,6 +4283,11 @@ export const RenameRoleRequest = {
     } else {
       message.jobTitle = "";
     }
+    if (object.clearance !== undefined && object.clearance !== null) {
+      message.clearance = String(object.clearance);
+    } else {
+      message.clearance = undefined;
+    }
     return message;
   },
 
@@ -4274,6 +4295,7 @@ export const RenameRoleRequest = {
     const obj: any = {};
     message.roleId !== undefined && (obj.roleId = message.roleId);
     message.jobTitle !== undefined && (obj.jobTitle = message.jobTitle);
+    message.clearance !== undefined && (obj.clearance = message.clearance);
     return obj;
   },
 
@@ -4288,6 +4310,11 @@ export const RenameRoleRequest = {
       message.jobTitle = object.jobTitle;
     } else {
       message.jobTitle = "";
+    }
+    if (object.clearance !== undefined && object.clearance !== null) {
+      message.clearance = object.clearance;
+    } else {
+      message.clearance = undefined;
     }
     return message;
   },
@@ -5192,6 +5219,9 @@ export const CreateEntityRequest = {
     if (message.rank !== undefined) {
       writer.uint32(122).string(message.rank);
     }
+    if (message.goalUserId !== undefined) {
+      writer.uint32(130).string(message.goalUserId);
+    }
     return writer;
   },
 
@@ -5248,6 +5278,9 @@ export const CreateEntityRequest = {
           break;
         case 15:
           message.rank = reader.string();
+          break;
+        case 16:
+          message.goalUserId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -5336,6 +5369,11 @@ export const CreateEntityRequest = {
     } else {
       message.rank = undefined;
     }
+    if (object.goalUserId !== undefined && object.goalUserId !== null) {
+      message.goalUserId = String(object.goalUserId);
+    } else {
+      message.goalUserId = undefined;
+    }
     return message;
   },
 
@@ -5368,6 +5406,7 @@ export const CreateEntityRequest = {
     message.dischargeDay !== undefined &&
       (obj.dischargeDay = message.dischargeDay);
     message.rank !== undefined && (obj.rank = message.rank);
+    message.goalUserId !== undefined && (obj.goalUserId = message.goalUserId);
     return obj;
   },
 
@@ -5449,6 +5488,11 @@ export const CreateEntityRequest = {
       message.rank = object.rank;
     } else {
       message.rank = undefined;
+    }
+    if (object.goalUserId !== undefined && object.goalUserId !== null) {
+      message.goalUserId = object.goalUserId;
+    } else {
+      message.goalUserId = undefined;
     }
     return message;
   },
@@ -5772,6 +5816,9 @@ export const GetChildrenOfOGRequest = {
     if (message.withRoles === true) {
       writer.uint32(40).bool(message.withRoles);
     }
+    if (message.withParent !== undefined) {
+      writer.uint32(48).bool(message.withParent);
+    }
     return writer;
   },
 
@@ -5799,6 +5846,9 @@ export const GetChildrenOfOGRequest = {
           break;
         case 5:
           message.withRoles = reader.bool();
+          break;
+        case 6:
+          message.withParent = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -5835,6 +5885,11 @@ export const GetChildrenOfOGRequest = {
     } else {
       message.withRoles = false;
     }
+    if (object.withParent !== undefined && object.withParent !== null) {
+      message.withParent = Boolean(object.withParent);
+    } else {
+      message.withParent = undefined;
+    }
     return message;
   },
 
@@ -5845,6 +5900,7 @@ export const GetChildrenOfOGRequest = {
     message.pageSize !== undefined && (obj.pageSize = message.pageSize);
     message.direct !== undefined && (obj.direct = message.direct);
     message.withRoles !== undefined && (obj.withRoles = message.withRoles);
+    message.withParent !== undefined && (obj.withParent = message.withParent);
     return obj;
   },
 
@@ -5876,6 +5932,11 @@ export const GetChildrenOfOGRequest = {
       message.withRoles = object.withRoles;
     } else {
       message.withRoles = false;
+    }
+    if (object.withParent !== undefined && object.withParent !== null) {
+      message.withParent = object.withParent;
+    } else {
+      message.withParent = undefined;
     }
     return message;
   },
@@ -6164,6 +6225,105 @@ export const SuccessMessage = {
       message.success = object.success;
     } else {
       message.success = false;
+    }
+    return message;
+  },
+};
+
+const baseGetIsHealthyReq: object = {};
+
+export const GetIsHealthyReq = {
+  encode(
+    _: GetIsHealthyReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): GetIsHealthyReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseGetIsHealthyReq } as GetIsHealthyReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): GetIsHealthyReq {
+    const message = { ...baseGetIsHealthyReq } as GetIsHealthyReq;
+    return message;
+  },
+
+  toJSON(_: GetIsHealthyReq): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(_: DeepPartial<GetIsHealthyReq>): GetIsHealthyReq {
+    const message = { ...baseGetIsHealthyReq } as GetIsHealthyReq;
+    return message;
+  },
+};
+
+const baseGetIsHealthyRes: object = { isHealthy: false };
+
+export const GetIsHealthyRes = {
+  encode(
+    message: GetIsHealthyRes,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.isHealthy === true) {
+      writer.uint32(8).bool(message.isHealthy);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): GetIsHealthyRes {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseGetIsHealthyRes } as GetIsHealthyRes;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.isHealthy = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetIsHealthyRes {
+    const message = { ...baseGetIsHealthyRes } as GetIsHealthyRes;
+    if (object.isHealthy !== undefined && object.isHealthy !== null) {
+      message.isHealthy = Boolean(object.isHealthy);
+    } else {
+      message.isHealthy = false;
+    }
+    return message;
+  },
+
+  toJSON(message: GetIsHealthyRes): unknown {
+    const obj: any = {};
+    message.isHealthy !== undefined && (obj.isHealthy = message.isHealthy);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<GetIsHealthyRes>): GetIsHealthyRes {
+    const message = { ...baseGetIsHealthyRes } as GetIsHealthyRes;
+    if (object.isHealthy !== undefined && object.isHealthy !== null) {
+      message.isHealthy = object.isHealthy;
+    } else {
+      message.isHealthy = false;
     }
     return message;
   },
@@ -7708,6 +7868,8 @@ export interface Kartoffel {
   GetRolesByHierarchy(request: GetRolesByHierarchyRequest): Promise<RoleArray>;
   GetRoleIdSuffixByOG(request: GetRoleIdSuffixByOGReq): Promise<RoleIdSuffix>;
   SearchRoleByRoleId(request: SearchRoleByRoleIdReq): Promise<RoleArray>;
+  /** Health */
+  GetIsHealthy(request: GetIsHealthyReq): Promise<GetIsHealthyRes>;
 }
 
 export class KartoffelClientImpl implements Kartoffel {
@@ -7766,6 +7928,7 @@ export class KartoffelClientImpl implements Kartoffel {
     this.GetRolesByHierarchy = this.GetRolesByHierarchy.bind(this);
     this.GetRoleIdSuffixByOG = this.GetRoleIdSuffixByOG.bind(this);
     this.SearchRoleByRoleId = this.SearchRoleByRoleId.bind(this);
+    this.GetIsHealthy = this.GetIsHealthy.bind(this);
   }
   CreateEntity(request: CreateEntityRequest): Promise<IdMessage> {
     const data = CreateEntityRequest.encode(request).finish();
@@ -8241,6 +8404,16 @@ export class KartoffelClientImpl implements Kartoffel {
       data
     );
     return promise.then((data) => RoleArray.decode(new _m0.Reader(data)));
+  }
+
+  GetIsHealthy(request: GetIsHealthyReq): Promise<GetIsHealthyRes> {
+    const data = GetIsHealthyReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "GetIsHealthy",
+      data
+    );
+    return promise.then((data) => GetIsHealthyRes.decode(new _m0.Reader(data)));
   }
 }
 

@@ -10,7 +10,7 @@ export class Authenticator {
   };
 
   private static readonly publiclyAvailablePaths: string[] = [
-    '/isAlive',
+    '/api/isAlive',
     '/auth/login',
     '/api-docs',
   ];

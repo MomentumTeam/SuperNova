@@ -76,10 +76,7 @@ export function containsLegalValues(rows: any, type: RequestType) {
     for (let i in rows) {
       const hebEntityType = rows[i][2].toString();
       const hebClearance = rows[i][1].toString();
-      if (
-        hebEntityTypes.indexOf(hebEntityType) === -1 ||
-        hebClearances.indexOf(hebClearance) === -1
-      ) {
+      if (hebEntityTypes.indexOf(hebEntityType) === -1) {
         return false;
       }
     }

@@ -60,6 +60,9 @@ service Kartoffel {
     rpc GetRolesByHierarchy(GetRolesByHierarchyRequest) returns (RoleArray){}
     rpc GetRoleIdSuffixByOG(GetRoleIdSuffixByOGReq) returns (RoleIdSuffix){}
     rpc SearchRoleByRoleId(SearchRoleByRoleIdReq) returns (RoleArray){}
+
+    // Health
+    rpc GetIsHealthy(GetIsHealthyReq) returns (GetIsHealthyRes){}
 }
 
 message GetRoleIdSuffixByOGReq{
@@ -301,6 +304,7 @@ message DeleteRoleRequest{
 message RenameRoleRequest{
     string roleId = 1;
     string jobTitle = 2;
+    optional string clearance = 3;
 }
 
 // ConnectRoleAndDI
@@ -379,6 +383,7 @@ message CreateEntityRequest{
     optional string akaUnit = 13;
     optional string dischargeDay = 14;
     optional string rank = 15;
+    optional string goalUserId = 16;
 }
 
 // GetEntityByRoleId
@@ -410,6 +415,7 @@ message GetChildrenOfOGRequest{
     optional int32 pageSize = 3;
     bool direct = 4;
     bool withRoles = 5;
+    optional bool withParent = 6;
 }
 
 // GetChildrenOfRootOG
@@ -433,6 +439,15 @@ message GetEntitiesUnderOGRequest{
 //SuccessMessage
 message SuccessMessage{
     bool success = 1;
+}
+
+// GetIsHealthyReq
+message GetIsHealthyReq{
+
+}
+
+message GetIsHealthyRes {
+    bool isHealthy = 1;
 }
 
 // Kartoffel messages

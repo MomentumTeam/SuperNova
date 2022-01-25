@@ -24,9 +24,24 @@ export async function getUPN(entity: EntityMin): Promise<string> {
           throw new Error(`Failed to get current brol counter`);
         }
         const prefixAfterInc: any = documentAfterInc.toObject();
-        return `brol_${zeroPad(prefixAfterInc.currentCounter, 6)}`;
+        return `${C.brol}_${zeroPad(prefixAfterInc.currentCounter, 6)}`;
     }
     return '';
+  } catch (error) {
+    throw error;
+  }
+}
+export async function getBrol(): Promise<string> {
+  try {
+    const documentAfterInc = await PrefixModel.findOneAndUpdate(
+      { prefix: C.brol },
+      { $inc: { currentCounter: 1 } }
+    );
+    if (!documentAfterInc) {
+      throw new Error(`Failed to get current brol counter`);
+    }
+    const prefixAfterInc: any = documentAfterInc.toObject();
+    return `${C.brol}_${zeroPad(prefixAfterInc.currentCounter, 6)}`;
   } catch (error) {
     throw error;
   }

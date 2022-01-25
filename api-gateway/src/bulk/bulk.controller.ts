@@ -164,7 +164,8 @@ export default class BulkController {
       const request: any = await approveUserRequest(
         req,
         changeRoleHierarchyBulkReq,
-        changeRoleHierarchyBulkReq.kartoffelParams?.directGroup
+        changeRoleHierarchyBulkReq.kartoffelParams?.directGroup,
+        true
       );
       const roleHierarchyBulk =
         await BulkService.changeRoleHierarchyBulkRequest(request);

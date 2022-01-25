@@ -45,6 +45,7 @@ import {
   SortOrder,
   AreAllSubRequestsFinishedReq,
   AreAllSubRequestsFinishedRes,
+  SendSubmissionMailReq,
 } from '../interfaces/protoc/proto/requestService';
 import { createNotifications } from '../services/notificationHelper';
 import { sendMail } from '../services/mailHelper';
@@ -66,6 +67,7 @@ import {
 } from '../utils/query';
 import {
   reportTeaFail,
+  retrieveBrol,
   retrieveTeaByOGId,
   retrieveUPNByEntityId,
 } from '../services/teaHelper';
@@ -86,6 +88,13 @@ export class RequestRepository {
         createRequestReq.kartoffelParams.uniqueId = tea.uniqueId;
         createRequestReq.kartoffelParams.mail = tea.mail;
         createRequestReq.adParams.samAccountName = tea.samAccountName;
+        if (
+          createRequestReq.kartoffelParams.roleEntityType &&
+          createRequestReq.kartoffelParams.roleEntityType === C.goalUser
+        ) {
+          createRequestReq.adParams.upn = await retrieveBrol();
+          createRequestReq.kartoffelParams.upn = createRequestReq.adParams.upn;
+        }
       } else if (type === RequestType.ASSIGN_ROLE_TO_ENTITY) {
         createRequestReq.adParams.upn = await retrieveUPNByEntityId(
           createRequestReq.kartoffelParams.id
@@ -167,30 +176,55 @@ export class RequestRepository {
             status: requestStatusToJSON(RequestStatus.IN_PROGRESS),
           },
         });
-        try {
-          await createNotifications(
-            NotificationType.REQUEST_IN_PROGRESS,
-            document
-          );
-        } catch (notificationError: any) {
-          logger.error('Notification error', {
-            error: { message: notificationError.message },
-          });
+        if (
+          type !== RequestType.CHANGE_ROLE_HIERARCHY_BULK &&
+          type !== RequestType.CREATE_ROLE_BULK
+        ) {
+          try {
+            await createNotifications(
+              NotificationType.REQUEST_IN_PROGRESS,
+              document
+            );
+          } catch (notificationError: any) {
+            logger.error('Notification error', {
+              error: { message: notificationError.message },
+            });
+          }
         }
       } else {
-        try {
-          await createNotifications(
-            NotificationType.REQUEST_SUBMITTED,
-            document
-          );
-          sendMail(MailType.REQUEST_SUBMITTED, document).then().catch();
-        } catch (notificationError: any) {
-          logger.error('Notification error', {
-            error: { message: notificationError.message },
-          });
+        if (
+          type !== RequestType.CHANGE_ROLE_HIERARCHY_BULK &&
+          type !== RequestType.CREATE_ROLE_BULK
+        ) {
+          try {
+            await createNotifications(
+              NotificationType.REQUEST_SUBMITTED,
+              document
+            );
+            sendMail(MailType.REQUEST_SUBMITTED, document).then().catch();
+          } catch (notificationError: any) {
+            logger.error('Notification error', {
+              error: { message: notificationError.message },
+            });
+          }
         }
       }
       return document as Request;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async sendSubmissionMail(
+    sendSubmissionMailReq: SendSubmissionMailReq
+  ): Promise<Request> {
+    try {
+      const request: Request = await this.getRequestById({
+        id: sendSubmissionMailReq.id,
+      });
+      await createNotifications(NotificationType.REQUEST_SUBMITTED, request);
+      await sendMail(MailType.REQUEST_SUBMITTED, request);
+      return request;
     } catch (error) {
       throw error;
     }
@@ -275,6 +309,7 @@ export class RequestRepository {
           ? transferRequestToApproverReq.commentForApprovers
           : '';
       switch (type) {
+        case ApproverType.ADMIN:
         case ApproverType.COMMANDER:
           updateSetQuery = {
             commanders: transferRequestToApproverReq.approvers,
@@ -852,10 +887,20 @@ export class RequestRepository {
             requestUpdate.superSecurityDecision ||
             requestUpdate.status)
         ) {
-          await RequestModel.updateMany(
-            { bulkRequestId: updateReq.id },
-            { $set: requestUpdate }
-          );
+          if (
+            requestUpdate.status === undefined ||
+            requestUpdate.status === null ||
+            (requestUpdate.status !== requestStatusToJSON(RequestStatus.DONE) &&
+              requestUpdate.status !==
+                requestStatusToJSON(RequestStatus.FAILED) &&
+              requestUpdate.status !== RequestStatus.DONE &&
+              requestUpdate.status !== RequestStatus.FAILED)
+          ) {
+            await RequestModel.updateMany(
+              { bulkRequestId: updateReq.id },
+              { $set: requestUpdate }
+            );
+          }
         } else if (
           documentObj.isPartOfBulk &&
           documentObj.bulkRequestId &&
@@ -1202,7 +1247,7 @@ export class RequestRepository {
       let query: any = {};
       let sortQuery: any = {
         sortStatusId: 1,
-        createdAt: -1,
+        createdAt: 1,
       };
 
       let waitingForApproveCount = 0;

@@ -31,9 +31,14 @@ export const hebEntityTypeToKartoffelLang: any = {
 };
 
 export const hebClearanceToKartoffelLang: any = {
-  אדום: 'red',
-  סגול: 'purple',
-  כחול: 'blue',
+  אדום: 'אדום',
+  סגול: 'סגול',
+  כחול: 'כחול',
+  סודי: 'סודי',
+  'סודי ביותר': 'סודי ביותר',
+  לבן: 'לבן',
+  'סגול טאבו': 'סגול טאבו',
+  'סגול מצומצם': 'סגול מצומצם',
 };
 
 export const kartoffelEntityTypeToHeb: any = {

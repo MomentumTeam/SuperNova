@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { PermissionHandler } from '../utils/auth/permissions';
 import RequestsController from './requests.controller';
 import { RequestValidator } from './requests.validator';
 

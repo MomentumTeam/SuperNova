@@ -20,7 +20,6 @@ import {
   Request,
   RequestArray,
   RequestType,
-  requestTypeFromJSON,
 } from '../interfaces/protoc/proto/requestService';
 import { RequestService } from '../services/request.service';
 import { parseExcelFile } from '../utils/excel';
@@ -112,6 +111,11 @@ export class BulkRepository {
                 id: bulkRequestId,
                 requestProperties: { requestIds: requestIds },
               });
+            try {
+              await this.requestService.sendSubmissionMail({
+                id: bulkRequestId,
+              });
+            } catch (notificationError) {}
             createRoleBulkResolve(updatedBulkRequest);
           })
           .catch(async (error) => {
@@ -191,6 +195,11 @@ export class BulkRepository {
                 id: bulkRequestId,
                 requestProperties: { requestIds: requestIds },
               });
+            try {
+              await this.requestService.sendSubmissionMail({
+                id: bulkRequestId,
+              });
+            } catch (notificationError) {}
             createRoleBulkResolve(updatedBulkRequest);
           })
           .catch(async (error) => {
@@ -269,6 +278,9 @@ export class BulkRepository {
             rowNumber: requestUnderBulk.rowNumber
               ? requestUnderBulk.rowNumber
               : '-',
+            status: requestUnderBulk.status
+              ? requestUnderBulk.status
+              : undefined,
           };
         }
       );
@@ -305,6 +317,9 @@ export class BulkRepository {
             rowNumber: requestUnderBulk.rowNumber
               ? requestUnderBulk.rowNumber
               : '-',
+            status: requestUnderBulk.status
+              ? requestUnderBulk.status
+              : undefined,
           };
         }
       );

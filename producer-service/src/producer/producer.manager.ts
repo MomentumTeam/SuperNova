@@ -1,5 +1,6 @@
 import * as C from '../config';
 import {
+  aDStageFromJSON,
   ProduceRequest,
   SuccessMessage,
 } from '../interfaces/protoc/proto/producerService';
@@ -113,7 +114,7 @@ export class RequestManager {
         );
         await this.producerRepository.pushIntoKartoffelQueue(message);
         logger.info(
-          `produceToADQueue pushed successfully into Kartoffel queue for ${
+          `produceToKartoffelQueue pushed successfully into Kartoffel queue for ${
             produceRequest.id
           }: ${JSON.stringify(message)}`
         );
@@ -123,7 +124,7 @@ export class RequestManager {
           message: `Pushed into kartoffel queue at ${new Date().toString()}`,
         });
         logger.info(
-          `produceToADQueue successfully updated kartoffelStatus of ${produceRequest.id}`
+          `produceToKartoffelQueue successfully updated kartoffelStatus of ${produceRequest.id}`
         );
         const response = {
           success: true,
@@ -151,9 +152,9 @@ export class RequestManager {
           status: StageStatus.STAGE_DONE,
           message: `User ${submitterId} is not AD allowed submitter, AD stage has not been performed`,
         });
-        const kartoffelSuccessMessage = await this.produceToKartoffelQueue(
-          produceRequest
-        );
+        const kartoffelSuccessMessage = await this.produceToKartoffelQueue({
+          id: produceRequest.id,
+        });
         return kartoffelSuccessMessage;
       }
       const force =
@@ -234,8 +235,25 @@ export class RequestManager {
           success: true,
           message: requestTypeToJSON(requestType),
         };
+      } else if (
+        requestType === RequestType.EDIT_ENTITY &&
+        (request.adParams?.samAccountName === undefined ||
+          request.adParams?.samAccountName === null)
+      ) {
+        await this.requestService.updateADStatus({
+          requestId: produceRequest.id,
+          status: StageStatus.STAGE_DONE,
+          message: `Entity does not have samAccountName, ADStage is not required!`,
+        });
+        const kartoffelSuccessMessage = await this.produceToKartoffelQueue({
+          id: produceRequest.id,
+        });
+        return kartoffelSuccessMessage;
       } else {
-        const message = generateADQueueMessage(request);
+        const adStage: any = produceRequest.adStage
+          ? produceRequest.adStage
+          : undefined;
+        const message = generateADQueueMessage(request, adStage);
         logger.info(
           `produceToADQueue generated queue message : ${JSON.stringify(
             message

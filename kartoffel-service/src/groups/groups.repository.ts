@@ -285,11 +285,18 @@ export class GroupsRepository {
         const queryParams: any = { ...getChildrenOfOGRequest };
         delete queryParams.id;
         delete queryParams.withRoles;
+        delete queryParams.withParent;
 
         if (!queryParams.page || !queryParams.pageSize) {
           //get all children
           let page = 1;
           let groups: OrganizationGroup[] = [];
+          if (getChildrenOfOGRequest.withParent) {
+            const parent = await this.getOGById({
+              id: getChildrenOfOGRequest.id,
+            });
+            groups.push(parent);
+          }
 
           while (true) {
             const currentPage = await this.getChildrenOfOG({
@@ -308,16 +315,23 @@ export class GroupsRepository {
           }
           return { groups: groups } as OGArray;
         } else {
+          let groups = [];
+          if (getChildrenOfOGRequest.withParent) {
+            const parent = await this.getOGById({
+              id: getChildrenOfOGRequest.id,
+            });
+            groups.push(parent);
+          }
           const res = await this.kartoffelUtils.kartoffelGet(
             `${C.kartoffelUrl}/api/groups/${getChildrenOfOGRequest.id}/children`,
             queryParams
           );
+          let resGroups = res as OrganizationGroup[];
+          groups.push(...resGroups);
 
-          let groups = res as OrganizationGroup[];
           if (getChildrenOfOGRequest.withRoles) {
             groups = await getDirectRolesForGroups(groups);
           }
-
           return { groups: groups } as OGArray;
         }
       }

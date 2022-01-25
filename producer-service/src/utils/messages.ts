@@ -4,6 +4,10 @@ import {
   requestTypeToJSON,
 } from '../interfaces/protoc/proto/requestService';
 import * as C from '../config';
+import {
+  ADStage,
+  aDStageFromJSON,
+} from '../interfaces/protoc/proto/producerService';
 
 function isValidMobilePhone(mobilePhone: any) {
   if (mobilePhone === undefined || mobilePhone === null) {
@@ -65,6 +69,10 @@ export function generateKartoffelQueueMessage(request: Request): any {
         //in case of goalUser - need to create an entity and assign it to the role
         roleEntityType: kartoffelParams.roleEntityType,
       };
+      if (kartoffelParams.upn !== undefined) {
+        // the brol
+        message.data.upn = kartoffelParams.upn;
+      }
       break;
     case RequestType.CREATE_ENTITY:
       message.data = {
@@ -79,10 +87,10 @@ export function generateKartoffelQueueMessage(request: Request): any {
         birthDate: kartoffelParams.birthdate,
         entityType: kartoffelParams.entityType,
       };
-      if (isValidPhone(kartoffelParams.phone)) {
-        message.data.phone = kartoffelParams.phone;
-      } else if (isValidMobilePhone(kartoffelParams.mobilePhone)) {
+      if (isValidMobilePhone(kartoffelParams.mobilePhone)) {
         message.data.mobilePhone = kartoffelParams.phone;
+      } else if (isValidPhone(kartoffelParams.phone)) {
+        message.data.phone = kartoffelParams.phone;
       }
       break;
     case RequestType.ASSIGN_ROLE_TO_ENTITY:
@@ -112,6 +120,7 @@ export function generateKartoffelQueueMessage(request: Request): any {
       message.data = {
         roleId: kartoffelParams.roleId,
         jobTitle: kartoffelParams.jobTitle,
+        clearance: kartoffelParams.clearance,
       };
       break;
     case RequestType.EDIT_ENTITY:
@@ -167,7 +176,13 @@ export function generateKartoffelQueueMessage(request: Request): any {
   return message;
 }
 
-export function generateADQueueMessage(request: Request): any {
+export function generateADQueueMessage(
+  request: Request,
+  adStage: any = undefined
+): any {
+  if (adStage !== undefined) {
+    adStage = typeof adStage === typeof '' ? aDStageFromJSON(adStage) : adStage;
+  }
   const message: any = {
     id: request.id,
     type: C.shmuelRequestTypes[requestTypeToJSON(request.type)],
@@ -189,11 +204,44 @@ export function generateADQueueMessage(request: Request): any {
       };
       break;
     case RequestType.CREATE_ROLE: //reviewed with Orin, CreateRole
-      message.data = {
-        userID: adParams.samAccountName,
-        ouName: adParams.ouDisplayName,
-        roleName: adParams.jobTitle,
-      };
+      if (
+        request.adParams &&
+        request.adParams.upn !== undefined &&
+        request.adParams.upn !== null
+      ) {
+        if (adStage === undefined || adStage === ADStage.FIRST_AD_STAGE) {
+          //First Stage - Create Role
+          message.id = `${message.id}@1`;
+          message.data = {
+            userID: adParams.samAccountName,
+            ouName: adParams.ouDisplayName,
+            roleName: adParams.jobTitle,
+          };
+        } else {
+          message.id = `${message.id}@2`;
+          //secondStage - treat it like ConnectNewRole
+          message.type =
+            C.shmuelRequestTypes[
+              requestTypeToJSON(RequestType.ASSIGN_ROLE_TO_ENTITY)
+            ];
+          message.data = {
+            userID: adParams.samAccountName,
+            UPN: `${adParams.upn}@${C.upnSuffix}`,
+            firstName: adParams.jobTitle,
+            lastName: adParams.jobTitle,
+            fullName: adParams.jobTitle,
+            rank: 'לא ידוע',
+            ID: adParams.samAccountName,
+            pdoName: 'x',
+          };
+        }
+      } else {
+        message.data = {
+          userID: adParams.samAccountName,
+          ouName: adParams.ouDisplayName,
+          roleName: adParams.jobTitle,
+        };
+      }
       break;
     case RequestType.ASSIGN_ROLE_TO_ENTITY: //reviewed with Orin
       if (
@@ -209,7 +257,7 @@ export function generateADQueueMessage(request: Request): any {
           lastName: adParams.lastName,
           fullName: adParams.fullName,
           nickname: adParams.fullName,
-          rank: adParams.rank,
+          rank: adParams.rank ? adParams.rank : 'לא ידוע',
           jobNumber: '0',
         };
       } else {
@@ -220,7 +268,7 @@ export function generateADQueueMessage(request: Request): any {
           firstName: adParams.firstName,
           lastName: adParams.lastName,
           fullName: adParams.fullName,
-          rank: adParams.rank,
+          rank: adParams.rank ? adParams.rank : 'לא ידוע',
           ID: adParams.newSAMAccountName,
           pdoName: 'x',
         };

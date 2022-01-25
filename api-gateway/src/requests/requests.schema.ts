@@ -99,8 +99,8 @@ export const updateADStatusSchema = Joi.object({
 export const entityMinObj = Joi.object({
   id: Joi.objectId().required(),
   displayName: Joi.string().required(),
-  identityCard: Joi.string().default(''),
-  personalNumber: Joi.string().default(''),
+  identityCard: Joi.string().default('').allow('', null),
+  personalNumber: Joi.string().default('').allow('', null),
 });
 
 export const ApproverDecisionObj = Joi.object({
@@ -241,6 +241,16 @@ export const createRoleSchema = Joi.object({
   query: {},
 });
 
+export const roleKartoffelObj = Joi.object({
+  roleId: Joi.string().required(),
+  jobTitle: Joi.string().required(),
+  digitalIdentityUniqueId: Joi.string().allow(''),
+  directGroup: Joi.string().allow(''),
+  clearance: Joi.string().allow(''),
+  source: Joi.string().required(),
+  displayName: Joi.string().allow(''),
+});
+
 const assignRoleToEntityKartoffelParamsObj = Joi.object({
   id: Joi.string().required(),
   uniqueId: Joi.string().required(),
@@ -248,6 +258,8 @@ const assignRoleToEntityKartoffelParamsObj = Joi.object({
   needDisconnect: Joi.boolean().required(),
   hierarchy: Joi.string().required(),
   directGroup: Joi.string().required(),
+  role: roleKartoffelObj.required(),
+  name: Joi.string().allow(''), // old entity if there is
 });
 
 const assignRoleToEntityADParamsObj = Joi.object({
@@ -257,7 +269,7 @@ const assignRoleToEntityADParamsObj = Joi.object({
   firstName: Joi.string().required(),
   lastName: Joi.string().required(),
   fullName: Joi.string().required(),
-  rank: Joi.string().required(),
+  rank: Joi.string(),
   roleSerialCode: Joi.string().required(),
 });
 
@@ -322,12 +334,13 @@ const additionalParamsObj = Joi.object({
   domainUsers: Joi.array().items(Joi.string()),
   akaUnit: Joi.string().default(''),
   personalNumber: Joi.string().default(''),
-  identityCard: Joi.string().default(''),
+  identityCard: Joi.string().default('').allow('', null),
   type: Joi.string()
     .valid(...Object.keys(ApproverType))
     .required(),
   directGroup: Joi.string().default(''),
-  groupInChargeId: Joi.string().default(config.fields.rootId),
+  groupInChargeId: Joi.string(),
+  // groupInChargeId: Joi.string().default(config.fields.rootId),
 });
 
 export const createNewApproverSchema = Joi.object({
@@ -352,7 +365,7 @@ const createEntityKartoffelParamsObj = Joi.object({
   firstName: Joi.string().required(),
   lastName: Joi.string().required(),
   identityCard: Joi.string().required(),
-  personalNumber: Joi.string(),
+  personalNumber: Joi.string().allow('', null),
   serviceType: Joi.string(),
   phone: Joi.array().items(Joi.string()),
   mobilePhone: Joi.array().items(Joi.string()),
@@ -365,6 +378,7 @@ const createEntityKartoffelParamsObj = Joi.object({
 const createEntityADParamsObj = Joi.object({
   //NO PARAMETERS NEEDED
 });
+
 
 export const createEntitySchema = Joi.object({
   body: {
@@ -424,7 +438,9 @@ export const renameOGSchema = Joi.object({
 const renameRoleKartoffelParamsObj = Joi.object({
   jobTitle: Joi.string().required(),
   roleId: Joi.string().required(),
-  oldJobTitle: Joi.string().required(),
+  oldJobTitle: Joi.string(),
+  clearance: Joi.string(),
+  role: roleKartoffelObj.required(),
 });
 
 const renameRoleADParamsObj = Joi.object({
@@ -457,11 +473,11 @@ const editEntityKartoffelParamsObj = Joi.object({
   id: Joi.string().required(),
   firstName: Joi.string().required(),
   lastName: Joi.string().required(),
-  identityCard: Joi.string(),
-  personalNumber: Joi.string(),
+  identityCard: Joi.string().allow("", null),
+  personalNumber: Joi.string().allow("", null),
   serviceType: Joi.string(),
-  phone: Joi.array().items(Joi.string()),
-  mobilePhone: Joi.array().items(Joi.string()),
+  phone: Joi.array().items(Joi.string().allow("")),
+  mobilePhone: Joi.array().items(Joi.string().allow("")),
   address: Joi.string(),
   clearance: Joi.string(),
   sex: Joi.string(),
@@ -470,7 +486,7 @@ const editEntityKartoffelParamsObj = Joi.object({
 });
 
 const editEntityADParamsObj = Joi.object({
-  samAccountName: Joi.string().required(),
+  samAccountName: Joi.string().allow("", null),
   firstName: Joi.string().required(),
   lastName: Joi.string().required(),
   fullName: Joi.string().required(),
@@ -504,6 +520,7 @@ const changeRoleHierarchyKartoffelParamsObj = Joi.object({
   newJobTitle: Joi.string(),
   hierarchy: Joi.string().required(),
   oldHierarchy: Joi.string().required(),
+  role: roleKartoffelObj.required(),
 });
 
 const changeRoleHierarchyADParamsObj = Joi.object({

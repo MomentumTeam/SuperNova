@@ -1,7 +1,10 @@
 import { Response } from 'express';
 import { logger } from '../utils/logger/logger';
 import ProducerController from '../producer/producer.controller';
-import { SuccessMessage } from '../interfaces/protoc/proto/producerService';
+import {
+  ADStage,
+  SuccessMessage,
+} from '../interfaces/protoc/proto/producerService';
 import { ApproverService } from '../approver/approver.service';
 import {
   StageStatus,
@@ -318,8 +321,16 @@ export default class RequestsController {
     });
     const retry: boolean = req.body.Retry;
     const status: boolean = req.body.Status;
+    // When the first stage of CreateRole with roleEntityType=GoalUser
+    const specialCase: boolean = req.body.RequestID.indexOf('@') !== -1;
+    const requestId = specialCase
+      ? req.body.RequestID.split('@')[0]
+      : req.body.RequestID;
+    const adStageSuffix = specialCase
+      ? req.body.RequestID.split('@')[1]
+      : undefined;
     let updateADStatus: UpdateADStatusReq = {
-      requestId: req.body.RequestID,
+      requestId: requestId,
       status: StageStatus.STAGE_UNKNOWN,
       message: req.body.ErrorID ? req.body.ErrorID : '',
     };
@@ -329,26 +340,53 @@ export default class RequestsController {
         updateADStatus.status = status
           ? StageStatus.STAGE_DONE
           : StageStatus.STAGE_FAILED;
-        request = await RequestsService.updateADStatus(updateADStatus);
+        if (
+          updateADStatus.status === StageStatus.STAGE_FAILED ||
+          adStageSuffix !== '1'
+        ) {
+          request = await RequestsService.updateADStatus(updateADStatus);
+        }
         if (status) {
-          const produceRes = (await ProducerController.produceToKartoffelQueue(
-            req.body.RequestID
-          )) as SuccessMessage;
-          if (produceRes.success) {
-            //if produce was successful update Kartoffel Status
-            request = await RequestsService.updateKartoffelStatus(
-              req.body.RequestID
+          if (adStageSuffix === '1') {
+            //First part is done, need to do second part
+            await ProducerController.produceToADQueue(
+              requestId,
+              res,
+              true,
+              ADStage.SECOND_AD_STAGE
             );
-            return res.send(request);
+          } else {
+            //need to send to kartoffel
+            const produceRes =
+              (await ProducerController.produceToKartoffelQueue(
+                requestId
+              )) as SuccessMessage;
+            if (produceRes.success) {
+              //if produce was successful update Kartoffel Status
+              request = await RequestsService.updateKartoffelStatus(requestId);
+              return res.send(request);
+            }
           }
         }
         return res.send(request);
       } else {
-        await ProducerController.produceToADQueue(
-          req.body.RequestID,
-          res,
-          true
-        );
+        if (adStageSuffix === '1') {
+          await ProducerController.produceToADQueue(
+            requestId,
+            res,
+            true,
+            ADStage.FIRST_AD_STAGE
+          );
+        } else if (adStageSuffix === '2') {
+          await ProducerController.produceToADQueue(
+            requestId,
+            res,
+            true,
+            ADStage.SECOND_AD_STAGE
+          );
+        } else {
+          await ProducerController.produceToADQueue(requestId, res, true);
+        }
       }
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -477,26 +515,20 @@ export default class RequestsController {
               ? approverTypeFromJSON(type)
               : type;
           });
-          if (entityUserType.includes(ApproverType.COMMANDER)) {
+          if (entityUserType.includes(ApproverType.COMMANDER) || entityUserType.includes(ApproverType.ADMIN)) {
             assignRoleToEntityReq.commanders = [
               {
                 id: entityWithRole.id,
                 displayName: entityWithRole.displayName,
-                identityCard: entityWithRole.identityCard
-                  ? entityWithRole.identityCard
-                  : '',
-                personalNumber: entityWithRole.personalNumber
-                  ? entityWithRole.personalNumber
-                  : '',
+                identityCard: entityWithRole.identityCard ? entityWithRole.identityCard : "",
+                personalNumber: entityWithRole.personalNumber ? entityWithRole.personalNumber : "",
                 ancestors: [],
               },
             ];
 
-            assignRoleToEntityReq.commanders =
-              assignRoleToEntityReq.commanders.filter(
-                (v: any, i: any, a: any) =>
-                  a.findIndex((t: any) => t.id === v.id) === i
-              );
+            assignRoleToEntityReq.commanders = assignRoleToEntityReq.commanders.filter(
+              (v: any, i: any, a: any) => a.findIndex((t: any) => t.id === v.id) === i
+            );
           }
         } catch (entityError) {
           //probably role is not attached to entity
@@ -567,7 +599,8 @@ export default class RequestsController {
       const request: any = await approveUserRequest(
         req,
         createOGReq,
-        createOGReq.kartoffelParams?.parent
+        createOGReq.kartoffelParams?.parent,
+        true
       );
       const createOGres: any = await RequestsService.createOGRequest(request);
       try {
@@ -599,10 +632,14 @@ export default class RequestsController {
     };
 
     try {
+      let groupId = undefined;
+      if (createNewApproverReq.additionalParams?.groupInChargeId) {
+        groupId = createNewApproverReq.additionalParams?.groupInChargeId;
+      }
       const request: any = await approveUserRequest(
         req,
         createNewApproverReq,
-        undefined,
+        groupId,
         true
       );
       const newApprover = await RequestsService.createNewApproverRequest(
@@ -937,7 +974,8 @@ export default class RequestsController {
       const request: any = await approveUserRequest(
         req,
         changeRoleHierarchyReq,
-        changeRoleHierarchyReq.kartoffelParams?.directGroup
+        changeRoleHierarchyReq.kartoffelParams?.directGroup,
+        true
       );
       const roleHierarchy = await RequestsService.changeRoleHierarchyRequest(
         request

@@ -13,6 +13,7 @@ import { logger } from './utils/logger/logger';
 import { swaggerDocument } from './swagger';
 import { addMockToken } from './utils/auth/user.mock';
 import { Authenticator } from './utils/auth/auth';
+import KartoffelController from './kartoffel/kartoffel.controller';
 
 
 export class Server {
@@ -56,9 +57,7 @@ export class Server {
   }
 
   private initializeRouters() {
-    this.app.get('/isAlive', (req, res) => {
-      return res.send('alive');
-    });
+    this.app.get('/api/isAlive', KartoffelController.getIsHealthy);
 
     this.app.use(
       '/api-docs',
