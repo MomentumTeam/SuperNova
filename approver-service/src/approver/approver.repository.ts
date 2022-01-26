@@ -344,14 +344,19 @@ export class ApproverRepository {
     searchByDisplayNameReq: SearchByDisplayNameReq
   ): Promise<ApproverArray> {
     try {
+      const approverTypesToSearch = [searchByDisplayNameReq.type.toString()];
       approverTypeValidation(searchByDisplayNameReq.type);
+
+      if (approverTypeFromJSON(searchByDisplayNameReq.type) === ApproverType.COMMANDER) {
+        approverTypesToSearch.push(approverTypeToJSON(ApproverType.ADMIN));
+      }
 
       const mongoApprovers: any = await ApproverModel.find(
         {
-          type: searchByDisplayNameReq.type,
+          type: { $in: approverTypesToSearch },
           displayName: {
             $regex: searchByDisplayNameReq.displayName,
-            $options: 'i',
+            $options: "i",
           },
         },
         {},

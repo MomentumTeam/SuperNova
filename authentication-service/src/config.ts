@@ -69,6 +69,7 @@ export const config: any = {
     useShragaLocalMap: useShragaLocalMap,
     diToId: diToId,
     unauthorized: "./401/index.html",
+    getEntityByAdfsId: env.get("AS_GET_ENTITY_BY_ADFS_ID").default("false").asBool()
   },
   clientEndpoint: process.env.AS_CLIENT_ENDPOINT || "http://localhost:3000",
   support: process.env.AS_UNAUTHORIZED_SUPPORT_URL || "https://open.rocket.chat",

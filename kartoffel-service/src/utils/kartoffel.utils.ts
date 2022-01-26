@@ -61,7 +61,7 @@ export class KartoffelUtils {
             error: { message: error.message },
             queryParams: params,
           });
-          if (error.response.status === 401) {
+          if (error?.response?.status === 401) {
             logger.info(`Refreshing Spike token`);
             this.spikeService
               .getSpikeToken()
@@ -104,7 +104,7 @@ export class KartoffelUtils {
             error: { message: error.message },
             queryParams: params,
           });
-          if (error.response.status === 401) {
+          if (error?.response?.status === 401) {
             logger.info(`Refreshing Spike token`);
             this.spikeService
               .getSpikeToken()
@@ -154,7 +154,7 @@ export class KartoffelUtils {
             queryParams: params,
             error: { message: error.message },
           });
-          if (error.response.status === 401) {
+          if (error?.response?.status === 401) {
             logger.info(`Refreshing Spike token`);
             this.spikeService
               .getSpikeToken()
@@ -200,7 +200,7 @@ export class KartoffelUtils {
             error: { message: error.message },
             queryParams: params,
           });
-          if (error.response.status === 401) {
+          if (error?.response?.status === 401) {
             logger.info(`Refreshing Spike token`);
             this.spikeService
               .getSpikeToken()
@@ -246,7 +246,7 @@ export class KartoffelUtils {
             error: { message: error.message },
             queryParams: params,
           });
-          if (error.response.status === 401) {
+          if (error?.response?.status === 401) {
             logger.info(`Refreshing Spike token`);
             this.spikeService
               .getSpikeToken()
