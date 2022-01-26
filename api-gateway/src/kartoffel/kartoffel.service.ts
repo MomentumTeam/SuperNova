@@ -64,7 +64,6 @@ const packageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(
 const protoDescriptor: any =
   grpc.loadPackageDefinition(packageDefinition).Kartoffel;
 
-
 const clients: any = [];
 for (let i = 0; i < config.fields.grpcPoolSize; i++) {
   clients.push(
@@ -100,7 +99,6 @@ export class KartoffelService {
           }
 
           logger.info(`getEntityById OK in GTW`, {
-            response: response,
             callRequest: getEntityByIdReq,
           });
           resolve(response);
@@ -158,7 +156,6 @@ export class KartoffelService {
           }
 
           logger.info(`searchEntitiesByFullName OK in GTW`, {
-            response: response,
             callRequest: searchEntitiesByFullNameReq,
           });
           resolve(response);
@@ -187,7 +184,6 @@ export class KartoffelService {
           }
 
           logger.info(`getEntityByIdentifier OK in GTW`, {
-            response: response,
             callRequest: getEntityByIdentifierReq,
           });
           resolve(response);
@@ -213,7 +209,6 @@ export class KartoffelService {
           }
 
           logger.info(`getEntityByRoleId OK in GTW`, {
-            response: response,
             callRequest: getEntityByRoleIdReq,
           });
           resolve(response);
@@ -239,7 +234,6 @@ export class KartoffelService {
           }
 
           logger.info(`getEntitiesUnderOG OK in GTW`, {
-            response: response,
             callRequest: getEntitiesUnderOGReq,
           });
           resolve(response);
@@ -268,7 +262,6 @@ export class KartoffelService {
           }
 
           logger.info(`getEntitiesByHierarchy OK in GTW`, {
-            response: response,
             callRequest: getEntitiesByHierarchyReq,
           });
           resolve(response);
@@ -292,7 +285,6 @@ export class KartoffelService {
           }
 
           logger.info(`getEntityByDI OK in GTW`, {
-            response: response,
             callRequest: getEntityByDIReq,
           });
           resolve(response);
@@ -316,7 +308,6 @@ export class KartoffelService {
         }
 
         logger.info(`searchOG OK in GTW`, {
-          response: response,
           callRequest: searchOGReq,
         });
         resolve(response);
@@ -369,7 +360,6 @@ export class KartoffelService {
           }
 
           logger.info(`getOGChildren OK in GTW`, {
-            response: response,
             callRequest: getOGRootChildrenReq,
           });
           resolve(response);
@@ -394,7 +384,6 @@ export class KartoffelService {
           }
 
           logger.info(`getOGChildren OK in GTW`, {
-            response: response,
             callRequest: getOGChildrenReq,
           });
           resolve(response);
@@ -417,7 +406,6 @@ export class KartoffelService {
         }
 
         logger.info(`getOGTree OK in GTW`, {
-          response: response,
           callRequest: getOGTreeReq,
         });
         resolve(response);
@@ -439,7 +427,6 @@ export class KartoffelService {
         }
 
         logger.info(`getAllOGs OK in GTW`, {
-          response: response,
           callRequest: getAllOGsReq,
         });
         resolve(response);
@@ -463,7 +450,6 @@ export class KartoffelService {
           }
 
           logger.info(`getOGById OK in GTW`, {
-            response: response,
             callRequest: getOGByIdReq,
           });
           resolve(response);
@@ -490,7 +476,6 @@ export class KartoffelService {
           }
 
           logger.info(`getOGByHierarchyName OK in GTW`, {
-            response: response,
             callRequest: getOGByHierarchyNameReq,
           });
           resolve(response);
@@ -516,7 +501,6 @@ export class KartoffelService {
           }
 
           logger.info(`getRoleById OK in GTW`, {
-            response: response,
             callRequest: getRoleByIdReq,
           });
           resolve(response);
@@ -541,7 +525,6 @@ export class KartoffelService {
           }
 
           logger.info(`getRolesUnderOG OK in GTW`, {
-            response: response,
             callRequest: getRolesUnderOGReq,
           });
           resolve(response);
@@ -566,7 +549,6 @@ export class KartoffelService {
           }
 
           logger.info(`getAllRoles OK in GTW`, {
-            response: response,
             callRequest: getAllRolesReq,
           });
           resolve(response);
@@ -593,7 +575,6 @@ export class KartoffelService {
           }
 
           logger.info(`getRolesByHierarchy OK in GTW`, {
-            response: response,
             callRequest: getRolesByHierarchyReq,
           });
           resolve(response);
@@ -620,7 +601,6 @@ export class KartoffelService {
           }
 
           logger.info(`isRoleAlreadyTaken OK in GTW`, {
-            response: response,
             callRequest: isRoleAlreadyTakenReq,
           });
           resolve(response);
@@ -677,7 +657,6 @@ export class KartoffelService {
           }
 
           logger.info(`searchRoleByRoleIdReq OK in GTW`, {
-            response: response,
             callRequest: searchRoleByRoleIdReq,
           });
           resolve(response);
@@ -708,7 +687,6 @@ export class KartoffelService {
           }
 
           logger.info(`searchDIsByUniqueId OK in GTW`, {
-            response: response,
             callRequest: searchDIsByUniqueIdRequest,
           });
           resolve(response);
@@ -733,7 +711,6 @@ export class KartoffelService {
           }
 
           logger.info(`getDIByUniqueId OK in GTW`, {
-            response: response,
             callRequest: getDIByUniqueIdRequest,
           });
           resolve(response);
@@ -746,21 +723,24 @@ export class KartoffelService {
     logger.info(`Call to getIsHealthy in GTW`, getIsHealthyReq);
 
     return new Promise((resolve, reject) => {
-      randomClient().GetIsHealthy(getIsHealthyReq, (err: any, response: GetIsHealthyRes) => {
-        if (err) {
-          logger.error(`getIsHealthy ERROR in GTW`, {
-            err,
+      randomClient().GetIsHealthy(
+        getIsHealthyReq,
+        (err: any, response: GetIsHealthyRes) => {
+          if (err) {
+            logger.error(`getIsHealthy ERROR in GTW`, {
+              err,
+              callRequest: getIsHealthyReq,
+            });
+            reject(err);
+          }
+
+          logger.info(`getIsHealthy OK in GTW`, {
+            response: response,
             callRequest: getIsHealthyReq,
           });
-          reject(err);
+          resolve(response);
         }
-
-        logger.info(`getIsHealthy OK in GTW`, {
-          response: response,
-          callRequest: getIsHealthyReq,
-        });
-        resolve(response);
-      });
+      );
     });
   }
 }

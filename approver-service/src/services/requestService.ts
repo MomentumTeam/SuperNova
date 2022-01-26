@@ -57,7 +57,6 @@ export default class RequestService {
           } else {
             logger.info('updateRequest in RequestService', {
               updateReq,
-              request,
             });
             resolve(request);
           }
@@ -83,7 +82,6 @@ export default class RequestService {
           } else {
             logger.info('updateApproverDecision in RequestService', {
               updateApproverDecisionReq,
-              request,
             });
             resolve(request);
           }
@@ -108,7 +106,6 @@ export default class RequestService {
           } else {
             logger.info('CanPushToADQueue in RequestService', {
               canPushToADQueueReq,
-              request,
             });
             resolve(request);
           }
