@@ -9,7 +9,7 @@ export const healthCheckStatusMap = {
   serviceName: grpcHealth.servingStatus.UNKNOWN,
 };
 
-const grpcHealthCheck = new grpcHealth.Implementation(healthCheckStatusMap);
+export const grpcHealthCheck = new grpcHealth.Implementation(healthCheckStatusMap);
 
 export function addHealthService(server: grpc.Server): grpc.Server {
   server.addService(grpcHealth.service, grpcHealthCheck);
