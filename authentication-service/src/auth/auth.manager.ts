@@ -95,10 +95,14 @@ export class AuthManager {
   }
 
   private static async extractKartoffelUserByGenesisId(genesisId: string) {
-    const kartoffelUser: any = await KartoffelService.getEntityById(genesisId)
+    const kartoffelUser: any = config.kartoffel.timeoutEnabled
+      ? await timeout(KartoffelService.getEntityById(genesisId), config.kartoffel.timeout)
+      : await KartoffelService.getEntityById(genesisId);
  
     if (kartoffelUser.directGroup) {
-      const group = await KartoffelService.getOGById(kartoffelUser.directGroup);
+      const group = config.kartoffel.timeoutEnabled
+        ? await timeout(KartoffelService.getOGById(kartoffelUser.directGroup), config.kartoffel.timeout)
+        : await KartoffelService.getOGById(kartoffelUser.directGroup);
       kartoffelUser.ancestors = group.ancestors;
     }
 
@@ -106,11 +110,14 @@ export class AuthManager {
   }
 
   private static async extractKartoffelUserByAdfsId(roleId: string) {
-    const kartoffelUser: any = await KartoffelService.getEntityByRoleId(roleId)
+    const kartoffelUser: any = config.kartoffel.timeoutEnabled
+      ? await timeout(KartoffelService.getEntityByRoleId(roleId), config.kartoffel.timeout)
+      : await KartoffelService.getEntityByRoleId(roleId);
      
-
     if (kartoffelUser.directGroup) {
-      const group = await KartoffelService.getOGById(kartoffelUser.directGroup);
+      const group = config.kartoffel.timeoutEnabled
+        ? await timeout(KartoffelService.getOGById(kartoffelUser.directGroup), config.kartoffel.timeout)
+        : await KartoffelService.getOGById(kartoffelUser.directGroup);
       kartoffelUser.ancestors = group.ancestors;
     }
 
@@ -121,7 +128,9 @@ export class AuthManager {
     const userWithType: any = { types: config.defaultUserTypes };
     try {
       logger.info(`Call to addUserType in AS:`, id);
-      const userResponse = await ApproverService.getUserType({ entityId: id });
+      const userResponse = config.kartoffel.timeoutEnabled
+        ? await timeout(ApproverService.getUserType({ entityId: id }), config.kartoffel.timeout)
+        : await ApproverService.getUserType({ entityId: id });
 
       userWithType.types =
         userResponse.type.length > 0
