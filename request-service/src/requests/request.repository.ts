@@ -384,6 +384,11 @@ export class RequestRepository {
         updateQuery.requestProperties[approverField] =
           updateDecisionReq.approverDecision;
         let updatedRequest = await this.updateRequest(updateQuery);
+        let oldRequestStatus: any = updatedRequest.status;
+        oldRequestStatus =
+          typeof oldRequestStatus === typeof ''
+            ? requestStatusFromJSON(oldRequestStatus)
+            : oldRequestStatus;
 
         // Get decision
         let decision =
@@ -486,20 +491,31 @@ export class RequestRepository {
         try {
           // Send notification
           if (approvingNotificationType) {
-            await createNotifications(
-              approvingNotificationType,
-              updatedRequest
-            );
-            sendMail(approvingMailType, updatedRequest).then().catch();
-            if (newRequestStatus) {
-              requestStatusNotificationType =
-                newRequestStatus === RequestStatus.IN_PROGRESS
-                  ? NotificationType.REQUEST_IN_PROGRESS
-                  : NotificationType.REQUEST_DECLINED;
+            if (
+              oldRequestStatus !== RequestStatus.IN_PROGRESS &&
+              oldRequestStatus !== RequestStatus.DECLINED
+            ) {
               await createNotifications(
-                requestStatusNotificationType,
+                approvingNotificationType,
                 updatedRequest
               );
+              sendMail(approvingMailType, updatedRequest).then().catch();
+
+              if (newRequestStatus === RequestStatus.IN_PROGRESS) {
+                requestStatusNotificationType =
+                  NotificationType.REQUEST_IN_PROGRESS;
+                await createNotifications(
+                  requestStatusNotificationType,
+                  updatedRequest
+                );
+              } else if (newRequestStatus === RequestStatus.DECLINED) {
+                requestStatusNotificationType =
+                  NotificationType.REQUEST_DECLINED;
+                await createNotifications(
+                  requestStatusNotificationType,
+                  updatedRequest
+                );
+              }
             }
           }
         } catch (notificationError: any) {
