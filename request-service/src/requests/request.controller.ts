@@ -24,7 +24,6 @@ export async function sendSubmissionMail(
     const response = await requestManager.sendSubmissionMail(call.request);
     logger.info(`sendSubmissionMail OK`, {
       callRequest: call.request,
-      response: response,
     });
     callback(null, response);
   } catch (error: any) {
@@ -118,7 +117,6 @@ export async function getRequestsUnderBulk(
     const response = await requestManager.getRequestsUnderBulk(call.request);
     logger.info(`getRequestsUnderBulk OK`, {
       callRequest: call.request,
-      response: response,
     });
     callback(null, response);
   } catch (error: any) {
@@ -188,7 +186,6 @@ export async function isRequestApproved(
       await requestManager.isRequestApproved(call.request);
     logger.info(`isRequestApproved OK`, {
       callRequest: call.request,
-      response: isRequestApprovedRes,
     });
     callback(null, isRequestApprovedRes);
   } catch (error: any) {
@@ -217,7 +214,6 @@ export async function updateRequest(call: any, callback: any): Promise<void> {
     );
     logger.info(`updateRequest OK`, {
       callRequest: call.request,
-      response: updateRequestResponse,
     });
     callback(null, updateRequestResponse);
   } catch (error: any) {
@@ -246,7 +242,6 @@ export async function updateApproverDecision(call: any, callback: any) {
     );
     logger.info(`updateApproverDecision OK`, {
       callRequest: call.request,
-      response: response,
     });
     callback(null, response);
   } catch (error: any) {
@@ -342,7 +337,6 @@ export async function getRequestBySerialNumber(
     );
     logger.info(`getRequestBySerialNumber OK`, {
       callRequest: call.request,
-      response: requestsResponse,
     });
     callback(null, requestsResponse);
   } catch (error: any) {
@@ -374,7 +368,6 @@ export async function updateKartoffelStatus(
     );
     logger.info(`updateKartoffelStatus OK`, {
       callRequest: call.request,
-      response: updateResponse,
     });
     callback(null, updateResponse);
   } catch (error: any) {
@@ -403,7 +396,6 @@ export async function updateADStatus(call: any, callback: any): Promise<void> {
     );
     logger.info(`updateADStatus OK`, {
       callRequest: call.request,
-      response: updateResponse,
     });
     callback(null, updateResponse);
   } catch (error: any) {
@@ -458,7 +450,6 @@ export async function getRequestById(call: any, callback: any): Promise<void> {
     const requestResponse = await requestManager.getRequestById(call.request);
     logger.info(`getRequestById OK`, {
       callRequest: call.request,
-      response: requestResponse,
     });
     callback(null, requestResponse);
   } catch (error: any) {
@@ -490,7 +481,6 @@ export async function incrementKartoffelRetries(
     );
     logger.info(`incrementKartoffelRetries OK`, {
       callRequest: call.request,
-      response: request,
     });
     callback(null, request);
   } catch (error: any) {
@@ -581,7 +571,6 @@ export async function getRequestsInProgressByDue(
     );
     logger.info(`getRequestsInProgressByDue OK`, {
       callRequest: call.request,
-      response: requests,
     });
     callback(null, requests);
   } catch (error: any) {
@@ -643,7 +632,6 @@ export async function incrementADRetries(
     const request = await requestManager.incrementADRetries(call.request);
     logger.info(`incrementADRetries OK`, {
       callRequest: call.request,
-      response: request,
     });
     callback(null, request);
   } catch (error: any) {
@@ -673,7 +661,6 @@ export async function getRequestsByPerson(
     const requests = await requestManager.getRequestsByPerson(call.request);
     logger.info(`getRequestsByPerson OK`, {
       callRequest: call.request,
-      response: requests,
     });
     callback(null, requests);
   } catch (error: any) {
@@ -700,7 +687,6 @@ export async function pushError(call: any, callback: any): Promise<void> {
     const request = await requestManager.pushError(call.request);
     logger.info(`pushError OK`, {
       callRequest: call.request,
-      response: request,
     });
     callback(null, request);
   } catch (error: any) {
@@ -727,7 +713,6 @@ export async function syncBulkRequest(call: any, callback: any): Promise<void> {
     const request = await requestManager.syncBulkRequest(call.request);
     logger.info(`syncBulkRequest OK`, {
       callRequest: call.request,
-      response: request,
     });
     callback(null, request);
   } catch (error: any) {
