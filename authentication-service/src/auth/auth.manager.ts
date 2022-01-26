@@ -30,7 +30,6 @@ export class AuthManager {
 
     const {
       id,
-      displayName,
       identityCard,
       personalNumber,
       fullName,
@@ -43,12 +42,13 @@ export class AuthManager {
       ? await AuthManager.extractUserType(id)
       : {};
 
+    const displayNameFormat = this.getFormattedDisplayName(kartoffelUser);
     const userToken: IUserToken = {
       id,
       genesisId,
       iat,
       exp,
-      displayName,
+      displayName: displayNameFormat,
       fullName,
       identityCard,
       personalNumber,
@@ -67,6 +67,19 @@ export class AuthManager {
     return jwt.sign(userInformation, config.authentication.secret);
   }
 
+  private static getFormattedDisplayName(kartoffelUser: IUser) {
+    let displayName = kartoffelUser.displayName;
+    if (!displayName) {
+      const fullName = kartoffelUser?.fullName
+        ? kartoffelUser.fullName
+        : `${kartoffelUser.firstName} ${kartoffelUser?.lastName ? kartoffelUser.lastName : ""}`;
+
+      displayName = `${fullName}${kartoffelUser?.jobTitle? "-"+kartoffelUser.jobTitle: ""}`
+    }
+
+    return displayName;
+  }
+
   private static extractShragaUser(shragaUser: IShragaUser) {
     // Get shragaUser
     let parsedUser: IShragaUser = JSON.parse(JSON.stringify(shragaUser));
@@ -82,10 +95,8 @@ export class AuthManager {
   }
 
   private static async extractKartoffelUserByGenesisId(genesisId: string) {
-    const kartoffelUser: any = await timeout(
-      KartoffelService.getEntityById(genesisId),
-      config.kartoffel.timeout
-    );
+    const kartoffelUser: any = await KartoffelService.getEntityById(genesisId)
+ 
     if (kartoffelUser.directGroup) {
       const group = await KartoffelService.getOGById(kartoffelUser.directGroup);
       kartoffelUser.ancestors = group.ancestors;
@@ -95,10 +106,8 @@ export class AuthManager {
   }
 
   private static async extractKartoffelUserByAdfsId(roleId: string) {
-    const kartoffelUser: any = await timeout(
-      KartoffelService.getEntityByRoleId(roleId),
-      config.kartoffel.timeout
-    );
+    const kartoffelUser: any = await KartoffelService.getEntityByRoleId(roleId)
+     
 
     if (kartoffelUser.directGroup) {
       const group = await KartoffelService.getOGById(kartoffelUser.directGroup);
@@ -108,17 +117,15 @@ export class AuthManager {
     return kartoffelUser as IUser;
   }
 
-  private static async extractUserType(genesisId: string) {
+  private static async extractUserType(id: string) {
     const userWithType: any = { types: config.defaultUserTypes };
     try {
-      logger.info(`Call to addUserType in AS:`, genesisId);
-      const userResponse = await ApproverService.getUserType({
-        entityId: genesisId,
-      });
+      logger.info(`Call to addUserType in AS:`, id);
+      const userResponse = await ApproverService.getUserType({ entityId: id });
 
       userWithType.types =
         userResponse.type.length > 0
-          ? userResponse.type.map((type) =>
+          ? userResponse.type.map((type: any) =>
               typeof type === typeof '' ? type : approverTypeToJSON(type)
             )
           : config.defaultUserTypes;

@@ -2,11 +2,9 @@ import * as grpc from "@grpc/grpc-js";
 import { GetIsHealthyRes } from '../interfaces/protoc/proto/kartoffelService';
 import { logger } from "../logger";
 import { getErrorMessage, getStatusCode } from "../utils/errors.utils";
-import { KartoffelUtils } from "../utils/kartoffel.utils";
 import { HealthManager } from './health.manager';
 
-const kartoffelUtils: KartoffelUtils = new KartoffelUtils();
-const healthManager: HealthManager = new HealthManager(kartoffelUtils);
+const healthManager: HealthManager = new HealthManager();
 
 export async function getIsHealthy(call: any, callback: any): Promise<void> {
   try {

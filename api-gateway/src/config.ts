@@ -14,7 +14,8 @@ export const config = {
     port: env.get('GATEWAY_PORT').default(2000).asPortNumber(),
     host: env.get('GATEWAY_HOST').default('0.0.0.0'),
     name: 'api-gatway',
-    healthCheckTimeout: env.get('GATEWAY_HEALTH_CHECK_TIMEOUT').default(30000).asIntPositive(),
+    healthCheckTimeout: env.get('GATEWAY_HEALTH_CHECK_TIMEOUT').default(1000).asIntPositive(),
+    healthCheckAllowed: env.get('GATEWAY_HEALTH_CHECK_TIMEOUT_ENABLED').default('true').asBool(),
   },
   fields: {
     highCommandersRanks: env
