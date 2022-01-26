@@ -16,7 +16,7 @@ export class HealthRepository {
         return { isHealthy: true };
       } else {
         const data = await this.kartoffelUtils.kartoffelGet(`${C.kartoffelUrl}/isalive`);
-        return { isHealthy: true } as GetIsHealthyRes;
+        return { isHealthy: data === C.kartoffelAlive} as GetIsHealthyRes;
       }
     } catch (error) {
       const code = getStatusCode(error);
