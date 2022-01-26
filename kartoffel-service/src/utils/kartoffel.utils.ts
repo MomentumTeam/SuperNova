@@ -51,7 +51,6 @@ export class KartoffelUtils {
         .get(url, { params })
         .then((res) => {
           logger.info(`Kartoffel GET Request to ${url} OK`, {
-            response: res.data,
             queryParams: params,
           });
           resolve(res.data);
@@ -61,7 +60,7 @@ export class KartoffelUtils {
             error: { message: error.message },
             queryParams: params,
           });
-          if (error.response.status === 401) {
+          if (error?.response?.status === 401) {
             logger.info(`Refreshing Spike token`);
             this.spikeService
               .getSpikeToken()
@@ -94,7 +93,6 @@ export class KartoffelUtils {
         .delete(url, { params })
         .then((res) => {
           logger.info(`Kartoffel DELETE Request to ${url} OK`, {
-            response: res.data,
             queryParams: params,
           });
           resolve(res.data);
@@ -104,7 +102,7 @@ export class KartoffelUtils {
             error: { message: error.message },
             queryParams: params,
           });
-          if (error.response.status === 401) {
+          if (error?.response?.status === 401) {
             logger.info(`Refreshing Spike token`);
             this.spikeService
               .getSpikeToken()
@@ -143,7 +141,6 @@ export class KartoffelUtils {
         .then((res) => {
           logger.info(`Kartoffel PUT Request to ${url} OK`, {
             requestBoody: body,
-            response: res.data,
             queryParams: params,
           });
           resolve(res.data);
@@ -154,7 +151,7 @@ export class KartoffelUtils {
             queryParams: params,
             error: { message: error.message },
           });
-          if (error.response.status === 401) {
+          if (error?.response?.status === 401) {
             logger.info(`Refreshing Spike token`);
             this.spikeService
               .getSpikeToken()
@@ -189,7 +186,6 @@ export class KartoffelUtils {
         .then((res) => {
           logger.info(`Kartoffel POST Request to ${url} OK`, {
             requestBoody: body,
-            response: res.data,
             queryParams: params,
           });
           resolve(res.data);
@@ -200,7 +196,7 @@ export class KartoffelUtils {
             error: { message: error.message },
             queryParams: params,
           });
-          if (error.response.status === 401) {
+          if (error?.response?.status === 401) {
             logger.info(`Refreshing Spike token`);
             this.spikeService
               .getSpikeToken()
@@ -236,7 +232,6 @@ export class KartoffelUtils {
           logger.info(`Kartoffel PATCH Request to ${url} OK`, {
             requestBoody: body,
             queryParams: params,
-            response: res.data,
           });
           resolve(res.data);
         })
@@ -246,7 +241,7 @@ export class KartoffelUtils {
             error: { message: error.message },
             queryParams: params,
           });
-          if (error.response.status === 401) {
+          if (error?.response?.status === 401) {
             logger.info(`Refreshing Spike token`);
             this.spikeService
               .getSpikeToken()
@@ -280,9 +275,7 @@ export class KartoffelUtils {
         })
         .then((res) => {
           const result: string = Buffer.from(res.data).toString('base64');
-          logger.info(`Kartoffel GET Buffer Stream Request to ${url} OK`, {
-            response: res.data,
-          });
+          logger.info(`Kartoffel GET Buffer Stream Request to ${url} OK`);
           resolve(result);
         })
         .catch((error) => {

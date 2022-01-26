@@ -84,7 +84,6 @@ export class ApproverService {
           }
 
           logger.info(`getApproverByEntityId OK in GTW`, {
-            response: response,
             callRequest: getApproverByEntityIdReq,
           });
           resolve(response);
@@ -114,7 +113,6 @@ export class ApproverService {
           }
 
           logger.info(`isApproverValidForOGReq OK in GTW`, {
-            response: response,
             callRequest: isApproverValidForOGReq,
           });
           resolve(response);
@@ -139,7 +137,6 @@ export class ApproverService {
           }
 
           logger.info(`getAllApprovers OK in GTW`, {
-            response: response,
             callRequest: getAllApproversReq,
           });
           resolve(response);
@@ -169,7 +166,6 @@ export class ApproverService {
           }
 
           logger.info(`searchHighCommandersByDisplayName OK in GTW`, {
-            response: response,
             callRequest: searchHighCommandersByDisplayNameReq,
           });
           resolve(response);
@@ -199,7 +195,6 @@ export class ApproverService {
           }
 
           logger.info(`SearchApproverByDisplayName OK in GTW`, {
-            response: response,
             callRequest: searchByDisplayNameReq,
           });
           resolve(response);
@@ -229,7 +224,6 @@ export class ApproverService {
           }
 
           logger.info(`searchApproverByDomainUser OK in GTW`, {
-            response: response,
             callRequest: searchByDomainUserReq,
           });
           resolve(response);
@@ -256,7 +250,6 @@ export class ApproverService {
           }
 
           logger.info(`getUserTypeReq OK in GTW`, {
-            response: response,
             callRequest: getUserTypeReq,
           });
           resolve(response);

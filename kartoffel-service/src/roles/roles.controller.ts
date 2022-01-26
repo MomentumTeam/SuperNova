@@ -33,7 +33,6 @@ export async function getRoleIdSuffixByOG(
     );
     logger.info(`getRoleIdSuffixByOG OK`, {
       callRequest: call.request,
-      response: roleIdSuffix,
     });
     callback(null, roleIdSuffix);
   } catch (error: any) {
@@ -61,7 +60,6 @@ export async function getAllRoles(call: any, callback: any): Promise<void> {
     const roleArray: RoleArray = await rolesManager.getAllRoles(call.request);
     logger.info(`getAllRoles OK`, {
       callRequest: call.request,
-      response: roleArray,
     });
     callback(null, roleArray);
   } catch (error: any) {
@@ -158,7 +156,6 @@ export async function createRole(call: any, callback: any): Promise<void> {
     const roleId: RoleIdMessage = await rolesManager.createRole(call.request);
     logger.info(`createRole OK`, {
       callRequest: call.request,
-      response: roleId,
     });
     callback(null, roleId);
   } catch (error: any) {
@@ -191,7 +188,6 @@ export async function connectRoleAndDI(
     );
     logger.info(`connectRoleAndDI OK`, {
       callRequest: call.request,
-      response: successMessage,
     });
     callback(null, successMessage);
   } catch (error: any) {
@@ -223,7 +219,6 @@ export async function disconnectRoleAndDI(
       await rolesManager.disconnectRoleAndDI(call.request);
     logger.info(`disconnectRoleAndDI OK`, {
       callRequest: call.request,
-      response: successMessage,
     });
     callback(null, successMessage);
   } catch (error: any) {
@@ -253,7 +248,6 @@ export async function deleteRole(call: any, callback: any): Promise<void> {
     );
     logger.info(`deleteRole OK`, {
       callRequest: call.request,
-      response: successMessage,
     });
     callback(null, successMessage);
   } catch (error: any) {
@@ -281,7 +275,6 @@ export async function getRoleByRoleId(call: any, callback: any): Promise<void> {
     const role: Role = await rolesManager.getRoleByRoleId(call.request);
     logger.info(`getRoleByRoleId OK`, {
       callRequest: call.request,
-      response: role,
     });
     callback(null, role);
   } catch (error: any) {
@@ -314,7 +307,6 @@ export async function getRolesByHierarchy(
     );
     logger.info(`getRolesByHierarchy OK`, {
       callRequest: call.request,
-      response: roles,
     });
     callback(null, roles);
   } catch (error: any) {
@@ -344,7 +336,6 @@ export async function changeRoleOG(call: any, callback: any): Promise<void> {
     );
     logger.info(`changeRoleOG OK`, {
       callRequest: call.request,
-      response: successMessage,
     });
     callback(null, successMessage);
   } catch (error: any) {
@@ -374,7 +365,6 @@ export async function getRolesUnderOG(call: any, callback: any): Promise<void> {
     );
     logger.info(`getRolesUnderOG OK`, {
       callRequest: call.request,
-      response: roleArray,
     });
     callback(null, roleArray);
   } catch (error: any) {
@@ -404,7 +394,6 @@ export async function renameRole(call: any, callback: any): Promise<void> {
     );
     logger.info(`renameRole OK`, {
       callRequest: call.request,
-      response: successMessage,
     });
     callback(null, successMessage);
   } catch (error: any) {
@@ -427,13 +416,17 @@ export async function renameRole(call: any, callback: any): Promise<void> {
 }
 
 // TODO: ADD TESTS
-export async function searchRolesByRoleId(call: any, callback: any): Promise<void> {
+export async function searchRolesByRoleId(
+  call: any,
+  callback: any
+): Promise<void> {
   try {
     logger.info(`Call to searchRolesByRoleId`, { callRequest: call.request });
-    const roleArray: RoleArray = await rolesManager.searchRolesByRoleId(call.request);
+    const roleArray: RoleArray = await rolesManager.searchRolesByRoleId(
+      call.request
+    );
     logger.info(`searchRolesByRoleId OK`, {
       callRequest: call.request,
-      response: roleArray,
     });
     callback(null, roleArray);
   } catch (error: any) {
@@ -454,4 +447,3 @@ export async function searchRolesByRoleId(call: any, callback: any): Promise<voi
     );
   }
 }
-

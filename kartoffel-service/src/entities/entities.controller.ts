@@ -20,13 +20,19 @@ const entitiesManager: EntitiesManager = new EntitiesManager(
   kartoffelFaker
 );
 
-export async function getPictureByEntityIdentifier(call: any, callback: any): Promise<void> {
+export async function getPictureByEntityIdentifier(
+  call: any,
+  callback: any
+): Promise<void> {
   try {
-    logger.info(`Call to getPictureByEntityIdentifier`, { callRequest: call.request });
-    const image: Image = await entitiesManager.getPictureByEntityIdentifier(call.request);
+    logger.info(`Call to getPictureByEntityIdentifier`, {
+      callRequest: call.request,
+    });
+    const image: Image = await entitiesManager.getPictureByEntityIdentifier(
+      call.request
+    );
     logger.info(`getPictureByEntityIdentifier OK`, {
       callRequest: call.request,
-      response: image,
     });
     callback(null, image);
   } catch (error: any) {
@@ -56,7 +62,6 @@ export async function createEntity(call: any, callback: any): Promise<void> {
     );
     logger.info(`createEntity OK`, {
       callRequest: call.request,
-      response: idMessage,
     });
     callback(null, idMessage);
   } catch (error: any) {
@@ -84,7 +89,6 @@ export async function getEntityByDI(call: any, callback: any): Promise<void> {
     const entity: Entity = await entitiesManager.getEntityByDI(call.request);
     logger.info(`getEntityByDI OK`, {
       callRequest: call.request,
-      response: entity,
     });
     callback(null, entity);
   } catch (error: any) {
@@ -117,7 +121,6 @@ export async function getEntityByRoleId(
     );
     logger.info(`getEntityByRoleId OK`, {
       callRequest: call.request,
-      response: entity,
     });
     callback(null, entity);
   } catch (error: any) {
@@ -150,7 +153,6 @@ export async function getEntitiesUnderOG(
     );
     logger.info(`getEntitiesUnderOG OK`, {
       callRequest: call.request,
-      response: entityArray,
     });
     callback(null, entityArray);
   } catch (error: any) {
@@ -185,7 +187,6 @@ export async function getEntitiesByHierarchy(
     );
     logger.info(`getEntitiesByHierarchy OK`, {
       callRequest: call.request,
-      response: entities,
     });
     callback(null, entities);
   } catch (error: any) {
@@ -220,7 +221,6 @@ export async function getEntityByIdentifier(
     );
     logger.info(`searchEntitiesByIdentifier OK`, {
       callRequest: call.request,
-      response: entity,
     });
     callback(null, entity);
   } catch (error: any) {
@@ -254,7 +254,6 @@ export async function searchCommandersByFullName(
       await entitiesManager.searchCommandersByFullName(call.request);
     logger.info(`searchCommandersByFullName OK`, {
       callRequest: call.request,
-      response: entityArray,
     });
     callback(null, entityArray);
   } catch (error: any) {
@@ -288,7 +287,6 @@ export async function searchHighCommandersByFullName(
       await entitiesManager.searchHighCommandersByFullName(call.request);
     logger.info(`searchHighCommandersByFullName OK`, {
       callRequest: call.request,
-      response: entityArray,
     });
     callback(null, entityArray);
   } catch (error: any) {
@@ -322,7 +320,6 @@ export async function searchEntitiesByFullName(
       await entitiesManager.searchEntitiesByFullName(call.request);
     logger.info(`searchEntitiesByFullName OK`, {
       callRequest: call.request,
-      response: entityArray,
     });
     callback(null, entityArray);
   } catch (error: any) {
@@ -350,7 +347,6 @@ export async function getEntityById(call: any, callback: any): Promise<void> {
     const entity: Entity = await entitiesManager.getEntityById(call.request);
     logger.info(`getEntityById OK`, {
       callRequest: call.request,
-      response: entity,
     });
     callback(null, entity);
   } catch (error: any) {
@@ -380,7 +376,6 @@ export async function deleteEntity(call: any, callback: any): Promise<void> {
     );
     logger.info(`deleteEntity OK`, {
       callRequest: call.request,
-      response: successMessage,
     });
     callback(null, successMessage);
   } catch (error: any) {
@@ -408,7 +403,6 @@ export async function updateEntity(call: any, callback: any): Promise<void> {
     const entity: Entity = await entitiesManager.updateEntity(call.request);
     logger.info(`updateEntity OK`, {
       callRequest: call.request,
-      response: entity,
     });
     callback(null, entity);
   } catch (error: any) {
@@ -442,7 +436,6 @@ export async function disconnectDIFromEntity(
       await entitiesManager.disconnectDIFromEntity(call.request);
     logger.info(`disconnectDIFromEntity OK`, {
       callRequest: call.request,
-      response: successMessage,
     });
     callback(null, successMessage);
   } catch (error: any) {
@@ -474,7 +467,6 @@ export async function connectEntityAndDI(
       await entitiesManager.connectEntityAndDI(call.request);
     logger.info(`connectEntityAndDI OK`, {
       callRequest: call.request,
-      response: successMessage,
     });
     callback(null, successMessage);
   } catch (error: any) {

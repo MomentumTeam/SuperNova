@@ -101,7 +101,6 @@ export class BulkService {
           }
 
           logger.info(`createRoleBulkRequest OK in GTW`, {
-            response: response,
             callRequest: createRoleBulkReq,
           });
           resolve(response);
@@ -132,7 +131,6 @@ export class BulkService {
           }
 
           logger.info(`changeRoleHierarchyBulkRequest OK in GTW`, {
-            response: response,
             callRequest: changeRoleHierarchyBulkReq,
           });
           resolve(response);
@@ -163,7 +161,6 @@ export class BulkService {
           }
 
           logger.info(`getBulkRequestExample OK in GTW`, {
-            response: response,
             callRequest: getBulkRequestExampleReq,
           });
           resolve(response);
@@ -194,7 +191,6 @@ export class BulkService {
           }
 
           logger.info(`getCreateRoleBulkRequestById OK in GTW`, {
-            response: response,
             callRequest: getBulkRequestByIdReq,
           });
           resolve(response);
@@ -225,7 +221,6 @@ export class BulkService {
           }
 
           logger.info(`getChangeRoleHierarchyBulkRequestById OK in GTW`, {
-            response: response,
             callRequest: getBulkRequestByIdReq,
           });
           resolve(response);

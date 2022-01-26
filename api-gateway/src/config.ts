@@ -15,6 +15,7 @@ export const config = {
     host: env.get('GATEWAY_HOST').default('0.0.0.0'),
     name: 'api-gatway',
     healthCheckTimeout: env.get('GATEWAY_HEALTH_CHECK_TIMEOUT').default(30000).asIntPositive(),
+    healthCheckAllowed: env.get('GATEWAY_HEALTH_CHECK_TIMEOUT_ENABLED').default('true').asBool(),
   },
   fields: {
     highCommandersRanks: env
