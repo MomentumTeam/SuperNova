@@ -232,7 +232,7 @@ export function generateADQueueMessage(
             fullName: adParams.jobTitle,
             rank: 'לא ידוע',
             ID: adParams.samAccountName,
-            pdoName: 'x',
+            // pdoName: 'x',
           };
         }
       } else {
@@ -270,7 +270,7 @@ export function generateADQueueMessage(
           fullName: adParams.fullName,
           rank: adParams.rank ? adParams.rank : 'לא ידוע',
           ID: adParams.newSAMAccountName,
-          pdoName: 'x',
+          // pdoName: 'x',
         };
       }
       break;
