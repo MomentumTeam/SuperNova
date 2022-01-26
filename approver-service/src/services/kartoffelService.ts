@@ -62,7 +62,6 @@ export default class KartoffelService {
           } else {
             logger.info('searchEntitiesByFullName in KartoffelService', {
               searchEntitiesByFullName,
-              entityArray,
             });
             resolve(entityArray);
           }
@@ -90,7 +89,6 @@ export default class KartoffelService {
           } else {
             logger.info('searchCommandersByFullName in KartoffelService', {
               searchCommandersByFullName,
-              entityArray,
             });
             entityArray.entities = entityArray.entities.filter(
               (entity) =>
@@ -126,7 +124,6 @@ export default class KartoffelService {
             );
             logger.info('searchHighCommandersByFullName in KartoffelService', {
               searchCommandersByFullName,
-              entityArray,
             });
             resolve(entityArray);
           }
@@ -151,7 +148,6 @@ export default class KartoffelService {
           } else {
             logger.info('getEntityByRoleId in KartoffelService', {
               getEntityByRoleId,
-              entity,
             });
             resolve(entity);
           }
@@ -176,7 +172,6 @@ export default class KartoffelService {
           } else {
             logger.info('getEntityById in KartoffelService', {
               getEntityById,
-              entity,
             });
             resolve(entity);
           }
@@ -201,7 +196,6 @@ export default class KartoffelService {
           } else {
             logger.info('getOGById in KartoffelService', {
               getOGByIdReq,
-              group,
             });
             resolve(group);
           }

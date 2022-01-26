@@ -25,7 +25,6 @@ export async function getApproverByEntityId(
       call.request
     );
     logger.info(`getApproverByEntityId OK`, {
-      response: approver,
       callRequest: call.request,
     });
     callback(null, approver);
@@ -143,7 +142,6 @@ export async function searchHighCommandersByDisplayName(
     const approverArray: ApproverArray =
       await approverManager.searchHighCommandersByDisplayName(call.request);
     logger.info(`searchHighCommandersByDisplayName OK`, {
-      response: approverArray,
       callRequest: call.request,
     });
     callback(null, approverArray);
@@ -174,7 +172,6 @@ export async function searchApproverByDisplayName(
     const approverArray: ApproverArray =
       await approverManager.searchApproverByDisplayName(call.request);
     logger.info(`searchApproverByDisplayName OK`, {
-      response: approverArray,
       callRequest: call.request,
     });
     callback(null, approverArray);
@@ -205,7 +202,6 @@ export async function searchApproverByDomainUser(
     const approverArray: ApproverArray =
       await approverManager.searchApproverByDomainUser(call.request);
     logger.info(`searchApproverByDomainUser OK`, {
-      response: approverArray,
       callRequest: call.request,
     });
     callback(null, approverArray);
@@ -237,7 +233,6 @@ export async function updateApproverDecision(
       call.request
     );
     logger.info(`updateApproverDecision OK`, {
-      response: request,
       callRequest: call.request,
     });
     callback(null, request);
@@ -266,7 +261,6 @@ export async function getAllApprovers(call: any, callback: any): Promise<void> {
       call.request
     );
     logger.info(`getAllApprovers OK`, {
-      response: approvers,
       callRequest: call.request,
     });
     callback(null, approvers);
@@ -355,7 +349,6 @@ export async function syncApprover(call: any, callback: any): Promise<void> {
       call.request
     );
     logger.info(`syncApprover OK`, {
-      response: approverArray,
       callRequest: call.request,
     });
     callback(null, approverArray);
