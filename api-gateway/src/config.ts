@@ -14,7 +14,10 @@ export const config = {
     port: env.get('GATEWAY_PORT').default(2000).asPortNumber(),
     host: env.get('GATEWAY_HOST').default('0.0.0.0'),
     name: 'api-gatway',
-    healthCheckTimeout: env.get('GATEWAY_HEALTH_CHECK_TIMEOUT').default(30000).asIntPositive(),
+    healthCheckTimeout: env
+      .get('GATEWAY_HEALTH_CHECK_TIMEOUT')
+      .default(30000)
+      .asIntPositive(),
   },
   fields: {
     highCommandersRanks: env
@@ -115,6 +118,12 @@ export const config = {
       .get('UI_INSTRUCTION_VIDEOS')
       .default(
         'https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley'
+      )
+      .asString(),
+    HI_CHAT_SUPPORT_GROUP_NAME: env
+      .get('UI_HI_CHAT_SUPPORT_GROUP_NAME')
+      .default(
+        'לגו תמיכה'
       )
       .asString(),
   },
