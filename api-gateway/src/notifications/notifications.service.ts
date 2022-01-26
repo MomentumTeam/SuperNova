@@ -66,7 +66,6 @@ export class NotificationService {
           }
 
           logger.info(`getNotificationsByOwnerId OK in GTW`, {
-            response: response,
             callRequest: getNotificationsByOwnerIdReq,
           });
           resolve(response);
@@ -91,7 +90,6 @@ export class NotificationService {
           }
 
           logger.info(`markAsRead OK in GTW`, {
-            response: response,
             callRequest: markAsReadReq,
           });
           resolve(response);
@@ -116,7 +114,6 @@ export class NotificationService {
           }
 
           logger.info(`markAllAsRead OK in GTW`, {
-            response: response,
             callRequest: markAllAsReadReq,
           });
           resolve(response);

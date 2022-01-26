@@ -112,8 +112,6 @@ export class ApproverRepository {
       const createdApprover = await approver.save();
       const document = createdApprover.toObject();
       turnObjectIdsToStrings(document);
-
-      logger.info('addApprover', { document, addApproverReq });
       return document as Approver;
     } catch (error: any) {
       logger.error('addApprover ERROR', {
@@ -154,7 +152,6 @@ export class ApproverRepository {
       }
 
       const mongoApprovers: any = await ApproverModel.find(query);
-      logger.info('getAllApprovers', { getAllApproversReq });
       return { approvers: getMongoApproverArray(mongoApprovers) };
     } catch (error: any) {
       logger.error('getAllApprovers ERROR', {
@@ -171,7 +168,6 @@ export class ApproverRepository {
     try {
       let approverIds: any = await ApproverModel.find({}).distinct('entityId');
       approverIds = approverIds.map((approverId: any) => approverId.toString());
-      logger.info('getAllApproverIds', { approverIds, getAllApproverIdsReq });
       return { approverIds: approverIds };
     } catch (error: any) {
       logger.error('getAllApproverIds ERROR', {
@@ -190,11 +186,6 @@ export class ApproverRepository {
       const domainUsers = entity.digitalIdentities
         ? entity.digitalIdentities.map((di: DigitalIdentity) => di.uniqueId)
         : [];
-      logger.info('syncApprover got entity successfully from Kartoffel', {
-        entity,
-        syncApproverReq,
-        domainUsers,
-      });
       const updateParams: any = {
         displayName: entity.displayName,
         domainUsers: domainUsers,
@@ -322,11 +313,6 @@ export class ApproverRepository {
         await KartoffelService.searchHighCommandersByFullName({
           fullName: searchHighCommandersByDisplayNameReq.displayName,
         });
-
-      logger.info('searchHighCommandersByDisplayName kartoffelResults', {
-        kartoffelEntities,
-        searchHighCommandersByDisplayNameReq,
-      });
       const approvers: Approver[] = getApproverArrayByEntityArray(
         kartoffelEntities,
         ApproverType.COMMANDER
@@ -347,7 +333,10 @@ export class ApproverRepository {
       const approverTypesToSearch = [searchByDisplayNameReq.type.toString()];
       approverTypeValidation(searchByDisplayNameReq.type);
 
-      if (approverTypeFromJSON(searchByDisplayNameReq.type) === ApproverType.COMMANDER) {
+      if (
+        approverTypeFromJSON(searchByDisplayNameReq.type) ===
+        ApproverType.COMMANDER
+      ) {
         approverTypesToSearch.push(approverTypeToJSON(ApproverType.ADMIN));
       }
 
@@ -356,7 +345,7 @@ export class ApproverRepository {
           type: { $in: approverTypesToSearch },
           displayName: {
             $regex: searchByDisplayNameReq.displayName,
-            $options: "i",
+            $options: 'i',
           },
         },
         {},
@@ -366,10 +355,6 @@ export class ApproverRepository {
         }
       );
       let approversResult: Approver[] = getMongoApproverArray(mongoApprovers);
-      logger.info('searchApproverByDisplayName MongoResults', {
-        searchByDisplayNameReq,
-        approversResult,
-      });
 
       if (
         approverTypeFromJSON(searchByDisplayNameReq.type) ===
@@ -380,10 +365,6 @@ export class ApproverRepository {
             await KartoffelService.searchCommandersByFullName({
               fullName: searchByDisplayNameReq.displayName,
             });
-          logger.info('searchApproverByDisplayName kartoffelResults', {
-            kartoffelEntities,
-            searchByDisplayNameReq,
-          });
 
           approversResult.push(
             ...getApproverArrayByEntityArray(
@@ -403,10 +384,6 @@ export class ApproverRepository {
           approversResult.map((item: Approver) => [item.entityId, item])
         ).values(),
       ];
-      logger.info('searchApproverByDisplayName Results', {
-        uniqueApproversResult,
-        searchByDisplayNameReq,
-      });
       return { approvers: uniqueApproversResult };
     } catch (error: any) {
       logger.error('searchApproverByDisplayName ERROR', {
@@ -458,10 +435,6 @@ export class ApproverRepository {
           };
         }
       }
-      logger.info('searchApproverByDomainUser', {
-        searchByDomainUserReq,
-        response,
-      });
       return response;
     } catch (error: any) {
       logger.error('searchApproverByDomainUser ERROR', {
