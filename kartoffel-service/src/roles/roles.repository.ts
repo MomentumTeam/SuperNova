@@ -256,12 +256,11 @@ export class RolesRepository {
           this.groupsRepository,
           jobTitle,
           isJobTitleAlreadyTakenRequest.directGroup,
-          true
         );
 
         return {
           isJobTitleAlreadyTaken: isAlreadyTaken.isAlreadyTaken,
-          suggestions: isAlreadyTaken?.suggestions ? isAlreadyTaken.suggestions : [],
+          suggestions: isAlreadyTaken.suggestions,
         };
       }
     } catch (error) {

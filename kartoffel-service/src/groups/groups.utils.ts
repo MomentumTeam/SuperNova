@@ -1,10 +1,10 @@
 import * as C from "../config";
 import { GetRolesUnderOGRequest, OGArray, Role, RoleArray } from '../interfaces/protoc/proto/kartoffelService';
 import { KartoffelFaker } from '../mock/kartoffel.faker';
-import { getSuggestions, jobTitleExists } from '../utils/jobTitles.utils';
+import { getJobTitleSuggestions, jobTitleExists } from '../utils/jobTitles.utils';
 import { cleanUnderscoreFields } from '../utils/json.utils';
 import { KartoffelUtils } from '../utils/kartoffel.utils';
-import { ogNameExists } from '../utils/ogName.utils';
+import { getOgNameSuggestions, ogNameExists } from '../utils/ogName.utils';
 import { GroupsRepository } from './groups.repository';
 
 const kartoffelFaker: KartoffelFaker = new KartoffelFaker();
@@ -12,7 +12,7 @@ const kartoffelUtils: KartoffelUtils = new KartoffelUtils();
 
 export type isAlreadyTakenType = {
   isAlreadyTaken: boolean;
-  suggestions?: string[];
+  suggestions: string[];
 };
 
 const getRolesUnderOG = async(getRolesUnderOGRequest: GetRolesUnderOGRequest): Promise<RoleArray> => {
@@ -79,7 +79,7 @@ export const isJobTitleAlreadyTakenCheck = async (jobTitle: any, directGroup: an
 
   return {
     isAlreadyTaken: isJobTitleExists,
-    suggestions: isJobTitleExists ? getSuggestions(roleArray, jobTitle) : [],
+    suggestions: isJobTitleExists ? getJobTitleSuggestions(roleArray, jobTitle) : [],
   };
 };
 
@@ -93,20 +93,31 @@ export const isOgNameAlreadyTakenCheck = async (
     direct: true,
   } as any);
 
-  return { isAlreadyTaken: ogNameExists(childrenArray, ogName) };
+  const isOgNameExists = ogNameExists(childrenArray, ogName);
+
+  return {
+    isAlreadyTaken: isOgNameExists,
+    suggestions: isOgNameExists ? getOgNameSuggestions(childrenArray, ogName) : [],
+  };
 };
  
 export const isOgNameOrJobTitleAlreadyTaken = async (
   groupsRepository: GroupsRepository,
   name: any,
   directGroup: any,
-  addSuggestion = false
 ): Promise<isAlreadyTakenType> => {
   const isOgNameAlreadyTaken = await isOgNameAlreadyTakenCheck(groupsRepository, name, directGroup);
   const isJobTitleAlreadyTaken = await isJobTitleAlreadyTakenCheck(name, directGroup);
 
+  let suggestions: string[] = [];
+  if (isOgNameAlreadyTaken.isAlreadyTaken) {
+    suggestions = isOgNameAlreadyTaken.suggestions;
+  } else if (isJobTitleAlreadyTaken.isAlreadyTaken) {
+    suggestions = isJobTitleAlreadyTaken.suggestions;
+  }
+
   return {
     isAlreadyTaken: isOgNameAlreadyTaken.isAlreadyTaken || isJobTitleAlreadyTaken.isAlreadyTaken,
-    ...(addSuggestion && { suggestions: isJobTitleAlreadyTaken.suggestions }),
+    suggestions,
   };
 };

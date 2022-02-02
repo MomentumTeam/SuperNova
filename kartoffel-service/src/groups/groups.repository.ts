@@ -23,7 +23,6 @@ import {
   IsOGNameAlreadyTakenRes,
   IdMessage,
 } from '../interfaces/protoc/proto/kartoffelService';
-import { ogNameExists } from '../utils/ogName.utils';
 import { cleanUnderscoreFields } from '../utils/json.utils';
 import { EntitiesRepository } from '../entities/entities.repository';
 import { getDirectRolesForGroups, isOgNameOrJobTitleAlreadyTaken } from './groups.utils';
