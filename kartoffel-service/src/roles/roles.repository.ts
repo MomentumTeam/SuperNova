@@ -25,9 +25,9 @@ import {
 import { KartoffelFaker } from '../mock/kartoffel.faker';
 import { KartoffelUtils } from '../utils/kartoffel.utils';
 import * as C from '../config';
-import { getSuggestions, jobTitleExists } from '../utils/jobTitles.utils';
 import { cleanUnderscoreFields } from '../utils/json.utils';
 import { GroupsRepository } from '../groups/groups.repository';
+import { isOgNameOrJobTitleAlreadyTaken } from '../groups/groups.utils';
 
 export class RolesRepository {
   private kartoffelFaker: KartoffelFaker;
@@ -252,26 +252,16 @@ export class RolesRepository {
         return res as IsJobTitleAlreadyTakenRes;
       } else {
         const jobTitle = isJobTitleAlreadyTakenRequest.jobTitle;
-        let roleArray: RoleArray;
-        let pageCounter = 1;
-        let isJobTitleExists = false;
-
-        do {
-          roleArray = await this.getRolesUnderOG({
-            groupId: isJobTitleAlreadyTakenRequest.directGroup,
-            direct: true,
-            page: pageCounter,
-            pageSize: 100,
-          });
-          isJobTitleExists = jobTitleExists(roleArray, jobTitle);
-          pageCounter++;
-        } while (roleArray.roles.length > 0 && !isJobTitleExists);
+        const isAlreadyTaken = await isOgNameOrJobTitleAlreadyTaken(
+          this.groupsRepository,
+          jobTitle,
+          isJobTitleAlreadyTakenRequest.directGroup,
+          true
+        );
 
         return {
-          isJobTitleAlreadyTaken: isJobTitleExists,
-          suggestions: isJobTitleExists
-            ? getSuggestions(roleArray, jobTitle)
-            : [],
+          isJobTitleAlreadyTaken: isAlreadyTaken.isAlreadyTaken,
+          suggestions: isAlreadyTaken?.suggestions ? isAlreadyTaken.suggestions : [],
         };
       }
     } catch (error) {

@@ -22,15 +22,11 @@ import {
   IsOGNameAlreadyTakenReq,
   IsOGNameAlreadyTakenRes,
   IdMessage,
-  EntityArray,
-  RoleArray,
-  GetRolesUnderOGRequest,
-  Role,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { ogNameExists } from '../utils/ogName.utils';
 import { cleanUnderscoreFields } from '../utils/json.utils';
 import { EntitiesRepository } from '../entities/entities.repository';
-import { getDirectRolesForGroups } from './groups.utils';
+import { getDirectRolesForGroups, isOgNameOrJobTitleAlreadyTaken } from './groups.utils';
 
 export class GroupsRepository {
   private kartoffelFaker: KartoffelFaker;
@@ -56,16 +52,8 @@ export class GroupsRepository {
         let res: any = { isOGNameAlreadyTaken: isOGNameAlreadyTaken };
         return res as IsOGNameAlreadyTakenRes;
       } else {
-        let childrenArray: OGArray = await this.getChildrenOfOG({
-          id: isOGNameAlreadyTakenReq.parent,
-          direct: true,
-        } as any);
-        const name = isOGNameAlreadyTakenReq.name;
-        if (ogNameExists(childrenArray, name)) {
-          return { isOGNameAlreadyTaken: true };
-        } else {
-          return { isOGNameAlreadyTaken: false };
-        }
+        const isOGTaken = await isOgNameOrJobTitleAlreadyTaken(this, isOGNameAlreadyTakenReq.name, isOGNameAlreadyTakenReq.parent);
+        return { isOGNameAlreadyTaken: isOGTaken.isAlreadyTaken };
       }
     } catch (error) {
       throw error;

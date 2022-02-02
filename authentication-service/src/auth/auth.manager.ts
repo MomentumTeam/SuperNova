@@ -15,6 +15,7 @@ export class AuthManager {
     const shragaUser: IShragaUser =
       AuthManager.extractShragaUser(populatedShragaUser);
     let { genesisId, adfsId, iat, exp } = shragaUser;
+    logger.info(`got shrage user:`, shragaUser);
 
     if (config.authentication.useShragaLocalMap) {
       if (config.authentication.getEntityByAdfsId) {
