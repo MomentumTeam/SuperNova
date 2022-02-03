@@ -1325,11 +1325,11 @@ export class RequestRepository {
 
       if (
         approvementStatus === ApprovementStatus.BY_USER_TYPE &&
-        getRequestsByPersonReq.groupInChargeId &&
+        getRequestsByPersonReq.groupsInCharge &&
         userType.includes(ApproverType.ADMIN)
       ) {
         const ancestorsQuery = getAncestorsQuery(
-          getRequestsByPersonReq.groupInChargeId
+          getRequestsByPersonReq.groupsInCharge
         );
         if (query['$or']) {
           query['$and'] = [{ $or: query['$or'] }, ancestorsQuery];

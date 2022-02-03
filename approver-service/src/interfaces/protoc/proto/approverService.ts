@@ -151,7 +151,7 @@ export interface Approver {
   personalNumber: string;
   identityCard: string;
   directGroup: string;
-  groupInChargeId?: string | undefined;
+  groupsInCharge: string[];
 }
 
 const baseIsApproverValidForOGReq: object = { approverId: "", groupId: "" };
@@ -1498,6 +1498,7 @@ const baseApprover: object = {
   personalNumber: "",
   identityCard: "",
   directGroup: "",
+  groupsInCharge: "",
 };
 
 export const Approver = {
@@ -1532,8 +1533,8 @@ export const Approver = {
     if (message.directGroup !== "") {
       writer.uint32(74).string(message.directGroup);
     }
-    if (message.groupInChargeId !== undefined) {
-      writer.uint32(82).string(message.groupInChargeId);
+    for (const v of message.groupsInCharge) {
+      writer.uint32(82).string(v!);
     }
     return writer;
   },
@@ -1543,6 +1544,7 @@ export const Approver = {
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseApprover } as Approver;
     message.domainUsers = [];
+    message.groupsInCharge = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1574,7 +1576,7 @@ export const Approver = {
           message.directGroup = reader.string();
           break;
         case 10:
-          message.groupInChargeId = reader.string();
+          message.groupsInCharge.push(reader.string());
           break;
         default:
           reader.skipType(tag & 7);
@@ -1587,6 +1589,7 @@ export const Approver = {
   fromJSON(object: any): Approver {
     const message = { ...baseApprover } as Approver;
     message.domainUsers = [];
+    message.groupsInCharge = [];
     if (object.entityId !== undefined && object.entityId !== null) {
       message.entityId = String(object.entityId);
     } else {
@@ -1632,13 +1635,10 @@ export const Approver = {
     } else {
       message.directGroup = "";
     }
-    if (
-      object.groupInChargeId !== undefined &&
-      object.groupInChargeId !== null
-    ) {
-      message.groupInChargeId = String(object.groupInChargeId);
-    } else {
-      message.groupInChargeId = undefined;
+    if (object.groupsInCharge !== undefined && object.groupsInCharge !== null) {
+      for (const e of object.groupsInCharge) {
+        message.groupsInCharge.push(String(e));
+      }
     }
     return message;
   },
@@ -1662,14 +1662,18 @@ export const Approver = {
       (obj.identityCard = message.identityCard);
     message.directGroup !== undefined &&
       (obj.directGroup = message.directGroup);
-    message.groupInChargeId !== undefined &&
-      (obj.groupInChargeId = message.groupInChargeId);
+    if (message.groupsInCharge) {
+      obj.groupsInCharge = message.groupsInCharge.map((e) => e);
+    } else {
+      obj.groupsInCharge = [];
+    }
     return obj;
   },
 
   fromPartial(object: DeepPartial<Approver>): Approver {
     const message = { ...baseApprover } as Approver;
     message.domainUsers = [];
+    message.groupsInCharge = [];
     if (object.entityId !== undefined && object.entityId !== null) {
       message.entityId = object.entityId;
     } else {
@@ -1715,13 +1719,10 @@ export const Approver = {
     } else {
       message.directGroup = "";
     }
-    if (
-      object.groupInChargeId !== undefined &&
-      object.groupInChargeId !== null
-    ) {
-      message.groupInChargeId = object.groupInChargeId;
-    } else {
-      message.groupInChargeId = undefined;
+    if (object.groupsInCharge !== undefined && object.groupsInCharge !== null) {
+      for (const e of object.groupsInCharge) {
+        message.groupsInCharge.push(e);
+      }
     }
     return message;
   },

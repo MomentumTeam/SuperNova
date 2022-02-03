@@ -13,7 +13,7 @@ export const ApproverSchema = new Schema(
     type: { type: String, enum: ApproverType, default: ApproverType.SOLDIER },
     akaUnit: { type: String, default: '' },
     directGroup: { type: String, default: '' },
-    groupInChargeId: { type: String, default: C.rootId },
+    groupsInCharge: { type: [String], default: C.rootId },
   },
   { strict: false }
 );

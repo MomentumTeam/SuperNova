@@ -1586,7 +1586,7 @@ export interface GetRequestsByPersonReq {
   type?: RequestType | undefined;
   sortField?: SortField | undefined;
   sortOrder?: SortOrder | undefined;
-  groupInChargeId?: string | undefined;
+  groupsInCharge: string[];
 }
 
 /** GetRequestBySerialNumber */
@@ -23251,6 +23251,7 @@ const baseGetRequestsByPersonReq: object = {
   userType: 0,
   from: 0,
   to: 0,
+  groupsInCharge: "",
 };
 
 export const GetRequestsByPersonReq = {
@@ -23293,8 +23294,8 @@ export const GetRequestsByPersonReq = {
     if (message.sortOrder !== undefined) {
       writer.uint32(96).int32(message.sortOrder);
     }
-    if (message.groupInChargeId !== undefined) {
-      writer.uint32(106).string(message.groupInChargeId);
+    for (const v of message.groupsInCharge) {
+      writer.uint32(106).string(v!);
     }
     return writer;
   },
@@ -23307,6 +23308,7 @@ export const GetRequestsByPersonReq = {
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseGetRequestsByPersonReq } as GetRequestsByPersonReq;
     message.userType = [];
+    message.groupsInCharge = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -23351,7 +23353,7 @@ export const GetRequestsByPersonReq = {
           message.sortOrder = reader.int32() as any;
           break;
         case 13:
-          message.groupInChargeId = reader.string();
+          message.groupsInCharge.push(reader.string());
           break;
         default:
           reader.skipType(tag & 7);
@@ -23364,6 +23366,7 @@ export const GetRequestsByPersonReq = {
   fromJSON(object: any): GetRequestsByPersonReq {
     const message = { ...baseGetRequestsByPersonReq } as GetRequestsByPersonReq;
     message.userType = [];
+    message.groupsInCharge = [];
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
@@ -23424,13 +23427,10 @@ export const GetRequestsByPersonReq = {
     } else {
       message.sortOrder = undefined;
     }
-    if (
-      object.groupInChargeId !== undefined &&
-      object.groupInChargeId !== null
-    ) {
-      message.groupInChargeId = String(object.groupInChargeId);
-    } else {
-      message.groupInChargeId = undefined;
+    if (object.groupsInCharge !== undefined && object.groupsInCharge !== null) {
+      for (const e of object.groupsInCharge) {
+        message.groupsInCharge.push(String(e));
+      }
     }
     return message;
   },
@@ -23474,8 +23474,11 @@ export const GetRequestsByPersonReq = {
         message.sortOrder !== undefined
           ? sortOrderToJSON(message.sortOrder)
           : undefined);
-    message.groupInChargeId !== undefined &&
-      (obj.groupInChargeId = message.groupInChargeId);
+    if (message.groupsInCharge) {
+      obj.groupsInCharge = message.groupsInCharge.map((e) => e);
+    } else {
+      obj.groupsInCharge = [];
+    }
     return obj;
   },
 
@@ -23484,6 +23487,7 @@ export const GetRequestsByPersonReq = {
   ): GetRequestsByPersonReq {
     const message = { ...baseGetRequestsByPersonReq } as GetRequestsByPersonReq;
     message.userType = [];
+    message.groupsInCharge = [];
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
@@ -23542,13 +23546,10 @@ export const GetRequestsByPersonReq = {
     } else {
       message.sortOrder = undefined;
     }
-    if (
-      object.groupInChargeId !== undefined &&
-      object.groupInChargeId !== null
-    ) {
-      message.groupInChargeId = object.groupInChargeId;
-    } else {
-      message.groupInChargeId = undefined;
+    if (object.groupsInCharge !== undefined && object.groupsInCharge !== null) {
+      for (const e of object.groupsInCharge) {
+        message.groupsInCharge.push(e);
+      }
     }
     return message;
   },

@@ -82,6 +82,7 @@ export default class RequestsController {
       to: req.query.to,
       userType: req.user.types,
       approvementStatus: ApprovementStatus.ANY,
+      groupsInCharge: []
     };
 
     if (req.query.searchQuery) {
@@ -119,6 +120,7 @@ export default class RequestsController {
       to: req.query.to,
       userType: req.user.types,
       approvementStatus: ApprovementStatus.BY_USER_TYPE,
+      groupsInCharge: []
     };
 
     if (req.query.searchQuery) {
@@ -141,8 +143,8 @@ export default class RequestsController {
       const approver = await ApproverService.getApproverByEntityId({
         entityId: req.user.id,
       });
-      if (approver.groupInChargeId) {
-        getRequestsByPersonReq.groupInChargeId = approver.groupInChargeId;
+      if (approver.groupsInCharge) {
+        getRequestsByPersonReq.groupsInCharge = approver.groupsInCharge;
       }
     }
 
@@ -165,6 +167,7 @@ export default class RequestsController {
       to: req.query.to,
       userType: req.user.types,
       approvementStatus: ApprovementStatus.BY_USER_TYPE,
+      groupsInCharge: []
     };
 
     if (req.query.searchQuery) {
@@ -201,6 +204,7 @@ export default class RequestsController {
       from: req.query.from,
       to: req.query.to,
       userType: req.user.types,
+      groupsInCharge: []
     };
 
     if (req.query.searchQuery) {

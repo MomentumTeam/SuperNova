@@ -108,11 +108,22 @@ export class ApproverRepository {
     try {
       const approver: any = new ApproverModel(addApproverReq);
       approverTypeValidation(approver.type);
+      const adminAlreadyExists: any = await ApproverModel.exists({
+        entityId: approver.entityId,
+        type: approverTypeToJSON(ApproverType.ADMIN),
+      });
 
-      const createdApprover = await approver.save();
-      const document = createdApprover.toObject();
-      turnObjectIdsToStrings(document);
-      return document as Approver;
+      if (adminAlreadyExists) {
+        await ApproverModel.findOneAndUpdate(
+          { entityId: approver.entityId },
+          { $addToSet: { groupsInCharge: addApproverReq.groupInChargeId } }
+        );
+      } else {
+        const createdApprover = await approver.save();
+        const document = createdApprover.toObject();
+        turnObjectIdsToStrings(document);
+        return document as Approver;
+      }
     } catch (error: any) {
       logger.error('addApprover ERROR', {
         error: { message: error.message },
