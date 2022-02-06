@@ -34,6 +34,7 @@ import {
   GetRequestsByPersonReq,
   IsRequestApprovedReq,
   IsRequestApprovedRes,
+  RemoveApproverFromApproversReq,
   RenameOGReq,
   RenameOGRes,
   RenameRoleReq,
@@ -702,6 +703,38 @@ export class RequestsService {
   }
 
   // DELETE
+
+  // PUT
+  static async removeApproverFromApprovers(
+    removeApproverFromApproversReq: RemoveApproverFromApproversReq
+  ) {
+    logger.info(
+      `Call to removeApproverFromApprovers in GTW`,
+      removeApproverFromApproversReq
+    );
+
+    return new Promise((resolve, reject) => {
+      randomClient().RemoveApproverFromApprovers(
+        removeApproverFromApproversReq,
+        (err: any, response: Request) => {
+          if (err) {
+            logger.error(`removeApproverFromApprovers ERROR in GTW`, {
+              err,
+              callRequest: removeApproverFromApproversReq,
+            });
+            reject(err);
+          }
+
+          logger.info(`removeApproverFromApprovers OK in GTW`, {
+            response: response,
+            callRequest: removeApproverFromApproversReq,
+          });
+          resolve(response);
+        }
+      );
+    });
+  }
+
   static async deleteRoleRequest(deleteRoleReq: DeleteRoleReq) {
     logger.info(`Call to deleteRoleRequest in GTW`, deleteRoleReq);
 
