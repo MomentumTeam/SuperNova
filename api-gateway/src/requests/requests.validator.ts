@@ -28,6 +28,7 @@ import {
   getRequestsSchema,
   transferRequestToApproversSchema,
   updateApproversCommentsSchema,
+  removeApproverFromApproversSchema,
 } from './requests.schema';
 
 export class RequestValidator {
@@ -64,6 +65,20 @@ export class RequestValidator {
     transformRequest(
       req,
       validateObject(req, getRequestsByPersonSchema, { allowUnknown: true })
+    );
+    next();
+  }
+
+  static isRemoveApproverFromApproversValid(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    transformRequest(
+      req,
+      validateObject(req, removeApproverFromApproversSchema, {
+        allowUnknown: true,
+      })
     );
     next();
   }

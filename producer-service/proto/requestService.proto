@@ -46,6 +46,7 @@ service RequestService {
 
     rpc GetRequestsByPerson(GetRequestsByPersonReq) returns (GetRequestsByPersonRes){}
     rpc TransferRequestToApprovers(TransferRequestToApproversReq) returns (Request){}
+    rpc RemoveApproverFromApprovers(RemoveApproverFromApproversReq) returns (Request){}
 
     rpc SendSubmissionMail(SendSubmissionMailReq) returns (Request){}
 }
@@ -983,6 +984,14 @@ message TransferRequestToApproversReq{
     repeated EntityMin approvers = 2;
     ApproverType type = 3;
     optional string commentForApprovers = 4;
+    optional bool overrideApprovers = 5;
+}
+
+//15.RemoveApproverFromApprovers
+message RemoveApproverFromApproversReq{
+    string id = 1;
+    string approverId = 2;
+    ApproverType type = 3;
 }
 
 // ---------------------------------------------Other Functions Objects------------------------------------------------------------
