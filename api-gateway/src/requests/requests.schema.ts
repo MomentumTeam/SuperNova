@@ -155,7 +155,7 @@ export const transferRequestToApproversSchema = Joi.object({
       .valid(...Object.keys(ApproverType))
       .required(),
     commentForApprovers: Joi.string(),
-    overrideApprovers: Joi.boolean.default(true),
+    overrideApprovers: Joi.boolean().default(true),
   },
   params: { id: Joi.objectId().required() },
   query: {},
