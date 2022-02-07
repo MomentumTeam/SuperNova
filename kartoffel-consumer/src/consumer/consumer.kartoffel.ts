@@ -84,7 +84,8 @@ export const createRole = async (data: any) => {
       //If goal user
       const goalUserEntity = await KartoffelService.createEntity({
         firstName: jobTitle,
-        lastName: jobTitle,
+        // lastName: jobTitle,
+        // lastName: '',
         entityType: config.goalUser,
         phone: [],
         mobilePhone: [],

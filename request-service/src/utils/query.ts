@@ -124,6 +124,10 @@ export function getStatusQuery(status: any) {
   return { status: requestStatus };
 }
 
+export function removeApproverFromArray(id: string, approvers: any) {
+  return approvers.filter((approver: any) => approver.id !== id);
+}
+
 export function getRequestTypeQuery(type: any) {
   const requestType =
     typeof type === typeof '' ? type : requestTypeToJSON(type);
