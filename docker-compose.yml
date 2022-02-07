@@ -24,7 +24,7 @@ services:
     ports:
       - 27017:27017
     restart: unless-stopped
-
+    
   redis:
     image: redis:alpine
     container_name: redis
@@ -95,9 +95,9 @@ services:
       - KS_SS_URL=spike-service:8080
       - KS_ROOT_ID=6184af202da776001134110b
       - KS_DEFAULT_ROLE_SOURCE=sf_name
-      - KS_DEFAULT_DI_SOURCE=sf_name
+      - KS_DEFAULT_DI_SOURCE=es_name
       - KS_DEFAULT_OG_SOURCE=sf_name
-      - KS_DI_SOURCES=sf_name,sf_name
+      - KS_DI_SOURCES=es_name,es_name
       - KS_DEFAULT_ROLE_ID_SUFFIX=oneTree
       - KS_SEARCH_WITH_RANKS=true
       - KS_LOG_PATH=/logs
@@ -255,8 +255,8 @@ services:
       - KC_TS_URL=tea-service:8080
       - KC_KS_URL=kartoffel-service:8080
       - KC_DEFAULT_ROLE_SOURCE=sf_name
-      - KC_DEFAULT_DI_SOURCE=sf_name
-      - KC_DI_SOURCES=sf_name,sf_name
+      - KC_DEFAULT_DI_SOURCE=es_name
+      - KC_DI_SOURCES=es_name,es_name
       - KC_KARTOFFEL_GOAL_USER=GoalUser
       - KC_KARTOFFEL_DOMAIN_USER=domainUser
       - KC_CIVILIAN=Civilian
@@ -317,18 +317,18 @@ services:
       - AIS_EXCEL_FILE_PATH=/excelFiles/AISExcelFile.xlsx
       - AIS_LOG_PATH=/logs
 
-  population-script:
-    image: population-script
-    build: ./population-script/
-    env_file:
-      - ./supernova.env
-    depends_on:
-      - request-service
-    environment:
-      - POS_RS_URL=request-service:8080
-      - POS_ENTITY_IDS=aaaaaaaaaaaaaaaaaaaaaaaa,bbbbbbbbbbbbbbbbbbbbbbbb
-      - POS_GENERATE_COUNT=50
-      - POS_LOG_PATH=/logs
+  # population-script:
+  #   image: population-script
+  #   build: ./population-script/
+  #   env_file:
+  #     - ./supernova.env
+  #   depends_on:
+  #     - request-service
+  #   environment:
+  #     - POS_RS_URL=request-service:8080
+  #     - POS_ENTITY_IDS=aaaaaaaaaaaaaaaaaaaaaaaa,bbbbbbbbbbbbbbbbbbbbbbbb
+  #     - POS_GENERATE_COUNT=50
+  #     - POS_LOG_PATH=/logs
 
   authentication-service:
     image: authentication-service
@@ -353,7 +353,7 @@ services:
       - AS_APPROVER_ENRICH=true
       - AS_USE_SHRAGA_LOCAL_MAP=true
       - AS_SHRAGA_LOCAL_MAP_IDS=619e3a6fe4de0300121d78c7,619e406ee4de0300121dc4c8,619e42b6e4de0300121dc4e3,619e5132e4de0300121dc528,619f8aa0e4de0300121dd3f4
-      - AS_SHRAGA_LOCAL_MAP_DIS=t23458789@jello.com,t25458789@jello.com,t25458711@jello.com,gggUser@rabiran.com,e595300134@turtle.com
+      - AS_SHRAGA_LOCAL_MAP_DIS=t23458789sh@jello,t25458789sh@jello,t25458711sh@jello,gggUsersh@rabiran,e595300134sh@turtle
       - AS_LOG_PATH=/logs
 
   api-gateway:
@@ -411,7 +411,7 @@ services:
     environment:
       - UI_REACT_APP_BASE_URL=http://localhost:2000
       - UI_REACT_TOKEN_NAME=sp-token
-      - UI_USER_SOURCE_DI=sf_name
+      - UI_USER_SOURCE_DI=es_name
 
   # Kafka GUI
   kouncil:
