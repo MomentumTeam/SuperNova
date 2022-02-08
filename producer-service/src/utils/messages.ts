@@ -92,6 +92,11 @@ export function generateKartoffelQueueMessage(request: Request): any {
       } else if (isValidPhone(kartoffelParams.phone)) {
         message.data.phone = kartoffelParams.phone;
       }
+      if (kartoffelParams.entityType === C.soldier) {
+        message.data.personalNumber = kartoffelParams.personalNumber;
+        message.data.rank = kartoffelParams.rank;
+        message.data.serviceType = kartoffelParams.serviceType;
+      }
       break;
     case RequestType.ASSIGN_ROLE_TO_ENTITY:
       message.data = {

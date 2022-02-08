@@ -379,6 +379,7 @@ const createEntityKartoffelParamsObj = Joi.object({
   identityCard: Joi.string().required(),
   personalNumber: Joi.string().allow('', null),
   serviceType: Joi.string(),
+  rank: Joi.string(),
   phone: Joi.array().items(Joi.string()),
   mobilePhone: Joi.array().items(Joi.string()),
   address: Joi.string(),

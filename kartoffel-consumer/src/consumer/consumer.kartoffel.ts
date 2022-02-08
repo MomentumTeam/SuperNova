@@ -109,12 +109,15 @@ export const createEntity = async (createEntityRequest: any) => {
       firstName,
       lastName,
       identityCard,
-      personalNumber,
       phone,
       mobilePhone,
       clearance,
       sex,
       birthDate,
+      personalNumber,
+      rank,
+      serviceType,
+      entityType,
     } = createEntityRequest;
     logger.info('createEntity request received', createEntityRequest);
 
@@ -122,14 +125,15 @@ export const createEntity = async (createEntityRequest: any) => {
       firstName: firstName,
       lastName: lastName && lastName !== '' ? lastName : firstName,
       identityCard: identityCard,
-      personalNumber: personalNumber,
       phone: phone,
       mobilePhone: mobilePhone,
       clearance: clearance,
       sex: sex,
       birthDate: birthDate,
-      entityType: config.civilian,
-      rank: config.civilianDefaultRank,
+      personalNumber: personalNumber,
+      entityType: entityType,
+      rank: rank !== undefined ? rank : config.civilianDefaultRank,
+      serviceType: serviceType,
     });
     logger.info('Successfuly created Entity', createdEntity);
     return createdEntity.id;

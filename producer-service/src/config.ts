@@ -51,3 +51,7 @@ export const logPath = process.env.PS_LOG_PATH
 export const storeLogs = process.env.GLOBAL_STORE_LOGS
   ? process.env.GLOBAL_STORE_LOGS === 'true'
   : false;
+
+export const soldier = process.env.PS_KARTOFFEL_SOLDIER || 'Soldier';
+
+export const external = process.env.PS_KARTOFFEL_EXTERNAL || 'External';
