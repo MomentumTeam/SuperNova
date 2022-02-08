@@ -1356,6 +1356,7 @@ export interface CreateEntityKartoffelParams {
   sex?: string | undefined;
   birthdate?: number | undefined;
   entityType: string;
+  rank: string;
 }
 
 /** NO PARAMETERS NEEDED */
@@ -19369,6 +19370,7 @@ const baseCreateEntityKartoffelParams: object = {
   mobilePhone: "",
   clearance: "",
   entityType: "",
+  rank: "",
 };
 
 export const CreateEntityKartoffelParams = {
@@ -19411,6 +19413,9 @@ export const CreateEntityKartoffelParams = {
     }
     if (message.entityType !== "") {
       writer.uint32(98).string(message.entityType);
+    }
+    if (message.rank !== "") {
+      writer.uint32(106).string(message.rank);
     }
     return writer;
   },
@@ -19464,6 +19469,9 @@ export const CreateEntityKartoffelParams = {
           break;
         case 12:
           message.entityType = reader.string();
+          break;
+        case 13:
+          message.rank = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -19539,6 +19547,11 @@ export const CreateEntityKartoffelParams = {
     } else {
       message.entityType = "";
     }
+    if (object.rank !== undefined && object.rank !== null) {
+      message.rank = String(object.rank);
+    } else {
+      message.rank = "";
+    }
     return message;
   },
 
@@ -19567,6 +19580,7 @@ export const CreateEntityKartoffelParams = {
     message.sex !== undefined && (obj.sex = message.sex);
     message.birthdate !== undefined && (obj.birthdate = message.birthdate);
     message.entityType !== undefined && (obj.entityType = message.entityType);
+    message.rank !== undefined && (obj.rank = message.rank);
     return obj;
   },
 
@@ -19637,6 +19651,11 @@ export const CreateEntityKartoffelParams = {
       message.entityType = object.entityType;
     } else {
       message.entityType = "";
+    }
+    if (object.rank !== undefined && object.rank !== null) {
+      message.rank = object.rank;
+    } else {
+      message.rank = "";
     }
     return message;
   },
