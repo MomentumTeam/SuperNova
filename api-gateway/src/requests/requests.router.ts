@@ -63,6 +63,12 @@ RequestsRouter.put(
 );
 
 RequestsRouter.put(
+  '/approver/delete/:id',
+  RequestValidator.isRemoveApproverFromApproversValid,
+  RequestsController.removeApproverFromApprovers
+);
+
+RequestsRouter.put(
   '/approver/comments/:id',
   RequestValidator.isUpdateApproversCommentsValid,
   RequestsController.updateApproversComments

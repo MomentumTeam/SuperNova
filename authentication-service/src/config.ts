@@ -42,6 +42,7 @@ export const config: any = {
     defaultLastName: " ",
     enrich: env.get("AS_KARTOFFEL_ENRICH").default("false").asBool(),
     timeout: env.get("AS_KARTOFFEL_TIMEOUT").default(30000).asIntPositive(),
+    timeoutEnabled: env.get("AS_KARTOFFEL_TIMEOUT_ENABLED").default("true").asBool()
   },
   approver: {
     endpoint: process.env.AS_APS_URL || "0.0.0.0:8085",

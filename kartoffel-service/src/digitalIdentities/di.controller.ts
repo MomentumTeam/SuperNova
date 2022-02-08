@@ -24,7 +24,6 @@ export async function getAllDIs(call: any, callback: any): Promise<void> {
     );
     logger.info(`getAllDIs OK`, {
       callRequest: call.request,
-      response: digitalIdentities,
     });
     callback(null, digitalIdentities);
   } catch (error: any) {
@@ -52,7 +51,6 @@ export async function createDI(call: any, callback: any): Promise<void> {
     const uniqueId: UniqueIdMessage = await diManager.createDI(call.request);
     logger.info(`createDI OK`, {
       callRequest: call.request,
-      response: uniqueId,
     });
     callback(null, uniqueId);
   } catch (error: any) {
@@ -80,7 +78,6 @@ export async function getDIByRoleId(call: any, callback: any): Promise<void> {
     const di: DigitalIdentity = await diManager.getDIByRoleId(call.request);
     logger.info(`getDIByRoleId OK`, {
       callRequest: call.request,
-      response: di,
     });
     callback(null, di);
   } catch (error: any) {
@@ -112,7 +109,6 @@ export async function searchDIByUniqueId(
       await diManager.searchDIByUniqueId(call.request);
     logger.info(`searchDIByUniqueId OK`, {
       callRequest: call.request,
-      response: DigitalIdentities,
     });
     callback(null, digitalIdentities);
   } catch (error: any) {
@@ -142,7 +138,6 @@ export async function deleteDI(call: any, callback: any): Promise<void> {
     );
     logger.info(`deleteDI OK`, {
       callRequest: call.request,
-      response: successMessage,
     });
     callback(null, successMessage);
   } catch (error: any) {
@@ -170,7 +165,6 @@ export async function getDIByUniqueId(call: any, callback: any): Promise<void> {
     const di: DigitalIdentity = await diManager.getDIByUniqueId(call.request);
     logger.info(`getDIByUniqueId OK`, {
       callRequest: call.request,
-      response: di,
     });
     callback(null, di);
   } catch (error: any) {
@@ -200,7 +194,6 @@ export async function updateDI(call: any, callback: any): Promise<void> {
     );
     logger.info(`updateDI OK`, {
       callRequest: call.request,
-      response: successMessage,
     });
     callback(null, successMessage);
   } catch (error: any) {

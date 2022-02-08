@@ -34,6 +34,7 @@ import {
   GetRequestsByPersonReq,
   IsRequestApprovedReq,
   IsRequestApprovedRes,
+  RemoveApproverFromApproversReq,
   RenameOGReq,
   RenameOGRes,
   RenameRoleReq,
@@ -150,7 +151,6 @@ export class RequestsService {
           }
 
           logger.info(`getRequestById OK in GTW`, {
-            response: response,
             callRequest: getRequestByIdReq,
           });
           resolve(response);
@@ -177,7 +177,6 @@ export class RequestsService {
           }
 
           logger.info(`getRequestsByPerson OK in GTW`, {
-            response: response,
             callRequest: getRequestsByPersonReq,
           });
           resolve(response);
@@ -207,7 +206,6 @@ export class RequestsService {
           }
 
           logger.info(`getRequestBySerialNumber OK in GTW`, {
-            response: response,
             callRequest: getRequestBySerialNumberReq,
           });
           resolve(response);
@@ -263,7 +261,6 @@ export class RequestsService {
           }
 
           logger.info(`updateADStatus OK in GTW`, {
-            response: response,
             callRequest: updateADStatus,
           });
           resolve(response);
@@ -296,7 +293,6 @@ export class RequestsService {
           }
 
           logger.info(`updateKartoffelStatus OK in GTW`, {
-            response: response,
             callRequest: updateKartoffelStatusReq,
           });
           resolve(response);
@@ -321,7 +317,6 @@ export class RequestsService {
           }
 
           logger.info(`updateRequest OK in GTW`, {
-            response: response,
             callRequest: updateRequestReq,
           });
           resolve(response);
@@ -346,7 +341,6 @@ export class RequestsService {
           }
 
           logger.info(`updateCommanders OK in GTW`, {
-            response: response,
             callRequest: updateCommandersReq,
           });
           resolve(response);
@@ -376,7 +370,6 @@ export class RequestsService {
           }
 
           logger.info(`updateSecurityApprovers OK in GTW`, {
-            response: response,
             callRequest: updateSecurityApproversReq,
           });
           resolve(response);
@@ -406,7 +399,6 @@ export class RequestsService {
           }
 
           logger.info(`updateApproverDecision OK in GTW`, {
-            response: response,
             callRequest: updateApproverDecisionReq,
           });
           resolve(response);
@@ -495,7 +487,6 @@ export class RequestsService {
           }
 
           logger.info(`createRoleRequest OK in GTW`, {
-            response: response,
             callRequest: createRoleReq,
           });
           resolve(response);
@@ -525,7 +516,6 @@ export class RequestsService {
           }
 
           logger.info(`assignRoleToEntityRequest OK in GTW`, {
-            response: response,
             callRequest: assignRoleToEntityReq,
           });
           resolve(response);
@@ -550,7 +540,6 @@ export class RequestsService {
           }
 
           logger.info(`createOGRequest OK in GTW`, {
-            response: response,
             callRequest: createOGReq,
           });
           resolve(response);
@@ -580,7 +569,6 @@ export class RequestsService {
           }
 
           logger.info(`createNewApproverRequest OK in GTW`, {
-            response: response,
             callRequest: createNewApproverReq,
           });
           resolve(response);
@@ -605,7 +593,6 @@ export class RequestsService {
           }
 
           logger.info(`createEntityRequest OK in GTW`, {
-            response: response,
             callRequest: createEntityReq,
           });
           resolve(response);
@@ -630,7 +617,6 @@ export class RequestsService {
           }
 
           logger.info(`renameOGRequest OK in GTW`, {
-            response: response,
             callRequest: renameOGReq,
           });
           resolve(response);
@@ -655,7 +641,6 @@ export class RequestsService {
           }
 
           logger.info(`renameRoleRequest OK in GTW`, {
-            response: response,
             callRequest: renameRoleReq,
           });
           resolve(response);
@@ -680,7 +665,6 @@ export class RequestsService {
           }
 
           logger.info(`editEntityRequest OK in GTW`, {
-            response: response,
             callRequest: editEntityReq,
           });
           resolve(response);
@@ -710,7 +694,6 @@ export class RequestsService {
           }
 
           logger.info(`changeRoleHierarchyRequest OK in GTW`, {
-            response: response,
             callRequest: changeRoleHierarchyRequest,
           });
           resolve(response);
@@ -720,6 +703,38 @@ export class RequestsService {
   }
 
   // DELETE
+
+  // PUT
+  static async removeApproverFromApprovers(
+    removeApproverFromApproversReq: RemoveApproverFromApproversReq
+  ) {
+    logger.info(
+      `Call to removeApproverFromApprovers in GTW`,
+      removeApproverFromApproversReq
+    );
+
+    return new Promise((resolve, reject) => {
+      randomClient().RemoveApproverFromApprovers(
+        removeApproverFromApproversReq,
+        (err: any, response: Request) => {
+          if (err) {
+            logger.error(`removeApproverFromApprovers ERROR in GTW`, {
+              err,
+              callRequest: removeApproverFromApproversReq,
+            });
+            reject(err);
+          }
+
+          logger.info(`removeApproverFromApprovers OK in GTW`, {
+            response: response,
+            callRequest: removeApproverFromApproversReq,
+          });
+          resolve(response);
+        }
+      );
+    });
+  }
+
   static async deleteRoleRequest(deleteRoleReq: DeleteRoleReq) {
     logger.info(`Call to deleteRoleRequest in GTW`, deleteRoleReq);
 
@@ -736,7 +751,6 @@ export class RequestsService {
           }
 
           logger.info(`deleteRoleRequest OK in GTW`, {
-            response: response,
             callRequest: deleteRoleReq,
           });
           resolve(response);
@@ -761,7 +775,6 @@ export class RequestsService {
           }
 
           logger.info(`deleteOGRequest OK in GTW`, {
-            response: response,
             callRequest: deleteOGReq,
           });
           resolve(response);
@@ -786,7 +799,6 @@ export class RequestsService {
           }
 
           logger.info(`deleteEntityRequest OK in GTW`, {
-            response: response,
             callRequest: deleteEntityRequest,
           });
           resolve(response);
@@ -816,7 +828,6 @@ export class RequestsService {
           }
 
           logger.info(`disconectRoleFromEntityRequest OK in GTW`, {
-            response: response,
             callRequest: disconectRoleFromEntityReq,
           });
           resolve(response);

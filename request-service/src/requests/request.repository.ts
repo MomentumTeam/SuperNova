@@ -46,6 +46,7 @@ import {
   AreAllSubRequestsFinishedReq,
   AreAllSubRequestsFinishedRes,
   SendSubmissionMailReq,
+  RemoveApproverFromApproversReq,
 } from '../interfaces/protoc/proto/requestService';
 import { createNotifications } from '../services/notificationHelper';
 import { sendMail } from '../services/mailHelper';
@@ -64,6 +65,7 @@ import {
   getSortQuery,
   getStatusQuery,
   getWaitingForApproveCountQuery,
+  removeApproverFromArray,
 } from '../utils/query';
 import {
   reportTeaFail,
@@ -295,6 +297,90 @@ export class RequestRepository {
     }
   }
 
+  async removeApproverFromApprovers(
+    removeApproverFromApproversReq: RemoveApproverFromApproversReq
+  ): Promise<Request> {
+    try {
+      const request: any = await this.getRequestById({
+        id: removeApproverFromApproversReq.id,
+      });
+      let updateSetQuery: any = {};
+      const type =
+        typeof removeApproverFromApproversReq.type === typeof ''
+          ? approverTypeFromJSON(removeApproverFromApproversReq.type)
+          : removeApproverFromApproversReq.type;
+      const commanderDecision =
+        typeof request.commanderDecision.decision === typeof ''
+          ? decisionFromJSON(request.commanderDecision.decision)
+          : request.commanderDecision.decision;
+      const commanderAlreadyDecided =
+        commanderDecision !== Decision.DECISION_UNKNOWN;
+      const securityDecision =
+        typeof request.securityDecision.decision === typeof ''
+          ? decisionFromJSON(request.securityDecision.decision)
+          : request.securityDecision.decision;
+      const securityAlreadyDecided =
+        securityDecision !== Decision.DECISION_UNKNOWN;
+      const superSecurityDecision =
+        typeof request.superSecurityDecision.decision === typeof ''
+          ? decisionFromJSON(request.superSecurityDecision.decision)
+          : request.superSecurityDecision.decision;
+      const superSecurityAlreadyDecided =
+        superSecurityDecision !== Decision.DECISION_UNKNOWN;
+      switch (type) {
+        case ApproverType.ADMIN:
+        case ApproverType.COMMANDER:
+          if (!commanderAlreadyDecided) {
+            updateSetQuery = {
+              commanders: removeApproverFromArray(
+                removeApproverFromApproversReq.approverId,
+                request.commanders
+              ),
+            };
+          }
+          break;
+        case ApproverType.SECURITY:
+          if (!securityAlreadyDecided) {
+            updateSetQuery = {
+              securityApprovers: removeApproverFromArray(
+                removeApproverFromApproversReq.approverId,
+                request.securityApprovers
+              ),
+            };
+          }
+          break;
+        case ApproverType.SUPER_SECURITY:
+          if (!superSecurityAlreadyDecided) {
+            updateSetQuery = {
+              superSecurityApprovers: removeApproverFromArray(
+                removeApproverFromApproversReq.approverId,
+                request.superSecurityApprovers
+              ),
+            };
+          }
+          break;
+        default:
+          throw new Error('ApproverType is not supported!');
+      }
+      const documentAfter: any = await RequestModel.findOneAndUpdate(
+        { _id: removeApproverFromApproversReq.id },
+        { $set: updateSetQuery },
+        { new: true }
+      );
+      if (documentAfter) {
+        const documentObj = documentAfter.toObject();
+        turnObjectIdsToStrings(documentObj);
+        return documentObj as Request;
+      } else {
+        throw new Error(
+          `RequestId=${removeApproverFromApproversReq.id} does not exist!`
+        );
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async transferRequestToApprovers(
     transferRequestToApproverReq: TransferRequestToApproversReq
   ): Promise<Request> {
@@ -308,25 +394,83 @@ export class RequestRepository {
         transferRequestToApproverReq.commentForApprovers
           ? transferRequestToApproverReq.commentForApprovers
           : '';
+      const overrideApprovers = transferRequestToApproverReq.overrideApprovers
+        ? transferRequestToApproverReq.overrideApprovers
+        : false;
+      const request: any = await this.getRequestById({
+        id: transferRequestToApproverReq.id,
+      });
+      const commanderDecision =
+        typeof request.commanderDecision.decision === typeof ''
+          ? decisionFromJSON(request.commanderDecision.decision)
+          : request.commanderDecision.decision;
+      const commanderAlreadyDecided =
+        commanderDecision !== Decision.DECISION_UNKNOWN;
+      const securityDecision =
+        typeof request.securityDecision.decision === typeof ''
+          ? decisionFromJSON(request.securityDecision.decision)
+          : request.securityDecision.decision;
+      const securityAlreadyDecided =
+        securityDecision !== Decision.DECISION_UNKNOWN;
+      const superSecurityDecision =
+        typeof request.superSecurityDecision.decision === typeof ''
+          ? decisionFromJSON(request.superSecurityDecision.decision)
+          : request.superSecurityDecision.decision;
+      const superSecurityAlreadyDecided =
+        superSecurityDecision !== Decision.DECISION_UNKNOWN;
+
       switch (type) {
         case ApproverType.ADMIN:
         case ApproverType.COMMANDER:
-          updateSetQuery = {
-            commanders: transferRequestToApproverReq.approvers,
-            'approversComments.commanderComment': commentForApprovers,
-          };
+          if (!commanderAlreadyDecided) {
+            updateSetQuery = {
+              commanders: overrideApprovers
+                ? transferRequestToApproverReq.approvers
+                : [
+                    ...new Map(
+                      [
+                        ...request.commanders,
+                        ...transferRequestToApproverReq.approvers,
+                      ].map((item: any) => [item.id, item])
+                    ).values(),
+                  ],
+              'approversComments.commanderComment': commentForApprovers,
+            };
+          }
           break;
         case ApproverType.SECURITY:
-          updateSetQuery = {
-            securityApprovers: transferRequestToApproverReq.approvers,
-            'approversComments.securityComment': commentForApprovers,
-          };
+          if (!securityAlreadyDecided) {
+            updateSetQuery = {
+              securityApprovers: overrideApprovers
+                ? transferRequestToApproverReq.approvers
+                : [
+                    ...new Map(
+                      [
+                        ...request.securityApprovers,
+                        ...transferRequestToApproverReq.approvers,
+                      ].map((item: any) => [item.id, item])
+                    ).values(),
+                  ],
+              'approversComments.securityComment': commentForApprovers,
+            };
+          }
           break;
         case ApproverType.SUPER_SECURITY:
-          updateSetQuery = {
-            superSecurityApprovers: transferRequestToApproverReq.approvers,
-            'approversComments.superSecurityComment': commentForApprovers,
-          };
+          if (superSecurityAlreadyDecided) {
+            updateSetQuery = {
+              superSecurityApprovers: overrideApprovers
+                ? transferRequestToApproverReq.approvers
+                : [
+                    ...new Map(
+                      [
+                        ...request.superSecurityApprovers,
+                        ...transferRequestToApproverReq.approvers,
+                      ].map((item: any) => [item.id, item])
+                    ).values(),
+                  ],
+              'approversComments.superSecurityComment': commentForApprovers,
+            };
+          }
           break;
         default:
           throw new Error('ApproverType is not supported!');
@@ -384,6 +528,11 @@ export class RequestRepository {
         updateQuery.requestProperties[approverField] =
           updateDecisionReq.approverDecision;
         let updatedRequest = await this.updateRequest(updateQuery);
+        let oldRequestStatus: any = updatedRequest.status;
+        oldRequestStatus =
+          typeof oldRequestStatus === typeof ''
+            ? requestStatusFromJSON(oldRequestStatus)
+            : oldRequestStatus;
 
         // Get decision
         let decision =
@@ -486,20 +635,31 @@ export class RequestRepository {
         try {
           // Send notification
           if (approvingNotificationType) {
-            await createNotifications(
-              approvingNotificationType,
-              updatedRequest
-            );
-            sendMail(approvingMailType, updatedRequest).then().catch();
-            if (newRequestStatus) {
-              requestStatusNotificationType =
-                newRequestStatus === RequestStatus.IN_PROGRESS
-                  ? NotificationType.REQUEST_IN_PROGRESS
-                  : NotificationType.REQUEST_DECLINED;
+            if (
+              oldRequestStatus !== RequestStatus.IN_PROGRESS &&
+              oldRequestStatus !== RequestStatus.DECLINED
+            ) {
               await createNotifications(
-                requestStatusNotificationType,
+                approvingNotificationType,
                 updatedRequest
               );
+              sendMail(approvingMailType, updatedRequest).then().catch();
+
+              if (newRequestStatus === RequestStatus.IN_PROGRESS) {
+                requestStatusNotificationType =
+                  NotificationType.REQUEST_IN_PROGRESS;
+                await createNotifications(
+                  requestStatusNotificationType,
+                  updatedRequest
+                );
+              } else if (newRequestStatus === RequestStatus.DECLINED) {
+                requestStatusNotificationType =
+                  NotificationType.REQUEST_DECLINED;
+                await createNotifications(
+                  requestStatusNotificationType,
+                  updatedRequest
+                );
+              }
             }
           }
         } catch (notificationError: any) {

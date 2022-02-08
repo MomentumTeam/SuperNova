@@ -425,7 +425,9 @@ export default class KartoffelController {
 
   static async getIsHealthy(req: Request, res: Response) {
     try {
-      const isHealthy = await timeout(KartoffelService.getIsHealthy({}), config.server.healthCheckTimeout);
+      const isHealthy = config.server.healthCheckAllowed
+        ? await timeout(KartoffelService.getIsHealthy({}), config.server.healthCheckTimeout)
+        : await KartoffelService.getIsHealthy({});
       res.send(isHealthy);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
