@@ -1778,6 +1778,7 @@ export interface KartoffelParams {
   oldHierarchy?: string | undefined;
   upn?: string | undefined;
   role?: Role | undefined;
+  entityId?: string | undefined;
   /**
    * EditEntity
    * string firstName = 25;
@@ -1794,7 +1795,7 @@ export interface KartoffelParams {
    * string entityType = 36;
    * string id =
    */
-  entityId?: string | undefined;
+  rank?: string | undefined;
 }
 
 export interface ADParams {
@@ -25923,6 +25924,9 @@ export const KartoffelParams = {
     if (message.entityId !== undefined) {
       writer.uint32(266).string(message.entityId);
     }
+    if (message.rank !== undefined) {
+      writer.uint32(274).string(message.rank);
+    }
     return writer;
   },
 
@@ -26033,6 +26037,9 @@ export const KartoffelParams = {
           break;
         case 33:
           message.entityId = reader.string();
+          break;
+        case 34:
+          message.rank = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -26217,6 +26224,11 @@ export const KartoffelParams = {
     } else {
       message.entityId = undefined;
     }
+    if (object.rank !== undefined && object.rank !== null) {
+      message.rank = String(object.rank);
+    } else {
+      message.rank = undefined;
+    }
     return message;
   },
 
@@ -26275,6 +26287,7 @@ export const KartoffelParams = {
     message.role !== undefined &&
       (obj.role = message.role ? Role.toJSON(message.role) : undefined);
     message.entityId !== undefined && (obj.entityId = message.entityId);
+    message.rank !== undefined && (obj.rank = message.rank);
     return obj;
   },
 
@@ -26452,6 +26465,11 @@ export const KartoffelParams = {
       message.entityId = object.entityId;
     } else {
       message.entityId = undefined;
+    }
+    if (object.rank !== undefined && object.rank !== null) {
+      message.rank = object.rank;
+    } else {
+      message.rank = undefined;
     }
     return message;
   },
