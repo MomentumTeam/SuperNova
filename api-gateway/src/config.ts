@@ -106,12 +106,12 @@ export const config = {
       .get('UI_KARTOFFEL_WORKER')
       .default('Worker')
       .asString(),
-    UI_KARTOFFEL_RANKS: env
+    KARTOFFEL_RANKS: env
       .get('UI_KARTOFFEL_RANKS')
       .default('טוראי,רב"ט,סמל,סמ"ר')
       .asString()
       ?.split(','),
-    USER_SERVICE_TYPE: env
+    KARTOFFEL_SERVICE_TYPES: env
       .get('UI_KARTOFFEL_SERVICE_TYPES')
       .default('חובה,חובה בתנאי קבע,קבע,מילואים')
       .asString()
