@@ -1412,6 +1412,9 @@ export class RequestRepository {
         sortStatusId: 1,
         createdAt: 1,
       };
+      if (getRequestsByPersonReq.searchQuery) {
+        sortQuery.exact = -1;
+      }
 
       let waitingForApproveCount = 0;
 
@@ -1486,32 +1489,39 @@ export class RequestRepository {
         }
       }
 
+      const addFields: any = {
+        serialNumberStr: { $toString: '$serialNumber' },
+        sortStatusId: {
+          $switch: {
+            branches: [
+              { case: { $eq: ['$status', 'SUBMITTED'] }, then: 0 },
+              {
+                case: { $eq: ['$status', 'APPROVED_BY_COMMANDER'] },
+                then: 1,
+              },
+              {
+                case: { $eq: ['$status', 'APPROVED_BY_SECURITY'] },
+                then: 2,
+              },
+              { case: { $eq: ['$status', 'IN_PROGRESS'] }, then: 3 },
+              { case: { $eq: ['$status', 'FAILED'] }, then: 4 },
+              { case: { $eq: ['$status', 'DECLINED'] }, then: 5 },
+              { case: { $eq: ['$status', 'DONE'] }, then: 6 },
+            ],
+            default: 0,
+          },
+        },
+      };
+      if (getRequestsByPersonReq.searchQuery) {
+        addFields.exact = {
+          $eq: ['$serialNumberStr', getRequestsByPersonReq.searchQuery],
+        };
+      }
+
       const totalCount = await RequestModel.count(query);
       const requests: any = await RequestModel.aggregate([
         {
-          $addFields: {
-            serialNumberStr: { $toString: '$serialNumber' },
-            sortStatusId: {
-              $switch: {
-                branches: [
-                  { case: { $eq: ['$status', 'SUBMITTED'] }, then: 0 },
-                  {
-                    case: { $eq: ['$status', 'APPROVED_BY_COMMANDER'] },
-                    then: 1,
-                  },
-                  {
-                    case: { $eq: ['$status', 'APPROVED_BY_SECURITY'] },
-                    then: 2,
-                  },
-                  { case: { $eq: ['$status', 'IN_PROGRESS'] }, then: 3 },
-                  { case: { $eq: ['$status', 'FAILED'] }, then: 4 },
-                  { case: { $eq: ['$status', 'DECLINED'] }, then: 5 },
-                  { case: { $eq: ['$status', 'DONE'] }, then: 6 },
-                ],
-                default: 0,
-              },
-            },
-          },
+          $addFields: addFields,
         },
         { $match: query },
         { $sort: sortQuery },
