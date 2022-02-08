@@ -116,6 +116,11 @@ export const config = {
       .default('חובה,חובה בתנאי קבע,קבע,מילואים')
       .asString()
       ?.split(','),
+    CREATE_SOLDIER_APPROVERS: env
+      .get('UI_CREATE_SOLDIER_APPROVERS')
+      .default('8334560,2331281')
+      .asString()
+      ?.split(','),
     USER_CLEARANCE: env
       .get('UI_USER_CLEARANCE')
       .default('1,2,3,4,5,6')
