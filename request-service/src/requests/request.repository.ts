@@ -1146,6 +1146,9 @@ export class RequestRepository {
         if (approverType === ApproverType.COMMANDER) {
           request.needSecurityDecision = false;
           request.needSuperSecurityDecision = false;
+        } else if (approverType === ApproverType.ADMIN) {
+          request.needSecurityDecision = false;
+          request.needSuperSecurityDecision = false;
         } else if (approverType === ApproverType.SECURITY) {
           request.needSecurityDecision = true;
           request.needSuperSecurityDecision = false;

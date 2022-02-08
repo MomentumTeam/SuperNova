@@ -122,10 +122,13 @@ export const config = {
       .asString(),
     HI_CHAT_SUPPORT_GROUP_NAME: env
       .get('UI_HI_CHAT_SUPPORT_GROUP_NAME')
-      .default(
-        'לגו תמיכה'
-      )
+      .default('לגו תמיכה')
       .asString(),
+    ADMIN_REQS_APPROVERS: env
+      .get('UI_ADMIN_REQS_APPROVERS')
+      .default('619e3a6fe4de0300121d78c7,619e406ee4de0300121dc4c8')
+      .asString()
+      ?.split(','),
   },
   logs: {
     storeLogs: env.get('GLOBAL_STORE_LOGS').default('true').asBool(),
