@@ -28,6 +28,7 @@ import {
   transferRequestToApprovers,
   areAllSubRequestsFinished,
   sendSubmissionMail,
+  removeApproverFromApprovers,
 } from './requests/request.controller';
 import { RequestType } from './interfaces/protoc/proto/requestService';
 import { findPath } from './utils/path';
@@ -118,6 +119,7 @@ export class Server {
         GetRequestsUnderBulk: getRequestsUnderBulk,
         AreAllSubRequestsFinished: areAllSubRequestsFinished,
         SendSubmissionMail: sendSubmissionMail,
+        RemoveApproverFromApprovers: removeApproverFromApprovers,
       });
       logger.info(`Grpc services were successfully added to the server`);
     } catch (error: any) {
