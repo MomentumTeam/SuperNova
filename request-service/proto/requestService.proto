@@ -820,6 +820,7 @@ message CreateEntityKartoffelParams{
     optional string sex = 10;
     optional int64 birthdate = 11;
     string entityType = 12;
+    string rank = 13;
 }
 
 message CreateEntityADParams{
