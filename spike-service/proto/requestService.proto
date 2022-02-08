@@ -1258,6 +1258,8 @@ message KartoffelParams{
     optional string upn = 31;
     optional Kartoffel.Role role = 32;
     optional string entityId = 33;
+
+    optional string rank = 34;
     //EditEntity
     // string firstName = 25;
     // string lastName = 26;
