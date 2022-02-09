@@ -75,6 +75,7 @@ import {
 } from '../services/teaHelper';
 import { logger } from '../logger';
 import { MailType } from '../interfaces/protoc/proto/mailService';
+import { isNaN } from 'lodash';
 
 export class RequestRepository {
   async createRequest(
@@ -1412,7 +1413,10 @@ export class RequestRepository {
         sortStatusId: 1,
         createdAt: 1,
       };
-      if (getRequestsByPersonReq.searchQuery) {
+      if (
+        getRequestsByPersonReq.searchQuery &&
+        !isNaN(getRequestsByPersonReq.searchQuery)
+      ) {
         sortQuery.exact = -1;
       }
 
@@ -1512,9 +1516,12 @@ export class RequestRepository {
           },
         },
       };
-      if (getRequestsByPersonReq.searchQuery) {
+      if (
+        getRequestsByPersonReq.searchQuery &&
+        !isNaN(getRequestsByPersonReq.searchQuery)
+      ) {
         addFields.exact = {
-          $eq: ['$serialNumberStr', getRequestsByPersonReq.searchQuery],
+          $eq: ['$serialNumber', parseInt(getRequestsByPersonReq.searchQuery)],
         };
       }
 
