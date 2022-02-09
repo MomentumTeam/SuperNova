@@ -94,33 +94,6 @@ export const config = {
       .get('UI_USER_EXTERNAL_ENTITY_TYPE')
       .default('external')
       .asString(),
-    KARTOFFEL_CIVILIAN: env
-      .get('UI_KARTOFFEL_CIVILIAN')
-      .default('Civilian')
-      .asString(),
-    KARTOFFEL_SOLDIER: env
-      .get('UI_KARTOFFEL_SOLDIER')
-      .default('Soldier')
-      .asString(),
-    KARTOFFEL_WORKER: env
-      .get('UI_KARTOFFEL_WORKER')
-      .default('Worker')
-      .asString(),
-    KARTOFFEL_RANKS: env
-      .get('UI_KARTOFFEL_RANKS')
-      .default('טוראי,רב"ט,סמל,סמ"ר')
-      .asString()
-      ?.split(','),
-    KARTOFFEL_SERVICE_TYPES: env
-      .get('UI_KARTOFFEL_SERVICE_TYPES')
-      .default('חובה,חובה בתנאי קבע,קבע,מילואים')
-      .asString()
-      ?.split(','),
-    CREATE_SOLDIER_APPROVERS: env
-      .get('UI_CREATE_SOLDIER_APPROVERS')
-      .default('8334560,2331281')
-      .asString()
-      ?.split(','),
     USER_CLEARANCE: env
       .get('UI_USER_CLEARANCE')
       .default('1,2,3,4,5,6')
@@ -159,9 +132,36 @@ export const config = {
       .get('UI_HI_CHAT_SUPPORT_GROUP_NAME')
       .default('לגו תמיכה')
       .asString(),
-    ADMIN_REQS_APPROVERS: env
-      .get('UI_ADMIN_REQS_APPROVERS')
+    CREATE_ADMIN_APPROVERS: env
+      .get('UI_CREATE_ADMIN_APPROVERS')
+      .default('61c039d8e4de0300121de45a,61dd539ce4de030012202d5e')
+      .asString()
+      ?.split(','),
+    CREATE_SOLDIER_APPROVERS: env
+      .get('UI_CREATE_SOLDIER_APPROVERS')
       .default('619e3a6fe4de0300121d78c7,619e406ee4de0300121dc4c8')
+      .asString()
+      ?.split(','),
+    KARTOFFEL_CIVILIAN: env
+      .get('UI_KARTOFFEL_CIVILIAN')
+      .default('Civilian')
+      .asString(),
+    KARTOFFEL_SOLDIER: env
+      .get('UI_KARTOFFEL_SOLDIER')
+      .default('Soldier')
+      .asString(),
+    KARTOFFEL_WORKER: env
+      .get('UI_KARTOFFEL_WORKER')
+      .default('Worker')
+      .asString(),
+    KARTOFFEL_RANKS: env
+      .get('UI_KARTOFFEL_RANKS')
+      .default('טוראי,רב"ט,סמל,סמ"ר')
+      .asString()
+      ?.split(','),
+    KARTOFFEL_SERVICE_TYPES: env
+      .get('UI_KARTOFFEL_SERVICE_TYPES')
+      .default('חובה,חובה בתנאי קבע,קבע,מילואים')
       .asString()
       ?.split(','),
   },
