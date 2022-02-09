@@ -25,18 +25,18 @@ export function jobTitleExists(
   );
 }
 
-function isNumeric(value: string) {
+export function isNumeric(value: string) {
   return /^-?\d+$/.test(value);
 }
-export function getSuggestions(
+export function getJobTitleSuggestions(
   roleArray: RoleArray,
   jobTitle: string
 ): string[] {
   let suggestions = [];
-  // let suggestion = jobTitle;
   let suggestion = '';
   const jobTitleSplit: string[] = jobTitle.replace(/  +/g, ' ').split(' ');
   let firstNumIndex: any = jobTitleSplit.length - 1;
+
   for (let i in jobTitleSplit) {
     suggestion = suggestion + ' ' + jobTitleSplit[i];
     if (isNumeric(jobTitleSplit[i])) {

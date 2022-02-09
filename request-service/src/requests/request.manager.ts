@@ -28,6 +28,7 @@ import {
   AreAllSubRequestsFinishedReq,
   AreAllSubRequestsFinishedRes,
   SendSubmissionMailReq,
+  RemoveApproverFromApproversReq,
 } from '../interfaces/protoc/proto/requestService';
 import { RequestRepository } from './request.repository';
 export class RequestManager {
@@ -140,6 +141,18 @@ export class RequestManager {
     try {
       return (await this.requestRepository.transferRequestToApprovers(
         transferRequestToApproverReq
+      )) as Request;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async removeApproverFromApprovers(
+    removeApproverFromApproversReq: RemoveApproverFromApproversReq
+  ): Promise<Request> {
+    try {
+      return (await this.requestRepository.removeApproverFromApprovers(
+        removeApproverFromApproversReq
       )) as Request;
     } catch (error) {
       throw error;

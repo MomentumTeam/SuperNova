@@ -39,6 +39,7 @@ import {
   ApproversComments,
   ApproverDecision,
   approverTypeToJSON,
+  RemoveApproverFromApproversReq,
 } from '../interfaces/protoc/proto/requestService';
 import { RequestsService } from './requests.service';
 import { AuthenticationError } from '../utils/errors/userErrors';
@@ -298,11 +299,29 @@ export default class RequestsController {
     }
   }
 
+  static async removeApproverFromApprovers(req: any, res: Response) {
+    let removeApproverFromApproversReq: RemoveApproverFromApproversReq = {
+      id: req.params.id,
+      approverId: req.body.approverId,
+      type: req.body.type,
+    };
+    try {
+      const request = await RequestsService.removeApproverFromApprovers(
+        removeApproverFromApproversReq
+      );
+      res.send(request);
+    } catch (error: any) {
+      const statusCode = statusCodeHandler(error);
+      res.status(statusCode).send(error.message);
+    }
+  }
+
   static async transferRequestToApprovers(req: any, res: Response) {
     let transferRequestToApproversReq: TransferRequestToApproversReq = {
       id: req.params.id,
       approvers: req.body.approvers,
       type: req.body.type,
+      overrideApprovers: req.body.overrideApprovers,
     };
     if (req.body.commentForApprovers) {
       transferRequestToApproversReq.commentForApprovers =
@@ -519,20 +538,29 @@ export default class RequestsController {
               ? approverTypeFromJSON(type)
               : type;
           });
-          if (entityUserType.includes(ApproverType.COMMANDER) || entityUserType.includes(ApproverType.ADMIN)) {
+          if (
+            entityUserType.includes(ApproverType.COMMANDER) ||
+            entityUserType.includes(ApproverType.ADMIN)
+          ) {
             assignRoleToEntityReq.commanders = [
               {
                 id: entityWithRole.id,
                 displayName: entityWithRole.displayName,
-                identityCard: entityWithRole.identityCard ? entityWithRole.identityCard : "",
-                personalNumber: entityWithRole.personalNumber ? entityWithRole.personalNumber : "",
+                identityCard: entityWithRole.identityCard
+                  ? entityWithRole.identityCard
+                  : '',
+                personalNumber: entityWithRole.personalNumber
+                  ? entityWithRole.personalNumber
+                  : '',
                 ancestors: [],
               },
             ];
 
-            assignRoleToEntityReq.commanders = assignRoleToEntityReq.commanders.filter(
-              (v: any, i: any, a: any) => a.findIndex((t: any) => t.id === v.id) === i
-            );
+            assignRoleToEntityReq.commanders =
+              assignRoleToEntityReq.commanders.filter(
+                (v: any, i: any, a: any) =>
+                  a.findIndex((t: any) => t.id === v.id) === i
+              );
           }
         } catch (entityError) {
           //probably role is not attached to entity

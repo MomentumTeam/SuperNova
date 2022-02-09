@@ -137,6 +137,17 @@ export const ADParamsObj = Joi.object({
   //TODO
 });
 
+export const removeApproverFromApproversSchema = Joi.object({
+  body: {
+    approverId: Joi.objectId().required(),
+    type: Joi.string()
+      .valid(...Object.keys(ApproverType))
+      .required(),
+  },
+  params: { id: Joi.objectId().required() },
+  query: {},
+});
+
 export const transferRequestToApproversSchema = Joi.object({
   body: {
     approvers: Joi.array().items(entityMinObj).required(),
@@ -144,6 +155,7 @@ export const transferRequestToApproversSchema = Joi.object({
       .valid(...Object.keys(ApproverType))
       .required(),
     commentForApprovers: Joi.string(),
+    overrideApprovers: Joi.boolean().default(true),
   },
   params: { id: Joi.objectId().required() },
   query: {},
@@ -367,6 +379,7 @@ const createEntityKartoffelParamsObj = Joi.object({
   identityCard: Joi.string().required(),
   personalNumber: Joi.string().allow('', null),
   serviceType: Joi.string(),
+  rank: Joi.string(),
   phone: Joi.array().items(Joi.string()),
   mobilePhone: Joi.array().items(Joi.string()),
   address: Joi.string(),
@@ -378,7 +391,6 @@ const createEntityKartoffelParamsObj = Joi.object({
 const createEntityADParamsObj = Joi.object({
   //NO PARAMETERS NEEDED
 });
-
 
 export const createEntitySchema = Joi.object({
   body: {
@@ -473,11 +485,11 @@ const editEntityKartoffelParamsObj = Joi.object({
   id: Joi.string().required(),
   firstName: Joi.string().required(),
   lastName: Joi.string().required(),
-  identityCard: Joi.string().allow("", null),
-  personalNumber: Joi.string().allow("", null),
+  identityCard: Joi.string().allow('', null),
+  personalNumber: Joi.string().allow('', null),
   serviceType: Joi.string(),
-  phone: Joi.array().items(Joi.string().allow("")),
-  mobilePhone: Joi.array().items(Joi.string().allow("")),
+  phone: Joi.array().items(Joi.string().allow('')),
+  mobilePhone: Joi.array().items(Joi.string().allow('')),
   address: Joi.string(),
   clearance: Joi.string(),
   sex: Joi.string(),
@@ -486,7 +498,7 @@ const editEntityKartoffelParamsObj = Joi.object({
 });
 
 const editEntityADParamsObj = Joi.object({
-  samAccountName: Joi.string().allow("", null),
+  samAccountName: Joi.string().allow('', null),
   firstName: Joi.string().required(),
   lastName: Joi.string().required(),
   fullName: Joi.string().required(),

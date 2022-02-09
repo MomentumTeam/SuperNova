@@ -46,6 +46,7 @@ service RequestService {
 
     rpc GetRequestsByPerson(GetRequestsByPersonReq) returns (GetRequestsByPersonRes){}
     rpc TransferRequestToApprovers(TransferRequestToApproversReq) returns (Request){}
+    rpc RemoveApproverFromApprovers(RemoveApproverFromApproversReq) returns (Request){}
 
     rpc SendSubmissionMail(SendSubmissionMailReq) returns (Request){}
 }
@@ -819,6 +820,7 @@ message CreateEntityKartoffelParams{
     optional string sex = 10;
     optional int64 birthdate = 11;
     string entityType = 12;
+    string rank = 13;
 }
 
 message CreateEntityADParams{
@@ -983,6 +985,14 @@ message TransferRequestToApproversReq{
     repeated EntityMin approvers = 2;
     ApproverType type = 3;
     optional string commentForApprovers = 4;
+    optional bool overrideApprovers = 5;
+}
+
+//15.RemoveApproverFromApprovers
+message RemoveApproverFromApproversReq{
+    string id = 1;
+    string approverId = 2;
+    ApproverType type = 3;
 }
 
 // ---------------------------------------------Other Functions Objects------------------------------------------------------------
@@ -1248,6 +1258,8 @@ message KartoffelParams{
     optional string upn = 31;
     optional Kartoffel.Role role = 32;
     optional string entityId = 33;
+
+    optional string rank = 34;
     //EditEntity
     // string firstName = 25;
     // string lastName = 26;

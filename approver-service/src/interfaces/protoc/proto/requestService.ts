@@ -1356,6 +1356,7 @@ export interface CreateEntityKartoffelParams {
   sex?: string | undefined;
   birthdate?: number | undefined;
   entityType: string;
+  rank: string;
 }
 
 /** NO PARAMETERS NEEDED */
@@ -1519,6 +1520,14 @@ export interface TransferRequestToApproversReq {
   approvers: EntityMin[];
   type: ApproverType;
   commentForApprovers?: string | undefined;
+  overrideApprovers?: boolean | undefined;
+}
+
+/** 15.RemoveApproverFromApprovers */
+export interface RemoveApproverFromApproversReq {
+  id: string;
+  approverId: string;
+  type: ApproverType;
 }
 
 export interface UpdateReq {
@@ -1769,6 +1778,7 @@ export interface KartoffelParams {
   oldHierarchy?: string | undefined;
   upn?: string | undefined;
   role?: Role | undefined;
+  entityId?: string | undefined;
   /**
    * EditEntity
    * string firstName = 25;
@@ -1785,7 +1795,7 @@ export interface KartoffelParams {
    * string entityType = 36;
    * string id =
    */
-  entityId?: string | undefined;
+  rank?: string | undefined;
 }
 
 export interface ADParams {
@@ -19361,6 +19371,7 @@ const baseCreateEntityKartoffelParams: object = {
   mobilePhone: "",
   clearance: "",
   entityType: "",
+  rank: "",
 };
 
 export const CreateEntityKartoffelParams = {
@@ -19403,6 +19414,9 @@ export const CreateEntityKartoffelParams = {
     }
     if (message.entityType !== "") {
       writer.uint32(98).string(message.entityType);
+    }
+    if (message.rank !== "") {
+      writer.uint32(106).string(message.rank);
     }
     return writer;
   },
@@ -19456,6 +19470,9 @@ export const CreateEntityKartoffelParams = {
           break;
         case 12:
           message.entityType = reader.string();
+          break;
+        case 13:
+          message.rank = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -19531,6 +19548,11 @@ export const CreateEntityKartoffelParams = {
     } else {
       message.entityType = "";
     }
+    if (object.rank !== undefined && object.rank !== null) {
+      message.rank = String(object.rank);
+    } else {
+      message.rank = "";
+    }
     return message;
   },
 
@@ -19559,6 +19581,7 @@ export const CreateEntityKartoffelParams = {
     message.sex !== undefined && (obj.sex = message.sex);
     message.birthdate !== undefined && (obj.birthdate = message.birthdate);
     message.entityType !== undefined && (obj.entityType = message.entityType);
+    message.rank !== undefined && (obj.rank = message.rank);
     return obj;
   },
 
@@ -19629,6 +19652,11 @@ export const CreateEntityKartoffelParams = {
       message.entityType = object.entityType;
     } else {
       message.entityType = "";
+    }
+    if (object.rank !== undefined && object.rank !== null) {
+      message.rank = object.rank;
+    } else {
+      message.rank = "";
     }
     return message;
   },
@@ -22139,6 +22167,9 @@ export const TransferRequestToApproversReq = {
     if (message.commentForApprovers !== undefined) {
       writer.uint32(34).string(message.commentForApprovers);
     }
+    if (message.overrideApprovers !== undefined) {
+      writer.uint32(40).bool(message.overrideApprovers);
+    }
     return writer;
   },
 
@@ -22166,6 +22197,9 @@ export const TransferRequestToApproversReq = {
           break;
         case 4:
           message.commentForApprovers = reader.string();
+          break;
+        case 5:
+          message.overrideApprovers = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -22203,6 +22237,14 @@ export const TransferRequestToApproversReq = {
     } else {
       message.commentForApprovers = undefined;
     }
+    if (
+      object.overrideApprovers !== undefined &&
+      object.overrideApprovers !== null
+    ) {
+      message.overrideApprovers = Boolean(object.overrideApprovers);
+    } else {
+      message.overrideApprovers = undefined;
+    }
     return message;
   },
 
@@ -22219,6 +22261,8 @@ export const TransferRequestToApproversReq = {
     message.type !== undefined && (obj.type = approverTypeToJSON(message.type));
     message.commentForApprovers !== undefined &&
       (obj.commentForApprovers = message.commentForApprovers);
+    message.overrideApprovers !== undefined &&
+      (obj.overrideApprovers = message.overrideApprovers);
     return obj;
   },
 
@@ -22251,6 +22295,121 @@ export const TransferRequestToApproversReq = {
       message.commentForApprovers = object.commentForApprovers;
     } else {
       message.commentForApprovers = undefined;
+    }
+    if (
+      object.overrideApprovers !== undefined &&
+      object.overrideApprovers !== null
+    ) {
+      message.overrideApprovers = object.overrideApprovers;
+    } else {
+      message.overrideApprovers = undefined;
+    }
+    return message;
+  },
+};
+
+const baseRemoveApproverFromApproversReq: object = {
+  id: "",
+  approverId: "",
+  type: 0,
+};
+
+export const RemoveApproverFromApproversReq = {
+  encode(
+    message: RemoveApproverFromApproversReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.approverId !== "") {
+      writer.uint32(18).string(message.approverId);
+    }
+    if (message.type !== 0) {
+      writer.uint32(24).int32(message.type);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): RemoveApproverFromApproversReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseRemoveApproverFromApproversReq,
+    } as RemoveApproverFromApproversReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        case 2:
+          message.approverId = reader.string();
+          break;
+        case 3:
+          message.type = reader.int32() as any;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RemoveApproverFromApproversReq {
+    const message = {
+      ...baseRemoveApproverFromApproversReq,
+    } as RemoveApproverFromApproversReq;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    if (object.approverId !== undefined && object.approverId !== null) {
+      message.approverId = String(object.approverId);
+    } else {
+      message.approverId = "";
+    }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = approverTypeFromJSON(object.type);
+    } else {
+      message.type = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: RemoveApproverFromApproversReq): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    message.approverId !== undefined && (obj.approverId = message.approverId);
+    message.type !== undefined && (obj.type = approverTypeToJSON(message.type));
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<RemoveApproverFromApproversReq>
+  ): RemoveApproverFromApproversReq {
+    const message = {
+      ...baseRemoveApproverFromApproversReq,
+    } as RemoveApproverFromApproversReq;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    if (object.approverId !== undefined && object.approverId !== null) {
+      message.approverId = object.approverId;
+    } else {
+      message.approverId = "";
+    }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = object.type;
+    } else {
+      message.type = 0;
     }
     return message;
   },
@@ -25766,6 +25925,9 @@ export const KartoffelParams = {
     if (message.entityId !== undefined) {
       writer.uint32(266).string(message.entityId);
     }
+    if (message.rank !== undefined) {
+      writer.uint32(274).string(message.rank);
+    }
     return writer;
   },
 
@@ -25876,6 +26038,9 @@ export const KartoffelParams = {
           break;
         case 33:
           message.entityId = reader.string();
+          break;
+        case 34:
+          message.rank = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -26060,6 +26225,11 @@ export const KartoffelParams = {
     } else {
       message.entityId = undefined;
     }
+    if (object.rank !== undefined && object.rank !== null) {
+      message.rank = String(object.rank);
+    } else {
+      message.rank = undefined;
+    }
     return message;
   },
 
@@ -26118,6 +26288,7 @@ export const KartoffelParams = {
     message.role !== undefined &&
       (obj.role = message.role ? Role.toJSON(message.role) : undefined);
     message.entityId !== undefined && (obj.entityId = message.entityId);
+    message.rank !== undefined && (obj.rank = message.rank);
     return obj;
   },
 
@@ -26295,6 +26466,11 @@ export const KartoffelParams = {
       message.entityId = object.entityId;
     } else {
       message.entityId = undefined;
+    }
+    if (object.rank !== undefined && object.rank !== null) {
+      message.rank = object.rank;
+    } else {
+      message.rank = undefined;
     }
     return message;
   },
@@ -28084,6 +28260,9 @@ export interface RequestService {
   TransferRequestToApprovers(
     request: TransferRequestToApproversReq
   ): Promise<Request>;
+  RemoveApproverFromApprovers(
+    request: RemoveApproverFromApproversReq
+  ): Promise<Request>;
   SendSubmissionMail(request: SendSubmissionMailReq): Promise<Request>;
 }
 
@@ -28136,6 +28315,8 @@ export class RequestServiceClientImpl implements RequestService {
     this.GetRequestsByPerson = this.GetRequestsByPerson.bind(this);
     this.TransferRequestToApprovers =
       this.TransferRequestToApprovers.bind(this);
+    this.RemoveApproverFromApprovers =
+      this.RemoveApproverFromApprovers.bind(this);
     this.SendSubmissionMail = this.SendSubmissionMail.bind(this);
   }
   CreateRoleRequest(request: CreateRoleReq): Promise<CreateRoleRes> {
@@ -28565,6 +28746,18 @@ export class RequestServiceClientImpl implements RequestService {
     const promise = this.rpc.request(
       "RequestService.RequestService",
       "TransferRequestToApprovers",
+      data
+    );
+    return promise.then((data) => Request.decode(new _m0.Reader(data)));
+  }
+
+  RemoveApproverFromApprovers(
+    request: RemoveApproverFromApproversReq
+  ): Promise<Request> {
+    const data = RemoveApproverFromApproversReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "RemoveApproverFromApprovers",
       data
     );
     return promise.then((data) => Request.decode(new _m0.Reader(data)));
