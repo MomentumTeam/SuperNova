@@ -137,8 +137,8 @@ export function getRequestTypeQuery(type: any) {
 export function getAncestorsQuery(groupsInCharge: Array<any>) {
   return {
     $or: [
-      { 'submittedBy.ancestors': {$in: groupsInCharge }},
-      { 'submittedBy.directGroup': {$in: groupsInCharge} },
+      { 'submittedBy.ancestors': { $in: groupsInCharge } }, 
+      { 'submittedBy.directGroup': { $in: groupsInCharge } },
     ],
   };
 }
