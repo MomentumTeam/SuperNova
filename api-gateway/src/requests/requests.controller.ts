@@ -40,6 +40,7 @@ import {
   ApproverDecision,
   approverTypeToJSON,
   RemoveApproverFromApproversReq,
+  RequestType,
 } from '../interfaces/protoc/proto/requestService';
 import { RequestsService } from './requests.service';
 import { AuthenticationError } from '../utils/errors/userErrors';
@@ -654,22 +655,25 @@ export default class RequestsController {
       ancestors: req.user.ancestors,
     };
 
-    const createNewApproverReq: CreateNewApproverReq = {
+    const createNewApproverReq: any = {
       submittedBy: submittedBy,
       ...req.body,
     };
+    createNewApproverReq.type = RequestType.ADD_APPROVER;
 
     try {
       let groupId = undefined;
       if (createNewApproverReq.additionalParams?.groupInChargeId) {
         groupId = createNewApproverReq.additionalParams?.groupInChargeId;
       }
+
       const request: any = await approveUserRequest(
         req,
         createNewApproverReq,
         groupId,
         true
       );
+      delete createNewApproverReq.type;
       const newApprover = await RequestsService.createNewApproverRequest(
         request
       );
