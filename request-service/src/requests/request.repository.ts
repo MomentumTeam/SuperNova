@@ -1413,12 +1413,6 @@ export class RequestRepository {
         sortStatusId: 1,
         createdAt: 1,
       };
-      if (
-        getRequestsByPersonReq.searchQuery &&
-        !isNaN(getRequestsByPersonReq.searchQuery)
-      ) {
-        sortQuery.exact = -1;
-      }
 
       let waitingForApproveCount = 0;
 
@@ -1516,14 +1510,6 @@ export class RequestRepository {
           },
         },
       };
-      if (
-        getRequestsByPersonReq.searchQuery &&
-        !isNaN(getRequestsByPersonReq.searchQuery)
-      ) {
-        addFields.exact = {
-          $eq: ['$serialNumber', parseInt(getRequestsByPersonReq.searchQuery)],
-        };
-      }
 
       const totalCount = await RequestModel.count(query);
       const requests: any = await RequestModel.aggregate([
