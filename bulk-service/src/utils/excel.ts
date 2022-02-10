@@ -68,8 +68,8 @@ export function isTableFull(rows: any, type: RequestType) {
 }
 
 export function containsLegalValues(rows: any, type: RequestType) {
-  const jobTitleRegex =
-    /^[\w\u0590-\u05fe]+[\w\u0590-\u05fe\s\-\']*[\w\u0590-\u05fe\']+$/;
+  // const jobTitleRegex =
+  //   /^[\w\u0590-\u05fe]+[\w\u0590-\u05fe\s\-\']*[\w\u0590-\u05fe\']+$/;
   if (type === RequestType.CREATE_ROLE_BULK) {
     const hebEntityTypes: string[] = Object.keys(
       C.hebEntityTypeToKartoffelLang
@@ -79,25 +79,22 @@ export function containsLegalValues(rows: any, type: RequestType) {
       const jobTitle = rows[i][0].toString();
       const hebEntityType = rows[i][2].toString();
       const hebClearance = rows[i][1].toString();
-      if (
-        hebEntityTypes.indexOf(hebEntityType) === -1 ||
-        !jobTitleRegex.test(jobTitle)
-      ) {
+      if (hebEntityTypes.indexOf(hebEntityType) === -1) {
         return false;
       }
     }
     return true;
   } else {
-    for (let i in rows) {
-      const newJobTitle = rows[i][2];
-      if (
-        newJobTitle != null &&
-        newJobTitle != undefined &&
-        !jobTitleRegex.test(newJobTitle)
-      ) {
-        return false;
-      }
-    }
+    // for (let i in rows) {
+    //   const newJobTitle = rows[i][2];
+    //   if (
+    //     newJobTitle !== null &&
+    //     newJobTitle !== undefined &&
+    //     !jobTitleRegex.test(newJobTitle)
+    //   ) {
+    //     return false;
+    //   }
+    // }
     return true;
   }
 }
