@@ -457,7 +457,7 @@ export class RequestRepository {
           }
           break;
         case ApproverType.SUPER_SECURITY:
-          if (superSecurityAlreadyDecided) {
+          if (!superSecurityAlreadyDecided) {
             updateSetQuery = {
               superSecurityApprovers: overrideApprovers
                 ? transferRequestToApproverReq.approvers
