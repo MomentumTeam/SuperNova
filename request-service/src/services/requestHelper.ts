@@ -98,6 +98,12 @@ export function turnObjectIdsToStrings(document: any): void {
     });
   }
 
+  if (document.superSecurityApprovers) {
+    document.superSecurityApprovers.forEach((superSecurityApprover: any) => {
+      turnIdOfApproverToString(superSecurityApprover);
+    });
+  }
+
   if (document.kartoffelProperties && document.kartoffelProperties.id) {
     document.kartoffelProperties.id =
       document.kartoffelProperties.id.toString();

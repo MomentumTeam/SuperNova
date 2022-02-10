@@ -328,6 +328,8 @@ export class RequestRepository {
           : request.superSecurityDecision.decision;
       const superSecurityAlreadyDecided =
         superSecurityDecision !== Decision.DECISION_UNKNOWN;
+      const needSecurityDecision = request.needSecurityDecision;
+      const needSuperSecurityDecision = request.needSuperSecurityDecision;
       switch (type) {
         case ApproverType.ADMIN:
         case ApproverType.COMMANDER:
@@ -341,7 +343,7 @@ export class RequestRepository {
           }
           break;
         case ApproverType.SECURITY:
-          if (!securityAlreadyDecided) {
+          if (!securityAlreadyDecided && needSecurityDecision) {
             updateSetQuery = {
               securityApprovers: removeApproverFromArray(
                 removeApproverFromApproversReq.approverId,
@@ -351,7 +353,7 @@ export class RequestRepository {
           }
           break;
         case ApproverType.SUPER_SECURITY:
-          if (!superSecurityAlreadyDecided) {
+          if (!superSecurityAlreadyDecided && needSuperSecurityDecision) {
             updateSetQuery = {
               superSecurityApprovers: removeApproverFromArray(
                 removeApproverFromApproversReq.approverId,
@@ -419,7 +421,8 @@ export class RequestRepository {
           : request.superSecurityDecision.decision;
       const superSecurityAlreadyDecided =
         superSecurityDecision !== Decision.DECISION_UNKNOWN;
-
+      const needSecurityDecision = request.needSecurityDecision;
+      const needSuperSecurityDecision = request.needSuperSecurityDecision;
       switch (type) {
         case ApproverType.ADMIN:
         case ApproverType.COMMANDER:
@@ -440,7 +443,7 @@ export class RequestRepository {
           }
           break;
         case ApproverType.SECURITY:
-          if (!securityAlreadyDecided) {
+          if (!securityAlreadyDecided && needSecurityDecision) {
             updateSetQuery = {
               securityApprovers: overrideApprovers
                 ? transferRequestToApproverReq.approvers
@@ -457,7 +460,7 @@ export class RequestRepository {
           }
           break;
         case ApproverType.SUPER_SECURITY:
-          if (!superSecurityAlreadyDecided) {
+          if (!superSecurityAlreadyDecided && needSuperSecurityDecision) {
             updateSetQuery = {
               superSecurityApprovers: overrideApprovers
                 ? transferRequestToApproverReq.approvers
