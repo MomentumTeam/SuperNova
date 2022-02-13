@@ -83,7 +83,7 @@ export default class RequestsController {
       to: req.query.to,
       userType: req.user.types,
       approvementStatus: ApprovementStatus.ANY,
-      groupsInCharge: []
+      groupsInCharge: [],
     };
 
     if (req.query.searchQuery) {
@@ -121,7 +121,7 @@ export default class RequestsController {
       to: req.query.to,
       userType: req.user.types,
       approvementStatus: ApprovementStatus.BY_USER_TYPE,
-      groupsInCharge: []
+      groupsInCharge: [],
     };
 
     if (req.query.searchQuery) {
@@ -144,7 +144,10 @@ export default class RequestsController {
       const approver = await ApproverService.getApproverByEntityId({
         entityId: req.user.id,
       });
-      if (approver.groupsInCharge) {
+      if (
+        approver.groupsInCharge !== undefined &&
+        approver.groupsInCharge.length > 0
+      ) {
         getRequestsByPersonReq.groupsInCharge = approver.groupsInCharge;
       }
     }
@@ -168,7 +171,7 @@ export default class RequestsController {
       to: req.query.to,
       userType: req.user.types,
       approvementStatus: ApprovementStatus.BY_USER_TYPE,
-      groupsInCharge: []
+      groupsInCharge: [],
     };
 
     if (req.query.searchQuery) {
@@ -205,7 +208,7 @@ export default class RequestsController {
       from: req.query.from,
       to: req.query.to,
       userType: req.user.types,
-      groupsInCharge: []
+      groupsInCharge: [],
     };
 
     if (req.query.searchQuery) {

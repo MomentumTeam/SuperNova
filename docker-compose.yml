@@ -1,17 +1,17 @@
 version: '3.8'
 services:
-  nginx-server:
-    image: nginx:latest
-    container_name: nginx-server
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-    depends_on:
-      - api-gateway
-      - authentication-service
-      - supernova-ui
-    ports:
-      - 80:80
-      - 443:443
+  # nginx-server:
+  #   image: nginx:latest
+  #   container_name: nginx-server
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/nginx.conf
+  #   depends_on:
+  #     - api-gateway
+  #     - authentication-service
+  #     - supernova-ui
+  #   ports:
+  #     - 80:80
+  #     - 443:443
 
   mongo:
     image: mongo:latest
@@ -266,58 +266,58 @@ services:
       - KC_CIVILIAN_DEFAULT_RANK=לא ידוע
       - KC_LOG_PATH=/logs
 
-  execution-script:
-    image: execution-script
-    build: ./execution-script/
-    env_file:
-      - ./supernova.env
-    depends_on:
-      - request-service
-      - producer-service
-    volumes:
-      - logs:/logs
-    environment:
-      - EXS_RS_URL=request-service:8080
-      - EXS_PS_URL=producer-service:8080
-      - EXS_APS_URL=approver-service:8080
-      - EXS_MINUTE=5
-      - EXS_CRON_JOB=false
-      - EXS_ROOT_ID=619e3193f235dc001846bb4f
-      - EXS_LOG_PATH=/logs
+  # execution-script:
+  #   image: execution-script
+  #   build: ./execution-script/
+  #   env_file:
+  #     - ./supernova.env
+  #   depends_on:
+  #     - request-service
+  #     - producer-service
+  #   volumes:
+  #     - logs:/logs
+  #   environment:
+  #     - EXS_RS_URL=request-service:8080
+  #     - EXS_PS_URL=producer-service:8080
+  #     - EXS_APS_URL=approver-service:8080
+  #     - EXS_MINUTE=5
+  #     - EXS_CRON_JOB=false
+  #     - EXS_ROOT_ID=619e3193f235dc001846bb4f
+  #     - EXS_LOG_PATH=/logs
 
-  whiteListSync-script:
-    image: whitelistsync-script
-    build: ./whiteListSync-script/
-    env_file:
-      - ./supernova.env
-    depends_on:
-      - approver-service
-    volumes:
-      - logs:/logs
-    environment:
-      - WLS_APS_URL=approver-service:8080
-      - WLS_HOUR=10
-      - WLS_MINUTE=0
-      - WLS_CRON_JOB=false
-      - WLS_LOG_PATH=/logs
+  # whiteListSync-script:
+  #   image: whitelistsync-script
+  #   build: ./whiteListSync-script/
+  #   env_file:
+  #     - ./supernova.env
+  #   depends_on:
+  #     - approver-service
+  #   volumes:
+  #     - logs:/logs
+  #   environment:
+  #     - WLS_APS_URL=approver-service:8080
+  #     - WLS_HOUR=10
+  #     - WLS_MINUTE=0
+  #     - WLS_CRON_JOB=false
+  #     - WLS_LOG_PATH=/logs
 
-  approvers-init-script:
-    image: approvers-init-script
-    build: ./approvers-init-script/
-    env_file:
-      - ./supernova.env
-    depends_on:
-      - approver-service
-      - kartoffel-service
-    volumes:
-      - logs:/logs
-      - ais-excel-files:/excelFiles
-      # - /home/reuven/SuperNova/approvers-init-script/src/excelFiles:/excelFiles
-    environment:
-      - AIS_KS_URL=kartoffel-service:8080
-      - AIS_APS_URL=approver-service:8080
-      - AIS_EXCEL_FILE_PATH=/excelFiles/AISExcelFile.xlsx
-      - AIS_LOG_PATH=/logs
+  # approvers-init-script:
+  #   image: approvers-init-script
+  #   build: ./approvers-init-script/
+  #   env_file:
+  #     - ./supernova.env
+  #   depends_on:
+  #     - approver-service
+  #     - kartoffel-service
+  #   volumes:
+  #     - logs:/logs
+  #     - ais-excel-files:/excelFiles
+  #     # - /home/reuven/SuperNova/approvers-init-script/src/excelFiles:/excelFiles
+  #   environment:
+  #     - AIS_KS_URL=kartoffel-service:8080
+  #     - AIS_APS_URL=approver-service:8080
+  #     - AIS_EXCEL_FILE_PATH=/excelFiles/AISExcelFile.xlsx
+  #     - AIS_LOG_PATH=/logs
 
   # population-script:
   #   image: population-script
@@ -347,8 +347,8 @@ services:
     environment:
       - AS_PORT=8080
       - AS_SHRAGA_URL=https://shraga.shraga.branch-yesodot.org
-      - AS_CLIENT_ENDPOINT=http://localhost
-      # - AS_CLIENT_ENDPOINT=http://localhost:3000
+      # - AS_CLIENT_ENDPOINT=http://localhost
+      - AS_CLIENT_ENDPOINT=http://localhost:3000
       - AS_KS_URL=kartoffel-service:8080
       - AS_APS_URL=approver-service:8080
       - AS_KARTOFFEL_ENRICH=false
@@ -386,8 +386,8 @@ services:
       - GATEWAY_RS_URL=request-service:8080
       - GATEWAY_PS_URL=producer-service:8080
       - GATEWAY_NS_URL=notification-service:8080
-      # - GATEWAY_AS_URL=http://localhost:9000
-      - GATEWAY_AS_URL=http://localhost
+      - GATEWAY_AS_URL=http://localhost:9000
+      # - GATEWAY_AS_URL=http://localhost
       - GATEWAY_BS_URL=bulk-service:8080
       - GATEWAY_APS_URL=approver-service:8080
       - GATEWAY_BS_FOLDER_PATH=/bulkFiles
@@ -401,113 +401,6 @@ services:
       - GATEWAY_ROOT_ID=619e3193f235dc001846bb4f
       - GATEWAY_LOG_PATH=/logs
 
-  supernova-ui:
-    image: supernova-ui
-    build: ./SuperNovaUI/
-    env_file:
-      - ./supernova.env
-    depends_on:
-      - api-gateway
-    ports:
-      - '3000:80'
-    environment:
-      - UI_REACT_APP_BASE_URL=http://localhost:2000
-      - UI_REACT_TOKEN_NAME=sp-token
-      - UI_USER_SOURCE_DI=es_name
-
-  # Kafka GUI
-  kouncil:
-    image: consdata/kouncil:latest
-    ports:
-      - '4001:8080'
-    environment:
-      bootstrapServers: 'kafka:29092'
-    depends_on:
-      - 'kafka'
-  kafka:
-    image: obsidiandynamics/kafka
-    container_name: kafka
-    ports:
-      - '2181:2181'
-      - '9092:9092'
-    environment:
-      KAFKA_LISTENERS: 'INTERNAL://:29092,EXTERNAL://:9092'
-      KAFKA_ADVERTISED_LISTENERS: 'INTERNAL://kafka:29092,EXTERNAL://localhost:9092'
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT'
-      KAFKA_INTER_BROKER_LISTENER_NAME: 'INTERNAL'
-      KAFKA_ZOOKEEPER_SESSION_TIMEOUT: '6000'
-      KAFKA_RESTART_ATTEMPTS: '10'
-      KAFKA_RESTART_DELAY: '5'
-      ZOOKEEPER_AUTOPURGE_PURGE_INTERVAL: '0'
-
-  apm-server:
-    image: docker.elastic.co/apm/apm-server:7.15.0
-    depends_on:
-      elasticsearch:
-        condition: service_healthy
-      kibana:
-        condition: service_healthy
-    cap_add: ['CHOWN', 'DAC_OVERRIDE', 'SETGID', 'SETUID']
-    cap_drop: ['ALL']
-    ports:
-      - 8200:8200
-    command: >
-      apm-server -e
-        -E apm-server.rum.enabled=true
-        -E setup.kibana.host=kibana:5601
-        -E setup.template.settings.index.number_of_replicas=0
-        -E apm-server.kibana.enabled=true
-        -E apm-server.kibana.host=kibana:5601
-        -E output.elasticsearch.hosts=["elasticsearch:9200"]
-    healthcheck:
-      interval: 10s
-      retries: 12
-      test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:8200/
-
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.15.0
-    environment:
-      - bootstrap.memory_lock=true
-      - cluster.name=docker-cluster
-      - cluster.routing.allocation.disk.threshold_enabled=false
-      - discovery.type=single-node
-      - ES_JAVA_OPTS=-XX:UseAVX=2 -Xms1g -Xmx1g
-    ulimits:
-      memlock:
-        hard: -1
-        soft: -1
-    volumes:
-      - esdata:/usr/share/elasticsearch/data
-    ports:
-      - 9200:9200
-    healthcheck:
-      interval: 20s
-      retries: 10
-      test: curl -s http://localhost:9200/_cluster/health | grep -vq '"status":"red"'
-
-  kibana:
-    image: docker.elastic.co/kibana/kibana:7.15.0
-    depends_on:
-      elasticsearch:
-        condition: service_healthy
-    environment:
-      ELASTICSEARCH_URL: http://elasticsearch:9200
-      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
-    ports:
-      - 5601:5601
-    healthcheck:
-      interval: 10s
-      retries: 20
-      test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:5601/api/status
-
-  filebeat:
-    image: docker.elastic.co/beats/filebeat:8.0.0-alpha2
-    depends_on:
-      elasticsearch:
-        condition: service_healthy
-    volumes:
-      - logs:/logs
-      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml
 
 volumes:
   bulk-files:
@@ -517,3 +410,121 @@ volumes:
   logs:
   esdata:
     driver: local
+
+    
+  # supernova-ui:
+  #   image: supernova-ui
+  #   build: ./SuperNovaUI/
+  #   env_file:
+  #     - ./supernova.env
+  #   depends_on:
+  #     - api-gateway
+  #   ports:
+  #     - '3000:80'
+  #   environment:
+  #     - UI_REACT_APP_BASE_URL=http://localhost:2000
+  #     - UI_REACT_TOKEN_NAME=sp-token
+  #     - UI_USER_SOURCE_DI=es_name
+
+  # # Kafka GUI
+  # kouncil:
+  #   image: consdata/kouncil:latest
+  #   ports:
+  #     - '4001:8080'
+  #   environment:
+  #     bootstrapServers: 'kafka:29092'
+  #   depends_on:
+  #     - 'kafka'
+  # kafka:
+  #   image: obsidiandynamics/kafka
+  #   container_name: kafka
+  #   ports:
+  #     - '2181:2181'
+  #     - '9092:9092'
+  #   environment:
+  #     KAFKA_LISTENERS: 'INTERNAL://:29092,EXTERNAL://:9092'
+  #     KAFKA_ADVERTISED_LISTENERS: 'INTERNAL://kafka:29092,EXTERNAL://localhost:9092'
+  #     KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT'
+  #     KAFKA_INTER_BROKER_LISTENER_NAME: 'INTERNAL'
+  #     KAFKA_ZOOKEEPER_SESSION_TIMEOUT: '6000'
+  #     KAFKA_RESTART_ATTEMPTS: '10'
+  #     KAFKA_RESTART_DELAY: '5'
+  #     ZOOKEEPER_AUTOPURGE_PURGE_INTERVAL: '0'
+
+  # apm-server:
+  #   image: docker.elastic.co/apm/apm-server:7.15.0
+  #   depends_on:
+  #     elasticsearch:
+  #       condition: service_healthy
+  #     kibana:
+  #       condition: service_healthy
+  #   cap_add: ['CHOWN', 'DAC_OVERRIDE', 'SETGID', 'SETUID']
+  #   cap_drop: ['ALL']
+  #   ports:
+  #     - 8200:8200
+  #   command: >
+  #     apm-server -e
+  #       -E apm-server.rum.enabled=true
+  #       -E setup.kibana.host=kibana:5601
+  #       -E setup.template.settings.index.number_of_replicas=0
+  #       -E apm-server.kibana.enabled=true
+  #       -E apm-server.kibana.host=kibana:5601
+  #       -E output.elasticsearch.hosts=["elasticsearch:9200"]
+  #   healthcheck:
+  #     interval: 10s
+  #     retries: 12
+  #     test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:8200/
+
+  # elasticsearch:
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:7.15.0
+  #   environment:
+  #     - bootstrap.memory_lock=true
+  #     - cluster.name=docker-cluster
+  #     - cluster.routing.allocation.disk.threshold_enabled=false
+  #     - discovery.type=single-node
+  #     - ES_JAVA_OPTS=-XX:UseAVX=2 -Xms1g -Xmx1g
+  #   ulimits:
+  #     memlock:
+  #       hard: -1
+  #       soft: -1
+  #   volumes:
+  #     - esdata:/usr/share/elasticsearch/data
+  #   ports:
+  #     - 9200:9200
+  #   healthcheck:
+  #     interval: 20s
+  #     retries: 10
+  #     test: curl -s http://localhost:9200/_cluster/health | grep -vq '"status":"red"'
+
+  # kibana:
+  #   image: docker.elastic.co/kibana/kibana:7.15.0
+  #   depends_on:
+  #     elasticsearch:
+  #       condition: service_healthy
+  #   environment:
+  #     ELASTICSEARCH_URL: http://elasticsearch:9200
+  #     ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+  #   ports:
+  #     - 5601:5601
+  #   healthcheck:
+  #     interval: 10s
+  #     retries: 20
+  #     test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:5601/api/status
+
+  # filebeat:
+  #   image: docker.elastic.co/beats/filebeat:8.0.0-alpha2
+  #   depends_on:
+  #     elasticsearch:
+  #       condition: service_healthy
+  #   volumes:
+  #     - logs:/logs
+  #     - ./filebeat.yml:/usr/share/filebeat/filebeat.yml
+
+# volumes:
+#   bulk-files:
+#   spike-utils:
+#   ais-excel-files:
+#   tea-utils:
+#   logs:
+#   esdata:
+#     driver: local

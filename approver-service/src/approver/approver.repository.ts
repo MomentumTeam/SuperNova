@@ -107,24 +107,22 @@ export class ApproverRepository {
   async addApprover(addApproverReq: AddApproverReq) {
     try {
       approverTypeValidation(addApproverReq.type);
-      const adminAlreadyExists: any = await ApproverModel.exists({
+      const adminAllreadyExists: any = await ApproverModel.exists({
         entityId: addApproverReq.entityId,
         type: approverTypeToJSON(ApproverType.ADMIN),
       });
 
-      if (adminAlreadyExists) {
+      if (adminAllreadyExists && approverTypeFromJSON(addApproverReq.type)===ApproverType.ADMIN) {
         const updatedAdminDocument = await ApproverModel.findOneAndUpdate(
           { entityId: addApproverReq.entityId },
           { $addToSet: { groupsInCharge: addApproverReq.groupInChargeId } }
         );
-        turnObjectIdsToStrings(updatedAdminDocument);
+        turnObjectIdsToStrings(updatedAdminDocument.toObject());
         return updatedAdminDocument as Approver;
       } else {
         const addApproverModel: any = addApproverReq;
         addApproverModel.groupsInCharge =
-          addApproverModel.groupInChargeId !== undefined
-            ? [addApproverModel.groupInChargeId]
-            : [C.rootId];
+        addApproverModel.groupInChargeId !== undefined ? [addApproverModel.groupInChargeId]: [C.rootId];
         delete addApproverModel.groupInChargeId;
 
         const approver: any = new ApproverModel(addApproverModel);
