@@ -329,6 +329,8 @@ export interface CreateEntityRequest {
   dischargeDay?: string | undefined;
   rank?: string | undefined;
   goalUserId?: string | undefined;
+  organization?: string | undefined;
+  employeeNumber?: string | undefined;
 }
 
 /** GetEntityByRoleId */
@@ -456,6 +458,10 @@ export interface Entity {
   digitalIdentities: DigitalIdentity[];
   picture: string;
   goalUserID: string;
+  organization: string;
+  employeeNumber: string;
+  /** organization-employeeNUmber */
+  employeeId: string;
 }
 
 export interface DigitalIdentity {
@@ -5222,6 +5228,12 @@ export const CreateEntityRequest = {
     if (message.goalUserId !== undefined) {
       writer.uint32(130).string(message.goalUserId);
     }
+    if (message.organization !== undefined) {
+      writer.uint32(138).string(message.organization);
+    }
+    if (message.employeeNumber !== undefined) {
+      writer.uint32(146).string(message.employeeNumber);
+    }
     return writer;
   },
 
@@ -5281,6 +5293,12 @@ export const CreateEntityRequest = {
           break;
         case 16:
           message.goalUserId = reader.string();
+          break;
+        case 17:
+          message.organization = reader.string();
+          break;
+        case 18:
+          message.employeeNumber = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -5374,6 +5392,16 @@ export const CreateEntityRequest = {
     } else {
       message.goalUserId = undefined;
     }
+    if (object.organization !== undefined && object.organization !== null) {
+      message.organization = String(object.organization);
+    } else {
+      message.organization = undefined;
+    }
+    if (object.employeeNumber !== undefined && object.employeeNumber !== null) {
+      message.employeeNumber = String(object.employeeNumber);
+    } else {
+      message.employeeNumber = undefined;
+    }
     return message;
   },
 
@@ -5407,6 +5435,10 @@ export const CreateEntityRequest = {
       (obj.dischargeDay = message.dischargeDay);
     message.rank !== undefined && (obj.rank = message.rank);
     message.goalUserId !== undefined && (obj.goalUserId = message.goalUserId);
+    message.organization !== undefined &&
+      (obj.organization = message.organization);
+    message.employeeNumber !== undefined &&
+      (obj.employeeNumber = message.employeeNumber);
     return obj;
   },
 
@@ -5493,6 +5525,16 @@ export const CreateEntityRequest = {
       message.goalUserId = object.goalUserId;
     } else {
       message.goalUserId = undefined;
+    }
+    if (object.organization !== undefined && object.organization !== null) {
+      message.organization = object.organization;
+    } else {
+      message.organization = undefined;
+    }
+    if (object.employeeNumber !== undefined && object.employeeNumber !== null) {
+      message.employeeNumber = object.employeeNumber;
+    } else {
+      message.employeeNumber = undefined;
     }
     return message;
   },
@@ -6908,6 +6950,9 @@ const baseEntity: object = {
   updatedAt: "",
   picture: "",
   goalUserID: "",
+  organization: "",
+  employeeNumber: "",
+  employeeId: "",
 };
 
 export const Entity = {
@@ -6995,6 +7040,15 @@ export const Entity = {
     }
     if (message.goalUserID !== "") {
       writer.uint32(218).string(message.goalUserID);
+    }
+    if (message.organization !== "") {
+      writer.uint32(226).string(message.organization);
+    }
+    if (message.employeeNumber !== "") {
+      writer.uint32(234).string(message.employeeNumber);
+    }
+    if (message.employeeId !== "") {
+      writer.uint32(242).string(message.employeeId);
     }
     return writer;
   },
@@ -7091,6 +7145,15 @@ export const Entity = {
           break;
         case 27:
           message.goalUserID = reader.string();
+          break;
+        case 28:
+          message.organization = reader.string();
+          break;
+        case 29:
+          message.employeeNumber = reader.string();
+          break;
+        case 30:
+          message.employeeId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -7243,6 +7306,21 @@ export const Entity = {
     } else {
       message.goalUserID = "";
     }
+    if (object.organization !== undefined && object.organization !== null) {
+      message.organization = String(object.organization);
+    } else {
+      message.organization = "";
+    }
+    if (object.employeeNumber !== undefined && object.employeeNumber !== null) {
+      message.employeeNumber = String(object.employeeNumber);
+    } else {
+      message.employeeNumber = "";
+    }
+    if (object.employeeId !== undefined && object.employeeId !== null) {
+      message.employeeId = String(object.employeeId);
+    } else {
+      message.employeeId = "";
+    }
     return message;
   },
 
@@ -7295,6 +7373,11 @@ export const Entity = {
     }
     message.picture !== undefined && (obj.picture = message.picture);
     message.goalUserID !== undefined && (obj.goalUserID = message.goalUserID);
+    message.organization !== undefined &&
+      (obj.organization = message.organization);
+    message.employeeNumber !== undefined &&
+      (obj.employeeNumber = message.employeeNumber);
+    message.employeeId !== undefined && (obj.employeeId = message.employeeId);
     return obj;
   },
 
@@ -7440,6 +7523,21 @@ export const Entity = {
       message.goalUserID = object.goalUserID;
     } else {
       message.goalUserID = "";
+    }
+    if (object.organization !== undefined && object.organization !== null) {
+      message.organization = object.organization;
+    } else {
+      message.organization = "";
+    }
+    if (object.employeeNumber !== undefined && object.employeeNumber !== null) {
+      message.employeeNumber = object.employeeNumber;
+    } else {
+      message.employeeNumber = "";
+    }
+    if (object.employeeId !== undefined && object.employeeId !== null) {
+      message.employeeId = object.employeeId;
+    } else {
+      message.employeeId = "";
     }
     return message;
   },

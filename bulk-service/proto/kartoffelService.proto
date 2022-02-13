@@ -384,6 +384,8 @@ message CreateEntityRequest{
     optional string dischargeDay = 14;
     optional string rank = 15;
     optional string goalUserId = 16;
+    optional string organization = 17;
+    optional string employeeNumber = 18;
 }
 
 // GetEntityByRoleId
@@ -511,6 +513,9 @@ message Entity{
     repeated DigitalIdentity digitalIdentities = 25;
     string picture = 26;
     string goalUserID = 27;
+    string organization = 28;
+    string employeeNumber = 29;
+    string employeeId = 30; // organization-employeeNUmber
 }
 
 message DigitalIdentity{

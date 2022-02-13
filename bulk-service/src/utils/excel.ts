@@ -68,12 +68,15 @@ export function isTableFull(rows: any, type: RequestType) {
 }
 
 export function containsLegalValues(rows: any, type: RequestType) {
+  // const jobTitleRegex =
+  //   /^[\w\u0590-\u05fe]+[\w\u0590-\u05fe\s\-\']*[\w\u0590-\u05fe\']+$/;
   if (type === RequestType.CREATE_ROLE_BULK) {
     const hebEntityTypes: string[] = Object.keys(
       C.hebEntityTypeToKartoffelLang
     );
     const hebClearances: string[] = Object.keys(C.hebClearanceToKartoffelLang);
     for (let i in rows) {
+      const jobTitle = rows[i][0].toString();
       const hebEntityType = rows[i][2].toString();
       const hebClearance = rows[i][1].toString();
       if (hebEntityTypes.indexOf(hebEntityType) === -1) {
@@ -83,8 +86,12 @@ export function containsLegalValues(rows: any, type: RequestType) {
     return true;
   } else {
     // for (let i in rows) {
-    //   const email = rows[i][0].toString();
-    //   if (!EmailValidator.validate(email)) {
+    //   const newJobTitle = rows[i][2];
+    //   if (
+    //     newJobTitle !== null &&
+    //     newJobTitle !== undefined &&
+    //     !jobTitleRegex.test(newJobTitle)
+    //   ) {
     //     return false;
     //   }
     // }

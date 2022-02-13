@@ -76,9 +76,14 @@ export class MailRepository {
           return { mail: email } as any;
         });
       }
-      const mails = entity.digitalIdentities.map(
-        (digitalIdentity) => digitalIdentity.mail
-      );
+      const mails = entity.digitalIdentities
+        .filter(
+          (digitalIdentity) => digitalIdentity.source === C.diDefaultSource
+        )
+        .map((digitalIdentity) => digitalIdentity.mail);
+      if (mails === undefined || mails.length === 0) {
+        return { success: true, message: '' };
+      }
       const uniqueMails = [...new Set(mails)];
       uniqueMails.forEach((mail) => {
         const options = {
