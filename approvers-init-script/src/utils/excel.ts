@@ -3,68 +3,48 @@ import * as EmailValidator from 'email-validator';
 
 const readXlsxFile = require('read-excel-file/node');
 
-export async function parseExcelFile() {
+export async function parseExcelFile(index: any) {
   try {
     let rows: any = await readXlsxFile(`${C.excelFilePath}`);
     rows.shift();
-    let commanders: Array<string> = rows
+    let approvers: Array<string> = rows
       .map((row: any) => {
-        return row[0];
+        return row[index];
       })
       .filter(
         (element: any) =>
           element && element !== null && EmailValidator.validate(element)
       );
-    let security: Array<string> = rows
-      .map((row: any) => {
-        return row[1];
-      })
-      .filter(
-        (element: any) =>
-          element && element !== null && EmailValidator.validate(element)
-      );
-    let superSecurity: Array<string> = rows
-      .map((row: any) => {
-        return row[2];
-      })
-      .filter(
-        (element: any) =>
-          element && element !== null && EmailValidator.validate(element)
-      );
-    let bulk: Array<string> = rows
-      .map((row: any) => {
-        return row[3];
-      })
-      .filter(
-        (element: any) =>
-          element && element !== null && EmailValidator.validate(element)
-      );
-    let adminOi: Array<string> = rows
-      .map((row: any) => {
-        return row[4];
-      });
+    return approvers;
+  } catch (error) {
+    throw error;
+  }
+}
 
-      let admin: Array<string> = adminOi.map((row: any)=>{
-        return row.split(',')[0];
+export async function parseExcelFileAdmin() {
+  try {
+    let rows: any = await readXlsxFile(`${C.excelFilePath}`);
+    rows.shift();
+    let approvers: Array<string> = rows.map((row: any) => {
+      return row[4];
+    });
+
+    let admin = approvers
+      .map((T) => {
+        return T?.split(',')[0];
       })
       .filter(
         (element: any) =>
           element && element !== null && EmailValidator.validate(element)
       );
-
-      let io: Array<string> =adminOi.map((row)=>{
-        return row.split(',')[1];
-      })
-
+    let io = approvers.map((I) => {
+      return I?.split(',')[1];
+    });
     return {
-      commanders,
-      security,
-      superSecurity,
-      bulk,
       admin,
-      io
+      io,
     };
-  } catch (error: any) {
-    throw Error;
+  } catch (error) {
+    throw error;
   }
 }

@@ -12,7 +12,7 @@ export function validateApprovers(approverObj: ApproverObj) {
 }
 
 export async function addApprovers(approverObj: ApproverObj) {
-  const promises = approverObj.approverDIs.map((diUniqueId,index) => {
+  const promises = approverObj.approverDIs.map((diUniqueId, index) => {
     return new Promise((resolve, reject) => {
       KartoffelService.getEntityByDI({ uniqueId: diUniqueId })
         .then((entity) => {
