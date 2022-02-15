@@ -10,8 +10,9 @@ export async function parseExcelFile(
   try {
     let rows: any = await readXlsxFile(`${C.folderPath}/${fileName}`);
     rows.shift();
-    if (!isLegalTable(rows, type)) {
-      throw new Error('Table is illegal!');
+    const isLegeal = isLegalTable(rows, type);
+    if (!isLegeal.legal) {
+      return { legal: false, errorRows: isLegeal.errorRows };
     }
     if (type === RequestType.CREATE_ROLE_BULK) {
       rows = rows.map((row: any, index: any) => {
@@ -38,18 +39,17 @@ export async function parseExcelFile(
       });
     }
 
-    return rows;
+    return { legal: true, rows: rows };
   } catch (error: any) {
     throw error;
   }
 }
 
 export function isLegalTable(rows: any, type: RequestType) {
-  return (
-    rows.length > 0 &&
-    isTableFull(rows, type) &&
-    containsLegalValues(rows, type)
-  );
+  const errorRows = containsLegalValues(rows, type);
+  const isLegal =
+    errorRows.length === 0 && rows.length > 0 && isTableFull(rows, type);
+  return { legal: isLegal, errorRows: errorRows };
 }
 
 export function isTableFull(rows: any, type: RequestType) {
@@ -68,8 +68,11 @@ export function isTableFull(rows: any, type: RequestType) {
 }
 
 export function containsLegalValues(rows: any, type: RequestType) {
-  const jobTitleRegex =
-    /^[\w\u0590-\u05fe]+[\w\u0590-\u05fe\s\-\']*[\w\u0590-\u05fe\']+$/;
+  // const jobTitleRegex =
+  //   /^[\w\u0590-\u05fe]+[\w\u0590-\u05fe\s\-\']*[\w\u0590-\u05fe\']+$/;
+
+  let errorLines: any = [];
+
   if (type === RequestType.CREATE_ROLE_BULK) {
     const hebEntityTypes: string[] = Object.keys(
       C.hebEntityTypeToKartoffelLang
@@ -79,25 +82,22 @@ export function containsLegalValues(rows: any, type: RequestType) {
       const jobTitle = rows[i][0].toString();
       const hebEntityType = rows[i][2].toString();
       const hebClearance = rows[i][1].toString();
-      if (
-        hebEntityTypes.indexOf(hebEntityType) === -1 ||
-        !jobTitleRegex.test(jobTitle)
-      ) {
-        return false;
+      if (hebEntityTypes.indexOf(hebEntityType) === -1) {
+        errorLines.push(i);
       }
     }
-    return true;
   } else {
-    for (let i in rows) {
-      const newJobTitle = rows[i][2];
-      if (
-        newJobTitle != null &&
-        newJobTitle != undefined &&
-        !jobTitleRegex.test(newJobTitle)
-      ) {
-        return false;
-      }
-    }
+    // for (let i in rows) {
+    //   const newJobTitle = rows[i][2];
+    //   if (
+    //     newJobTitle !== null &&
+    //     newJobTitle !== undefined &&
+    //     !jobTitleRegex.test(newJobTitle)
+    //   ) {
+    //     return false;
+    //   }
+    // }
     return true;
   }
+  return errorLines;
 }

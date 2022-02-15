@@ -63,6 +63,7 @@ export class BulkService {
       randomClient().IsBulkFileValid(
         isBulkFileValidReq,
         (err: any, response: IsBulkFileValidRes) => {
+
           if (err) {
             logger.error(`isBulkFileValid ERROR in GTW`, {
               err,
@@ -75,11 +76,8 @@ export class BulkService {
             response: response,
             callRequest: isBulkFileValidReq,
           });
-          if (response.isFileValid) {
-            resolve(response);
-          } else {
-            reject(new Error('File is invalid!'));
-          }
+
+          resolve(response);
         }
       );
     });
