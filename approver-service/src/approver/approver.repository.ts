@@ -112,7 +112,10 @@ export class ApproverRepository {
         type: approverTypeToJSON(ApproverType.ADMIN),
       });
 
-      if (adminAllreadyExists && approverTypeFromJSON(addApproverReq.type)===ApproverType.ADMIN) {
+      if (
+        adminAllreadyExists &&
+        approverTypeFromJSON(addApproverReq.type) === ApproverType.ADMIN
+      ) {
         const updatedAdminDocument = await ApproverModel.findOneAndUpdate(
           { entityId: addApproverReq.entityId },
           { $addToSet: { groupsInCharge: addApproverReq.groupInChargeId } }
@@ -122,7 +125,9 @@ export class ApproverRepository {
       } else {
         const addApproverModel: any = addApproverReq;
         addApproverModel.groupsInCharge =
-        addApproverModel.groupInChargeId !== undefined ? [addApproverModel.groupInChargeId]: [C.rootId];
+          addApproverModel.groupInChargeId !== undefined
+            ? [addApproverModel.groupInChargeId]
+            : [C.rootId];
         delete addApproverModel.groupInChargeId;
 
         const approver: any = new ApproverModel(addApproverModel);

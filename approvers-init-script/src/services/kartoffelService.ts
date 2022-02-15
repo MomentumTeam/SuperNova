@@ -63,7 +63,7 @@ export default class KartoffelService {
               personalNumber: entity.personalNumber,
               identityCard: entity.identityCard,
               directGroup: entity.directGroup,
-            });
+            });            
           }
         }
       );

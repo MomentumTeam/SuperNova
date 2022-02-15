@@ -39,14 +39,22 @@ export async function parseExcelFile() {
         (element: any) =>
           element && element !== null && EmailValidator.validate(element)
       );
-    let admin: Array<string> = rows
+    let adminOi: Array<string> = rows
       .map((row: any) => {
         return row[4];
+      });
+
+      let admin: Array<string> = adminOi.map((row: any)=>{
+        return row.split(',')[0];
       })
       .filter(
         (element: any) =>
           element && element !== null && EmailValidator.validate(element)
       );
+
+      let io: Array<string> =adminOi.map((row)=>{
+        return row.split(',')[1];
+      })
 
     return {
       commanders,
@@ -54,6 +62,7 @@ export async function parseExcelFile() {
       superSecurity,
       bulk,
       admin,
+      io
     };
   } catch (error: any) {
     throw Error;

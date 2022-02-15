@@ -27,6 +27,7 @@ async function main() {
       {
         approverDIs: excelArray.admin,
         type: ApproverType.ADMIN,
+        groupInChargeId: excelArray.io,
       },
     ];
 
