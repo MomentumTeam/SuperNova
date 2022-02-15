@@ -60,3 +60,5 @@ export const requestTypeToHebrew = {
 
 export const legoAddress =
   process.env.MS_LEGO_ADDRESS || 'http://localhost:3000';
+
+export const diDefaultSource = process.env.MS_DI_DEFAULT_SOURCE || 'OneTree';

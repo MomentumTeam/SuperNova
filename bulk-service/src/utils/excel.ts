@@ -1,5 +1,5 @@
 const readXlsxFile = require('read-excel-file/node');
-import * as EmailValidator from 'email-validator';
+// import * as EmailValidator from 'email-validator';
 import * as C from '../config';
 import { RequestType } from '../interfaces/protoc/proto/requestService';
 
@@ -94,10 +94,9 @@ export function containsLegalValues(rows: any, type: RequestType) {
     //     newJobTitle !== undefined &&
     //     !jobTitleRegex.test(newJobTitle)
     //   ) {
-    //     return false;
+    //     errorLines.push(i);
     //   }
     // }
-    return true;
   }
   return errorLines;
 }
