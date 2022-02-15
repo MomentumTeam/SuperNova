@@ -810,17 +810,17 @@ message CreateOGADParams{
 message CreateEntityKartoffelParams{
     string firstName = 1;
     string lastName = 2;
-    string identityCard = 3;
+    optional string identityCard = 3;
     optional string personalNumber = 4;
     optional string serviceType = 5;
     repeated string phone = 6;
     repeated string mobilePhone = 7;
     optional string address = 8;
-    string clearance = 9;
+    optional string clearance = 9;
     optional string sex = 10;
     optional int64 birthdate = 11;
     string entityType = 12;
-    string rank = 13;
+    optional string rank = 13;
 }
 
 message CreateEntityADParams{

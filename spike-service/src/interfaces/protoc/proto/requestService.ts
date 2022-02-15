@@ -1346,17 +1346,17 @@ export interface CreateOGADParams {
 export interface CreateEntityKartoffelParams {
   firstName: string;
   lastName: string;
-  identityCard: string;
+  identityCard?: string | undefined;
   personalNumber?: string | undefined;
   serviceType?: string | undefined;
   phone: string[];
   mobilePhone: string[];
   address?: string | undefined;
-  clearance: string;
+  clearance?: string | undefined;
   sex?: string | undefined;
   birthdate?: number | undefined;
   entityType: string;
-  rank: string;
+  rank?: string | undefined;
 }
 
 /** NO PARAMETERS NEEDED */
@@ -19366,12 +19366,9 @@ export const CreateOGADParams = {
 const baseCreateEntityKartoffelParams: object = {
   firstName: "",
   lastName: "",
-  identityCard: "",
   phone: "",
   mobilePhone: "",
-  clearance: "",
   entityType: "",
-  rank: "",
 };
 
 export const CreateEntityKartoffelParams = {
@@ -19385,7 +19382,7 @@ export const CreateEntityKartoffelParams = {
     if (message.lastName !== "") {
       writer.uint32(18).string(message.lastName);
     }
-    if (message.identityCard !== "") {
+    if (message.identityCard !== undefined) {
       writer.uint32(26).string(message.identityCard);
     }
     if (message.personalNumber !== undefined) {
@@ -19403,7 +19400,7 @@ export const CreateEntityKartoffelParams = {
     if (message.address !== undefined) {
       writer.uint32(66).string(message.address);
     }
-    if (message.clearance !== "") {
+    if (message.clearance !== undefined) {
       writer.uint32(74).string(message.clearance);
     }
     if (message.sex !== undefined) {
@@ -19415,7 +19412,7 @@ export const CreateEntityKartoffelParams = {
     if (message.entityType !== "") {
       writer.uint32(98).string(message.entityType);
     }
-    if (message.rank !== "") {
+    if (message.rank !== undefined) {
       writer.uint32(106).string(message.rank);
     }
     return writer;
@@ -19501,7 +19498,7 @@ export const CreateEntityKartoffelParams = {
     if (object.identityCard !== undefined && object.identityCard !== null) {
       message.identityCard = String(object.identityCard);
     } else {
-      message.identityCard = "";
+      message.identityCard = undefined;
     }
     if (object.personalNumber !== undefined && object.personalNumber !== null) {
       message.personalNumber = String(object.personalNumber);
@@ -19531,7 +19528,7 @@ export const CreateEntityKartoffelParams = {
     if (object.clearance !== undefined && object.clearance !== null) {
       message.clearance = String(object.clearance);
     } else {
-      message.clearance = "";
+      message.clearance = undefined;
     }
     if (object.sex !== undefined && object.sex !== null) {
       message.sex = String(object.sex);
@@ -19551,7 +19548,7 @@ export const CreateEntityKartoffelParams = {
     if (object.rank !== undefined && object.rank !== null) {
       message.rank = String(object.rank);
     } else {
-      message.rank = "";
+      message.rank = undefined;
     }
     return message;
   },
@@ -19606,7 +19603,7 @@ export const CreateEntityKartoffelParams = {
     if (object.identityCard !== undefined && object.identityCard !== null) {
       message.identityCard = object.identityCard;
     } else {
-      message.identityCard = "";
+      message.identityCard = undefined;
     }
     if (object.personalNumber !== undefined && object.personalNumber !== null) {
       message.personalNumber = object.personalNumber;
@@ -19636,7 +19633,7 @@ export const CreateEntityKartoffelParams = {
     if (object.clearance !== undefined && object.clearance !== null) {
       message.clearance = object.clearance;
     } else {
-      message.clearance = "";
+      message.clearance = undefined;
     }
     if (object.sex !== undefined && object.sex !== null) {
       message.sex = object.sex;
@@ -19656,7 +19653,7 @@ export const CreateEntityKartoffelParams = {
     if (object.rank !== undefined && object.rank !== null) {
       message.rank = object.rank;
     } else {
-      message.rank = "";
+      message.rank = undefined;
     }
     return message;
   },
