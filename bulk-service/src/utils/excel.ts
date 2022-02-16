@@ -12,6 +12,7 @@ export async function parseExcelFile(
     rows.shift();
     const isLegeal = isLegalTable(rows, type);
     if (!isLegeal.legal) {
+      isLegeal.errorRows=await Promise.all(isLegeal.errorRows.map((i:string)=>Number(i)));
       return { legal: false, errorRows: isLegeal.errorRows };
     }
     if (type === RequestType.CREATE_ROLE_BULK) {
