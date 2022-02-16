@@ -53,7 +53,7 @@ export interface IsBulkFileValidReq {
 
 export interface IsBulkFileValidRes {
   isFileValid: boolean;
-  errorRows: string[];
+  errorRows: number[];
 }
 
 export interface GetBulkRequestExampleReq {
@@ -171,7 +171,7 @@ export const IsBulkFileValidReq = {
   },
 };
 
-const baseIsBulkFileValidRes: object = { isFileValid: false, errorRows: "" };
+const baseIsBulkFileValidRes: object = { isFileValid: false, errorRows: 0 };
 
 export const IsBulkFileValidRes = {
   encode(
@@ -181,9 +181,11 @@ export const IsBulkFileValidRes = {
     if (message.isFileValid === true) {
       writer.uint32(8).bool(message.isFileValid);
     }
+    writer.uint32(18).fork();
     for (const v of message.errorRows) {
-      writer.uint32(18).string(v!);
+      writer.int32(v);
     }
+    writer.ldelim();
     return writer;
   },
 
@@ -199,7 +201,14 @@ export const IsBulkFileValidRes = {
           message.isFileValid = reader.bool();
           break;
         case 2:
-          message.errorRows.push(reader.string());
+          if ((tag & 7) === 2) {
+            const end2 = reader.uint32() + reader.pos;
+            while (reader.pos < end2) {
+              message.errorRows.push(reader.int32());
+            }
+          } else {
+            message.errorRows.push(reader.int32());
+          }
           break;
         default:
           reader.skipType(tag & 7);
@@ -219,7 +228,7 @@ export const IsBulkFileValidRes = {
     }
     if (object.errorRows !== undefined && object.errorRows !== null) {
       for (const e of object.errorRows) {
-        message.errorRows.push(String(e));
+        message.errorRows.push(Number(e));
       }
     }
     return message;

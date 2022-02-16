@@ -21,7 +21,7 @@ message IsBulkFileValidReq{
 
 message IsBulkFileValidRes{
     bool isFileValid = 1;
-    repeated string errorRows = 2;
+    repeated int32 errorRows = 2;
 
 }
 
