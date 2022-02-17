@@ -43,11 +43,11 @@ export class BulkRepository {
         type === BulkType.CHANGE_ROLE_HIERARCHY_REQUEST
           ? RequestType.CHANGE_ROLE_HIERARCHY_BULK
           : RequestType.CREATE_ROLE_BULK;
-      const rows = await parseExcelFile(
+      const res = await parseExcelFile(
         isBulkFileValidReq.fileName,
         requestType
       );
-      return { isFileValid: true };
+      return { isFileValid: res.legal, errorRows:res?.errorRows };
     } catch (error: any) {
       throw error;
     }
@@ -63,11 +63,12 @@ export class BulkRepository {
           await this.requestService.createRoleBulkRequest(createRoleBulkReq);
         bulkRequestId = bulkRequest.id;
 
-        const rows = await parseExcelFile(
+        const res = await parseExcelFile(
           createRoleBulkReq.excelFilePath,
           RequestType.CREATE_ROLE_BULK
         );
-        const promises: Promise<any>[] = rows.map((row: any) => {
+        
+        const promises: Promise<any>[] = res.rows.map((row: any) => {
           return new Promise((resolve, reject) => {
             let createRoleRequestReq: any = Object.assign(
               {},
@@ -143,11 +144,11 @@ export class BulkRepository {
           );
         bulkRequestId = bulkRequest.id;
 
-        const rows = await parseExcelFile(
+        const res = await parseExcelFile(
           changeRoleHierarchyBulkReq.excelFilePath,
           RequestType.CHANGE_ROLE_HIERARCHY_BULK
         );
-        const promises: Promise<any>[] = rows.map((row: any) => {
+        const promises: Promise<any>[] = res.rows.map((row: any) => {
           return new Promise((resolve, reject) => {
             let changeRoleHierarchyRequestReq: any = Object.assign(
               {},

@@ -21,6 +21,8 @@ message IsBulkFileValidReq{
 
 message IsBulkFileValidRes{
     bool isFileValid = 1;
+    repeated int32 errorRows = 2;
+
 }
 
 message GetBulkRequestExampleReq {

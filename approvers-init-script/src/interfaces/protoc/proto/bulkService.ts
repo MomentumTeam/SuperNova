@@ -53,6 +53,7 @@ export interface IsBulkFileValidReq {
 
 export interface IsBulkFileValidRes {
   isFileValid: boolean;
+  errorRows: number[];
 }
 
 export interface GetBulkRequestExampleReq {
@@ -170,7 +171,7 @@ export const IsBulkFileValidReq = {
   },
 };
 
-const baseIsBulkFileValidRes: object = { isFileValid: false };
+const baseIsBulkFileValidRes: object = { isFileValid: false, errorRows: 0 };
 
 export const IsBulkFileValidRes = {
   encode(
@@ -180,6 +181,11 @@ export const IsBulkFileValidRes = {
     if (message.isFileValid === true) {
       writer.uint32(8).bool(message.isFileValid);
     }
+    writer.uint32(18).fork();
+    for (const v of message.errorRows) {
+      writer.int32(v);
+    }
+    writer.ldelim();
     return writer;
   },
 
@@ -187,11 +193,22 @@ export const IsBulkFileValidRes = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseIsBulkFileValidRes } as IsBulkFileValidRes;
+    message.errorRows = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
           message.isFileValid = reader.bool();
+          break;
+        case 2:
+          if ((tag & 7) === 2) {
+            const end2 = reader.uint32() + reader.pos;
+            while (reader.pos < end2) {
+              message.errorRows.push(reader.int32());
+            }
+          } else {
+            message.errorRows.push(reader.int32());
+          }
           break;
         default:
           reader.skipType(tag & 7);
@@ -203,10 +220,16 @@ export const IsBulkFileValidRes = {
 
   fromJSON(object: any): IsBulkFileValidRes {
     const message = { ...baseIsBulkFileValidRes } as IsBulkFileValidRes;
+    message.errorRows = [];
     if (object.isFileValid !== undefined && object.isFileValid !== null) {
       message.isFileValid = Boolean(object.isFileValid);
     } else {
       message.isFileValid = false;
+    }
+    if (object.errorRows !== undefined && object.errorRows !== null) {
+      for (const e of object.errorRows) {
+        message.errorRows.push(Number(e));
+      }
     }
     return message;
   },
@@ -215,15 +238,26 @@ export const IsBulkFileValidRes = {
     const obj: any = {};
     message.isFileValid !== undefined &&
       (obj.isFileValid = message.isFileValid);
+    if (message.errorRows) {
+      obj.errorRows = message.errorRows.map((e) => e);
+    } else {
+      obj.errorRows = [];
+    }
     return obj;
   },
 
   fromPartial(object: DeepPartial<IsBulkFileValidRes>): IsBulkFileValidRes {
     const message = { ...baseIsBulkFileValidRes } as IsBulkFileValidRes;
+    message.errorRows = [];
     if (object.isFileValid !== undefined && object.isFileValid !== null) {
       message.isFileValid = object.isFileValid;
     } else {
       message.isFileValid = false;
+    }
+    if (object.errorRows !== undefined && object.errorRows !== null) {
+      for (const e of object.errorRows) {
+        message.errorRows.push(e);
+      }
     }
     return message;
   },
