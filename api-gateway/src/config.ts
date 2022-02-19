@@ -23,10 +23,10 @@ const organizationIds = env
   .asString()
   ?.split(',');
 
-const organizationNumberToGroupId: any = {};
+const organizationNumberToGroupId: any = [];
 
 for (let [index, value] of organizationNumbers.entries()) {
-  organizationNumberToGroupId[value] = organizationIds[index];
+  organizationNumberToGroupId.push({ "orgNumber": value, "orgId": organizationIds[index]})
 }
 
 export const config = {
