@@ -75,6 +75,7 @@ import {
 } from '../services/teaHelper';
 import { logger } from '../logger';
 import { MailType } from '../interfaces/protoc/proto/mailService';
+import { isNaN } from 'lodash';
 
 export class RequestRepository {
   async createRequest(
@@ -327,6 +328,8 @@ export class RequestRepository {
           : request.superSecurityDecision.decision;
       const superSecurityAlreadyDecided =
         superSecurityDecision !== Decision.DECISION_UNKNOWN;
+      const needSecurityDecision = request.needSecurityDecision;
+      const needSuperSecurityDecision = request.needSuperSecurityDecision;
       switch (type) {
         case ApproverType.ADMIN:
         case ApproverType.COMMANDER:
@@ -340,7 +343,7 @@ export class RequestRepository {
           }
           break;
         case ApproverType.SECURITY:
-          if (!securityAlreadyDecided) {
+          if (!securityAlreadyDecided && needSecurityDecision) {
             updateSetQuery = {
               securityApprovers: removeApproverFromArray(
                 removeApproverFromApproversReq.approverId,
@@ -350,7 +353,7 @@ export class RequestRepository {
           }
           break;
         case ApproverType.SUPER_SECURITY:
-          if (!superSecurityAlreadyDecided) {
+          if (!superSecurityAlreadyDecided && needSuperSecurityDecision) {
             updateSetQuery = {
               superSecurityApprovers: removeApproverFromArray(
                 removeApproverFromApproversReq.approverId,
@@ -418,7 +421,8 @@ export class RequestRepository {
           : request.superSecurityDecision.decision;
       const superSecurityAlreadyDecided =
         superSecurityDecision !== Decision.DECISION_UNKNOWN;
-
+      const needSecurityDecision = request.needSecurityDecision;
+      const needSuperSecurityDecision = request.needSuperSecurityDecision;
       switch (type) {
         case ApproverType.ADMIN:
         case ApproverType.COMMANDER:
@@ -439,7 +443,7 @@ export class RequestRepository {
           }
           break;
         case ApproverType.SECURITY:
-          if (!securityAlreadyDecided) {
+          if (!securityAlreadyDecided && needSecurityDecision) {
             updateSetQuery = {
               securityApprovers: overrideApprovers
                 ? transferRequestToApproverReq.approvers
@@ -456,7 +460,7 @@ export class RequestRepository {
           }
           break;
         case ApproverType.SUPER_SECURITY:
-          if (superSecurityAlreadyDecided) {
+          if (!superSecurityAlreadyDecided && needSuperSecurityDecision) {
             updateSetQuery = {
               superSecurityApprovers: overrideApprovers
                 ? transferRequestToApproverReq.approvers
@@ -1306,6 +1310,9 @@ export class RequestRepository {
         if (approverType === ApproverType.COMMANDER) {
           request.needSecurityDecision = false;
           request.needSuperSecurityDecision = false;
+        } else if (approverType === ApproverType.ADMIN) {
+          request.needSecurityDecision = false;
+          request.needSuperSecurityDecision = false;
         } else if (approverType === ApproverType.SECURITY) {
           request.needSecurityDecision = true;
           request.needSuperSecurityDecision = false;
@@ -1469,11 +1476,11 @@ export class RequestRepository {
 
       if (
         approvementStatus === ApprovementStatus.BY_USER_TYPE &&
-        getRequestsByPersonReq.groupInChargeId &&
+        getRequestsByPersonReq.groupsInCharge &&
         userType.includes(ApproverType.ADMIN)
       ) {
         const ancestorsQuery = getAncestorsQuery(
-          getRequestsByPersonReq.groupInChargeId
+          getRequestsByPersonReq.groupsInCharge
         );
         if (query['$or']) {
           query['$and'] = [{ $or: query['$or'] }, ancestorsQuery];
@@ -1483,32 +1490,34 @@ export class RequestRepository {
         }
       }
 
+      const addFields: any = {
+        serialNumberStr: { $toString: '$serialNumber' },
+        sortStatusId: {
+          $switch: {
+            branches: [
+              { case: { $eq: ['$status', 'SUBMITTED'] }, then: 0 },
+              {
+                case: { $eq: ['$status', 'APPROVED_BY_COMMANDER'] },
+                then: 1,
+              },
+              {
+                case: { $eq: ['$status', 'APPROVED_BY_SECURITY'] },
+                then: 2,
+              },
+              { case: { $eq: ['$status', 'IN_PROGRESS'] }, then: 3 },
+              { case: { $eq: ['$status', 'FAILED'] }, then: 4 },
+              { case: { $eq: ['$status', 'DECLINED'] }, then: 5 },
+              { case: { $eq: ['$status', 'DONE'] }, then: 6 },
+            ],
+            default: 0,
+          },
+        },
+      };
+
       const totalCount = await RequestModel.count(query);
       const requests: any = await RequestModel.aggregate([
         {
-          $addFields: {
-            serialNumberStr: { $toString: '$serialNumber' },
-            sortStatusId: {
-              $switch: {
-                branches: [
-                  { case: { $eq: ['$status', 'SUBMITTED'] }, then: 0 },
-                  {
-                    case: { $eq: ['$status', 'APPROVED_BY_COMMANDER'] },
-                    then: 1,
-                  },
-                  {
-                    case: { $eq: ['$status', 'APPROVED_BY_SECURITY'] },
-                    then: 2,
-                  },
-                  { case: { $eq: ['$status', 'IN_PROGRESS'] }, then: 3 },
-                  { case: { $eq: ['$status', 'FAILED'] }, then: 4 },
-                  { case: { $eq: ['$status', 'DECLINED'] }, then: 5 },
-                  { case: { $eq: ['$status', 'DONE'] }, then: 6 },
-                ],
-                default: 0,
-              },
-            },
-          },
+          $addFields: addFields,
         },
         { $match: query },
         { $sort: sortQuery },

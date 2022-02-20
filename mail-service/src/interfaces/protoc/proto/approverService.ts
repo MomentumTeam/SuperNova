@@ -61,6 +61,10 @@ export function requestStatusToJSON(object: RequestStatus): string {
   }
 }
 
+export interface GetAdminsByGroupIdsReq {
+  groupIds: string[];
+}
+
 export interface IsApproverValidForOGReq {
   approverId: string;
   groupId: string;
@@ -72,6 +76,7 @@ export interface IsApproverValidForOGRes {
 
 export interface GetApproverByEntityIdReq {
   entityId: string;
+  type?: ApproverType | undefined;
 }
 
 export interface SyncApproverReq {
@@ -151,8 +156,78 @@ export interface Approver {
   personalNumber: string;
   identityCard: string;
   directGroup: string;
-  groupInChargeId?: string | undefined;
+  groupsInCharge: string[];
 }
+
+const baseGetAdminsByGroupIdsReq: object = { groupIds: "" };
+
+export const GetAdminsByGroupIdsReq = {
+  encode(
+    message: GetAdminsByGroupIdsReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.groupIds) {
+      writer.uint32(10).string(v!);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GetAdminsByGroupIdsReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseGetAdminsByGroupIdsReq } as GetAdminsByGroupIdsReq;
+    message.groupIds = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.groupIds.push(reader.string());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetAdminsByGroupIdsReq {
+    const message = { ...baseGetAdminsByGroupIdsReq } as GetAdminsByGroupIdsReq;
+    message.groupIds = [];
+    if (object.groupIds !== undefined && object.groupIds !== null) {
+      for (const e of object.groupIds) {
+        message.groupIds.push(String(e));
+      }
+    }
+    return message;
+  },
+
+  toJSON(message: GetAdminsByGroupIdsReq): unknown {
+    const obj: any = {};
+    if (message.groupIds) {
+      obj.groupIds = message.groupIds.map((e) => e);
+    } else {
+      obj.groupIds = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<GetAdminsByGroupIdsReq>
+  ): GetAdminsByGroupIdsReq {
+    const message = { ...baseGetAdminsByGroupIdsReq } as GetAdminsByGroupIdsReq;
+    message.groupIds = [];
+    if (object.groupIds !== undefined && object.groupIds !== null) {
+      for (const e of object.groupIds) {
+        message.groupIds.push(e);
+      }
+    }
+    return message;
+  },
+};
 
 const baseIsApproverValidForOGReq: object = { approverId: "", groupId: "" };
 
@@ -319,6 +394,9 @@ export const GetApproverByEntityIdReq = {
     if (message.entityId !== "") {
       writer.uint32(10).string(message.entityId);
     }
+    if (message.type !== undefined) {
+      writer.uint32(16).int32(message.type);
+    }
     return writer;
   },
 
@@ -337,6 +415,9 @@ export const GetApproverByEntityIdReq = {
         case 1:
           message.entityId = reader.string();
           break;
+        case 2:
+          message.type = reader.int32() as any;
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -354,12 +435,22 @@ export const GetApproverByEntityIdReq = {
     } else {
       message.entityId = "";
     }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = approverTypeFromJSON(object.type);
+    } else {
+      message.type = undefined;
+    }
     return message;
   },
 
   toJSON(message: GetApproverByEntityIdReq): unknown {
     const obj: any = {};
     message.entityId !== undefined && (obj.entityId = message.entityId);
+    message.type !== undefined &&
+      (obj.type =
+        message.type !== undefined
+          ? approverTypeToJSON(message.type)
+          : undefined);
     return obj;
   },
 
@@ -373,6 +464,11 @@ export const GetApproverByEntityIdReq = {
       message.entityId = object.entityId;
     } else {
       message.entityId = "";
+    }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = object.type;
+    } else {
+      message.type = undefined;
     }
     return message;
   },
@@ -1498,6 +1594,7 @@ const baseApprover: object = {
   personalNumber: "",
   identityCard: "",
   directGroup: "",
+  groupsInCharge: "",
 };
 
 export const Approver = {
@@ -1532,8 +1629,8 @@ export const Approver = {
     if (message.directGroup !== "") {
       writer.uint32(74).string(message.directGroup);
     }
-    if (message.groupInChargeId !== undefined) {
-      writer.uint32(82).string(message.groupInChargeId);
+    for (const v of message.groupsInCharge) {
+      writer.uint32(82).string(v!);
     }
     return writer;
   },
@@ -1543,6 +1640,7 @@ export const Approver = {
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseApprover } as Approver;
     message.domainUsers = [];
+    message.groupsInCharge = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1574,7 +1672,7 @@ export const Approver = {
           message.directGroup = reader.string();
           break;
         case 10:
-          message.groupInChargeId = reader.string();
+          message.groupsInCharge.push(reader.string());
           break;
         default:
           reader.skipType(tag & 7);
@@ -1587,6 +1685,7 @@ export const Approver = {
   fromJSON(object: any): Approver {
     const message = { ...baseApprover } as Approver;
     message.domainUsers = [];
+    message.groupsInCharge = [];
     if (object.entityId !== undefined && object.entityId !== null) {
       message.entityId = String(object.entityId);
     } else {
@@ -1632,13 +1731,10 @@ export const Approver = {
     } else {
       message.directGroup = "";
     }
-    if (
-      object.groupInChargeId !== undefined &&
-      object.groupInChargeId !== null
-    ) {
-      message.groupInChargeId = String(object.groupInChargeId);
-    } else {
-      message.groupInChargeId = undefined;
+    if (object.groupsInCharge !== undefined && object.groupsInCharge !== null) {
+      for (const e of object.groupsInCharge) {
+        message.groupsInCharge.push(String(e));
+      }
     }
     return message;
   },
@@ -1662,14 +1758,18 @@ export const Approver = {
       (obj.identityCard = message.identityCard);
     message.directGroup !== undefined &&
       (obj.directGroup = message.directGroup);
-    message.groupInChargeId !== undefined &&
-      (obj.groupInChargeId = message.groupInChargeId);
+    if (message.groupsInCharge) {
+      obj.groupsInCharge = message.groupsInCharge.map((e) => e);
+    } else {
+      obj.groupsInCharge = [];
+    }
     return obj;
   },
 
   fromPartial(object: DeepPartial<Approver>): Approver {
     const message = { ...baseApprover } as Approver;
     message.domainUsers = [];
+    message.groupsInCharge = [];
     if (object.entityId !== undefined && object.entityId !== null) {
       message.entityId = object.entityId;
     } else {
@@ -1715,13 +1815,10 @@ export const Approver = {
     } else {
       message.directGroup = "";
     }
-    if (
-      object.groupInChargeId !== undefined &&
-      object.groupInChargeId !== null
-    ) {
-      message.groupInChargeId = object.groupInChargeId;
-    } else {
-      message.groupInChargeId = undefined;
+    if (object.groupsInCharge !== undefined && object.groupsInCharge !== null) {
+      for (const e of object.groupsInCharge) {
+        message.groupsInCharge.push(e);
+      }
     }
     return message;
   },
@@ -1748,6 +1845,7 @@ export interface ApproverService {
   IsApproverValidForOG(
     request: IsApproverValidForOGReq
   ): Promise<IsApproverValidForOGRes>;
+  GetAdminsByGroupIds(request: GetAdminsByGroupIdsReq): Promise<ApproverArray>;
 }
 
 export class ApproverServiceClientImpl implements ApproverService {
@@ -1769,6 +1867,7 @@ export class ApproverServiceClientImpl implements ApproverService {
     this.SyncApprover = this.SyncApprover.bind(this);
     this.DeleteApprover = this.DeleteApprover.bind(this);
     this.IsApproverValidForOG = this.IsApproverValidForOG.bind(this);
+    this.GetAdminsByGroupIds = this.GetAdminsByGroupIds.bind(this);
   }
   AddApprover(request: AddApproverReq): Promise<Approver> {
     const data = AddApproverReq.encode(request).finish();
@@ -1898,6 +1997,16 @@ export class ApproverServiceClientImpl implements ApproverService {
     return promise.then((data) =>
       IsApproverValidForOGRes.decode(new _m0.Reader(data))
     );
+  }
+
+  GetAdminsByGroupIds(request: GetAdminsByGroupIdsReq): Promise<ApproverArray> {
+    const data = GetAdminsByGroupIdsReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "ApproverService.ApproverService",
+      "GetAdminsByGroupIds",
+      data
+    );
+    return promise.then((data) => ApproverArray.decode(new _m0.Reader(data)));
   }
 }
 

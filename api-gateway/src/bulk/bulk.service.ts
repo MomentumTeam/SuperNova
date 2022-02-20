@@ -55,7 +55,6 @@ function randomClient(): any {
 
 export class BulkService {
   // POST
-
   static async isBulkFileValid(isBulkFileValidReq: IsBulkFileValidReq) {
     logger.info(`Call to isBulkFileValid in GTW`, isBulkFileValidReq);
 

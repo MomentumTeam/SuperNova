@@ -79,6 +79,7 @@ export function getApproverByEntity(entity: Entity, type: ApproverType) {
     personalNumber: entity.personalNumber,
     identityCard: entity.identityCard,
     directGroup: entity.directGroup,
+    groupsInCharge: [C.rootId],
   };
 }
 

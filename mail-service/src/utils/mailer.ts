@@ -50,16 +50,21 @@ export function generateMail(mailType: any, request: Request) {
         message = `בקשתך ל${C.requestTypeToHebrew[requestTypeStr]} מספר ${request.serialNumber} אושרה על ידי ${commanderName}.`;
         if (request.needSecurityDecision) {
           message = message + 'הועברה לטיפול יחב"ם.';
+        } else {
+          message = message + 'זמן ביצוע הבקשה יכול לקחת עד שלושה ימים.';
         }
         break;
       case MailType.REQUEST_APPROVED_2:
         message = `בקשתך ל${C.requestTypeToHebrew[requestTypeStr]} מספר ${request.serialNumber} אושרה על ידי ${commanderName} ועל ידי יחב\"ם.`;
         if (request.needSuperSecurityDecision) {
           message = message + 'הועברה לטיפול בטח"ם.';
+        } else {
+          message = message + 'זמן ביצוע הבקשה יכול לקחת עד שלושה ימים.';
         }
         break;
       case MailType.REQUEST_APPROVED_3:
         message = `בקשתך ל${C.requestTypeToHebrew[requestTypeStr]} מספר ${request.serialNumber} אושרה על ידי ${commanderName} ועל ידי יחב\"ם ובטח\"ם.`;
+        message = message + 'זמן ביצוע הבקשה יכול לקחת עד שלושה ימים.';
         break;
       case MailType.REQUEST_DECLINED_1:
         message = `בקשתך ל${C.requestTypeToHebrew[requestTypeStr]} מספר ${request.serialNumber} נדחתה על ידי ${commanderName}.`;

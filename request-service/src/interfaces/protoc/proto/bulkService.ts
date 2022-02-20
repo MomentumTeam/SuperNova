@@ -52,6 +52,7 @@ export interface IsBulkFileValidReq {
 }
 
 export interface IsBulkFileValidRes {
+  /** repeated int32 errorRows = 2; */
   isFileValid: boolean;
 }
 

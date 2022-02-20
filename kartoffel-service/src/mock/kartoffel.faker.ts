@@ -214,6 +214,9 @@ export class KartoffelFaker {
         digitalIdentities: this.randomDiArray().digitalIdentities,
         picture: '',
         goalUserID: mongoose.Types.ObjectId().toString(),
+        organization: '',
+        employeeNumber: '',
+        employeeId: '',
       };
       return entity;
     } catch (err) {
@@ -274,6 +277,9 @@ export class KartoffelFaker {
         digitalIdentities: this.randomDiArray().digitalIdentities,
         picture: picture.image,
         goalUserID: mongoose.Types.ObjectId().toString(),
+        organization: '',
+        employeeNumber: '',
+        employeeId: '',
       };
       return entity;
     } catch (err) {

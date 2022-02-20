@@ -67,6 +67,7 @@ export class BulkRepository {
           createRoleBulkReq.excelFilePath,
           RequestType.CREATE_ROLE_BULK
         );
+
         const promises: Promise<any>[] = rows.map((row: any) => {
           return new Promise((resolve, reject) => {
             let createRoleRequestReq: any = Object.assign(

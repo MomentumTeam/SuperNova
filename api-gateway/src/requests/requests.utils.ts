@@ -6,6 +6,8 @@ import {
   Decision,
   EntityMin,
   PersonTypeInRequest,
+  RequestType,
+  requestTypeFromJSON,
 } from '../interfaces/protoc/proto/requestService';
 import { config } from '../config';
 
@@ -19,6 +21,10 @@ export const approveUserRequest = async (
   if (req.user.types.length > 0 && req.user.types !== [ApproverType.SOLDIER]) {
     const entityUser: EntityMin = getEntityFromConnectedUser(req);
     const decision: ApproverDecision = getApprovedDecision(entityUser);
+    const requestType =
+      typeof request.type === typeof ''
+        ? requestTypeFromJSON(request.type)
+        : request.type;
 
     await Promise.all(
       req.user.types.map(async (type: any) => {
@@ -26,12 +32,24 @@ export const approveUserRequest = async (
 
         switch (approverType) {
           case PersonTypeInRequest.APPROVER: //ADMIN
-            request.commanders = request.commanders ? [...request.commanders, entityUser] : [entityUser];
+            if (requestType === RequestType.ADD_APPROVER) {
+              const approverToAddType =
+                typeof request.additionalParams.type === typeof ''
+                  ? approverTypeFromJSON(request.additionalParams.type)
+                  : request.additionalParams.type;
+              if (approverToAddType === ApproverType.ADMIN) {
+                break;
+              }
+            }
+            request.commanders = request.commanders
+              ? [...request.commanders, entityUser]
+              : [entityUser];
             request.commanderDecision = decision;
 
             // remove duplicate commanders
             request.commanders = request.commanders.filter(
-              (v: any, i: any, a: any) => a.findIndex((t: any) => t.id === v.id) === i
+              (v: any, i: any, a: any) =>
+                a.findIndex((t: any) => t.id === v.id) === i
             );
             break;
           case PersonTypeInRequest.SECURITY_APPROVER:
@@ -40,7 +58,8 @@ export const approveUserRequest = async (
               : [entityUser];
             request.securityDecision = decision;
             request.securityApprovers = request.securityApprovers.filter(
-              (v: any, i: any, a: any) => a.findIndex((t: any) => t.id === v.id) === i
+              (v: any, i: any, a: any) =>
+                a.findIndex((t: any) => t.id === v.id) === i
             );
 
             break;
@@ -49,12 +68,23 @@ export const approveUserRequest = async (
               ? [...request.superSecurityApprovers, entityUser]
               : [entityUser];
             request.superSecurityDecision = decision;
-            request.superSecurityApprovers = request.superSecurityApprovers.filter(
-              (v: any, i: any, a: any) => a.findIndex((t: any) => t.id === v.id) === i
-            );
+            request.superSecurityApprovers =
+              request.superSecurityApprovers.filter(
+                (v: any, i: any, a: any) =>
+                  a.findIndex((t: any) => t.id === v.id) === i
+              );
 
             break;
           case PersonTypeInRequest.COMMANDER_APPROVER:
+            if (requestType === RequestType.ADD_APPROVER) {
+              const approverToAddType =
+                typeof request.additionalParams.type === typeof ''
+                  ? approverTypeFromJSON(request.additionalParams.type)
+                  : request.additionalParams.type;
+              if (approverToAddType === ApproverType.ADMIN) {
+                break;
+              }
+            }
             let valid = true;
             if (groupId) {
               const response: any = await ApproverService.isApproverValidForOG({
@@ -65,18 +95,24 @@ export const approveUserRequest = async (
             }
 
             if (highCommander) {
-              if (!req.user?.rank || !config.fields.highCommandersRanks.includes(req.user.rank)) {
+              if (
+                !req.user?.rank ||
+                !config.fields.highCommandersRanks.includes(req.user.rank)
+              ) {
                 valid = false;
               }
             }
 
             if (valid) {
-              request.commanders = request.commanders ? [...request.commanders, entityUser] : [entityUser];
+              request.commanders = request.commanders
+                ? [...request.commanders, entityUser]
+                : [entityUser];
               request.commanderDecision = decision;
 
               // remove duplicate commanders
               request.commanders = request.commanders.filter(
-                (v: any, i: any, a: any) => a.findIndex((t: any) => t.id === v.id) === i
+                (v: any, i: any, a: any) =>
+                  a.findIndex((t: any) => t.id === v.id) === i
               );
             }
             break;

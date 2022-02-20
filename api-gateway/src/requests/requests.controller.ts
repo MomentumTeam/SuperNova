@@ -40,6 +40,7 @@ import {
   ApproverDecision,
   approverTypeToJSON,
   RemoveApproverFromApproversReq,
+  RequestType,
 } from '../interfaces/protoc/proto/requestService';
 import { RequestsService } from './requests.service';
 import { AuthenticationError } from '../utils/errors/userErrors';
@@ -83,6 +84,7 @@ export default class RequestsController {
       to: req.query.to,
       userType: req.user.types,
       approvementStatus: ApprovementStatus.ANY,
+      groupsInCharge: [],
     };
 
     if (req.query.searchQuery) {
@@ -120,6 +122,7 @@ export default class RequestsController {
       to: req.query.to,
       userType: req.user.types,
       approvementStatus: ApprovementStatus.BY_USER_TYPE,
+      groupsInCharge: [],
     };
 
     if (req.query.searchQuery) {
@@ -142,8 +145,11 @@ export default class RequestsController {
       const approver = await ApproverService.getApproverByEntityId({
         entityId: req.user.id,
       });
-      if (approver.groupInChargeId) {
-        getRequestsByPersonReq.groupInChargeId = approver.groupInChargeId;
+      if (
+        approver.groupsInCharge !== undefined &&
+        approver.groupsInCharge.length > 0
+      ) {
+        getRequestsByPersonReq.groupsInCharge = approver.groupsInCharge;
       }
     }
 
@@ -166,6 +172,7 @@ export default class RequestsController {
       to: req.query.to,
       userType: req.user.types,
       approvementStatus: ApprovementStatus.BY_USER_TYPE,
+      groupsInCharge: [],
     };
 
     if (req.query.searchQuery) {
@@ -202,6 +209,7 @@ export default class RequestsController {
       from: req.query.from,
       to: req.query.to,
       userType: req.user.types,
+      groupsInCharge: [],
     };
 
     if (req.query.searchQuery) {
@@ -654,22 +662,25 @@ export default class RequestsController {
       ancestors: req.user.ancestors,
     };
 
-    const createNewApproverReq: CreateNewApproverReq = {
+    const createNewApproverReq: any = {
       submittedBy: submittedBy,
       ...req.body,
     };
+    createNewApproverReq.type = RequestType.ADD_APPROVER;
 
     try {
       let groupId = undefined;
       if (createNewApproverReq.additionalParams?.groupInChargeId) {
         groupId = createNewApproverReq.additionalParams?.groupInChargeId;
       }
+
       const request: any = await approveUserRequest(
         req,
         createNewApproverReq,
         groupId,
         true
       );
+      delete createNewApproverReq.type;
       const newApprover = await RequestsService.createNewApproverRequest(
         request
       );
@@ -702,7 +713,13 @@ export default class RequestsController {
     };
 
     try {
-      const request: any = await approveUserRequest(req, createEntityReq);
+      let request: any = createEntityReq;
+
+      if (request.kartoffelParams?.entityType !== config.ui.KARTOFFEL_SOLDIER ||       //המאשרים היחידים של בקשה ליצירת חייל הם הקרטופלים
+        (request.kartoffelParams?.entityType === config.ui.KARTOFFEL_SOLDIER && config.ui.CREATE_SOLDIER_APPROVERS.includes(req.user.id))) {
+        request = await approveUserRequest(req, createEntityReq);
+      }
+
       const entity = await RequestsService.createEntityRequest(request);
       try {
         await RequestsService.executeRequestIfNeeded(entity);

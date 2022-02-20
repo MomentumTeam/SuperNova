@@ -49,6 +49,7 @@ export async function isBulkFileValid(call: any, callback: any) {
     });
     const isBulkFileValidRes: IsBulkFileValidRes =
       await bulkManager.isBulkFileValid(call.request);
+    
     logger.info(`isBulkFileValid OK`, {
       callRequest: call.request,
       isBulkFileValidRes: isBulkFileValidRes,

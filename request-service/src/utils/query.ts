@@ -134,11 +134,11 @@ export function getRequestTypeQuery(type: any) {
   return { type: type };
 }
 
-export function getAncestorsQuery(groupInChargeId: any) {
+export function getAncestorsQuery(groupsInCharge: Array<any>) {
   return {
     $or: [
-      { 'submittedBy.ancestors': groupInChargeId },
-      { 'submittedBy.directGroup': groupInChargeId },
+      { 'submittedBy.ancestors': { $in: groupsInCharge } }, 
+      { 'submittedBy.directGroup': { $in: groupsInCharge } },
     ],
   };
 }

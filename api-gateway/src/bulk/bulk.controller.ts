@@ -99,6 +99,7 @@ export default class BulkController {
           })
         )
       );
+
       res.status(200).send({ uploadFiles });
     } catch (error: any) {
       logger.error(error.message);

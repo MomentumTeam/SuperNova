@@ -1356,6 +1356,7 @@ export interface CreateEntityKartoffelParams {
   sex?: string | undefined;
   birthdate?: number | undefined;
   entityType: string;
+  rank: string;
 }
 
 /** NO PARAMETERS NEEDED */
@@ -1594,7 +1595,7 @@ export interface GetRequestsByPersonReq {
   type?: RequestType | undefined;
   sortField?: SortField | undefined;
   sortOrder?: SortOrder | undefined;
-  groupInChargeId?: string | undefined;
+  groupsInCharge: string[];
 }
 
 /** GetRequestBySerialNumber */
@@ -1777,6 +1778,7 @@ export interface KartoffelParams {
   oldHierarchy?: string | undefined;
   upn?: string | undefined;
   role?: Role | undefined;
+  entityId?: string | undefined;
   /**
    * EditEntity
    * string firstName = 25;
@@ -1793,7 +1795,7 @@ export interface KartoffelParams {
    * string entityType = 36;
    * string id =
    */
-  entityId?: string | undefined;
+  rank?: string | undefined;
 }
 
 export interface ADParams {
@@ -19369,6 +19371,7 @@ const baseCreateEntityKartoffelParams: object = {
   mobilePhone: "",
   clearance: "",
   entityType: "",
+  rank: "",
 };
 
 export const CreateEntityKartoffelParams = {
@@ -19411,6 +19414,9 @@ export const CreateEntityKartoffelParams = {
     }
     if (message.entityType !== "") {
       writer.uint32(98).string(message.entityType);
+    }
+    if (message.rank !== "") {
+      writer.uint32(106).string(message.rank);
     }
     return writer;
   },
@@ -19464,6 +19470,9 @@ export const CreateEntityKartoffelParams = {
           break;
         case 12:
           message.entityType = reader.string();
+          break;
+        case 13:
+          message.rank = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -19539,6 +19548,11 @@ export const CreateEntityKartoffelParams = {
     } else {
       message.entityType = "";
     }
+    if (object.rank !== undefined && object.rank !== null) {
+      message.rank = String(object.rank);
+    } else {
+      message.rank = "";
+    }
     return message;
   },
 
@@ -19567,6 +19581,7 @@ export const CreateEntityKartoffelParams = {
     message.sex !== undefined && (obj.sex = message.sex);
     message.birthdate !== undefined && (obj.birthdate = message.birthdate);
     message.entityType !== undefined && (obj.entityType = message.entityType);
+    message.rank !== undefined && (obj.rank = message.rank);
     return obj;
   },
 
@@ -19637,6 +19652,11 @@ export const CreateEntityKartoffelParams = {
       message.entityType = object.entityType;
     } else {
       message.entityType = "";
+    }
+    if (object.rank !== undefined && object.rank !== null) {
+      message.rank = object.rank;
+    } else {
+      message.rank = "";
     }
     return message;
   },
@@ -23390,6 +23410,7 @@ const baseGetRequestsByPersonReq: object = {
   userType: 0,
   from: 0,
   to: 0,
+  groupsInCharge: "",
 };
 
 export const GetRequestsByPersonReq = {
@@ -23432,8 +23453,8 @@ export const GetRequestsByPersonReq = {
     if (message.sortOrder !== undefined) {
       writer.uint32(96).int32(message.sortOrder);
     }
-    if (message.groupInChargeId !== undefined) {
-      writer.uint32(106).string(message.groupInChargeId);
+    for (const v of message.groupsInCharge) {
+      writer.uint32(106).string(v!);
     }
     return writer;
   },
@@ -23446,6 +23467,7 @@ export const GetRequestsByPersonReq = {
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseGetRequestsByPersonReq } as GetRequestsByPersonReq;
     message.userType = [];
+    message.groupsInCharge = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -23490,7 +23512,7 @@ export const GetRequestsByPersonReq = {
           message.sortOrder = reader.int32() as any;
           break;
         case 13:
-          message.groupInChargeId = reader.string();
+          message.groupsInCharge.push(reader.string());
           break;
         default:
           reader.skipType(tag & 7);
@@ -23503,6 +23525,7 @@ export const GetRequestsByPersonReq = {
   fromJSON(object: any): GetRequestsByPersonReq {
     const message = { ...baseGetRequestsByPersonReq } as GetRequestsByPersonReq;
     message.userType = [];
+    message.groupsInCharge = [];
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
@@ -23563,13 +23586,10 @@ export const GetRequestsByPersonReq = {
     } else {
       message.sortOrder = undefined;
     }
-    if (
-      object.groupInChargeId !== undefined &&
-      object.groupInChargeId !== null
-    ) {
-      message.groupInChargeId = String(object.groupInChargeId);
-    } else {
-      message.groupInChargeId = undefined;
+    if (object.groupsInCharge !== undefined && object.groupsInCharge !== null) {
+      for (const e of object.groupsInCharge) {
+        message.groupsInCharge.push(String(e));
+      }
     }
     return message;
   },
@@ -23613,8 +23633,11 @@ export const GetRequestsByPersonReq = {
         message.sortOrder !== undefined
           ? sortOrderToJSON(message.sortOrder)
           : undefined);
-    message.groupInChargeId !== undefined &&
-      (obj.groupInChargeId = message.groupInChargeId);
+    if (message.groupsInCharge) {
+      obj.groupsInCharge = message.groupsInCharge.map((e) => e);
+    } else {
+      obj.groupsInCharge = [];
+    }
     return obj;
   },
 
@@ -23623,6 +23646,7 @@ export const GetRequestsByPersonReq = {
   ): GetRequestsByPersonReq {
     const message = { ...baseGetRequestsByPersonReq } as GetRequestsByPersonReq;
     message.userType = [];
+    message.groupsInCharge = [];
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
@@ -23681,13 +23705,10 @@ export const GetRequestsByPersonReq = {
     } else {
       message.sortOrder = undefined;
     }
-    if (
-      object.groupInChargeId !== undefined &&
-      object.groupInChargeId !== null
-    ) {
-      message.groupInChargeId = object.groupInChargeId;
-    } else {
-      message.groupInChargeId = undefined;
+    if (object.groupsInCharge !== undefined && object.groupsInCharge !== null) {
+      for (const e of object.groupsInCharge) {
+        message.groupsInCharge.push(e);
+      }
     }
     return message;
   },
@@ -25904,6 +25925,9 @@ export const KartoffelParams = {
     if (message.entityId !== undefined) {
       writer.uint32(266).string(message.entityId);
     }
+    if (message.rank !== undefined) {
+      writer.uint32(274).string(message.rank);
+    }
     return writer;
   },
 
@@ -26014,6 +26038,9 @@ export const KartoffelParams = {
           break;
         case 33:
           message.entityId = reader.string();
+          break;
+        case 34:
+          message.rank = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -26198,6 +26225,11 @@ export const KartoffelParams = {
     } else {
       message.entityId = undefined;
     }
+    if (object.rank !== undefined && object.rank !== null) {
+      message.rank = String(object.rank);
+    } else {
+      message.rank = undefined;
+    }
     return message;
   },
 
@@ -26256,6 +26288,7 @@ export const KartoffelParams = {
     message.role !== undefined &&
       (obj.role = message.role ? Role.toJSON(message.role) : undefined);
     message.entityId !== undefined && (obj.entityId = message.entityId);
+    message.rank !== undefined && (obj.rank = message.rank);
     return obj;
   },
 
@@ -26433,6 +26466,11 @@ export const KartoffelParams = {
       message.entityId = object.entityId;
     } else {
       message.entityId = undefined;
+    }
+    if (object.rank !== undefined && object.rank !== null) {
+      message.rank = object.rank;
+    } else {
+      message.rank = undefined;
     }
     return message;
   },
