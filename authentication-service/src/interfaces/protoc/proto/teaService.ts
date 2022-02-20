@@ -125,6 +125,7 @@ export interface EntityMin {
   goalUserID?: string | undefined;
   firstName?: string | undefined;
   lastName?: string | undefined;
+  employeeNumber?: string | undefined;
 }
 
 const baseRetrieveBrolReq: object = {};
@@ -1448,6 +1449,9 @@ export const EntityMin = {
     if (message.lastName !== undefined) {
       writer.uint32(58).string(message.lastName);
     }
+    if (message.employeeNumber !== undefined) {
+      writer.uint32(66).string(message.employeeNumber);
+    }
     return writer;
   },
 
@@ -1478,6 +1482,9 @@ export const EntityMin = {
           break;
         case 7:
           message.lastName = reader.string();
+          break;
+        case 8:
+          message.employeeNumber = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -1524,6 +1531,11 @@ export const EntityMin = {
     } else {
       message.lastName = undefined;
     }
+    if (object.employeeNumber !== undefined && object.employeeNumber !== null) {
+      message.employeeNumber = String(object.employeeNumber);
+    } else {
+      message.employeeNumber = undefined;
+    }
     return message;
   },
 
@@ -1538,6 +1550,8 @@ export const EntityMin = {
     message.goalUserID !== undefined && (obj.goalUserID = message.goalUserID);
     message.firstName !== undefined && (obj.firstName = message.firstName);
     message.lastName !== undefined && (obj.lastName = message.lastName);
+    message.employeeNumber !== undefined &&
+      (obj.employeeNumber = message.employeeNumber);
     return obj;
   },
 
@@ -1577,6 +1591,11 @@ export const EntityMin = {
       message.lastName = object.lastName;
     } else {
       message.lastName = undefined;
+    }
+    if (object.employeeNumber !== undefined && object.employeeNumber !== null) {
+      message.employeeNumber = object.employeeNumber;
+    } else {
+      message.employeeNumber = undefined;
     }
     return message;
   },

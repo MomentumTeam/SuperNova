@@ -29,6 +29,7 @@ message GetAdminsByGroupIdsReq{
 message IsApproverValidForOGReq{
     string approverId = 1;
     string groupId = 2;
+    optional bool isOrganization = 3;
 }
 
 message IsApproverValidForOGRes{

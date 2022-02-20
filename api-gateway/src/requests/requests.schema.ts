@@ -376,17 +376,19 @@ export const createNewApproverSchema = Joi.object({
 const createEntityKartoffelParamsObj = Joi.object({
   firstName: Joi.string().required(),
   lastName: Joi.string().required(),
-  identityCard: Joi.string().required(),
+  identityCard: Joi.string(),
   personalNumber: Joi.string().allow('', null),
   serviceType: Joi.string(),
   rank: Joi.string(),
-  phone: Joi.array().items(Joi.string()),
-  mobilePhone: Joi.array().items(Joi.string()),
+  phone: Joi.array().items(Joi.string().allow('', null)).allow('', null),
+  mobilePhone: Joi.array().items(Joi.string().allow('', null)).allow('', null),
   address: Joi.string(),
   clearance: Joi.string().required(),
   sex: Joi.string(),
   birthdate: Joi.number().unsafe(),
   entityType: Joi.string().required(),
+  organization: Joi.string().allow('', null),
+  employeeNumber: Joi.string().allow('', null),
 });
 const createEntityADParamsObj = Joi.object({
   //NO PARAMETERS NEEDED

@@ -15,6 +15,8 @@ export async function getUPN(entity: EntityMin): Promise<string> {
         return `s${entity.identityCard}`;
       case C.civilian:
         return `c${entity.identityCard}`;
+      case C.external:
+        return `${entity.employeeNumber}`;
       case C.goalUser:
         const documentAfterInc = await PrefixModel.findOneAndUpdate(
           { prefix: C.brol },
@@ -27,6 +29,7 @@ export async function getUPN(entity: EntityMin): Promise<string> {
         return `${C.brol}_${zeroPad(prefixAfterInc.currentCounter, 6)}`;
     }
     return '';
+              
   } catch (error) {
     throw error;
   }
