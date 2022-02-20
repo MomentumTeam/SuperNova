@@ -5,6 +5,7 @@ import { logger } from './logger';
 import {
   addApprover,
   deleteApprover,
+  getAdminsByGroupIds,
   getAllApproverIds,
   getAllApprovers,
   getApproverByEntityId,
@@ -71,6 +72,7 @@ export class Server {
           DeleteApprover: deleteApprover,
           IsApproverValidForOG: isApproverValidForOG,
           GetApproverByEntityId: getApproverByEntityId,
+          GetAdminsByGroupIds: getAdminsByGroupIds,
         }
       );
       logger.info(`Grpc services were successfully added to the server`);
