@@ -11,7 +11,7 @@ try {
 
 export const config = {
   server: {
-    port: 4000,
+    port: env.get('GATEWAY_PORT').default(2000).asPortNumber(),
     host: env.get('GATEWAY_HOST').default('0.0.0.0'),
     name: 'api-gatway',
     healthCheckTimeout: env
@@ -41,7 +41,7 @@ export const config = {
     notification: env.get('GATEWAY_NS_URL').default('0.0.0.0:8084').asString(),
     approver: env.get('GATEWAY_APS_URL').default('0.0.0.0:8085').asString(),
     tea: env.get('GATEWAY_TS_URL').default('0.0.0.0:8086').asString(),
-    bulk: '0.0.0.0:8087',
+    bulk: env.get('GATEWAY_BS_URL').default('0.0.0.0:8087').asString(),
     apm: env
       .get('GATEWAY_APM_URL')
       .default('http://52.169.23.32:8200')
