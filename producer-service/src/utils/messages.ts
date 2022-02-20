@@ -96,6 +96,9 @@ export function generateKartoffelQueueMessage(request: Request): any {
         message.data.personalNumber = kartoffelParams.personalNumber;
         message.data.rank = kartoffelParams.rank;
         message.data.serviceType = kartoffelParams.serviceType;
+      } else if (kartoffelParams.entityType === C.external) {
+        message.data.organization = kartoffelParams.organization;
+        message.data.employeeNumber = kartoffelParams.employeeNumber;
       }
       break;
     case RequestType.ASSIGN_ROLE_TO_ENTITY:

@@ -114,6 +114,6 @@ message EntityMin{
     optional string goalUserID = 5;
     optional string firstName = 6;
     optional string lastName = 7;
-    optional string employeeId = 8;
+    optional string employeeNumber = 8;
 }
 

@@ -171,7 +171,7 @@ export const config = {
       .default('Soldier')
       .asString(),
     KARTOFFEL_WORKER: env
-      .get('UI_KARTOFFEL_WORKER')
+      .get('UI_KARTOFFEL_EXTERNAL')
       .default('Worker')
       .asString(),
     KARTOFFEL_RANKS: env
