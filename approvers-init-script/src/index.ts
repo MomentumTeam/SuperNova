@@ -1,32 +1,37 @@
-import { parseExcelFile } from './utils/excel';
+import { parseExcelFile, parseExcelFileAdmin } from './utils/excel';
 import { ApproverType } from './interfaces/protoc/proto/requestService';
 import { addApprovers, validateApprovers } from './utils/approvers.utils';
 import { logger } from './logger';
 
 async function main() {
   try {
-    const excelArray: any = await parseExcelFile();
+    let commanders: any = await parseExcelFile(0);
+    let security: any = await parseExcelFile(1);
+    let superSecurity: any = await parseExcelFile(2);
+    let bulk: any = await parseExcelFile(3);
+    let adminIo: any = await parseExcelFileAdmin();
 
     const approversToAdd = [
       {
-        approverDIs: excelArray.commanders,
+        approverDIs: commanders,
         type: ApproverType.COMMANDER,
       },
       {
-        approverDIs: excelArray.security,
+        approverDIs: security,
         type: ApproverType.SECURITY,
       },
       {
-        approverDIs: excelArray.superSecurity,
+        approverDIs: superSecurity,
         type: ApproverType.SUPER_SECURITY,
       },
       {
-        approverDIs: excelArray.bulk,
+        approverDIs: bulk,
         type: ApproverType.BULK,
       },
       {
-        approverDIs: excelArray.admin,
+        approverDIs: adminIo.admin,
         type: ApproverType.ADMIN,
+        groupInChargeId: adminIo.io,
       },
     ];
 

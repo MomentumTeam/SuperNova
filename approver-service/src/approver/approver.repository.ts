@@ -106,13 +106,36 @@ export class ApproverRepository {
 
   async addApprover(addApproverReq: AddApproverReq) {
     try {
-      const approver: any = new ApproverModel(addApproverReq);
-      approverTypeValidation(approver.type);
+      approverTypeValidation(addApproverReq.type);
+      const adminAlreadyExists: any = await ApproverModel.exists({
+        entityId: addApproverReq.entityId,
+        type: approverTypeToJSON(ApproverType.ADMIN),
+      });
 
-      const createdApprover = await approver.save();
-      const document = createdApprover.toObject();
-      turnObjectIdsToStrings(document);
-      return document as Approver;
+      if (
+        adminAlreadyExists &&
+        approverTypeFromJSON(addApproverReq.type) === ApproverType.ADMIN
+      ) {
+        const updatedAdminDocument = await ApproverModel.findOneAndUpdate(
+          { entityId: addApproverReq.entityId },
+          { $addToSet: { groupsInCharge: addApproverReq.groupInChargeId } }
+        );
+        turnObjectIdsToStrings(updatedAdminDocument.toObject());
+        return updatedAdminDocument as Approver;
+      } else {
+        const addApproverModel: any = addApproverReq;
+        addApproverModel.groupsInCharge =
+          addApproverModel.groupInChargeId !== undefined
+            ? [addApproverModel.groupInChargeId]
+            : [C.rootId];
+        delete addApproverModel.groupInChargeId;
+
+        const approver: any = new ApproverModel(addApproverModel);
+        const createdApprover = await approver.save();
+        const document = createdApprover.toObject();
+        turnObjectIdsToStrings(document);
+        return document as Approver;
+      }
     } catch (error: any) {
       logger.error('addApprover ERROR', {
         error: { message: error.message },
