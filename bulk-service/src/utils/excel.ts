@@ -1,5 +1,5 @@
 const readXlsxFile = require('read-excel-file/node');
-// import * as EmailValidator from 'email-validator';
+import * as EmailValidator from 'email-validator';
 import * as C from '../config';
 import { RequestType } from '../interfaces/protoc/proto/requestService';
 
@@ -10,10 +10,8 @@ export async function parseExcelFile(
   try {
     let rows: any = await readXlsxFile(`${C.folderPath}/${fileName}`);
     rows.shift();
-    const isLegeal = isLegalTable(rows, type);
-    if (!isLegeal.legal) {
-      isLegeal.errorRows=await Promise.all(isLegeal.errorRows.map((i:string)=>Number(i)));
-      return { legal: false, errorRows: isLegeal.errorRows };
+    if (!isLegalTable(rows, type)) {
+      throw new Error('Table is illegal!');
     }
     if (type === RequestType.CREATE_ROLE_BULK) {
       rows = rows.map((row: any, index: any) => {
@@ -40,17 +38,18 @@ export async function parseExcelFile(
       });
     }
 
-    return { legal: true, rows: rows };
+    return rows;
   } catch (error: any) {
     throw error;
   }
 }
 
 export function isLegalTable(rows: any, type: RequestType) {
-  const errorRows = containsLegalValues(rows, type);
-  const isLegal =
-    errorRows.length === 0 && rows.length > 0 && isTableFull(rows, type);
-  return { legal: isLegal, errorRows: errorRows };
+  return (
+    rows.length > 0 &&
+    isTableFull(rows, type) &&
+    containsLegalValues(rows, type)
+  );
 }
 
 export function isTableFull(rows: any, type: RequestType) {
@@ -71,9 +70,6 @@ export function isTableFull(rows: any, type: RequestType) {
 export function containsLegalValues(rows: any, type: RequestType) {
   // const jobTitleRegex =
   //   /^[\w\u0590-\u05fe]+[\w\u0590-\u05fe\s\-\']*[\w\u0590-\u05fe\']+$/;
-
-  let errorLines: any = [];
-
   if (type === RequestType.CREATE_ROLE_BULK) {
     const hebEntityTypes: string[] = Object.keys(
       C.hebEntityTypeToKartoffelLang
@@ -84,9 +80,10 @@ export function containsLegalValues(rows: any, type: RequestType) {
       const hebEntityType = rows[i][2].toString();
       const hebClearance = rows[i][1].toString();
       if (hebEntityTypes.indexOf(hebEntityType) === -1) {
-        errorLines.push(i);
+        return false;
       }
     }
+    return true;
   } else {
     // for (let i in rows) {
     //   const newJobTitle = rows[i][2];
@@ -95,9 +92,9 @@ export function containsLegalValues(rows: any, type: RequestType) {
     //     newJobTitle !== undefined &&
     //     !jobTitleRegex.test(newJobTitle)
     //   ) {
-    //     errorLines.push(i);
+    //     return false;
     //   }
     // }
+    return true;
   }
-  return errorLines;
 }

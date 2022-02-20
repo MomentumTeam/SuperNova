@@ -61,6 +61,10 @@ export function requestStatusToJSON(object: RequestStatus): string {
   }
 }
 
+export interface GetAdminsByGroupIdsReq {
+  groupIds: string[];
+}
+
 export interface IsApproverValidForOGReq {
   approverId: string;
   groupId: string;
@@ -73,6 +77,7 @@ export interface IsApproverValidForOGRes {
 
 export interface GetApproverByEntityIdReq {
   entityId: string;
+  type?: ApproverType | undefined;
 }
 
 export interface SyncApproverReq {
@@ -154,6 +159,76 @@ export interface Approver {
   directGroup: string;
   groupsInCharge: string[];
 }
+
+const baseGetAdminsByGroupIdsReq: object = { groupIds: "" };
+
+export const GetAdminsByGroupIdsReq = {
+  encode(
+    message: GetAdminsByGroupIdsReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.groupIds) {
+      writer.uint32(10).string(v!);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GetAdminsByGroupIdsReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseGetAdminsByGroupIdsReq } as GetAdminsByGroupIdsReq;
+    message.groupIds = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.groupIds.push(reader.string());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetAdminsByGroupIdsReq {
+    const message = { ...baseGetAdminsByGroupIdsReq } as GetAdminsByGroupIdsReq;
+    message.groupIds = [];
+    if (object.groupIds !== undefined && object.groupIds !== null) {
+      for (const e of object.groupIds) {
+        message.groupIds.push(String(e));
+      }
+    }
+    return message;
+  },
+
+  toJSON(message: GetAdminsByGroupIdsReq): unknown {
+    const obj: any = {};
+    if (message.groupIds) {
+      obj.groupIds = message.groupIds.map((e) => e);
+    } else {
+      obj.groupIds = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<GetAdminsByGroupIdsReq>
+  ): GetAdminsByGroupIdsReq {
+    const message = { ...baseGetAdminsByGroupIdsReq } as GetAdminsByGroupIdsReq;
+    message.groupIds = [];
+    if (object.groupIds !== undefined && object.groupIds !== null) {
+      for (const e of object.groupIds) {
+        message.groupIds.push(e);
+      }
+    }
+    return message;
+  },
+};
 
 const baseIsApproverValidForOGReq: object = { approverId: "", groupId: "" };
 
@@ -338,6 +413,9 @@ export const GetApproverByEntityIdReq = {
     if (message.entityId !== "") {
       writer.uint32(10).string(message.entityId);
     }
+    if (message.type !== undefined) {
+      writer.uint32(16).int32(message.type);
+    }
     return writer;
   },
 
@@ -356,6 +434,9 @@ export const GetApproverByEntityIdReq = {
         case 1:
           message.entityId = reader.string();
           break;
+        case 2:
+          message.type = reader.int32() as any;
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -373,12 +454,22 @@ export const GetApproverByEntityIdReq = {
     } else {
       message.entityId = "";
     }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = approverTypeFromJSON(object.type);
+    } else {
+      message.type = undefined;
+    }
     return message;
   },
 
   toJSON(message: GetApproverByEntityIdReq): unknown {
     const obj: any = {};
     message.entityId !== undefined && (obj.entityId = message.entityId);
+    message.type !== undefined &&
+      (obj.type =
+        message.type !== undefined
+          ? approverTypeToJSON(message.type)
+          : undefined);
     return obj;
   },
 
@@ -392,6 +483,11 @@ export const GetApproverByEntityIdReq = {
       message.entityId = object.entityId;
     } else {
       message.entityId = "";
+    }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = object.type;
+    } else {
+      message.type = undefined;
     }
     return message;
   },
@@ -1768,6 +1864,7 @@ export interface ApproverService {
   IsApproverValidForOG(
     request: IsApproverValidForOGReq
   ): Promise<IsApproverValidForOGRes>;
+  GetAdminsByGroupIds(request: GetAdminsByGroupIdsReq): Promise<ApproverArray>;
 }
 
 export class ApproverServiceClientImpl implements ApproverService {
@@ -1789,6 +1886,7 @@ export class ApproverServiceClientImpl implements ApproverService {
     this.SyncApprover = this.SyncApprover.bind(this);
     this.DeleteApprover = this.DeleteApprover.bind(this);
     this.IsApproverValidForOG = this.IsApproverValidForOG.bind(this);
+    this.GetAdminsByGroupIds = this.GetAdminsByGroupIds.bind(this);
   }
   AddApprover(request: AddApproverReq): Promise<Approver> {
     const data = AddApproverReq.encode(request).finish();
@@ -1918,6 +2016,16 @@ export class ApproverServiceClientImpl implements ApproverService {
     return promise.then((data) =>
       IsApproverValidForOGRes.decode(new _m0.Reader(data))
     );
+  }
+
+  GetAdminsByGroupIds(request: GetAdminsByGroupIdsReq): Promise<ApproverArray> {
+    const data = GetAdminsByGroupIdsReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "ApproverService.ApproverService",
+      "GetAdminsByGroupIds",
+      data
+    );
+    return promise.then((data) => ApproverArray.decode(new _m0.Reader(data)));
   }
 }
 

@@ -19,6 +19,11 @@ service ApproverService {
     rpc SyncApprover(SyncApproverReq) returns (ApproverArray){}
     rpc DeleteApprover(DeleteApproverReq) returns (SuccessMessage){}
     rpc IsApproverValidForOG(IsApproverValidForOGReq) returns (IsApproverValidForOGRes){}
+    rpc GetAdminsByGroupIds(GetAdminsByGroupIdsReq) returns (ApproverArray){}
+}
+
+message GetAdminsByGroupIdsReq{
+    repeated string groupIds = 1;
 }
 
 message IsApproverValidForOGReq{
@@ -33,6 +38,7 @@ message IsApproverValidForOGRes{
 
 message GetApproverByEntityIdReq{
     string entityId = 1;
+    optional RequestService.ApproverType type = 2;
 }
 
 
