@@ -114,7 +114,7 @@ message Approver{
     string personalNumber = 7;
     string identityCard = 8;
     string directGroup = 9;
-    optional string groupInChargeId = 10;
+    repeated string groupsInCharge = 10;
 }
 
 enum RequestStatus{

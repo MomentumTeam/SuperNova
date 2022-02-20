@@ -91,15 +91,40 @@ export default class BulkController {
         files.map((bulkFile: any) => uploadFile(bulkFile))
       );
 
-      const isValid = await Promise.all(
-        uploadFiles.map((uploadedFileName: any) =>
-          BulkService.isBulkFileValid({
-            fileName: uploadedFileName,
-            type: type,
-          })
-        )
+      const areFilesValid: any[] = await Promise.all(
+        uploadFiles.map(async (uploadedFileName: any) => {
+          try {
+            const isFileValid = await BulkService.isBulkFileValid({
+              fileName: uploadedFileName,
+              type: type,
+            });
+            return isFileValid;
+          } catch {
+            return null;
+          }
+        })
       );
-      res.status(200).send({ uploadFiles });
+
+      const uploadFilesInfo = await Promise.all(
+        uploadFiles.map((fileName, index) => {
+          if (areFilesValid[index] === null) {
+            return {
+              name: fileName,
+            };
+          }
+          return {
+            name: fileName,
+            valid: areFilesValid[index].isFileValid,
+            errorRows: areFilesValid[index].errorRows,
+          };
+        })
+      );
+
+      //if valid is false, then: ------->
+      // 1) if errorRows array is not empty - there are inValid rows in the file.
+      // 2) if errorRows array is empty - table is probely empty
+
+      res.status(200).send({ uploadFilesInfo }); 
     } catch (error: any) {
       logger.error(error.message);
       const statusCode = statusCodeHandler(error);

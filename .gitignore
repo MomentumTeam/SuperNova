@@ -111,6 +111,7 @@ dist
 *.vscode/
 *.pem
 ~*
+*SuperNovaUI/
 
 data
 
@@ -118,3 +119,5 @@ SuperNovaProto
 bulk-files
 .metals
 superNovaUi
+SuperNovaUI
+./SuperNovaUI
