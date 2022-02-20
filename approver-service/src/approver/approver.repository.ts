@@ -72,7 +72,6 @@ export class ApproverRepository {
         const approverGroup = await KartoffelService.getOGById({
           id: approverEntity.directGroup,
         });
-<<<<<<< HEAD
         if (isApproverValidForOGReq.isOrganization) {
           if (
             isApproverValidForOGReq.groupId === approverEntity.directGroup ||
@@ -83,8 +82,6 @@ export class ApproverRepository {
             return { isValid: false };
           }
         }
-=======
-
         try {
           const admin = await this.getApproverByEntityId({
             entityId: isApproverValidForOGReq.approverId,
@@ -101,7 +98,6 @@ export class ApproverRepository {
             }
           }
         } catch (getAdminError: any) {}
->>>>>>> f9f63ef77e19ba137ed1676e775c1d208447be5e
         // OneTree is not considered
         approverGroup.ancestors.pop();
         group.ancestors.pop();
