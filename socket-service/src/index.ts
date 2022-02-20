@@ -1,17 +1,17 @@
 import mongoose from "mongoose";
-import { createMongoStreams } from "./mongo/mongo.stream";
-import { connectMongo } from "./mongo/mongoose";
+import { MongoStream } from "./mongo/mongo.stream";
+import { MongoConn } from "./mongo/mongo.conn";
 import { Server } from "./server";
 import { logger } from "./utils/logger/logger";
 
 async function main(): Promise<void> {
   try {
     const server = Server.createServer();
-    await connectMongo();
+    await new MongoConn().connectMongo();
     server.startServer();
 
     await mongoose.connection.once("open", () => {
-      createMongoStreams(server.io);
+      new MongoStream(server.io);
     });
 
     logger.info("socket-service started successfully");

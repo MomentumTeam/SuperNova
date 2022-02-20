@@ -31,7 +31,8 @@ export class Server {
         origin: config.cors.ui,
       },
     });
-    SocketsConnector.startSocket(this.io);
+    const socketConnector = new SocketsConnector(this.io);
+    socketConnector.startSocket();
 
     this.configurationMiddleware();
     this.initializeErrorHandler();

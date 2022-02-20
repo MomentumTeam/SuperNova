@@ -7,12 +7,13 @@ export const config = {
   },
   redis: {
     port: env.get("SKS_REDIS_PORT").default(6379).asPortNumber(),
-    host: env.get("SKS_REDIS_HOST").default("localhost"),
-    password: env.get("SKS_REDIS_PASSWORD").default("mozart"),
+    host: env.get("SKS_REDIS_HOST").default("localhost").asString(),
+    password: env.get("SKS_REDIS_PASSWORD").default("mozart").asString(),
   },
   socket: {
-    namespaces: {
-      notifications: env.get("SKS_NOTIFICATIONS_NAMESPACE").default("/notifications").asString(),
+    rooms: {
+      security: env.get("SKS_SECURITY_ROOM").default("security").asString(),
+      superSecurity: env.get("SKS_SUPER_SECURITY_ROOM").default("super_security").asString(),
     },
   },
   authorization: {
@@ -22,11 +23,12 @@ export const config = {
     ui: env.get("SKS_UI_ALLOW_ORIGINS").default("http://localhost:3000").asString(),
   },
   mongo: {
-    uri: env.get("SKS_MONGO_URI").default("mongodb://localhost:27017/supernova").asString(),
+    uri: env.get("SKS_MONGO_URI").default("mongodb://localhost:27017/supernova?replicaSet=rs0").asString(),
     connectionRetries: env.get("SKS_MONGO_CONNECTION_RETRIES").default(5).asInt(),
     reconnectTimeout: env.get("SKS_MONGO_RECONNECT_TIMEOUT").default(2000).asInt(),
     collections: {
       notifications: env.get("SKS_MONGO_NOTIFICATION_COLLECTION_NAME").default("notifications").asString(),
+      requests: env.get("SKS_MONGO_REQUEST_COLLECTION_NAME").default("requests").asString(),
     },
   },
 };
