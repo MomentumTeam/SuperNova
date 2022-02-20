@@ -55,7 +55,6 @@ function randomClient(): any {
 
 export class BulkService {
   // POST
-
   static async isBulkFileValid(isBulkFileValidReq: IsBulkFileValidReq) {
     logger.info(`Call to isBulkFileValid in GTW`, isBulkFileValidReq);
 
@@ -63,7 +62,6 @@ export class BulkService {
       randomClient().IsBulkFileValid(
         isBulkFileValidReq,
         (err: any, response: IsBulkFileValidRes) => {
-
           if (err) {
             logger.error(`isBulkFileValid ERROR in GTW`, {
               err,
@@ -76,8 +74,11 @@ export class BulkService {
             response: response,
             callRequest: isBulkFileValidReq,
           });
-
-          resolve(response);
+          if (response.isFileValid) {
+            resolve(response);
+          } else {
+            reject(new Error('File is invalid!'));
+          }
         }
       );
     });
