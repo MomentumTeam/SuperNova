@@ -4,6 +4,7 @@ import {
   ApproverArray,
   ApproverIdArray,
   DeleteApproverReq,
+  GetAdminsByGroupIdsReq,
   GetAllApproversReq,
   GetApproverByEntityIdReq,
   GetUserTypeReq,
@@ -32,6 +33,18 @@ export class ApproverManager {
       return (await this.approverRepository.isApproverValidForOG(
         isApproverValidForOGReq
       )) as IsApproverValidForOGRes;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getAdminsByGroupIds(
+    getAdminsByGroupIdsReq: GetAdminsByGroupIdsReq
+  ): Promise<ApproverArray> {
+    try {
+      return (await this.approverRepository.getAdminsByGroupIds(
+        getAdminsByGroupIdsReq
+      )) as ApproverArray;
     } catch (error) {
       throw error;
     }

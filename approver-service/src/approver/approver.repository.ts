@@ -16,6 +16,7 @@ import {
   UpdateApproverDecisionReq,
   IsApproverValidForOGRes,
   GetApproverByEntityIdReq,
+  GetAdminsByGroupIdsReq,
 } from '../interfaces/protoc/proto/approverService';
 import {
   DigitalIdentity,
@@ -71,6 +72,23 @@ export class ApproverRepository {
         const approverGroup = await KartoffelService.getOGById({
           id: approverEntity.directGroup,
         });
+
+        try {
+          const admin = await this.getApproverByEntityId({
+            entityId: isApproverValidForOGReq.approverId,
+            type: ApproverType.ADMIN,
+          });
+          const groupsInCharge = admin.groupsInCharge;
+          if (groupsInCharge.includes(isApproverValidForOGReq.groupId)) {
+            return { isValid: true };
+          } else {
+            for (let ancestor of group.ancestors) {
+              if (groupsInCharge.includes(ancestor)) {
+                return { isValid: true };
+              }
+            }
+          }
+        } catch (getAdminError: any) {}
         // OneTree is not considered
         approverGroup.ancestors.pop();
         group.ancestors.pop();
@@ -118,10 +136,12 @@ export class ApproverRepository {
       ) {
         const updatedAdminDocument = await ApproverModel.findOneAndUpdate(
           { entityId: addApproverReq.entityId },
-          { $addToSet: { groupsInCharge: addApproverReq.groupInChargeId } }
+          { $addToSet: { groupsInCharge: addApproverReq.groupInChargeId } },
+          { new: true }
         );
-        turnObjectIdsToStrings(updatedAdminDocument.toObject());
-        return updatedAdminDocument as Approver;
+        const updatedAdmin = updatedAdminDocument.toObject();
+        turnObjectIdsToStrings(updatedAdmin);
+        return updatedAdmin as Approver;
       } else {
         const addApproverModel: any = addApproverReq;
         addApproverModel.groupsInCharge =
@@ -141,6 +161,20 @@ export class ApproverRepository {
         error: { message: error.message },
         addApproverReq,
       });
+      throw error;
+    }
+  }
+
+  async getAdminsByGroupIds(
+    getAdminsByGroupIdsReq: GetAdminsByGroupIdsReq
+  ): Promise<ApproverArray> {
+    try {
+      const mongoAdmins = await ApproverModel.find({
+        type: approverTypeToJSON(ApproverType.ADMIN),
+        groupsInCharge: { $in: getAdminsByGroupIdsReq.groupIds },
+      });
+      return { approvers: getMongoApproverArray(mongoAdmins) };
+    } catch (error: any) {
       throw error;
     }
   }
@@ -246,22 +280,43 @@ export class ApproverRepository {
     getApproverByEntityIdReq: GetApproverByEntityIdReq
   ): Promise<Approver> {
     try {
-      const approver = await ApproverModel.findOne({
+      const query: any = {
         entityId: getApproverByEntityIdReq.entityId,
-      });
+      };
+      let type = undefined;
+      if (getApproverByEntityIdReq.type !== undefined) {
+        type =
+          typeof getApproverByEntityIdReq.type === typeof ''
+            ? approverTypeFromJSON(getApproverByEntityIdReq.type)
+            : getApproverByEntityIdReq.type;
+        query.type = approverTypeToJSON(type);
+      }
+      const approver = await ApproverModel.findOne(query);
       if (approver) {
         const document = approver.toObject();
         turnObjectIdsToStrings(document);
-        document.type = ApproverType.UNKNOWN;
+        if (getApproverByEntityIdReq.type === undefined) {
+          document.type = ApproverType.UNKNOWN;
+        }
         return document as Approver;
       } else {
-        const entity = await KartoffelService.getEntityById({
-          id: getApproverByEntityIdReq.entityId,
-        });
-        if (hasCommanderRank(entity)) {
-          return getApproverByEntity(entity, ApproverType.COMMANDER);
+        if (
+          getApproverByEntityIdReq.type !== undefined &&
+          type !== ApproverType.SOLDIER &&
+          type !== ApproverType.COMMANDER
+        ) {
+          throw new Error(
+            `Approver ${getApproverByEntityIdReq.entityId} does not exist with type ${getApproverByEntityIdReq.type}`
+          );
         } else {
-          return getApproverByEntity(entity, ApproverType.SOLDIER);
+          const entity = await KartoffelService.getEntityById({
+            id: getApproverByEntityIdReq.entityId,
+          });
+          if (hasCommanderRank(entity)) {
+            return getApproverByEntity(entity, ApproverType.COMMANDER);
+          } else {
+            return getApproverByEntity(entity, ApproverType.SOLDIER);
+          }
         }
       }
     } catch (error: any) {

@@ -44,6 +44,36 @@ export async function getApproverByEntityId(
   }
 }
 
+export async function getAdminsByGroupIds(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    logger.info(`Call to getAdminsByGroupIds`, {
+      callRequest: call.request,
+    });
+    const approverArray: ApproverArray =
+      await approverManager.getAdminsByGroupIds(call.request);
+    logger.info(`getAdminsByGroupIds OK`, {
+      callRequest: call.request,
+    });
+    callback(null, approverArray);
+  } catch (error: any) {
+    logger.error(`getAdminsByGroupIds ERROR`, {
+      callRequest: call.request,
+      error: { message: error.message },
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
 export async function isApproverValidForOG(
   call: any,
   callback: any
