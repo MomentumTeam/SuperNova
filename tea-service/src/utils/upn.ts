@@ -25,8 +25,11 @@ export async function getUPN(entity: EntityMin): Promise<string> {
         }
         const prefixAfterInc: any = documentAfterInc.toObject();
         return `${C.brol}_${zeroPad(prefixAfterInc.currentCounter, 6)}`;
+      case C.external:
+        return `${entity.employeeId}`;
     }
     return '';
+              
   } catch (error) {
     throw error;
   }

@@ -821,6 +821,9 @@ message CreateEntityKartoffelParams{
     optional int64 birthdate = 11;
     string entityType = 12;
     optional string rank = 13;
+    optional string organization = 14;
+    optional string employeeNumber = 15;
+
 }
 
 message CreateEntityADParams{
@@ -1245,21 +1248,23 @@ message KartoffelParams{
 
     optional string currentJobTitle = 26;
     optional string newJobTitle = 27;
-    
+    optional string organization = 28;
+    optional string employeeNumber = 29;
+    optional string employeeId = 30;
 
     //RenameOG
     // ?
 
     //RenameRole
     // ?
-    optional string oldJobTitle = 28;
-    optional string hierarchy = 29;
-    optional string oldHierarchy = 30;
-    optional string upn = 31;
-    optional Kartoffel.Role role = 32;
-    optional string entityId = 33;
+    optional string oldJobTitle = 31;
+    optional string hierarchy = 32;
+    optional string oldHierarchy = 33;
+    optional string upn = 34;
+    optional Kartoffel.Role role = 35;
+    optional string entityId = 36;
 
-    optional string rank = 34;
+    optional string rank = 37;
     //EditEntity
     // string firstName = 25;
     // string lastName = 26;
