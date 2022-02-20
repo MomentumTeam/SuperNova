@@ -107,13 +107,13 @@ export class ApproverRepository {
   async addApprover(addApproverReq: AddApproverReq) {
     try {
       approverTypeValidation(addApproverReq.type);
-      const adminAllreadyExists: any = await ApproverModel.exists({
+      const adminAlreadyExists: any = await ApproverModel.exists({
         entityId: addApproverReq.entityId,
         type: approverTypeToJSON(ApproverType.ADMIN),
       });
 
       if (
-        adminAllreadyExists &&
+        adminAlreadyExists &&
         approverTypeFromJSON(addApproverReq.type) === ApproverType.ADMIN
       ) {
         const updatedAdminDocument = await ApproverModel.findOneAndUpdate(
