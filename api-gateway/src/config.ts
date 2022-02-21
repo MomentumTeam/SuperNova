@@ -26,7 +26,10 @@ const organizationIds = env
 const organizationNumberToGroupId: any = [];
 
 for (let [index, value] of organizationNumbers.entries()) {
-  organizationNumberToGroupId.push({ "orgNumber": value, "orgId": organizationIds[index]})
+  organizationNumberToGroupId.push({
+    orgNumber: value,
+    orgId: organizationIds[index],
+  });
 }
 
 export const config = {
@@ -159,6 +162,11 @@ export const config = {
       ?.split(','),
     CREATE_SOLDIER_APPROVERS: env
       .get('UI_CREATE_SOLDIER_APPROVERS')
+      .default('619e3a6fe4de0300121d78c7,619e406ee4de0300121dc4c8')
+      .asString()
+      ?.split(','),
+    ENTITIES_WITH_VISIBLE_CREATE_EXTERNAL: env
+      .get('UI_ENTITIES_WITH_VISIBLE_CREATE_EXTERNAL')
       .default('619e3a6fe4de0300121d78c7,619e406ee4de0300121dc4c8')
       .asString()
       ?.split(','),
