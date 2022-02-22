@@ -680,7 +680,7 @@ export default class RequestsController {
         groupId,
         true
       );
-      delete createNewApproverReq.type;
+      delete request.type;
       const newApprover = await RequestsService.createNewApproverRequest(
         request
       );
@@ -707,14 +707,16 @@ export default class RequestsController {
       ancestors: req.user.ancestors,
     };
 
-    const createEntityReq: CreateEntityReq = {
+    const createEntityReq: any = {
       submittedBy: submittedBy,
       ...req.body,
     };
 
+    createEntityReq.type = RequestType.CREATE_ENTITY;
+
     try {
       let request: any = await approveUserRequest(req, createEntityReq);
-
+      delete request.type;
       const entity = await RequestsService.createEntityRequest(request);
       try {
         await RequestsService.executeRequestIfNeeded(entity);

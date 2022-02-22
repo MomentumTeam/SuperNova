@@ -49,11 +49,10 @@ export const approveUserRequest = async (
 
             if (requestType === RequestType.CREATE_ENTITY) {
               if (
+                //המאשרים היחידים של בקשה ליצירת חייל הם הקרטופלים
                 request.kartoffelParams?.entityType ===
-                  config.ui.KARTOFFEL_SOLDIER || //המאשרים היחידים של בקשה ליצירת חייל הם הקרטופלים
-                (request.kartoffelParams?.entityType ===
                   config.ui.KARTOFFEL_SOLDIER &&
-                  !config.ui.CREATE_SOLDIER_APPROVERS.includes(req.user.id))
+                !config.ui.CREATE_SOLDIER_APPROVERS.includes(req.user.id)
               ) {
                 break;
               }
@@ -111,11 +110,10 @@ export const approveUserRequest = async (
 
             if (requestType === RequestType.CREATE_ENTITY) {
               if (
+                //המאשרים היחידים של בקשה ליצירת חייל הם הקרטופלים
                 request.kartoffelParams?.entityType ===
-                  config.ui.KARTOFFEL_SOLDIER || //המאשרים היחידים של בקשה ליצירת חייל הם הקרטופלים
-                (request.kartoffelParams?.entityType ===
                   config.ui.KARTOFFEL_SOLDIER &&
-                  !config.ui.CREATE_SOLDIER_APPROVERS.includes(req.user.id))
+                !config.ui.CREATE_SOLDIER_APPROVERS.includes(req.user.id)
               ) {
                 break;
               }
