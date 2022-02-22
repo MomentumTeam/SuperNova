@@ -26,7 +26,10 @@ const organizationIds = env
 const organizationNumberToGroupId: any = [];
 
 for (let [index, value] of organizationNumbers.entries()) {
-  organizationNumberToGroupId.push({ "orgNumber": value, "orgId": organizationIds[index]})
+  organizationNumberToGroupId.push({
+    orgNumber: value,
+    orgId: organizationIds[index],
+  });
 }
 
 export const config = {
@@ -154,7 +157,14 @@ export const config = {
       .asString(),
     CREATE_ADMIN_APPROVERS: env
       .get('UI_CREATE_ADMIN_APPROVERS')
-      .default('61c039d8e4de0300121de45a,61dd539ce4de030012202d5e')
+      .default(
+        '61c039d8e4de0300121de45a,61dd539ce4de030012202d5e,619f8aa0e4de0300121dd3f4'
+      )
+      .asString()
+      ?.split(','),
+    CREATE_BULK_APPROVERS: env
+      .get('UI_CREATE_BULK_APPROVERS')
+      .default('61dd539ce4de030012202d5e,619e3a6fe4de0300121d78c7')
       .asString()
       ?.split(','),
     CREATE_SOLDIER_APPROVERS: env

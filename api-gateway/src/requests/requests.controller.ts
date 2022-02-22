@@ -713,12 +713,7 @@ export default class RequestsController {
     };
 
     try {
-      let request: any = createEntityReq;
-
-      if (request.kartoffelParams?.entityType !== config.ui.KARTOFFEL_SOLDIER ||       //המאשרים היחידים של בקשה ליצירת חייל הם הקרטופלים
-        (request.kartoffelParams?.entityType === config.ui.KARTOFFEL_SOLDIER && config.ui.CREATE_SOLDIER_APPROVERS.includes(req.user.id))) {
-        request = await approveUserRequest(req, createEntityReq);
-      }
+      let request: any = await approveUserRequest(req, createEntityReq);
 
       const entity = await RequestsService.createEntityRequest(request);
       try {
