@@ -5,7 +5,11 @@ export const config = {
     port: env.get("SKS_APPLICATION_PORT").default(2001).asPortNumber(),
     name: "socket-service",
   },
+  approver: {
+    endpoint: env.get("SKS_APS_URL").default("0.0.0.0:8085").asString(),
+  },
   redis: {
+    enabled: env.get("SKS_REDIS_ENABLED").default("true").asBool(),
     port: env.get("SKS_REDIS_PORT").default(6379).asPortNumber(),
     host: env.get("SKS_REDIS_HOST").default("localhost").asString(),
     password: env.get("SKS_REDIS_PASSWORD").default("mozart").asString(),

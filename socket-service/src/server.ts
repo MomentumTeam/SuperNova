@@ -5,7 +5,7 @@ import { Server as socketIoServer } from "socket.io";
 import { config } from "./config";
 import { userErrorHandler, serverErrorHandler, unknownErrorHandler } from "./utils/errors/handler";
 import { logger } from "./utils/logger/logger";
-import { SocketsConnector } from "./socket";
+import { SocketsConnector } from "./socket/socket.conn";
 
 // Socket server
 export class Server {
@@ -31,7 +31,8 @@ export class Server {
         origin: config.cors.ui,
       },
     });
-    const socketConnector = new SocketsConnector(this.io);
+
+    const socketConnector = new SocketsConnector(this.io, config.redis.enabled);
     socketConnector.startSocket();
 
     this.configurationMiddleware();

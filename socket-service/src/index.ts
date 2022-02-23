@@ -20,4 +20,4 @@ async function main(): Promise<void> {
   }
 }
 
-main().then().catch();
+main();
