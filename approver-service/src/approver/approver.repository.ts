@@ -74,6 +74,12 @@ export class ApproverRepository {
         });
         if (isApproverValidForOGReq.isOrganization) {
           if (
+            C.createExternalAllowedApprovers.includes(
+              isApproverValidForOGReq.approverId
+            )
+          ) {
+            return { isValid: true };
+          } else if (
             isApproverValidForOGReq.groupId === approverEntity.directGroup ||
             approverGroup.ancestors.includes(isApproverValidForOGReq.groupId)
           ) {

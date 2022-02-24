@@ -172,6 +172,11 @@ export const config = {
       .default('619e3a6fe4de0300121d78c7,619e406ee4de0300121dc4c8')
       .asString()
       ?.split(','),
+    ENTITIES_WITH_VISIBLE_CREATE_EXTERNAL: env
+      .get('UI_ENTITIES_WITH_VISIBLE_CREATE_EXTERNAL')
+      .default('619e3a6fe4de0300121d78c7,619e406ee4de0300121dc4c8')
+      .asString()
+      ?.split(','),
     KARTOFFEL_CIVILIAN: env
       .get('UI_KARTOFFEL_CIVILIAN')
       .default('Civilian')
