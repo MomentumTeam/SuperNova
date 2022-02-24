@@ -1313,6 +1313,9 @@ export class RequestRepository {
         } else if (approverType === ApproverType.ADMIN) {
           request.needSecurityDecision = false;
           request.needSuperSecurityDecision = false;
+        } else if (approverType === ApproverType.BULK) {
+          request.needSecurityDecision = false;
+          request.needSuperSecurityDecision = false;
         } else if (approverType === ApproverType.SECURITY) {
           request.needSecurityDecision = true;
           request.needSuperSecurityDecision = false;
