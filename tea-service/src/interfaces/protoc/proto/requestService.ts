@@ -13,6 +13,7 @@ export enum ApproverType {
   SOLDIER = 4,
   ADMIN = 5,
   BULK = 6,
+  SPECIAL_GROUP = 7,
   UNRECOGNIZED = -1,
 }
 
@@ -39,6 +40,9 @@ export function approverTypeFromJSON(object: any): ApproverType {
     case 6:
     case "BULK":
       return ApproverType.BULK;
+    case 7:
+    case "SPECIAL_GROUP":
+      return ApproverType.SPECIAL_GROUP;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -62,6 +66,8 @@ export function approverTypeToJSON(object: ApproverType): string {
       return "ADMIN";
     case ApproverType.BULK:
       return "BULK";
+    case ApproverType.SPECIAL_GROUP:
+      return "SPECIAL_GROUP";
     default:
       return "UNKNOWN";
   }

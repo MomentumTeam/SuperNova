@@ -20,7 +20,20 @@ service ApproverService {
     rpc DeleteApprover(DeleteApproverReq) returns (SuccessMessage){}
     rpc IsApproverValidForOG(IsApproverValidForOGReq) returns (IsApproverValidForOGRes){}
     rpc GetAdminsByGroupIds(GetAdminsByGroupIdsReq) returns (ApproverArray){}
+
+
+    rpc IncludesSpecialGroup(IncludesSpecialGroupReq) returns (IncludesSpecialGroupRes){}
+
 }
+
+message IncludesSpecialGroupRes{
+    bool includes= 1;
+}
+
+message IncludesSpecialGroupReq{
+    repeated string groupIds = 1;
+}
+
 
 message GetAdminsByGroupIdsReq{
     repeated string groupIds = 1;
@@ -103,6 +116,7 @@ message AddApproverReq{
     optional string identityCard = 7;
     string directGroup = 8;
     optional string groupInChargeId = 9;
+    optional string specialGroupId = 10;
 }
 
 message UpdateApproverDecisionReq{
@@ -121,6 +135,8 @@ message Approver{
     string identityCard = 8;
     string directGroup = 9;
     repeated string groupsInCharge = 10;
+    optional string specialGroupId = 11;
+    
 }
 
 enum RequestStatus{

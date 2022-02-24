@@ -1409,6 +1409,7 @@ enum ApproverType{
     SOLDIER = 4;
     ADMIN = 5;
     BULK = 6;
+    SPECIAL_GROUP = 7;
 }
 
 enum RequestType {

@@ -14,6 +14,7 @@ export const ApproverSchema = new Schema(
     akaUnit: { type: String, default: '' },
     directGroup: { type: String, default: '' },
     groupsInCharge: { type: [String], default: [C.rootId] },
+    specialGroupId: { type: [String], default: '' },
   },
   { strict: false }
 );
@@ -21,6 +22,7 @@ ApproverSchema.index({ displayName: 'text' });
 
 //TODO: user-friendly error when the unique key already exists
 ApproverSchema.index({ entityId: 1, type: 1 }, { unique: true });
+ApproverSchema.index({ specialGroupId: 1 }, { unique: true });
 
 export const ApproverModel = mongoose.model(
   'Approver',
