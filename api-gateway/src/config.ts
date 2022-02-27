@@ -202,6 +202,10 @@ export const config = {
     organizationNumbers,
     organizationIds,
     organizationNumberToGroupId,
+    SOCKET_URL: env
+      .get('UI_SOCKET_URL')
+      .default('localhost:2001')
+      .asString()
   },
   logs: {
     storeLogs: env.get('GLOBAL_STORE_LOGS').default('true').asBool(),
