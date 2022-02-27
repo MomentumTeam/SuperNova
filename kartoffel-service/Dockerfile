@@ -9,7 +9,10 @@ RUN apk add --no-cache git ca-certificates
 COPY --chown=node:node ./package*.json ./
 COPY --chown=node:node ./tsconfig.json ./
 
-
+RUN GRPC_HEALTH_PROBE_VERSION=v0.4.4 && \
+    wget -qO/bin/grpc_health_probe https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/${GRPC_HEALTH_PROBE_VERSION}/grpc_health_probe-linux-amd64 && \
+    chmod +x /bin/grpc_health_probe && \
+    chown node:node /bin/grpc_health_probe
 
 # copy source code to /app/src folder
 COPY . .
@@ -23,11 +26,6 @@ FROM node:14.17.5-alpine3.14
 RUN apk update 
 RUN apk add --no-cache nano vim
 
-RUN GRPC_HEALTH_PROBE_VERSION=v0.4.4 && \
-    wget -qO/bin/grpc_health_probe https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/${GRPC_HEALTH_PROBE_VERSION}/grpc_health_probe-linux-amd64 && \
-    chmod +x /bin/grpc_health_probe && \
-    chown node:node /bin/grpc_health_probe
-
 RUN mkdir -p /logs && chown -R node:node /logs
 RUN mkdir -p /logs/kartoffel-service && chown -R node:node /logs/kartoffel-service
 RUN mkdir -p /usr/src/app && chown -R node:node /usr/src/app
@@ -38,7 +36,7 @@ COPY --chown=node:node ./package*.json ./
 RUN npm ci --production && npm cache clean --force
 
 COPY --from=builder --chown=node:node /app/dist .
-
+COPY --from=builder --chown=node:node /bin/grpc_health_probe /bin/grpc_health_probe
 COPY --from=builder --chown=node:node /app/proto proto
 
 USER node
