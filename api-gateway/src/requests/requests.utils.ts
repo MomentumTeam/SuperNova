@@ -37,10 +37,27 @@ export const approveUserRequest = async (
                 typeof request.additionalParams.type === typeof ''
                   ? approverTypeFromJSON(request.additionalParams.type)
                   : request.additionalParams.type;
-              if (approverToAddType === ApproverType.ADMIN) {
+              if (
+                (approverToAddType === ApproverType.ADMIN &&
+                  !config.ui.CREATE_ADMIN_APPROVERS.includes(req.user.id)) ||
+                (approverToAddType === ApproverType.BULK &&
+                  !config.ui.CREATE_BULK_APPROVERS.includes(req.user.id))
+              ) {
                 break;
               }
             }
+
+            if (requestType === RequestType.CREATE_ENTITY) {
+              if (
+                //המאשרים היחידים של בקשה ליצירת חייל הם הקרטופלים
+                request.kartoffelParams?.entityType ===
+                  config.ui.KARTOFFEL_SOLDIER &&
+                !config.ui.CREATE_SOLDIER_APPROVERS.includes(req.user.id)
+              ) {
+                break;
+              }
+            }
+
             request.commanders = request.commanders
               ? [...request.commanders, entityUser]
               : [entityUser];
@@ -81,10 +98,27 @@ export const approveUserRequest = async (
                 typeof request.additionalParams.type === typeof ''
                   ? approverTypeFromJSON(request.additionalParams.type)
                   : request.additionalParams.type;
-              if (approverToAddType === ApproverType.ADMIN) {
+              if (
+                (approverToAddType === ApproverType.ADMIN &&
+                  !config.ui.CREATE_ADMIN_APPROVERS.includes(req.user.id)) ||
+                (approverToAddType === ApproverType.BULK &&
+                  !config.ui.CREATE_BULK_APPROVERS.includes(req.user.id))
+              ) {
                 break;
               }
             }
+
+            if (requestType === RequestType.CREATE_ENTITY) {
+              if (
+                //המאשרים היחידים של בקשה ליצירת חייל הם הקרטופלים
+                request.kartoffelParams?.entityType ===
+                  config.ui.KARTOFFEL_SOLDIER &&
+                !config.ui.CREATE_SOLDIER_APPROVERS.includes(req.user.id)
+              ) {
+                break;
+              }
+            }
+
             let valid = true;
             if (groupId) {
               const response: any = await ApproverService.isApproverValidForOG({
