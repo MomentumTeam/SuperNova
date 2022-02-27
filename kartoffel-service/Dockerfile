@@ -8,7 +8,6 @@ RUN apk add --no-cache git ca-certificates
 # copy configs to /app folder
 RUN GRPC_HEALTH_PROBE_VERSION=v0.4.4 && \
     wget -qO/bin/grpc_health_probe https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/${GRPC_HEALTH_PROBE_VERSION}/grpc_health_probe-linux-amd64 && \
-    chmod +x /bin/grpc_health_probe && \
     chown node:node /bin/grpc_health_probe
 COPY --chown=node:node ./package*.json ./
 COPY --chown=node:node ./tsconfig.json ./
@@ -37,7 +36,6 @@ RUN npm ci --production && npm cache clean --force
 COPY --from=builder --chown=node:node /app/dist .
 COPY --from=builder --chown=node:node /bin/grpc_health_probe /bin/grpc_health_probe
 COPY --from=builder --chown=node:node /app/proto proto
-
 USER node
 
 EXPOSE 8080
