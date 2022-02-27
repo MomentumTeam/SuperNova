@@ -37,24 +37,6 @@ config:
   configmaps:
       name: momentum-configmap
 
-livenessProbe:
-      httpGet:
-        path: /api/isAlive
-        port: 8080
-      initialDelaySeconds: 5
-      periodSeconds: 5
-      timeoutSeconds: 1
-      successThreshold: 1
-      failureThreshold: 3
-readinessProbe:
-  httpGet:
-    path: /api/isAlive
-    port: 8080
-  initialDelaySeconds: 5
-  periodSeconds: 5
-  timeoutSeconds: 1
-  successThreshold: 1
-  failureThreshold: 3
 
 ingress:
   enabled: true
@@ -65,3 +47,21 @@ ingress:
         service: api-gateway
         port: 8080
 
+# livenessProbe:
+#       httpGet:
+#         path: /api/isAlive
+#         port: 8080
+#       initialDelaySeconds: 5
+#       periodSeconds: 5
+#       timeoutSeconds: 1
+#       successThreshold: 1
+#       failureThreshold: 3
+# readinessProbe:
+#   httpGet:
+#     path: /api/isAlive
+#     port: 8080
+#   initialDelaySeconds: 5
+#   periodSeconds: 5
+#   timeoutSeconds: 1
+#   successThreshold: 1
+#   failureThreshold: 3
