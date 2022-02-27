@@ -118,6 +118,8 @@ export const createEntity = async (createEntityRequest: any) => {
       rank,
       serviceType,
       entityType,
+      organization,
+      employeeNumber
     } = createEntityRequest;
     logger.info('createEntity request received', createEntityRequest);
 
@@ -134,6 +136,8 @@ export const createEntity = async (createEntityRequest: any) => {
       entityType: entityType,
       rank: rank !== undefined ? rank : config.civilianDefaultRank,
       serviceType: serviceType,
+      organization: organization,
+      employeeNumber: employeeNumber
     });
     logger.info('Successfuly created Entity', createdEntity);
     return createdEntity.id;

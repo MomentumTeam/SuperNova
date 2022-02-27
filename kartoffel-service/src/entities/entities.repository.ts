@@ -160,7 +160,7 @@ export class EntitiesRepository {
       } else {
         const image: string =
           await this.kartoffelUtils.kartoffelGetBufferStream(
-            `${C.kartoffelUrl}/api/entities/${getPictureByEntityIdentifierRequest.identifier}/pictures/profile`
+            `${C.kartoffelUrl}/api/entities/${encodeURIComponent(getPictureByEntityIdentifierRequest.identifier)}/pictures/profile`
           );
         return { image: image };
       }
@@ -240,7 +240,9 @@ export class EntitiesRepository {
         return entity;
       } else {
         const data = await this.kartoffelUtils.kartoffelGet(
-          `${C.kartoffelUrl}/api/entities/identifier/${getEntityByIndetifierRequest.identifier}`,
+          `${C.kartoffelUrl}/api/entities/identifier/${encodeURIComponent(
+            getEntityByIndetifierRequest.identifier
+          )}`,
           { expanded: true }
         );
         fillEntityFields(data);
@@ -380,7 +382,12 @@ export class EntitiesRepository {
         delete data.picture;
         if (withPicture) {
           const picture = await this.getPictureByEntityIdentifier({
-            identifier: data.personalNumber || data.identityCard,
+            identifier:
+              data.personalNumber !== undefined
+                ? data.personalNumber
+                : data.identityCard !== undefined
+                ? data.identityCard
+                : data.employeeId,
           });
           data.picture = picture.image;
         }

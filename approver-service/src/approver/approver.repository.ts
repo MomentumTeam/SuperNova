@@ -72,7 +72,22 @@ export class ApproverRepository {
         const approverGroup = await KartoffelService.getOGById({
           id: approverEntity.directGroup,
         });
-
+        if (isApproverValidForOGReq.isOrganization) {
+          if (
+            C.createExternalAllowedApprovers.includes(
+              isApproverValidForOGReq.approverId
+            )
+          ) {
+            return { isValid: true };
+          } else if (
+            isApproverValidForOGReq.groupId === approverEntity.directGroup ||
+            approverGroup.ancestors.includes(isApproverValidForOGReq.groupId)
+          ) {
+            return { isValid: true };
+          } else {
+            return { isValid: false };
+          }
+        }
         try {
           const admin = await this.getApproverByEntityId({
             entityId: isApproverValidForOGReq.approverId,

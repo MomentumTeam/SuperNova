@@ -68,6 +68,7 @@ export interface GetAdminsByGroupIdsReq {
 export interface IsApproverValidForOGReq {
   approverId: string;
   groupId: string;
+  isOrganization?: boolean | undefined;
 }
 
 export interface IsApproverValidForOGRes {
@@ -242,6 +243,9 @@ export const IsApproverValidForOGReq = {
     if (message.groupId !== "") {
       writer.uint32(18).string(message.groupId);
     }
+    if (message.isOrganization !== undefined) {
+      writer.uint32(24).bool(message.isOrganization);
+    }
     return writer;
   },
 
@@ -262,6 +266,9 @@ export const IsApproverValidForOGReq = {
           break;
         case 2:
           message.groupId = reader.string();
+          break;
+        case 3:
+          message.isOrganization = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -285,6 +292,11 @@ export const IsApproverValidForOGReq = {
     } else {
       message.groupId = "";
     }
+    if (object.isOrganization !== undefined && object.isOrganization !== null) {
+      message.isOrganization = Boolean(object.isOrganization);
+    } else {
+      message.isOrganization = undefined;
+    }
     return message;
   },
 
@@ -292,6 +304,8 @@ export const IsApproverValidForOGReq = {
     const obj: any = {};
     message.approverId !== undefined && (obj.approverId = message.approverId);
     message.groupId !== undefined && (obj.groupId = message.groupId);
+    message.isOrganization !== undefined &&
+      (obj.isOrganization = message.isOrganization);
     return obj;
   },
 
@@ -310,6 +324,11 @@ export const IsApproverValidForOGReq = {
       message.groupId = object.groupId;
     } else {
       message.groupId = "";
+    }
+    if (object.isOrganization !== undefined && object.isOrganization !== null) {
+      message.isOrganization = object.isOrganization;
+    } else {
+      message.isOrganization = undefined;
     }
     return message;
   },

@@ -165,6 +165,7 @@ export default class ApproverController {
     const isApproverValidReq: IsApproverValidForOGReq = {
       approverId: req.body.approverId,
       groupId: req.body.groupId,
+      isOrganization: req.body.isOrganization
     };
 
     try {

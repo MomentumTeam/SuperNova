@@ -30,6 +30,10 @@ export const grpcPoolSize = process.env.GLOBAL_GRPC_POOL_SIZE
 export const logPath = process.env.APS_LOG_PATH
   ? `${process.env.APS_LOG_PATH}/approver-service`
   : './logs/approver-service';
+export const createExternalAllowedApprovers = process.env
+  .APS_CREATE_EXTERNAL_ALLOWED_APPROVERS
+  ? process.env.APS_CREATE_EXTERNAL_ALLOWED_APPROVERS.split(',')
+  : ['aaa', 'bbb'];
 export const storeLogs = process.env.GLOBAL_STORE_LOGS
   ? process.env.GLOBAL_STORE_LOGS === 'true'
   : false;

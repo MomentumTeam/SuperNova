@@ -63,6 +63,7 @@ export const isApproverValidSchema = Joi.object({
   body: {
     approverId: Joi.objectId().required(),
     groupId: Joi.objectId().required(),
+    isOrganization: Joi.boolean().default(false),
   },
   params: {},
   query: {},
