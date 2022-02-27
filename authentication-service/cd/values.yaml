@@ -31,3 +31,20 @@ ingress:
       - path: /auth
         service: authentication-service
         port: 8080
+
+livenessProbe:
+  exec:
+    command: ["/bin/grpc_health_probe", "-addr=:8080"]
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 3
+readinessProbe:
+  exec:
+    command: ["/bin/grpc_health_probe", "-addr=:8080"]
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 3

@@ -21,10 +21,6 @@ FROM node:14.17.5-alpine3.14
 RUN apk update 
 RUN apk add --no-cache nano vim
 
-RUN GRPC_HEALTH_PROBE_VERSION=v0.4.4 && \
-    wget -qO/bin/grpc_health_probe https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/${GRPC_HEALTH_PROBE_VERSION}/grpc_health_probe-linux-amd64 && \
-    chmod +x /bin/grpc_health_probe && \
-    chown node:node /bin/grpc_health_probe
 
 RUN mkdir -p /logs && chown -R node:node /logs
 RUN mkdir -p /logs/kartoffel-consumer && chown -R node:node /logs/kartoffel-consumer
@@ -36,7 +32,6 @@ COPY --chown=node:node ./package*.json ./
 RUN npm ci --production && npm cache clean --force
 
 COPY --from=builder --chown=node:node /app/dist .
-
 COPY --from=builder --chown=node:node /app/proto proto
 
 USER node
