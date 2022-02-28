@@ -13,6 +13,11 @@ COPY . .
 # copy source code to /app/src folder
 # RUN rm -rf /app/proto && git clone https://github.com/MomentumTeam/SuperNovaProto.git /app/proto
 
+RUN GRPC_HEALTH_PROBE_VERSION=v0.4.4 && \
+    wget -qO/bin/grpc_health_probe https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/${GRPC_HEALTH_PROBE_VERSION}/grpc_health_probe-linux-amd64 && \
+    chmod +x /bin/grpc_health_probe && \
+    chown node:node /bin/grpc_health_probe
+
 RUN npm i && npm cache clean --force
 RUN npm run build
 
@@ -21,11 +26,6 @@ FROM node:14.17.5-alpine3.14
 
 RUN apk update 
 RUN apk add --no-cache nano vim
-
-RUN GRPC_HEALTH_PROBE_VERSION=v0.4.4 && \
-    wget -qO/bin/grpc_health_probe https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/${GRPC_HEALTH_PROBE_VERSION}/grpc_health_probe-linux-amd64 && \
-    chmod +x /bin/grpc_health_probe && \
-    chown node:node /bin/grpc_health_probe
 
 RUN mkdir -p /logs && chown -R node:node /logs
 RUN mkdir -p /logs/bulk-service && chown -R node:node /logs/bulk-service
@@ -39,7 +39,7 @@ COPY --chown=node:node ./src/excelFilesExample /bulkFiles
 RUN npm ci --production && npm cache clean --force
 
 COPY --from=builder --chown=node:node /app/dist .
-
+COPY --from=builder --chown=node:node /bin/grpc_health_probe /bin/grpc_health_probe
 COPY --from=builder --chown=node:node /app/proto proto
 
 USER node
