@@ -162,7 +162,11 @@ export class ApproverRepository {
       let approvers: Approver[] = getMongoApproverArray(approversRes);
 
       for (const approver of approvers) {
-        if (approverTypeFromJSON(approver.type) === ApproverType.ADMIN) {
+        const approverType =
+          typeof approver.type === typeof ''
+            ? approverTypeFromJSON(approver.type)
+            : approver.type;
+        if (approverType === ApproverType.ADMIN) {
           const promises = approver.groupsInCharge.map((groupId) => {
             return new Promise((resolve, reject) => {
               KartoffelService.getOGById({
@@ -183,7 +187,7 @@ export class ApproverRepository {
           });
           await Promise.all(promises);
         }
-        res.types.push(approver.type);
+        res.types.push(approverType);
       }
 
       return res;
@@ -200,18 +204,26 @@ export class ApproverRepository {
     deleteApproverReq: DeleteApproverReq
   ): Promise<SuccessMessage> {
     try {
+      const approverType =
+        typeof deleteApproverReq.type === typeof ''
+          ? approverTypeFromJSON(deleteApproverReq.type)
+          : deleteApproverReq.type;
       if (
-        approverTypeFromJSON(deleteApproverReq.type === ApproverType.ADMIN) &&
-        deleteApproverReq.groupInChargeId
+        approverType === ApproverType.ADMIN &&
+        deleteApproverReq.groupInChargeId !== undefined
       ) {
+        //TODO ADD SECURITY_ADMIN
         await ApproverModel.updateOne(
-          { entityId: deleteApproverReq.approverId },
+          {
+            entityId: deleteApproverReq.approverId,
+            type: approverTypeToJSON(approverType),
+          },
           { $pull: { groupsInCharge: deleteApproverReq.groupInChargeId } }
         );
       } else {
         await ApproverModel.deleteOne({
           entityId: deleteApproverReq.approverId,
-          type: deleteApproverReq.type,
+          type: approverTypeToJSON(approverType),
         });
       }
       logger.info('deleteApprover', { deleteApproverReq });
