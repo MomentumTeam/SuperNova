@@ -13,6 +13,7 @@ export enum ApproverType {
   SOLDIER = 4,
   ADMIN = 5,
   BULK = 6,
+  SPECIAL_GROUP = 7,
   UNRECOGNIZED = -1,
 }
 
@@ -39,6 +40,9 @@ export function approverTypeFromJSON(object: any): ApproverType {
     case 6:
     case "BULK":
       return ApproverType.BULK;
+    case 7:
+    case "SPECIAL_GROUP":
+      return ApproverType.SPECIAL_GROUP;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -62,6 +66,8 @@ export function approverTypeToJSON(object: ApproverType): string {
       return "ADMIN";
     case ApproverType.BULK:
       return "BULK";
+    case ApproverType.SPECIAL_GROUP:
+      return "SPECIAL_GROUP";
     default:
       return "UNKNOWN";
   }
@@ -1346,17 +1352,19 @@ export interface CreateOGADParams {
 export interface CreateEntityKartoffelParams {
   firstName: string;
   lastName: string;
-  identityCard: string;
+  identityCard?: string | undefined;
   personalNumber?: string | undefined;
   serviceType?: string | undefined;
   phone: string[];
   mobilePhone: string[];
   address?: string | undefined;
-  clearance: string;
+  clearance?: string | undefined;
   sex?: string | undefined;
   birthdate?: number | undefined;
   entityType: string;
-  rank: string;
+  rank?: string | undefined;
+  organization?: string | undefined;
+  employeeNumber?: string | undefined;
 }
 
 /** NO PARAMETERS NEEDED */
@@ -1373,6 +1381,7 @@ export interface AdditionalParams {
   identityCard?: string | undefined;
   directGroup: string;
   groupInChargeId?: string | undefined;
+  specialGroupId?: string | undefined;
 }
 
 /** 5.RenameOGRequest */
@@ -1769,6 +1778,9 @@ export interface KartoffelParams {
   roleEntityType?: string | undefined;
   currentJobTitle?: string | undefined;
   newJobTitle?: string | undefined;
+  organization?: string | undefined;
+  employeeNumber?: string | undefined;
+  employeeId?: string | undefined;
   /**
    * RenameRole
    * ?
@@ -19366,12 +19378,9 @@ export const CreateOGADParams = {
 const baseCreateEntityKartoffelParams: object = {
   firstName: "",
   lastName: "",
-  identityCard: "",
   phone: "",
   mobilePhone: "",
-  clearance: "",
   entityType: "",
-  rank: "",
 };
 
 export const CreateEntityKartoffelParams = {
@@ -19385,7 +19394,7 @@ export const CreateEntityKartoffelParams = {
     if (message.lastName !== "") {
       writer.uint32(18).string(message.lastName);
     }
-    if (message.identityCard !== "") {
+    if (message.identityCard !== undefined) {
       writer.uint32(26).string(message.identityCard);
     }
     if (message.personalNumber !== undefined) {
@@ -19403,7 +19412,7 @@ export const CreateEntityKartoffelParams = {
     if (message.address !== undefined) {
       writer.uint32(66).string(message.address);
     }
-    if (message.clearance !== "") {
+    if (message.clearance !== undefined) {
       writer.uint32(74).string(message.clearance);
     }
     if (message.sex !== undefined) {
@@ -19415,8 +19424,14 @@ export const CreateEntityKartoffelParams = {
     if (message.entityType !== "") {
       writer.uint32(98).string(message.entityType);
     }
-    if (message.rank !== "") {
+    if (message.rank !== undefined) {
       writer.uint32(106).string(message.rank);
+    }
+    if (message.organization !== undefined) {
+      writer.uint32(114).string(message.organization);
+    }
+    if (message.employeeNumber !== undefined) {
+      writer.uint32(122).string(message.employeeNumber);
     }
     return writer;
   },
@@ -19474,6 +19489,12 @@ export const CreateEntityKartoffelParams = {
         case 13:
           message.rank = reader.string();
           break;
+        case 14:
+          message.organization = reader.string();
+          break;
+        case 15:
+          message.employeeNumber = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -19501,7 +19522,7 @@ export const CreateEntityKartoffelParams = {
     if (object.identityCard !== undefined && object.identityCard !== null) {
       message.identityCard = String(object.identityCard);
     } else {
-      message.identityCard = "";
+      message.identityCard = undefined;
     }
     if (object.personalNumber !== undefined && object.personalNumber !== null) {
       message.personalNumber = String(object.personalNumber);
@@ -19531,7 +19552,7 @@ export const CreateEntityKartoffelParams = {
     if (object.clearance !== undefined && object.clearance !== null) {
       message.clearance = String(object.clearance);
     } else {
-      message.clearance = "";
+      message.clearance = undefined;
     }
     if (object.sex !== undefined && object.sex !== null) {
       message.sex = String(object.sex);
@@ -19551,7 +19572,17 @@ export const CreateEntityKartoffelParams = {
     if (object.rank !== undefined && object.rank !== null) {
       message.rank = String(object.rank);
     } else {
-      message.rank = "";
+      message.rank = undefined;
+    }
+    if (object.organization !== undefined && object.organization !== null) {
+      message.organization = String(object.organization);
+    } else {
+      message.organization = undefined;
+    }
+    if (object.employeeNumber !== undefined && object.employeeNumber !== null) {
+      message.employeeNumber = String(object.employeeNumber);
+    } else {
+      message.employeeNumber = undefined;
     }
     return message;
   },
@@ -19582,6 +19613,10 @@ export const CreateEntityKartoffelParams = {
     message.birthdate !== undefined && (obj.birthdate = message.birthdate);
     message.entityType !== undefined && (obj.entityType = message.entityType);
     message.rank !== undefined && (obj.rank = message.rank);
+    message.organization !== undefined &&
+      (obj.organization = message.organization);
+    message.employeeNumber !== undefined &&
+      (obj.employeeNumber = message.employeeNumber);
     return obj;
   },
 
@@ -19606,7 +19641,7 @@ export const CreateEntityKartoffelParams = {
     if (object.identityCard !== undefined && object.identityCard !== null) {
       message.identityCard = object.identityCard;
     } else {
-      message.identityCard = "";
+      message.identityCard = undefined;
     }
     if (object.personalNumber !== undefined && object.personalNumber !== null) {
       message.personalNumber = object.personalNumber;
@@ -19636,7 +19671,7 @@ export const CreateEntityKartoffelParams = {
     if (object.clearance !== undefined && object.clearance !== null) {
       message.clearance = object.clearance;
     } else {
-      message.clearance = "";
+      message.clearance = undefined;
     }
     if (object.sex !== undefined && object.sex !== null) {
       message.sex = object.sex;
@@ -19656,7 +19691,17 @@ export const CreateEntityKartoffelParams = {
     if (object.rank !== undefined && object.rank !== null) {
       message.rank = object.rank;
     } else {
-      message.rank = "";
+      message.rank = undefined;
+    }
+    if (object.organization !== undefined && object.organization !== null) {
+      message.organization = object.organization;
+    } else {
+      message.organization = undefined;
+    }
+    if (object.employeeNumber !== undefined && object.employeeNumber !== null) {
+      message.employeeNumber = object.employeeNumber;
+    } else {
+      message.employeeNumber = undefined;
     }
     return message;
   },
@@ -19746,6 +19791,9 @@ export const AdditionalParams = {
     if (message.groupInChargeId !== undefined) {
       writer.uint32(74).string(message.groupInChargeId);
     }
+    if (message.specialGroupId !== undefined) {
+      writer.uint32(82).string(message.specialGroupId);
+    }
     return writer;
   },
 
@@ -19783,6 +19831,9 @@ export const AdditionalParams = {
           break;
         case 9:
           message.groupInChargeId = reader.string();
+          break;
+        case 10:
+          message.specialGroupId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -19843,6 +19894,11 @@ export const AdditionalParams = {
     } else {
       message.groupInChargeId = undefined;
     }
+    if (object.specialGroupId !== undefined && object.specialGroupId !== null) {
+      message.specialGroupId = String(object.specialGroupId);
+    } else {
+      message.specialGroupId = undefined;
+    }
     return message;
   },
 
@@ -19866,6 +19922,8 @@ export const AdditionalParams = {
       (obj.directGroup = message.directGroup);
     message.groupInChargeId !== undefined &&
       (obj.groupInChargeId = message.groupInChargeId);
+    message.specialGroupId !== undefined &&
+      (obj.specialGroupId = message.specialGroupId);
     return obj;
   },
 
@@ -19919,6 +19977,11 @@ export const AdditionalParams = {
       message.groupInChargeId = object.groupInChargeId;
     } else {
       message.groupInChargeId = undefined;
+    }
+    if (object.specialGroupId !== undefined && object.specialGroupId !== null) {
+      message.specialGroupId = object.specialGroupId;
+    } else {
+      message.specialGroupId = undefined;
     }
     return message;
   },
@@ -25907,26 +25970,35 @@ export const KartoffelParams = {
     if (message.newJobTitle !== undefined) {
       writer.uint32(218).string(message.newJobTitle);
     }
+    if (message.organization !== undefined) {
+      writer.uint32(226).string(message.organization);
+    }
+    if (message.employeeNumber !== undefined) {
+      writer.uint32(234).string(message.employeeNumber);
+    }
+    if (message.employeeId !== undefined) {
+      writer.uint32(242).string(message.employeeId);
+    }
     if (message.oldJobTitle !== undefined) {
-      writer.uint32(226).string(message.oldJobTitle);
+      writer.uint32(250).string(message.oldJobTitle);
     }
     if (message.hierarchy !== undefined) {
-      writer.uint32(234).string(message.hierarchy);
+      writer.uint32(258).string(message.hierarchy);
     }
     if (message.oldHierarchy !== undefined) {
-      writer.uint32(242).string(message.oldHierarchy);
+      writer.uint32(266).string(message.oldHierarchy);
     }
     if (message.upn !== undefined) {
-      writer.uint32(250).string(message.upn);
+      writer.uint32(274).string(message.upn);
     }
     if (message.role !== undefined) {
-      Role.encode(message.role, writer.uint32(258).fork()).ldelim();
+      Role.encode(message.role, writer.uint32(282).fork()).ldelim();
     }
     if (message.entityId !== undefined) {
-      writer.uint32(266).string(message.entityId);
+      writer.uint32(290).string(message.entityId);
     }
     if (message.rank !== undefined) {
-      writer.uint32(274).string(message.rank);
+      writer.uint32(298).string(message.rank);
     }
     return writer;
   },
@@ -26022,24 +26094,33 @@ export const KartoffelParams = {
           message.newJobTitle = reader.string();
           break;
         case 28:
-          message.oldJobTitle = reader.string();
+          message.organization = reader.string();
           break;
         case 29:
-          message.hierarchy = reader.string();
+          message.employeeNumber = reader.string();
           break;
         case 30:
-          message.oldHierarchy = reader.string();
+          message.employeeId = reader.string();
           break;
         case 31:
-          message.upn = reader.string();
+          message.oldJobTitle = reader.string();
           break;
         case 32:
-          message.role = Role.decode(reader, reader.uint32());
+          message.hierarchy = reader.string();
           break;
         case 33:
-          message.entityId = reader.string();
+          message.oldHierarchy = reader.string();
           break;
         case 34:
+          message.upn = reader.string();
+          break;
+        case 35:
+          message.role = Role.decode(reader, reader.uint32());
+          break;
+        case 36:
+          message.entityId = reader.string();
+          break;
+        case 37:
           message.rank = reader.string();
           break;
         default:
@@ -26195,6 +26276,21 @@ export const KartoffelParams = {
     } else {
       message.newJobTitle = undefined;
     }
+    if (object.organization !== undefined && object.organization !== null) {
+      message.organization = String(object.organization);
+    } else {
+      message.organization = undefined;
+    }
+    if (object.employeeNumber !== undefined && object.employeeNumber !== null) {
+      message.employeeNumber = String(object.employeeNumber);
+    } else {
+      message.employeeNumber = undefined;
+    }
+    if (object.employeeId !== undefined && object.employeeId !== null) {
+      message.employeeId = String(object.employeeId);
+    } else {
+      message.employeeId = undefined;
+    }
     if (object.oldJobTitle !== undefined && object.oldJobTitle !== null) {
       message.oldJobTitle = String(object.oldJobTitle);
     } else {
@@ -26279,6 +26375,11 @@ export const KartoffelParams = {
       (obj.currentJobTitle = message.currentJobTitle);
     message.newJobTitle !== undefined &&
       (obj.newJobTitle = message.newJobTitle);
+    message.organization !== undefined &&
+      (obj.organization = message.organization);
+    message.employeeNumber !== undefined &&
+      (obj.employeeNumber = message.employeeNumber);
+    message.employeeId !== undefined && (obj.employeeId = message.employeeId);
     message.oldJobTitle !== undefined &&
       (obj.oldJobTitle = message.oldJobTitle);
     message.hierarchy !== undefined && (obj.hierarchy = message.hierarchy);
@@ -26436,6 +26537,21 @@ export const KartoffelParams = {
       message.newJobTitle = object.newJobTitle;
     } else {
       message.newJobTitle = undefined;
+    }
+    if (object.organization !== undefined && object.organization !== null) {
+      message.organization = object.organization;
+    } else {
+      message.organization = undefined;
+    }
+    if (object.employeeNumber !== undefined && object.employeeNumber !== null) {
+      message.employeeNumber = object.employeeNumber;
+    } else {
+      message.employeeNumber = undefined;
+    }
+    if (object.employeeId !== undefined && object.employeeId !== null) {
+      message.employeeId = object.employeeId;
+    } else {
+      message.employeeId = undefined;
     }
     if (object.oldJobTitle !== undefined && object.oldJobTitle !== null) {
       message.oldJobTitle = object.oldJobTitle;

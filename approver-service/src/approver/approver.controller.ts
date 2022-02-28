@@ -4,6 +4,7 @@ import {
   ApproverArray,
   ApproverIdArray,
   GetUserTypeRes,
+  IncludesSpecialGroupRes,
   IsApproverValidForOGRes,
   SuccessMessage,
   GetAllApproverTypesRes,
@@ -31,6 +32,36 @@ export async function getApproverByEntityId(
     callback(null, approver);
   } catch (error: any) {
     logger.error(`getApproverByEntityId ERROR`, {
+      callRequest: call.request,
+      error: { message: error.message },
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function getAdminsByGroupIds(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    logger.info(`Call to getAdminsByGroupIds`, {
+      callRequest: call.request,
+    });
+    const approverArray: ApproverArray =
+      await approverManager.getAdminsByGroupIds(call.request);
+    logger.info(`getAdminsByGroupIds OK`, {
+      callRequest: call.request,
+    });
+    callback(null, approverArray);
+  } catch (error: any) {
+    logger.error(`getAdminsByGroupIds ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
     });
@@ -385,6 +416,33 @@ export async function syncApprover(call: any, callback: any): Promise<void> {
     callback(null, approverArray);
   } catch (error: any) {
     logger.error(`syncApprover ERROR`, {
+      callRequest: call.request,
+      error: { message: error.message },
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function includesSpecialGroup(call: any, callback: any): Promise<void> {
+  try {
+    logger.info(`Call to includesSpecialGroup`, {
+      callRequest: call.request,
+    });
+    const includesSpecialGroup: IncludesSpecialGroupRes =
+      await approverManager.includesSpecialGroup(call.request);
+    logger.info(`includesSpecialGroup OK`, {
+      callRequest: call.request,
+    });
+    callback(null, includesSpecialGroup);
+  } catch (error: any) {
+    logger.error(`includesSpecialGroup ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
     });

@@ -9,6 +9,29 @@ try {
   spikePubKeyDefault = '/usr/src/app/spike-utils/publickey.pem';
 }
 
+const organizationNumbers = env
+  .get('UI_EXTERNAL_ORGANIZATION_NUMBERS')
+  .default('8200,8100,8000,7900')
+  .asString()
+  ?.split(',');
+
+const organizationIds = env
+  .get('UI_EXTERNAL_ORGANIZATION_GROUP_IDS')
+  .default(
+    '619e3210f235dc001846faff,619e3210f235dc001846faff,619e3210f235dc001846faff,619e3210f235dc001846faff'
+  )
+  .asString()
+  ?.split(',');
+
+const organizationNumberToGroupId: any = [];
+
+for (let [index, value] of organizationNumbers.entries()) {
+  organizationNumberToGroupId.push({
+    orgNumber: value,
+    orgId: organizationIds[index],
+  });
+}
+
 export const config = {
   server: {
     port: env.get('GATEWAY_PORT').default(2000).asPortNumber(),
@@ -134,11 +157,23 @@ export const config = {
       .asString(),
     CREATE_ADMIN_APPROVERS: env
       .get('UI_CREATE_ADMIN_APPROVERS')
-      .default('61c039d8e4de0300121de45a,61dd539ce4de030012202d5e')
+      .default(
+        '61c039d8e4de0300121de45a,61dd539ce4de030012202d5e,619f8aa0e4de0300121dd3f4'
+      )
+      .asString()
+      ?.split(','),
+    CREATE_BULK_APPROVERS: env
+      .get('UI_CREATE_BULK_APPROVERS')
+      .default('61dd539ce4de030012202d5e,619e3a6fe4de0300121d78c7')
       .asString()
       ?.split(','),
     CREATE_SOLDIER_APPROVERS: env
       .get('UI_CREATE_SOLDIER_APPROVERS')
+      .default('619e3a6fe4de0300121d78c7,619e406ee4de0300121dc4c8')
+      .asString()
+      ?.split(','),
+    ENTITIES_WITH_VISIBLE_CREATE_EXTERNAL: env
+      .get('UI_ENTITIES_WITH_VISIBLE_CREATE_EXTERNAL')
       .default('619e3a6fe4de0300121d78c7,619e406ee4de0300121dc4c8')
       .asString()
       ?.split(','),
@@ -151,7 +186,7 @@ export const config = {
       .default('Soldier')
       .asString(),
     KARTOFFEL_WORKER: env
-      .get('UI_KARTOFFEL_WORKER')
+      .get('UI_KARTOFFEL_EXTERNAL')
       .default('Worker')
       .asString(),
     KARTOFFEL_RANKS: env
@@ -164,6 +199,9 @@ export const config = {
       .default('חובה,חובה בתנאי קבע,קבע,מילואים')
       .asString()
       ?.split(','),
+    organizationNumbers,
+    organizationIds,
+    organizationNumberToGroupId,
   },
   logs: {
     storeLogs: env.get('GLOBAL_STORE_LOGS').default('true').asBool(),

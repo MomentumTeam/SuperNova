@@ -16,8 +16,14 @@ import {
   UpdateApproverDecisionReq,
   IsApproverValidForOGRes,
   GetApproverByEntityIdReq,
+<<<<<<< HEAD
   GetAllApproverTypesReq,
   GetAllApproverTypesRes,
+=======
+  GetAdminsByGroupIdsReq,
+  IncludesSpecialGroupReq,
+  IncludesSpecialGroupRes,
+>>>>>>> 503c020904ee99348b1ac107a081ae8422787019
 } from '../interfaces/protoc/proto/approverService';
 import {
   DigitalIdentity,
@@ -73,6 +79,38 @@ export class ApproverRepository {
         const approverGroup = await KartoffelService.getOGById({
           id: approverEntity.directGroup,
         });
+        if (isApproverValidForOGReq.isOrganization) {
+          if (
+            C.createExternalAllowedApprovers.includes(
+              isApproverValidForOGReq.approverId
+            )
+          ) {
+            return { isValid: true };
+          } else if (
+            isApproverValidForOGReq.groupId === approverEntity.directGroup ||
+            approverGroup.ancestors.includes(isApproverValidForOGReq.groupId)
+          ) {
+            return { isValid: true };
+          } else {
+            return { isValid: false };
+          }
+        }
+        try {
+          const admin = await this.getApproverByEntityId({
+            entityId: isApproverValidForOGReq.approverId,
+            type: ApproverType.ADMIN,
+          });
+          const groupsInCharge = admin.groupsInCharge;
+          if (groupsInCharge.includes(isApproverValidForOGReq.groupId)) {
+            return { isValid: true };
+          } else {
+            for (let ancestor of group.ancestors) {
+              if (groupsInCharge.includes(ancestor)) {
+                return { isValid: true };
+              }
+            }
+          }
+        } catch (getAdminError: any) {}
         // OneTree is not considered
         approverGroup.ancestors.pop();
         group.ancestors.pop();
@@ -120,10 +158,12 @@ export class ApproverRepository {
       ) {
         const updatedAdminDocument = await ApproverModel.findOneAndUpdate(
           { entityId: addApproverReq.entityId },
-          { $addToSet: { groupsInCharge: addApproverReq.groupInChargeId } }
+          { $addToSet: { groupsInCharge: addApproverReq.groupInChargeId } },
+          { new: true }
         );
-        turnObjectIdsToStrings(updatedAdminDocument.toObject());
-        return updatedAdminDocument as Approver;
+        const updatedAdmin = updatedAdminDocument.toObject();
+        turnObjectIdsToStrings(updatedAdmin);
+        return updatedAdmin as Approver;
       } else {
         const addApproverModel: any = addApproverReq;
         addApproverModel.groupsInCharge =
@@ -196,6 +236,19 @@ export class ApproverRepository {
         error: { message: error.message },
         getAllApproversTypeReq,
       });
+    }
+  }
+  
+  async getAdminsByGroupIds(
+    getAdminsByGroupIdsReq: GetAdminsByGroupIdsReq
+  ): Promise<ApproverArray> {
+    try {
+      const mongoAdmins = await ApproverModel.find({
+        type: approverTypeToJSON(ApproverType.ADMIN),
+        groupsInCharge: { $in: getAdminsByGroupIdsReq.groupIds },
+      });
+      return { approvers: getMongoApproverArray(mongoAdmins) };
+    } catch (error: any) {
       throw error;
     }
   }
@@ -241,7 +294,9 @@ export class ApproverRepository {
     getAllApproversReq: GetAllApproversReq
   ): Promise<ApproverArray> {
     try {
-      let query = {};
+      let query: any = {
+        type: { $ne: approverTypeToJSON(ApproverType.SPECIAL_GROUP) },
+      };
       if (getAllApproversReq.type != undefined) {
         let type = approverTypeValidation(getAllApproversReq.type);
         query = { type: approverTypeToJSON(type) };
@@ -262,7 +317,9 @@ export class ApproverRepository {
     getAllApproverIdsReq: GetAllApproversReq
   ): Promise<ApproverIdArray> {
     try {
-      let approverIds: any = await ApproverModel.find({}).distinct('entityId');
+      let approverIds: any = await ApproverModel.find({
+        type: { $ne: approverTypeToJSON(ApproverType.SPECIAL_GROUP) },
+      }).distinct('entityId');
       approverIds = approverIds.map((approverId: any) => approverId.toString());
       return { approverIds: approverIds };
     } catch (error: any) {
@@ -319,22 +376,44 @@ export class ApproverRepository {
     getApproverByEntityIdReq: GetApproverByEntityIdReq
   ): Promise<Approver> {
     try {
-      const approver = await ApproverModel.findOne({
+      const query: any = {
         entityId: getApproverByEntityIdReq.entityId,
-      });
+        type: { $ne: approverTypeToJSON(ApproverType.SPECIAL_GROUP) },
+      };
+      let type = undefined;
+      if (getApproverByEntityIdReq.type !== undefined) {
+        type =
+          typeof getApproverByEntityIdReq.type === typeof ''
+            ? approverTypeFromJSON(getApproverByEntityIdReq.type)
+            : getApproverByEntityIdReq.type;
+        query.type = approverTypeToJSON(type);
+      }
+      const approver = await ApproverModel.findOne(query);
       if (approver) {
         const document = approver.toObject();
         turnObjectIdsToStrings(document);
-        document.type = ApproverType.UNKNOWN;
+        if (getApproverByEntityIdReq.type === undefined) {
+          document.type = ApproverType.UNKNOWN;
+        }
         return document as Approver;
       } else {
-        const entity = await KartoffelService.getEntityById({
-          id: getApproverByEntityIdReq.entityId,
-        });
-        if (hasCommanderRank(entity)) {
-          return getApproverByEntity(entity, ApproverType.COMMANDER);
+        if (
+          getApproverByEntityIdReq.type !== undefined &&
+          type !== ApproverType.SOLDIER &&
+          type !== ApproverType.COMMANDER
+        ) {
+          throw new Error(
+            `Approver ${getApproverByEntityIdReq.entityId} does not exist with type ${getApproverByEntityIdReq.type}`
+          );
         } else {
-          return getApproverByEntity(entity, ApproverType.SOLDIER);
+          const entity = await KartoffelService.getEntityById({
+            id: getApproverByEntityIdReq.entityId,
+          });
+          if (hasCommanderRank(entity)) {
+            return getApproverByEntity(entity, ApproverType.COMMANDER);
+          } else {
+            return getApproverByEntity(entity, ApproverType.SOLDIER);
+          }
         }
       }
     } catch (error: any) {
@@ -352,6 +431,7 @@ export class ApproverRepository {
     try {
       const approvers = await ApproverModel.find({
         entityId: getUserTypeReq.entityId,
+        type: { $ne: approverTypeToJSON(ApproverType.SPECIAL_GROUP) },
       });
       let response: GetUserTypeRes;
       if (approvers) {
@@ -595,6 +675,25 @@ export class ApproverRepository {
         updateApproverDecisionReq,
         error: { message: error.message },
       });
+      throw error;
+    }
+  }
+
+  async includesSpecialGroup(
+    includesSpecialGroupReq: IncludesSpecialGroupReq
+  ): Promise<IncludesSpecialGroupRes> {
+    try {
+      const includes = await ApproverModel.exists({
+        type: approverTypeToJSON(ApproverType.SPECIAL_GROUP),
+        specialGroupId: { $in: includesSpecialGroupReq.groupIds },
+      });
+
+      return { includes };
+    } catch (error: any) {
+       logger.error('includesSpecialGroup ERROR', {
+         includesSpecialGroupReq,
+         error: { message: error.message },
+       });
       throw error;
     }
   }

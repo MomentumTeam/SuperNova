@@ -49,6 +49,12 @@ ApproverRouter.post(
   ApproverController.isApproverValid
 );
 
+ApproverRouter.post(
+  '/includes/specialgroup',
+  ApproverValidator.includesSpecialGroupValid,
+  ApproverController.includesSpecialGroup
+);
+
 // PUT
 ApproverRouter.put(
   '/decision/:requestId',

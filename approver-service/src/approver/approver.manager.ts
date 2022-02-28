@@ -4,12 +4,15 @@ import {
   ApproverArray,
   ApproverIdArray,
   DeleteApproverReq,
+  GetAdminsByGroupIdsReq,
   GetAllApproversReq,
   GetAllApproverTypesReq,
   GetAllApproverTypesRes,
   GetApproverByEntityIdReq,
   GetUserTypeReq,
   GetUserTypeRes,
+  IncludesSpecialGroupReq,
+  IncludesSpecialGroupRes,
   IsApproverValidForOGReq,
   IsApproverValidForOGRes,
   SearchByDisplayNameReq,
@@ -34,6 +37,18 @@ export class ApproverManager {
       return (await this.approverRepository.isApproverValidForOG(
         isApproverValidForOGReq
       )) as IsApproverValidForOGRes;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getAdminsByGroupIds(
+    getAdminsByGroupIdsReq: GetAdminsByGroupIdsReq
+  ): Promise<ApproverArray> {
+    try {
+      return (await this.approverRepository.getAdminsByGroupIds(
+        getAdminsByGroupIdsReq
+      )) as ApproverArray;
     } catch (error) {
       throw error;
     }
@@ -165,6 +180,18 @@ export class ApproverManager {
     try {
       return await this.approverRepository.getAllMyApproverTypes(
         getAllApproversTypeReq
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async includesSpecialGroup(
+    includesSpecialGroupReq: IncludesSpecialGroupReq
+  ): Promise<IncludesSpecialGroupRes> {
+    try {
+      return await this.approverRepository.includesSpecialGroup(
+        includesSpecialGroupReq
       );
     } catch (error) {
       throw error;

@@ -69,6 +69,7 @@ export const isApproverValidSchema = Joi.object({
   body: {
     approverId: Joi.objectId().required(),
     groupId: Joi.objectId().required(),
+    isOrganization: Joi.boolean().default(false),
   },
   params: {},
   query: {},
@@ -80,6 +81,14 @@ export const addApproverSchema = Joi.object({
     type: Joi.string()
       .valid(...Object.keys(ApproverType))
       .required(),
+  },
+  params: {},
+  query: {},
+});
+
+export const includesSpecialGroupSchema = Joi.object({
+  body: {
+    groupIds: Joi.array().items(Joi.objectId()),
   },
   params: {},
   query: {},

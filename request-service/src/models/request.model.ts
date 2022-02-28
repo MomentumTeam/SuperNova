@@ -348,6 +348,7 @@ const RequestSchema = new Schema(
       identityCard: { type: String, default: null },
       directGroup: { type: String, default: null },
       groupInChargeId: { type: String, default: C.rootId },
+      specialGroupId: { type: String, default: '' },
     },
     isPartOfBulk: { type: Boolean, default: false },
     bulkRequestId: { type: mongoose.Schema.Types.ObjectId, default: null },

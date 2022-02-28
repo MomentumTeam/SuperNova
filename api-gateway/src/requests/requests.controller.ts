@@ -680,7 +680,7 @@ export default class RequestsController {
         groupId,
         true
       );
-      delete createNewApproverReq.type;
+      delete request.type;
       const newApprover = await RequestsService.createNewApproverRequest(
         request
       );
@@ -707,19 +707,16 @@ export default class RequestsController {
       ancestors: req.user.ancestors,
     };
 
-    const createEntityReq: CreateEntityReq = {
+    const createEntityReq: any = {
       submittedBy: submittedBy,
       ...req.body,
     };
 
+    createEntityReq.type = RequestType.CREATE_ENTITY;
+
     try {
-      let request: any = createEntityReq;
-
-      if (request.kartoffelParams?.entityType !== config.ui.KARTOFFEL_SOLDIER ||       //המאשרים היחידים של בקשה ליצירת חייל הם הקרטופלים
-        (request.kartoffelParams?.entityType === config.ui.KARTOFFEL_SOLDIER && config.ui.CREATE_SOLDIER_APPROVERS.includes(req.user.id))) {
-        request = await approveUserRequest(req, createEntityReq);
-      }
-
+      let request: any = await approveUserRequest(req, createEntityReq);
+      delete request.type;
       const entity = await RequestsService.createEntityRequest(request);
       try {
         await RequestsService.executeRequestIfNeeded(entity);

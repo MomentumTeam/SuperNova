@@ -11,6 +11,7 @@ import {
   UpdateApproverDecisionReq,
   IsApproverValidForOGReq,
   GetAllApproverTypesReq,
+  IncludesSpecialGroupReq,
 } from '../interfaces/protoc/proto/approverService';
 import { ApproverService } from './approver.service';
 import { KartoffelService } from '../kartoffel/kartoffel.service';
@@ -120,18 +121,20 @@ export default class ApproverController {
     }
   }
 
-  static async getAllMyApproverTypes(req: any, res: Response){
+  static async getAllMyApproverTypes(req: any, res: Response) {
     let getAllApproverTypesReq: GetAllApproverTypesReq = {
       entityId: req.user.id,
+    };
+    try {
+      const getMyApproverTypes = await ApproverService.getAllMyApproverTypes(
+        getAllApproverTypesReq
+      );
+      res.send(getMyApproverTypes);
+    } catch (error: any) {
+      const statusCode = statusCodeHandler(error);
+      res.status(statusCode).send(error.message);
     }
-    try{
-        const getMyApproverTypes = await ApproverService.getAllMyApproverTypes(getAllApproverTypesReq);
-        res.send(getMyApproverTypes);
-      } catch (error: any) {
-          const statusCode = statusCodeHandler(error);
-          res.status(statusCode).send(error.message);
-        }
-    }
+  }
 
   // POST
   static async addApprover(req: any, res: Response) {
@@ -179,6 +182,7 @@ export default class ApproverController {
     const isApproverValidReq: IsApproverValidForOGReq = {
       approverId: req.body.approverId,
       groupId: req.body.groupId,
+      isOrganization: req.body.isOrganization,
     };
 
     try {
@@ -186,6 +190,22 @@ export default class ApproverController {
         isApproverValidReq
       );
       res.send(isApproverValidRes);
+    } catch (error: any) {
+      const statusCode = statusCodeHandler(error);
+      res.status(statusCode).send(error.message);
+    }
+  }
+
+  static async includesSpecialGroup(req: any, res: Response) {
+    const includesSpecialGroupReq: IncludesSpecialGroupReq = {
+      groupIds: req.body.groupIds,
+    };
+
+    try {
+      const includes = await ApproverService.includesSpecialGroup(
+        includesSpecialGroupReq
+      );
+      res.send(includes);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
@@ -252,6 +272,7 @@ export default class ApproverController {
               groupInChargeId:
                 request.additionalParams?.groupInChargeId ||
                 config.fields.rootId,
+              specialGroupId: request.additionalParams?.specialGroupId || '',
             });
             await RequestsService.updateRequest({
               id: request.id,
@@ -301,9 +322,9 @@ export default class ApproverController {
   // DELETE
   static async deleteApprover(req: any, res: Response) {
     let deleteApproverReq: DeleteApproverReq = {
-        approverId: req.user.id,
-        type: req.query.type,
-        groupInChargeId: req.query.groupInChargeId,
+      approverId: req.user.id,
+      type: req.query.type,
+      groupInChargeId: req.query.groupInChargeId,
     };
 
     try {
