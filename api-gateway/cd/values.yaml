@@ -16,22 +16,25 @@ service:
 
 volume:
   - name: bulk-files-utils
-    mountPath: /bulkFiles
+    type: azurefile
     secretName: azure-secret
     shareName: momentum/bulk-files
-    type: azurefile
-  
+    mounts:
+      - mountPath: /bulkFiles
+
   - name: logs
-    mountPath: /logs
+    type: azurefile
     secretName: azure-secret
     shareName: momentum/logs
-    type: azurefile
-    
+    mounts:
+      - mountPath: /logs
+
   - name: api-gate-spike-utils
-    mountPath: /spikeUtils
+    type: azurefile
     secretName: azure-secret
     shareName: momentum/spike-utils
-    type: azurefile
+    mounts:
+      - mountPath: /spikeUtils
 
 config:
   configmaps:
@@ -46,22 +49,3 @@ ingress:
       - path: /api
         service: api-gateway
         port: 8080
-
-# livenessProbe:
-#       httpGet:
-#         path: /api/isAlive
-#         port: 8080
-#       initialDelaySeconds: 5
-#       periodSeconds: 5
-#       timeoutSeconds: 1
-#       successThreshold: 1
-#       failureThreshold: 3
-# readinessProbe:
-#   httpGet:
-#     path: /api/isAlive
-#     port: 8080
-#   initialDelaySeconds: 5
-#   periodSeconds: 5
-#   timeoutSeconds: 1
-#   successThreshold: 1
-#   failureThreshold: 3
