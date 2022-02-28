@@ -200,6 +200,7 @@ export class ApproverRepository {
     try {
       const approversRes = await ApproverModel.find({
         entityId: getAllApproversTypeReq.entityId,
+        type: { $ne: approverTypeToJSON(ApproverType.SPECIAL_GROUP) },
       });
 
       let res: GetAllApproverTypesRes = {
