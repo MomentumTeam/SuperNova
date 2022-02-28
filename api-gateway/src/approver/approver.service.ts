@@ -8,6 +8,7 @@ import {
   ApproverArray,
   DeleteApproverReq,
   GetAllApproversReq,
+  GetAllApproverTypesReq,
   GetApproverByEntityIdReq,
   GetUserTypeReq,
   GetUserTypeRes,
@@ -18,6 +19,7 @@ import {
   SearchByDomainUserReq,
   SearchHighCommandersByDisplayNameReq,
   UpdateApproverDecisionReq,
+  GetAllApproverTypesRes,
 } from '../interfaces/protoc/proto/approverService';
 import { logger } from '../utils/logger/logger';
 import {
@@ -29,6 +31,7 @@ import {
   Entity,
   EntityArray,
 } from '../interfaces/protoc/proto/kartoffelService';
+import { resolve } from 'path/posix';
 
 const PROTO_PATH = __dirname.includes('dist')
   ? path.join(__dirname, '../../../proto/approverService.proto')
@@ -252,6 +255,30 @@ export class ApproverService {
 
           logger.info(`getUserTypeReq OK in GTW`, {
             callRequest: getUserTypeReq,
+          });
+          resolve(response);
+        }
+      );
+    });
+  }
+
+  static async getAllMyApproverTypes(
+    getAllApproverTypesReq: GetAllApproverTypesReq
+  ) {
+    logger.info('Call to getAllMyApproverTypes in GTW', getAllApproverTypesReq);
+    return new Promise((resolve, reject) => {
+      randomClient().GetAllMyApproverTypes(
+        getAllApproverTypesReq,
+        (err: any, response: GetAllApproverTypesRes) => {
+          if (err) {
+            logger.error(`getAllMyApproverTypes ERROR in GTW`, {
+              err,
+              callRequest: getAllApproverTypesReq,
+            });
+            reject(err);
+          }
+          logger.info('getAllMyApproverTypes OK in GTW', {
+            callRequest: getAllApproverTypesReq,
           });
           resolve(response);
         }

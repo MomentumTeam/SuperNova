@@ -16,6 +16,8 @@ import {
   UpdateApproverDecisionReq,
   IsApproverValidForOGRes,
   GetApproverByEntityIdReq,
+  GetAllApproverTypesReq,
+  GetAllApproverTypesRes,
   GetAdminsByGroupIdsReq,
   IncludesSpecialGroupReq,
   IncludesSpecialGroupRes,
@@ -192,6 +194,62 @@ export class ApproverRepository {
     }
   }
 
+  async getAllMyApproverTypes(
+    getAllApproversTypeReq: GetAllApproverTypesReq
+  ): Promise<GetAllApproverTypesRes> {
+    try {
+      const approversRes = await ApproverModel.find({
+        entityId: getAllApproversTypeReq.entityId,
+      });
+
+      let res: GetAllApproverTypesRes = {
+        types: [],
+        groupsInCharge: [],
+      };
+      let approvers: Approver[] = getMongoApproverArray(approversRes);
+
+      for (const approver of approvers) {
+        const approverType =
+          typeof approver.type === typeof ''
+            ? approverTypeFromJSON(approver.type)
+            : approver.type;
+        if (
+          approverType === ApproverType.ADMIN ||
+          approverType === ApproverType.SECURITY_ADMIN
+        ) {
+          const promises = approver.groupsInCharge.map((groupId) => {
+            return new Promise((resolve, reject) => {
+              KartoffelService.getOGById({
+                id: groupId,
+              })
+                .then((groupInCharge: OrganizationGroup) => {
+                  res.groupsInCharge.push({
+                    id: groupId,
+                    name: groupInCharge.name,
+                    hierarchy: groupInCharge.hierarchy,
+                  });
+                  resolve('OK');
+                })
+                .catch((error) => {
+                  reject(error);
+                });
+            });
+          });
+          await Promise.all(promises);
+        }
+        res.types.push(approverType);
+      }
+
+      return res;
+    } catch (error: any) {
+      logger.error('getAllApproverTypes ERROR', {
+        error: { message: error.message },
+        getAllApproversTypeReq,
+      });
+      throw error;
+    }
+  }
+
   async getAdminsByGroupIds(
     getAdminsByGroupIdsReq: GetAdminsByGroupIdsReq
   ): Promise<ApproverArray> {
@@ -210,11 +268,28 @@ export class ApproverRepository {
     deleteApproverReq: DeleteApproverReq
   ): Promise<SuccessMessage> {
     try {
-      // TODO: what if there is not user? return false??
-      await ApproverModel.deleteMany({
-        entityId: deleteApproverReq.approverId,
-        type: { $ne: approverTypeToJSON(ApproverType.SPECIAL_GROUP) },
-      });
+      const approverType =
+        typeof deleteApproverReq.type === typeof ''
+          ? approverTypeFromJSON(deleteApproverReq.type)
+          : deleteApproverReq.type;
+      if (
+        (approverType === ApproverType.ADMIN ||
+          approverType === ApproverType.SECURITY_ADMIN) &&
+        deleteApproverReq.groupInChargeId !== undefined
+      ) {
+        await ApproverModel.updateOne(
+          {
+            entityId: deleteApproverReq.approverId,
+            type: approverTypeToJSON(approverType),
+          },
+          { $pull: { groupsInCharge: deleteApproverReq.groupInChargeId } }
+        );
+      } else {
+        await ApproverModel.deleteOne({
+          entityId: deleteApproverReq.approverId,
+          type: approverTypeToJSON(approverType),
+        });
+      }
       logger.info('deleteApprover', { deleteApproverReq });
       return { success: true };
     } catch (error: any) {
