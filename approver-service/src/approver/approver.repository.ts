@@ -16,14 +16,11 @@ import {
   UpdateApproverDecisionReq,
   IsApproverValidForOGRes,
   GetApproverByEntityIdReq,
-<<<<<<< HEAD
   GetAllApproverTypesReq,
   GetAllApproverTypesRes,
-=======
   GetAdminsByGroupIdsReq,
   IncludesSpecialGroupReq,
   IncludesSpecialGroupRes,
->>>>>>> 503c020904ee99348b1ac107a081ae8422787019
 } from '../interfaces/protoc/proto/approverService';
 import {
   DigitalIdentity,
@@ -236,9 +233,10 @@ export class ApproverRepository {
         error: { message: error.message },
         getAllApproversTypeReq,
       });
+      throw error;
     }
   }
-  
+
   async getAdminsByGroupIds(
     getAdminsByGroupIdsReq: GetAdminsByGroupIdsReq
   ): Promise<ApproverArray> {
@@ -690,10 +688,10 @@ export class ApproverRepository {
 
       return { includes };
     } catch (error: any) {
-       logger.error('includesSpecialGroup ERROR', {
-         includesSpecialGroupReq,
-         error: { message: error.message },
-       });
+      logger.error('includesSpecialGroup ERROR', {
+        includesSpecialGroupReq,
+        error: { message: error.message },
+      });
       throw error;
     }
   }

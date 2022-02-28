@@ -17,7 +17,7 @@ import {
   syncApprover,
   updateApproverDecision,
   getAllMyApproverTypes,
-  includesSpecialGroup
+  includesSpecialGroup,
 } from './approver/approver.controller';
 import { findPath } from './utils/path';
 import { addHealthService } from './health';
@@ -74,12 +74,9 @@ export class Server {
           DeleteApprover: deleteApprover,
           IsApproverValidForOG: isApproverValidForOG,
           GetApproverByEntityId: getApproverByEntityId,
-<<<<<<< HEAD
           GetAllMyApproverTypes: getAllMyApproverTypes,
-=======
           GetAdminsByGroupIds: getAdminsByGroupIds,
           includesSpecialGroup: includesSpecialGroup,
->>>>>>> 503c020904ee99348b1ac107a081ae8422787019
         }
       );
       logger.info(`Grpc services were successfully added to the server`);

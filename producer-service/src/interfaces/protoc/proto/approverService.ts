@@ -186,6 +186,7 @@ export interface groupsInCharge {
   name: string;
   hierarchy: string;
 }
+
 const baseIncludesSpecialGroupRes: object = { includes: false };
 
 export const IncludesSpecialGroupRes = {
