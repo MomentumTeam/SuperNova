@@ -14,32 +14,34 @@ service:
   - name: http
     port: "8080"
 
+
 volume:
-  - name: bulk-files-utils
-    type: azurefile
-    secretName: azure-secret
-    shareName: momentum/bulk-files
-    mounts:
-      - mountPath: /bulkFiles
-
-  - name: logs
-    type: azurefile
-    secretName: azure-secret
-    shareName: momentum/logs
-    mounts:
-      - mountPath: /logs
-
+      
   - name: api-gate-spike-utils
-    type: azurefile
-    secretName: azure-secret
-    shareName: momentum/spike-utils
     mounts:
       - mountPath: /spikeUtils
+    secretName: azure-secret
+    shareName: momentum/spike-utils
+    type: azurefile
+
+
+  - name: bulk-files-utils
+    mounts:
+      - mountPath: /bulkFiles
+    secretName: azure-secret
+    shareName: momentum/bulk-files
+    type: azurefile
+
+  - name: logs
+    mounts:
+      - mountPath: /logs
+    secretName: azure-secret
+    shareName: momentum/logs
+    type: azurefile
 
 config:
   configmaps:
       name: momentum-configmap
-
 
 ingress:
   enabled: true
