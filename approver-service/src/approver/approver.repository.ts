@@ -203,7 +203,10 @@ export class ApproverRepository {
           typeof approver.type === typeof ''
             ? approverTypeFromJSON(approver.type)
             : approver.type;
-        if (approverType === ApproverType.ADMIN) {
+        if (
+          approverType === ApproverType.ADMIN ||
+          approverType === ApproverType.SECURITY_ADMIN
+        ) {
           const promises = approver.groupsInCharge.map((groupId) => {
             return new Promise((resolve, reject) => {
               KartoffelService.getOGById({
@@ -260,10 +263,10 @@ export class ApproverRepository {
           ? approverTypeFromJSON(deleteApproverReq.type)
           : deleteApproverReq.type;
       if (
-        approverType === ApproverType.ADMIN &&
+        (approverType === ApproverType.ADMIN ||
+          approverType === ApproverType.SECURITY_ADMIN) &&
         deleteApproverReq.groupInChargeId !== undefined
       ) {
-        //TODO ADD SECURITY_ADMIN
         await ApproverModel.updateOne(
           {
             entityId: deleteApproverReq.approverId,
