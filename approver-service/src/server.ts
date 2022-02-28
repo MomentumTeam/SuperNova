@@ -16,7 +16,8 @@ import {
   searchHighCommandersByDisplayName,
   syncApprover,
   updateApproverDecision,
-  includesSpecialGroup
+  getAllMyApproverTypes,
+  includesSpecialGroup,
 } from './approver/approver.controller';
 import { findPath } from './utils/path';
 import { addHealthService } from './health';
@@ -73,6 +74,7 @@ export class Server {
           DeleteApprover: deleteApprover,
           IsApproverValidForOG: isApproverValidForOG,
           GetApproverByEntityId: getApproverByEntityId,
+          GetAllMyApproverTypes: getAllMyApproverTypes,
           GetAdminsByGroupIds: getAdminsByGroupIds,
           includesSpecialGroup: includesSpecialGroup,
         }

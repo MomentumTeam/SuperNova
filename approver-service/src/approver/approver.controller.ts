@@ -7,6 +7,7 @@ import {
   IncludesSpecialGroupRes,
   IsApproverValidForOGRes,
   SuccessMessage,
+  GetAllApproverTypesRes,
 } from '../interfaces/protoc/proto/approverService';
 import { Request } from '../interfaces/protoc/proto/requestService';
 import { logger } from '../logger';
@@ -297,6 +298,36 @@ export async function getAllApprovers(call: any, callback: any): Promise<void> {
     callback(null, approvers);
   } catch (error: any) {
     logger.error(`getAllApprovers ERROR`, {
+      callRequest: call.request,
+      error: { message: error.message },
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function getAllMyApproverTypes(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    logger.info(`Call to getAllApproverTypes`, {
+      callRequest: call.request,
+    });
+    const getAllApproverTypesRes: GetAllApproverTypesRes =
+      await approverManager.getAllMyApproverTypes(call.request);
+    logger.info(`getAllApproverTypes OK`, {
+      callRequest: call.request,
+    });
+    callback(null, getAllApproverTypesRes);
+  } catch (error: any) {
+    logger.error(`getAllApproverTypes ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
     });

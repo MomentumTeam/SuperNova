@@ -30,6 +30,11 @@ ApproverRouter.get(
   ApproverValidator.isGetUserTypeValid,
   ApproverController.getUserType
 );
+ApproverRouter.get(
+  '/my/types',
+  ApproverValidator.isGetMyApproverTypes,
+  ApproverController.getAllMyApproverTypes
+)
 
 // POST
 // ApproverRouter.post(
@@ -59,7 +64,7 @@ ApproverRouter.put(
 
 // DELETE
 ApproverRouter.delete(
-  '/:id',
+  '/',
   ApproverValidator.isDeleteApproverValid,
   ApproverController.deleteApprover
 );
