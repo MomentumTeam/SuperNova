@@ -11,6 +11,7 @@ import {
   GetApproverByEntityIdReq,
   GetUserTypeReq,
   GetUserTypeRes,
+  IncludesSpecialGroupReq,
   IsApproverValidForOGReq,
   IsApproverValidForOGRes,
   SearchByDisplayNameReq,
@@ -331,6 +332,32 @@ export class ApproverService {
           logger.info(`deleteApprover OK in GTW`, {
             response: response,
             callRequest: deleteApproverReq,
+          });
+          resolve(response);
+        }
+      );
+    });
+  }
+
+  static async includesSpecialGroup(
+    includesSpecialGroupReq: IncludesSpecialGroupReq
+  ) {
+    logger.info(`Call to includesSpecialGroup in GTW`, includesSpecialGroupReq);
+
+    return new Promise((resolve, reject) => {
+      randomClient().IncludesSpecialGroup(
+        includesSpecialGroupReq,
+        (err: any, response: IsApproverValidForOGRes) => {
+          if (err) {
+            logger.error(`includesSpecialGroup ERROR in GTW`, {
+              err,
+              callRequest: includesSpecialGroupReq,
+            });
+            reject(err);
+          }
+
+          logger.info(`includesSpecialGroup OK in GTW`, {
+            callRequest: includesSpecialGroupReq,
           });
           resolve(response);
         }

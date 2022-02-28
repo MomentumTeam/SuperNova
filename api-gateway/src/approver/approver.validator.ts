@@ -13,6 +13,7 @@ import {
   isApproverValidSchema,
   searchHighCommandersByDisplayNameValidSchema,
   updateApproverDecisionSchema,
+  includesSpecialGroupSchema,
 } from './approver.schema';
 
 export class ApproverValidator {
@@ -67,11 +68,7 @@ export class ApproverValidator {
     next();
   }
 
-  static isGetUserTypeValid(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
+  static isGetUserTypeValid(req: Request, res: Response, next: NextFunction) {
     transformRequest(
       req,
       validateObject(req, getUserTypeValidSchema, { allowUnknown: true })
@@ -94,6 +91,19 @@ export class ApproverValidator {
     );
     next();
   }
+
+  static includesSpecialGroupValid(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    transformRequest(
+      req,
+      validateObject(req, includesSpecialGroupSchema, { allowUnknown: true })
+    );
+    next();
+  }
+
   // PUT
   static isUpdateApproverDecisionValid(
     req: Request,

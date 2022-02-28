@@ -115,6 +115,7 @@ export class RequestsService {
               groupInChargeId:
                 request.additionalParams?.groupInChargeId ||
                 config.fields.rootId,
+              specialGroupId: request.additionalParams?.specialGroupId || '',
             });
             await RequestsService.updateRequest({
               id: request.id,

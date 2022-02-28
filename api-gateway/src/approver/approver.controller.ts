@@ -10,6 +10,7 @@ import {
   SearchHighCommandersByDisplayNameReq,
   UpdateApproverDecisionReq,
   IsApproverValidForOGReq,
+  IncludesSpecialGroupReq,
 } from '../interfaces/protoc/proto/approverService';
 import { ApproverService } from './approver.service';
 import { KartoffelService } from '../kartoffel/kartoffel.service';
@@ -179,6 +180,22 @@ export default class ApproverController {
     }
   }
 
+  static async includesSpecialGroup(req: any, res: Response) {
+    const includesSpecialGroupReq: IncludesSpecialGroupReq = {
+      groupIds: req.body.groupIds,
+    };
+
+    try {
+      const includes = await ApproverService.includesSpecialGroup(
+        includesSpecialGroupReq
+      );
+      res.send(includes);
+    } catch (error: any) {
+      const statusCode = statusCodeHandler(error);
+      res.status(statusCode).send(error.message);
+    }
+  }
+
   // PUT
   static async updateApproverDecision(req: any, res: Response) {
     // Get the current approver
@@ -239,6 +256,7 @@ export default class ApproverController {
               groupInChargeId:
                 request.additionalParams?.groupInChargeId ||
                 config.fields.rootId,
+              specialGroupId: request.additionalParams?.specialGroupId || '',
             });
             await RequestsService.updateRequest({
               id: request.id,
