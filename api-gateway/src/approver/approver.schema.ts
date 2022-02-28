@@ -80,6 +80,14 @@ export const addApproverSchema = Joi.object({
   query: {},
 });
 
+export const includesSpecialGroupSchema = Joi.object({
+  body: {
+    groupIds: Joi.array().items(Joi.objectId()),
+  },
+  params: {},
+  query: {},
+});
+
 // PUT
 export const approverDecisionObj = Joi.object({
   decision: Joi.string()

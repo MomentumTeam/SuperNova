@@ -16,6 +16,7 @@ import {
   searchHighCommandersByDisplayName,
   syncApprover,
   updateApproverDecision,
+  includesSpecialGroup
 } from './approver/approver.controller';
 import { findPath } from './utils/path';
 import { addHealthService } from './health';
@@ -73,6 +74,7 @@ export class Server {
           IsApproverValidForOG: isApproverValidForOG,
           GetApproverByEntityId: getApproverByEntityId,
           GetAdminsByGroupIds: getAdminsByGroupIds,
+          includesSpecialGroup: includesSpecialGroup,
         }
       );
       logger.info(`Grpc services were successfully added to the server`);

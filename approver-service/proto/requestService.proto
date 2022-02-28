@@ -841,6 +841,8 @@ message AdditionalParams{
     optional string identityCard = 7;
     string directGroup = 8;
     optional string groupInChargeId = 9;
+    optional string specialGroupId = 10;
+    
 }
 
 //5.RenameOGRequest
@@ -1409,6 +1411,7 @@ enum ApproverType{
     SOLDIER = 4;
     ADMIN = 5;
     BULK = 6;
+    SPECIAL_GROUP = 7;
 }
 
 enum RequestType {

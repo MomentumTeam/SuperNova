@@ -13,6 +13,7 @@ export enum ApproverType {
   SOLDIER = 4,
   ADMIN = 5,
   BULK = 6,
+  SPECIAL_GROUP = 7,
   UNRECOGNIZED = -1,
 }
 
@@ -39,6 +40,9 @@ export function approverTypeFromJSON(object: any): ApproverType {
     case 6:
     case "BULK":
       return ApproverType.BULK;
+    case 7:
+    case "SPECIAL_GROUP":
+      return ApproverType.SPECIAL_GROUP;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -62,6 +66,8 @@ export function approverTypeToJSON(object: ApproverType): string {
       return "ADMIN";
     case ApproverType.BULK:
       return "BULK";
+    case ApproverType.SPECIAL_GROUP:
+      return "SPECIAL_GROUP";
     default:
       return "UNKNOWN";
   }
@@ -1375,6 +1381,7 @@ export interface AdditionalParams {
   identityCard?: string | undefined;
   directGroup: string;
   groupInChargeId?: string | undefined;
+  specialGroupId?: string | undefined;
 }
 
 /** 5.RenameOGRequest */
@@ -19784,6 +19791,9 @@ export const AdditionalParams = {
     if (message.groupInChargeId !== undefined) {
       writer.uint32(74).string(message.groupInChargeId);
     }
+    if (message.specialGroupId !== undefined) {
+      writer.uint32(82).string(message.specialGroupId);
+    }
     return writer;
   },
 
@@ -19821,6 +19831,9 @@ export const AdditionalParams = {
           break;
         case 9:
           message.groupInChargeId = reader.string();
+          break;
+        case 10:
+          message.specialGroupId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -19881,6 +19894,11 @@ export const AdditionalParams = {
     } else {
       message.groupInChargeId = undefined;
     }
+    if (object.specialGroupId !== undefined && object.specialGroupId !== null) {
+      message.specialGroupId = String(object.specialGroupId);
+    } else {
+      message.specialGroupId = undefined;
+    }
     return message;
   },
 
@@ -19904,6 +19922,8 @@ export const AdditionalParams = {
       (obj.directGroup = message.directGroup);
     message.groupInChargeId !== undefined &&
       (obj.groupInChargeId = message.groupInChargeId);
+    message.specialGroupId !== undefined &&
+      (obj.specialGroupId = message.specialGroupId);
     return obj;
   },
 
@@ -19957,6 +19977,11 @@ export const AdditionalParams = {
       message.groupInChargeId = object.groupInChargeId;
     } else {
       message.groupInChargeId = undefined;
+    }
+    if (object.specialGroupId !== undefined && object.specialGroupId !== null) {
+      message.specialGroupId = object.specialGroupId;
+    } else {
+      message.specialGroupId = undefined;
     }
     return message;
   },

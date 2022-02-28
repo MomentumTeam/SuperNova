@@ -17,6 +17,8 @@ import {
   IsApproverValidForOGRes,
   GetApproverByEntityIdReq,
   GetAdminsByGroupIdsReq,
+  IncludesSpecialGroupReq,
+  IncludesSpecialGroupRes,
 } from '../interfaces/protoc/proto/approverService';
 import {
   DigitalIdentity,
@@ -201,6 +203,7 @@ export class ApproverRepository {
       // TODO: what if there is not user? return false??
       await ApproverModel.deleteMany({
         entityId: deleteApproverReq.approverId,
+        type: { $ne: approverTypeToJSON(ApproverType.SPECIAL_GROUP) },
       });
       logger.info('deleteApprover', { deleteApproverReq });
       return { success: true };
@@ -217,7 +220,9 @@ export class ApproverRepository {
     getAllApproversReq: GetAllApproversReq
   ): Promise<ApproverArray> {
     try {
-      let query = {};
+      let query: any = {
+        type: { $ne: approverTypeToJSON(ApproverType.SPECIAL_GROUP) },
+      };
       if (getAllApproversReq.type != undefined) {
         let type = approverTypeValidation(getAllApproversReq.type);
         query = { type: approverTypeToJSON(type) };
@@ -238,7 +243,9 @@ export class ApproverRepository {
     getAllApproverIdsReq: GetAllApproversReq
   ): Promise<ApproverIdArray> {
     try {
-      let approverIds: any = await ApproverModel.find({}).distinct('entityId');
+      let approverIds: any = await ApproverModel.find({
+        type: { $ne: approverTypeToJSON(ApproverType.SPECIAL_GROUP) },
+      }).distinct('entityId');
       approverIds = approverIds.map((approverId: any) => approverId.toString());
       return { approverIds: approverIds };
     } catch (error: any) {
@@ -297,6 +304,7 @@ export class ApproverRepository {
     try {
       const query: any = {
         entityId: getApproverByEntityIdReq.entityId,
+        type: { $ne: approverTypeToJSON(ApproverType.SPECIAL_GROUP) },
       };
       let type = undefined;
       if (getApproverByEntityIdReq.type !== undefined) {
@@ -349,6 +357,7 @@ export class ApproverRepository {
     try {
       const approvers = await ApproverModel.find({
         entityId: getUserTypeReq.entityId,
+        type: { $ne: approverTypeToJSON(ApproverType.SPECIAL_GROUP) },
       });
       let response: GetUserTypeRes;
       if (approvers) {
@@ -592,6 +601,25 @@ export class ApproverRepository {
         updateApproverDecisionReq,
         error: { message: error.message },
       });
+      throw error;
+    }
+  }
+
+  async includesSpecialGroup(
+    includesSpecialGroupReq: IncludesSpecialGroupReq
+  ): Promise<IncludesSpecialGroupRes> {
+    try {
+      const includes = await ApproverModel.exists({
+        type: approverTypeToJSON(ApproverType.SPECIAL_GROUP),
+        specialGroupId: { $in: includesSpecialGroupReq.groupIds },
+      });
+
+      return { includes };
+    } catch (error: any) {
+       logger.error('includesSpecialGroup ERROR', {
+         includesSpecialGroupReq,
+         error: { message: error.message },
+       });
       throw error;
     }
   }

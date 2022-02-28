@@ -4,6 +4,7 @@ import {
   ApproverArray,
   ApproverIdArray,
   GetUserTypeRes,
+  IncludesSpecialGroupRes,
   IsApproverValidForOGRes,
   SuccessMessage,
 } from '../interfaces/protoc/proto/approverService';
@@ -384,6 +385,33 @@ export async function syncApprover(call: any, callback: any): Promise<void> {
     callback(null, approverArray);
   } catch (error: any) {
     logger.error(`syncApprover ERROR`, {
+      callRequest: call.request,
+      error: { message: error.message },
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function includesSpecialGroup(call: any, callback: any): Promise<void> {
+  try {
+    logger.info(`Call to includesSpecialGroup`, {
+      callRequest: call.request,
+    });
+    const includesSpecialGroup: IncludesSpecialGroupRes =
+      await approverManager.includesSpecialGroup(call.request);
+    logger.info(`includesSpecialGroup OK`, {
+      callRequest: call.request,
+    });
+    callback(null, includesSpecialGroup);
+  } catch (error: any) {
+    logger.error(`includesSpecialGroup ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
     });
