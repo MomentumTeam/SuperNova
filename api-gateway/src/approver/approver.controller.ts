@@ -10,6 +10,7 @@ import {
   SearchHighCommandersByDisplayNameReq,
   UpdateApproverDecisionReq,
   IsApproverValidForOGReq,
+  GetAllApproverTypesReq,
 } from '../interfaces/protoc/proto/approverService';
 import { ApproverService } from './approver.service';
 import { KartoffelService } from '../kartoffel/kartoffel.service';
@@ -118,6 +119,19 @@ export default class ApproverController {
       res.status(statusCode).send(error.message);
     }
   }
+
+  static async getAllMyApproverTypes(req: any, res: Response){
+    let getAllApproverTypesReq: GetAllApproverTypesReq = {
+      entityId: req.user.id,
+    }
+    try{
+        const getMyApproverTypes = await ApproverService.getAllMyApproverTypes(getAllApproverTypesReq);
+        res.send(getMyApproverTypes);
+      } catch (error: any) {
+          const statusCode = statusCodeHandler(error);
+          res.status(statusCode).send(error.message);
+        }
+    }
 
   // POST
   static async addApprover(req: any, res: Response) {
@@ -287,7 +301,9 @@ export default class ApproverController {
   // DELETE
   static async deleteApprover(req: any, res: Response) {
     let deleteApproverReq: DeleteApproverReq = {
-      approverId: req.params.id,
+        approverId: req.user.id,
+        type: req.query.type,
+        groupInChargeId: req.query.groupInChargeId,
     };
 
     try {

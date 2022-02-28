@@ -15,6 +15,7 @@ import {
   searchHighCommandersByDisplayName,
   syncApprover,
   updateApproverDecision,
+  getAllMyApproverTypes,
 } from './approver/approver.controller';
 import { findPath } from './utils/path';
 import { addHealthService } from './health';
@@ -71,6 +72,7 @@ export class Server {
           DeleteApprover: deleteApprover,
           IsApproverValidForOG: isApproverValidForOG,
           GetApproverByEntityId: getApproverByEntityId,
+          GetAllMyApproverTypes: getAllMyApproverTypes,
         }
       );
       logger.info(`Grpc services were successfully added to the server`);

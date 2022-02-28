@@ -16,6 +16,8 @@ import {
   UpdateApproverDecisionReq,
   IsApproverValidForOGRes,
   GetApproverByEntityIdReq,
+  GetAllApproverTypesReq,
+  GetAllApproverTypesRes,
 } from '../interfaces/protoc/proto/approverService';
 import {
   DigitalIdentity,
@@ -145,14 +147,73 @@ export class ApproverRepository {
     }
   }
 
+  async getAllMyApproverTypes(
+    getAllApproversTypeReq: GetAllApproverTypesReq
+  ): Promise<GetAllApproverTypesRes> {
+    try {
+      const approversRes = await ApproverModel.find({
+        entityId: getAllApproversTypeReq.entityId,
+      });
+
+      let res: GetAllApproverTypesRes = {
+        types: [],
+        groupsInCharge: [],
+      };
+      let approvers: Approver[] = getMongoApproverArray(approversRes);
+
+      for (const approver of approvers) {
+        if (approverTypeFromJSON(approver.type) === ApproverType.ADMIN) {
+          const promises = approver.groupsInCharge.map((groupId) => {
+            return new Promise((resolve, reject) => {
+              KartoffelService.getOGById({
+                id: groupId,
+              })
+                .then((groupInCharge: OrganizationGroup) => {
+                  res.groupsInCharge.push({
+                    id: groupId,
+                    name: groupInCharge.name,
+                    hierarchy: groupInCharge.hierarchy,
+                  });
+                  resolve('OK');
+                })
+                .catch((error) => {
+                  reject(error);
+                });
+            });
+          });
+          await Promise.all(promises);
+        }
+        res.types.push(approver.type);
+      }
+
+      return res;
+    } catch (error: any) {
+      logger.error('getAllApproverTypes ERROR', {
+        error: { message: error.message },
+        getAllApproversTypeReq,
+      });
+      throw error;
+    }
+  }
+
   async deleteApprover(
     deleteApproverReq: DeleteApproverReq
   ): Promise<SuccessMessage> {
     try {
-      // TODO: what if there is not user? return false??
-      await ApproverModel.deleteMany({
-        entityId: deleteApproverReq.approverId,
-      });
+      if (
+        approverTypeFromJSON(deleteApproverReq.type === ApproverType.ADMIN) &&
+        deleteApproverReq.groupInChargeId
+      ) {
+        await ApproverModel.updateOne(
+          { entityId: deleteApproverReq.approverId },
+          { $pull: { groupsInCharge: deleteApproverReq.groupInChargeId } }
+        );
+      } else {
+        await ApproverModel.deleteOne({
+          entityId: deleteApproverReq.approverId,
+          type: deleteApproverReq.type,
+        });
+      }
       logger.info('deleteApprover', { deleteApproverReq });
       return { success: true };
     } catch (error: any) {
