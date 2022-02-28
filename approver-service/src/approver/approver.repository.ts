@@ -144,17 +144,27 @@ export class ApproverRepository {
   async addApprover(addApproverReq: AddApproverReq) {
     try {
       approverTypeValidation(addApproverReq.type);
-      const adminAlreadyExists: any = await ApproverModel.exists({
-        entityId: addApproverReq.entityId,
-        type: approverTypeToJSON(ApproverType.ADMIN),
-      });
+      const approverType =
+        typeof addApproverReq.type === typeof ''
+          ? approverTypeFromJSON(addApproverReq.type)
+          : addApproverReq.type;
+      const adminOrSecurityAdminAlreadyExists: any = await ApproverModel.exists(
+        {
+          entityId: addApproverReq.entityId,
+          type: approverTypeToJSON(approverType),
+        }
+      );
 
       if (
-        adminAlreadyExists &&
-        approverTypeFromJSON(addApproverReq.type) === ApproverType.ADMIN
+        adminOrSecurityAdminAlreadyExists &&
+        (approverType === ApproverType.ADMIN ||
+          approverType === ApproverType.SECURITY_ADMIN)
       ) {
         const updatedAdminDocument = await ApproverModel.findOneAndUpdate(
-          { entityId: addApproverReq.entityId },
+          {
+            entityId: addApproverReq.entityId,
+            type: approverTypeToJSON(approverType),
+          },
           { $addToSet: { groupsInCharge: addApproverReq.groupInChargeId } },
           { new: true }
         );
@@ -190,6 +200,7 @@ export class ApproverRepository {
     try {
       const approversRes = await ApproverModel.find({
         entityId: getAllApproversTypeReq.entityId,
+        type: { $ne: approverTypeToJSON(ApproverType.SPECIAL_GROUP) },
       });
 
       let res: GetAllApproverTypesRes = {
