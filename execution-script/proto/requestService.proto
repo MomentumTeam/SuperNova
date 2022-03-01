@@ -102,6 +102,8 @@ message CreateRoleRes{
     string serialNumber = 23;
     bool needSecurityDecision = 24;
     bool needSuperSecurityDecision = 25;
+    bool hasSecurityAdmin = 26;
+
 }
 
 //2.CreateOG
@@ -147,6 +149,7 @@ message CreateOGRes{
     string serialNumber = 20;
     bool needSecurityDecision = 21;
     bool needSuperSecurityDecision = 22;
+    bool hasSecurityAdmin = 23;
 }
 
 
@@ -193,6 +196,8 @@ message CreateEntityRes{
     string serialNumber = 20;
     bool needSecurityDecision = 21;
     bool needSuperSecurityDecision = 22;
+    bool hasSecurityAdmin = 23;
+
 }
 
 //4.CreateNewApproverRequest
@@ -209,6 +214,7 @@ message CreateNewApproverReq{
     optional string comments = 10;
     optional ApproversComments approversComments = 11;
     optional int64 due = 12;
+
 }
 
 message CreateNewApproverRes{
@@ -232,6 +238,8 @@ message CreateNewApproverRes{
     string serialNumber = 17;
     bool needSecurityDecision = 18;
     bool needSuperSecurityDecision = 19;
+    bool hasSecurityAdmin = 20;
+
 }
 
 //5.RenameOGRequest
@@ -277,6 +285,8 @@ message RenameOGRes{
     string serialNumber = 20;
     bool needSecurityDecision = 21;
     bool needSuperSecurityDecision = 22;
+    bool hasSecurityAdmin = 23;
+
 }
 
 //6.RenameRoleRequest
@@ -322,6 +332,8 @@ message RenameRoleRes{
     string serialNumber = 20;
     bool needSecurityDecision = 21;
     bool needSuperSecurityDecision = 22;
+    bool hasSecurityAdmin = 23;
+
 }
 
 //7.EditEntityRequest
@@ -367,6 +379,8 @@ message EditEntityRes{
     string serialNumber = 20;
     bool needSecurityDecision = 21;
     bool needSuperSecurityDecision = 22;
+    bool hasSecurityAdmin = 23;
+
 }
 
 //8.DeleteOGRequest
@@ -412,6 +426,8 @@ message DeleteOGRes{
     string serialNumber = 20;
     bool needSecurityDecision = 21;
     bool needSuperSecurityDecision = 22;
+    bool hasSecurityAdmin = 23;
+
 }
 
 //9.DeleteRoleRequest
@@ -457,6 +473,8 @@ message DeleteRoleRes{
     string serialNumber = 20;
     bool needSecurityDecision = 21;
     bool needSuperSecurityDecision = 22;
+    bool hasSecurityAdmin = 23;
+
 }
 
 //10.DeleteEntityRequest
@@ -502,6 +520,8 @@ message DeleteEntityRes{
     string serialNumber = 20;
     bool needSecurityDecision = 21;
     bool needSuperSecurityDecision = 22;
+    bool hasSecurityAdmin = 23;
+
 }
 
 //11.AssignRoleToEntityRequest
@@ -547,6 +567,8 @@ message AssignRoleToEntityRes{
     string serialNumber = 20;
     bool needSecurityDecision = 21;
     bool needSuperSecurityDecision = 22;
+    bool hasSecurityAdmin = 23;
+
 }
 
 //12.DisconectRoleFromEntityRequest
@@ -592,6 +614,8 @@ message DisconectRoleFromEntityRes{
     string serialNumber = 20;
     bool needSecurityDecision = 21;
     bool needSuperSecurityDecision = 22;
+    bool hasSecurityAdmin = 23;
+
 }
 
 //13.ChangeHierarchyToRoleRequest
@@ -643,6 +667,8 @@ message ChangeRoleHierarchyRes{
     string serialNumber = 23;
     bool needSecurityDecision = 24;
     bool needSuperSecurityDecision = 25;
+    bool hasSecurityAdmin = 26;
+
 }
 
 //14.CreateRoleBulkRequest
@@ -691,6 +717,8 @@ message CreateRoleBulkRes{
     string serialNumber = 21;
     bool needSecurityDecision = 22;
     bool needSuperSecurityDecision = 23;
+    bool hasSecurityAdmin = 24;
+
 }
 
 message CreateRoleBulkKartoffelParams{
@@ -745,6 +773,8 @@ message ChangeRoleHierarchyBulkRes{
     string serialNumber = 20;
     bool needSecurityDecision = 21;
     bool needSuperSecurityDecision = 22;
+    bool hasSecurityAdmin = 23;
+
 }
 
 message ChangeRoleHierarchyBulkKartoffelParams{
@@ -1398,6 +1428,8 @@ message Request{
     string serialNumber = 27;
     bool needSecurityDecision = 28;
     bool needSuperSecurityDecision = 29;
+    bool hasSecurityAdmin = 30;
+
 }
 
 
