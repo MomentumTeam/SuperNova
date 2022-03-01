@@ -4,8 +4,10 @@ import {
   ApproverArray,
   ApproverIdArray,
   GetUserTypeRes,
+  IncludesSpecialGroupRes,
   IsApproverValidForOGRes,
   SuccessMessage,
+  GetAllApproverTypesRes,
 } from '../interfaces/protoc/proto/approverService';
 import { Request } from '../interfaces/protoc/proto/requestService';
 import { logger } from '../logger';
@@ -310,6 +312,36 @@ export async function getAllApprovers(call: any, callback: any): Promise<void> {
   }
 }
 
+export async function getAllMyApproverTypes(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    logger.info(`Call to getAllApproverTypes`, {
+      callRequest: call.request,
+    });
+    const getAllApproverTypesRes: GetAllApproverTypesRes =
+      await approverManager.getAllMyApproverTypes(call.request);
+    logger.info(`getAllApproverTypes OK`, {
+      callRequest: call.request,
+    });
+    callback(null, getAllApproverTypesRes);
+  } catch (error: any) {
+    logger.error(`getAllApproverTypes ERROR`, {
+      callRequest: call.request,
+      error: { message: error.message },
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
 export async function deleteApprover(call: any, callback: any): Promise<void> {
   try {
     logger.info(`Call to deleteApprover`, {
@@ -384,6 +416,33 @@ export async function syncApprover(call: any, callback: any): Promise<void> {
     callback(null, approverArray);
   } catch (error: any) {
     logger.error(`syncApprover ERROR`, {
+      callRequest: call.request,
+      error: { message: error.message },
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function includesSpecialGroup(call: any, callback: any): Promise<void> {
+  try {
+    logger.info(`Call to includesSpecialGroup`, {
+      callRequest: call.request,
+    });
+    const includesSpecialGroup: IncludesSpecialGroupRes =
+      await approverManager.includesSpecialGroup(call.request);
+    logger.info(`includesSpecialGroup OK`, {
+      callRequest: call.request,
+    });
+    callback(null, includesSpecialGroup);
+  } catch (error: any) {
+    logger.error(`includesSpecialGroup ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
     });

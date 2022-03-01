@@ -14,13 +14,24 @@ export const ApproverSchema = new Schema(
     akaUnit: { type: String, default: '' },
     directGroup: { type: String, default: '' },
     groupsInCharge: { type: [String], default: [C.rootId] },
+    specialGroupId: { type: String, default: null },
   },
   { strict: false }
 );
 ApproverSchema.index({ displayName: 'text' });
+ApproverSchema.index(
+  { specialGroupId: 1 },
+  {
+    unique: true,
+    partialFilterExpression: { specialGroupId: { $type: 'string' } },
+  }
+);
 
 //TODO: user-friendly error when the unique key already exists
-ApproverSchema.index({ entityId: 1, type: 1 }, { unique: true });
+ApproverSchema.index(
+  { entityId: 1, type: 1, specialGroupId: 1 },
+  { unique: true }
+);
 
 export const ApproverModel = mongoose.model(
   'Approver',

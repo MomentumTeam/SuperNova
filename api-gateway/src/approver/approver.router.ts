@@ -30,6 +30,11 @@ ApproverRouter.get(
   ApproverValidator.isGetUserTypeValid,
   ApproverController.getUserType
 );
+ApproverRouter.get(
+  '/my/types',
+  ApproverValidator.isGetMyApproverTypes,
+  ApproverController.getAllMyApproverTypes
+)
 
 // POST
 // ApproverRouter.post(
@@ -44,6 +49,12 @@ ApproverRouter.post(
   ApproverController.isApproverValid
 );
 
+ApproverRouter.post(
+  '/includes/specialgroup',
+  ApproverValidator.includesSpecialGroupValid,
+  ApproverController.includesSpecialGroup
+);
+
 // PUT
 ApproverRouter.put(
   '/decision/:requestId',
@@ -53,7 +64,7 @@ ApproverRouter.put(
 
 // DELETE
 ApproverRouter.delete(
-  '/:id',
+  '/',
   ApproverValidator.isDeleteApproverValid,
   ApproverController.deleteApprover
 );

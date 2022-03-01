@@ -13,6 +13,8 @@ export enum ApproverType {
   SOLDIER = 4,
   ADMIN = 5,
   BULK = 6,
+  SPECIAL_GROUP = 7,
+  SECURITY_ADMIN = 8,
   UNRECOGNIZED = -1,
 }
 
@@ -39,6 +41,12 @@ export function approverTypeFromJSON(object: any): ApproverType {
     case 6:
     case "BULK":
       return ApproverType.BULK;
+    case 7:
+    case "SPECIAL_GROUP":
+      return ApproverType.SPECIAL_GROUP;
+    case 8:
+    case "SECURITY_ADMIN":
+      return ApproverType.SECURITY_ADMIN;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -62,6 +70,10 @@ export function approverTypeToJSON(object: ApproverType): string {
       return "ADMIN";
     case ApproverType.BULK:
       return "BULK";
+    case ApproverType.SPECIAL_GROUP:
+      return "SPECIAL_GROUP";
+    case ApproverType.SECURITY_ADMIN:
+      return "SECURITY_ADMIN";
     default:
       return "UNKNOWN";
   }
@@ -669,6 +681,7 @@ export interface CreateRoleRes {
   needSecurityDecision: boolean;
   needSuperSecurityDecision: boolean;
   needAdminDecision: boolean;
+  hasSecurityAdmin: boolean;
 }
 
 /** 2.CreateOG */
@@ -718,6 +731,7 @@ export interface CreateOGRes {
   needSecurityDecision: boolean;
   needSuperSecurityDecision: boolean;
   needAdminDecision: boolean;
+  hasSecurityAdmin: boolean;
 }
 
 /** 3.CreateEntity */
@@ -767,6 +781,7 @@ export interface CreateEntityRes {
   needSecurityDecision: boolean;
   needSuperSecurityDecision: boolean;
   needAdminDecision: boolean;
+  hasSecurityAdmin: boolean;
 }
 
 /** 4.CreateNewApproverRequest */
@@ -810,6 +825,7 @@ export interface CreateNewApproverRes {
   needSecurityDecision: boolean;
   needSuperSecurityDecision: boolean;
   needAdminDecision: boolean;
+  hasSecurityAdmin: boolean;
 }
 
 /** 5.RenameOGRequest */
@@ -859,6 +875,7 @@ export interface RenameOGRes {
   needSecurityDecision: boolean;
   needSuperSecurityDecision: boolean;
   needAdminDecision: boolean;
+  hasSecurityAdmin: boolean;
 }
 
 /** 6.RenameRoleRequest */
@@ -908,6 +925,7 @@ export interface RenameRoleRes {
   needSecurityDecision: boolean;
   needSuperSecurityDecision: boolean;
   needAdminDecision: boolean;
+  hasSecurityAdmin: boolean;
 }
 
 /** 7.EditEntityRequest */
@@ -957,6 +975,7 @@ export interface EditEntityRes {
   needSecurityDecision: boolean;
   needSuperSecurityDecision: boolean;
   needAdminDecision: boolean;
+  hasSecurityAdmin: boolean;
 }
 
 /** 8.DeleteOGRequest */
@@ -1005,6 +1024,7 @@ export interface DeleteOGRes {
   needSecurityDecision: boolean;
   needSuperSecurityDecision: boolean;
   needAdminDecision: boolean;
+  hasSecurityAdmin: boolean;
 }
 
 /** 9.DeleteRoleRequest */
@@ -1053,6 +1073,7 @@ export interface DeleteRoleRes {
   needSecurityDecision: boolean;
   needSuperSecurityDecision: boolean;
   needAdminDecision: boolean;
+  hasSecurityAdmin: boolean;
 }
 
 /** 10.DeleteEntityRequest */
@@ -1102,6 +1123,7 @@ export interface DeleteEntityRes {
   needSecurityDecision: boolean;
   needSuperSecurityDecision: boolean;
   needAdminDecision: boolean;
+  hasSecurityAdmin: boolean;
 }
 
 /** 11.AssignRoleToEntityRequest */
@@ -1151,6 +1173,7 @@ export interface AssignRoleToEntityRes {
   needSecurityDecision: boolean;
   needSuperSecurityDecision: boolean;
   needAdminDecision: boolean;
+  hasSecurityAdmin: boolean;
 }
 
 /** 12.DisconectRoleFromEntityRequest */
@@ -1200,6 +1223,7 @@ export interface DisconectRoleFromEntityRes {
   needSecurityDecision: boolean;
   needSuperSecurityDecision: boolean;
   needAdminDecision: boolean;
+  hasSecurityAdmin: boolean;
 }
 
 /** 13.ChangeHierarchyToRoleRequest */
@@ -1255,6 +1279,7 @@ export interface ChangeRoleHierarchyRes {
   needSecurityDecision: boolean;
   needSuperSecurityDecision: boolean;
   needAdminDecision: boolean;
+  hasSecurityAdmin: boolean;
 }
 
 /** 14.CreateRoleBulkRequest */
@@ -1306,6 +1331,7 @@ export interface CreateRoleBulkRes {
   needSecurityDecision: boolean;
   needSuperSecurityDecision: boolean;
   needAdminDecision: boolean;
+  hasSecurityAdmin: boolean;
 }
 
 export interface CreateRoleBulkKartoffelParams {
@@ -1366,6 +1392,7 @@ export interface ChangeRoleHierarchyBulkRes {
   needSecurityDecision: boolean;
   needSuperSecurityDecision: boolean;
   needAdminDecision: boolean;
+  hasSecurityAdmin: boolean;
 }
 
 export interface ChangeRoleHierarchyBulkKartoffelParams {
@@ -1467,6 +1494,7 @@ export interface AdditionalParams {
   identityCard?: string | undefined;
   directGroup: string;
   groupInChargeId?: string | undefined;
+  specialGroupId?: string | undefined;
 }
 
 /** 5.RenameOGRequest */
@@ -1989,6 +2017,7 @@ export interface Request {
   needSecurityDecision: boolean;
   needSuperSecurityDecision: boolean;
   needAdminDecision: boolean;
+  hasSecurityAdmin: boolean;
 }
 
 const baseCreateRoleReq: object = {};
@@ -2580,6 +2609,7 @@ const baseCreateRoleRes: object = {
   needSecurityDecision: false,
   needSuperSecurityDecision: false,
   needAdminDecision: false,
+  hasSecurityAdmin: false,
 };
 
 export const CreateRoleRes = {
@@ -2700,6 +2730,9 @@ export const CreateRoleRes = {
     }
     if (message.needAdminDecision === true) {
       writer.uint32(232).bool(message.needAdminDecision);
+    }
+    if (message.hasSecurityAdmin === true) {
+      writer.uint32(240).bool(message.hasSecurityAdmin);
     }
     return writer;
   },
@@ -2828,6 +2861,9 @@ export const CreateRoleRes = {
           break;
         case 29:
           message.needAdminDecision = reader.bool();
+          break;
+        case 30:
+          message.hasSecurityAdmin = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -3035,6 +3071,14 @@ export const CreateRoleRes = {
     } else {
       message.needAdminDecision = false;
     }
+    if (
+      object.hasSecurityAdmin !== undefined &&
+      object.hasSecurityAdmin !== null
+    ) {
+      message.hasSecurityAdmin = Boolean(object.hasSecurityAdmin);
+    } else {
+      message.hasSecurityAdmin = false;
+    }
     return message;
   },
 
@@ -3136,6 +3180,8 @@ export const CreateRoleRes = {
       (obj.needSuperSecurityDecision = message.needSuperSecurityDecision);
     message.needAdminDecision !== undefined &&
       (obj.needAdminDecision = message.needAdminDecision);
+    message.hasSecurityAdmin !== undefined &&
+      (obj.hasSecurityAdmin = message.hasSecurityAdmin);
     return obj;
   },
 
@@ -3336,6 +3382,14 @@ export const CreateRoleRes = {
       message.needAdminDecision = object.needAdminDecision;
     } else {
       message.needAdminDecision = false;
+    }
+    if (
+      object.hasSecurityAdmin !== undefined &&
+      object.hasSecurityAdmin !== null
+    ) {
+      message.hasSecurityAdmin = object.hasSecurityAdmin;
+    } else {
+      message.hasSecurityAdmin = false;
     }
     return message;
   },
@@ -3878,6 +3932,7 @@ const baseCreateOGRes: object = {
   needSecurityDecision: false,
   needSuperSecurityDecision: false,
   needAdminDecision: false,
+  hasSecurityAdmin: false,
 };
 
 export const CreateOGRes = {
@@ -3983,6 +4038,9 @@ export const CreateOGRes = {
     }
     if (message.needAdminDecision === true) {
       writer.uint32(200).bool(message.needAdminDecision);
+    }
+    if (message.hasSecurityAdmin === true) {
+      writer.uint32(208).bool(message.hasSecurityAdmin);
     }
     return writer;
   },
@@ -4099,6 +4157,9 @@ export const CreateOGRes = {
           break;
         case 25:
           message.needAdminDecision = reader.bool();
+          break;
+        case 26:
+          message.hasSecurityAdmin = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -4286,6 +4347,14 @@ export const CreateOGRes = {
     } else {
       message.needAdminDecision = false;
     }
+    if (
+      object.hasSecurityAdmin !== undefined &&
+      object.hasSecurityAdmin !== null
+    ) {
+      message.hasSecurityAdmin = Boolean(object.hasSecurityAdmin);
+    } else {
+      message.hasSecurityAdmin = false;
+    }
     return message;
   },
 
@@ -4375,6 +4444,8 @@ export const CreateOGRes = {
       (obj.needSuperSecurityDecision = message.needSuperSecurityDecision);
     message.needAdminDecision !== undefined &&
       (obj.needAdminDecision = message.needAdminDecision);
+    message.hasSecurityAdmin !== undefined &&
+      (obj.hasSecurityAdmin = message.hasSecurityAdmin);
     return obj;
   },
 
@@ -4555,6 +4626,14 @@ export const CreateOGRes = {
       message.needAdminDecision = object.needAdminDecision;
     } else {
       message.needAdminDecision = false;
+    }
+    if (
+      object.hasSecurityAdmin !== undefined &&
+      object.hasSecurityAdmin !== null
+    ) {
+      message.hasSecurityAdmin = object.hasSecurityAdmin;
+    } else {
+      message.hasSecurityAdmin = false;
     }
     return message;
   },
@@ -5100,6 +5179,7 @@ const baseCreateEntityRes: object = {
   needSecurityDecision: false,
   needSuperSecurityDecision: false,
   needAdminDecision: false,
+  hasSecurityAdmin: false,
 };
 
 export const CreateEntityRes = {
@@ -5205,6 +5285,9 @@ export const CreateEntityRes = {
     }
     if (message.needAdminDecision === true) {
       writer.uint32(200).bool(message.needAdminDecision);
+    }
+    if (message.hasSecurityAdmin === true) {
+      writer.uint32(208).bool(message.hasSecurityAdmin);
     }
     return writer;
   },
@@ -5324,6 +5407,9 @@ export const CreateEntityRes = {
           break;
         case 25:
           message.needAdminDecision = reader.bool();
+          break;
+        case 26:
+          message.hasSecurityAdmin = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -5511,6 +5597,14 @@ export const CreateEntityRes = {
     } else {
       message.needAdminDecision = false;
     }
+    if (
+      object.hasSecurityAdmin !== undefined &&
+      object.hasSecurityAdmin !== null
+    ) {
+      message.hasSecurityAdmin = Boolean(object.hasSecurityAdmin);
+    } else {
+      message.hasSecurityAdmin = false;
+    }
     return message;
   },
 
@@ -5600,6 +5694,8 @@ export const CreateEntityRes = {
       (obj.needSuperSecurityDecision = message.needSuperSecurityDecision);
     message.needAdminDecision !== undefined &&
       (obj.needAdminDecision = message.needAdminDecision);
+    message.hasSecurityAdmin !== undefined &&
+      (obj.hasSecurityAdmin = message.hasSecurityAdmin);
     return obj;
   },
 
@@ -5780,6 +5876,14 @@ export const CreateEntityRes = {
       message.needAdminDecision = object.needAdminDecision;
     } else {
       message.needAdminDecision = false;
+    }
+    if (
+      object.hasSecurityAdmin !== undefined &&
+      object.hasSecurityAdmin !== null
+    ) {
+      message.hasSecurityAdmin = object.hasSecurityAdmin;
+    } else {
+      message.hasSecurityAdmin = false;
     }
     return message;
   },
@@ -6246,6 +6350,7 @@ const baseCreateNewApproverRes: object = {
   needSecurityDecision: false,
   needSuperSecurityDecision: false,
   needAdminDecision: false,
+  hasSecurityAdmin: false,
 };
 
 export const CreateNewApproverRes = {
@@ -6336,6 +6441,9 @@ export const CreateNewApproverRes = {
     }
     if (message.needAdminDecision === true) {
       writer.uint32(176).bool(message.needAdminDecision);
+    }
+    if (message.hasSecurityAdmin === true) {
+      writer.uint32(184).bool(message.hasSecurityAdmin);
     }
     return writer;
   },
@@ -6443,6 +6551,9 @@ export const CreateNewApproverRes = {
           break;
         case 22:
           message.needAdminDecision = reader.bool();
+          break;
+        case 23:
+          message.hasSecurityAdmin = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -6610,6 +6721,14 @@ export const CreateNewApproverRes = {
     } else {
       message.needAdminDecision = false;
     }
+    if (
+      object.hasSecurityAdmin !== undefined &&
+      object.hasSecurityAdmin !== null
+    ) {
+      message.hasSecurityAdmin = Boolean(object.hasSecurityAdmin);
+    } else {
+      message.hasSecurityAdmin = false;
+    }
     return message;
   },
 
@@ -6687,6 +6806,8 @@ export const CreateNewApproverRes = {
       (obj.needSuperSecurityDecision = message.needSuperSecurityDecision);
     message.needAdminDecision !== undefined &&
       (obj.needAdminDecision = message.needAdminDecision);
+    message.hasSecurityAdmin !== undefined &&
+      (obj.hasSecurityAdmin = message.hasSecurityAdmin);
     return obj;
   },
 
@@ -6847,6 +6968,14 @@ export const CreateNewApproverRes = {
       message.needAdminDecision = object.needAdminDecision;
     } else {
       message.needAdminDecision = false;
+    }
+    if (
+      object.hasSecurityAdmin !== undefined &&
+      object.hasSecurityAdmin !== null
+    ) {
+      message.hasSecurityAdmin = object.hasSecurityAdmin;
+    } else {
+      message.hasSecurityAdmin = false;
     }
     return message;
   },
@@ -7389,6 +7518,7 @@ const baseRenameOGRes: object = {
   needSecurityDecision: false,
   needSuperSecurityDecision: false,
   needAdminDecision: false,
+  hasSecurityAdmin: false,
 };
 
 export const RenameOGRes = {
@@ -7494,6 +7624,9 @@ export const RenameOGRes = {
     }
     if (message.needAdminDecision === true) {
       writer.uint32(200).bool(message.needAdminDecision);
+    }
+    if (message.hasSecurityAdmin === true) {
+      writer.uint32(208).bool(message.hasSecurityAdmin);
     }
     return writer;
   },
@@ -7610,6 +7743,9 @@ export const RenameOGRes = {
           break;
         case 25:
           message.needAdminDecision = reader.bool();
+          break;
+        case 26:
+          message.hasSecurityAdmin = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -7797,6 +7933,14 @@ export const RenameOGRes = {
     } else {
       message.needAdminDecision = false;
     }
+    if (
+      object.hasSecurityAdmin !== undefined &&
+      object.hasSecurityAdmin !== null
+    ) {
+      message.hasSecurityAdmin = Boolean(object.hasSecurityAdmin);
+    } else {
+      message.hasSecurityAdmin = false;
+    }
     return message;
   },
 
@@ -7886,6 +8030,8 @@ export const RenameOGRes = {
       (obj.needSuperSecurityDecision = message.needSuperSecurityDecision);
     message.needAdminDecision !== undefined &&
       (obj.needAdminDecision = message.needAdminDecision);
+    message.hasSecurityAdmin !== undefined &&
+      (obj.hasSecurityAdmin = message.hasSecurityAdmin);
     return obj;
   },
 
@@ -8066,6 +8212,14 @@ export const RenameOGRes = {
       message.needAdminDecision = object.needAdminDecision;
     } else {
       message.needAdminDecision = false;
+    }
+    if (
+      object.hasSecurityAdmin !== undefined &&
+      object.hasSecurityAdmin !== null
+    ) {
+      message.hasSecurityAdmin = object.hasSecurityAdmin;
+    } else {
+      message.hasSecurityAdmin = false;
     }
     return message;
   },
@@ -8608,6 +8762,7 @@ const baseRenameRoleRes: object = {
   needSecurityDecision: false,
   needSuperSecurityDecision: false,
   needAdminDecision: false,
+  hasSecurityAdmin: false,
 };
 
 export const RenameRoleRes = {
@@ -8713,6 +8868,9 @@ export const RenameRoleRes = {
     }
     if (message.needAdminDecision === true) {
       writer.uint32(200).bool(message.needAdminDecision);
+    }
+    if (message.hasSecurityAdmin === true) {
+      writer.uint32(208).bool(message.hasSecurityAdmin);
     }
     return writer;
   },
@@ -8829,6 +8987,9 @@ export const RenameRoleRes = {
           break;
         case 25:
           message.needAdminDecision = reader.bool();
+          break;
+        case 26:
+          message.hasSecurityAdmin = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -9016,6 +9177,14 @@ export const RenameRoleRes = {
     } else {
       message.needAdminDecision = false;
     }
+    if (
+      object.hasSecurityAdmin !== undefined &&
+      object.hasSecurityAdmin !== null
+    ) {
+      message.hasSecurityAdmin = Boolean(object.hasSecurityAdmin);
+    } else {
+      message.hasSecurityAdmin = false;
+    }
     return message;
   },
 
@@ -9105,6 +9274,8 @@ export const RenameRoleRes = {
       (obj.needSuperSecurityDecision = message.needSuperSecurityDecision);
     message.needAdminDecision !== undefined &&
       (obj.needAdminDecision = message.needAdminDecision);
+    message.hasSecurityAdmin !== undefined &&
+      (obj.hasSecurityAdmin = message.hasSecurityAdmin);
     return obj;
   },
 
@@ -9285,6 +9456,14 @@ export const RenameRoleRes = {
       message.needAdminDecision = object.needAdminDecision;
     } else {
       message.needAdminDecision = false;
+    }
+    if (
+      object.hasSecurityAdmin !== undefined &&
+      object.hasSecurityAdmin !== null
+    ) {
+      message.hasSecurityAdmin = object.hasSecurityAdmin;
+    } else {
+      message.hasSecurityAdmin = false;
     }
     return message;
   },
@@ -9827,6 +10006,7 @@ const baseEditEntityRes: object = {
   needSecurityDecision: false,
   needSuperSecurityDecision: false,
   needAdminDecision: false,
+  hasSecurityAdmin: false,
 };
 
 export const EditEntityRes = {
@@ -9932,6 +10112,9 @@ export const EditEntityRes = {
     }
     if (message.needAdminDecision === true) {
       writer.uint32(200).bool(message.needAdminDecision);
+    }
+    if (message.hasSecurityAdmin === true) {
+      writer.uint32(208).bool(message.hasSecurityAdmin);
     }
     return writer;
   },
@@ -10048,6 +10231,9 @@ export const EditEntityRes = {
           break;
         case 25:
           message.needAdminDecision = reader.bool();
+          break;
+        case 26:
+          message.hasSecurityAdmin = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -10235,6 +10421,14 @@ export const EditEntityRes = {
     } else {
       message.needAdminDecision = false;
     }
+    if (
+      object.hasSecurityAdmin !== undefined &&
+      object.hasSecurityAdmin !== null
+    ) {
+      message.hasSecurityAdmin = Boolean(object.hasSecurityAdmin);
+    } else {
+      message.hasSecurityAdmin = false;
+    }
     return message;
   },
 
@@ -10324,6 +10518,8 @@ export const EditEntityRes = {
       (obj.needSuperSecurityDecision = message.needSuperSecurityDecision);
     message.needAdminDecision !== undefined &&
       (obj.needAdminDecision = message.needAdminDecision);
+    message.hasSecurityAdmin !== undefined &&
+      (obj.hasSecurityAdmin = message.hasSecurityAdmin);
     return obj;
   },
 
@@ -10504,6 +10700,14 @@ export const EditEntityRes = {
       message.needAdminDecision = object.needAdminDecision;
     } else {
       message.needAdminDecision = false;
+    }
+    if (
+      object.hasSecurityAdmin !== undefined &&
+      object.hasSecurityAdmin !== null
+    ) {
+      message.hasSecurityAdmin = object.hasSecurityAdmin;
+    } else {
+      message.hasSecurityAdmin = false;
     }
     return message;
   },
@@ -11046,6 +11250,7 @@ const baseDeleteOGRes: object = {
   needSecurityDecision: false,
   needSuperSecurityDecision: false,
   needAdminDecision: false,
+  hasSecurityAdmin: false,
 };
 
 export const DeleteOGRes = {
@@ -11148,6 +11353,9 @@ export const DeleteOGRes = {
     }
     if (message.needAdminDecision === true) {
       writer.uint32(192).bool(message.needAdminDecision);
+    }
+    if (message.hasSecurityAdmin === true) {
+      writer.uint32(200).bool(message.hasSecurityAdmin);
     }
     return writer;
   },
@@ -11258,6 +11466,9 @@ export const DeleteOGRes = {
           break;
         case 24:
           message.needAdminDecision = reader.bool();
+          break;
+        case 25:
+          message.hasSecurityAdmin = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -11439,6 +11650,14 @@ export const DeleteOGRes = {
     } else {
       message.needAdminDecision = false;
     }
+    if (
+      object.hasSecurityAdmin !== undefined &&
+      object.hasSecurityAdmin !== null
+    ) {
+      message.hasSecurityAdmin = Boolean(object.hasSecurityAdmin);
+    } else {
+      message.hasSecurityAdmin = false;
+    }
     return message;
   },
 
@@ -11521,6 +11740,8 @@ export const DeleteOGRes = {
       (obj.needSuperSecurityDecision = message.needSuperSecurityDecision);
     message.needAdminDecision !== undefined &&
       (obj.needAdminDecision = message.needAdminDecision);
+    message.hasSecurityAdmin !== undefined &&
+      (obj.hasSecurityAdmin = message.hasSecurityAdmin);
     return obj;
   },
 
@@ -11695,6 +11916,14 @@ export const DeleteOGRes = {
       message.needAdminDecision = object.needAdminDecision;
     } else {
       message.needAdminDecision = false;
+    }
+    if (
+      object.hasSecurityAdmin !== undefined &&
+      object.hasSecurityAdmin !== null
+    ) {
+      message.hasSecurityAdmin = object.hasSecurityAdmin;
+    } else {
+      message.hasSecurityAdmin = false;
     }
     return message;
   },
@@ -12209,6 +12438,7 @@ const baseDeleteRoleRes: object = {
   needSecurityDecision: false,
   needSuperSecurityDecision: false,
   needAdminDecision: false,
+  hasSecurityAdmin: false,
 };
 
 export const DeleteRoleRes = {
@@ -12314,6 +12544,9 @@ export const DeleteRoleRes = {
     }
     if (message.needAdminDecision === true) {
       writer.uint32(200).bool(message.needAdminDecision);
+    }
+    if (message.hasSecurityAdmin === true) {
+      writer.uint32(208).bool(message.hasSecurityAdmin);
     }
     return writer;
   },
@@ -12430,6 +12663,9 @@ export const DeleteRoleRes = {
           break;
         case 25:
           message.needAdminDecision = reader.bool();
+          break;
+        case 26:
+          message.hasSecurityAdmin = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -12617,6 +12853,14 @@ export const DeleteRoleRes = {
     } else {
       message.needAdminDecision = false;
     }
+    if (
+      object.hasSecurityAdmin !== undefined &&
+      object.hasSecurityAdmin !== null
+    ) {
+      message.hasSecurityAdmin = Boolean(object.hasSecurityAdmin);
+    } else {
+      message.hasSecurityAdmin = false;
+    }
     return message;
   },
 
@@ -12706,6 +12950,8 @@ export const DeleteRoleRes = {
       (obj.needSuperSecurityDecision = message.needSuperSecurityDecision);
     message.needAdminDecision !== undefined &&
       (obj.needAdminDecision = message.needAdminDecision);
+    message.hasSecurityAdmin !== undefined &&
+      (obj.hasSecurityAdmin = message.hasSecurityAdmin);
     return obj;
   },
 
@@ -12886,6 +13132,14 @@ export const DeleteRoleRes = {
       message.needAdminDecision = object.needAdminDecision;
     } else {
       message.needAdminDecision = false;
+    }
+    if (
+      object.hasSecurityAdmin !== undefined &&
+      object.hasSecurityAdmin !== null
+    ) {
+      message.hasSecurityAdmin = object.hasSecurityAdmin;
+    } else {
+      message.hasSecurityAdmin = false;
     }
     return message;
   },
@@ -13431,6 +13685,7 @@ const baseDeleteEntityRes: object = {
   needSecurityDecision: false,
   needSuperSecurityDecision: false,
   needAdminDecision: false,
+  hasSecurityAdmin: false,
 };
 
 export const DeleteEntityRes = {
@@ -13536,6 +13791,9 @@ export const DeleteEntityRes = {
     }
     if (message.needAdminDecision === true) {
       writer.uint32(200).bool(message.needAdminDecision);
+    }
+    if (message.hasSecurityAdmin === true) {
+      writer.uint32(208).bool(message.hasSecurityAdmin);
     }
     return writer;
   },
@@ -13655,6 +13913,9 @@ export const DeleteEntityRes = {
           break;
         case 25:
           message.needAdminDecision = reader.bool();
+          break;
+        case 26:
+          message.hasSecurityAdmin = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -13842,6 +14103,14 @@ export const DeleteEntityRes = {
     } else {
       message.needAdminDecision = false;
     }
+    if (
+      object.hasSecurityAdmin !== undefined &&
+      object.hasSecurityAdmin !== null
+    ) {
+      message.hasSecurityAdmin = Boolean(object.hasSecurityAdmin);
+    } else {
+      message.hasSecurityAdmin = false;
+    }
     return message;
   },
 
@@ -13931,6 +14200,8 @@ export const DeleteEntityRes = {
       (obj.needSuperSecurityDecision = message.needSuperSecurityDecision);
     message.needAdminDecision !== undefined &&
       (obj.needAdminDecision = message.needAdminDecision);
+    message.hasSecurityAdmin !== undefined &&
+      (obj.hasSecurityAdmin = message.hasSecurityAdmin);
     return obj;
   },
 
@@ -14111,6 +14382,14 @@ export const DeleteEntityRes = {
       message.needAdminDecision = object.needAdminDecision;
     } else {
       message.needAdminDecision = false;
+    }
+    if (
+      object.hasSecurityAdmin !== undefined &&
+      object.hasSecurityAdmin !== null
+    ) {
+      message.hasSecurityAdmin = object.hasSecurityAdmin;
+    } else {
+      message.hasSecurityAdmin = false;
     }
     return message;
   },
@@ -14663,6 +14942,7 @@ const baseAssignRoleToEntityRes: object = {
   needSecurityDecision: false,
   needSuperSecurityDecision: false,
   needAdminDecision: false,
+  hasSecurityAdmin: false,
 };
 
 export const AssignRoleToEntityRes = {
@@ -14768,6 +15048,9 @@ export const AssignRoleToEntityRes = {
     }
     if (message.needAdminDecision === true) {
       writer.uint32(200).bool(message.needAdminDecision);
+    }
+    if (message.hasSecurityAdmin === true) {
+      writer.uint32(208).bool(message.hasSecurityAdmin);
     }
     return writer;
   },
@@ -14890,6 +15173,9 @@ export const AssignRoleToEntityRes = {
           break;
         case 25:
           message.needAdminDecision = reader.bool();
+          break;
+        case 26:
+          message.hasSecurityAdmin = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -15077,6 +15363,14 @@ export const AssignRoleToEntityRes = {
     } else {
       message.needAdminDecision = false;
     }
+    if (
+      object.hasSecurityAdmin !== undefined &&
+      object.hasSecurityAdmin !== null
+    ) {
+      message.hasSecurityAdmin = Boolean(object.hasSecurityAdmin);
+    } else {
+      message.hasSecurityAdmin = false;
+    }
     return message;
   },
 
@@ -15166,6 +15460,8 @@ export const AssignRoleToEntityRes = {
       (obj.needSuperSecurityDecision = message.needSuperSecurityDecision);
     message.needAdminDecision !== undefined &&
       (obj.needAdminDecision = message.needAdminDecision);
+    message.hasSecurityAdmin !== undefined &&
+      (obj.hasSecurityAdmin = message.hasSecurityAdmin);
     return obj;
   },
 
@@ -15350,6 +15646,14 @@ export const AssignRoleToEntityRes = {
       message.needAdminDecision = object.needAdminDecision;
     } else {
       message.needAdminDecision = false;
+    }
+    if (
+      object.hasSecurityAdmin !== undefined &&
+      object.hasSecurityAdmin !== null
+    ) {
+      message.hasSecurityAdmin = object.hasSecurityAdmin;
+    } else {
+      message.hasSecurityAdmin = false;
     }
     return message;
   },
@@ -15912,6 +16216,7 @@ const baseDisconectRoleFromEntityRes: object = {
   needSecurityDecision: false,
   needSuperSecurityDecision: false,
   needAdminDecision: false,
+  hasSecurityAdmin: false,
 };
 
 export const DisconectRoleFromEntityRes = {
@@ -16017,6 +16322,9 @@ export const DisconectRoleFromEntityRes = {
     }
     if (message.needAdminDecision === true) {
       writer.uint32(200).bool(message.needAdminDecision);
+    }
+    if (message.hasSecurityAdmin === true) {
+      writer.uint32(208).bool(message.hasSecurityAdmin);
     }
     return writer;
   },
@@ -16142,6 +16450,9 @@ export const DisconectRoleFromEntityRes = {
           break;
         case 25:
           message.needAdminDecision = reader.bool();
+          break;
+        case 26:
+          message.hasSecurityAdmin = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -16333,6 +16644,14 @@ export const DisconectRoleFromEntityRes = {
     } else {
       message.needAdminDecision = false;
     }
+    if (
+      object.hasSecurityAdmin !== undefined &&
+      object.hasSecurityAdmin !== null
+    ) {
+      message.hasSecurityAdmin = Boolean(object.hasSecurityAdmin);
+    } else {
+      message.hasSecurityAdmin = false;
+    }
     return message;
   },
 
@@ -16422,6 +16741,8 @@ export const DisconectRoleFromEntityRes = {
       (obj.needSuperSecurityDecision = message.needSuperSecurityDecision);
     message.needAdminDecision !== undefined &&
       (obj.needAdminDecision = message.needAdminDecision);
+    message.hasSecurityAdmin !== undefined &&
+      (obj.hasSecurityAdmin = message.hasSecurityAdmin);
     return obj;
   },
 
@@ -16609,6 +16930,14 @@ export const DisconectRoleFromEntityRes = {
       message.needAdminDecision = object.needAdminDecision;
     } else {
       message.needAdminDecision = false;
+    }
+    if (
+      object.hasSecurityAdmin !== undefined &&
+      object.hasSecurityAdmin !== null
+    ) {
+      message.hasSecurityAdmin = object.hasSecurityAdmin;
+    } else {
+      message.hasSecurityAdmin = false;
     }
     return message;
   },
@@ -17219,6 +17548,7 @@ const baseChangeRoleHierarchyRes: object = {
   needSecurityDecision: false,
   needSuperSecurityDecision: false,
   needAdminDecision: false,
+  hasSecurityAdmin: false,
 };
 
 export const ChangeRoleHierarchyRes = {
@@ -17333,6 +17663,9 @@ export const ChangeRoleHierarchyRes = {
     }
     if (message.needAdminDecision === true) {
       writer.uint32(224).bool(message.needAdminDecision);
+    }
+    if (message.hasSecurityAdmin === true) {
+      writer.uint32(232).bool(message.hasSecurityAdmin);
     }
     return writer;
   },
@@ -17464,6 +17797,9 @@ export const ChangeRoleHierarchyRes = {
           break;
         case 28:
           message.needAdminDecision = reader.bool();
+          break;
+        case 29:
+          message.hasSecurityAdmin = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -17666,6 +18002,14 @@ export const ChangeRoleHierarchyRes = {
     } else {
       message.needAdminDecision = false;
     }
+    if (
+      object.hasSecurityAdmin !== undefined &&
+      object.hasSecurityAdmin !== null
+    ) {
+      message.hasSecurityAdmin = Boolean(object.hasSecurityAdmin);
+    } else {
+      message.hasSecurityAdmin = false;
+    }
     return message;
   },
 
@@ -17760,6 +18104,8 @@ export const ChangeRoleHierarchyRes = {
       (obj.needSuperSecurityDecision = message.needSuperSecurityDecision);
     message.needAdminDecision !== undefined &&
       (obj.needAdminDecision = message.needAdminDecision);
+    message.hasSecurityAdmin !== undefined &&
+      (obj.hasSecurityAdmin = message.hasSecurityAdmin);
     return obj;
   },
 
@@ -17959,6 +18305,14 @@ export const ChangeRoleHierarchyRes = {
       message.needAdminDecision = object.needAdminDecision;
     } else {
       message.needAdminDecision = false;
+    }
+    if (
+      object.hasSecurityAdmin !== undefined &&
+      object.hasSecurityAdmin !== null
+    ) {
+      message.hasSecurityAdmin = object.hasSecurityAdmin;
+    } else {
+      message.hasSecurityAdmin = false;
     }
     return message;
   },
@@ -18515,6 +18869,7 @@ const baseCreateRoleBulkRes: object = {
   needSecurityDecision: false,
   needSuperSecurityDecision: false,
   needAdminDecision: false,
+  hasSecurityAdmin: false,
 };
 
 export const CreateRoleBulkRes = {
@@ -18620,6 +18975,9 @@ export const CreateRoleBulkRes = {
     }
     if (message.needAdminDecision === true) {
       writer.uint32(208).bool(message.needAdminDecision);
+    }
+    if (message.hasSecurityAdmin === true) {
+      writer.uint32(216).bool(message.hasSecurityAdmin);
     }
     return writer;
   },
@@ -18741,6 +19099,9 @@ export const CreateRoleBulkRes = {
           break;
         case 26:
           message.needAdminDecision = reader.bool();
+          break;
+        case 27:
+          message.hasSecurityAdmin = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -18930,6 +19291,14 @@ export const CreateRoleBulkRes = {
     } else {
       message.needAdminDecision = false;
     }
+    if (
+      object.hasSecurityAdmin !== undefined &&
+      object.hasSecurityAdmin !== null
+    ) {
+      message.hasSecurityAdmin = Boolean(object.hasSecurityAdmin);
+    } else {
+      message.hasSecurityAdmin = false;
+    }
     return message;
   },
 
@@ -19028,6 +19397,8 @@ export const CreateRoleBulkRes = {
       (obj.needSuperSecurityDecision = message.needSuperSecurityDecision);
     message.needAdminDecision !== undefined &&
       (obj.needAdminDecision = message.needAdminDecision);
+    message.hasSecurityAdmin !== undefined &&
+      (obj.hasSecurityAdmin = message.hasSecurityAdmin);
     return obj;
   },
 
@@ -19210,6 +19581,14 @@ export const CreateRoleBulkRes = {
       message.needAdminDecision = object.needAdminDecision;
     } else {
       message.needAdminDecision = false;
+    }
+    if (
+      object.hasSecurityAdmin !== undefined &&
+      object.hasSecurityAdmin !== null
+    ) {
+      message.hasSecurityAdmin = object.hasSecurityAdmin;
+    } else {
+      message.hasSecurityAdmin = false;
     }
     return message;
   },
@@ -19914,6 +20293,7 @@ const baseChangeRoleHierarchyBulkRes: object = {
   needSecurityDecision: false,
   needSuperSecurityDecision: false,
   needAdminDecision: false,
+  hasSecurityAdmin: false,
 };
 
 export const ChangeRoleHierarchyBulkRes = {
@@ -20016,6 +20396,9 @@ export const ChangeRoleHierarchyBulkRes = {
     }
     if (message.needAdminDecision === true) {
       writer.uint32(200).bool(message.needAdminDecision);
+    }
+    if (message.hasSecurityAdmin === true) {
+      writer.uint32(208).bool(message.hasSecurityAdmin);
     }
     return writer;
   },
@@ -20139,6 +20522,9 @@ export const ChangeRoleHierarchyBulkRes = {
           break;
         case 25:
           message.needAdminDecision = reader.bool();
+          break;
+        case 26:
+          message.hasSecurityAdmin = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -20326,6 +20712,14 @@ export const ChangeRoleHierarchyBulkRes = {
     } else {
       message.needAdminDecision = false;
     }
+    if (
+      object.hasSecurityAdmin !== undefined &&
+      object.hasSecurityAdmin !== null
+    ) {
+      message.hasSecurityAdmin = Boolean(object.hasSecurityAdmin);
+    } else {
+      message.hasSecurityAdmin = false;
+    }
     return message;
   },
 
@@ -20417,6 +20811,8 @@ export const ChangeRoleHierarchyBulkRes = {
       (obj.needSuperSecurityDecision = message.needSuperSecurityDecision);
     message.needAdminDecision !== undefined &&
       (obj.needAdminDecision = message.needAdminDecision);
+    message.hasSecurityAdmin !== undefined &&
+      (obj.hasSecurityAdmin = message.hasSecurityAdmin);
     return obj;
   },
 
@@ -20600,6 +20996,14 @@ export const ChangeRoleHierarchyBulkRes = {
       message.needAdminDecision = object.needAdminDecision;
     } else {
       message.needAdminDecision = false;
+    }
+    if (
+      object.hasSecurityAdmin !== undefined &&
+      object.hasSecurityAdmin !== null
+    ) {
+      message.hasSecurityAdmin = object.hasSecurityAdmin;
+    } else {
+      message.hasSecurityAdmin = false;
     }
     return message;
   },
@@ -21905,6 +22309,9 @@ export const AdditionalParams = {
     if (message.groupInChargeId !== undefined) {
       writer.uint32(74).string(message.groupInChargeId);
     }
+    if (message.specialGroupId !== undefined) {
+      writer.uint32(82).string(message.specialGroupId);
+    }
     return writer;
   },
 
@@ -21942,6 +22349,9 @@ export const AdditionalParams = {
           break;
         case 9:
           message.groupInChargeId = reader.string();
+          break;
+        case 10:
+          message.specialGroupId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -22002,6 +22412,11 @@ export const AdditionalParams = {
     } else {
       message.groupInChargeId = undefined;
     }
+    if (object.specialGroupId !== undefined && object.specialGroupId !== null) {
+      message.specialGroupId = String(object.specialGroupId);
+    } else {
+      message.specialGroupId = undefined;
+    }
     return message;
   },
 
@@ -22025,6 +22440,8 @@ export const AdditionalParams = {
       (obj.directGroup = message.directGroup);
     message.groupInChargeId !== undefined &&
       (obj.groupInChargeId = message.groupInChargeId);
+    message.specialGroupId !== undefined &&
+      (obj.specialGroupId = message.specialGroupId);
     return obj;
   },
 
@@ -22078,6 +22495,11 @@ export const AdditionalParams = {
       message.groupInChargeId = object.groupInChargeId;
     } else {
       message.groupInChargeId = undefined;
+    }
+    if (object.specialGroupId !== undefined && object.specialGroupId !== null) {
+      message.specialGroupId = object.specialGroupId;
+    } else {
+      message.specialGroupId = undefined;
     }
     return message;
   },
@@ -29755,6 +30177,7 @@ const baseRequest: object = {
   needSecurityDecision: false,
   needSuperSecurityDecision: false,
   needAdminDecision: false,
+  hasSecurityAdmin: false,
 };
 
 export const Request = {
@@ -29881,6 +30304,9 @@ export const Request = {
     }
     if (message.needAdminDecision === true) {
       writer.uint32(256).bool(message.needAdminDecision);
+    }
+    if (message.hasSecurityAdmin === true) {
+      writer.uint32(264).bool(message.hasSecurityAdmin);
     }
     return writer;
   },
@@ -30023,6 +30449,9 @@ export const Request = {
           break;
         case 32:
           message.needAdminDecision = reader.bool();
+          break;
+        case 33:
+          message.hasSecurityAdmin = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -30252,6 +30681,14 @@ export const Request = {
     } else {
       message.needAdminDecision = false;
     }
+    if (
+      object.hasSecurityAdmin !== undefined &&
+      object.hasSecurityAdmin !== null
+    ) {
+      message.hasSecurityAdmin = Boolean(object.hasSecurityAdmin);
+    } else {
+      message.hasSecurityAdmin = false;
+    }
     return message;
   },
 
@@ -30364,6 +30801,8 @@ export const Request = {
       (obj.needSuperSecurityDecision = message.needSuperSecurityDecision);
     message.needAdminDecision !== undefined &&
       (obj.needAdminDecision = message.needAdminDecision);
+    message.hasSecurityAdmin !== undefined &&
+      (obj.hasSecurityAdmin = message.hasSecurityAdmin);
     return obj;
   },
 
@@ -30586,6 +31025,14 @@ export const Request = {
       message.needAdminDecision = object.needAdminDecision;
     } else {
       message.needAdminDecision = false;
+    }
+    if (
+      object.hasSecurityAdmin !== undefined &&
+      object.hasSecurityAdmin !== null
+    ) {
+      message.hasSecurityAdmin = object.hasSecurityAdmin;
+    } else {
+      message.hasSecurityAdmin = false;
     }
     return message;
   },

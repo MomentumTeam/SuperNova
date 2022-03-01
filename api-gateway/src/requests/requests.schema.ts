@@ -352,6 +352,8 @@ const additionalParamsObj = Joi.object({
     .required(),
   directGroup: Joi.string().default(''),
   groupInChargeId: Joi.string(),
+  specialGroupId: Joi.string(),
+
   // groupInChargeId: Joi.string().default(config.fields.rootId),
 });
 

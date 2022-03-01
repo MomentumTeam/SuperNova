@@ -1385,6 +1385,9 @@ export class RequestRepository {
         } else if (approverType === ApproverType.SUPER_SECURITY) {
           request.needSecurityDecision = false;
           request.needSuperSecurityDecision = true;
+        } else if (approverType === ApproverType.SPECIAL_GROUP) {
+          request.needSecurityDecision = false;
+          request.needSuperSecurityDecision = false;
         } else {
           request.needSecurityDecision = true;
           request.needSuperSecurityDecision = false;
