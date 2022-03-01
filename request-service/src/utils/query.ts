@@ -111,6 +111,12 @@ export function getIdQuery(
         ],
       };
       break;
+    case PersonTypeInRequest.ADMIN_APPROVER:
+      query = {
+        'submittedBy.id': { $ne: ObjectId(id) },
+        'adminApprovers.id': ObjectId(id),
+      };
+      break;
     case PersonTypeInRequest.GET_ALL:
       query = { 'submittedBy.id': { $ne: ObjectId(id) } };
       break;
@@ -289,10 +295,16 @@ export function getApprovementQuery(
       };
     case ApprovementStatus.SECURITY_APPROVE:
       return {
-        $and: [
-          { needSecurityDecision: true },
+        $or: [
           {
+            needSecurityDecision: true,
+            needAdminDecision: false,
             'commanderDecision.decision': decisionToJSON(Decision.APPROVED),
+          },
+          {
+            needSecurityDecision: true,
+            needAdminDecision: true,
+            'adminDecision.decision': decisionToJSON(Decision.APPROVED),
           },
         ],
       };
@@ -308,6 +320,15 @@ export function getApprovementQuery(
             needSuperSecurityDecision: true,
             needSecurityDecision: false,
             'commanderDecision.decision': decisionToJSON(Decision.APPROVED),
+          },
+        ],
+      };
+    case ApprovementStatus.ADMIN_APPROVE:
+      return {
+        $and: [
+          { needAdminDecision: true },
+          {
+            'adminDecision.decision': decisionToJSON(Decision.APPROVED),
           },
         ],
       };

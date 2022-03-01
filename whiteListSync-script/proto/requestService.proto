@@ -1542,8 +1542,9 @@ enum ApprovementStatus{
     COMMANDER_APPROVE = 0;
     SECURITY_APPROVE = 1;
     SUPER_SECURITY_APPROVE = 2;
-    ANY = 3;
-    BY_USER_TYPE = 4;
+    ADMIN_APPROVE = 3;
+    ANY = 4;
+    BY_USER_TYPE = 5;
 }
 
 enum ErrorType{

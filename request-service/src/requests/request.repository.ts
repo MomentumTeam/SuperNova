@@ -131,6 +131,7 @@ export class RequestRepository {
         createRequestReq.commanderDecision = approverDecision;
         createRequestReq.securityDecision = approverDecision;
         createRequestReq.superSecurityDecision = approverDecision;
+        createRequestReq.adminDecision = approverDecision;
         createRequestReq.adStatus = {
           status: stageStatusToJSON(StageStatus.STAGE_WAITING_FOR_PUSH),
           message: '',
@@ -152,6 +153,7 @@ export class RequestRepository {
       const document = createdCreateRequest.toObject();
       turnObjectIdsToStrings(document);
 
+      // TODO: ask baraks if i need to add admin check to here?
       // Get current status of the request
       if (this.isRequestApprovedBySecurity(request)) {
         await this.updateRequest({
@@ -264,6 +266,16 @@ export class RequestRepository {
     return superSecurityDecision === Decision.APPROVED;
   }
 
+    isRequestApprovedByAdmin(request: Request) {
+    let adminDecision: any = request.adminDecision?.decision;
+    adminDecision =
+      typeof adminDecision === typeof ''
+        ? decisionFromJSON(adminDecision)
+        : adminDecision;
+
+    return adminDecision === Decision.APPROVED;
+  }
+
   async isRequestApproved(
     isRequestApprovedReq: IsRequestApprovedReq
   ): Promise<IsRequestApprovedRes> {
@@ -280,13 +292,16 @@ export class RequestRepository {
       } else {
         const needSecurityDecision = request.needSecurityDecision;
         const needSuperSecurityDecision = request.needSuperSecurityDecision;
-
+        const needAdminDecision = request.needAdminDecision;
+        
         if (
           this.isRequestApprovedByCommander(request) &&
           (!needSecurityDecision ||
             this.isRequestApprovedBySecurity(request)) &&
           (!needSuperSecurityDecision ||
-            this.isRequestApprovedBySuperSecurity(request))
+            this.isRequestApprovedBySuperSecurity(request)) &&
+          (!needAdminDecision || 
+            this.isRequestApprovedByAdmin(request))
         ) {
           return { isRequestApproved: true };
         } else {
@@ -316,6 +331,12 @@ export class RequestRepository {
           : request.commanderDecision.decision;
       const commanderAlreadyDecided =
         commanderDecision !== Decision.DECISION_UNKNOWN;
+      const adminDecision =
+        typeof request.adminDecision.decision === typeof ''
+          ? decisionFromJSON(request.adminDecision.decision)
+          : request.adminDecision.decision;
+      const adminAlreadyDecided =
+        adminDecision !== Decision.DECISION_UNKNOWN;
       const securityDecision =
         typeof request.securityDecision.decision === typeof ''
           ? decisionFromJSON(request.securityDecision.decision)
@@ -332,6 +353,15 @@ export class RequestRepository {
       const needSuperSecurityDecision = request.needSuperSecurityDecision;
       switch (type) {
         case ApproverType.ADMIN:
+          if (!adminAlreadyDecided) {
+            updateSetQuery = {
+              adminApprovers: removeApproverFromArray(
+                removeApproverFromApproversReq.approverId,
+                request.securityApprovers
+              ),
+            };
+          }
+          break;
         case ApproverType.COMMANDER:
           if (!commanderAlreadyDecided) {
             updateSetQuery = {
@@ -409,6 +439,12 @@ export class RequestRepository {
           : request.commanderDecision.decision;
       const commanderAlreadyDecided =
         commanderDecision !== Decision.DECISION_UNKNOWN;
+      const adminDecision =
+        typeof request.adminDecision.decision === typeof ''
+          ? decisionFromJSON(request.adminDecision.decision)
+          : request.adminDecision.decision;
+      const adminAlreadyDecided =
+        adminDecision !== Decision.DECISION_UNKNOWN;
       const securityDecision =
         typeof request.securityDecision.decision === typeof ''
           ? decisionFromJSON(request.securityDecision.decision)
@@ -423,8 +459,8 @@ export class RequestRepository {
         superSecurityDecision !== Decision.DECISION_UNKNOWN;
       const needSecurityDecision = request.needSecurityDecision;
       const needSuperSecurityDecision = request.needSuperSecurityDecision;
+      const needAdminDecision = request.needAdminDecision;
       switch (type) {
-        case ApproverType.ADMIN:
         case ApproverType.COMMANDER:
           if (!commanderAlreadyDecided) {
             updateSetQuery = {
@@ -476,6 +512,23 @@ export class RequestRepository {
             };
           }
           break;
+        case ApproverType.ADMIN:
+          if (!adminAlreadyDecided && needAdminDecision) {
+            updateSetQuery = {
+              adminApprovers: overrideApprovers
+                ? transferRequestToApproverReq.approvers
+                : [
+                    ...new Map(
+                      [
+                        ...request.commanders,
+                        ...transferRequestToApproverReq.approvers,
+                      ].map((item: any) => [item.id, item])
+                    ).values(),
+                  ],
+              'approversComments.adminComment': commentForApprovers,
+            };
+          }
+        break;
         default:
           throw new Error('ApproverType is not supported!');
       }
@@ -520,6 +573,9 @@ export class RequestRepository {
         case PersonTypeInRequest.SECURITY_APPROVER:
           approverField = 'securityDecision';
           break;
+        case PersonTypeInRequest.ADMIN_APPROVER:
+          approverField = 'adminDecision';
+          break;
         case PersonTypeInRequest.APPROVER:
         case PersonTypeInRequest.SUPER_SECURITY_APPROVER:
           approverField = 'superSecurityDecision';
@@ -552,12 +608,15 @@ export class RequestRepository {
           const isRequestApprovedObj = await this.isRequestApproved({
             id: updateDecisionReq.id,
           });
+          // TODO: ask baraks about this if - why update to in progress when request approved?
           if (isRequestApprovedObj.isRequestApproved) {
             newRequestStatus = RequestStatus.IN_PROGRESS;
           } else if (approverType === PersonTypeInRequest.COMMANDER_APPROVER) {
             newRequestStatus = RequestStatus.APPROVED_BY_COMMANDER;
           } else if (approverType === PersonTypeInRequest.SECURITY_APPROVER) {
             newRequestStatus = RequestStatus.APPROVED_BY_SECURITY;
+          } else if (approverType === PersonTypeInRequest.ADMIN_APPROVER) {
+            newRequestStatus = RequestStatus.APPROVED_BY_ADMIN;
           }
         }
 
@@ -613,7 +672,8 @@ export class RequestRepository {
 
         // Get notification type
         if (decision === Decision.APPROVED) {
-          if (approverType === PersonTypeInRequest.COMMANDER_APPROVER) {
+          if (approverType === PersonTypeInRequest.COMMANDER_APPROVER ||
+              approverType === PersonTypeInRequest.ADMIN_APPROVER) {
             approvingNotificationType = NotificationType.REQUEST_APPROVED_1;
             approvingMailType = MailType.REQUEST_APPROVED_1;
           } else if (approverType === PersonTypeInRequest.SECURITY_APPROVER) {
@@ -1042,6 +1102,8 @@ export class RequestRepository {
           typeof documentObj.type === typeof ''
             ? requestTypeFromJSON(documentObj.type)
             : documentObj.type;
+        
+        // TODO: ask baraks about bulk requests in case of hierarchy needing admin approval
         // if bulk
         if (
           (requestType === RequestType.CREATE_ROLE_BULK ||
@@ -1235,6 +1297,7 @@ export class RequestRepository {
   }
 
   setNeedApproversDecisionsValues(request: any, type: RequestType): void {
+    // TODO: I think add here function call to liora's function to know if admin decision needed
     switch (type) {
       case RequestType.CREATE_OG:
         request.needSecurityDecision = false;
@@ -1405,6 +1468,20 @@ export class RequestRepository {
       const request: Request = await this.updateRequest({
         id: updateApproversReq.id,
         requestProperties: { securityApprovers: updateApproversReq.approvers },
+      });
+      return request;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateAdminApprovers(
+    updateApproversReq: UpdateApproversReq
+  ): Promise<Request> {
+    try {
+      const request: Request = await this.updateRequest({
+        id: updateApproversReq.id,
+        requestProperties: { adminApprovers: updateApproversReq.approvers },
       });
       return request;
     } catch (error) {
