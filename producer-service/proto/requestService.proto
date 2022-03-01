@@ -1097,7 +1097,8 @@ message GetRequestsByPersonReq{
     optional RequestType type = 10;
     optional SortField sortField = 11;
     optional SortOrder sortOrder = 12;
-    repeated string groupsInCharge = 13;
+    repeated string adminGroupsInCharge = 13;
+    repeated string securityAdminGroupsInCharge = 14;
     
 }
 

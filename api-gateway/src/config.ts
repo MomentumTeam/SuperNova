@@ -56,6 +56,12 @@ export const config = {
       .default('619e3193f235dc001846bb4f')
       .asString(),
     grpcPoolSize: env.get('GLOBAL_GRPC_POOL_SIZE').default('3').asInt(),
+    groupsWithSecurityAdmin: env
+      .get('GATEWAY_GROUPS_WITH_SECURITY_ADMIN')
+      .default(
+        '619e31f5f235dc001846e872,61ee8c7af302e80019bba6e4,619e31fef235dc001846f10b,61bb4647e4de0300121de442'
+      )
+      .asArray(),
   },
   endpoints: {
     request: env.get('GATEWAY_RS_URL').default('0.0.0.0:8081').asString(),
@@ -165,6 +171,13 @@ export const config = {
     CREATE_BULK_APPROVERS: env
       .get('UI_CREATE_BULK_APPROVERS')
       .default('61dd539ce4de030012202d5e,619e3a6fe4de0300121d78c7')
+      .asString()
+      ?.split(','),
+    CREATE_SPECIAL_GROUP_APPROVERS: env
+      .get('UI_CREATE_SPECIAL_GROUP_APPROVERS')
+      .default(
+        '61dd539ce4de030012202d5e,619f8aa0e4de0300121dd3f4,619e3a6fe4de0300121d78c7'
+      )
       .asString()
       ?.split(','),
     CREATE_SOLDIER_APPROVERS: env

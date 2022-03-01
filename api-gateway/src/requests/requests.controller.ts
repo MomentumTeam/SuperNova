@@ -84,7 +84,8 @@ export default class RequestsController {
       to: req.query.to,
       userType: req.user.types,
       approvementStatus: ApprovementStatus.ANY,
-      groupsInCharge: [],
+      adminGroupsInCharge: [],
+      securityAdminGroupsInCharge: [],
     };
 
     if (req.query.searchQuery) {
@@ -122,7 +123,8 @@ export default class RequestsController {
       to: req.query.to,
       userType: req.user.types,
       approvementStatus: ApprovementStatus.BY_USER_TYPE,
-      groupsInCharge: [],
+      adminGroupsInCharge: [],
+      securityAdminGroupsInCharge: [],
     };
 
     if (req.query.searchQuery) {
@@ -142,14 +144,31 @@ export default class RequestsController {
     }
 
     if (req.user.types.includes(approverTypeToJSON(ApproverType.ADMIN))) {
-      const approver = await ApproverService.getApproverByEntityId({
+      const admin = await ApproverService.getApproverByEntityId({
         entityId: req.user.id,
+        type: ApproverType.ADMIN,
       });
       if (
-        approver.groupsInCharge !== undefined &&
-        approver.groupsInCharge.length > 0
+        admin.groupsInCharge !== undefined &&
+        admin.groupsInCharge.length > 0
       ) {
-        getRequestsByPersonReq.groupsInCharge = approver.groupsInCharge;
+        getRequestsByPersonReq.adminGroupsInCharge = admin.groupsInCharge;
+      }
+    }
+
+    if (
+      req.user.types.includes(approverTypeToJSON(ApproverType.SECURITY_ADMIN))
+    ) {
+      const securityAdmin = await ApproverService.getApproverByEntityId({
+        entityId: req.user.id,
+        type: ApproverType.SECURITY_ADMIN,
+      });
+      if (
+        securityAdmin.groupsInCharge !== undefined &&
+        securityAdmin.groupsInCharge.length > 0
+      ) {
+        getRequestsByPersonReq.securityAdminGroupsInCharge =
+          securityAdmin.groupsInCharge;
       }
     }
 
@@ -172,7 +191,8 @@ export default class RequestsController {
       to: req.query.to,
       userType: req.user.types,
       approvementStatus: ApprovementStatus.BY_USER_TYPE,
-      groupsInCharge: [],
+      adminGroupsInCharge: [],
+      securityAdminGroupsInCharge: [],
     };
 
     if (req.query.searchQuery) {
@@ -209,7 +229,8 @@ export default class RequestsController {
       from: req.query.from,
       to: req.query.to,
       userType: req.user.types,
-      groupsInCharge: [],
+      adminGroupsInCharge: [],
+      securityAdminGroupsInCharge: [],
     };
 
     if (req.query.searchQuery) {

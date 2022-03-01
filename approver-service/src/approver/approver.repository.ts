@@ -666,7 +666,10 @@ export class ApproverRepository {
           );
         }
 
-        if (types.includes(ApproverType.SECURITY)) {
+        if (
+          types.includes(ApproverType.SECURITY) ||
+          types.includes(ApproverType.SECURITY_ADMIN)
+        ) {
           currentUpdateRequest.approverType =
             PersonTypeInRequest.SECURITY_APPROVER;
           updatedRequest = await RequestService.updateApproverDecision(

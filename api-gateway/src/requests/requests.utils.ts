@@ -26,9 +26,22 @@ export const approveUserRequest = async (
         ? requestTypeFromJSON(request.type)
         : request.type;
 
+    const submitterGroups: any[] = [
+      request.submittedBy.directGroup,
+      ...request.submittedBy.ancestors,
+    ];
+
+    const containsSpecialGroup = config.fields.groupsWithSecurityAdmin.some(
+      (groupId: any) => {
+        return submitterGroups.includes(groupId);
+      }
+    );
     await Promise.all(
       req.user.types.map(async (type: any) => {
-        const approverType = parseFromApproverTypeToPersonInRequest(type);
+        const approverType = parseFromApproverTypeToPersonInRequest(
+          type,
+          containsSpecialGroup
+        );
 
         switch (approverType) {
           case PersonTypeInRequest.APPROVER: //ADMIN
@@ -161,7 +174,10 @@ export const approveUserRequest = async (
   return request;
 };
 
-export const parseFromApproverTypeToPersonInRequest = (type: string) => {
+export const parseFromApproverTypeToPersonInRequest = (
+  type: string,
+  containsSpecialGroup: boolean = false
+) => {
   const approverType = approverTypeFromJSON(type);
   switch (approverType) {
     case ApproverType.SECURITY:
@@ -172,6 +188,13 @@ export const parseFromApproverTypeToPersonInRequest = (type: string) => {
       return PersonTypeInRequest.COMMANDER_APPROVER;
     case ApproverType.ADMIN:
       return PersonTypeInRequest.APPROVER;
+    case ApproverType.SECURITY_ADMIN: {
+      if (containsSpecialGroup) {
+        return PersonTypeInRequest.SECURITY_APPROVER;
+      } else {
+        return PersonTypeInRequest.UNRECOGNIZED;
+      }
+    }
     default:
       break;
   }

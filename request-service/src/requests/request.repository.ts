@@ -75,6 +75,7 @@ import {
 } from '../services/teaHelper';
 import { logger } from '../logger';
 import { MailType } from '../interfaces/protoc/proto/mailService';
+import * as config from '../config';
 import { isNaN } from 'lodash';
 
 export class RequestRepository {
@@ -145,6 +146,24 @@ export class RequestRepository {
           RequestStatus.IN_PROGRESS
         );
       }
+
+      let submitterGroups: any[] = [createRequestReq.submittedBy.directGroup];
+
+      if (createRequestReq.submittedBy.ancestors) {
+        submitterGroups = [
+          ...submitterGroups,
+          ...createRequestReq.submittedBy.ancestors,
+        ];
+      }
+
+      const containsSpecialGroup = config.groupsWithSecurityAdmin.some(
+        (groupId: any) => {
+          return submitterGroups.includes(groupId);
+        }
+      );
+
+      createRequestReq.hasSecurityAdmin = containsSpecialGroup;
+
       const request: any = new RequestModel(createRequestReq);
       this.setNeedApproversDecisionsValues(request, type);
       request.type = requestTypeToJSON(type);
@@ -1429,17 +1448,21 @@ export class RequestRepository {
         typeof getRequestsByPersonReq.personType === typeof ''
           ? personTypeInRequestFromJSON(getRequestsByPersonReq.personType)
           : getRequestsByPersonReq.personType;
+
       getRequestsByPersonReq.approvementStatus =
         getRequestsByPersonReq.approvementStatus
           ? getRequestsByPersonReq.approvementStatus
           : ApprovementStatus.ANY;
+
       const approvementStatus: ApprovementStatus =
         typeof getRequestsByPersonReq.approvementStatus === typeof ''
           ? approvementStatusFromJSON(getRequestsByPersonReq.approvementStatus)
           : getRequestsByPersonReq.approvementStatus;
+
       let userType: any[] = getRequestsByPersonReq.userType
         ? getRequestsByPersonReq.userType
         : [];
+
       userType = userType.map((type) => {
         return typeof type === typeof '' ? approverTypeFromJSON(type) : type;
       });
@@ -1482,11 +1505,13 @@ export class RequestRepository {
 
       if (
         approvementStatus === ApprovementStatus.BY_USER_TYPE &&
-        getRequestsByPersonReq.groupsInCharge &&
-        userType.includes(ApproverType.ADMIN)
+        (userType.includes(ApproverType.ADMIN) ||
+          userType.includes(ApproverType.SECURITY_ADMIN))
       ) {
         const ancestorsQuery = getAncestorsQuery(
-          getRequestsByPersonReq.groupsInCharge
+          getRequestsByPersonReq.adminGroupsInCharge,
+          getRequestsByPersonReq.securityAdminGroupsInCharge,
+          userType
         );
         if (query['$or']) {
           query['$and'] = [{ $or: query['$or'] }, ancestorsQuery];
