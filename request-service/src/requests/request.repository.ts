@@ -75,7 +75,7 @@ import {
 } from '../services/teaHelper';
 import { logger } from '../logger';
 import { MailType } from '../interfaces/protoc/proto/mailService';
-import { isNaN } from 'lodash';
+import ApproverService from '../services/approverService';
 
 export class RequestRepository {
   async createRequest(
@@ -146,8 +146,14 @@ export class RequestRepository {
           RequestStatus.IN_PROGRESS
         );
       }
+       
       const request: any = new RequestModel(createRequestReq);
-      this.setNeedApproversDecisionsValues(request, type);
+      const groupIds: string[] = [
+        request.submittedBy.directGroup,
+        ...request.submittedBy.ancestors,
+      ];
+      const needAdminDecision = await ApproverService.includesSpecialGroup({groupIds: groupIds})
+      this.setNeedApproversDecisionsValues(request, type, needAdminDecision.includes);
       request.type = requestTypeToJSON(type);
       const createdCreateRequest = await request.save();
       const document = createdCreateRequest.toObject();
@@ -1296,72 +1302,85 @@ export class RequestRepository {
     }
   }
 
-  setNeedApproversDecisionsValues(request: any, type: RequestType): void {
+  setNeedApproversDecisionsValues(request: any, type: RequestType, needAdminDecision = false): void {
     // TODO: I think add here function call to liora's function to know if admin decision needed
     switch (type) {
       case RequestType.CREATE_OG:
+        request.needAdminDecision = needAdminDecision;
         request.needSecurityDecision = false;
         request.needSuperSecurityDecision = false;
         break;
 
       case RequestType.CREATE_ROLE:
+        request.needAdminDecision = needAdminDecision;
         request.needSecurityDecision = true;
         request.needSuperSecurityDecision = false;
         break;
-
       case RequestType.ASSIGN_ROLE_TO_ENTITY:
+        request.needAdminDecision = needAdminDecision;
         request.needSecurityDecision = true;
         request.needSuperSecurityDecision = false;
         break;
 
       case RequestType.CREATE_ENTITY:
+        request.needAdminDecision = needAdminDecision;
         request.needSecurityDecision = false;
         request.needSuperSecurityDecision = false;
         break;
 
       case RequestType.DELETE_ENTITY:
+        request.needAdminDecision = needAdminDecision;
         request.needSecurityDecision = false;
         request.needSuperSecurityDecision = false;
         break;
 
       case RequestType.RENAME_OG:
+        request.needAdminDecision = needAdminDecision;
         request.needSecurityDecision = true;
         request.needSuperSecurityDecision = true;
         break;
 
       case RequestType.RENAME_ROLE:
+        request.needAdminDecision = needAdminDecision;
         request.needSecurityDecision = true;
         request.needSuperSecurityDecision = true;
         break;
 
       case RequestType.EDIT_ENTITY:
+        request.needAdminDecision = needAdminDecision;
         request.needSecurityDecision = false;
         request.needSuperSecurityDecision = false;
         break;
 
       case RequestType.DELETE_OG:
+        request.needAdminDecision = needAdminDecision;
         request.needSecurityDecision = false;
         request.needSuperSecurityDecision = false;
         break;
 
       case RequestType.DELETE_ROLE:
+        request.needAdminDecision = needAdminDecision;
         request.needSecurityDecision = false;
         request.needSuperSecurityDecision = false;
         break;
 
       case RequestType.DISCONNECT_ROLE:
+        request.needAdminDecision = needAdminDecision;
         request.needSecurityDecision = false;
         request.needSuperSecurityDecision = false;
         break;
       case RequestType.CHANGE_ROLE_HIERARCHY:
+        request.needAdminDecision = needAdminDecision;
         request.needSecurityDecision = true;
         request.needSuperSecurityDecision = true;
         break;
       case RequestType.CREATE_ROLE_BULK:
+        request.needAdminDecision = needAdminDecision;
         request.needSecurityDecision = true;
         request.needSuperSecurityDecision = false;
         break;
       case RequestType.CHANGE_ROLE_HIERARCHY_BULK:
+        request.needAdminDecision = needAdminDecision;
         request.needSecurityDecision = true;
         request.needSuperSecurityDecision = true;
         break;
@@ -1371,24 +1390,31 @@ export class RequestRepository {
           request.additionalParams.type
         );
         if (approverType === ApproverType.COMMANDER) {
+        request.needAdminDecision = needAdminDecision;
           request.needSecurityDecision = false;
           request.needSuperSecurityDecision = false;
         } else if (approverType === ApproverType.ADMIN) {
+        request.needAdminDecision = needAdminDecision;
           request.needSecurityDecision = false;
           request.needSuperSecurityDecision = false;
         } else if (approverType === ApproverType.BULK) {
+        request.needAdminDecision = needAdminDecision;
           request.needSecurityDecision = false;
           request.needSuperSecurityDecision = false;
         } else if (approverType === ApproverType.SECURITY) {
+        request.needAdminDecision = needAdminDecision;
           request.needSecurityDecision = true;
           request.needSuperSecurityDecision = false;
         } else if (approverType === ApproverType.SUPER_SECURITY) {
+          request.needAdminDecision = needAdminDecision;
           request.needSecurityDecision = false;
           request.needSuperSecurityDecision = true;
         } else if (approverType === ApproverType.SPECIAL_GROUP) {
+          request.needAdminDecision = needAdminDecision;
           request.needSecurityDecision = false;
           request.needSuperSecurityDecision = false;
         } else {
+          request.needAdminDecision = needAdminDecision;
           request.needSecurityDecision = true;
           request.needSuperSecurityDecision = false;
         }
@@ -1587,10 +1613,14 @@ export class RequestRepository {
                 case: { $eq: ['$status', 'APPROVED_BY_SECURITY'] },
                 then: 2,
               },
-              { case: { $eq: ['$status', 'IN_PROGRESS'] }, then: 3 },
-              { case: { $eq: ['$status', 'FAILED'] }, then: 4 },
-              { case: { $eq: ['$status', 'DECLINED'] }, then: 5 },
-              { case: { $eq: ['$status', 'DONE'] }, then: 6 },
+               {
+                case: { $eq: ['$status', 'APPROVED_BY_ADMIN'] },
+                then: 3,
+              },
+              { case: { $eq: ['$status', 'IN_PROGRESS'] }, then: 4 },
+              { case: { $eq: ['$status', 'FAILED'] }, then: 5 },
+              { case: { $eq: ['$status', 'DECLINED'] }, then: 6 },
+              { case: { $eq: ['$status', 'DONE'] }, then: 7 },
             ],
             default: 0,
           },
