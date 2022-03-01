@@ -21,10 +21,14 @@ service ApproverService {
     rpc DeleteApprover(DeleteApproverReq) returns (SuccessMessage){}
     rpc IsApproverValidForOG(IsApproverValidForOGReq) returns (IsApproverValidForOGRes){}
     rpc GetAdminsByGroupIds(GetAdminsByGroupIdsReq) returns (ApproverArray){}
-
+    rpc GetAdminsAboveGroupId(GetAdminsAboveGroupIdReq) returns (ApproverArray){}
 
     rpc IncludesSpecialGroup(IncludesSpecialGroupReq) returns (IncludesSpecialGroupRes){}
 
+}
+
+message GetAdminsAboveGroupIdReq{
+    string groupId = 1;
 }
 
 message IncludesSpecialGroupRes{

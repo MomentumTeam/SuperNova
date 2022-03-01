@@ -61,6 +61,10 @@ export function requestStatusToJSON(object: RequestStatus): string {
   }
 }
 
+export interface GetAdminsAboveGroupIdReq {
+  groupId: string;
+}
+
 export interface IncludesSpecialGroupRes {
   includes: boolean;
 }
@@ -186,6 +190,75 @@ export interface groupsInCharge {
   name: string;
   hierarchy: string;
 }
+
+const baseGetAdminsAboveGroupIdReq: object = { groupId: "" };
+
+export const GetAdminsAboveGroupIdReq = {
+  encode(
+    message: GetAdminsAboveGroupIdReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.groupId !== "") {
+      writer.uint32(10).string(message.groupId);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GetAdminsAboveGroupIdReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseGetAdminsAboveGroupIdReq,
+    } as GetAdminsAboveGroupIdReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.groupId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetAdminsAboveGroupIdReq {
+    const message = {
+      ...baseGetAdminsAboveGroupIdReq,
+    } as GetAdminsAboveGroupIdReq;
+    if (object.groupId !== undefined && object.groupId !== null) {
+      message.groupId = String(object.groupId);
+    } else {
+      message.groupId = "";
+    }
+    return message;
+  },
+
+  toJSON(message: GetAdminsAboveGroupIdReq): unknown {
+    const obj: any = {};
+    message.groupId !== undefined && (obj.groupId = message.groupId);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<GetAdminsAboveGroupIdReq>
+  ): GetAdminsAboveGroupIdReq {
+    const message = {
+      ...baseGetAdminsAboveGroupIdReq,
+    } as GetAdminsAboveGroupIdReq;
+    if (object.groupId !== undefined && object.groupId !== null) {
+      message.groupId = object.groupId;
+    } else {
+      message.groupId = "";
+    }
+    return message;
+  },
+};
 
 const baseIncludesSpecialGroupRes: object = { includes: false };
 
@@ -2379,6 +2452,9 @@ export interface ApproverService {
     request: IsApproverValidForOGReq
   ): Promise<IsApproverValidForOGRes>;
   GetAdminsByGroupIds(request: GetAdminsByGroupIdsReq): Promise<ApproverArray>;
+  GetAdminsAboveGroupId(
+    request: GetAdminsAboveGroupIdReq
+  ): Promise<ApproverArray>;
   IncludesSpecialGroup(
     request: IncludesSpecialGroupReq
   ): Promise<IncludesSpecialGroupRes>;
@@ -2405,6 +2481,7 @@ export class ApproverServiceClientImpl implements ApproverService {
     this.DeleteApprover = this.DeleteApprover.bind(this);
     this.IsApproverValidForOG = this.IsApproverValidForOG.bind(this);
     this.GetAdminsByGroupIds = this.GetAdminsByGroupIds.bind(this);
+    this.GetAdminsAboveGroupId = this.GetAdminsAboveGroupId.bind(this);
     this.IncludesSpecialGroup = this.IncludesSpecialGroup.bind(this);
   }
   AddApprover(request: AddApproverReq): Promise<Approver> {
@@ -2556,6 +2633,18 @@ export class ApproverServiceClientImpl implements ApproverService {
     const promise = this.rpc.request(
       "ApproverService.ApproverService",
       "GetAdminsByGroupIds",
+      data
+    );
+    return promise.then((data) => ApproverArray.decode(new _m0.Reader(data)));
+  }
+
+  GetAdminsAboveGroupId(
+    request: GetAdminsAboveGroupIdReq
+  ): Promise<ApproverArray> {
+    const data = GetAdminsAboveGroupIdReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "ApproverService.ApproverService",
+      "GetAdminsAboveGroupId",
       data
     );
     return promise.then((data) => ApproverArray.decode(new _m0.Reader(data)));
