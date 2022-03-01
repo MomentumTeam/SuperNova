@@ -36,6 +36,10 @@ const RequestSchema = new Schema(
       type: Boolean,
       default: true,
     },
+    needAdminDecision: {
+      type: Boolean,
+      default: false,
+    },
     comments: { type: String, default: '' },
     approversComments: {
       type: {
