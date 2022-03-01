@@ -443,8 +443,9 @@ export enum ApprovementStatus {
   COMMANDER_APPROVE = 0,
   SECURITY_APPROVE = 1,
   SUPER_SECURITY_APPROVE = 2,
-  ANY = 3,
-  BY_USER_TYPE = 4,
+  ADMIN_APPROVE = 3,
+  ANY = 4,
+  BY_USER_TYPE = 5,
   UNRECOGNIZED = -1,
 }
 
@@ -460,9 +461,12 @@ export function approvementStatusFromJSON(object: any): ApprovementStatus {
     case "SUPER_SECURITY_APPROVE":
       return ApprovementStatus.SUPER_SECURITY_APPROVE;
     case 3:
+    case "ADMIN_APPROVE":
+      return ApprovementStatus.ADMIN_APPROVE;
+    case 4:
     case "ANY":
       return ApprovementStatus.ANY;
-    case 4:
+    case 5:
     case "BY_USER_TYPE":
       return ApprovementStatus.BY_USER_TYPE;
     case -1:
@@ -480,6 +484,8 @@ export function approvementStatusToJSON(object: ApprovementStatus): string {
       return "SECURITY_APPROVE";
     case ApprovementStatus.SUPER_SECURITY_APPROVE:
       return "SUPER_SECURITY_APPROVE";
+    case ApprovementStatus.ADMIN_APPROVE:
+      return "ADMIN_APPROVE";
     case ApprovementStatus.ANY:
       return "ANY";
     case ApprovementStatus.BY_USER_TYPE:
