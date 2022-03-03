@@ -806,7 +806,7 @@ message ChangeRoleHierarchyBulkRes{
     repeated EntityMin adminApprovers = 10;
     optional string comments = 11;
     optional ApproversComments approversComments = 12;
-    optional int64 due = 13;;
+    optional int64 due = 13;
     repeated string requestIds =  14;
     string excelFilePath = 15;
     ChangeRoleHierarchyBulkKartoffelParams kartoffelParams = 16;
