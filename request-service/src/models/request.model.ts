@@ -50,11 +50,13 @@ const RequestSchema = new Schema(
         commanderComment: { type: String, default: '' },
         securityComment: { type: String, default: '' },
         superSecurityComment: { type: String, default: '' },
+        adminComment: { type: String, default: '' },
       },
       default: {
         commanderComment: '',
         securityComment: '',
         superSecurityComment: '',
+        adminComment: '',
       },
     },
     submittedBy: {
@@ -206,6 +208,48 @@ const RequestSchema = new Schema(
         decision: decisionToJSON(Decision.DECISION_UNKNOWN),
       },
     },
+    adminDecision: {
+      type: {
+        approver: {
+          type: {
+            id: { type: mongoose.Schema.Types.ObjectId, default: null },
+            displayName: { type: String, default: '' },
+            identityCard: { type: String, default: '' },
+            personalNumber: { type: String, default: '' },
+          },
+          default: {
+            id: null,
+            displayName: '',
+            identityCard: '',
+            personalNumber: '',
+          },
+        },
+        reason: {
+          type: String,
+          default: '',
+        },
+        date: {
+          type: Number,
+          default: () => new Date().getTime(),
+        },
+        decision: {
+          type: String,
+          enum: Decision,
+          defualt: decisionToJSON(Decision.DECISION_UNKNOWN),
+        },
+      },
+      default: {
+        approver: {
+          id: null,
+          displayName: '',
+          identityCard: '',
+          personalNumber: '',
+        },
+        reason: '',
+        date: () => new Date().getTime(),
+        decision: decisionToJSON(Decision.DECISION_UNKNOWN),
+      },
+    },
     commanders: [
       {
         id: { type: mongoose.Schema.Types.ObjectId, default: null },
@@ -227,6 +271,16 @@ const RequestSchema = new Schema(
       },
     ],
     superSecurityApprovers: [
+      {
+        id: { type: mongoose.Schema.Types.ObjectId, default: null },
+        displayName: { type: String, default: '' },
+        identityCard: { type: String, default: '' },
+        personalNumber: { type: String, default: '' },
+        directGroup: { type: String, default: '' },
+        // ancestors: { type: [String], default: [C.rootId] },
+      },
+    ],
+    adminApprovers: [
       {
         id: { type: mongoose.Schema.Types.ObjectId, default: null },
         displayName: { type: String, default: '' },
@@ -391,6 +445,7 @@ RequestSchema.pre<any>('save', function (next) {
     object.commanderDecision.date = new Date().getTime();
     object.securityDecision.date = new Date().getTime();
     object.superSecurityDecision.date = new Date().getTime();
+    object.adminDecision.date = new Date().getTime();
     if (
       object.submittedBy &&
       (!object.submittedBy.ancestors ||
@@ -427,6 +482,9 @@ RequestSchema.index({
   'superSecurityApprovers.displayName': 'text',
   'superSecurityApprovers.personalNumber': 'text',
   'superSecurityApprovers.identityCard': 'text',
+  'adminApprovers.displayName': 'text',
+  'adminApprovers.personalNumber': 'text',
+  'adminApprovers.identityCard': 'text',
   serialNumber: 'text',
 });
 

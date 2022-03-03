@@ -357,9 +357,11 @@ export class RequestRepository {
         superSecurityDecision !== Decision.DECISION_UNKNOWN;
       const needSecurityDecision = request.needSecurityDecision;
       const needSuperSecurityDecision = request.needSuperSecurityDecision;
+      const needAdminDecision = request.needAdminDecision;
+
       switch (type) {
         case ApproverType.ADMIN:
-          if (!adminAlreadyDecided) {
+          if (!adminAlreadyDecided && needAdminDecision) {
             updateSetQuery = {
               adminApprovers: removeApproverFromArray(
                 removeApproverFromApproversReq.approverId,
@@ -1117,6 +1119,7 @@ export class RequestRepository {
           (requestUpdate.commanderDecision ||
             requestUpdate.securityDecision ||
             requestUpdate.superSecurityDecision ||
+            requestUpdate.admin ||
             requestUpdate.status)
         ) {
           if (
