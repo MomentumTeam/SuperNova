@@ -436,23 +436,24 @@ message DeleteOGRes{
     repeated EntityMin commanders = 7;
     repeated EntityMin securityApprovers = 8;
     repeated EntityMin superSecurityApprovers = 9;
-    KartoffelStatus kartoffelStatus = 10;
-    ADStatus adStatus = 11;
-    DeleteOGKartoffelParams kartoffelParams = 12;
-    DeleteOGADParams adParams = 13;
-    string comments = 14;
-    ApproversComments approversComments = 15;
-    int64 due = 16;
-
-    string id = 17;
-    int64 createdAt = 18;
-    int64 updatedAt = 19; 
-    RequestType type = 20;
-    string serialNumber = 21;
-    bool needSecurityDecision = 22;
-    bool needSuperSecurityDecision = 23;
-    bool needAdminDecision = 24;
-    bool hasSecurityAdmin = 25;
+    repeated EntityMin adminApprovers = 10;
+    KartoffelStatus kartoffelStatus = 11;
+    ADStatus adStatus = 12;
+    DeleteOGKartoffelParams kartoffelParams = 13;
+    DeleteOGADParams adParams = 14;
+    string comments = 15;
+    ApproversComments approversComments = 16;
+    int64 due =
+ 17;
+    string id = 18;
+    int64 createdAt = 19; 
+    int64 updatedAt = 20;
+    RequestType type = 21;
+    string serialNumber = 22;
+    bool needSecurityDecision = 23;
+    bool needSuperSecurityDecision = 24;
+    bool needAdminDecision = 25;
+    bool hasSecurityAdmin = 26;
 }
 
 //9.DeleteRoleRequest
@@ -466,13 +467,14 @@ message DeleteRoleReq{
     repeated EntityMin commanders =  7;
     repeated EntityMin securityApprovers = 8;
     repeated EntityMin superSecurityApprovers = 9;
-    optional KartoffelStatus kartoffelStatus =10;
-    optional ADStatus adStatus = 11;
-    DeleteRoleKartoffelParams kartoffelParams = 12;
-    DeleteRoleADParams adParams = 13;
-    optional string comments = 14;
-    optional ApproversComments approversComments = 15;
-    optional int64 due = 16;
+    repeated EntityMin adminApprovers =10;
+    optional KartoffelStatus kartoffelStatus = 11;
+    optional ADStatus adStatus = 12;
+    DeleteRoleKartoffelParams kartoffelParams = 13;
+    DeleteRoleADParams adParams = 14;
+    optional string comments = 15;
+    optional ApproversComments approversComments = 16;
+    optional int64 due = 17;
 }
 
 message DeleteRoleRes{
@@ -1098,14 +1100,15 @@ message UpdateReqProperties{
     repeated EntityMin commanders = 12; 
     repeated EntityMin securityApprovers = 13; 
     repeated EntityMin superSecurityApprovers = 14;
-    optional bool isPartOfBulk = 15;
-    optional string bulkRequestId = 16;
-    repeated string requestIds = 17;
-    optional string rowNumber = 18;
-    repeated RowError rowErrors = 19;
-    optional string excelFilePath = 20;
-    optional string comments = 21;
-    optional ApproversComments approversComments = 22;
+    repeated EntityMin adminApprovers = 15;
+    optional bool isPartOfBulk = 16;
+    optional string bulkRequestId = 17;
+    repeated string requestIds = 18;
+    optional string rowNumber = 19;
+    repeated RowError rowErrors = 20;
+    optional string excelFilePath = 21;
+    optional string comments = 22;
+    optional ApproversComments approversComments = 23;
 }
 
 //UpdateKartoffelStatus
