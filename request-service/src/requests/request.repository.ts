@@ -146,13 +146,13 @@ export class RequestRepository {
           RequestStatus.IN_PROGRESS
         );
       }
-       
+
       const request: any = new RequestModel(createRequestReq);
       const groupIds: string[] = [
         request.submittedBy.directGroup,
         ...request.submittedBy.ancestors,
       ];
-      const needAdminDecision = await ApproverService.includesSpecialGroup({groupIds: groupIds})
+      const needAdminDecision = await ApproverService.includesSpecialGroup({ groupIds: groupIds })
       this.setNeedApproversDecisionsValues(request, type, needAdminDecision.includes);
       request.type = requestTypeToJSON(type);
       const createdCreateRequest = await request.save();
@@ -168,7 +168,16 @@ export class RequestRepository {
             status: requestStatusToJSON(RequestStatus.APPROVED_BY_SECURITY),
           },
         });
-      } else if (this.isRequestApprovedByCommander(request)) {
+      }
+      else if (this.isRequestApprovedByAdmin(request)) {
+        await this.updateRequest({
+          id: document.id,
+          requestProperties: {
+            status: requestStatusToJSON(RequestStatus.APPROVED_BY_ADMIN),
+          },
+        });
+      }
+      else if (this.isRequestApprovedByCommander(request)) {
         await this.updateRequest({
           id: document.id,
           requestProperties: {
@@ -248,7 +257,7 @@ export class RequestRepository {
         ? decisionFromJSON(commanderDecision)
         : commanderDecision;
 
-    return commanderDecision === Decision.APPROVED;
+    return (commanderDecision === Decision.APPROVED) || (request.needAdminDecision && this.isRequestApprovedByAdmin(request));
   }
 
   isRequestApprovedBySecurity(request: Request) {
@@ -257,7 +266,6 @@ export class RequestRepository {
       typeof securityDecision === typeof ''
         ? decisionFromJSON(securityDecision)
         : securityDecision;
-    const needSecurityDecision = request.needSecurityDecision;
 
     return securityDecision === Decision.APPROVED;
   }
@@ -272,7 +280,7 @@ export class RequestRepository {
     return superSecurityDecision === Decision.APPROVED;
   }
 
-    isRequestApprovedByAdmin(request: Request) {
+  isRequestApprovedByAdmin(request: Request) {
     let adminDecision: any = request.adminDecision?.decision;
     adminDecision =
       typeof adminDecision === typeof ''
@@ -299,14 +307,14 @@ export class RequestRepository {
         const needSecurityDecision = request.needSecurityDecision;
         const needSuperSecurityDecision = request.needSuperSecurityDecision;
         const needAdminDecision = request.needAdminDecision;
-        
+
         if (
           this.isRequestApprovedByCommander(request) &&
           (!needSecurityDecision ||
             this.isRequestApprovedBySecurity(request)) &&
           (!needSuperSecurityDecision ||
             this.isRequestApprovedBySuperSecurity(request)) &&
-          (!needAdminDecision || 
+          (!needAdminDecision ||
             this.isRequestApprovedByAdmin(request))
         ) {
           return { isRequestApproved: true };
@@ -365,7 +373,7 @@ export class RequestRepository {
             updateSetQuery = {
               adminApprovers: removeApproverFromArray(
                 removeApproverFromApproversReq.approverId,
-                request.securityApprovers
+                request.adminApprovers
               ),
             };
           }
@@ -470,18 +478,18 @@ export class RequestRepository {
       const needAdminDecision = request.needAdminDecision;
       switch (type) {
         case ApproverType.COMMANDER:
-          if (!commanderAlreadyDecided) {
+          if (!commanderAlreadyDecided && (!needAdminDecision || (!adminAlreadyDecided && needAdminDecision))) {
             updateSetQuery = {
               commanders: overrideApprovers
                 ? transferRequestToApproverReq.approvers
                 : [
-                    ...new Map(
-                      [
-                        ...request.commanders,
-                        ...transferRequestToApproverReq.approvers,
-                      ].map((item: any) => [item.id, item])
-                    ).values(),
-                  ],
+                  ...new Map(
+                    [
+                      ...request.commanders,
+                      ...transferRequestToApproverReq.approvers,
+                    ].map((item: any) => [item.id, item])
+                  ).values(),
+                ],
               'approversComments.commanderComment': commentForApprovers,
             };
           }
@@ -492,13 +500,13 @@ export class RequestRepository {
               securityApprovers: overrideApprovers
                 ? transferRequestToApproverReq.approvers
                 : [
-                    ...new Map(
-                      [
-                        ...request.securityApprovers,
-                        ...transferRequestToApproverReq.approvers,
-                      ].map((item: any) => [item.id, item])
-                    ).values(),
-                  ],
+                  ...new Map(
+                    [
+                      ...request.securityApprovers,
+                      ...transferRequestToApproverReq.approvers,
+                    ].map((item: any) => [item.id, item])
+                  ).values(),
+                ],
               'approversComments.securityComment': commentForApprovers,
             };
           }
@@ -509,13 +517,13 @@ export class RequestRepository {
               superSecurityApprovers: overrideApprovers
                 ? transferRequestToApproverReq.approvers
                 : [
-                    ...new Map(
-                      [
-                        ...request.superSecurityApprovers,
-                        ...transferRequestToApproverReq.approvers,
-                      ].map((item: any) => [item.id, item])
-                    ).values(),
-                  ],
+                  ...new Map(
+                    [
+                      ...request.superSecurityApprovers,
+                      ...transferRequestToApproverReq.approvers,
+                    ].map((item: any) => [item.id, item])
+                  ).values(),
+                ],
               'approversComments.superSecurityComment': commentForApprovers,
             };
           }
@@ -526,17 +534,32 @@ export class RequestRepository {
               adminApprovers: overrideApprovers
                 ? transferRequestToApproverReq.approvers
                 : [
-                    ...new Map(
-                      [
-                        ...request.commanders,
-                        ...transferRequestToApproverReq.approvers,
-                      ].map((item: any) => [item.id, item])
-                    ).values(),
-                  ],
+                  ...new Map(
+                    [
+                      ...request.adminApprovers,
+                      ...transferRequestToApproverReq.approvers,
+                    ].map((item: any) => [item.id, item])
+                  ).values(),
+                ],
               'approversComments.adminComment': commentForApprovers,
             };
           }
-        break;
+          else if (!commanderAlreadyDecided && (!needAdminDecision || (!adminAlreadyDecided && needAdminDecision))) {
+            updateSetQuery = {
+              commanders: overrideApprovers
+                ? transferRequestToApproverReq.approvers
+                : [
+                  ...new Map(
+                    [
+                      ...request.commanders,
+                      ...transferRequestToApproverReq.approvers,
+                    ].map((item: any) => [item.id, item])
+                  ).values(),
+                ],
+              'approversComments.commanderComment': commentForApprovers,
+            };
+          }
+          break;
         default:
           throw new Error('ApproverType is not supported!');
       }
@@ -574,6 +597,7 @@ export class RequestRepository {
       };
 
       let approverField;
+      let otherApproverUpdates = [];
       switch (approverType) {
         case PersonTypeInRequest.COMMANDER_APPROVER:
           approverField = 'commanderDecision';
@@ -583,10 +607,19 @@ export class RequestRepository {
           break;
         case PersonTypeInRequest.ADMIN_APPROVER:
           approverField = 'adminDecision';
+          let prevReq = await this.getRequestById({
+            id: updateDecisionReq.id
+          });
+          let commanderDecision = prevReq.commanderDecision?.decision;
+          commanderDecision = typeof commanderDecision === typeof "" ? decisionFromJSON(commanderDecision) : commanderDecision;
+          if(commanderDecision !== Decision.APPROVED && commanderDecision !== Decision.DENIED) {
+             otherApproverUpdates.push('commanderDecision')
+          }         
           break;
         case PersonTypeInRequest.APPROVER:
         case PersonTypeInRequest.SUPER_SECURITY_APPROVER:
           approverField = 'superSecurityDecision';
+        break
         default:
           break;
       }
@@ -595,6 +628,12 @@ export class RequestRepository {
         // Update request
         updateQuery.requestProperties[approverField] =
           updateDecisionReq.approverDecision;
+        if(otherApproverUpdates.length) {
+          otherApproverUpdates.forEach(approverField => {
+            updateQuery.requestProperties[approverField] =
+              updateDecisionReq.approverDecision;
+          })
+        }
         let updatedRequest = await this.updateRequest(updateQuery);
         let oldRequestStatus: any = updatedRequest.status;
         oldRequestStatus =
@@ -616,7 +655,6 @@ export class RequestRepository {
           const isRequestApprovedObj = await this.isRequestApproved({
             id: updateDecisionReq.id,
           });
-          // TODO: ask baraks about this if - why update to in progress when request approved?
           if (isRequestApprovedObj.isRequestApproved) {
             newRequestStatus = RequestStatus.IN_PROGRESS;
           } else if (approverType === PersonTypeInRequest.COMMANDER_APPROVER) {
@@ -681,7 +719,7 @@ export class RequestRepository {
         // Get notification type
         if (decision === Decision.APPROVED) {
           if (approverType === PersonTypeInRequest.COMMANDER_APPROVER ||
-              approverType === PersonTypeInRequest.ADMIN_APPROVER) {
+            approverType === PersonTypeInRequest.ADMIN_APPROVER) {
             approvingNotificationType = NotificationType.REQUEST_APPROVED_1;
             approvingMailType = MailType.REQUEST_APPROVED_1;
           } else if (approverType === PersonTypeInRequest.SECURITY_APPROVER) {
@@ -692,7 +730,8 @@ export class RequestRepository {
             approvingMailType = MailType.REQUEST_APPROVED_3;
           }
         } else if (decision === Decision.DENIED) {
-          if (approverType === PersonTypeInRequest.COMMANDER_APPROVER) {
+          if (approverType === PersonTypeInRequest.COMMANDER_APPROVER ||
+            approverType === PersonTypeInRequest.ADMIN_APPROVER) {
             approvingNotificationType = NotificationType.REQUEST_DECLINED_1;
             approvingMailType = MailType.REQUEST_DECLINED_1;
           } else if (approverType === PersonTypeInRequest.SECURITY_APPROVER) {
@@ -962,9 +1001,9 @@ export class RequestRepository {
       const pagination =
         from && to
           ? {
-              skip: from - 1,
-              limit: to - from + 1,
-            }
+            skip: from - 1,
+            limit: to - from + 1,
+          }
           : {};
 
       const totalCount = await RequestModel.count(query);
@@ -1110,7 +1149,7 @@ export class RequestRepository {
           typeof documentObj.type === typeof ''
             ? requestTypeFromJSON(documentObj.type)
             : documentObj.type;
-        
+
         // TODO: ask baraks about bulk requests in case of hierarchy needing admin approval
         // if bulk
         if (
@@ -1127,7 +1166,7 @@ export class RequestRepository {
             requestUpdate.status === null ||
             (requestUpdate.status !== requestStatusToJSON(RequestStatus.DONE) &&
               requestUpdate.status !==
-                requestStatusToJSON(RequestStatus.FAILED) &&
+              requestStatusToJSON(RequestStatus.FAILED) &&
               requestUpdate.status !== RequestStatus.DONE &&
               requestUpdate.status !== RequestStatus.FAILED)
           ) {
@@ -1306,118 +1345,96 @@ export class RequestRepository {
   }
 
   setNeedApproversDecisionsValues(request: any, type: RequestType, needAdminDecision = false): void {
-    // TODO: I think add here function call to liora's function to know if admin decision needed
+    request.needAdminDecision = needAdminDecision;
     switch (type) {
       case RequestType.CREATE_OG:
-        request.needAdminDecision = needAdminDecision;
         request.needSecurityDecision = false;
         request.needSuperSecurityDecision = false;
         break;
 
       case RequestType.CREATE_ROLE:
-        request.needAdminDecision = needAdminDecision;
         request.needSecurityDecision = true;
         request.needSuperSecurityDecision = false;
         break;
       case RequestType.ASSIGN_ROLE_TO_ENTITY:
-        request.needAdminDecision = needAdminDecision;
         request.needSecurityDecision = true;
         request.needSuperSecurityDecision = false;
         break;
 
       case RequestType.CREATE_ENTITY:
-        request.needAdminDecision = needAdminDecision;
         request.needSecurityDecision = false;
         request.needSuperSecurityDecision = false;
         break;
 
       case RequestType.DELETE_ENTITY:
-        request.needAdminDecision = needAdminDecision;
         request.needSecurityDecision = false;
         request.needSuperSecurityDecision = false;
         break;
 
       case RequestType.RENAME_OG:
-        request.needAdminDecision = needAdminDecision;
         request.needSecurityDecision = true;
         request.needSuperSecurityDecision = true;
         break;
 
       case RequestType.RENAME_ROLE:
-        request.needAdminDecision = needAdminDecision;
         request.needSecurityDecision = true;
         request.needSuperSecurityDecision = true;
         break;
 
       case RequestType.EDIT_ENTITY:
-        request.needAdminDecision = needAdminDecision;
         request.needSecurityDecision = false;
         request.needSuperSecurityDecision = false;
         break;
 
       case RequestType.DELETE_OG:
-        request.needAdminDecision = needAdminDecision;
         request.needSecurityDecision = false;
         request.needSuperSecurityDecision = false;
         break;
 
       case RequestType.DELETE_ROLE:
-        request.needAdminDecision = needAdminDecision;
         request.needSecurityDecision = false;
         request.needSuperSecurityDecision = false;
         break;
 
       case RequestType.DISCONNECT_ROLE:
-        request.needAdminDecision = needAdminDecision;
         request.needSecurityDecision = false;
         request.needSuperSecurityDecision = false;
         break;
       case RequestType.CHANGE_ROLE_HIERARCHY:
-        request.needAdminDecision = needAdminDecision;
         request.needSecurityDecision = true;
         request.needSuperSecurityDecision = true;
         break;
       case RequestType.CREATE_ROLE_BULK:
-        request.needAdminDecision = needAdminDecision;
         request.needSecurityDecision = true;
         request.needSuperSecurityDecision = false;
         break;
       case RequestType.CHANGE_ROLE_HIERARCHY_BULK:
-        request.needAdminDecision = needAdminDecision;
         request.needSecurityDecision = true;
         request.needSuperSecurityDecision = true;
         break;
-
       case RequestType.ADD_APPROVER:
         const approverType = approverTypeFromJSON(
           request.additionalParams.type
         );
         if (approverType === ApproverType.COMMANDER) {
-        request.needAdminDecision = needAdminDecision;
           request.needSecurityDecision = false;
           request.needSuperSecurityDecision = false;
         } else if (approverType === ApproverType.ADMIN) {
-        request.needAdminDecision = needAdminDecision;
           request.needSecurityDecision = false;
           request.needSuperSecurityDecision = false;
         } else if (approverType === ApproverType.BULK) {
-        request.needAdminDecision = needAdminDecision;
           request.needSecurityDecision = false;
           request.needSuperSecurityDecision = false;
         } else if (approverType === ApproverType.SECURITY) {
-        request.needAdminDecision = needAdminDecision;
           request.needSecurityDecision = true;
           request.needSuperSecurityDecision = false;
         } else if (approverType === ApproverType.SUPER_SECURITY) {
-          request.needAdminDecision = needAdminDecision;
           request.needSecurityDecision = false;
           request.needSuperSecurityDecision = true;
         } else if (approverType === ApproverType.SPECIAL_GROUP) {
-          request.needAdminDecision = needAdminDecision;
           request.needSecurityDecision = false;
           request.needSuperSecurityDecision = false;
         } else {
-          request.needAdminDecision = needAdminDecision;
           request.needSecurityDecision = true;
           request.needSuperSecurityDecision = false;
         }
@@ -1616,7 +1633,7 @@ export class RequestRepository {
                 case: { $eq: ['$status', 'APPROVED_BY_SECURITY'] },
                 then: 2,
               },
-               {
+              {
                 case: { $eq: ['$status', 'APPROVED_BY_ADMIN'] },
                 then: 3,
               },
