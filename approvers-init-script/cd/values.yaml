@@ -17,7 +17,8 @@ config:
     name: momentum-configmap
 volume:
   - name: ais-utils
-    mountPath: /excelFiles
+    mounts:
+      - mountPath: /excelFiles
     secretName: azure-secret
     shareName: momentum/ais-utils
     type: azurefile
