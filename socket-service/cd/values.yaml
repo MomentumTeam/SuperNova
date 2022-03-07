@@ -1,4 +1,4 @@
-name: "sockets-service"
+name: "socket-service"
 # If you want to overide the full name you can include the 'fullnameOverride' value
 #fullname:
 replicaCount: 1
@@ -23,5 +23,5 @@ ingress:
   - host: momentum.branch-yesodot.org
     paths:
       - path: /socket
-        service: sockets-service
+        service: socket-service
         port: 8080
