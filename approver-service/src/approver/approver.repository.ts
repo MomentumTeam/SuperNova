@@ -527,6 +527,20 @@ export class ApproverRepository {
       ) {
         approverTypesToSearch.push(approverTypeToJSON(ApproverType.ADMIN));
       }
+      if (
+        approverTypeFromJSON(searchByDisplayNameReq.type) ===
+        ApproverType.SECURITY_ADMIN
+      ) {
+        approverTypesToSearch.push(approverTypeToJSON(ApproverType.SECURITY));
+      }
+      if (
+        approverTypeFromJSON(searchByDisplayNameReq.type) ===
+        ApproverType.SECURITY
+      ) {
+        approverTypesToSearch.push(
+          approverTypeToJSON(ApproverType.SECURITY_ADMIN)
+        );
+      }
 
       const mongoApprovers: any = await ApproverModel.find(
         {

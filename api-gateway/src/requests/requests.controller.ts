@@ -297,6 +297,7 @@ export default class RequestsController {
         approversComments.superSecurityComment = req.body.commentForApprovers;
         break;
       case ApproverType.SECURITY:
+      case ApproverType.SECURITY_ADMIN:
         approversComments.securityComment = req.body.commentForApprovers;
         break;
       case ApproverType.COMMANDER:

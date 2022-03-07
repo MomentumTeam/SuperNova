@@ -59,7 +59,7 @@ export const config = {
     groupsWithSecurityAdmin: env
       .get('GATEWAY_GROUPS_WITH_SECURITY_ADMIN')
       .default(
-        '619e31f5f235dc001846e872,61ee8c7af302e80019bba6e4,619e31fef235dc001846f10b,61bb4647e4de0300121de442'
+        '61ee8c7af302e80019bba6e4,619e31fef235dc001846f10b,61bb4647e4de0300121de442,619e31f5f235dc001846e872'
       )
       .asArray(),
   },

@@ -75,7 +75,6 @@ import {
 } from '../services/teaHelper';
 import { logger } from '../logger';
 import { MailType } from '../interfaces/protoc/proto/mailService';
-import * as config from '../config';
 import { isNaN } from 'lodash';
 
 export class RequestRepository {
@@ -156,7 +155,7 @@ export class RequestRepository {
         ];
       }
 
-      const containsSpecialGroup = config.groupsWithSecurityAdmin.some(
+      const containsSpecialGroup = C.groupsWithSecurityAdmin.some(
         (groupId: any) => {
           return submitterGroups.includes(groupId);
         }
@@ -362,6 +361,7 @@ export class RequestRepository {
           }
           break;
         case ApproverType.SECURITY:
+        case ApproverType.SECURITY_ADMIN:
           if (!securityAlreadyDecided && needSecurityDecision) {
             updateSetQuery = {
               securityApprovers: removeApproverFromArray(
@@ -462,6 +462,7 @@ export class RequestRepository {
           }
           break;
         case ApproverType.SECURITY:
+        case ApproverType.SECURITY_ADMIN:
           if (!securityAlreadyDecided && needSecurityDecision) {
             updateSetQuery = {
               securityApprovers: overrideApprovers
@@ -1344,7 +1345,7 @@ export class RequestRepository {
         } else if (approverType === ApproverType.SPECIAL_GROUP) {
           request.needSecurityDecision = false;
           request.needSuperSecurityDecision = false;
-        } else {
+        } else {   //in case of SECUIRTY_ADMIN
           request.needSecurityDecision = true;
           request.needSuperSecurityDecision = false;
         }
@@ -1506,7 +1507,8 @@ export class RequestRepository {
       if (
         approvementStatus === ApprovementStatus.BY_USER_TYPE &&
         (userType.includes(ApproverType.ADMIN) ||
-          userType.includes(ApproverType.SECURITY_ADMIN))
+          userType.includes(ApproverType.SECURITY_ADMIN)) &&
+        personTypeInRequest === PersonTypeInRequest.GET_ALL
       ) {
         const ancestorsQuery = getAncestorsQuery(
           getRequestsByPersonReq.adminGroupsInCharge,
