@@ -377,6 +377,14 @@ export class RequestRepository {
               ),
             };
           }
+          else if (!commanderAlreadyDecided && !needAdminDecision) {
+            updateSetQuery = {
+              commanderApprovers: removeApproverFromArray(
+                removeApproverFromApproversReq.approverId,
+                request.commanderApprovers
+              ),
+            };
+          }
           break;
         case ApproverType.COMMANDER:
           if (!commanderAlreadyDecided) {
