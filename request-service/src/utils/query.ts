@@ -108,6 +108,7 @@ export function getIdQuery(
           { 'commanders.id': ObjectId(id) },
           { 'securityApprovers.id': ObjectId(id) },
           { 'superSecurityApprovers.id': ObjectId(id) },
+          { 'adminApprovers.id': ObjectId(id) },
         ],
       };
       break;
@@ -281,6 +282,7 @@ export function getApprovementQuery(
 ) {
   switch (approvementStatus) {
     case ApprovementStatus.COMMANDER_APPROVE:
+    case ApprovementStatus.ADMIN_APPROVE:
       return {
         $or: [
           {
@@ -319,15 +321,13 @@ export function getApprovementQuery(
           {
             needSuperSecurityDecision: true,
             needSecurityDecision: false,
+            needAdminDecision: false,
             'commanderDecision.decision': decisionToJSON(Decision.APPROVED),
           },
-        ],
-      };
-    case ApprovementStatus.ADMIN_APPROVE:
-      return {
-        $and: [
-          { needAdminDecision: true },
           {
+            needSuperSecurityDecision: true,
+            needSecurityDecision: false,
+            needAdminDecision: true,
             'adminDecision.decision': decisionToJSON(Decision.APPROVED),
           },
         ],

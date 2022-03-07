@@ -478,7 +478,7 @@ export class RequestRepository {
       const needAdminDecision = request.needAdminDecision;
       switch (type) {
         case ApproverType.COMMANDER:
-          if (!commanderAlreadyDecided && (!needAdminDecision || (!adminAlreadyDecided && needAdminDecision))) {
+          if (!commanderAlreadyDecided) {
             updateSetQuery = {
               commanders: overrideApprovers
                 ? transferRequestToApproverReq.approvers
@@ -544,7 +544,7 @@ export class RequestRepository {
               'approversComments.adminComment': commentForApprovers,
             };
           }
-          else if (!commanderAlreadyDecided && (!needAdminDecision || (!adminAlreadyDecided && needAdminDecision))) {
+          else if (!commanderAlreadyDecided && !needAdminDecision) {
             updateSetQuery = {
               commanders: overrideApprovers
                 ? transferRequestToApproverReq.approvers
