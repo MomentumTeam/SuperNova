@@ -8,7 +8,7 @@ repositories:
   password: {{ requiredEnv "HARBOR_PASSWORD" }}
   
 releases:
-- name: authentication-service
+- name: socket-service
   namespace: momentum
   chart: yesodot/common
   version: {{ requiredEnv "COMMON_VERSION" | default "0.5.1" }}
