@@ -15,7 +15,8 @@ service:
     
 volume: 
   - name: logs
-    mountPath: /logs
+    mounts:
+      - mountPath: /logs
     secretName: azure-secret
     shareName: momentum/logs
     type: azurefile
@@ -31,3 +32,22 @@ ingress:
       - path: /auth
         service: authentication-service
         port: 8080
+
+livenessProbe:
+  httpGet:
+    path: /isAlive
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 3
+readinessProbe:
+  httpGet:
+    path: /isAlive
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 3
