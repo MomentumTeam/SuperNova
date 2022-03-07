@@ -60,6 +60,7 @@ export class MongoConn {
       {
         useCreateIndex: true,
         useFindAndModify: false,
+        useUnifiedTopology: true,
       },
       async (err: any) => {
         return { success: false, error: err };
