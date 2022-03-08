@@ -12,6 +12,7 @@ service:
   ports:
   - name: websocket
     port: 8080
+    targetPort: 2001
 
 config:
   configmaps:
@@ -23,4 +24,4 @@ ingress:
     paths:
       - path: /socket.io/?(.*)
         service: socket-service
-        port: 2001
+        port: 8080
