@@ -28,7 +28,7 @@ export class Server {
     this.server = http.createServer(this.app);
     this.io = new socketIoServer(this.server, {
       cors: {
-        origin: config.cors.ui,
+        origin: '*',
       },
     });
 
