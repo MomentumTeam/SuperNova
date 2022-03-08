@@ -10,17 +10,17 @@ images:
   tag: "latest"
 service:
   ports:
-  - name: http
+  - name: wss
     port: "8080"
 
 config:
   configmaps:
       name: momentum-configmap
-ingress:
-  enabled: true
-  hosts:
-  - host: momentum.branch-yesodot.org
-    paths:
-      - path: /socket
-        service: socket-service
-        port: 8080
+# ingress:
+#   enabled: true
+#   hosts:
+#   - host: momentum.branch-yesodot.org
+#     paths:
+#       - path: /socket
+#         service: socket-service
+#         port: 8080
