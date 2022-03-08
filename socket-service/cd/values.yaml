@@ -10,8 +10,8 @@ images:
   tag: "latest"
 service:
   ports:
-  - name: websocket
-    port: 2001
+  - name: http
+    port: "8080"
 
 config:
   configmaps:
@@ -23,4 +23,4 @@ ingress:
     paths:
       - path: /socket.io/?(.*)
         service: socket-service
-        port: 2001
+        port: 8080
