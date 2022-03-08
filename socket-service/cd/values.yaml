@@ -10,8 +10,8 @@ images:
   tag: "latest"
 service:
   ports:
-  - name: http
-    port: "8080"
+  - name: websocket
+    port: "2001"
 
 
 config:
@@ -22,6 +22,6 @@ ingress:
   hosts:
   - host: momentum.branch-yesodot.org
     paths:
-      - path: /socket
+      - path: /socket.io
         service: socket-service
-        port: 8080
+        port: 2001
