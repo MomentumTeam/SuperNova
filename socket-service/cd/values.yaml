@@ -10,8 +10,9 @@ images:
   tag: "latest"
 service:
   ports:
-  - name: http
-    port: "2001"
+  - name: websocket
+    port: 8080
+    targetPort: 2001
 
 
 config:
