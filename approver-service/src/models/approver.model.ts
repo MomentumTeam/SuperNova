@@ -19,6 +19,8 @@ export const ApproverSchema = new Schema(
   { strict: false }
 );
 ApproverSchema.index({ displayName: 'text' });
+
+//allow only one document with a certain specialGroupId
 ApproverSchema.index(
   { specialGroupId: 1 },
   {
@@ -27,11 +29,14 @@ ApproverSchema.index(
   }
 );
 
-//TODO: user-friendly error when the unique key already exists
+//allow only one document with a certain specialGroupId,entityId,type
+
 ApproverSchema.index(
   { entityId: 1, type: 1, specialGroupId: 1 },
   { unique: true }
 );
+
+//TODO: user-friendly error when the unique key already exists
 
 export const ApproverModel = mongoose.model(
   'Approver',

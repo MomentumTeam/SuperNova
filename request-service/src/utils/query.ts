@@ -319,9 +319,9 @@ export function getApprovementQuery(
         ],
       };
     case ApprovementStatus.SECURITY_APPROVE:
-      const hasSecurityAdmin = userType.includes(ApproverType.SECURITY)
-        ? false
-        : true;
+      const hasSecurityAdmin = userType.includes(ApproverType.SECURITY_ADMIN)
+        ? true
+        : false;
       return {
         $and: [
           { hasSecurityAdmin: hasSecurityAdmin },

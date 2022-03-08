@@ -148,20 +148,23 @@ export class RequestRepository {
 
       let submitterGroups: any[] = [createRequestReq.submittedBy.directGroup];
 
-      if (createRequestReq.submittedBy.ancestors) {
+      if (
+        createRequestReq.submittedBy.ancestors &&
+        createRequestReq.submittedBy.ancestors.length > 0
+      ) {
         submitterGroups = [
           ...submitterGroups,
           ...createRequestReq.submittedBy.ancestors,
         ];
       }
 
-      const containsSpecialGroup = C.groupsWithSecurityAdmin.some(
+      const containsGroupWithSecurityAdmin = C.groupsWithSecurityAdmin.some(
         (groupId: any) => {
           return submitterGroups.includes(groupId);
         }
       );
 
-      createRequestReq.hasSecurityAdmin = containsSpecialGroup;
+      createRequestReq.hasSecurityAdmin = containsGroupWithSecurityAdmin;
 
       const request: any = new RequestModel(createRequestReq);
       this.setNeedApproversDecisionsValues(request, type);
@@ -1345,7 +1348,8 @@ export class RequestRepository {
         } else if (approverType === ApproverType.SPECIAL_GROUP) {
           request.needSecurityDecision = false;
           request.needSuperSecurityDecision = false;
-        } else {   //in case of SECUIRTY_ADMIN
+        } else {
+          //in case of SECUIRTY_ADMIN
           request.needSecurityDecision = true;
           request.needSuperSecurityDecision = false;
         }
