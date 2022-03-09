@@ -47,7 +47,10 @@ export class MongoStream {
           change.fullDocument.id = change?.fullDocument._id.toString();
           destUserId = change.fullDocument.ownerId.toString();
         }
-  
+        
+        logger.info(
+          `got a change in notification collection, operation type: ${change.operationType}, user: ${destUserId}`
+        );
         switch (change.operationType) {
           case StreamEvents.insert:
             destUserId && this.io.to(destUserId).emit(EventName.newNotification, change.fullDocument);
