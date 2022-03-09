@@ -71,11 +71,14 @@ export class MongoStream {
       .watch(undefined, { fullDocument: "updateLookup" });
 
     requestCollection.on("change", async(change) => {
+      logger.info(
+        `got a change in request collection, operation type: ${change.operationType}`
+      );
       try {
-         const request = change?.fullDocument;
-         const submittedBy = request?.submittedBy;
-         const submittedByGroups = [...submittedBy.ancestors, submittedBy.directGroup];
-         if (request?._id) request.id = request?._id.toString();
+        const request = change?.fullDocument;
+        const submittedBy = request?.submittedBy;
+        const submittedByGroups = [...submittedBy.ancestors, submittedBy.directGroup];
+        if (request?._id) request.id = request?._id.toString();
 
          // Get approvers
          let adminApprovers: any = [];
