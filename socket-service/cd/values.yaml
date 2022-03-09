@@ -21,6 +21,6 @@ ingress:
   hosts:
   - host: momentum.branch-yesodot.org
     paths:
-      - path: /socket-io
+      - path: /socket.io
         service: socket-service
         port: 8080
