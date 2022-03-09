@@ -31,44 +31,6 @@ export const approveUserRequest = async (
         const approverType = parseFromApproverTypeToPersonInRequest(type);
 
         switch (approverType) {
-          case PersonTypeInRequest.APPROVER: //ADMIN
-            if (requestType === RequestType.ADD_APPROVER) {
-              const approverToAddType =
-                typeof request.additionalParams.type === typeof ''
-                  ? approverTypeFromJSON(request.additionalParams.type)
-                  : request.additionalParams.type;
-              if (
-                (approverToAddType === ApproverType.ADMIN &&
-                  !config.ui.CREATE_ADMIN_APPROVERS.includes(req.user.id)) ||
-                (approverToAddType === ApproverType.BULK &&
-                  !config.ui.CREATE_BULK_APPROVERS.includes(req.user.id))
-              ) {
-                break;
-              }
-            }
-
-            if (requestType === RequestType.CREATE_ENTITY) {
-              if (
-                //המאשרים היחידים של בקשה ליצירת חייל הם הקרטופלים
-                request.kartoffelParams?.entityType ===
-                  config.ui.KARTOFFEL_SOLDIER &&
-                !config.ui.CREATE_SOLDIER_APPROVERS.includes(req.user.id)
-              ) {
-                break;
-              }
-            }
-
-            request.commanders = request.commanders
-              ? [...request.commanders, entityUser]
-              : [entityUser];
-            request.commanderDecision = decision;
-
-            // remove duplicate commanders
-            request.commanders = request.commanders.filter(
-              (v: any, i: any, a: any) =>
-                a.findIndex((t: any) => t.id === v.id) === i
-            );
-            break;
           case PersonTypeInRequest.SECURITY_APPROVER:
             request.securityApprovers = request.securityApprovers
               ? [...request.securityApprovers, entityUser]
@@ -92,6 +54,7 @@ export const approveUserRequest = async (
               );
 
             break;
+          case PersonTypeInRequest.ADMIN_APPROVER:
           case PersonTypeInRequest.COMMANDER_APPROVER:
             if (requestType === RequestType.ADD_APPROVER) {
               const approverToAddType =
@@ -138,16 +101,32 @@ export const approveUserRequest = async (
             }
 
             if (valid) {
-              request.commanders = request.commanders
-                ? [...request.commanders, entityUser]
-                : [entityUser];
-              request.commanderDecision = decision;
+              if (
+                request.needAdminDecision &&
+                approverType === PersonTypeInRequest.ADMIN_APPROVER
+              ) {
+                if (request.needAdminDecision) {
+                  request.adminApprovers = request.adminApprovers
+                    ? [...request.adminApprovers, entityUser]
+                    : [entityUser];
+                  request.adminDecision = decision;
+                  request.adminApprovers = request.adminApprovers.filter(
+                    (v: any, i: any, a: any) =>
+                      a.findIndex((t: any) => t.id === v.id) === i
+                  );
+                }
+              } else {
+                request.commanders = request.commanders
+                  ? [...request.commanders, entityUser]
+                  : [entityUser];
+                request.commanderDecision = decision;
 
-              // remove duplicate commanders
-              request.commanders = request.commanders.filter(
-                (v: any, i: any, a: any) =>
-                  a.findIndex((t: any) => t.id === v.id) === i
-              );
+                // remove duplicate commanders
+                request.commanders = request.commanders.filter(
+                  (v: any, i: any, a: any) =>
+                    a.findIndex((t: any) => t.id === v.id) === i
+                );
+              }
             }
             break;
 
@@ -171,7 +150,7 @@ export const parseFromApproverTypeToPersonInRequest = (type: string) => {
     case ApproverType.COMMANDER:
       return PersonTypeInRequest.COMMANDER_APPROVER;
     case ApproverType.ADMIN:
-      return PersonTypeInRequest.APPROVER;
+      return PersonTypeInRequest.ADMIN_APPROVER;
     default:
       break;
   }

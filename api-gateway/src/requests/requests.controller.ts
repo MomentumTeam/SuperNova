@@ -282,7 +282,7 @@ export default class RequestsController {
         approversComments.commanderComment = req.body.commentForApprovers;
         break;
       case ApproverType.ADMIN:
-        approversComments.commanderComment = req.body.commentForApprovers;
+        approversComments.adminComment = req.body.commentForApprovers;
         break;
       default:
         return res.status(500).send('Approver type not supported!');

@@ -148,9 +148,13 @@ export class RequestRepository {
       }
 
       const request: any = new RequestModel(createRequestReq);
+      let ancestors = [];
+      if(request && request.submittedBy?.ancestors?.length) {
+         ancestors = request.submittedBy.ancestors;
+      }
       const groupIds: string[] = [
-        request.submittedBy.directGroup,
-        ...request.submittedBy.ancestors,
+        request?.submittedBy?.directGroup,
+        ...ancestors
       ];
       const needAdminDecision = await ApproverService.includesSpecialGroup({ groupIds: groupIds })
       this.setNeedApproversDecisionsValues(request, type, needAdminDecision.includes);
