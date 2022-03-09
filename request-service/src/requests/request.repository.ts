@@ -47,6 +47,8 @@ import {
   AreAllSubRequestsFinishedRes,
   SendSubmissionMailReq,
   RemoveApproverFromApproversReq,
+  HasSecurityAdminReq,
+  HasSecurityAdminRes,
 } from '../interfaces/protoc/proto/requestService';
 import { createNotifications } from '../services/notificationHelper';
 import { sendMail } from '../services/mailHelper';
@@ -76,6 +78,7 @@ import {
 import { logger } from '../logger';
 import { MailType } from '../interfaces/protoc/proto/mailService';
 import { isNaN } from 'lodash';
+import { HandleCall } from '@grpc/grpc-js/build/src/server-call';
 
 export class RequestRepository {
   async createRequest(
@@ -1751,6 +1754,61 @@ export class RequestRepository {
         throw new Error(`No bulk request with id=${syncBulkRequestReq.id}`);
       }
     } catch (error) {
+      throw error;
+    }
+  }
+
+  async hasSecurityAdmin(
+    hasSecurityAdminReq: HasSecurityAdminReq
+  ): Promise<HasSecurityAdminRes> {
+    try {
+      let hasSecurityAdmin = false;
+
+      const reqType =
+        typeof hasSecurityAdminReq.requestType === typeof ''
+          ? requestTypeFromJSON(hasSecurityAdminReq.requestType)
+          : hasSecurityAdminReq.requestType;
+
+      const approverTypeToAdd =
+        typeof hasSecurityAdminReq.approverTypeToAdd === typeof ''
+          ? approverTypeFromJSON(hasSecurityAdminReq.approverTypeToAdd)
+          : hasSecurityAdminReq.approverTypeToAdd;
+
+      const containsGroupWithSecurityAdmin = C.groupsWithSecurityAdmin.some(
+        (groupId: any) => {
+          return hasSecurityAdminReq.groupsIds.includes(groupId);
+        }
+      );
+
+      switch (reqType) {
+        case RequestType.CREATE_ROLE: // 1
+        case RequestType.CREATE_ROLE_BULK: // 1.1
+        case RequestType.CHANGE_ROLE_HIERARCHY_BULK: // 2.1
+          hasSecurityAdmin = containsGroupWithSecurityAdmin;
+          break;
+        case RequestType.CHANGE_ROLE_HIERARCHY: // 2
+        case RequestType.ASSIGN_ROLE_TO_ENTITY: // 3, 4
+        case RequestType.CREATE_ENTITY: // 4.1
+        case RequestType.CREATE_OG: // 5
+        case RequestType.RENAME_OG: // 7
+        case RequestType.RENAME_ROLE: // 8
+        case RequestType.EDIT_ENTITY: // 9
+          hasSecurityAdmin = false;
+          break;
+        case RequestType.ADD_APPROVER: // 6
+          if (approverTypeToAdd === ApproverType.SECURITY) {
+            hasSecurityAdmin = containsGroupWithSecurityAdmin;
+          }
+          break;
+        default:
+          break;
+      }
+      return { hasSecurityAdmin };
+    } catch (error: any) {
+      logger.error('hasSecurityAdmin ERROR', {
+        hasSecurityAdminReq,
+        error: { message: error.message },
+      });
       throw error;
     }
   }

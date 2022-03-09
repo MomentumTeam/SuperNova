@@ -1922,6 +1922,19 @@ export interface Request {
   hasSecurityAdmin: boolean;
 }
 
+export interface HasSecurityAdminReq {
+  requestType: RequestType;
+  groupsIds: string[];
+  /** במקרה שסוג הבקשה היא ADD_APPROVER */
+  approverTypeToAdd?: ApproverType | undefined;
+  /** למקרה עתידי שבו יהיה צורך להפריד בין בקשות : "מעבר תפקיד" ו"חיבור משתמש חדש" */
+  needDisconnect?: boolean | undefined;
+}
+
+export interface HasSecurityAdminRes {
+  hasSecurityAdmin: boolean;
+}
+
 const baseCreateRoleReq: object = {};
 
 export const CreateRoleReq = {
@@ -28773,6 +28786,201 @@ export const Request = {
   },
 };
 
+const baseHasSecurityAdminReq: object = { requestType: 0, groupsIds: "" };
+
+export const HasSecurityAdminReq = {
+  encode(
+    message: HasSecurityAdminReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.requestType !== 0) {
+      writer.uint32(8).int32(message.requestType);
+    }
+    for (const v of message.groupsIds) {
+      writer.uint32(18).string(v!);
+    }
+    if (message.approverTypeToAdd !== undefined) {
+      writer.uint32(24).int32(message.approverTypeToAdd);
+    }
+    if (message.needDisconnect !== undefined) {
+      writer.uint32(32).bool(message.needDisconnect);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): HasSecurityAdminReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseHasSecurityAdminReq } as HasSecurityAdminReq;
+    message.groupsIds = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.requestType = reader.int32() as any;
+          break;
+        case 2:
+          message.groupsIds.push(reader.string());
+          break;
+        case 3:
+          message.approverTypeToAdd = reader.int32() as any;
+          break;
+        case 4:
+          message.needDisconnect = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): HasSecurityAdminReq {
+    const message = { ...baseHasSecurityAdminReq } as HasSecurityAdminReq;
+    message.groupsIds = [];
+    if (object.requestType !== undefined && object.requestType !== null) {
+      message.requestType = requestTypeFromJSON(object.requestType);
+    } else {
+      message.requestType = 0;
+    }
+    if (object.groupsIds !== undefined && object.groupsIds !== null) {
+      for (const e of object.groupsIds) {
+        message.groupsIds.push(String(e));
+      }
+    }
+    if (
+      object.approverTypeToAdd !== undefined &&
+      object.approverTypeToAdd !== null
+    ) {
+      message.approverTypeToAdd = approverTypeFromJSON(
+        object.approverTypeToAdd
+      );
+    } else {
+      message.approverTypeToAdd = undefined;
+    }
+    if (object.needDisconnect !== undefined && object.needDisconnect !== null) {
+      message.needDisconnect = Boolean(object.needDisconnect);
+    } else {
+      message.needDisconnect = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: HasSecurityAdminReq): unknown {
+    const obj: any = {};
+    message.requestType !== undefined &&
+      (obj.requestType = requestTypeToJSON(message.requestType));
+    if (message.groupsIds) {
+      obj.groupsIds = message.groupsIds.map((e) => e);
+    } else {
+      obj.groupsIds = [];
+    }
+    message.approverTypeToAdd !== undefined &&
+      (obj.approverTypeToAdd =
+        message.approverTypeToAdd !== undefined
+          ? approverTypeToJSON(message.approverTypeToAdd)
+          : undefined);
+    message.needDisconnect !== undefined &&
+      (obj.needDisconnect = message.needDisconnect);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<HasSecurityAdminReq>): HasSecurityAdminReq {
+    const message = { ...baseHasSecurityAdminReq } as HasSecurityAdminReq;
+    message.groupsIds = [];
+    if (object.requestType !== undefined && object.requestType !== null) {
+      message.requestType = object.requestType;
+    } else {
+      message.requestType = 0;
+    }
+    if (object.groupsIds !== undefined && object.groupsIds !== null) {
+      for (const e of object.groupsIds) {
+        message.groupsIds.push(e);
+      }
+    }
+    if (
+      object.approverTypeToAdd !== undefined &&
+      object.approverTypeToAdd !== null
+    ) {
+      message.approverTypeToAdd = object.approverTypeToAdd;
+    } else {
+      message.approverTypeToAdd = undefined;
+    }
+    if (object.needDisconnect !== undefined && object.needDisconnect !== null) {
+      message.needDisconnect = object.needDisconnect;
+    } else {
+      message.needDisconnect = undefined;
+    }
+    return message;
+  },
+};
+
+const baseHasSecurityAdminRes: object = { hasSecurityAdmin: false };
+
+export const HasSecurityAdminRes = {
+  encode(
+    message: HasSecurityAdminRes,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.hasSecurityAdmin === true) {
+      writer.uint32(8).bool(message.hasSecurityAdmin);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): HasSecurityAdminRes {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseHasSecurityAdminRes } as HasSecurityAdminRes;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.hasSecurityAdmin = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): HasSecurityAdminRes {
+    const message = { ...baseHasSecurityAdminRes } as HasSecurityAdminRes;
+    if (
+      object.hasSecurityAdmin !== undefined &&
+      object.hasSecurityAdmin !== null
+    ) {
+      message.hasSecurityAdmin = Boolean(object.hasSecurityAdmin);
+    } else {
+      message.hasSecurityAdmin = false;
+    }
+    return message;
+  },
+
+  toJSON(message: HasSecurityAdminRes): unknown {
+    const obj: any = {};
+    message.hasSecurityAdmin !== undefined &&
+      (obj.hasSecurityAdmin = message.hasSecurityAdmin);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<HasSecurityAdminRes>): HasSecurityAdminRes {
+    const message = { ...baseHasSecurityAdminRes } as HasSecurityAdminRes;
+    if (
+      object.hasSecurityAdmin !== undefined &&
+      object.hasSecurityAdmin !== null
+    ) {
+      message.hasSecurityAdmin = object.hasSecurityAdmin;
+    } else {
+      message.hasSecurityAdmin = false;
+    }
+    return message;
+  },
+};
+
 export interface RequestService {
   CreateRoleRequest(request: CreateRoleReq): Promise<CreateRoleRes>;
   CreateOGRequest(request: CreateOGReq): Promise<CreateOGRes>;
@@ -28842,6 +29050,7 @@ export interface RequestService {
     request: RemoveApproverFromApproversReq
   ): Promise<Request>;
   SendSubmissionMail(request: SendSubmissionMailReq): Promise<Request>;
+  HasSecurityAdmin(request: HasSecurityAdminReq): Promise<HasSecurityAdminRes>;
 }
 
 export class RequestServiceClientImpl implements RequestService {
@@ -28896,6 +29105,7 @@ export class RequestServiceClientImpl implements RequestService {
     this.RemoveApproverFromApprovers =
       this.RemoveApproverFromApprovers.bind(this);
     this.SendSubmissionMail = this.SendSubmissionMail.bind(this);
+    this.HasSecurityAdmin = this.HasSecurityAdmin.bind(this);
   }
   CreateRoleRequest(request: CreateRoleReq): Promise<CreateRoleRes> {
     const data = CreateRoleReq.encode(request).finish();
@@ -29349,6 +29559,18 @@ export class RequestServiceClientImpl implements RequestService {
       data
     );
     return promise.then((data) => Request.decode(new _m0.Reader(data)));
+  }
+
+  HasSecurityAdmin(request: HasSecurityAdminReq): Promise<HasSecurityAdminRes> {
+    const data = HasSecurityAdminReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "HasSecurityAdmin",
+      data
+    );
+    return promise.then((data) =>
+      HasSecurityAdminRes.decode(new _m0.Reader(data))
+    );
   }
 }
 

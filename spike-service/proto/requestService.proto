@@ -49,6 +49,9 @@ service RequestService {
     rpc RemoveApproverFromApprovers(RemoveApproverFromApproversReq) returns (Request){}
 
     rpc SendSubmissionMail(SendSubmissionMailReq) returns (Request){}
+
+    rpc HasSecurityAdmin(HasSecurityAdminReq) returns (HasSecurityAdminRes){}
+
 }
 
 // ---------------------------------------------LEGO Requests------------------------------------------------------------
@@ -1431,6 +1434,19 @@ message Request{
     bool needSuperSecurityDecision = 29;
     bool hasSecurityAdmin = 30;
 
+}
+
+
+message HasSecurityAdminReq{
+    RequestType requestType = 1;
+    repeated string groupsIds = 2;
+    optional ApproverType approverTypeToAdd = 3;   //במקרה שסוג הבקשה היא ADD_APPROVER
+    optional bool needDisconnect = 4;  //למקרה עתידי שבו יהיה צורך להפריד בין בקשות : "מעבר תפקיד" ו"חיבור משתמש חדש"
+
+}
+
+message HasSecurityAdminRes{
+    bool hasSecurityAdmin = 1;
 }
 
 
