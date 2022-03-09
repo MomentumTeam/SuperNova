@@ -73,7 +73,7 @@ export class MongoStream {
     requestCollection.on("change", async(change) => {
       try {
         const request = change?.fullDocument;
-        logger.info(`got a change in request collection, operation type: ${change.operationType}, request: ${JSON.parse(request as any)}`);
+        logger.info(`got a change in request collection, operation type: ${change.operationType}, request: ${JSON.stringify(request as any)}`);
         const submittedBy = request?.submittedBy;
         const submittedByGroups = [...submittedBy.ancestors, submittedBy.directGroup];
         if (request?._id) request.id = request?._id.toString();
