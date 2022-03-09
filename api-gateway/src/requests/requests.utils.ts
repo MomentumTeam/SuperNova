@@ -6,10 +6,12 @@ import {
   Decision,
   EntityMin,
   PersonTypeInRequest,
+  personTypeInRequestFromJSON,
   RequestType,
   requestTypeFromJSON,
 } from '../interfaces/protoc/proto/requestService';
 import { config } from '../config';
+import { logger } from '../utils/logger/logger';
 
 export const approveUserRequest = async (
   req: any,
@@ -101,10 +103,27 @@ export const approveUserRequest = async (
             }
 
             if (valid) {
+              
+              let ancestors = [];
+              if(request && request.submittedBy?.ancestors?.length) {
+                ancestors = request.submittedBy.ancestors;
+              }
+              const groupIds: string[] = [
+                request?.submittedBy?.directGroup,
+                ...ancestors
+              ];
+              
+              const needAdminDecision = await ApproverService.includesSpecialGroup({ groupIds: groupIds })
+              logger.info(`THIS IS TEST LOGS`, {
+                needAdminDecision: needAdminDecision, approverType: approverType, PersonTypeInRequest: PersonTypeInRequest.ADMIN_APPROVER, comparison: approverType === PersonTypeInRequest.ADMIN_APPROVER
+              });
               if (
-                request.needAdminDecision &&
+                needAdminDecision &&
                 approverType === PersonTypeInRequest.ADMIN_APPROVER
               ) {
+                logger.info(`THIS IS TEST LOGS`, {
+                  logs: "I AM HEREEEEEEEEEE"
+                });
                   request.adminApprovers = request.adminApprovers
                     ? [...request.adminApprovers, entityUser]
                     : [entityUser];

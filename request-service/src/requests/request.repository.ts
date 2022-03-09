@@ -1162,7 +1162,6 @@ export class RequestRepository {
             ? requestTypeFromJSON(documentObj.type)
             : documentObj.type;
 
-        // TODO: ask baraks about bulk requests in case of hierarchy needing admin approval
         // if bulk
         if (
           (requestType === RequestType.CREATE_ROLE_BULK ||
@@ -1170,7 +1169,7 @@ export class RequestRepository {
           (requestUpdate.commanderDecision ||
             requestUpdate.securityDecision ||
             requestUpdate.superSecurityDecision ||
-            requestUpdate.admin ||
+            requestUpdate.adminDecision ||
             requestUpdate.status)
         ) {
           if (

@@ -656,19 +656,19 @@ export class ApproverRepository {
           typeof type === typeof '' ? approverTypeFromJSON(type) : type
         );
         if (
-          types.includes(ApproverType.COMMANDER)
-        ) {
-          currentUpdateRequest.approverType =
-            PersonTypeInRequest.COMMANDER_APPROVER;
-          updatedRequest = await RequestService.updateApproverDecision(
-            currentUpdateRequest
-          );
-        }
-        if (
           types.includes(ApproverType.ADMIN)
         ) {
           currentUpdateRequest.approverType =
             PersonTypeInRequest.ADMIN_APPROVER;
+          updatedRequest = await RequestService.updateApproverDecision(
+            currentUpdateRequest
+          );
+        }
+        else if (
+          types.includes(ApproverType.COMMANDER)
+        ) {
+          currentUpdateRequest.approverType =
+            PersonTypeInRequest.COMMANDER_APPROVER;
           updatedRequest = await RequestService.updateApproverDecision(
             currentUpdateRequest
           );
