@@ -291,6 +291,7 @@ export function getApprovementQuery(
             },
           },
           {
+            needAdminDecision: true,
             'commanderDecision.decision': decisionToJSON(Decision.APPROVED),
           },
         ],
@@ -352,7 +353,13 @@ export function getApprovementQueryByUserType(userType: ApproverType[]) {
       or.push(
         getApprovementQuery(ApprovementStatus.COMMANDER_APPROVE, userType)
       );
-    } else if (type === ApproverType.SECURITY) {
+    } else if (type === ApproverType.ADMIN) {
+      commanderInserted = true;
+      or.push(
+        getApprovementQuery(ApprovementStatus.ADMIN_APPROVE, userType)
+      );
+    }
+     else if (type === ApproverType.SECURITY) {
       or.push(
         getApprovementQuery(ApprovementStatus.SECURITY_APPROVE, userType)
       );

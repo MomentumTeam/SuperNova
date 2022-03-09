@@ -105,7 +105,6 @@ export const approveUserRequest = async (
                 request.needAdminDecision &&
                 approverType === PersonTypeInRequest.ADMIN_APPROVER
               ) {
-                if (request.needAdminDecision) {
                   request.adminApprovers = request.adminApprovers
                     ? [...request.adminApprovers, entityUser]
                     : [entityUser];
@@ -115,7 +114,7 @@ export const approveUserRequest = async (
                       a.findIndex((t: any) => t.id === v.id) === i
                   );
                 }
-              } else {
+               else {
                 request.commanders = request.commanders
                   ? [...request.commanders, entityUser]
                   : [entityUser];
@@ -129,7 +128,6 @@ export const approveUserRequest = async (
               }
             }
             break;
-
           default:
             break;
         }
