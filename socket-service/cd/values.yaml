@@ -10,7 +10,7 @@ images:
   tag: "latest"
 service:
   ports:
-  - name: ws
+  - name: http
     port: "8080"
 
 config:
