@@ -74,7 +74,6 @@ export class MongoStream {
       try {
         const request = change?.fullDocument;
         logger.info(`got a change in request collection, operation type: ${change.operationType}`);
-        console.log('request', request);
 
         const submittedBy = request?.submittedBy;
         const submittedByGroups = [...submittedBy.ancestors, submittedBy.directGroup];
@@ -90,8 +89,9 @@ export class MongoStream {
          }
 
          const commanders = request?.commanders;
-         const securityApprovers = request?.securityApprovers;
-         const superSecurityApprovers = request?.superSecurityApprovers;
+         const securityApprovers = request?.needSecurityDecision? request?.securityApprovers: [];  
+         const superSecurityApprovers = request?.needSuperSecurityDecision? request?.superSecurityApprovers: [];
+         
          const approvers = [...commanders, ...securityApprovers, ...superSecurityApprovers, ...adminApprovers];
          const commanderDecision = decisionFromJSON(request?.commanderDecision?.decision);
          const securityDecision = decisionFromJSON(request?.securityDecision?.decision);
@@ -107,19 +107,16 @@ export class MongoStream {
            case StreamEvents.update: {
              const updatedFields = change?.updateDescription?.updatedFields;
              const reqStatus = updatedFields?.status && requestStatusFromJSON(updatedFields.status);
-             console.log("updatedFields", updatedFields, reqStatus); 
-             console.log(
-               "reqStatus === RequestStatus.APPROVED_BY_COMMANDER",
-               reqStatus === RequestStatus.APPROVED_BY_COMMANDER
-             );
+             const isApprovedByCommander =
+              reqStatus === RequestStatus.APPROVED_BY_COMMANDER ||
+              (commanderDecision === Decision.APPROVED && updatedFields?.commanderDecision);
+             const isApprovedBySecurity =
+              (securityDecision === Decision.APPROVED && updatedFields?.securityDecision) ||
+              reqStatus === RequestStatus.APPROVED_BY_SECURITY;
 
              // If security can see request now
-             if (
-               ((reqStatus === RequestStatus.APPROVED_BY_COMMANDER) ||
-                 (commanderDecision === Decision.APPROVED && updatedFields?.commanderDecision)) &&
-               request?.needSecurityDecision
-             ) {
-               logger.info('send to security room')
+             if (isApprovedByCommander && request?.needSecurityDecision) {
+               logger.info("send to security room");
                this.io.to(config.socket.rooms.security).emit(EventName.newRequestAll, request);
              }
 
@@ -127,10 +124,8 @@ export class MongoStream {
              if (
                request?.needSuperSecurityDecision &&
                commanderDecision === Decision.APPROVED &&
-               ((!request.needSecurityDecision && updatedFields?.commanderDecision) ||
-                 (request?.needSecurityDecision &&
-                   securityDecision === Decision.APPROVED &&
-                   updatedFields?.securityDecision))
+               ((!request.needSecurityDecision && isApprovedByCommander) ||
+                 (request.needSecurityDecision && isApprovedBySecurity))
              ) {
                logger.info("send to super security room");
                this.io.to(config.socket.rooms.superSecurity).emit(EventName.newRequestAll, request);
