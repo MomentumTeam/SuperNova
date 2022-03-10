@@ -74,8 +74,8 @@ export class MongoStream {
       try {
         const request = change?.fullDocument;
         logger.info(`got a change in request collection, operation type: ${change.operationType}`);
-        console.log(request);
-      
+        console.log('request', request);
+
         const submittedBy = request?.submittedBy;
         const submittedByGroups = [...submittedBy.ancestors, submittedBy.directGroup];
         if (request?._id) request.id = request?._id.toString();
@@ -104,6 +104,8 @@ export class MongoStream {
            }
            case StreamEvents.update: {
              const updatedFields = change?.updateDescription?.updatedFields;
+            console.log("updatedFields", updatedFields);
+
              const commanderDecision = decisionFromJSON(request?.commanderDecision?.decision);
              const securityDecision = decisionFromJSON(request?.securityDecision?.decision);
 
