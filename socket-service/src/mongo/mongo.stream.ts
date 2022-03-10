@@ -93,6 +93,8 @@ export class MongoStream {
          const securityApprovers = request?.securityApprovers;
          const superSecurityApprovers = request?.superSecurityApprovers;
          const approvers = [...commanders, ...securityApprovers, ...superSecurityApprovers, ...adminApprovers];
+         const commanderDecision = decisionFromJSON(request?.commanderDecision?.decision);
+         const securityDecision = decisionFromJSON(request?.securityDecision?.decision);
 
          switch (change.operationType) {
            case StreamEvents.insert: {
@@ -104,14 +106,12 @@ export class MongoStream {
            }
            case StreamEvents.update: {
              const updatedFields = change?.updateDescription?.updatedFields;
-            console.log("updatedFields", updatedFields);
-
-             const commanderDecision = decisionFromJSON(request?.commanderDecision?.decision);
-             const securityDecision = decisionFromJSON(request?.securityDecision?.decision);
+             const reqStatus = updatedFields?.status && decisionFromJSON(updatedFields.status);
+             console.log("updatedFields", updatedFields);
 
              // If security can see request now
              if (
-               (updatedFields?.status === RequestStatus.APPROVED_BY_COMMANDER ||
+               ((reqStatus && reqStatus === RequestStatus.APPROVED_BY_COMMANDER) ||
                  (commanderDecision === Decision.APPROVED && updatedFields?.commanderDecision)) &&
                request?.needSecurityDecision
              ) {
