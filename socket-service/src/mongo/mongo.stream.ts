@@ -107,14 +107,19 @@ export class MongoStream {
            case StreamEvents.update: {
              const updatedFields = change?.updateDescription?.updatedFields;
              const reqStatus = updatedFields?.status && decisionFromJSON(updatedFields.status);
-             console.log("updatedFields", updatedFields);
+             console.log("updatedFields", updatedFields, reqStatus); 
+             console.log(
+               "reqStatus === RequestStatus.APPROVED_BY_COMMANDER",
+               reqStatus === RequestStatus.APPROVED_BY_COMMANDER
+             );
 
              // If security can see request now
              if (
-               ((reqStatus && reqStatus === RequestStatus.APPROVED_BY_COMMANDER) ||
+               ((reqStatus === RequestStatus.APPROVED_BY_COMMANDER) ||
                  (commanderDecision === Decision.APPROVED && updatedFields?.commanderDecision)) &&
                request?.needSecurityDecision
              ) {
+               logger.info('send to security room')
                this.io.to(config.socket.rooms.security).emit(EventName.newRequestAll, request);
              }
 
@@ -127,6 +132,7 @@ export class MongoStream {
                    securityDecision === Decision.APPROVED &&
                    updatedFields?.securityDecision))
              ) {
+               logger.info("send to super security room");
                this.io.to(config.socket.rooms.superSecurity).emit(EventName.newRequestAll, request);
              }
 
