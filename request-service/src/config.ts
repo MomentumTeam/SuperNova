@@ -31,6 +31,9 @@ export const grpcPoolSize = process.env.GLOBAL_GRPC_POOL_SIZE
   : 2;
 export const goalUser = process.env.RS_KARTOFFEL_GOAL_USER || 'GoalUser';
 
+export const groupsWithSecurityAdmin =
+  process.env.RS_GROUPS_WITH_SECURITY_ADMIN ? process.env.RS_GROUPS_WITH_SECURITY_ADMIN.split(','): [];
+
 export const searchFields = [
   { name: 'submittedBy.displayName' },
   { name: 'submittedBy.personalNumber' },

@@ -19,19 +19,30 @@ export const ApproverSchema = new Schema(
   { strict: false }
 );
 ApproverSchema.index({ displayName: 'text' });
+
+//allow only one document with a certain specialGroupId,entityId,type
+
+ApproverSchema.index(
+  { entityId: 1, type: 1, specialGroupId: 1 },
+  {
+    unique: true,
+  }
+);
+
+//allow only one document with a certain specialGroupId
 ApproverSchema.index(
   { specialGroupId: 1 },
   {
     unique: true,
-    partialFilterExpression: { specialGroupId: { $type: 'string' } },
+    partialFilterExpression: {
+      specialGroupId: {
+        $type: 'string',
+      },
+    },
   }
 );
 
 //TODO: user-friendly error when the unique key already exists
-ApproverSchema.index(
-  { entityId: 1, type: 1, specialGroupId: 1 },
-  { unique: true }
-);
 
 export const ApproverModel = mongoose.model(
   'Approver',

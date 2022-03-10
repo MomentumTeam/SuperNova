@@ -148,6 +148,14 @@ export class ApproverRepository {
         typeof addApproverReq.type === typeof ''
           ? approverTypeFromJSON(addApproverReq.type)
           : addApproverReq.type;
+
+      if (
+        addApproverReq.specialGroupId !== undefined &&
+        addApproverReq.specialGroupId.length < 24
+      ) {
+        delete addApproverReq.specialGroupId;
+      }
+
       const adminOrSecurityAdminAlreadyExists: any = await ApproverModel.exists(
         {
           entityId: addApproverReq.entityId,
@@ -527,6 +535,20 @@ export class ApproverRepository {
       ) {
         approverTypesToSearch.push(approverTypeToJSON(ApproverType.ADMIN));
       }
+      if (
+        approverTypeFromJSON(searchByDisplayNameReq.type) ===
+        ApproverType.SECURITY_ADMIN
+      ) {
+        approverTypesToSearch.push(approverTypeToJSON(ApproverType.SECURITY));
+      }
+      if (
+        approverTypeFromJSON(searchByDisplayNameReq.type) ===
+        ApproverType.SECURITY
+      ) {
+        approverTypesToSearch.push(
+          approverTypeToJSON(ApproverType.SECURITY_ADMIN)
+        );
+      }
 
       const mongoApprovers: any = await ApproverModel.find(
         {
@@ -673,7 +695,11 @@ export class ApproverRepository {
             currentUpdateRequest
           );
         }
-        if (types.includes(ApproverType.SECURITY)) {
+
+        if (
+          types.includes(ApproverType.SECURITY) ||
+          types.includes(ApproverType.SECURITY_ADMIN)
+        ) {
           currentUpdateRequest.approverType =
             PersonTypeInRequest.SECURITY_APPROVER;
           updatedRequest = await RequestService.updateApproverDecision(

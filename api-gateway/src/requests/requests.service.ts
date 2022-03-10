@@ -32,6 +32,8 @@ import {
   GetRequestByIdReq,
   GetRequestBySerialNumberReq,
   GetRequestsByPersonReq,
+  HasSecurityAdminReq,
+  HasSecurityAdminRes,
   IsRequestApprovedReq,
   IsRequestApprovedRes,
   RemoveApproverFromApproversReq,
@@ -880,6 +882,31 @@ export class RequestsService {
           logger.info(`isRequestApproved OK in GTW`, {
             response: response,
             callRequest: isRequestApprovedReq,
+          });
+          resolve(response);
+        }
+      );
+    });
+  }
+
+  static async hasSecurityAdmin(hasSecurityAdminReq: HasSecurityAdminReq) {
+    logger.info(`Call to hasSecurityAdmin in GTW`, hasSecurityAdminReq);
+
+    return new Promise((resolve, reject) => {
+      randomClient().HasSecurityAdmin(
+        hasSecurityAdminReq,
+        (err: any, response: HasSecurityAdminRes) => {
+          if (err) {
+            logger.error(`hasSecurityAdmin ERROR in GTW`, {
+              err,
+              callRequest: hasSecurityAdminReq,
+            });
+            reject(err);
+          }
+
+          logger.info(`hasSecurityAdmin OK in GTW`, {
+            response: response,
+            callRequest: hasSecurityAdminReq,
           });
           resolve(response);
         }

@@ -100,6 +100,12 @@ export function getIdQuery(
         'superSecurityApprovers.id': ObjectId(id),
       };
       break;
+    case PersonTypeInRequest.ADMIN_APPROVER:
+      query = {
+        'submittedBy.id': { $ne: ObjectId(id) },
+        'adminApprovers.id': ObjectId(id),
+      };
+      break;
     case PersonTypeInRequest.APPROVER:
       //PersonTypeInRequest.APPROVER
       query = {
@@ -110,12 +116,6 @@ export function getIdQuery(
           { 'superSecurityApprovers.id': ObjectId(id) },
           { 'adminApprovers.id': ObjectId(id) },
         ],
-      };
-      break;
-    case PersonTypeInRequest.ADMIN_APPROVER:
-      query = {
-        'submittedBy.id': { $ne: ObjectId(id) },
-        'adminApprovers.id': ObjectId(id),
       };
       break;
     case PersonTypeInRequest.GET_ALL:
@@ -141,12 +141,31 @@ export function getRequestTypeQuery(type: any) {
   return { type: type };
 }
 
-export function getAncestorsQuery(groupsInCharge: Array<any>) {
+export function getAncestorsQuery(
+  adminGroupsInCharge: Array<any>,
+  securityAdminGroupsInCharge: Array<any>,
+  userType: ApproverType[]
+) {
+  const orArray = [];
+  if (userType.includes(ApproverType.ADMIN) && adminGroupsInCharge) {
+    orArray.push({ 'submittedBy.ancestors': { $in: adminGroupsInCharge } });
+    orArray.push({ 'submittedBy.directGroup': { $in: adminGroupsInCharge } });
+  }
+  if (
+    userType.includes(ApproverType.SECURITY_ADMIN) &&
+    securityAdminGroupsInCharge
+  ) {
+    orArray.push({
+      'submittedBy.ancestors': { $in: securityAdminGroupsInCharge },
+      hasSecurityAdmin: true,
+    });
+    orArray.push({
+      'submittedBy.directGroup': { $in: securityAdminGroupsInCharge },
+      hasSecurityAdmin: true,
+    });
+  }
   return {
-    $or: [
-      { 'submittedBy.ancestors': { $in: groupsInCharge } }, 
-      { 'submittedBy.directGroup': { $in: groupsInCharge } },
-    ],
+    $or: orArray,
   };
 }
 
@@ -223,7 +242,19 @@ export function getWaitingForApproveCountQuery(userType: ApproverType[]) {
             Decision.DECISION_UNKNOWN
           ),
         },
-        { needSecurityDecision: true },
+        { needSecurityDecision: true, hasSecurityAdmin: false },
+      ],
+    });
+  }
+  if (userType.includes(ApproverType.SECURITY_ADMIN)) {
+    orArray.push({
+      $and: [
+        {
+          'securityDecision.decision': decisionToJSON(
+            Decision.DECISION_UNKNOWN
+          ),
+        },
+        { needSecurityDecision: true, hasSecurityAdmin: true },
       ],
     });
   }
@@ -291,23 +322,27 @@ export function getApprovementQuery(
             },
           },
           {
-            needAdminDecision: true,
             'commanderDecision.decision': decisionToJSON(Decision.APPROVED),
           },
         ],
       };
     case ApprovementStatus.SECURITY_APPROVE:
+      const hasSecurityAdmin = userType.includes(ApproverType.SECURITY_ADMIN)
+        ? true
+        : false;
       return {
         $or: [
           {
             needSecurityDecision: true,
             needAdminDecision: false,
             'commanderDecision.decision': decisionToJSON(Decision.APPROVED),
+            hasSecurityAdmin: hasSecurityAdmin,
           },
           {
             needSecurityDecision: true,
             needAdminDecision: true,
             'adminDecision.decision': decisionToJSON(Decision.APPROVED),
+            hasSecurityAdmin: hasSecurityAdmin,
           },
         ],
       };
@@ -343,26 +378,31 @@ export function getApprovementQuery(
 
 export function getApprovementQueryByUserType(userType: ApproverType[]) {
   let or: any = [];
-  let commanderInserted: boolean = false;
+  let commanderOrAdminInserted: boolean = false;
   for (let type of userType) {
     if (
-      (type === ApproverType.COMMANDER || type === ApproverType.ADMIN) &&
-      !commanderInserted
+      type === ApproverType.COMMANDER &&
+      !commanderOrAdminInserted
     ) {
-      commanderInserted = true;
+      commanderOrAdminInserted = true;
       or.push(
         getApprovementQuery(ApprovementStatus.COMMANDER_APPROVE, userType)
       );
-    } else if (type === ApproverType.ADMIN) {
-      commanderInserted = true;
+    } 
+    else if (
+      type === ApproverType.ADMIN &&
+      !commanderOrAdminInserted
+    ) {
+      commanderOrAdminInserted = true;
       or.push(
         getApprovementQuery(ApprovementStatus.ADMIN_APPROVE, userType)
       );
-    }
-     else if (type === ApproverType.SECURITY) {
-      or.push(
-        getApprovementQuery(ApprovementStatus.SECURITY_APPROVE, userType)
-      );
+    } 
+    else if (
+      type === ApproverType.SECURITY ||
+      type === ApproverType.SECURITY_ADMIN
+    ) {
+      or.push(getApprovementQuery(ApprovementStatus.SECURITY_APPROVE, [type]));
     } else if (type === ApproverType.SUPER_SECURITY) {
       or.push(
         getApprovementQuery(ApprovementStatus.SUPER_SECURITY_APPROVE, userType)
