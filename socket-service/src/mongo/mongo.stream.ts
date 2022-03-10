@@ -5,7 +5,7 @@ import { logger } from '../utils/logger/logger';
 import { concat, unique } from '../utils/array.utils';
 import { EventName, StreamEvents } from './mongo.types';
 import { ApproverService } from '../services/approver.service';
-import { Decision, decisionFromJSON, RequestStatus } from '../interfaces/protoc/proto/requestService';
+import { Decision, decisionFromJSON, RequestStatus, requestStatusFromJSON } from '../interfaces/protoc/proto/requestService';
 
 export class MongoStream {
   io: socketIO.Server;
@@ -106,7 +106,7 @@ export class MongoStream {
            }
            case StreamEvents.update: {
              const updatedFields = change?.updateDescription?.updatedFields;
-             const reqStatus = updatedFields?.status && decisionFromJSON(updatedFields.status);
+             const reqStatus = updatedFields?.status && requestStatusFromJSON(updatedFields.status);
              console.log("updatedFields", updatedFields, reqStatus); 
              console.log(
                "reqStatus === RequestStatus.APPROVED_BY_COMMANDER",
