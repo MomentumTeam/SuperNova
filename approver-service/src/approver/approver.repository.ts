@@ -148,6 +148,14 @@ export class ApproverRepository {
         typeof addApproverReq.type === typeof ''
           ? approverTypeFromJSON(addApproverReq.type)
           : addApproverReq.type;
+
+      if (
+        addApproverReq.specialGroupId !== undefined &&
+        addApproverReq.specialGroupId.length < 24
+      ) {
+        delete addApproverReq.specialGroupId;
+      }
+
       const adminOrSecurityAdminAlreadyExists: any = await ApproverModel.exists(
         {
           entityId: addApproverReq.entityId,

@@ -20,20 +20,26 @@ export const ApproverSchema = new Schema(
 );
 ApproverSchema.index({ displayName: 'text' });
 
+//allow only one document with a certain specialGroupId,entityId,type
+
+ApproverSchema.index(
+  { entityId: 1, type: 1, specialGroupId: 1 },
+  {
+    unique: true,
+  }
+);
+
 //allow only one document with a certain specialGroupId
 ApproverSchema.index(
   { specialGroupId: 1 },
   {
     unique: true,
-    partialFilterExpression: { specialGroupId: { $type: 'string' } },
+    partialFilterExpression: {
+      specialGroupId: {
+        $type: 'string',
+      },
+    },
   }
-);
-
-//allow only one document with a certain specialGroupId,entityId,type
-
-ApproverSchema.index(
-  { entityId: 1, type: 1, specialGroupId: 1 },
-  { unique: true }
 );
 
 //TODO: user-friendly error when the unique key already exists

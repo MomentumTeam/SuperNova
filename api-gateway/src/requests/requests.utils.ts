@@ -26,11 +26,6 @@ export const approveUserRequest = async (
         ? requestTypeFromJSON(request.type)
         : request.type;
 
-    const submitterGroups: any[] = [
-      request.submittedBy.directGroup,
-      ...request.submittedBy.ancestors,
-    ];
-
     await Promise.all(
       req.user.types.map(async (type: any) => {
         const approverType = parseFromApproverTypeToPersonInRequest(type);
@@ -166,9 +161,7 @@ export const approveUserRequest = async (
   return request;
 };
 
-export const parseFromApproverTypeToPersonInRequest = (
-  type: string,
-) => {
+export const parseFromApproverTypeToPersonInRequest = (type: string) => {
   const approverType = approverTypeFromJSON(type);
   switch (approverType) {
     case ApproverType.SECURITY:

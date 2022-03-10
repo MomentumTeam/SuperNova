@@ -161,13 +161,18 @@ export class RequestRepository {
         ];
       }
 
-      const containsGroupWithSecurityAdmin = C.groupsWithSecurityAdmin.some(
-        (groupId: any) => {
-          return submitterGroups.includes(groupId);
-        }
-      );
+      const hasSecurityAdminReq: HasSecurityAdminReq = {
+        groupsIds: submitterGroups,
+        requestType: type,
+      };
 
-      createRequestReq.hasSecurityAdmin = containsGroupWithSecurityAdmin;
+      if (type === RequestType.ADD_APPROVER) {
+        hasSecurityAdminReq.approverTypeToAdd =
+          createRequestReq.additionalParams.type;
+      }
+      const hasSecurityAdmin = await this.hasSecurityAdmin(hasSecurityAdminReq);
+
+      createRequestReq.hasSecurityAdmin = hasSecurityAdmin.hasSecurityAdmin;
 
       const request: any = new RequestModel(createRequestReq);
       this.setNeedApproversDecisionsValues(request, type);
@@ -1793,14 +1798,11 @@ export class RequestRepository {
         case RequestType.RENAME_OG: // 7
         case RequestType.RENAME_ROLE: // 8
         case RequestType.EDIT_ENTITY: // 9
+        case RequestType.ADD_APPROVER: // 6
           hasSecurityAdmin = false;
           break;
-        case RequestType.ADD_APPROVER: // 6
-          if (approverTypeToAdd === ApproverType.SECURITY) {
-            hasSecurityAdmin = containsGroupWithSecurityAdmin;
-          }
-          break;
         default:
+          hasSecurityAdmin = false;
           break;
       }
       return { hasSecurityAdmin };
