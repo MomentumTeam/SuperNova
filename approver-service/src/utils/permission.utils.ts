@@ -19,7 +19,9 @@ export async function hasPermissionToDecide(
     const commanderFlag =
       types.includes(ApproverType.COMMANDER) ||
       types.includes(ApproverType.ADMIN);
-    const securityFlag = types.includes(ApproverType.SECURITY);
+    const securityFlag =
+      types.includes(ApproverType.SECURITY) ||
+      types.includes(ApproverType.SECURITY_ADMIN);
     const superSecurityFlag = types.includes(ApproverType.SUPER_SECURITY);
     return commanderFlag || securityFlag || superSecurityFlag;
   } catch (error) {

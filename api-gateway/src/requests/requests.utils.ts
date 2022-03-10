@@ -165,6 +165,7 @@ export const parseFromApproverTypeToPersonInRequest = (type: string) => {
   const approverType = approverTypeFromJSON(type);
   switch (approverType) {
     case ApproverType.SECURITY:
+    case ApproverType.SECURITY_ADMIN:
       return PersonTypeInRequest.SECURITY_APPROVER;
     case ApproverType.SUPER_SECURITY:
       return PersonTypeInRequest.SUPER_SECURITY_APPROVER;
@@ -172,6 +173,7 @@ export const parseFromApproverTypeToPersonInRequest = (type: string) => {
       return PersonTypeInRequest.COMMANDER_APPROVER;
     case ApproverType.ADMIN:
       return PersonTypeInRequest.APPROVER;
+
     default:
       break;
   }
