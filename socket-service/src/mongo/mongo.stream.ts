@@ -5,7 +5,7 @@ import { logger } from '../utils/logger/logger';
 import { concat, unique } from '../utils/array.utils';
 import { EventName, StreamEvents } from './mongo.types';
 import { ApproverService } from '../services/approver.service';
-import { Decision, decisionFromJSON } from '../interfaces/protoc/proto/requestService';
+import { Decision, decisionFromJSON, RequestStatus } from '../interfaces/protoc/proto/requestService';
 
 export class MongoStream {
   io: socketIO.Server;
@@ -109,9 +109,9 @@ export class MongoStream {
 
              // If security can see request now
              if (
-               request?.needSecurityDecision &&
-               commanderDecision === Decision.APPROVED &&
-               updatedFields?.commanderDecision
+               (updatedFields?.status === RequestStatus.APPROVED_BY_COMMANDER ||
+                 (commanderDecision === Decision.APPROVED && updatedFields?.commanderDecision)) &&
+               request?.needSecurityDecision
              ) {
                this.io.to(config.socket.rooms.security).emit(EventName.newRequestAll, request);
              }
