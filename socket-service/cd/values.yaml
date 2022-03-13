@@ -17,7 +17,10 @@ config:
   configmaps:
       name: momentum-configmap
 ingress:
-  enabled: true 
+  enabled: true
+  annotations:
+    nginx.ingress.kubernetes.io/affinity: cookie
+    nginx.ingress.kubernetes.io/session-cookie-name: socket_io_cookie
   hosts:
   - host: momentum.branch-yesodot.org
     paths:
