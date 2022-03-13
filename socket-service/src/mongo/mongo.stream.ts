@@ -92,15 +92,19 @@ export class MongoStream {
          const securityApprovers = request?.needSecurityDecision? request?.securityApprovers: [];  
          const superSecurityApprovers = request?.needSuperSecurityDecision? request?.superSecurityApprovers: [];
          
-         const approvers = [...commanders, ...securityApprovers, ...superSecurityApprovers, ...adminApprovers];
+         const directApprovers = [...commanders, ...securityApprovers, ...superSecurityApprovers];
+         const approvers = [...directApprovers, ...adminApprovers]
          const commanderDecision = decisionFromJSON(request?.commanderDecision?.decision);
          const securityDecision = decisionFromJSON(request?.securityDecision?.decision);
 
          switch (change.operationType) {
            case StreamEvents.insert: {
              // Notify approvers
-             approvers && this.sendToUser(approvers, request, EventName.newRequestMy);
+             directApprovers && this.sendToUser(directApprovers, request, EventName.newRequestMy);
 
+             // Notify admin approver
+             adminApprovers && this.sendToUser(adminApprovers, request, EventName.newRequestAll);
+             
              // TODO: send to user submitted by
              break;
            }
