@@ -29,6 +29,7 @@ import {
   AreAllSubRequestsFinishedRes,
   SendSubmissionMailReq,
   RemoveApproverFromApproversReq,
+  HasSecurityAdminReq,
 } from '../interfaces/protoc/proto/requestService';
 import { RequestRepository } from './request.repository';
 export class RequestManager {
@@ -327,6 +328,14 @@ export class RequestManager {
       return await this.requestRepository.getRequestsByPerson(
         getRequestsByPersonReq
       );
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async hasSecurityAdmin(hasSecurityAdminReq: HasSecurityAdminReq) {
+    try {
+      return await this.requestRepository.hasSecurityAdmin(hasSecurityAdminReq);
     } catch (error) {
       throw error;
     }

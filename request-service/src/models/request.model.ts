@@ -36,6 +36,10 @@ const RequestSchema = new Schema(
       type: Boolean,
       default: true,
     },
+    hasSecurityAdmin: {
+      type: Boolean,
+      default: false,
+    },
     comments: { type: String, default: '' },
     approversComments: {
       type: {
@@ -348,6 +352,7 @@ const RequestSchema = new Schema(
       identityCard: { type: String, default: null },
       directGroup: { type: String, default: null },
       groupInChargeId: { type: String, default: C.rootId },
+      specialGroupId: { type: String, default: '' },
     },
     isPartOfBulk: { type: Boolean, default: false },
     bulkRequestId: { type: mongoose.Schema.Types.ObjectId, default: null },

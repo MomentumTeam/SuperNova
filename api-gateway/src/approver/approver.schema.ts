@@ -16,6 +16,12 @@ export const getAllApproversSchema = Joi.object({
   },
 });
 
+export const getAllMyApproverTypes = Joi.object({
+  body: {},
+  params: {},
+  query: {}
+})
+
 export const searchHighCommandersByDisplayNameValidSchema = Joi.object({
   body: {},
   params: {
@@ -80,6 +86,14 @@ export const addApproverSchema = Joi.object({
   query: {},
 });
 
+export const includesSpecialGroupSchema = Joi.object({
+  body: {
+    groupIds: Joi.array().items(Joi.objectId()),
+  },
+  params: {},
+  query: {},
+});
+
 // PUT
 export const approverDecisionObj = Joi.object({
   decision: Joi.string()
@@ -102,8 +116,11 @@ export const updateApproverDecisionSchema = Joi.object({
 // DELETE
 export const deleteApproverSchema = Joi.object({
   body: {},
-  params: {
-    id: Joi.objectId().required(),
+  params: {},
+  query: {
+    groupInChargeId: Joi.objectId(),
+    type: Joi.string()
+      .valid(...Object.keys(ApproverType))
+      .required(),
   },
-  query: {},
 });
