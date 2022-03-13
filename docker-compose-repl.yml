@@ -383,7 +383,7 @@ services:
       env_file:
         - ./supernova.env
       ports:
-        - '2001:2001'
+        - '2001:8080'
       depends_on:
         - mongo1
         - mongo2
