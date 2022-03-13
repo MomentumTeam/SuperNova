@@ -141,17 +141,17 @@ export class MongoStream {
                updatedFields?.securityApprovers ||
                updatedFields?.superSecurityApprovers
              ) {
-               const newApprovers: any = concat(
+               const newDirectApprovers: any = concat(
                  updatedFields?.commanders,
                  updatedFields?.securityApprovers,
                  updatedFields?.superSecurityApprovers
                );
 
-               const oldApprovers = approvers.filter(
+               const oldApprovers = directApprovers.filter(
                  (approver) =>
-                   !newApprovers.some((newApprover: any) => newApprover.id.toString() === approver.id.toString())
+                   !newDirectApprovers.some((newApprover: any) => newApprover.id.toString() === approver.id.toString())
                );
-               this.sendToUser(newApprovers, request, EventName.newRequestMy);
+               this.sendToUser(newDirectApprovers, request, EventName.newRequestMy);
                this.sendToUser([...oldApprovers, submittedBy], request, EventName.updateRequest);
              }
 
