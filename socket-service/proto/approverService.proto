@@ -9,6 +9,7 @@ service ApproverService {
     rpc SearchApproverByDisplayName(SearchByDisplayNameReq) returns (ApproverArray) {}
     rpc SearchApproverByDomainUser(SearchByDomainUserReq) returns (ApproverArray) {}
     rpc GetApproverByEntityId(GetApproverByEntityIdReq) returns (Approver){}
+    rpc GetAllMyApproverTypes(GetAllApproverTypesReq) returns (GetAllApproverTypesRes){}
     
     rpc UpdateApproverDecision(UpdateApproverDecisionReq) returns (RequestService.Request) {}
 
@@ -20,7 +21,20 @@ service ApproverService {
     rpc DeleteApprover(DeleteApproverReq) returns (SuccessMessage){}
     rpc IsApproverValidForOG(IsApproverValidForOGReq) returns (IsApproverValidForOGRes){}
     rpc GetAdminsByGroupIds(GetAdminsByGroupIdsReq) returns (ApproverArray){}
+
+
+    rpc IncludesSpecialGroup(IncludesSpecialGroupReq) returns (IncludesSpecialGroupRes){}
+
 }
+
+message IncludesSpecialGroupRes{
+    bool includes= 1;
+}
+
+message IncludesSpecialGroupReq{
+    repeated string groupIds = 1;
+}
+
 
 message GetAdminsByGroupIdsReq{
     repeated string groupIds = 1;
@@ -29,6 +43,7 @@ message GetAdminsByGroupIdsReq{
 message IsApproverValidForOGReq{
     string approverId = 1;
     string groupId = 2;
+    optional bool isOrganization = 3;
 }
 
 message IsApproverValidForOGRes{
@@ -47,6 +62,8 @@ message SyncApproverReq{
 
 message DeleteApproverReq{
     string approverId = 1;
+    RequestService.ApproverType type =2;
+    optional string groupInChargeId = 3;
 }
 
 message ApproverIdArray{
@@ -102,6 +119,7 @@ message AddApproverReq{
     optional string identityCard = 7;
     string directGroup = 8;
     optional string groupInChargeId = 9;
+    optional string specialGroupId = 10;
 }
 
 message UpdateApproverDecisionReq{
@@ -120,6 +138,23 @@ message Approver{
     string identityCard = 8;
     string directGroup = 9;
     repeated string groupsInCharge = 10;
+    optional string specialGroupId = 11;
+    
+}
+
+message GetAllApproverTypesReq {
+    string entityId = 1;
+}
+
+message GetAllApproverTypesRes {
+    repeated RequestService.ApproverType types = 1;
+    repeated groupsInCharge groupsInCharge = 2;
+}
+
+message groupsInCharge {
+    string id = 1;
+    string name = 2;
+    string hierarchy = 3;
 }
 
 enum RequestStatus{
