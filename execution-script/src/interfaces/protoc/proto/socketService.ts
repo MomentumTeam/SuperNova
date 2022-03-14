@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Notification } from "./notificationService";
-import { Request } from "./requestService";
+import { Request, EntityMin } from "./requestService";
 
 export const protobufPackage = "SocketService";
 
@@ -11,6 +11,7 @@ export enum SocketEventType {
   READ_NOTIFICATION = 1,
   NEW_REQUEST = 2,
   UPDATE_REQUEST = 3,
+  UPDATE_REQUEST_APPROVERS = 4,
   UNRECOGNIZED = -1,
 }
 
@@ -28,6 +29,9 @@ export function socketEventTypeFromJSON(object: any): SocketEventType {
     case 3:
     case "UPDATE_REQUEST":
       return SocketEventType.UPDATE_REQUEST;
+    case 4:
+    case "UPDATE_REQUEST_APPROVERS":
+      return SocketEventType.UPDATE_REQUEST_APPROVERS;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -45,6 +49,8 @@ export function socketEventTypeToJSON(object: SocketEventType): string {
       return "NEW_REQUEST";
     case SocketEventType.UPDATE_REQUEST:
       return "UPDATE_REQUEST";
+    case SocketEventType.UPDATE_REQUEST_APPROVERS:
+      return "UPDATE_REQUEST_APPROVERS";
     default:
       return "UNKNOWN";
   }
@@ -53,7 +59,6 @@ export function socketEventTypeToJSON(object: SocketEventType): string {
 export interface SendEventReq {
   eventType: SocketEventType;
   eventData?: SocketEventData | undefined;
-  additionalDests: string[];
 }
 
 export interface SuccessMessage {
@@ -63,9 +68,12 @@ export interface SuccessMessage {
 export interface SocketEventData {
   notification?: Notification | undefined;
   request?: Request | undefined;
+  oldRequest?: Request | undefined;
+  additionalDests: string[];
+  additionalApprovers: EntityMin[];
 }
 
-const baseSendEventReq: object = { eventType: 0, additionalDests: "" };
+const baseSendEventReq: object = { eventType: 0 };
 
 export const SendEventReq = {
   encode(
@@ -81,9 +89,6 @@ export const SendEventReq = {
         writer.uint32(18).fork()
       ).ldelim();
     }
-    for (const v of message.additionalDests) {
-      writer.uint32(26).string(v!);
-    }
     return writer;
   },
 
@@ -91,7 +96,6 @@ export const SendEventReq = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseSendEventReq } as SendEventReq;
-    message.additionalDests = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -100,9 +104,6 @@ export const SendEventReq = {
           break;
         case 2:
           message.eventData = SocketEventData.decode(reader, reader.uint32());
-          break;
-        case 3:
-          message.additionalDests.push(reader.string());
           break;
         default:
           reader.skipType(tag & 7);
@@ -114,7 +115,6 @@ export const SendEventReq = {
 
   fromJSON(object: any): SendEventReq {
     const message = { ...baseSendEventReq } as SendEventReq;
-    message.additionalDests = [];
     if (object.eventType !== undefined && object.eventType !== null) {
       message.eventType = socketEventTypeFromJSON(object.eventType);
     } else {
@@ -124,14 +124,6 @@ export const SendEventReq = {
       message.eventData = SocketEventData.fromJSON(object.eventData);
     } else {
       message.eventData = undefined;
-    }
-    if (
-      object.additionalDests !== undefined &&
-      object.additionalDests !== null
-    ) {
-      for (const e of object.additionalDests) {
-        message.additionalDests.push(String(e));
-      }
     }
     return message;
   },
@@ -144,17 +136,11 @@ export const SendEventReq = {
       (obj.eventData = message.eventData
         ? SocketEventData.toJSON(message.eventData)
         : undefined);
-    if (message.additionalDests) {
-      obj.additionalDests = message.additionalDests.map((e) => e);
-    } else {
-      obj.additionalDests = [];
-    }
     return obj;
   },
 
   fromPartial(object: DeepPartial<SendEventReq>): SendEventReq {
     const message = { ...baseSendEventReq } as SendEventReq;
-    message.additionalDests = [];
     if (object.eventType !== undefined && object.eventType !== null) {
       message.eventType = object.eventType;
     } else {
@@ -164,14 +150,6 @@ export const SendEventReq = {
       message.eventData = SocketEventData.fromPartial(object.eventData);
     } else {
       message.eventData = undefined;
-    }
-    if (
-      object.additionalDests !== undefined &&
-      object.additionalDests !== null
-    ) {
-      for (const e of object.additionalDests) {
-        message.additionalDests.push(e);
-      }
     }
     return message;
   },
@@ -235,7 +213,7 @@ export const SuccessMessage = {
   },
 };
 
-const baseSocketEventData: object = {};
+const baseSocketEventData: object = { additionalDests: "" };
 
 export const SocketEventData = {
   encode(
@@ -251,6 +229,15 @@ export const SocketEventData = {
     if (message.request !== undefined) {
       Request.encode(message.request, writer.uint32(18).fork()).ldelim();
     }
+    if (message.oldRequest !== undefined) {
+      Request.encode(message.oldRequest, writer.uint32(26).fork()).ldelim();
+    }
+    for (const v of message.additionalDests) {
+      writer.uint32(34).string(v!);
+    }
+    for (const v of message.additionalApprovers) {
+      EntityMin.encode(v!, writer.uint32(42).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -258,6 +245,8 @@ export const SocketEventData = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseSocketEventData } as SocketEventData;
+    message.additionalDests = [];
+    message.additionalApprovers = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -266,6 +255,17 @@ export const SocketEventData = {
           break;
         case 2:
           message.request = Request.decode(reader, reader.uint32());
+          break;
+        case 3:
+          message.oldRequest = Request.decode(reader, reader.uint32());
+          break;
+        case 4:
+          message.additionalDests.push(reader.string());
+          break;
+        case 5:
+          message.additionalApprovers.push(
+            EntityMin.decode(reader, reader.uint32())
+          );
           break;
         default:
           reader.skipType(tag & 7);
@@ -277,6 +277,8 @@ export const SocketEventData = {
 
   fromJSON(object: any): SocketEventData {
     const message = { ...baseSocketEventData } as SocketEventData;
+    message.additionalDests = [];
+    message.additionalApprovers = [];
     if (object.notification !== undefined && object.notification !== null) {
       message.notification = Notification.fromJSON(object.notification);
     } else {
@@ -286,6 +288,27 @@ export const SocketEventData = {
       message.request = Request.fromJSON(object.request);
     } else {
       message.request = undefined;
+    }
+    if (object.oldRequest !== undefined && object.oldRequest !== null) {
+      message.oldRequest = Request.fromJSON(object.oldRequest);
+    } else {
+      message.oldRequest = undefined;
+    }
+    if (
+      object.additionalDests !== undefined &&
+      object.additionalDests !== null
+    ) {
+      for (const e of object.additionalDests) {
+        message.additionalDests.push(String(e));
+      }
+    }
+    if (
+      object.additionalApprovers !== undefined &&
+      object.additionalApprovers !== null
+    ) {
+      for (const e of object.additionalApprovers) {
+        message.additionalApprovers.push(EntityMin.fromJSON(e));
+      }
     }
     return message;
   },
@@ -300,11 +323,29 @@ export const SocketEventData = {
       (obj.request = message.request
         ? Request.toJSON(message.request)
         : undefined);
+    message.oldRequest !== undefined &&
+      (obj.oldRequest = message.oldRequest
+        ? Request.toJSON(message.oldRequest)
+        : undefined);
+    if (message.additionalDests) {
+      obj.additionalDests = message.additionalDests.map((e) => e);
+    } else {
+      obj.additionalDests = [];
+    }
+    if (message.additionalApprovers) {
+      obj.additionalApprovers = message.additionalApprovers.map((e) =>
+        e ? EntityMin.toJSON(e) : undefined
+      );
+    } else {
+      obj.additionalApprovers = [];
+    }
     return obj;
   },
 
   fromPartial(object: DeepPartial<SocketEventData>): SocketEventData {
     const message = { ...baseSocketEventData } as SocketEventData;
+    message.additionalDests = [];
+    message.additionalApprovers = [];
     if (object.notification !== undefined && object.notification !== null) {
       message.notification = Notification.fromPartial(object.notification);
     } else {
@@ -314,6 +355,27 @@ export const SocketEventData = {
       message.request = Request.fromPartial(object.request);
     } else {
       message.request = undefined;
+    }
+    if (object.oldRequest !== undefined && object.oldRequest !== null) {
+      message.oldRequest = Request.fromPartial(object.oldRequest);
+    } else {
+      message.oldRequest = undefined;
+    }
+    if (
+      object.additionalDests !== undefined &&
+      object.additionalDests !== null
+    ) {
+      for (const e of object.additionalDests) {
+        message.additionalDests.push(e);
+      }
+    }
+    if (
+      object.additionalApprovers !== undefined &&
+      object.additionalApprovers !== null
+    ) {
+      for (const e of object.additionalApprovers) {
+        message.additionalApprovers.push(EntityMin.fromPartial(e));
+      }
     }
     return message;
   },
