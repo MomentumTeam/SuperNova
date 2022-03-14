@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Notification } from "./notificationService";
-import { Request, EntityMin } from "./requestService";
+import { Request } from "./requestService";
 
 export const protobufPackage = "SocketService";
 
@@ -11,7 +11,6 @@ export enum SocketEventType {
   READ_NOTIFICATION = 1,
   NEW_REQUEST = 2,
   UPDATE_REQUEST = 3,
-  UPDATE_REQUEST_APPROVERS = 4,
   UNRECOGNIZED = -1,
 }
 
@@ -29,9 +28,6 @@ export function socketEventTypeFromJSON(object: any): SocketEventType {
     case 3:
     case "UPDATE_REQUEST":
       return SocketEventType.UPDATE_REQUEST;
-    case 4:
-    case "UPDATE_REQUEST_APPROVERS":
-      return SocketEventType.UPDATE_REQUEST_APPROVERS;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -49,8 +45,6 @@ export function socketEventTypeToJSON(object: SocketEventType): string {
       return "NEW_REQUEST";
     case SocketEventType.UPDATE_REQUEST:
       return "UPDATE_REQUEST";
-    case SocketEventType.UPDATE_REQUEST_APPROVERS:
-      return "UPDATE_REQUEST_APPROVERS";
     default:
       return "UNKNOWN";
   }
@@ -70,7 +64,6 @@ export interface SocketEventData {
   request?: Request | undefined;
   oldRequest?: Request | undefined;
   additionalDests: string[];
-  additionalApprovers: EntityMin[];
 }
 
 const baseSendEventReq: object = { eventType: 0 };
@@ -235,9 +228,6 @@ export const SocketEventData = {
     for (const v of message.additionalDests) {
       writer.uint32(34).string(v!);
     }
-    for (const v of message.additionalApprovers) {
-      EntityMin.encode(v!, writer.uint32(42).fork()).ldelim();
-    }
     return writer;
   },
 
@@ -246,7 +236,6 @@ export const SocketEventData = {
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseSocketEventData } as SocketEventData;
     message.additionalDests = [];
-    message.additionalApprovers = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -262,11 +251,6 @@ export const SocketEventData = {
         case 4:
           message.additionalDests.push(reader.string());
           break;
-        case 5:
-          message.additionalApprovers.push(
-            EntityMin.decode(reader, reader.uint32())
-          );
-          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -278,7 +262,6 @@ export const SocketEventData = {
   fromJSON(object: any): SocketEventData {
     const message = { ...baseSocketEventData } as SocketEventData;
     message.additionalDests = [];
-    message.additionalApprovers = [];
     if (object.notification !== undefined && object.notification !== null) {
       message.notification = Notification.fromJSON(object.notification);
     } else {
@@ -300,14 +283,6 @@ export const SocketEventData = {
     ) {
       for (const e of object.additionalDests) {
         message.additionalDests.push(String(e));
-      }
-    }
-    if (
-      object.additionalApprovers !== undefined &&
-      object.additionalApprovers !== null
-    ) {
-      for (const e of object.additionalApprovers) {
-        message.additionalApprovers.push(EntityMin.fromJSON(e));
       }
     }
     return message;
@@ -332,20 +307,12 @@ export const SocketEventData = {
     } else {
       obj.additionalDests = [];
     }
-    if (message.additionalApprovers) {
-      obj.additionalApprovers = message.additionalApprovers.map((e) =>
-        e ? EntityMin.toJSON(e) : undefined
-      );
-    } else {
-      obj.additionalApprovers = [];
-    }
     return obj;
   },
 
   fromPartial(object: DeepPartial<SocketEventData>): SocketEventData {
     const message = { ...baseSocketEventData } as SocketEventData;
     message.additionalDests = [];
-    message.additionalApprovers = [];
     if (object.notification !== undefined && object.notification !== null) {
       message.notification = Notification.fromPartial(object.notification);
     } else {
@@ -367,14 +334,6 @@ export const SocketEventData = {
     ) {
       for (const e of object.additionalDests) {
         message.additionalDests.push(e);
-      }
-    }
-    if (
-      object.additionalApprovers !== undefined &&
-      object.additionalApprovers !== null
-    ) {
-      for (const e of object.additionalApprovers) {
-        message.additionalApprovers.push(EntityMin.fromPartial(e));
       }
     }
     return message;
