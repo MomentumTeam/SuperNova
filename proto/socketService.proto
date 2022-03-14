@@ -31,5 +31,4 @@ message SocketEventData  {
     optional RequestService.Request request = 2;
     optional RequestService.Request oldRequest = 3;
     repeated string additionalDests = 4;
-    repeated RequestService.EntityMin additionalApprovers = 5;
 }
