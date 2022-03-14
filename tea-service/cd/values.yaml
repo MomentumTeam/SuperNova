@@ -18,7 +18,8 @@ config:
 
 volume:
   - name: tea-utils
-    mountPath: /teaUtils
+    mounts:
+      - mountPath: /teaUtils
     secretName: azure-secret
     shareName: momentum/tea-utils
     type: azurefile

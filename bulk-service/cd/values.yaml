@@ -17,12 +17,14 @@ service:
 volume:
   - name: bulk-files-utils
     type: azurefile
-    mountPath: /bulkFiles
+    mounts:
+      - mountPath: /bulkFiles
     secretName: azure-secret
     shareName: momentum/bulk-files
 
   - name: logs
-    mountPath: /logs
+    mounts:
+      - mountPath: /logs
     secretName: azure-secret
     shareName: momentum/logs
     type: azurefile
