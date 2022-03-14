@@ -22,8 +22,6 @@ enum SocketEventType{
     READ_NOTIFICATION = 1;
     NEW_REQUEST = 2;
     UPDATE_REQUEST = 3;
-    UPDATE_REQUEST_APPROVERS = 4;
-
 }
 
 message SocketEventData  {
