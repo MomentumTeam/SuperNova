@@ -11,6 +11,8 @@ export enum SocketEventType {
   READ_NOTIFICATION = 1,
   NEW_REQUEST = 2,
   UPDATE_REQUEST = 3,
+  UPDATE_REQUEST_APPROVERS = 4,
+  DELETE_REQUEST = 5,
   UNRECOGNIZED = -1,
 }
 
@@ -28,6 +30,12 @@ export function socketEventTypeFromJSON(object: any): SocketEventType {
     case 3:
     case "UPDATE_REQUEST":
       return SocketEventType.UPDATE_REQUEST;
+    case 4:
+    case "UPDATE_REQUEST_APPROVERS":
+      return SocketEventType.UPDATE_REQUEST_APPROVERS;
+    case 5:
+    case "DELETE_REQUEST":
+      return SocketEventType.DELETE_REQUEST;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -45,6 +53,10 @@ export function socketEventTypeToJSON(object: SocketEventType): string {
       return "NEW_REQUEST";
     case SocketEventType.UPDATE_REQUEST:
       return "UPDATE_REQUEST";
+    case SocketEventType.UPDATE_REQUEST_APPROVERS:
+      return "UPDATE_REQUEST_APPROVERS";
+    case SocketEventType.DELETE_REQUEST:
+      return "DELETE_REQUEST";
     default:
       return "UNKNOWN";
   }
