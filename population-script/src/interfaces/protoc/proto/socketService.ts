@@ -76,7 +76,6 @@ export interface SocketEventData {
   request?: Request | undefined;
   oldRequest?: Request | undefined;
   additionalDests: string[];
-  reqId?: string | undefined;
 }
 
 const baseSendEventReq: object = { eventType: 0 };
@@ -241,9 +240,6 @@ export const SocketEventData = {
     for (const v of message.additionalDests) {
       writer.uint32(34).string(v!);
     }
-    if (message.reqId !== undefined) {
-      writer.uint32(42).string(message.reqId);
-    }
     return writer;
   },
 
@@ -266,9 +262,6 @@ export const SocketEventData = {
           break;
         case 4:
           message.additionalDests.push(reader.string());
-          break;
-        case 5:
-          message.reqId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -304,11 +297,6 @@ export const SocketEventData = {
         message.additionalDests.push(String(e));
       }
     }
-    if (object.reqId !== undefined && object.reqId !== null) {
-      message.reqId = String(object.reqId);
-    } else {
-      message.reqId = undefined;
-    }
     return message;
   },
 
@@ -331,7 +319,6 @@ export const SocketEventData = {
     } else {
       obj.additionalDests = [];
     }
-    message.reqId !== undefined && (obj.reqId = message.reqId);
     return obj;
   },
 
@@ -360,11 +347,6 @@ export const SocketEventData = {
       for (const e of object.additionalDests) {
         message.additionalDests.push(e);
       }
-    }
-    if (object.reqId !== undefined && object.reqId !== null) {
-      message.reqId = object.reqId;
-    } else {
-      message.reqId = undefined;
     }
     return message;
   },
