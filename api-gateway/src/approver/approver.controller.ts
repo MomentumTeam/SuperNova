@@ -272,7 +272,8 @@ export default class ApproverController {
               groupInChargeId:
                 request.additionalParams?.groupInChargeId ||
                 config.fields.rootId,
-              specialGroupId: request.additionalParams?.specialGroupId || '',
+              specialGroupId:
+                request.additionalParams?.specialGroupId || undefined,
             });
             await RequestsService.updateRequest({
               id: request.id,

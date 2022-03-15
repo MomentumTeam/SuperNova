@@ -16,7 +16,8 @@ service:
 
 volume: 
   - name: logs
-    mountPath: /logs
+    mounts:
+      - mountPath: /logs
     secretName: azure-secret
     shareName: momentum/logs
     type: azurefile

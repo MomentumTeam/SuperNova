@@ -149,6 +149,14 @@ export class ApproverRepository {
         typeof addApproverReq.type === typeof ''
           ? approverTypeFromJSON(addApproverReq.type)
           : addApproverReq.type;
+
+      if (
+        addApproverReq.specialGroupId !== undefined &&
+        addApproverReq.specialGroupId.length < 24
+      ) {
+        delete addApproverReq.specialGroupId;
+      }
+
       const adminOrSecurityAdminAlreadyExists: any = await ApproverModel.exists(
         {
           entityId: addApproverReq.entityId,
@@ -554,6 +562,20 @@ export class ApproverRepository {
       ) {
         approverTypesToSearch.push(approverTypeToJSON(ApproverType.ADMIN));
       }
+      if (
+        approverTypeFromJSON(searchByDisplayNameReq.type) ===
+        ApproverType.SECURITY_ADMIN
+      ) {
+        approverTypesToSearch.push(approverTypeToJSON(ApproverType.SECURITY));
+      }
+      if (
+        approverTypeFromJSON(searchByDisplayNameReq.type) ===
+        ApproverType.SECURITY
+      ) {
+        approverTypesToSearch.push(
+          approverTypeToJSON(ApproverType.SECURITY_ADMIN)
+        );
+      }
 
       const mongoApprovers: any = await ApproverModel.find(
         {
@@ -683,7 +705,15 @@ export class ApproverRepository {
           typeof type === typeof '' ? approverTypeFromJSON(type) : type
         );
         if (
-          types.includes(ApproverType.ADMIN) ||
+          types.includes(ApproverType.ADMIN)
+        ) {
+          currentUpdateRequest.approverType =
+            PersonTypeInRequest.ADMIN_APPROVER;
+          updatedRequest = await RequestService.updateApproverDecision(
+            currentUpdateRequest
+          );
+        }
+        else if (
           types.includes(ApproverType.COMMANDER)
         ) {
           currentUpdateRequest.approverType =
@@ -693,7 +723,10 @@ export class ApproverRepository {
           );
         }
 
-        if (types.includes(ApproverType.SECURITY)) {
+        if (
+          types.includes(ApproverType.SECURITY) ||
+          types.includes(ApproverType.SECURITY_ADMIN)
+        ) {
           currentUpdateRequest.approverType =
             PersonTypeInRequest.SECURITY_APPROVER;
           updatedRequest = await RequestService.updateApproverDecision(

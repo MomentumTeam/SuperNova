@@ -15,7 +15,8 @@ service:
     
 volume: 
   - name: logs
-    mountPath: /logs
+    mounts:
+      - mountPath: /logs
     secretName: azure-secret
     shareName: momentum/logs
     type: azurefile
@@ -33,16 +34,18 @@ ingress:
         port: 8080
 
 livenessProbe:
-  exec:
-    command: ["/bin/grpc_health_probe", "-addr=:8080"]
+  httpGet:
+    path: /isAlive
+    port: 8080
   initialDelaySeconds: 5
   periodSeconds: 5
   timeoutSeconds: 1
   successThreshold: 1
   failureThreshold: 3
 readinessProbe:
-  exec:
-    command: ["/bin/grpc_health_probe", "-addr=:8080"]
+  httpGet:
+    path: /isAlive
+    port: 8080
   initialDelaySeconds: 5
   periodSeconds: 5
   timeoutSeconds: 1

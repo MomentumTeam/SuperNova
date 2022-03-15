@@ -84,6 +84,11 @@ export function turnObjectIdsToStrings(document: any): void {
     turnIdOfApproverToString(document.superSecurityDecision.approver);
   }
 
+  // adminDecision
+  if (document.adminDecision && document.adminDecision.approver) {
+    turnIdOfApproverToString(document.adminDecision.approver);
+  }
+
   //commanders
   if (document.commanders) {
     document.commanders.forEach((commander: any) => {
@@ -101,6 +106,13 @@ export function turnObjectIdsToStrings(document: any): void {
   if (document.superSecurityApprovers) {
     document.superSecurityApprovers.forEach((superSecurityApprover: any) => {
       turnIdOfApproverToString(superSecurityApprover);
+    });
+  }
+
+
+  if (document.adminApprovers) {
+    document.adminApprovers.forEach((adminApprover: any) => {
+      turnIdOfApproverToString(adminApprover);
     });
   }
 

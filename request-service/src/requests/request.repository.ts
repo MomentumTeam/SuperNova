@@ -47,8 +47,8 @@ import {
   AreAllSubRequestsFinishedRes,
   SendSubmissionMailReq,
   RemoveApproverFromApproversReq,
-  ChangeRoleHierarchyRes,
-  KartoffelParams,
+  HasSecurityAdminReq,
+  HasSecurityAdminRes,
 } from '../interfaces/protoc/proto/requestService';
 import {
   createNotifications,
@@ -84,8 +84,6 @@ import {
 } from '../services/teaHelper';
 import { logger } from '../logger';
 import { MailType } from '../interfaces/protoc/proto/mailService';
-import { isNaN, reject } from 'lodash';
-import { updateShorthandPropertyAssignment } from 'typescript';
 import { ApproverArray } from '../interfaces/protoc/proto/approverService';
 
 export class RequestRepository {
@@ -142,6 +140,7 @@ export class RequestRepository {
         createRequestReq.commanderDecision = approverDecision;
         createRequestReq.securityDecision = approverDecision;
         createRequestReq.superSecurityDecision = approverDecision;
+        createRequestReq.adminDecision = approverDecision;
         createRequestReq.adStatus = {
           status: stageStatusToJSON(StageStatus.STAGE_WAITING_FOR_PUSH),
           message: '',
@@ -156,13 +155,49 @@ export class RequestRepository {
           RequestStatus.IN_PROGRESS
         );
       }
+
+      let submitterGroups: any[] = [createRequestReq.submittedBy.directGroup];
+
+      if (
+        createRequestReq.submittedBy.ancestors &&
+        createRequestReq.submittedBy.ancestors.length > 0
+      ) {
+        submitterGroups = [
+          ...submitterGroups,
+          ...createRequestReq.submittedBy.ancestors,
+        ];
+      }
+
+      const hasSecurityAdminReq: HasSecurityAdminReq = {
+        groupsIds: submitterGroups,
+        requestType: type,
+      };
+
+      if (type === RequestType.ADD_APPROVER) {
+        hasSecurityAdminReq.approverTypeToAdd =
+          createRequestReq.additionalParams.type;
+      }
+      const hasSecurityAdmin = await this.hasSecurityAdmin(hasSecurityAdminReq);
+
+      createRequestReq.hasSecurityAdmin = hasSecurityAdmin.hasSecurityAdmin;
+
       const request: any = new RequestModel(createRequestReq);
-      this.setNeedApproversDecisionsValues(request, type);
+      let ancestors = [];
+      if(request && request.submittedBy?.ancestors?.length) {
+         ancestors = request.submittedBy.ancestors;
+      }
+      const groupIds: string[] = [
+        request?.submittedBy?.directGroup,
+        ...ancestors
+      ];
+      const needAdminDecision = await ApproverService.includesSpecialGroup({ groupIds: groupIds })
+      this.setNeedApproversDecisionsValues(request, type, needAdminDecision.includes);
       request.type = requestTypeToJSON(type);
       const createdCreateRequest = await request.save();
       const document = createdCreateRequest.toObject();
       turnObjectIdsToStrings(document);
 
+      // TODO: ask baraks if i need to add admin check to here?
       // Get current status of the request
       if (this.isRequestApprovedBySecurity(request)) {
         await this.updateRequest({
@@ -171,7 +206,16 @@ export class RequestRepository {
             status: requestStatusToJSON(RequestStatus.APPROVED_BY_SECURITY),
           },
         });
-      } else if (this.isRequestApprovedByCommander(request)) {
+      }
+      else if (this.isRequestApprovedByAdmin(request)) {
+        await this.updateRequest({
+          id: document.id,
+          requestProperties: {
+            status: requestStatusToJSON(RequestStatus.APPROVED_BY_ADMIN),
+          },
+        });
+      }
+      else if (this.isRequestApprovedByCommander(request)) {
         await this.updateRequest({
           id: document.id,
           requestProperties: {
@@ -251,7 +295,7 @@ export class RequestRepository {
         ? decisionFromJSON(commanderDecision)
         : commanderDecision;
 
-    return commanderDecision === Decision.APPROVED;
+    return (commanderDecision === Decision.APPROVED) || (request.needAdminDecision && this.isRequestApprovedByAdmin(request));
   }
 
   isRequestApprovedBySecurity(request: Request) {
@@ -260,7 +304,6 @@ export class RequestRepository {
       typeof securityDecision === typeof ''
         ? decisionFromJSON(securityDecision)
         : securityDecision;
-    const needSecurityDecision = request.needSecurityDecision;
 
     return securityDecision === Decision.APPROVED;
   }
@@ -273,6 +316,16 @@ export class RequestRepository {
         : superSecurityDecision;
 
     return superSecurityDecision === Decision.APPROVED;
+  }
+
+  isRequestApprovedByAdmin(request: Request) {
+    let adminDecision: any = request.adminDecision?.decision;
+    adminDecision =
+      typeof adminDecision === typeof ''
+        ? decisionFromJSON(adminDecision)
+        : adminDecision;
+
+    return adminDecision === Decision.APPROVED;
   }
 
   async isRequestApproved(
@@ -291,13 +344,16 @@ export class RequestRepository {
       } else {
         const needSecurityDecision = request.needSecurityDecision;
         const needSuperSecurityDecision = request.needSuperSecurityDecision;
+        const needAdminDecision = request.needAdminDecision;
 
         if (
           this.isRequestApprovedByCommander(request) &&
           (!needSecurityDecision ||
             this.isRequestApprovedBySecurity(request)) &&
           (!needSuperSecurityDecision ||
-            this.isRequestApprovedBySuperSecurity(request))
+            this.isRequestApprovedBySuperSecurity(request)) &&
+          (!needAdminDecision ||
+            this.isRequestApprovedByAdmin(request))
         ) {
           return { isRequestApproved: true };
         } else {
@@ -327,6 +383,12 @@ export class RequestRepository {
           : request.commanderDecision.decision;
       const commanderAlreadyDecided =
         commanderDecision !== Decision.DECISION_UNKNOWN;
+      const adminDecision =
+        typeof request.adminDecision.decision === typeof ''
+          ? decisionFromJSON(request.adminDecision.decision)
+          : request.adminDecision.decision;
+      const adminAlreadyDecided =
+        adminDecision !== Decision.DECISION_UNKNOWN;
       const securityDecision =
         typeof request.securityDecision.decision === typeof ''
           ? decisionFromJSON(request.securityDecision.decision)
@@ -341,8 +403,27 @@ export class RequestRepository {
         superSecurityDecision !== Decision.DECISION_UNKNOWN;
       const needSecurityDecision = request.needSecurityDecision;
       const needSuperSecurityDecision = request.needSuperSecurityDecision;
+      const needAdminDecision = request.needAdminDecision;
+
       switch (type) {
         case ApproverType.ADMIN:
+          if (!adminAlreadyDecided && needAdminDecision) {
+            updateSetQuery = {
+              adminApprovers: removeApproverFromArray(
+                removeApproverFromApproversReq.approverId,
+                request.adminApprovers
+              ),
+            };
+          }
+          else if (!commanderAlreadyDecided && !needAdminDecision) {
+            updateSetQuery = {
+              commanderApprovers: removeApproverFromArray(
+                removeApproverFromApproversReq.approverId,
+                request.commanderApprovers
+              ),
+            };
+          }
+          break;
         case ApproverType.COMMANDER:
           if (!commanderAlreadyDecided) {
             updateSetQuery = {
@@ -354,6 +435,7 @@ export class RequestRepository {
           }
           break;
         case ApproverType.SECURITY:
+        case ApproverType.SECURITY_ADMIN:
           if (!securityAlreadyDecided && needSecurityDecision) {
             updateSetQuery = {
               securityApprovers: removeApproverFromArray(
@@ -420,6 +502,12 @@ export class RequestRepository {
           : request.commanderDecision.decision;
       const commanderAlreadyDecided =
         commanderDecision !== Decision.DECISION_UNKNOWN;
+      const adminDecision =
+        typeof request.adminDecision.decision === typeof ''
+          ? decisionFromJSON(request.adminDecision.decision)
+          : request.adminDecision.decision;
+      const adminAlreadyDecided =
+        adminDecision !== Decision.DECISION_UNKNOWN;
       const securityDecision =
         typeof request.securityDecision.decision === typeof ''
           ? decisionFromJSON(request.securityDecision.decision)
@@ -434,38 +522,39 @@ export class RequestRepository {
         superSecurityDecision !== Decision.DECISION_UNKNOWN;
       const needSecurityDecision = request.needSecurityDecision;
       const needSuperSecurityDecision = request.needSuperSecurityDecision;
+      const needAdminDecision = request.needAdminDecision;
       switch (type) {
-        case ApproverType.ADMIN:
         case ApproverType.COMMANDER:
           if (!commanderAlreadyDecided) {
             updateSetQuery = {
               commanders: overrideApprovers
                 ? transferRequestToApproverReq.approvers
                 : [
-                    ...new Map(
-                      [
-                        ...request.commanders,
-                        ...transferRequestToApproverReq.approvers,
-                      ].map((item: any) => [item.id, item])
-                    ).values(),
-                  ],
+                  ...new Map(
+                    [
+                      ...request.commanders,
+                      ...transferRequestToApproverReq.approvers,
+                    ].map((item: any) => [item.id, item])
+                  ).values(),
+                ],
               'approversComments.commanderComment': commentForApprovers,
             };
           }
           break;
         case ApproverType.SECURITY:
+        case ApproverType.SECURITY_ADMIN:
           if (!securityAlreadyDecided && needSecurityDecision) {
             updateSetQuery = {
               securityApprovers: overrideApprovers
                 ? transferRequestToApproverReq.approvers
                 : [
-                    ...new Map(
-                      [
-                        ...request.securityApprovers,
-                        ...transferRequestToApproverReq.approvers,
-                      ].map((item: any) => [item.id, item])
-                    ).values(),
-                  ],
+                  ...new Map(
+                    [
+                      ...request.securityApprovers,
+                      ...transferRequestToApproverReq.approvers,
+                    ].map((item: any) => [item.id, item])
+                  ).values(),
+                ],
               'approversComments.securityComment': commentForApprovers,
             };
           }
@@ -476,14 +565,46 @@ export class RequestRepository {
               superSecurityApprovers: overrideApprovers
                 ? transferRequestToApproverReq.approvers
                 : [
-                    ...new Map(
-                      [
-                        ...request.superSecurityApprovers,
-                        ...transferRequestToApproverReq.approvers,
-                      ].map((item: any) => [item.id, item])
-                    ).values(),
-                  ],
+                  ...new Map(
+                    [
+                      ...request.superSecurityApprovers,
+                      ...transferRequestToApproverReq.approvers,
+                    ].map((item: any) => [item.id, item])
+                  ).values(),
+                ],
               'approversComments.superSecurityComment': commentForApprovers,
+            };
+          }
+          break;
+        case ApproverType.ADMIN:
+          if (!adminAlreadyDecided && needAdminDecision) {
+            updateSetQuery = {
+              adminApprovers: overrideApprovers
+                ? transferRequestToApproverReq.approvers
+                : [
+                  ...new Map(
+                    [
+                      ...request.adminApprovers,
+                      ...transferRequestToApproverReq.approvers,
+                    ].map((item: any) => [item.id, item])
+                  ).values(),
+                ],
+              'approversComments.adminComment': commentForApprovers,
+            };
+          }
+          else if (!commanderAlreadyDecided && !needAdminDecision) {
+            updateSetQuery = {
+              commanders: overrideApprovers
+                ? transferRequestToApproverReq.approvers
+                : [
+                  ...new Map(
+                    [
+                      ...request.commanders,
+                      ...transferRequestToApproverReq.approvers,
+                    ].map((item: any) => [item.id, item])
+                  ).values(),
+                ],
+              'approversComments.commanderComment': commentForApprovers,
             };
           }
           break;
@@ -524,6 +645,7 @@ export class RequestRepository {
       };
 
       let approverField;
+      let otherApproverUpdates = [];
       switch (approverType) {
         case PersonTypeInRequest.COMMANDER_APPROVER:
           approverField = 'commanderDecision';
@@ -531,9 +653,21 @@ export class RequestRepository {
         case PersonTypeInRequest.SECURITY_APPROVER:
           approverField = 'securityDecision';
           break;
+        case PersonTypeInRequest.ADMIN_APPROVER:
+          approverField = 'adminDecision';
+          let prevReq = await this.getRequestById({
+            id: updateDecisionReq.id
+          });
+          let commanderDecision = prevReq.commanderDecision?.decision;
+          commanderDecision = typeof commanderDecision === typeof "" ? decisionFromJSON(commanderDecision) : commanderDecision;
+          if(commanderDecision !== Decision.APPROVED && commanderDecision !== Decision.DENIED) {
+             otherApproverUpdates.push('commanderDecision')
+          }         
+          break;
         case PersonTypeInRequest.APPROVER:
         case PersonTypeInRequest.SUPER_SECURITY_APPROVER:
           approverField = 'superSecurityDecision';
+        break
         default:
           break;
       }
@@ -542,6 +676,12 @@ export class RequestRepository {
         // Update request
         updateQuery.requestProperties[approverField] =
           updateDecisionReq.approverDecision;
+        if(otherApproverUpdates.length) {
+          otherApproverUpdates.forEach(approverField => {
+            updateQuery.requestProperties[approverField] =
+              updateDecisionReq.approverDecision;
+          })
+        }
         let updatedRequest = await this.updateRequest(updateQuery);
         let oldRequestStatus: any = updatedRequest.status;
         oldRequestStatus =
@@ -569,6 +709,8 @@ export class RequestRepository {
             newRequestStatus = RequestStatus.APPROVED_BY_COMMANDER;
           } else if (approverType === PersonTypeInRequest.SECURITY_APPROVER) {
             newRequestStatus = RequestStatus.APPROVED_BY_SECURITY;
+          } else if (approverType === PersonTypeInRequest.ADMIN_APPROVER) {
+            newRequestStatus = RequestStatus.APPROVED_BY_ADMIN;
           }
         }
 
@@ -624,7 +766,8 @@ export class RequestRepository {
 
         // Get notification type
         if (decision === Decision.APPROVED) {
-          if (approverType === PersonTypeInRequest.COMMANDER_APPROVER) {
+          if (approverType === PersonTypeInRequest.COMMANDER_APPROVER ||
+            approverType === PersonTypeInRequest.ADMIN_APPROVER) {
             approvingNotificationType = NotificationType.REQUEST_APPROVED_1;
             approvingMailType = MailType.REQUEST_APPROVED_1;
           } else if (approverType === PersonTypeInRequest.SECURITY_APPROVER) {
@@ -635,7 +778,8 @@ export class RequestRepository {
             approvingMailType = MailType.REQUEST_APPROVED_3;
           }
         } else if (decision === Decision.DENIED) {
-          if (approverType === PersonTypeInRequest.COMMANDER_APPROVER) {
+          if (approverType === PersonTypeInRequest.COMMANDER_APPROVER ||
+            approverType === PersonTypeInRequest.ADMIN_APPROVER) {
             approvingNotificationType = NotificationType.REQUEST_DECLINED_1;
             approvingMailType = MailType.REQUEST_DECLINED_1;
           } else if (approverType === PersonTypeInRequest.SECURITY_APPROVER) {
@@ -905,9 +1049,9 @@ export class RequestRepository {
       const pagination =
         from && to
           ? {
-              skip: from - 1,
-              limit: to - from + 1,
-            }
+            skip: from - 1,
+            limit: to - from + 1,
+          }
           : {};
 
       const totalCount = await RequestModel.count(query);
@@ -1053,6 +1197,7 @@ export class RequestRepository {
           typeof documentObj.type === typeof ''
             ? requestTypeFromJSON(documentObj.type)
             : documentObj.type;
+
         // if bulk
         if (
           (requestType === RequestType.CREATE_ROLE_BULK ||
@@ -1060,6 +1205,7 @@ export class RequestRepository {
           (requestUpdate.commanderDecision ||
             requestUpdate.securityDecision ||
             requestUpdate.superSecurityDecision ||
+            requestUpdate.adminDecision ||
             requestUpdate.status)
         ) {
           if (
@@ -1067,7 +1213,7 @@ export class RequestRepository {
             requestUpdate.status === null ||
             (requestUpdate.status !== requestStatusToJSON(RequestStatus.DONE) &&
               requestUpdate.status !==
-                requestStatusToJSON(RequestStatus.FAILED) &&
+              requestStatusToJSON(RequestStatus.FAILED) &&
               requestUpdate.status !== RequestStatus.DONE &&
               requestUpdate.status !== RequestStatus.FAILED)
           ) {
@@ -1283,7 +1429,8 @@ export class RequestRepository {
     }
   }
 
-  setNeedApproversDecisionsValues(request: any, type: RequestType): void {
+  setNeedApproversDecisionsValues(request: any, type: RequestType, needAdminDecision = false): void {
+    request.needAdminDecision = needAdminDecision;
     switch (type) {
       case RequestType.CREATE_OG:
         request.needSecurityDecision = false;
@@ -1294,7 +1441,6 @@ export class RequestRepository {
         request.needSecurityDecision = true;
         request.needSuperSecurityDecision = false;
         break;
-
       case RequestType.ASSIGN_ROLE_TO_ENTITY:
         request.needSecurityDecision = true;
         request.needSuperSecurityDecision = false;
@@ -1351,7 +1497,6 @@ export class RequestRepository {
         request.needSecurityDecision = true;
         request.needSuperSecurityDecision = true;
         break;
-
       case RequestType.ADD_APPROVER:
         const approverType = approverTypeFromJSON(
           request.additionalParams.type
@@ -1375,6 +1520,7 @@ export class RequestRepository {
           request.needSecurityDecision = false;
           request.needSuperSecurityDecision = false;
         } else {
+          //in case of SECUIRTY_ADMIN
           request.needSecurityDecision = true;
           request.needSuperSecurityDecision = false;
         }
@@ -1464,6 +1610,20 @@ export class RequestRepository {
     }
   }
 
+  async updateAdminApprovers(
+    updateApproversReq: UpdateApproversReq
+  ): Promise<Request> {
+    try {
+      const request: Request = await this.updateRequest({
+        id: updateApproversReq.id,
+        requestProperties: { adminApprovers: updateApproversReq.approvers },
+      });
+      return request;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async getRequestsByPerson(getRequestsByPersonReq: GetRequestsByPersonReq) {
     try {
       let query: any = {};
@@ -1478,17 +1638,21 @@ export class RequestRepository {
         typeof getRequestsByPersonReq.personType === typeof ''
           ? personTypeInRequestFromJSON(getRequestsByPersonReq.personType)
           : getRequestsByPersonReq.personType;
+
       getRequestsByPersonReq.approvementStatus =
         getRequestsByPersonReq.approvementStatus
           ? getRequestsByPersonReq.approvementStatus
           : ApprovementStatus.ANY;
+
       const approvementStatus: ApprovementStatus =
         typeof getRequestsByPersonReq.approvementStatus === typeof ''
           ? approvementStatusFromJSON(getRequestsByPersonReq.approvementStatus)
           : getRequestsByPersonReq.approvementStatus;
+
       let userType: any[] = getRequestsByPersonReq.userType
         ? getRequestsByPersonReq.userType
         : [];
+
       userType = userType.map((type) => {
         return typeof type === typeof '' ? approverTypeFromJSON(type) : type;
       });
@@ -1531,11 +1695,14 @@ export class RequestRepository {
 
       if (
         approvementStatus === ApprovementStatus.BY_USER_TYPE &&
-        getRequestsByPersonReq.groupsInCharge &&
-        userType.includes(ApproverType.ADMIN)
+        (userType.includes(ApproverType.ADMIN) ||
+          userType.includes(ApproverType.SECURITY_ADMIN)) &&
+        personTypeInRequest === PersonTypeInRequest.GET_ALL
       ) {
         const ancestorsQuery = getAncestorsQuery(
-          getRequestsByPersonReq.groupsInCharge
+          getRequestsByPersonReq.adminGroupsInCharge,
+          getRequestsByPersonReq.securityAdminGroupsInCharge,
+          userType
         );
         if (query['$or']) {
           query['$and'] = [{ $or: query['$or'] }, ancestorsQuery];
@@ -1559,10 +1726,14 @@ export class RequestRepository {
                 case: { $eq: ['$status', 'APPROVED_BY_SECURITY'] },
                 then: 2,
               },
-              { case: { $eq: ['$status', 'IN_PROGRESS'] }, then: 3 },
-              { case: { $eq: ['$status', 'FAILED'] }, then: 4 },
-              { case: { $eq: ['$status', 'DECLINED'] }, then: 5 },
-              { case: { $eq: ['$status', 'DONE'] }, then: 6 },
+              {
+                case: { $eq: ['$status', 'APPROVED_BY_ADMIN'] },
+                then: 3,
+              },
+              { case: { $eq: ['$status', 'IN_PROGRESS'] }, then: 4 },
+              { case: { $eq: ['$status', 'FAILED'] }, then: 5 },
+              { case: { $eq: ['$status', 'DECLINED'] }, then: 6 },
+              { case: { $eq: ['$status', 'DONE'] }, then: 7 },
             ],
             default: 0,
           },
@@ -1772,13 +1943,56 @@ export class RequestRepository {
       throw error;
     }
   }
-}
 
-// createCustomNotification(
-//   type: NotificationType.CHANGE_ROLE_HIERARCHY,
-//   ownerId: '',
-//   ownerType: OwnerType,
-//   requestId: '',
-//   message: '',
-//   reason: '',
-//  )
+  async hasSecurityAdmin(
+    hasSecurityAdminReq: HasSecurityAdminReq
+  ): Promise<HasSecurityAdminRes> {
+    try {
+      let hasSecurityAdmin = false;
+
+      const reqType =
+        typeof hasSecurityAdminReq.requestType === typeof ''
+          ? requestTypeFromJSON(hasSecurityAdminReq.requestType)
+          : hasSecurityAdminReq.requestType;
+
+      const approverTypeToAdd =
+        typeof hasSecurityAdminReq.approverTypeToAdd === typeof ''
+          ? approverTypeFromJSON(hasSecurityAdminReq.approverTypeToAdd)
+          : hasSecurityAdminReq.approverTypeToAdd;
+
+      const containsGroupWithSecurityAdmin = C.groupsWithSecurityAdmin.some(
+        (groupId: any) => {
+          return hasSecurityAdminReq.groupsIds.includes(groupId);
+        }
+      );
+
+      switch (reqType) {
+        case RequestType.CREATE_ROLE: // 1
+        case RequestType.CREATE_ROLE_BULK: // 1.1
+        case RequestType.CHANGE_ROLE_HIERARCHY_BULK: // 2.1
+          hasSecurityAdmin = containsGroupWithSecurityAdmin;
+          break;
+        case RequestType.CHANGE_ROLE_HIERARCHY: // 2
+        case RequestType.ASSIGN_ROLE_TO_ENTITY: // 3, 4
+        case RequestType.CREATE_ENTITY: // 4.1
+        case RequestType.CREATE_OG: // 5
+        case RequestType.RENAME_OG: // 7
+        case RequestType.RENAME_ROLE: // 8
+        case RequestType.EDIT_ENTITY: // 9
+        case RequestType.ADD_APPROVER: // 6
+          hasSecurityAdmin = false;
+          break;
+        default:
+          hasSecurityAdmin = false;
+          break;
+      }
+      return { hasSecurityAdmin };
+    } catch (error: any) {
+      logger.error('hasSecurityAdmin ERROR', {
+        hasSecurityAdminReq,
+        error: { message: error.message },
+      });
+      throw error;
+    }
+  }
+}

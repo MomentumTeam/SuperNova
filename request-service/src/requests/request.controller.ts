@@ -590,6 +590,25 @@ export async function updateSuperSecurityApprovers(
   }
 }
 
+export async function updateAdminApprovers(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    const request = await requestManager.updateAdminApprovers(call.request);
+    callback(null, request);
+  } catch (error: any) {
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
 export async function getRequestsInProgressByDue(
   call: any,
   callback: any
@@ -749,6 +768,35 @@ export async function syncBulkRequest(call: any, callback: any): Promise<void> {
     callback(null, request);
   } catch (error: any) {
     logger.error(`syncBulkRequest ERROR`, {
+      callRequest: call.request,
+      error: { message: error.message },
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function hasSecurityAdmin(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    logger.info(`Call to hasSecurityAdmin`, {
+      callRequest: call.request,
+    });
+    const request = await requestManager.hasSecurityAdmin(call.request);
+    logger.info(`hasSecurityAdmin OK`, {
+      callRequest: call.request,
+    });
+    callback(null, request);
+  } catch (error: any) {
+    logger.error(`hasSecurityAdmin ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
     });
