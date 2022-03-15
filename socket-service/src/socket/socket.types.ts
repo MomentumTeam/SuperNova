@@ -9,4 +9,5 @@ export enum EventName {
   newRequestMy = "newRequestMy",
   newRequestAll = "newRequestAll",
   updateRequest = "updateRequest",
+  deleteRequest = "deleteRequest"
 }

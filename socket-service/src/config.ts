@@ -2,7 +2,9 @@ import * as env from "env-var";
 
 export const config = {
   server: {
-    port: env.get("SKS_APPLICATION_PORT").default(2001).asPortNumber(),
+    host: env.get("SKS_HOST").default('0.0.0.0').asString(),
+    socketPort: env.get("SKS_APPLICATION_SOCKET_PORT").default(8080).asPortNumber(),
+    grpcPort: env.get("SKS_APPLICATION_GRPC_PORT").default(8089).asPortNumber(),
     name: "socket-service",
   },
   approver: {

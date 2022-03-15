@@ -77,8 +77,8 @@ import {
 } from '../services/teaHelper';
 import { logger } from '../logger';
 import { MailType } from '../interfaces/protoc/proto/mailService';
-import { isNaN } from 'lodash';
-import { HandleCall } from '@grpc/grpc-js/build/src/server-call';
+import { SocketService } from '../services/socketService';
+import { SocketEventType } from '../interfaces/protoc/proto/socketService';
 
 export class RequestRepository {
   async createRequest(
@@ -188,6 +188,7 @@ export class RequestRepository {
           requestProperties: {
             status: requestStatusToJSON(RequestStatus.APPROVED_BY_SECURITY),
           },
+          sendSocket: false
         });
       } else if (this.isRequestApprovedByCommander(request)) {
         await this.updateRequest({
@@ -195,6 +196,7 @@ export class RequestRepository {
           requestProperties: {
             status: requestStatusToJSON(RequestStatus.APPROVED_BY_COMMANDER),
           },
+          sendSocket: false
         });
       }
 
@@ -207,6 +209,7 @@ export class RequestRepository {
           requestProperties: {
             status: requestStatusToJSON(RequestStatus.IN_PROGRESS),
           },
+          sendSocket: false,
         });
         if (
           type !== RequestType.CHANGE_ROLE_HIERARCHY_BULK &&
@@ -241,6 +244,16 @@ export class RequestRepository {
           }
         }
       }
+      
+      try {
+        await SocketService.SendEvent({
+          eventType: SocketEventType.NEW_REQUEST,
+          eventData: { request: document as Request, additionalDests: [] },
+        });
+      } catch (error) {
+        logger.error("can't send socket info", error);
+      }
+
       return document as Request;
     } catch (error) {
       throw error;
@@ -359,6 +372,7 @@ export class RequestRepository {
         superSecurityDecision !== Decision.DECISION_UNKNOWN;
       const needSecurityDecision = request.needSecurityDecision;
       const needSuperSecurityDecision = request.needSuperSecurityDecision;
+
       switch (type) {
         case ApproverType.ADMIN:
         case ApproverType.COMMANDER:
@@ -403,6 +417,17 @@ export class RequestRepository {
       if (documentAfter) {
         const documentObj = documentAfter.toObject();
         turnObjectIdsToStrings(documentObj);
+
+        try {
+          await SocketService.SendEvent({
+            eventType: SocketEventType.UPDATE_REQUEST_APPROVERS,
+            eventData: { request: documentObj as Request, oldRequest: request, additionalDests: [] },
+          });
+        } catch (error) {
+          logger.error("can't send socket info", error);
+        }
+      
+
         return documentObj as Request;
       } else {
         throw new Error(
@@ -453,6 +478,7 @@ export class RequestRepository {
         superSecurityDecision !== Decision.DECISION_UNKNOWN;
       const needSecurityDecision = request.needSecurityDecision;
       const needSuperSecurityDecision = request.needSuperSecurityDecision;
+
       switch (type) {
         case ApproverType.ADMIN:
         case ApproverType.COMMANDER:
@@ -518,6 +544,16 @@ export class RequestRepository {
       if (documentAfter) {
         const documentObj = documentAfter.toObject();
         turnObjectIdsToStrings(documentObj);
+
+        try {
+          await SocketService.SendEvent({
+            eventType: SocketEventType.UPDATE_REQUEST_APPROVERS,
+            eventData: { request: documentObj as Request, oldRequest: request, additionalDests: [] },
+          });
+        } catch (error) {
+          logger.error("can't send socket info", error);
+        }
+      
         return documentObj as Request;
       } else {
         throw new Error(
@@ -541,6 +577,7 @@ export class RequestRepository {
       let updateQuery: any = {
         id: updateDecisionReq.id,
         requestProperties: {},
+        sendSocket: false,
       };
 
       let approverField;
@@ -1046,10 +1083,22 @@ export class RequestRepository {
         success: true,
         message: `Request ${deleteReq.id} was deleted successfully`,
       };
+      
+      // TODONETTA: add socket remove request
       await createNotifications(
         NotificationType.REQUEST_DELETED,
         requestBefore
       );
+
+      try {
+        await SocketService.SendEvent({
+          eventType: SocketEventType.DELETE_REQUEST,
+          eventData: { oldRequest: requestBefore, additionalDests: [] },
+        });
+      } catch (error) {
+        logger.error("can't send socket info", error);
+      }
+      
       return res;
     } catch (error) {
       throw error;
@@ -1109,6 +1158,17 @@ export class RequestRepository {
             await this.syncBulkRequest({ id: bulkRequestId });
           }
         }
+
+        if (!("sendSocket" in updateReq) || updateReq.sendSocket)
+          try {
+            await SocketService.SendEvent({
+              eventType: SocketEventType.UPDATE_REQUEST,
+              eventData: { request: documentObj as Request, additionalDests: [] },
+            });
+          } catch (error) {
+            logger.error("can't send socket info", error);
+          }
+
         return documentObj as Request;
       } else {
         throw new Error(`A request with {_id: ${updateReq.id}} was not found!`);

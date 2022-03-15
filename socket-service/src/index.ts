@@ -1,18 +1,14 @@
-import mongoose from "mongoose";
-import { MongoStream } from "./mongo/mongo.stream";
-import { MongoConn } from "./mongo/mongo.conn";
 import { Server } from "./server";
 import { logger } from "./utils/logger/logger";
+import { GrpcServer } from './grpcServer';
 
 async function main(): Promise<void> {
   try {
-    const server = Server.createServer();
-    await new MongoConn().connectMongo();
-    server.startServer();
+    const socketServer = Server.createServer();
+    socketServer.startServer();
 
-    await mongoose.connection.once("open", () => {
-      new MongoStream(server.io);
-    });
+    const grpcServer = new GrpcServer(socketServer.io);
+    await grpcServer.startServer();
 
     logger.info("socket-service started successfully");
   } catch (error: any) {

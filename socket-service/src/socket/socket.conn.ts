@@ -14,9 +14,7 @@ export class SocketsConnector {
     this.io = io;
     this.redisEnabled = redisEnabled;
 
-    if (this.redisEnabled) {
-      const redisAdapter = new RedisConnAdapter(this.io);
-    }
+    if (this.redisEnabled) new RedisConnAdapter(this.io);
   }
 
 

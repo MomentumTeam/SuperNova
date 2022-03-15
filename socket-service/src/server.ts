@@ -18,8 +18,8 @@ export class Server {
   }
 
   public startServer() {
-    this.server.listen(config.server.port, () => {
-      logger.info(`${config.server.name} listening on port ${config.server.port}`);
+    this.server.listen(config.server.socketPort, () => {
+      logger.info(`${config.server.name} listening on port ${config.server.socketPort}`);
     });
   }
 

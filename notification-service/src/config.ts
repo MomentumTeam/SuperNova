@@ -41,3 +41,5 @@ export const logPath = process.env.NS_LOG_PATH
 export const storeLogs = process.env.GLOBAL_STORE_LOGS
   ? process.env.GLOBAL_STORE_LOGS === 'true'
   : false;
+export const socketServiceUrl = process.env.NS_SKS_URL || "0.0.0.0:8095";
+export const grpcPoolSize = process.env.GLOBAL_GRPC_POOL_SIZE ? parseInt(process.env.GLOBAL_GRPC_POOL_SIZE) : 2;

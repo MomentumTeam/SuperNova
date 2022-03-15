@@ -68,6 +68,7 @@ services:
       - notification-service
       - tea-service
       - mail-service
+      - socket-service
     volumes:
       - logs:/logs
     environment:
@@ -75,6 +76,7 @@ services:
       - RS_NS_URL=notification-service:8080
       - RS_TS_URL=tea-service:8080
       - RS_MS_URL=mail-service:8080
+      - RS_SKS_URL=socket-service:8089
       - RS_APS_URL=approver-service:8080
       - RS_ROOT_ID=619e3193f235dc001846bb4f
       - RS_KARTOFFEL_GOAL_USER=GoalUser
@@ -140,9 +142,12 @@ services:
       - logs:/logs
     ports:
       - '8084:8080'
+    depends_on:
+      - socket-service
     environment:
       - NS_MONGO_URL=mongodb://mongo:27017/supernova
       - NS_LOG_PATH=/logs
+      - NS_SKS_URL=socket-service:8089
 
   approver-service:
     image: approver-service
@@ -334,6 +339,21 @@ services:
   #     - POS_GENERATE_COUNT=50
   #     - POS_LOG_PATH=/logs
 
+  socket-service:
+      image: socket-service
+      build: ./socket-service/
+      env_file:
+        - ./supernova.env
+      ports:
+        - '2001:8080'
+        - '8089:8089'
+      depends_on:
+        - mongo
+      environment:
+        - SKS_MONGO_URI=mongodb://mongo:27017/supernova
+        - SKS_REDIS_HOST=redis
+        - SKS_APS_URL=approver-service:8080
+
   authentication-service:
     image: authentication-service
     build: ./authentication-service/
@@ -357,7 +377,7 @@ services:
       - AS_APPROVER_ENRICH=true
       - AS_USE_SHRAGA_LOCAL_MAP=true
       - AS_SHRAGA_LOCAL_MAP_IDS=619e3a6fe4de0300121d78c7,619e406ee4de0300121dc4c8,619e42b6e4de0300121dc4e3,619e5132e4de0300121dc528,619f8aa0e4de0300121dd3f4
-      - AS_SHRAGA_LOCAL_MAP_DIS=t23458789sh@jello,t25458789sh@jello,t25458711sh@jello,gggUsersh@rabiran,e595300134sh@turtle
+      - AS_SHRAGA_LOCAL_MAP_DIS=t23458789sh@jello,t25458789sh@jello,t25458711sh@jello,gggusersh@rabiran,e595300134sh@turtle
       - AS_LOG_PATH=/logs
 
   api-gateway:
@@ -403,19 +423,19 @@ services:
       - GATEWAY_ROOT_ID=619e3193f235dc001846bb4f
       - GATEWAY_LOG_PATH=/logs
 
-  supernova-ui:
-    image: supernova-ui
-    build: ./SuperNovaUI/
-    env_file:
-      - ./supernova.env
-    depends_on:
-      - api-gateway
-    ports:
-      - '3000:80'
-    environment:
-      - UI_REACT_APP_BASE_URL=http://localhost:2000
-      - UI_REACT_TOKEN_NAME=sp-token
-      - UI_USER_SOURCE_DI=es_name
+  # supernova-ui:
+  #   image: supernova-ui
+  #   build: ./SuperNovaUI/
+  #   env_file:
+  #     - ./supernova.env
+  #   depends_on:
+  #     - api-gateway
+  #   ports:
+  #     - '3000:80'
+  #   environment:
+  #     - UI_REACT_APP_BASE_URL=http://localhost:2000
+  #     - UI_REACT_TOKEN_NAME=sp-token
+  #     - UI_USER_SOURCE_DI=es_name
 
 volumes:
   bulk-files:
