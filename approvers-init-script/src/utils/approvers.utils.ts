@@ -17,7 +17,10 @@ export async function addApprovers(approverObj: ApproverObj) {
       KartoffelService.getEntityByDI({ uniqueId: diUniqueId })
         .then((entity) => {
           entity.type = approverObj.type;
-          if (entity.type === ApproverType.ADMIN) {
+          if (
+            entity.type === ApproverType.ADMIN ||
+            entity.type === ApproverType.SECURITY_ADMIN
+          ) {
             entity.groupInChargeId = approverObj.groupInChargeId[index];
           }
           ApproverService.addApprover(entity)

@@ -152,10 +152,11 @@ message GetAllApproverTypesReq {
 
 message GetAllApproverTypesRes {
     repeated RequestService.ApproverType types = 1;
-    repeated groupsInCharge groupsInCharge = 2;
+    repeated GroupInCharge securityAdminGroupsInCharge = 2;
+    repeated GroupInCharge adminGroupsInCharge = 3;
 }
 
-message groupsInCharge {
+message GroupInCharge {
     string id = 1;
     string name = 2;
     string hierarchy = 3;

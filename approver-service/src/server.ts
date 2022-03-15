@@ -18,6 +18,7 @@ import {
   updateApproverDecision,
   getAllMyApproverTypes,
   includesSpecialGroup,
+  getAdminsAboveGroupId,
 } from './approver/approver.controller';
 import { findPath } from './utils/path';
 import { addHealthService } from './health';
@@ -77,6 +78,7 @@ export class Server {
           GetAllMyApproverTypes: getAllMyApproverTypes,
           GetAdminsByGroupIds: getAdminsByGroupIds,
           includesSpecialGroup: includesSpecialGroup,
+          GetAdminsAboveGroupId: getAdminsAboveGroupId,
         }
       );
       logger.info(`Grpc services were successfully added to the server`);
