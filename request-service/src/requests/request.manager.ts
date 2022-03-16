@@ -295,6 +295,18 @@ export class RequestManager {
     }
   }
 
+  async updateAdminApprovers(
+    updateApproversReq: UpdateApproversReq
+  ): Promise<Request> {
+    try {
+      return (await this.requestRepository.updateAdminApprovers(
+        updateApproversReq
+      )) as Request;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async getRequestBySerialNumber(
     getRequestBySerialNumberReq: GetRequestBySerialNumberReq
   ) {

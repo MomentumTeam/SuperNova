@@ -100,6 +100,12 @@ export function getIdQuery(
         'superSecurityApprovers.id': ObjectId(id),
       };
       break;
+    case PersonTypeInRequest.ADMIN_APPROVER:
+      query = {
+        'submittedBy.id': { $ne: ObjectId(id) },
+        'adminApprovers.id': ObjectId(id),
+      };
+      break;
     case PersonTypeInRequest.APPROVER:
       //PersonTypeInRequest.APPROVER
       query = {
@@ -108,6 +114,7 @@ export function getIdQuery(
           { 'commanders.id': ObjectId(id) },
           { 'securityApprovers.id': ObjectId(id) },
           { 'superSecurityApprovers.id': ObjectId(id) },
+          { 'adminApprovers.id': ObjectId(id) },
         ],
       };
       break;
@@ -306,6 +313,7 @@ export function getApprovementQuery(
 ) {
   switch (approvementStatus) {
     case ApprovementStatus.COMMANDER_APPROVE:
+    case ApprovementStatus.ADMIN_APPROVE:
       return {
         $or: [
           {
@@ -323,11 +331,18 @@ export function getApprovementQuery(
         ? true
         : false;
       return {
-        $and: [
-          { hasSecurityAdmin: hasSecurityAdmin },
-          { needSecurityDecision: true },
+        $or: [
           {
+            needSecurityDecision: true,
+            needAdminDecision: false,
             'commanderDecision.decision': decisionToJSON(Decision.APPROVED),
+            hasSecurityAdmin: hasSecurityAdmin,
+          },
+          {
+            needSecurityDecision: true,
+            needAdminDecision: true,
+            'adminDecision.decision': decisionToJSON(Decision.APPROVED),
+            hasSecurityAdmin: hasSecurityAdmin,
           },
         ],
       };
@@ -342,7 +357,14 @@ export function getApprovementQuery(
           {
             needSuperSecurityDecision: true,
             needSecurityDecision: false,
+            needAdminDecision: false,
             'commanderDecision.decision': decisionToJSON(Decision.APPROVED),
+          },
+          {
+            needSuperSecurityDecision: true,
+            needSecurityDecision: false,
+            needAdminDecision: true,
+            'adminDecision.decision': decisionToJSON(Decision.APPROVED),
           },
         ],
       };
@@ -356,17 +378,27 @@ export function getApprovementQuery(
 
 export function getApprovementQueryByUserType(userType: ApproverType[]) {
   let or: any = [];
-  let commanderInserted: boolean = false;
+  let commanderOrAdminInserted: boolean = false;
   for (let type of userType) {
     if (
-      (type === ApproverType.COMMANDER || type === ApproverType.ADMIN) &&
-      !commanderInserted
+      type === ApproverType.COMMANDER &&
+      !commanderOrAdminInserted
     ) {
-      commanderInserted = true;
+      commanderOrAdminInserted = true;
       or.push(
         getApprovementQuery(ApprovementStatus.COMMANDER_APPROVE, userType)
       );
-    } else if (
+    } 
+    else if (
+      type === ApproverType.ADMIN &&
+      !commanderOrAdminInserted
+    ) {
+      commanderOrAdminInserted = true;
+      or.push(
+        getApprovementQuery(ApprovementStatus.ADMIN_APPROVE, userType)
+      );
+    } 
+    else if (
       type === ApproverType.SECURITY ||
       type === ApproverType.SECURITY_ADMIN
     ) {
