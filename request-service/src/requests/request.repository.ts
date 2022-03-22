@@ -80,8 +80,6 @@ import { MailType } from '../interfaces/protoc/proto/mailService';
 import { SocketService } from '../services/socketService';
 import { SocketEventType } from '../interfaces/protoc/proto/socketService';
 import ApproverService from '../services/approverService';
-import { isNaN } from 'lodash';
-import { HandleCall } from '@grpc/grpc-js/build/src/server-call';
 
 export class RequestRepository {
   async createRequest(
@@ -269,9 +267,10 @@ export class RequestRepository {
       }
       
       try {
+        const req = document as Request
         await SocketService.SendEvent({
           eventType: SocketEventType.NEW_REQUEST,
-          eventData: { request: document as Request, additionalDests: [] },
+          eventData: { request: req, additionalDests: [] },
         });
       } catch (error) {
         logger.error("can't send socket info", error);
