@@ -69,6 +69,7 @@ services:
       - tea-service
       - mail-service
       - socket-service
+      - approver-service
     volumes:
       - logs:/logs
     environment:
