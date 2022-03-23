@@ -1,8 +1,8 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Request } from "./requestService";
 import { Notification } from "./notificationService";
+import { Request } from "./requestService";
 
 export const protobufPackage = "SocketService";
 
@@ -65,7 +65,6 @@ export function socketEventTypeToJSON(object: SocketEventType): string {
 export interface SendEventReq {
   eventType: SocketEventType;
   eventData?: SocketEventData | undefined;
-  request?: Request | undefined;
 }
 
 export interface SuccessMessage {
@@ -74,7 +73,7 @@ export interface SuccessMessage {
 
 export interface SocketEventData {
   notification?: Notification | undefined;
-  /** optional RequestService.Request requestObj = 2; */
+  request?: Request | undefined;
   oldRequest?: Request | undefined;
   additionalDests: string[];
 }
@@ -95,9 +94,6 @@ export const SendEventReq = {
         writer.uint32(18).fork()
       ).ldelim();
     }
-    if (message.request !== undefined) {
-      Request.encode(message.request, writer.uint32(26).fork()).ldelim();
-    }
     return writer;
   },
 
@@ -113,9 +109,6 @@ export const SendEventReq = {
           break;
         case 2:
           message.eventData = SocketEventData.decode(reader, reader.uint32());
-          break;
-        case 3:
-          message.request = Request.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -137,11 +130,6 @@ export const SendEventReq = {
     } else {
       message.eventData = undefined;
     }
-    if (object.request !== undefined && object.request !== null) {
-      message.request = Request.fromJSON(object.request);
-    } else {
-      message.request = undefined;
-    }
     return message;
   },
 
@@ -152,10 +140,6 @@ export const SendEventReq = {
     message.eventData !== undefined &&
       (obj.eventData = message.eventData
         ? SocketEventData.toJSON(message.eventData)
-        : undefined);
-    message.request !== undefined &&
-      (obj.request = message.request
-        ? Request.toJSON(message.request)
         : undefined);
     return obj;
   },
@@ -171,11 +155,6 @@ export const SendEventReq = {
       message.eventData = SocketEventData.fromPartial(object.eventData);
     } else {
       message.eventData = undefined;
-    }
-    if (object.request !== undefined && object.request !== null) {
-      message.request = Request.fromPartial(object.request);
-    } else {
-      message.request = undefined;
     }
     return message;
   },
@@ -252,11 +231,14 @@ export const SocketEventData = {
         writer.uint32(10).fork()
       ).ldelim();
     }
+    if (message.request !== undefined) {
+      Request.encode(message.request, writer.uint32(18).fork()).ldelim();
+    }
     if (message.oldRequest !== undefined) {
-      Request.encode(message.oldRequest, writer.uint32(18).fork()).ldelim();
+      Request.encode(message.oldRequest, writer.uint32(26).fork()).ldelim();
     }
     for (const v of message.additionalDests) {
-      writer.uint32(26).string(v!);
+      writer.uint32(34).string(v!);
     }
     return writer;
   },
@@ -273,9 +255,12 @@ export const SocketEventData = {
           message.notification = Notification.decode(reader, reader.uint32());
           break;
         case 2:
-          message.oldRequest = Request.decode(reader, reader.uint32());
+          message.request = Request.decode(reader, reader.uint32());
           break;
         case 3:
+          message.oldRequest = Request.decode(reader, reader.uint32());
+          break;
+        case 4:
           message.additionalDests.push(reader.string());
           break;
         default:
@@ -293,6 +278,11 @@ export const SocketEventData = {
       message.notification = Notification.fromJSON(object.notification);
     } else {
       message.notification = undefined;
+    }
+    if (object.request !== undefined && object.request !== null) {
+      message.request = Request.fromJSON(object.request);
+    } else {
+      message.request = undefined;
     }
     if (object.oldRequest !== undefined && object.oldRequest !== null) {
       message.oldRequest = Request.fromJSON(object.oldRequest);
@@ -316,6 +306,10 @@ export const SocketEventData = {
       (obj.notification = message.notification
         ? Notification.toJSON(message.notification)
         : undefined);
+    message.request !== undefined &&
+      (obj.request = message.request
+        ? Request.toJSON(message.request)
+        : undefined);
     message.oldRequest !== undefined &&
       (obj.oldRequest = message.oldRequest
         ? Request.toJSON(message.oldRequest)
@@ -335,6 +329,11 @@ export const SocketEventData = {
       message.notification = Notification.fromPartial(object.notification);
     } else {
       message.notification = undefined;
+    }
+    if (object.request !== undefined && object.request !== null) {
+      message.request = Request.fromPartial(object.request);
+    } else {
+      message.request = undefined;
     }
     if (object.oldRequest !== undefined && object.oldRequest !== null) {
       message.oldRequest = Request.fromPartial(object.oldRequest);
