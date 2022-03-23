@@ -180,6 +180,11 @@ export const config = {
       )
       .asString()
       ?.split(','),
+    CREATE_SECURITY_ADMIN_APPROVERS: env
+      .get('UI_CREATE_SECURITY_ADMIN_APPROVERS')
+      .default('61dd539ce4de030012202d5e,619e3a6fe4de0300121d78c7')
+      .asString()
+      ?.split(','),
     CREATE_SOLDIER_APPROVERS: env
       .get('UI_CREATE_SOLDIER_APPROVERS')
       .default('619e3a6fe4de0300121d78c7,619e406ee4de0300121dc4c8')

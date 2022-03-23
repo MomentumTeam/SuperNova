@@ -67,7 +67,15 @@ export const approveUserRequest = async (
                 (approverToAddType === ApproverType.ADMIN &&
                   !config.ui.CREATE_ADMIN_APPROVERS.includes(req.user.id)) ||
                 (approverToAddType === ApproverType.BULK &&
-                  !config.ui.CREATE_BULK_APPROVERS.includes(req.user.id))
+                  !config.ui.CREATE_BULK_APPROVERS.includes(req.user.id)) ||
+                (approverToAddType === ApproverType.SPECIAL_GROUP &&
+                  !config.ui.CREATE_SPECIAL_GROUP_APPROVERS.includes(
+                    req.user.id
+                  )) ||
+                (approverToAddType === ApproverType.SECURITY_ADMIN &&
+                  !config.ui.CREATE_SECURITY_ADMIN_APPROVERS.includes(
+                    req.user.id
+                  ))
               ) {
                 break;
               }
