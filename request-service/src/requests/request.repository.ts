@@ -178,15 +178,21 @@ export class RequestRepository {
 
       const request: any = new RequestModel(createRequestReq);
       let ancestors = [];
-      if(request && request.submittedBy?.ancestors?.length) {
-         ancestors = request.submittedBy.ancestors;
+      if (request && request.submittedBy?.ancestors?.length) {
+        ancestors = request.submittedBy.ancestors;
       }
       const groupIds: string[] = [
         request?.submittedBy?.directGroup,
-        ...ancestors
+        ...ancestors,
       ];
-      const needAdminDecision = await ApproverService.includesSpecialGroup({ groupIds: groupIds })
-      this.setNeedApproversDecisionsValues(request, type, needAdminDecision.includes);
+      const needAdminDecision = await ApproverService.includesSpecialGroup({
+        groupIds: groupIds,
+      });
+      this.setNeedApproversDecisionsValues(
+        request,
+        type,
+        needAdminDecision.includes
+      );
       request.type = requestTypeToJSON(type);
       const createdCreateRequest = await request.save();
       const document = createdCreateRequest.toObject();
@@ -201,16 +207,14 @@ export class RequestRepository {
             status: requestStatusToJSON(RequestStatus.APPROVED_BY_SECURITY),
           },
         });
-      }
-      else if (this.isRequestApprovedByAdmin(request)) {
+      } else if (this.isRequestApprovedByAdmin(request)) {
         await this.updateRequest({
           id: document.id,
           requestProperties: {
             status: requestStatusToJSON(RequestStatus.APPROVED_BY_ADMIN),
           },
         });
-      }
-      else if (this.isRequestApprovedByCommander(request)) {
+      } else if (this.isRequestApprovedByCommander(request)) {
         await this.updateRequest({
           id: document.id,
           requestProperties: {
@@ -290,7 +294,10 @@ export class RequestRepository {
         ? decisionFromJSON(commanderDecision)
         : commanderDecision;
 
-    return (commanderDecision === Decision.APPROVED) || (request.needAdminDecision && this.isRequestApprovedByAdmin(request));
+    return (
+      commanderDecision === Decision.APPROVED ||
+      (request.needAdminDecision && this.isRequestApprovedByAdmin(request))
+    );
   }
 
   isRequestApprovedBySecurity(request: Request) {
@@ -347,8 +354,7 @@ export class RequestRepository {
             this.isRequestApprovedBySecurity(request)) &&
           (!needSuperSecurityDecision ||
             this.isRequestApprovedBySuperSecurity(request)) &&
-          (!needAdminDecision ||
-            this.isRequestApprovedByAdmin(request))
+          (!needAdminDecision || this.isRequestApprovedByAdmin(request))
         ) {
           return { isRequestApproved: true };
         } else {
@@ -382,8 +388,7 @@ export class RequestRepository {
         typeof request.adminDecision.decision === typeof ''
           ? decisionFromJSON(request.adminDecision.decision)
           : request.adminDecision.decision;
-      const adminAlreadyDecided =
-        adminDecision !== Decision.DECISION_UNKNOWN;
+      const adminAlreadyDecided = adminDecision !== Decision.DECISION_UNKNOWN;
       const securityDecision =
         typeof request.securityDecision.decision === typeof ''
           ? decisionFromJSON(request.securityDecision.decision)
@@ -409,12 +414,11 @@ export class RequestRepository {
                 request.adminApprovers
               ),
             };
-          }
-          else if (!commanderAlreadyDecided && !needAdminDecision) {
+          } else if (!commanderAlreadyDecided && !needAdminDecision) {
             updateSetQuery = {
-              commanderApprovers: removeApproverFromArray(
+              commanders: removeApproverFromArray(
                 removeApproverFromApproversReq.approverId,
-                request.commanderApprovers
+                request.commanders
               ),
             };
           }
@@ -501,8 +505,7 @@ export class RequestRepository {
         typeof request.adminDecision.decision === typeof ''
           ? decisionFromJSON(request.adminDecision.decision)
           : request.adminDecision.decision;
-      const adminAlreadyDecided =
-        adminDecision !== Decision.DECISION_UNKNOWN;
+      const adminAlreadyDecided = adminDecision !== Decision.DECISION_UNKNOWN;
       const securityDecision =
         typeof request.securityDecision.decision === typeof ''
           ? decisionFromJSON(request.securityDecision.decision)
@@ -525,13 +528,13 @@ export class RequestRepository {
               commanders: overrideApprovers
                 ? transferRequestToApproverReq.approvers
                 : [
-                  ...new Map(
-                    [
-                      ...request.commanders,
-                      ...transferRequestToApproverReq.approvers,
-                    ].map((item: any) => [item.id, item])
-                  ).values(),
-                ],
+                    ...new Map(
+                      [
+                        ...request.commanders,
+                        ...transferRequestToApproverReq.approvers,
+                      ].map((item: any) => [item.id, item])
+                    ).values(),
+                  ],
               'approversComments.commanderComment': commentForApprovers,
             };
           }
@@ -543,13 +546,13 @@ export class RequestRepository {
               securityApprovers: overrideApprovers
                 ? transferRequestToApproverReq.approvers
                 : [
-                  ...new Map(
-                    [
-                      ...request.securityApprovers,
-                      ...transferRequestToApproverReq.approvers,
-                    ].map((item: any) => [item.id, item])
-                  ).values(),
-                ],
+                    ...new Map(
+                      [
+                        ...request.securityApprovers,
+                        ...transferRequestToApproverReq.approvers,
+                      ].map((item: any) => [item.id, item])
+                    ).values(),
+                  ],
               'approversComments.securityComment': commentForApprovers,
             };
           }
@@ -560,13 +563,13 @@ export class RequestRepository {
               superSecurityApprovers: overrideApprovers
                 ? transferRequestToApproverReq.approvers
                 : [
-                  ...new Map(
-                    [
-                      ...request.superSecurityApprovers,
-                      ...transferRequestToApproverReq.approvers,
-                    ].map((item: any) => [item.id, item])
-                  ).values(),
-                ],
+                    ...new Map(
+                      [
+                        ...request.superSecurityApprovers,
+                        ...transferRequestToApproverReq.approvers,
+                      ].map((item: any) => [item.id, item])
+                    ).values(),
+                  ],
               'approversComments.superSecurityComment': commentForApprovers,
             };
           }
@@ -577,28 +580,27 @@ export class RequestRepository {
               adminApprovers: overrideApprovers
                 ? transferRequestToApproverReq.approvers
                 : [
-                  ...new Map(
-                    [
-                      ...request.adminApprovers,
-                      ...transferRequestToApproverReq.approvers,
-                    ].map((item: any) => [item.id, item])
-                  ).values(),
-                ],
+                    ...new Map(
+                      [
+                        ...request.adminApprovers,
+                        ...transferRequestToApproverReq.approvers,
+                      ].map((item: any) => [item.id, item])
+                    ).values(),
+                  ],
               'approversComments.adminComment': commentForApprovers,
             };
-          }
-          else if (!commanderAlreadyDecided && !needAdminDecision) {
+          } else if (!commanderAlreadyDecided && !needAdminDecision) {
             updateSetQuery = {
               commanders: overrideApprovers
                 ? transferRequestToApproverReq.approvers
                 : [
-                  ...new Map(
-                    [
-                      ...request.commanders,
-                      ...transferRequestToApproverReq.approvers,
-                    ].map((item: any) => [item.id, item])
-                  ).values(),
-                ],
+                    ...new Map(
+                      [
+                        ...request.commanders,
+                        ...transferRequestToApproverReq.approvers,
+                      ].map((item: any) => [item.id, item])
+                    ).values(),
+                  ],
               'approversComments.commanderComment': commentForApprovers,
             };
           }
@@ -651,18 +653,24 @@ export class RequestRepository {
         case PersonTypeInRequest.ADMIN_APPROVER:
           approverField = 'adminDecision';
           let prevReq = await this.getRequestById({
-            id: updateDecisionReq.id
+            id: updateDecisionReq.id,
           });
           let commanderDecision = prevReq.commanderDecision?.decision;
-          commanderDecision = typeof commanderDecision === typeof "" ? decisionFromJSON(commanderDecision) : commanderDecision;
-          if(commanderDecision !== Decision.APPROVED && commanderDecision !== Decision.DENIED) {
-             otherApproverUpdates.push('commanderDecision')
-          }         
+          commanderDecision =
+            typeof commanderDecision === typeof ''
+              ? decisionFromJSON(commanderDecision)
+              : commanderDecision;
+          if (
+            commanderDecision !== Decision.APPROVED &&
+            commanderDecision !== Decision.DENIED
+          ) {
+            otherApproverUpdates.push('commanderDecision');
+          }
           break;
         case PersonTypeInRequest.APPROVER:
         case PersonTypeInRequest.SUPER_SECURITY_APPROVER:
           approverField = 'superSecurityDecision';
-        break
+          break;
         default:
           break;
       }
@@ -671,11 +679,11 @@ export class RequestRepository {
         // Update request
         updateQuery.requestProperties[approverField] =
           updateDecisionReq.approverDecision;
-        if(otherApproverUpdates.length) {
-          otherApproverUpdates.forEach(approverField => {
+        if (otherApproverUpdates.length) {
+          otherApproverUpdates.forEach((approverField) => {
             updateQuery.requestProperties[approverField] =
               updateDecisionReq.approverDecision;
-          })
+          });
         }
         let updatedRequest = await this.updateRequest(updateQuery);
         let oldRequestStatus: any = updatedRequest.status;
@@ -761,8 +769,10 @@ export class RequestRepository {
 
         // Get notification type
         if (decision === Decision.APPROVED) {
-          if (approverType === PersonTypeInRequest.COMMANDER_APPROVER ||
-            approverType === PersonTypeInRequest.ADMIN_APPROVER) {
+          if (
+            approverType === PersonTypeInRequest.COMMANDER_APPROVER ||
+            approverType === PersonTypeInRequest.ADMIN_APPROVER
+          ) {
             approvingNotificationType = NotificationType.REQUEST_APPROVED_1;
             approvingMailType = MailType.REQUEST_APPROVED_1;
           } else if (approverType === PersonTypeInRequest.SECURITY_APPROVER) {
@@ -773,8 +783,10 @@ export class RequestRepository {
             approvingMailType = MailType.REQUEST_APPROVED_3;
           }
         } else if (decision === Decision.DENIED) {
-          if (approverType === PersonTypeInRequest.COMMANDER_APPROVER ||
-            approverType === PersonTypeInRequest.ADMIN_APPROVER) {
+          if (
+            approverType === PersonTypeInRequest.COMMANDER_APPROVER ||
+            approverType === PersonTypeInRequest.ADMIN_APPROVER
+          ) {
             approvingNotificationType = NotificationType.REQUEST_DECLINED_1;
             approvingMailType = MailType.REQUEST_DECLINED_1;
           } else if (approverType === PersonTypeInRequest.SECURITY_APPROVER) {
@@ -1044,9 +1056,9 @@ export class RequestRepository {
       const pagination =
         from && to
           ? {
-            skip: from - 1,
-            limit: to - from + 1,
-          }
+              skip: from - 1,
+              limit: to - from + 1,
+            }
           : {};
 
       const totalCount = await RequestModel.count(query);
@@ -1208,7 +1220,7 @@ export class RequestRepository {
             requestUpdate.status === null ||
             (requestUpdate.status !== requestStatusToJSON(RequestStatus.DONE) &&
               requestUpdate.status !==
-              requestStatusToJSON(RequestStatus.FAILED) &&
+                requestStatusToJSON(RequestStatus.FAILED) &&
               requestUpdate.status !== RequestStatus.DONE &&
               requestUpdate.status !== RequestStatus.FAILED)
           ) {
@@ -1386,7 +1398,11 @@ export class RequestRepository {
     }
   }
 
-  setNeedApproversDecisionsValues(request: any, type: RequestType, needAdminDecision = false): void {
+  setNeedApproversDecisionsValues(
+    request: any,
+    type: RequestType,
+    needAdminDecision = false
+  ): void {
     request.needAdminDecision = needAdminDecision;
     switch (type) {
       case RequestType.CREATE_OG:
