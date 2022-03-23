@@ -1,8 +1,10 @@
 import { ApproverService } from '../approver/approver.service';
 import {
+  approvementStatusToJSON,
   ApproverDecision,
   ApproverType,
   approverTypeFromJSON,
+  approverTypeToJSON,
   Decision,
   EntityMin,
   PersonTypeInRequest,
@@ -83,48 +85,58 @@ export const approveUserRequest = async (
             }
 
             let valid = true;
-            if (groupId) {
-              const response: any = await ApproverService.isApproverValidForOG({
-                approverId: req.user.id,
-                groupId: groupId,
-              });
-              if (!response.isValid) valid = false;
-            }
 
-            if (highCommander) {
-              if (
-                !req.user?.rank ||
-                !config.fields.highCommandersRanks.includes(req.user.rank)
-              ) {
-                valid = false;
+            if (
+              req.user.types.includes(
+                approverTypeToJSON(ApproverType.COMMANDER)
+              )
+            ) {
+              if (groupId) {
+                const response: any =
+                  await ApproverService.isApproverValidForOG({
+                    approverId: req.user.id,
+                    groupId: groupId,
+                  });
+                if (!response.isValid) valid = false;
+              }
+
+              if (highCommander) {
+                if (
+                  !req.user?.rank ||
+                  !config.fields.highCommandersRanks.includes(req.user.rank)
+                ) {
+                  valid = false;
+                }
               }
             }
 
             if (valid) {
               let ancestors = [];
-              if(request && request.submittedBy?.ancestors?.length) {
+              if (request && request.submittedBy?.ancestors?.length) {
                 ancestors = request.submittedBy.ancestors;
               }
               const groupIds: string[] = [
                 request?.submittedBy?.directGroup,
-                ...ancestors
+                ...ancestors,
               ];
-              
-              const needAdminDecision = await ApproverService.includesSpecialGroup({ groupIds: groupIds })
+
+              const needAdminDecision: any =
+                await ApproverService.includesSpecialGroup({
+                  groupIds: groupIds,
+                });
               if (
-                needAdminDecision &&
+                needAdminDecision.includes &&
                 approverType === PersonTypeInRequest.ADMIN_APPROVER
               ) {
-                  request.adminApprovers = request.adminApprovers
-                    ? [...request.adminApprovers, entityUser]
-                    : [entityUser];
-                  request.adminDecision = decision;
-                  request.adminApprovers = request.adminApprovers.filter(
-                    (v: any, i: any, a: any) =>
-                      a.findIndex((t: any) => t.id === v.id) === i
-                  );
-                }
-               else {
+                request.adminApprovers = request.adminApprovers
+                  ? [...request.adminApprovers, entityUser]
+                  : [entityUser];
+                request.adminDecision = decision;
+                request.adminApprovers = request.adminApprovers.filter(
+                  (v: any, i: any, a: any) =>
+                    a.findIndex((t: any) => t.id === v.id) === i
+                );
+              } else {
                 request.commanders = request.commanders
                   ? [...request.commanders, entityUser]
                   : [entityUser];
