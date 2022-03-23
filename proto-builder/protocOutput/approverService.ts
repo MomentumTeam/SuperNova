@@ -71,6 +71,7 @@ export interface IncludesSpecialGroupReq {
 
 export interface GetAdminsByGroupIdsReq {
   groupIds: string[];
+  type?: ApproverType | undefined;
 }
 
 export interface IsApproverValidForOGReq {
@@ -342,6 +343,9 @@ export const GetAdminsByGroupIdsReq = {
     for (const v of message.groupIds) {
       writer.uint32(10).string(v!);
     }
+    if (message.type !== undefined) {
+      writer.uint32(16).int32(message.type);
+    }
     return writer;
   },
 
@@ -359,6 +363,9 @@ export const GetAdminsByGroupIdsReq = {
         case 1:
           message.groupIds.push(reader.string());
           break;
+        case 2:
+          message.type = reader.int32() as any;
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -375,6 +382,11 @@ export const GetAdminsByGroupIdsReq = {
         message.groupIds.push(String(e));
       }
     }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = approverTypeFromJSON(object.type);
+    } else {
+      message.type = undefined;
+    }
     return message;
   },
 
@@ -385,6 +397,11 @@ export const GetAdminsByGroupIdsReq = {
     } else {
       obj.groupIds = [];
     }
+    message.type !== undefined &&
+      (obj.type =
+        message.type !== undefined
+          ? approverTypeToJSON(message.type)
+          : undefined);
     return obj;
   },
 
@@ -397,6 +414,11 @@ export const GetAdminsByGroupIdsReq = {
       for (const e of object.groupIds) {
         message.groupIds.push(e);
       }
+    }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = object.type;
+    } else {
+      message.type = undefined;
     }
     return message;
   },
