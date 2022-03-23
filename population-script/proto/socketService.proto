@@ -11,6 +11,7 @@ service SocketService {
 message SendEventReq{
     SocketEventType eventType = 1;
     optional SocketEventData eventData = 2;
+    optional RequestService.Request request = 3;
 }
 
 message SuccessMessage{
@@ -28,7 +29,7 @@ enum SocketEventType{
 
 message SocketEventData  {
     optional NotificationService.Notification notification = 1; 
-    optional RequestService.Request request = 2;
-    optional RequestService.Request oldRequest = 3;
-    repeated string additionalDests = 4;
+    // optional RequestService.Request requestObj = 2;
+    optional RequestService.Request oldRequest = 2;
+    repeated string additionalDests = 3;
 }
