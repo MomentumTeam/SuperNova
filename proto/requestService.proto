@@ -1538,7 +1538,6 @@ enum ApproverType{
     BULK = 6;
     SPECIAL_GROUP = 7;
     SECURITY_ADMIN = 8;
-
 }
 
 enum RequestType {
