@@ -52,6 +52,11 @@ service RequestService {
 
     rpc HasSecurityAdmin(HasSecurityAdminReq) returns (HasSecurityAdminRes){}
 
+    rpc GetDoneRequestsByRoleId(GetDoneRequestsByRoleIdReq) returns (RequestArray) {}
+    rpc GetDoneRequestsByGroupId(GetDoneRequestsByGroupIdReq) returns (RequestArray) {}
+    rpc GetDoneRequestsByEntityId(GetDoneRequestsByEntityIdReq) returns (RequestArray) {}
+    rpc GetDoneRequestsSubmittedByEntityId(GetDoneRequestsByEntityIdReq) returns (RequestArray) {}
+
 }
 
 // ---------------------------------------------LEGO Requests------------------------------------------------------------
@@ -1079,6 +1084,24 @@ message RemoveApproverFromApproversReq{
     string approverId = 2;
     ApproverType type = 3;
 }
+
+//16.GetDoneRequests
+message GetDoneRequestsByEntityIdReq{
+    string entityId = 1;
+    int32 start = 2;
+    int32 end = 3;
+}
+message GetDoneRequestsByGroupIdReq{
+    string groupId = 1;
+    int32 start = 2;
+    int32 end = 3;
+}
+message GetDoneRequestsByRoleIdReq{
+    string roleId = 1;
+    int32 start = 2;
+    int32 end = 3;
+}
+
 
 // ---------------------------------------------Other Functions Objects------------------------------------------------------------
 

@@ -1654,6 +1654,25 @@ export interface RemoveApproverFromApproversReq {
   type: ApproverType;
 }
 
+/** 16.GetDoneRequests */
+export interface GetDoneRequestsByEntityIdReq {
+  entityId: string;
+  start: number;
+  end: number;
+}
+
+export interface GetDoneRequestsByGroupIdReq {
+  groupId: string;
+  start: number;
+  end: number;
+}
+
+export interface GetDoneRequestsByRoleIdReq {
+  roleId: string;
+  start: number;
+  end: number;
+}
+
 export interface UpdateReq {
   id: string;
   requestProperties: UpdateReqProperties | undefined;
@@ -25069,6 +25088,323 @@ export const RemoveApproverFromApproversReq = {
   },
 };
 
+const baseGetDoneRequestsByEntityIdReq: object = {
+  entityId: "",
+  start: 0,
+  end: 0,
+};
+
+export const GetDoneRequestsByEntityIdReq = {
+  encode(
+    message: GetDoneRequestsByEntityIdReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.entityId !== "") {
+      writer.uint32(10).string(message.entityId);
+    }
+    if (message.start !== 0) {
+      writer.uint32(16).int32(message.start);
+    }
+    if (message.end !== 0) {
+      writer.uint32(24).int32(message.end);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GetDoneRequestsByEntityIdReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseGetDoneRequestsByEntityIdReq,
+    } as GetDoneRequestsByEntityIdReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.entityId = reader.string();
+          break;
+        case 2:
+          message.start = reader.int32();
+          break;
+        case 3:
+          message.end = reader.int32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetDoneRequestsByEntityIdReq {
+    const message = {
+      ...baseGetDoneRequestsByEntityIdReq,
+    } as GetDoneRequestsByEntityIdReq;
+    if (object.entityId !== undefined && object.entityId !== null) {
+      message.entityId = String(object.entityId);
+    } else {
+      message.entityId = "";
+    }
+    if (object.start !== undefined && object.start !== null) {
+      message.start = Number(object.start);
+    } else {
+      message.start = 0;
+    }
+    if (object.end !== undefined && object.end !== null) {
+      message.end = Number(object.end);
+    } else {
+      message.end = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: GetDoneRequestsByEntityIdReq): unknown {
+    const obj: any = {};
+    message.entityId !== undefined && (obj.entityId = message.entityId);
+    message.start !== undefined && (obj.start = message.start);
+    message.end !== undefined && (obj.end = message.end);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<GetDoneRequestsByEntityIdReq>
+  ): GetDoneRequestsByEntityIdReq {
+    const message = {
+      ...baseGetDoneRequestsByEntityIdReq,
+    } as GetDoneRequestsByEntityIdReq;
+    if (object.entityId !== undefined && object.entityId !== null) {
+      message.entityId = object.entityId;
+    } else {
+      message.entityId = "";
+    }
+    if (object.start !== undefined && object.start !== null) {
+      message.start = object.start;
+    } else {
+      message.start = 0;
+    }
+    if (object.end !== undefined && object.end !== null) {
+      message.end = object.end;
+    } else {
+      message.end = 0;
+    }
+    return message;
+  },
+};
+
+const baseGetDoneRequestsByGroupIdReq: object = {
+  groupId: "",
+  start: 0,
+  end: 0,
+};
+
+export const GetDoneRequestsByGroupIdReq = {
+  encode(
+    message: GetDoneRequestsByGroupIdReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.groupId !== "") {
+      writer.uint32(10).string(message.groupId);
+    }
+    if (message.start !== 0) {
+      writer.uint32(16).int32(message.start);
+    }
+    if (message.end !== 0) {
+      writer.uint32(24).int32(message.end);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GetDoneRequestsByGroupIdReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseGetDoneRequestsByGroupIdReq,
+    } as GetDoneRequestsByGroupIdReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.groupId = reader.string();
+          break;
+        case 2:
+          message.start = reader.int32();
+          break;
+        case 3:
+          message.end = reader.int32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetDoneRequestsByGroupIdReq {
+    const message = {
+      ...baseGetDoneRequestsByGroupIdReq,
+    } as GetDoneRequestsByGroupIdReq;
+    if (object.groupId !== undefined && object.groupId !== null) {
+      message.groupId = String(object.groupId);
+    } else {
+      message.groupId = "";
+    }
+    if (object.start !== undefined && object.start !== null) {
+      message.start = Number(object.start);
+    } else {
+      message.start = 0;
+    }
+    if (object.end !== undefined && object.end !== null) {
+      message.end = Number(object.end);
+    } else {
+      message.end = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: GetDoneRequestsByGroupIdReq): unknown {
+    const obj: any = {};
+    message.groupId !== undefined && (obj.groupId = message.groupId);
+    message.start !== undefined && (obj.start = message.start);
+    message.end !== undefined && (obj.end = message.end);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<GetDoneRequestsByGroupIdReq>
+  ): GetDoneRequestsByGroupIdReq {
+    const message = {
+      ...baseGetDoneRequestsByGroupIdReq,
+    } as GetDoneRequestsByGroupIdReq;
+    if (object.groupId !== undefined && object.groupId !== null) {
+      message.groupId = object.groupId;
+    } else {
+      message.groupId = "";
+    }
+    if (object.start !== undefined && object.start !== null) {
+      message.start = object.start;
+    } else {
+      message.start = 0;
+    }
+    if (object.end !== undefined && object.end !== null) {
+      message.end = object.end;
+    } else {
+      message.end = 0;
+    }
+    return message;
+  },
+};
+
+const baseGetDoneRequestsByRoleIdReq: object = { roleId: "", start: 0, end: 0 };
+
+export const GetDoneRequestsByRoleIdReq = {
+  encode(
+    message: GetDoneRequestsByRoleIdReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.roleId !== "") {
+      writer.uint32(10).string(message.roleId);
+    }
+    if (message.start !== 0) {
+      writer.uint32(16).int32(message.start);
+    }
+    if (message.end !== 0) {
+      writer.uint32(24).int32(message.end);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GetDoneRequestsByRoleIdReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseGetDoneRequestsByRoleIdReq,
+    } as GetDoneRequestsByRoleIdReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.roleId = reader.string();
+          break;
+        case 2:
+          message.start = reader.int32();
+          break;
+        case 3:
+          message.end = reader.int32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetDoneRequestsByRoleIdReq {
+    const message = {
+      ...baseGetDoneRequestsByRoleIdReq,
+    } as GetDoneRequestsByRoleIdReq;
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = String(object.roleId);
+    } else {
+      message.roleId = "";
+    }
+    if (object.start !== undefined && object.start !== null) {
+      message.start = Number(object.start);
+    } else {
+      message.start = 0;
+    }
+    if (object.end !== undefined && object.end !== null) {
+      message.end = Number(object.end);
+    } else {
+      message.end = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: GetDoneRequestsByRoleIdReq): unknown {
+    const obj: any = {};
+    message.roleId !== undefined && (obj.roleId = message.roleId);
+    message.start !== undefined && (obj.start = message.start);
+    message.end !== undefined && (obj.end = message.end);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<GetDoneRequestsByRoleIdReq>
+  ): GetDoneRequestsByRoleIdReq {
+    const message = {
+      ...baseGetDoneRequestsByRoleIdReq,
+    } as GetDoneRequestsByRoleIdReq;
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = object.roleId;
+    } else {
+      message.roleId = "";
+    }
+    if (object.start !== undefined && object.start !== null) {
+      message.start = object.start;
+    } else {
+      message.start = 0;
+    }
+    if (object.end !== undefined && object.end !== null) {
+      message.end = object.end;
+    } else {
+      message.end = 0;
+    }
+    return message;
+  },
+};
+
 const baseUpdateReq: object = { id: "" };
 
 export const UpdateReq = {
@@ -31443,6 +31779,18 @@ export interface RequestService {
   ): Promise<Request>;
   SendSubmissionMail(request: SendSubmissionMailReq): Promise<Request>;
   HasSecurityAdmin(request: HasSecurityAdminReq): Promise<HasSecurityAdminRes>;
+  GetDoneRequestsByRoleId(
+    request: GetDoneRequestsByRoleIdReq
+  ): Promise<RequestArray>;
+  GetDoneRequestsByGroupId(
+    request: GetDoneRequestsByGroupIdReq
+  ): Promise<RequestArray>;
+  GetDoneRequestsByEntityId(
+    request: GetDoneRequestsByEntityIdReq
+  ): Promise<RequestArray>;
+  GetDoneRequestsSubmittedByEntityId(
+    request: GetDoneRequestsByEntityIdReq
+  ): Promise<RequestArray>;
 }
 
 export class RequestServiceClientImpl implements RequestService {
@@ -31498,6 +31846,11 @@ export class RequestServiceClientImpl implements RequestService {
       this.RemoveApproverFromApprovers.bind(this);
     this.SendSubmissionMail = this.SendSubmissionMail.bind(this);
     this.HasSecurityAdmin = this.HasSecurityAdmin.bind(this);
+    this.GetDoneRequestsByRoleId = this.GetDoneRequestsByRoleId.bind(this);
+    this.GetDoneRequestsByGroupId = this.GetDoneRequestsByGroupId.bind(this);
+    this.GetDoneRequestsByEntityId = this.GetDoneRequestsByEntityId.bind(this);
+    this.GetDoneRequestsSubmittedByEntityId =
+      this.GetDoneRequestsSubmittedByEntityId.bind(this);
   }
   CreateRoleRequest(request: CreateRoleReq): Promise<CreateRoleRes> {
     const data = CreateRoleReq.encode(request).finish();
@@ -31963,6 +32316,54 @@ export class RequestServiceClientImpl implements RequestService {
     return promise.then((data) =>
       HasSecurityAdminRes.decode(new _m0.Reader(data))
     );
+  }
+
+  GetDoneRequestsByRoleId(
+    request: GetDoneRequestsByRoleIdReq
+  ): Promise<RequestArray> {
+    const data = GetDoneRequestsByRoleIdReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "GetDoneRequestsByRoleId",
+      data
+    );
+    return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
+  }
+
+  GetDoneRequestsByGroupId(
+    request: GetDoneRequestsByGroupIdReq
+  ): Promise<RequestArray> {
+    const data = GetDoneRequestsByGroupIdReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "GetDoneRequestsByGroupId",
+      data
+    );
+    return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
+  }
+
+  GetDoneRequestsByEntityId(
+    request: GetDoneRequestsByEntityIdReq
+  ): Promise<RequestArray> {
+    const data = GetDoneRequestsByEntityIdReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "GetDoneRequestsByEntityId",
+      data
+    );
+    return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
+  }
+
+  GetDoneRequestsSubmittedByEntityId(
+    request: GetDoneRequestsByEntityIdReq
+  ): Promise<RequestArray> {
+    const data = GetDoneRequestsByEntityIdReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "GetDoneRequestsSubmittedByEntityId",
+      data
+    );
+    return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
   }
 }
 
