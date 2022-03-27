@@ -30,6 +30,7 @@ import {
   SendSubmissionMailReq,
   RemoveApproverFromApproversReq,
   HasSecurityAdminReq,
+  GetDoneRequestsByRoleIdReq,
 } from '../interfaces/protoc/proto/requestService';
 import { RequestRepository } from './request.repository';
 export class RequestManager {
@@ -348,6 +349,18 @@ export class RequestManager {
   async hasSecurityAdmin(hasSecurityAdminReq: HasSecurityAdminReq) {
     try {
       return await this.requestRepository.hasSecurityAdmin(hasSecurityAdminReq);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+
+
+  async getDoneRequestsByRoleId(getDoneRequestsByRoleIdReq: GetDoneRequestsByRoleIdReq) {
+    try {
+      return await this.requestRepository.getDoneRequestsByRoleId(
+        getDoneRequestsByRoleIdReq
+      );
     } catch (error) {
       throw error;
     }

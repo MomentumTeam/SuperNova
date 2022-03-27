@@ -810,3 +810,33 @@ export async function hasSecurityAdmin(
     );
   }
 }
+
+
+export async function getDoneRequestsByRoleId(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    logger.info(`Call to getDoneRequestsByRoleId`, {
+      callRequest: call.request,
+    });
+    const requests = await requestManager.getDoneRequestsByRoleId(call.request);
+    logger.info(`getDoneRequestsByRoleId OK`, {
+      callRequest: call.request,
+    });
+    callback(null, requests);
+  } catch (error: any) {
+    logger.error(`getDoneRequestsByRoleId ERROR`, {
+      callRequest: call.request,
+      error: { message: error.message },
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}

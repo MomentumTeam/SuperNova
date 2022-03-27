@@ -1657,20 +1657,21 @@ export interface RemoveApproverFromApproversReq {
 /** 16.GetDoneRequests */
 export interface GetDoneRequestsByEntityIdReq {
   entityId: string;
-  start: number;
-  end: number;
+  from: number;
+  to: number;
 }
 
 export interface GetDoneRequestsByGroupIdReq {
   groupId: string;
-  start: number;
-  end: number;
+  from: number;
+  to: number;
+  showRoles: boolean;
 }
 
 export interface GetDoneRequestsByRoleIdReq {
   roleId: string;
-  start: number;
-  end: number;
+  from: number;
+  to: number;
 }
 
 export interface UpdateReq {
@@ -25090,8 +25091,8 @@ export const RemoveApproverFromApproversReq = {
 
 const baseGetDoneRequestsByEntityIdReq: object = {
   entityId: "",
-  start: 0,
-  end: 0,
+  from: 0,
+  to: 0,
 };
 
 export const GetDoneRequestsByEntityIdReq = {
@@ -25102,11 +25103,11 @@ export const GetDoneRequestsByEntityIdReq = {
     if (message.entityId !== "") {
       writer.uint32(10).string(message.entityId);
     }
-    if (message.start !== 0) {
-      writer.uint32(16).int32(message.start);
+    if (message.from !== 0) {
+      writer.uint32(16).int32(message.from);
     }
-    if (message.end !== 0) {
-      writer.uint32(24).int32(message.end);
+    if (message.to !== 0) {
+      writer.uint32(24).int32(message.to);
     }
     return writer;
   },
@@ -25127,10 +25128,10 @@ export const GetDoneRequestsByEntityIdReq = {
           message.entityId = reader.string();
           break;
         case 2:
-          message.start = reader.int32();
+          message.from = reader.int32();
           break;
         case 3:
-          message.end = reader.int32();
+          message.to = reader.int32();
           break;
         default:
           reader.skipType(tag & 7);
@@ -25149,15 +25150,15 @@ export const GetDoneRequestsByEntityIdReq = {
     } else {
       message.entityId = "";
     }
-    if (object.start !== undefined && object.start !== null) {
-      message.start = Number(object.start);
+    if (object.from !== undefined && object.from !== null) {
+      message.from = Number(object.from);
     } else {
-      message.start = 0;
+      message.from = 0;
     }
-    if (object.end !== undefined && object.end !== null) {
-      message.end = Number(object.end);
+    if (object.to !== undefined && object.to !== null) {
+      message.to = Number(object.to);
     } else {
-      message.end = 0;
+      message.to = 0;
     }
     return message;
   },
@@ -25165,8 +25166,8 @@ export const GetDoneRequestsByEntityIdReq = {
   toJSON(message: GetDoneRequestsByEntityIdReq): unknown {
     const obj: any = {};
     message.entityId !== undefined && (obj.entityId = message.entityId);
-    message.start !== undefined && (obj.start = message.start);
-    message.end !== undefined && (obj.end = message.end);
+    message.from !== undefined && (obj.from = message.from);
+    message.to !== undefined && (obj.to = message.to);
     return obj;
   },
 
@@ -25181,15 +25182,15 @@ export const GetDoneRequestsByEntityIdReq = {
     } else {
       message.entityId = "";
     }
-    if (object.start !== undefined && object.start !== null) {
-      message.start = object.start;
+    if (object.from !== undefined && object.from !== null) {
+      message.from = object.from;
     } else {
-      message.start = 0;
+      message.from = 0;
     }
-    if (object.end !== undefined && object.end !== null) {
-      message.end = object.end;
+    if (object.to !== undefined && object.to !== null) {
+      message.to = object.to;
     } else {
-      message.end = 0;
+      message.to = 0;
     }
     return message;
   },
@@ -25197,8 +25198,9 @@ export const GetDoneRequestsByEntityIdReq = {
 
 const baseGetDoneRequestsByGroupIdReq: object = {
   groupId: "",
-  start: 0,
-  end: 0,
+  from: 0,
+  to: 0,
+  showRoles: false,
 };
 
 export const GetDoneRequestsByGroupIdReq = {
@@ -25209,11 +25211,14 @@ export const GetDoneRequestsByGroupIdReq = {
     if (message.groupId !== "") {
       writer.uint32(10).string(message.groupId);
     }
-    if (message.start !== 0) {
-      writer.uint32(16).int32(message.start);
+    if (message.from !== 0) {
+      writer.uint32(16).int32(message.from);
     }
-    if (message.end !== 0) {
-      writer.uint32(24).int32(message.end);
+    if (message.to !== 0) {
+      writer.uint32(24).int32(message.to);
+    }
+    if (message.showRoles === true) {
+      writer.uint32(32).bool(message.showRoles);
     }
     return writer;
   },
@@ -25234,10 +25239,13 @@ export const GetDoneRequestsByGroupIdReq = {
           message.groupId = reader.string();
           break;
         case 2:
-          message.start = reader.int32();
+          message.from = reader.int32();
           break;
         case 3:
-          message.end = reader.int32();
+          message.to = reader.int32();
+          break;
+        case 4:
+          message.showRoles = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -25256,15 +25264,20 @@ export const GetDoneRequestsByGroupIdReq = {
     } else {
       message.groupId = "";
     }
-    if (object.start !== undefined && object.start !== null) {
-      message.start = Number(object.start);
+    if (object.from !== undefined && object.from !== null) {
+      message.from = Number(object.from);
     } else {
-      message.start = 0;
+      message.from = 0;
     }
-    if (object.end !== undefined && object.end !== null) {
-      message.end = Number(object.end);
+    if (object.to !== undefined && object.to !== null) {
+      message.to = Number(object.to);
     } else {
-      message.end = 0;
+      message.to = 0;
+    }
+    if (object.showRoles !== undefined && object.showRoles !== null) {
+      message.showRoles = Boolean(object.showRoles);
+    } else {
+      message.showRoles = false;
     }
     return message;
   },
@@ -25272,8 +25285,9 @@ export const GetDoneRequestsByGroupIdReq = {
   toJSON(message: GetDoneRequestsByGroupIdReq): unknown {
     const obj: any = {};
     message.groupId !== undefined && (obj.groupId = message.groupId);
-    message.start !== undefined && (obj.start = message.start);
-    message.end !== undefined && (obj.end = message.end);
+    message.from !== undefined && (obj.from = message.from);
+    message.to !== undefined && (obj.to = message.to);
+    message.showRoles !== undefined && (obj.showRoles = message.showRoles);
     return obj;
   },
 
@@ -25288,21 +25302,26 @@ export const GetDoneRequestsByGroupIdReq = {
     } else {
       message.groupId = "";
     }
-    if (object.start !== undefined && object.start !== null) {
-      message.start = object.start;
+    if (object.from !== undefined && object.from !== null) {
+      message.from = object.from;
     } else {
-      message.start = 0;
+      message.from = 0;
     }
-    if (object.end !== undefined && object.end !== null) {
-      message.end = object.end;
+    if (object.to !== undefined && object.to !== null) {
+      message.to = object.to;
     } else {
-      message.end = 0;
+      message.to = 0;
+    }
+    if (object.showRoles !== undefined && object.showRoles !== null) {
+      message.showRoles = object.showRoles;
+    } else {
+      message.showRoles = false;
     }
     return message;
   },
 };
 
-const baseGetDoneRequestsByRoleIdReq: object = { roleId: "", start: 0, end: 0 };
+const baseGetDoneRequestsByRoleIdReq: object = { roleId: "", from: 0, to: 0 };
 
 export const GetDoneRequestsByRoleIdReq = {
   encode(
@@ -25312,11 +25331,11 @@ export const GetDoneRequestsByRoleIdReq = {
     if (message.roleId !== "") {
       writer.uint32(10).string(message.roleId);
     }
-    if (message.start !== 0) {
-      writer.uint32(16).int32(message.start);
+    if (message.from !== 0) {
+      writer.uint32(16).int32(message.from);
     }
-    if (message.end !== 0) {
-      writer.uint32(24).int32(message.end);
+    if (message.to !== 0) {
+      writer.uint32(24).int32(message.to);
     }
     return writer;
   },
@@ -25337,10 +25356,10 @@ export const GetDoneRequestsByRoleIdReq = {
           message.roleId = reader.string();
           break;
         case 2:
-          message.start = reader.int32();
+          message.from = reader.int32();
           break;
         case 3:
-          message.end = reader.int32();
+          message.to = reader.int32();
           break;
         default:
           reader.skipType(tag & 7);
@@ -25359,15 +25378,15 @@ export const GetDoneRequestsByRoleIdReq = {
     } else {
       message.roleId = "";
     }
-    if (object.start !== undefined && object.start !== null) {
-      message.start = Number(object.start);
+    if (object.from !== undefined && object.from !== null) {
+      message.from = Number(object.from);
     } else {
-      message.start = 0;
+      message.from = 0;
     }
-    if (object.end !== undefined && object.end !== null) {
-      message.end = Number(object.end);
+    if (object.to !== undefined && object.to !== null) {
+      message.to = Number(object.to);
     } else {
-      message.end = 0;
+      message.to = 0;
     }
     return message;
   },
@@ -25375,8 +25394,8 @@ export const GetDoneRequestsByRoleIdReq = {
   toJSON(message: GetDoneRequestsByRoleIdReq): unknown {
     const obj: any = {};
     message.roleId !== undefined && (obj.roleId = message.roleId);
-    message.start !== undefined && (obj.start = message.start);
-    message.end !== undefined && (obj.end = message.end);
+    message.from !== undefined && (obj.from = message.from);
+    message.to !== undefined && (obj.to = message.to);
     return obj;
   },
 
@@ -25391,15 +25410,15 @@ export const GetDoneRequestsByRoleIdReq = {
     } else {
       message.roleId = "";
     }
-    if (object.start !== undefined && object.start !== null) {
-      message.start = object.start;
+    if (object.from !== undefined && object.from !== null) {
+      message.from = object.from;
     } else {
-      message.start = 0;
+      message.from = 0;
     }
-    if (object.end !== undefined && object.end !== null) {
-      message.end = object.end;
+    if (object.to !== undefined && object.to !== null) {
+      message.to = object.to;
     } else {
-      message.end = 0;
+      message.to = 0;
     }
     return message;
   },
