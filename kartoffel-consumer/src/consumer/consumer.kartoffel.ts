@@ -42,7 +42,6 @@ export const createOG = async (createOGRequest: any) => {
 export const createRole = async (data: any) => {
   try {
     logger.info('createRole request received.', data);
-
     const {
       type,
       source,
@@ -52,6 +51,8 @@ export const createRole = async (data: any) => {
       roleEntityType,
       clearance,
       upn,
+      firstName,
+      lastName,
     } = data;
     const newDI: DigitalIdentity = await KartoffelService.createDI({
       isRoleAttachable: isRoleAttachable,
@@ -82,10 +83,10 @@ export const createRole = async (data: any) => {
 
     if (roleEntityType === config.goalUser && upn !== undefined) {
       //If goal user
+      //TODO add given firstName and lastName
       const goalUserEntity = await KartoffelService.createEntity({
-        firstName: jobTitle,
-        // lastName: jobTitle,
-        // lastName: '',
+        firstName: firstName,
+        lastName: lastName,
         entityType: config.goalUser,
         phone: [],
         mobilePhone: [],
@@ -119,7 +120,7 @@ export const createEntity = async (createEntityRequest: any) => {
       serviceType,
       entityType,
       organization,
-      employeeNumber
+      employeeNumber,
     } = createEntityRequest;
     logger.info('createEntity request received', createEntityRequest);
 
@@ -137,7 +138,7 @@ export const createEntity = async (createEntityRequest: any) => {
       rank: rank !== undefined ? rank : config.civilianDefaultRank,
       serviceType: serviceType,
       organization: organization,
-      employeeNumber: employeeNumber
+      employeeNumber: employeeNumber,
     });
     logger.info('Successfuly created Entity', createdEntity);
     return createdEntity.id;

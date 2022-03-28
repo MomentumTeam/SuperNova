@@ -21,6 +21,26 @@ function isValidMobilePhone(mobilePhone: any) {
   }
 }
 
+function splitFullName(jobTitle: string) {
+  let lastName: string;
+  let firstName: string;
+  let fullName: string;
+  let arrayName: string[] = jobTitle.trim().split(/[,.\s/]+/g);
+  firstName = arrayName[0];
+  if (arrayName.length > 1) {
+    let sliceFullName: string[] = arrayName.slice(1);
+    lastName = sliceFullName.join(' ');
+  } else {
+    lastName = C.brolDefaultLastName;
+  }
+  fullName = `${firstName} ${lastName}`;
+  return {
+    fullName,
+    firstName,
+    lastName,
+  };
+}
+
 function isValidPhone(phone: any) {
   if (phone === undefined || phone === null) {
     return false;
@@ -70,7 +90,10 @@ export function generateKartoffelQueueMessage(request: Request): any {
         roleEntityType: kartoffelParams.roleEntityType,
       };
       if (kartoffelParams.upn !== undefined) {
-        // the brol
+        const getJobTitle = splitFullName(kartoffelParams.jobTitle);
+        message.data.firstName = getJobTitle.firstName;
+        message.data.lastName = getJobTitle.lastName;
+        message.data.fullName = getJobTitle.fullName;
         message.data.upn = kartoffelParams.upn;
       }
       break;
@@ -232,12 +255,13 @@ export function generateADQueueMessage(
             C.shmuelRequestTypes[
               requestTypeToJSON(RequestType.ASSIGN_ROLE_TO_ENTITY)
             ];
+          const getJobTitle = splitFullName(adParams.jobTitle);
           message.data = {
             userID: adParams.samAccountName,
             UPN: `${adParams.upn}@${C.upnSuffix}`,
-            firstName: adParams.jobTitle,
-            lastName: adParams.jobTitle,
-            fullName: adParams.jobTitle,
+            firstName: getJobTitle.firstName,
+            lastName: getJobTitle.lastName,
+            fullName: getJobTitle.fullName,
             rank: 'לא ידוע',
             ID: adParams.samAccountName,
             // pdoName: 'x',
