@@ -69,7 +69,6 @@ services:
       - tea-service
       - mail-service
       - socket-service
-      - approver-service
     volumes:
       - logs:/logs
     environment:
@@ -351,6 +350,7 @@ services:
       depends_on:
         - mongo
       environment:
+        - SKS_APPLICATION_SOCKET_PORT=8080
         - SKS_MONGO_URI=mongodb://mongo:27017/supernova
         - SKS_REDIS_HOST=redis
         - SKS_APS_URL=approver-service:8080
