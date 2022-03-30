@@ -263,8 +263,18 @@ export class ApproverRepository {
     getAdminsByGroupIdsReq: GetAdminsByGroupIdsReq
   ): Promise<ApproverArray> {
     try {
+      // Get type
+      let type: any = approverTypeToJSON(ApproverType.ADMIN);
+      if (getAdminsByGroupIdsReq.type !== undefined) {
+        type =
+          typeof getAdminsByGroupIdsReq.type === typeof ""
+            ? approverTypeFromJSON(getAdminsByGroupIdsReq.type)
+            : getAdminsByGroupIdsReq.type;
+        type = approverTypeToJSON(type as any);
+      }
+
       const mongoAdmins = await ApproverModel.find({
-        type: approverTypeToJSON(ApproverType.ADMIN),
+        type,
         groupsInCharge: { $in: getAdminsByGroupIdsReq.groupIds },
       });
       return { approvers: getMongoApproverArray(mongoAdmins) };

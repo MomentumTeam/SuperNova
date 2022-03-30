@@ -1,6 +1,7 @@
 import * as socketIO from "socket.io";
 import { config } from '../config';
 import {
+  ApproverType,
   Decision,
   decisionFromJSON,
   Request,
@@ -40,7 +41,21 @@ export const getApproversAndSubmittedFromReq = async (request: Request) => {
 
   // Get direct approvers
   const commanders = request?.commanders;
-  const securityApprovers = request.needSecurityDecision && isApprovedByCommander ? request.securityApprovers : [];
+  
+  let securityApprovers: any = [];
+  if (request.needSecurityDecision && isApprovedByCommander) {
+    securityApprovers = [...request?.securityApprovers];
+    if (request.hasSecurityAdmin) {
+      try {
+        const getSecurityAdminsRes = await ApproverService.getAdminsByGroupIds({ groupIds: submittedByGroups as string[], type: ApproverType.SECURITY_ADMIN });
+        if (getSecurityAdminsRes?.approvers) securityApprovers = [...securityApprovers, ...getSecurityAdminsRes.approvers];
+      } catch (error: any) {
+        logger.error(`Error while get security admin approvers: ${error.message}`);
+        throw error;
+      }
+    } 
+  }
+
   const superSecurityApprovers =
     request.needSuperSecurityDecision && isApprovedBySecurity ? request.superSecurityApprovers : [];
   const directApprovers = [...commanders, ...securityApprovers, ...superSecurityApprovers];
@@ -56,7 +71,7 @@ export const getApproversAndSubmittedFromReq = async (request: Request) => {
   }
 
   // If security can see request now
-  if (isApprovedByCommander && request?.needSecurityDecision) {
+  if (isApprovedByCommander && request?.needSecurityDecision && !request.hasSecurityAdmin) {
     undirectApprovers = [...undirectApprovers, config.socket.rooms.security];
   }
 

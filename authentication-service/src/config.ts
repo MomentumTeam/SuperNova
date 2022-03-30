@@ -13,16 +13,20 @@ let diToId: any = {}; // for user1,user2,user3
 
 if (useShragaLocalMap) {
   const idArray = process.env.AS_SHRAGA_LOCAL_MAP_IDS
-    ? process.env.AS_SHRAGA_LOCAL_MAP_IDS.split(',')
+    ? process.env.AS_SHRAGA_LOCAL_MAP_IDS.split(",")
     : [
-        '619e3a6fe4de0300121d78c7',
-        '619e406ee4de0300121dc4c8',
-        '619e42b6e4de0300121dc4e3',
+        "619e3a6fe4de0300121d78c7",
+        "619e406ee4de0300121dc4c8",
+        "619e42b6e4de0300121dc4e3",
+        "619e5132e4de0300121dc528",
+        "619f8aa0e4de0300121dd3f4",
       ];
 
   const diArray = process.env.AS_SHRAGA_LOCAL_MAP_DIS
-    ? process.env.AS_SHRAGA_LOCAL_MAP_DIS.split(',')
-    : ['t23458789@jello.com', 't25458789@jello.com', 't25458711@jello.com'];
+    ? process.env.AS_SHRAGA_LOCAL_MAP_DIS.split(",")
+    : [
+        "t23458789sh@jello","t25458789sh@jello","t25458711sh@jello","gggusersh@rabiran","e595300134sh@turtlem",
+      ];
   for (let i = 0; i < idArray.length; i++) {
     diToId[diArray[i]] = idArray[i];
   }
