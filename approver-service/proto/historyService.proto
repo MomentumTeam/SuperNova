@@ -1,0 +1,38 @@
+syntax = "proto3";
+package HistoryService;
+
+service HistoryService {
+    rpc GetEventsByRoleId(GetDoneRequestsByRoleIdReq) returns (EventArray) {}
+    rpc GetEventsByGroupId(GetDoneRequestsByGroupIdReq) returns (EventArray) {}
+    rpc GetEventsByEntityId(GetDoneRequestsByEntityIdReq) returns (EventArray) {}
+    rpc GetEventsSubmmitedByEntityId(GetDoneRequestsByEntityIdReq) returns (EventArray) {}
+}
+
+
+message GetDoneRequestsByEntityIdReq{
+    string entityId = 1;
+    int32 from = 2;
+    int32 to = 3;
+}
+message GetDoneRequestsByGroupIdReq{
+    string groupId = 1;
+    int32 from = 2;
+    int32 to = 3;
+    optional bool showRoles = 4;
+}
+message GetDoneRequestsByRoleIdReq{
+    string roleId = 1;
+    int32 from = 2;
+    int32 to = 3;
+}
+
+message Event{
+    string message = 1;
+    int64 date = 2;
+}
+
+message EventArray{
+    repeated Event events = 1;
+    int32 totalCount = 2;
+}
+
