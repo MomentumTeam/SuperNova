@@ -312,7 +312,6 @@ export function getApprovementQuery(
   userType: ApproverType[]
 ) {
   switch (approvementStatus) {
-    case ApprovementStatus.COMMANDER_APPROVE:
     case ApprovementStatus.ADMIN_APPROVE:
       return {
         $or: [
@@ -369,6 +368,7 @@ export function getApprovementQuery(
         ],
       };
     case ApprovementStatus.ANY:
+    case ApprovementStatus.COMMANDER_APPROVE:
       return {};
     default:
       //BY_USER_TYPE
@@ -378,27 +378,10 @@ export function getApprovementQuery(
 
 export function getApprovementQueryByUserType(userType: ApproverType[]) {
   let or: any = [];
-  let commanderOrAdminInserted: boolean = false;
   for (let type of userType) {
-    if (
-      type === ApproverType.COMMANDER &&
-      !commanderOrAdminInserted
-    ) {
-      commanderOrAdminInserted = true;
-      or.push(
-        getApprovementQuery(ApprovementStatus.COMMANDER_APPROVE, userType)
-      );
-    } 
-    else if (
-      type === ApproverType.ADMIN &&
-      !commanderOrAdminInserted
-    ) {
-      commanderOrAdminInserted = true;
-      or.push(
-        getApprovementQuery(ApprovementStatus.ADMIN_APPROVE, userType)
-      );
-    } 
-    else if (
+    if (type === ApproverType.ADMIN) {
+      or.push(getApprovementQuery(ApprovementStatus.ADMIN_APPROVE, userType));
+    } else if (
       type === ApproverType.SECURITY ||
       type === ApproverType.SECURITY_ADMIN
     ) {

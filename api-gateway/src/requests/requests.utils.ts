@@ -144,18 +144,18 @@ export const approveUserRequest = async (
                   (v: any, i: any, a: any) =>
                     a.findIndex((t: any) => t.id === v.id) === i
                 );
-              } else {
-                request.commanders = request.commanders
-                  ? [...request.commanders, entityUser]
-                  : [entityUser];
-                request.commanderDecision = decision;
-
-                // remove duplicate commanders
-                request.commanders = request.commanders.filter(
-                  (v: any, i: any, a: any) =>
-                    a.findIndex((t: any) => t.id === v.id) === i
-                );
               }
+
+              request.commanders = request.commanders
+                ? [...request.commanders, entityUser]
+                : [entityUser];
+              request.commanderDecision = decision;
+
+              // remove duplicate commanders
+              request.commanders = request.commanders.filter(
+                (v: any, i: any, a: any) =>
+                  a.findIndex((t: any) => t.id === v.id) === i
+              );
             }
             break;
           default:
@@ -167,6 +167,7 @@ export const approveUserRequest = async (
 
   return request;
 };
+
 
 export const parseFromApproverTypeToPersonInRequest = (type: string) => {
   const approverType = approverTypeFromJSON(type);
