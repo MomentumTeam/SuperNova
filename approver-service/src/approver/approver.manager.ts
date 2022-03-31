@@ -4,6 +4,7 @@ import {
   ApproverArray,
   ApproverIdArray,
   DeleteApproverReq,
+  GetAdminsAboveGroupIdReq,
   GetAdminsByGroupIdsReq,
   GetAllApproversReq,
   GetAllApproverTypesReq,
@@ -50,6 +51,16 @@ export class ApproverManager {
         getAdminsByGroupIdsReq
       )) as ApproverArray;
     } catch (error) {
+      throw error;
+    }
+  }
+
+  async getAdminsAboveGroupId(
+    getAdminsAboveGroupIdreq: GetAdminsAboveGroupIdReq
+  ): Promise<ApproverArray> {
+    try{
+      return await this.approverRepository.getAdminsAboveGroupId(getAdminsAboveGroupIdreq);
+    }catch(error){
       throw error;
     }
   }
