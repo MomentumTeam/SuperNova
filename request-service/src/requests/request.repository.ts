@@ -1993,9 +1993,9 @@ export class RequestRepository {
       );
       const query: any = {
         status: requestStatusToJSON(RequestStatus.DONE),
-        type: { in: requestTypes },
+        type: { $in: requestTypes },
         $or: [
-          { 'KartoffelParams.roleId': getDoneRequestsByRoleIdReq.roleId },
+          { 'kartoffelParams.roleId': getDoneRequestsByRoleIdReq.roleId },
           { 'adParams.samAccountName': samAccountName },
         ],
       };
@@ -2005,9 +2005,9 @@ export class RequestRepository {
           getDoneRequestsByRoleIdReq.to - getDoneRequestsByRoleIdReq.from + 1,
       };
       const totalCount = await RequestModel.count(query);
-      const requests: any = await RequestModel.find(query, pagination).sort([
-        ['updatedAt', -1],
-      ]);
+      const requests: any = await RequestModel.find(query, {}, pagination).sort(
+        [['updatedAt', -1]]
+      );
 
       if (requests) {
         let documents: any = [];
@@ -2048,11 +2048,11 @@ export class RequestRepository {
       }
       const query: any = {
         status: requestStatusToJSON(RequestStatus.DONE),
-        type: { in: requestTypes },
+        type: { $in: requestTypes },
         $or: [
-          { 'KartoffelParams.id': getDoneRequestsByGroupIdReq.groupId },
+          { 'kartoffelParams.id': getDoneRequestsByGroupIdReq.groupId },
           {
-            'KartoffelParams.directGroup': getDoneRequestsByGroupIdReq.groupId,
+            'kartoffelParams.directGroup': getDoneRequestsByGroupIdReq.groupId,
           },
           { 'kartoffelStatus.createdId': getDoneRequestsByGroupIdReq.groupId },
         ],
@@ -2064,9 +2064,9 @@ export class RequestRepository {
           getDoneRequestsByGroupIdReq.to - getDoneRequestsByGroupIdReq.from + 1,
       };
       const totalCount = await RequestModel.count(query);
-      const requests: any = await RequestModel.find(query, pagination).sort([
-        ['updatedAt', -1],
-      ]);
+      const requests: any = await RequestModel.find(query, {}, pagination).sort(
+        [['updatedAt', -1]]
+      );
 
       if (requests) {
         let documents: any = [];
@@ -2103,9 +2103,9 @@ export class RequestRepository {
       ];
       const query: any = {
         status: requestStatusToJSON(RequestStatus.DONE),
-        type: { in: requestTypes },
+        type: { $in: requestTypes },
         $or: [
-          { 'KartoffelParams.id': getDoneRequestsByEntityIdReq.entityId },
+          { 'kartoffelParams.id': getDoneRequestsByEntityIdReq.entityId },
           {
             'kartoffelStatus.createdId': getDoneRequestsByEntityIdReq.entityId,
           },
@@ -2122,9 +2122,9 @@ export class RequestRepository {
           1,
       };
       const totalCount = await RequestModel.count(query);
-      const requests: any = await RequestModel.find(query, pagination).sort([
-        ['updatedAt', -1],
-      ]);
+      const requests: any = await RequestModel.find(query, {}, pagination).sort(
+        [['updatedAt', -1]]
+      );
 
       if (requests) {
         let documents: any = [];
@@ -2155,7 +2155,7 @@ export class RequestRepository {
     try {
       const query: any = {
         status: requestStatusToJSON(RequestStatus.DONE),
-        'submmitedBy.id': getDoneRequestsByEntityIdReq.entityId,
+        'submittedBy.id': getDoneRequestsByEntityIdReq.entityId,
         isPartOfBulk: false,
       };
       const pagination: any = {
@@ -2166,9 +2166,9 @@ export class RequestRepository {
           1,
       };
       const totalCount = await RequestModel.count(query);
-      const requests: any = await RequestModel.find(query, pagination).sort([
-        ['updatedAt', -1],
-      ]);
+      const requests: any = await RequestModel.find(query, {}, pagination).sort(
+        [['updatedAt', -1]]
+      );
 
       if (requests) {
         let documents: any = [];
