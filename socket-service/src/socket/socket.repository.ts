@@ -8,7 +8,7 @@ import {
   SuccessMessage,
 } from "../interfaces/protoc/proto/socketService";
 import { EventName } from "./socket.types";
-import { getApproversAndSubmittedFromReq, getNewApprovers, sendToUser } from "./socket.utils";
+import { getApproversAndSubmittedFromReq, getChangeApprovers, sendToUser } from "./socket.utils";
 
 export class SocketRepository {
   async sendEvent(io: socketIO.Server, sendEventReq: SendEventReq): Promise<SuccessMessage> {
@@ -63,15 +63,25 @@ export class SocketRepository {
           const [oldDirectApprovers, oldUndirectApprovers] = await getApproversAndSubmittedFromReq(oldRequest);
 
           // Find which new in direct approvers and send them new my approve request
-          const newDirectApprovers = getNewApprovers(oldDirectApprovers, directApprovers);
+          const newDirectApprovers = getChangeApprovers(oldDirectApprovers, directApprovers);
           newDirectApprovers && sendToUser(io, newDirectApprovers, EventName.newRequestMy, request);
 
           // Find which new in undirect approvers and send them new all approve request
-          const newUndirectApprovers = getNewApprovers(oldUndirectApprovers, undirectApprovers);
+          const newUndirectApprovers = getChangeApprovers(oldUndirectApprovers, undirectApprovers);
           newUndirectApprovers && sendToUser(io, newUndirectApprovers, EventName.newRequestAll, request);
 
+          // Find deleted direct approvers
+          const deletedDirectApprovers = getChangeApprovers(directApprovers, oldDirectApprovers);
+          const deletedUndirectApprovers = getChangeApprovers(undirectApprovers, oldUndirectApprovers);
+          const deletedApprovers = [...deletedUndirectApprovers, ...deletedDirectApprovers];
+          sendToUser(io, deletedApprovers, EventName.deleteRequest, oldRequest);
+
           // Send old approvers and submitted by an update
-          sendToUser(io, [...oldDirectApprovers, ...oldUndirectApprovers, submittedBy], EventName.updateRequest, request);
+          const remainApprovers = getChangeApprovers(deletedApprovers, [
+            ...oldDirectApprovers,
+            ...oldUndirectApprovers,
+          ]);
+          sendToUser(io, [...remainApprovers, submittedBy], EventName.updateRequest, request);
 
           break;
         }
