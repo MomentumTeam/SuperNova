@@ -163,6 +163,8 @@ message GetOGByIdRequest{
 message GetOGByHierarchyNameRequest{
     string hierarchy = 1;
     bool withRoles = 2;
+    optional bool direct = 3;
+
 }
 
 message DeleteEntityRequest{

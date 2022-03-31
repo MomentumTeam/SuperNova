@@ -283,6 +283,7 @@ export default class KartoffelController {
     const getOGByHierarchyNameReq: any = {
       hierarchy: req.query.hierarchy,
       withRoles: req.query.withRoles,
+      direct: req.query.direct,
     };
 
     try {
@@ -426,7 +427,10 @@ export default class KartoffelController {
   static async getIsHealthy(req: Request, res: Response) {
     try {
       const isHealthy = config.server.healthCheckAllowed
-        ? await timeout(KartoffelService.getIsHealthy({}), config.server.healthCheckTimeout)
+        ? await timeout(
+            KartoffelService.getIsHealthy({}),
+            config.server.healthCheckTimeout
+          )
         : await KartoffelService.getIsHealthy({});
       res.send(isHealthy);
     } catch (error: any) {

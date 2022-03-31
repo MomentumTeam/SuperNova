@@ -102,6 +102,7 @@ export interface GetOGByIdRequest {
 export interface GetOGByHierarchyNameRequest {
   hierarchy: string;
   withRoles: boolean;
+  direct?: boolean | undefined;
 }
 
 export interface DeleteEntityRequest {
@@ -2073,6 +2074,9 @@ export const GetOGByHierarchyNameRequest = {
     if (message.withRoles === true) {
       writer.uint32(16).bool(message.withRoles);
     }
+    if (message.direct !== undefined) {
+      writer.uint32(24).bool(message.direct);
+    }
     return writer;
   },
 
@@ -2093,6 +2097,9 @@ export const GetOGByHierarchyNameRequest = {
           break;
         case 2:
           message.withRoles = reader.bool();
+          break;
+        case 3:
+          message.direct = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -2116,6 +2123,11 @@ export const GetOGByHierarchyNameRequest = {
     } else {
       message.withRoles = false;
     }
+    if (object.direct !== undefined && object.direct !== null) {
+      message.direct = Boolean(object.direct);
+    } else {
+      message.direct = undefined;
+    }
     return message;
   },
 
@@ -2123,6 +2135,7 @@ export const GetOGByHierarchyNameRequest = {
     const obj: any = {};
     message.hierarchy !== undefined && (obj.hierarchy = message.hierarchy);
     message.withRoles !== undefined && (obj.withRoles = message.withRoles);
+    message.direct !== undefined && (obj.direct = message.direct);
     return obj;
   },
 
@@ -2141,6 +2154,11 @@ export const GetOGByHierarchyNameRequest = {
       message.withRoles = object.withRoles;
     } else {
       message.withRoles = false;
+    }
+    if (object.direct !== undefined && object.direct !== null) {
+      message.direct = object.direct;
+    } else {
+      message.direct = undefined;
     }
     return message;
   },

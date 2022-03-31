@@ -25,7 +25,10 @@ import {
 } from '../interfaces/protoc/proto/kartoffelService';
 import { cleanUnderscoreFields } from '../utils/json.utils';
 import { EntitiesRepository } from '../entities/entities.repository';
-import { getDirectRolesForGroups, isOgNameOrJobTitleAlreadyTaken } from './groups.utils';
+import {
+  getDirectRolesForGroups,
+  isOgNameOrJobTitleAlreadyTaken,
+} from './groups.utils';
 
 export class GroupsRepository {
   private kartoffelFaker: KartoffelFaker;
@@ -51,7 +54,11 @@ export class GroupsRepository {
         let res: any = { isOGNameAlreadyTaken: isOGNameAlreadyTaken };
         return res as IsOGNameAlreadyTakenRes;
       } else {
-        const isOGTaken = await isOgNameOrJobTitleAlreadyTaken(this, isOGNameAlreadyTakenReq.name, isOGNameAlreadyTakenReq.parent);
+        const isOGTaken = await isOgNameOrJobTitleAlreadyTaken(
+          this,
+          isOGNameAlreadyTakenReq.name,
+          isOGNameAlreadyTakenReq.parent
+        );
         return { isOGNameAlreadyTaken: isOGTaken.isAlreadyTaken };
       }
     } catch (error) {
@@ -180,7 +187,9 @@ export class GroupsRepository {
 
         let group = res;
         if (getOGByHierarchyName.withRoles) {
-          let groupwithroles = await getDirectRolesForGroups([res]);
+          const direct = getOGByHierarchyName?.direct;
+
+          let groupwithroles = await getDirectRolesForGroups([res], direct);
           group = groupwithroles[0];
         }
 

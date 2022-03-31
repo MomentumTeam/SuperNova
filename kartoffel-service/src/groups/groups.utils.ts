@@ -35,7 +35,8 @@ const getRolesUnderOG = async(getRolesUnderOGRequest: GetRolesUnderOGRequest): P
       throw error;
     }
 }
-export const getDirectRolesForGroups = async (groups: any) => {
+
+export const getDirectRolesForGroups = async (groups: any,direct:boolean=true) => {
    await Promise.all(
      groups.map(async (group: any) => {
        let directRoles: any = [];
@@ -44,7 +45,7 @@ export const getDirectRolesForGroups = async (groups: any) => {
 
        do {
          res = await getRolesUnderOG({
-           direct: true,
+           direct,
            groupId: group.id,
            page: pageCounter,
            pageSize: 100,

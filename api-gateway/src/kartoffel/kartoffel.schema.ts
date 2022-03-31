@@ -129,6 +129,7 @@ export const GetOGByHierarchyNameSchema = Joi.object({
   query: {
     hierarchy: Joi.string().required(),
     withRoles: Joi.boolean().default(false),
+    direct: Joi.boolean().default(true),
   },
 });
 
