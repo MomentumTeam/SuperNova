@@ -811,7 +811,6 @@ export async function hasSecurityAdmin(
   }
 }
 
-
 export async function getDoneRequestsByRoleId(
   call: any,
   callback: any
@@ -827,6 +826,96 @@ export async function getDoneRequestsByRoleId(
     callback(null, requests);
   } catch (error: any) {
     logger.error(`getDoneRequestsByRoleId ERROR`, {
+      callRequest: call.request,
+      error: { message: error.message },
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+export async function getDoneRequestsByGroupId(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    logger.info(`Call to getDoneRequestsByGroupId`, {
+      callRequest: call.request,
+    });
+    const requests = await requestManager.getDoneRequestsByGroupId(
+      call.request
+    );
+    logger.info(`getDoneRequestsByGroupId OK`, {
+      callRequest: call.request,
+    });
+    callback(null, requests);
+  } catch (error: any) {
+    logger.error(`getDoneRequestsByGroupId ERROR`, {
+      callRequest: call.request,
+      error: { message: error.message },
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+export async function getDoneRequestsByEntityId(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    logger.info(`Call to getDoneRequestsByEntityId`, {
+      callRequest: call.request,
+    });
+    const requests = await requestManager.getDoneRequestsByEntityId(
+      call.request
+    );
+    logger.info(`getDoneRequestsByEntityId OK`, {
+      callRequest: call.request,
+    });
+    callback(null, requests);
+  } catch (error: any) {
+    logger.error(`getDoneRequestsByEntityId ERROR`, {
+      callRequest: call.request,
+      error: { message: error.message },
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+export async function getDoneRequestsSubmmitedByEntityId(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    logger.info(`Call to getDoneRequestsSubmmitedByEntityId`, {
+      callRequest: call.request,
+    });
+    const requests = await requestManager.getDoneRequestsSubmmitedByEntityId(
+      call.request
+    );
+    logger.info(`getDoneRequestsSubmmitedByEntityId OK`, {
+      callRequest: call.request,
+    });
+    callback(null, requests);
+  } catch (error: any) {
+    logger.error(`getDoneRequestsSubmmitedByEntityId ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
     });

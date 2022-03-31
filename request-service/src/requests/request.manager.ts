@@ -31,6 +31,8 @@ import {
   RemoveApproverFromApproversReq,
   HasSecurityAdminReq,
   GetDoneRequestsByRoleIdReq,
+  GetDoneRequestsByGroupIdReq,
+  GetDoneRequestsByEntityIdReq,
 } from '../interfaces/protoc/proto/requestService';
 import { RequestRepository } from './request.repository';
 export class RequestManager {
@@ -360,6 +362,33 @@ export class RequestManager {
     try {
       return await this.requestRepository.getDoneRequestsByRoleId(
         getDoneRequestsByRoleIdReq
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+  async getDoneRequestsByGroupId(getDoneRequestsByGroupIdReq: GetDoneRequestsByGroupIdReq) {
+    try {
+      return await this.requestRepository.getDoneRequestsByGroupId(
+        getDoneRequestsByGroupIdReq
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+  async getDoneRequestsByEntityId(getDoneRequestsByEntityIdReq: GetDoneRequestsByEntityIdReq) {
+    try {
+      return await this.requestRepository.getDoneRequestsByEntityId(
+        getDoneRequestsByEntityIdReq
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+  async getDoneRequestsSubmmitedByEntityId(getDoneRequestsByEntityIdReq: GetDoneRequestsByEntityIdReq) {
+    try {
+      return await this.requestRepository.getDoneRequestsSubmmitedByEntityId(
+        getDoneRequestsByEntityIdReq
       );
     } catch (error) {
       throw error;

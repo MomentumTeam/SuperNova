@@ -51,6 +51,7 @@ import {
   HasSecurityAdminRes,
   GetDoneRequestsByRoleIdReq,
   GetDoneRequestsByGroupIdReq,
+  GetDoneRequestsByEntityIdReq,
 } from '../interfaces/protoc/proto/requestService';
 import { createNotifications } from '../services/notificationHelper';
 import { sendMail } from '../services/mailHelper';
@@ -1983,9 +1984,12 @@ export class RequestRepository {
         requestTypeToJSON(RequestType.ASSIGN_ROLE_TO_ENTITY),
         requestTypeToJSON(RequestType.CHANGE_ROLE_HIERARCHY),
       ];
+      const shtrudelIndex = getDoneRequestsByRoleIdReq.roleId.indexOf('@');
       const samAccountName: any = getDoneRequestsByRoleIdReq.roleId.substring(
         0,
-        getDoneRequestsByRoleIdReq.roleId.indexOf('@')
+        shtrudelIndex === -1
+          ? getDoneRequestsByRoleIdReq.roleId.length
+          : shtrudelIndex
       );
       const query: any = {
         status: requestStatusToJSON(RequestStatus.DONE),
@@ -2027,57 +2031,165 @@ export class RequestRepository {
       throw error;
     }
   }
-  /*
-  // async getDoneRequestsByGroupId(
-  //   getDoneRequestsByGroupIdReq: GetDoneRequestsByGroupIdReq
-  // ): Promise<RequestArray> {
-  //   try {
-  //     let requestTypes = [
-  //       requestTypeToJSON(RequestType.CREATE_OG),
-  //       requestTypeToJSON(RequestType.RENAME_OG),
-  //     ];
-  //     if (getDoneRequestsByGroupIdReq.showRoles === true) {
-  //       requestTypes.push(requestTypeToJSON(RequestType.CREATE_ROLE), requestTypeToJSON(RequestType.CHANGE_ROLE_HIERARCHY))
-  //     }
-  //     const query: any = {
-  //       //TODO insert constraints on roleId, notice that roleId = T123456@gmail, samAccountName=T123456 without @
-  //       status: requestStatusToJSON(RequestStatus.DONE),
-  //       type: { in: requestTypes },
-  //       $or: [{KartoffelParams.groupId: getDoneRequestsByGroupIdReq.groupId }, { "adParams.samAccountName".split('@')[0] : getDoneRequestsByGroupIdReq.roleId}],
-  //     };
-  //     // const pagination: any = {}; //TODO
 
-  //     const pagination : any = {
-  //             skip: getDoneRequestsByGroupIdReq.from - 1,
-  //             limit: getDoneRequestsByGroupIdReq.to - getDoneRequestsByGroupIdReq.from + 1,
-  //           };
-  //     const totalCount = await RequestModel.count(query);
-  //     const requests: any = await RequestModel.find(query, pagination).sort([
-  //       ['updatedAt', -1],
-  //     ]);;
+  async getDoneRequestsByGroupId(
+    getDoneRequestsByGroupIdReq: GetDoneRequestsByGroupIdReq
+  ): Promise<RequestArray> {
+    try {
+      let requestTypes = [
+        requestTypeToJSON(RequestType.CREATE_OG),
+        requestTypeToJSON(RequestType.RENAME_OG),
+      ];
+      if (getDoneRequestsByGroupIdReq.showRoles) {
+        requestTypes.push(
+          requestTypeToJSON(RequestType.CREATE_ROLE),
+          requestTypeToJSON(RequestType.CHANGE_ROLE_HIERARCHY)
+        );
+      }
+      const query: any = {
+        status: requestStatusToJSON(RequestStatus.DONE),
+        type: { in: requestTypes },
+        $or: [
+          { 'KartoffelParams.id': getDoneRequestsByGroupIdReq.groupId },
+          {
+            'KartoffelParams.directGroup': getDoneRequestsByGroupIdReq.groupId,
+          },
+          { 'kartoffelStatus.createdId': getDoneRequestsByGroupIdReq.groupId },
+        ],
+      };
 
-  //     if (requests) {
-  //       let documents: any = [];
-  //       for (let i = 0; i < requests.length; i++) {
-  //         const requestObj: any = requests[i].toObject();
-  //         turnObjectIdsToStrings(requestObj);
-  //         documents.push(requestObj);
-  //       }
+      const pagination: any = {
+        skip: getDoneRequestsByGroupIdReq.from - 1,
+        limit:
+          getDoneRequestsByGroupIdReq.to - getDoneRequestsByGroupIdReq.from + 1,
+      };
+      const totalCount = await RequestModel.count(query);
+      const requests: any = await RequestModel.find(query, pagination).sort([
+        ['updatedAt', -1],
+      ]);
 
-  //       return {
-  //         requests: documents,
-  //         totalCount: totalCount,
-  //       };
-  //     } else {
-  //       return {
-  //         requests: [],
-  //         totalCount: 0,
-  //       };
-  //     }
-  //     // TODO return them in RequestArray
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
-  */
+      if (requests) {
+        let documents: any = [];
+        for (let i = 0; i < requests.length; i++) {
+          const requestObj: any = requests[i].toObject();
+          turnObjectIdsToStrings(requestObj);
+          documents.push(requestObj);
+        }
+
+        return {
+          requests: documents,
+          totalCount: totalCount,
+        };
+      } else {
+        return {
+          requests: [],
+          totalCount: 0,
+        };
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getDoneRequestsByEntityId(
+    getDoneRequestsByEntityIdReq: GetDoneRequestsByEntityIdReq
+  ): Promise<RequestArray> {
+    try {
+      const requestTypes = [
+        requestTypeToJSON(RequestType.CREATE_ENTITY),
+        requestTypeToJSON(RequestType.ADD_APPROVER),
+        requestTypeToJSON(RequestType.EDIT_ENTITY),
+        requestTypeToJSON(RequestType.ASSIGN_ROLE_TO_ENTITY),
+      ];
+      const query: any = {
+        status: requestStatusToJSON(RequestStatus.DONE),
+        type: { in: requestTypes },
+        $or: [
+          { 'KartoffelParams.id': getDoneRequestsByEntityIdReq.entityId },
+          {
+            'kartoffelStatus.createdId': getDoneRequestsByEntityIdReq.entityId,
+          },
+          {
+            'additionalParams.entityId': getDoneRequestsByEntityIdReq.entityId,
+          },
+        ],
+      };
+      const pagination: any = {
+        skip: getDoneRequestsByEntityIdReq.from - 1,
+        limit:
+          getDoneRequestsByEntityIdReq.to -
+          getDoneRequestsByEntityIdReq.from +
+          1,
+      };
+      const totalCount = await RequestModel.count(query);
+      const requests: any = await RequestModel.find(query, pagination).sort([
+        ['updatedAt', -1],
+      ]);
+
+      if (requests) {
+        let documents: any = [];
+        for (let i = 0; i < requests.length; i++) {
+          const requestObj: any = requests[i].toObject();
+          turnObjectIdsToStrings(requestObj);
+          documents.push(requestObj);
+        }
+
+        return {
+          requests: documents,
+          totalCount: totalCount,
+        };
+      } else {
+        return {
+          requests: [],
+          totalCount: 0,
+        };
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getDoneRequestsSubmmitedByEntityId(
+    getDoneRequestsByEntityIdReq: GetDoneRequestsByEntityIdReq
+  ): Promise<RequestArray> {
+    try {
+      const query: any = {
+        status: requestStatusToJSON(RequestStatus.DONE),
+        'submmitedBy.id': getDoneRequestsByEntityIdReq.entityId,
+        isPartOfBulk: false,
+      };
+      const pagination: any = {
+        skip: getDoneRequestsByEntityIdReq.from - 1,
+        limit:
+          getDoneRequestsByEntityIdReq.to -
+          getDoneRequestsByEntityIdReq.from +
+          1,
+      };
+      const totalCount = await RequestModel.count(query);
+      const requests: any = await RequestModel.find(query, pagination).sort([
+        ['updatedAt', -1],
+      ]);
+
+      if (requests) {
+        let documents: any = [];
+        for (let i = 0; i < requests.length; i++) {
+          const requestObj: any = requests[i].toObject();
+          turnObjectIdsToStrings(requestObj);
+          documents.push(requestObj);
+        }
+
+        return {
+          requests: documents,
+          totalCount: totalCount,
+        };
+      } else {
+        return {
+          requests: [],
+          totalCount: 0,
+        };
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
 }

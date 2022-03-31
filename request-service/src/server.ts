@@ -30,6 +30,10 @@ import {
   sendSubmissionMail,
   removeApproverFromApprovers,
   hasSecurityAdmin,
+  getDoneRequestsSubmmitedByEntityId,
+  getDoneRequestsByEntityId,
+  getDoneRequestsByGroupId,
+  getDoneRequestsByRoleId,
 } from './requests/request.controller';
 import { RequestType } from './interfaces/protoc/proto/requestService';
 import { findPath } from './utils/path';
@@ -122,6 +126,10 @@ export class Server {
         SendSubmissionMail: sendSubmissionMail,
         RemoveApproverFromApprovers: removeApproverFromApprovers,
         HasSecurityAdmin: hasSecurityAdmin,
+        GetDoneRequestsSubmittedByEntityId: getDoneRequestsSubmmitedByEntityId,
+        GetDoneRequestsByEntityId: getDoneRequestsByEntityId,
+        GetDoneRequestsByGroupId: getDoneRequestsByGroupId,
+        GetDoneRequestsByRoleId: getDoneRequestsByRoleId,
       });
       logger.info(`Grpc services were successfully added to the server`);
     } catch (error: any) {
