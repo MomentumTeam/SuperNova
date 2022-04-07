@@ -22,12 +22,15 @@ import {
   IsOGNameAlreadyTakenReq,
   IsOGNameAlreadyTakenRes,
   IdMessage,
+  ExportHierarchyDataReq,
+  ExportHierarchyDataRes,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { cleanUnderscoreFields } from '../utils/json.utils';
 import { EntitiesRepository } from '../entities/entities.repository';
 import {
   getDirectRolesForGroups,
   isOgNameOrJobTitleAlreadyTaken,
+  exportHierarchyData,
 } from './groups.utils';
 
 export class GroupsRepository {
@@ -195,6 +198,28 @@ export class GroupsRepository {
 
         return group as OrganizationGroup;
       }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async exportHierarchyData(
+    exportHierarchyDataReq: ExportHierarchyDataReq
+  ): Promise<ExportHierarchyDataRes> {
+    try {
+      cleanUnderscoreFields(exportHierarchyDataReq);
+      //TODO - add faker
+
+      const groupData = await this.getOGByHierarchyName(exportHierarchyDataReq);
+
+      const hierarchyData: any[] = await exportHierarchyData(groupData);
+
+      const res: ExportHierarchyDataRes = {
+        hierarchyData: hierarchyData,
+        fatherHierarchyName: groupData.name,
+      };
+
+      return res as ExportHierarchyDataRes;
     } catch (error) {
       throw error;
     }

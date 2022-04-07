@@ -297,6 +297,24 @@ export default class KartoffelController {
     }
   }
 
+  static async ExportHierarchyData(req: Request, res: Response) {
+    const exportHierarchyDataReq: any = {
+      hierarchy: req.query.hierarchy,
+      withRoles: req.query.withRoles,
+      direct: req.query.direct,
+    };
+
+    try {
+      const ogExportData = await KartoffelService.exportHierarchyData(
+        exportHierarchyDataReq
+      );
+      res.send(ogExportData);
+    } catch (error: any) {
+      const statusCode = statusCodeHandler(error);
+      res.status(statusCode).send(error.message);
+    }
+  }
+
   // Roles
   static async getRoleById(req: Request, res: Response) {
     const getRoleByIdReq: GetRoleByRoleIdRequest = {
