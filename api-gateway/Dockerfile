@@ -1,15 +1,18 @@
 FROM node:14.17.5-alpine3.14 as builder
 WORKDIR /app
 
-RUN apk update 
 
 # copy configs to /app folder
 COPY ./package*.json ./
 COPY ./tsconfig.json ./
 RUN npm i && npm cache clean --force
 
-# copy source code to /app/src folder
 COPY . .
+
+
+
+
+
 RUN npm run build
 
 FROM node:14.17.5-alpine3.14 as PROD
@@ -24,15 +27,10 @@ RUN mkdir -p /bulkFiles
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
-COPY  ./package*.json ./
-
-RUN npm ci --production && npm cache clean --force
+COPY --from=builder /app/node_modules . 
 COPY --from=builder  /app/dist .
 COPY --from=builder  /app/proto proto
 
-
 EXPOSE 8080
-
 ENV NODE_ENV=production
-
 CMD ["node", "src/index.js"]
