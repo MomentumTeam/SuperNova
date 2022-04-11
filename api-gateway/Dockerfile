@@ -9,10 +9,6 @@ RUN npm i && npm cache clean --force
 
 COPY . .
 
-
-
-
-
 RUN npm run build
 
 FROM node:14.17.5-alpine3.14 as PROD
@@ -27,7 +23,7 @@ RUN mkdir -p /bulkFiles
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
-COPY --from=builder /app/node_modules . 
+COPY --from=builder /app/node_modules node_modules
 COPY --from=builder  /app/dist .
 COPY --from=builder  /app/proto proto
 
