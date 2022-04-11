@@ -31,6 +31,7 @@ export interface Event {
 export interface EventArray {
   events: Event[];
   totalCount: number;
+  till: number;
 }
 
 const baseGetDoneRequestsByEntityIdReq: object = {
@@ -435,7 +436,7 @@ export const Event = {
   },
 };
 
-const baseEventArray: object = { totalCount: 0 };
+const baseEventArray: object = { totalCount: 0, till: 0 };
 
 export const EventArray = {
   encode(
@@ -447,6 +448,9 @@ export const EventArray = {
     }
     if (message.totalCount !== 0) {
       writer.uint32(16).int32(message.totalCount);
+    }
+    if (message.till !== 0) {
+      writer.uint32(24).int32(message.till);
     }
     return writer;
   },
@@ -464,6 +468,9 @@ export const EventArray = {
           break;
         case 2:
           message.totalCount = reader.int32();
+          break;
+        case 3:
+          message.till = reader.int32();
           break;
         default:
           reader.skipType(tag & 7);
@@ -486,6 +493,11 @@ export const EventArray = {
     } else {
       message.totalCount = 0;
     }
+    if (object.till !== undefined && object.till !== null) {
+      message.till = Number(object.till);
+    } else {
+      message.till = 0;
+    }
     return message;
   },
 
@@ -497,6 +509,7 @@ export const EventArray = {
       obj.events = [];
     }
     message.totalCount !== undefined && (obj.totalCount = message.totalCount);
+    message.till !== undefined && (obj.till = message.till);
     return obj;
   },
 
@@ -512,6 +525,11 @@ export const EventArray = {
       message.totalCount = object.totalCount;
     } else {
       message.totalCount = 0;
+    }
+    if (object.till !== undefined && object.till !== null) {
+      message.till = object.till;
+    } else {
+      message.till = 0;
     }
     return message;
   },
