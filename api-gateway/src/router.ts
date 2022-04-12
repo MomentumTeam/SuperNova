@@ -13,6 +13,7 @@ mainRouter.use('/notifications', NotificationRouter);
 mainRouter.use('/kartoffel', KartoffelRouter);
 mainRouter.use('/requests', RequestsRouter);
 mainRouter.use('/bulk', BulkRouter);
+mainRouter.use('/options', OptionsRouter);
 mainRouter.get("/config", (req, res) =>res.send(config.ui));
 
 export default mainRouter;

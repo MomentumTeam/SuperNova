@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package OptionsService;
+
+service OptionsService {
+    rpc GetOptionsByEntityId(GetOptionsByEntityIdReq) returns (Options){}
+    rpc UpdateUserOptions(UpdateUserOptionsReq) returns (Options){}
+    rpc AddFavoriteCommander(FavoriteCommanderReq) returns (Options){}
+    rpc RemoveFavoriteCommander(FavoriteCommanderReq) returns (Options){} 
+}
+
+message GetOptionsByEntityIdReq {
+    string entityId = 1;
+}
+
+message Options {
+    bool toggleProfilePicture = 1;
+    bool getMailNotifications = 2;
+    bool showPhoneNumber = 3;
+    repeated string favoriteCommanders = 4;
+}
+
+message UpdateUserOptionsReq {
+    string entityId = 1;
+    optional bool toggleProfilePicture = 2;
+    optional bool getMailNotifications = 3;
+    optional bool showPhoneNumber = 4;
+}
+
+message FavoriteCommanderReq {
+string entityId = 1;
+string commanderId = 2;
+}
+
+
