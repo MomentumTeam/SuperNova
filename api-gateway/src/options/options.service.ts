@@ -39,7 +39,7 @@ function randomClient(): any {
 }
 
 export class OptionsService {
-  static async getMyOptions(
+  static async getUserOptions(
     getOptionsByEntityIdReq: GetOptionsByEntityIdReq
   ) {
     logger.info(
@@ -68,7 +68,7 @@ export class OptionsService {
     });
   }
 
-  static async updateMyOptions(updateOptionsByEntityIdReq: UpdateUserOptionsReq) {
+  static async updateUserOptions(updateOptionsByEntityIdReq: UpdateUserOptionsReq) {
     logger.info(`Call to updateUserOptions in GTW`, updateOptionsByEntityIdReq);
 
     return new Promise((resolve, reject) => {

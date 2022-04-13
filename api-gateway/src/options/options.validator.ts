@@ -14,7 +14,7 @@ export class OptionsValidator {
         next();
     }
 
-    static isModifyFavoriteCommandersValid(req: Request, res: Response, next: NextFunction) {
+    static isModifyUserFavoriteCommandersValid(req: Request, res: Response, next: NextFunction) {
         transformRequest(req, validateObject(req, modifyFavoriteCommandersSchema, { allowUnknown: true }));
         next();
     }

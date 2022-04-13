@@ -20,13 +20,13 @@ OptionsRouter.put(
 
 OptionsRouter.put(
   "/add-favorite-commander",
-  OptionsValidator.isModifyFavoriteCommandersValid,
+  OptionsValidator.isModifyUserFavoriteCommandersValid,
   OptionsController.addFavoriteCommander
 );
 
 OptionsRouter.put(
   "/remove-favorite-commander",
-  OptionsValidator.isModifyFavoriteCommandersValid,
+  OptionsValidator.isModifyUserFavoriteCommandersValid,
   OptionsController.removeFavoriteCommander
 );
 

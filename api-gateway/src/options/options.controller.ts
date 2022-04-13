@@ -23,7 +23,7 @@ export default class OptionsController {
     });
 
     try {
-      const options = await OptionsService.getMyOptions(
+      const options = await OptionsService.getUserOptions(
         getOptionsByEntityIdReq
       );
       res.send(options);
@@ -39,11 +39,13 @@ export default class OptionsController {
 
     const updateOptionsByEntityIdReq: UpdateUserOptionsReq = {
       entityId: req.user.id,
-      ...req.body
+      ...req.body,
     };
 
     try {
-      const response = await OptionsService.updateMyOptions(updateOptionsByEntityIdReq);
+      const response = await OptionsService.updateUserOptions(
+        updateOptionsByEntityIdReq
+      );
       res.send(response);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -53,7 +55,10 @@ export default class OptionsController {
 
   static async addFavoriteCommander(req: any, res: Response) {
     if (!req.user && !req.user.id) throw new AuthenticationError();
-    const addFavoriteCommanderReq: FavoriteCommanderReq = { entityId: req.user.id, commanderId: req.params.commanderId };
+    const addFavoriteCommanderReq: FavoriteCommanderReq = {
+      entityId: req.user.id,
+      commanderId: req.params.commanderId,
+    };
 
     try {
       const response = await OptionsService.addFavoriteCommander(
@@ -68,7 +73,10 @@ export default class OptionsController {
 
   static async removeFavoriteCommander(req: any, res: Response) {
     if (!req.user && !req.user.id) throw new AuthenticationError();
-    const removeFavoriteCommanderReq: FavoriteCommanderReq = { entityId: req.user.id, commanderId: req.params.commanderId };
+    const removeFavoriteCommanderReq: FavoriteCommanderReq = {
+      entityId: req.user.id,
+      commanderId: req.params.commanderId,
+    };
 
     try {
       const response = await OptionsService.removeFavoriteCommander(

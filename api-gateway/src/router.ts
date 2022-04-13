@@ -5,6 +5,7 @@ import RequestsRouter from './requests/requests.router';
 import NotificationRouter from './notifications/notifications.router';
 import ApproverRouter from './approver/approver.router';
 import BulkRouter from './bulk/bulk.router';
+import OptionsRouter from './options/options.router';
 
 const mainRouter = Router();
 
