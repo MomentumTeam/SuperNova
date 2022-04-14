@@ -57,6 +57,8 @@ service RequestService {
     rpc GetDoneRequestsByEntityId(GetDoneRequestsByEntityIdReq) returns (RequestArray) {}
     rpc GetDoneRequestsSubmittedByEntityId(GetDoneRequestsByEntityIdReq) returns (RequestArray) {}
 
+    rpc WasCreateBeenInLego(CheckIfCreateWasInLegoReq) returns (BoolCheck) {}
+
 }
 
 // ---------------------------------------------LEGO Requests------------------------------------------------------------
@@ -1085,7 +1087,7 @@ message RemoveApproverFromApproversReq{
     ApproverType type = 3;
 }
 
-//16.GetDoneRequests
+//16.GetDoneRequests (historyService)
 message GetDoneRequestsByEntityIdReq{
     string entityId = 1;
     int32 from = 2;
@@ -1103,6 +1105,14 @@ message GetDoneRequestsByRoleIdReq{
     int32 to = 3;
 }
 
+message CheckIfCreateWasInLegoReq {
+    CheckingOpsions typeOfCheck = 1;
+    string idCheck = 2;
+}
+
+message BoolCheck {
+    bool isItCreateInLego = 1;
+}
 
 // ---------------------------------------------Other Functions Objects------------------------------------------------------------
 
@@ -1627,4 +1637,10 @@ enum SortField{
 enum SortOrder{
     INC = 0;
     DEC = 1;
+}
+
+enum CheckingOpsions{
+    OG = 0;
+    ROLE = 1;
+    ENTITY = 2;
 }

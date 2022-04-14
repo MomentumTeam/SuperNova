@@ -627,6 +627,44 @@ export function sortOrderToJSON(object: SortOrder): string {
   }
 }
 
+export enum CheckingOpsions {
+  OG = 0,
+  ROLE = 1,
+  ENTITY = 2,
+  UNRECOGNIZED = -1,
+}
+
+export function checkingOpsionsFromJSON(object: any): CheckingOpsions {
+  switch (object) {
+    case 0:
+    case "OG":
+      return CheckingOpsions.OG;
+    case 1:
+    case "ROLE":
+      return CheckingOpsions.ROLE;
+    case 2:
+    case "ENTITY":
+      return CheckingOpsions.ENTITY;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return CheckingOpsions.UNRECOGNIZED;
+  }
+}
+
+export function checkingOpsionsToJSON(object: CheckingOpsions): string {
+  switch (object) {
+    case CheckingOpsions.OG:
+      return "OG";
+    case CheckingOpsions.ROLE:
+      return "ROLE";
+    case CheckingOpsions.ENTITY:
+      return "ENTITY";
+    default:
+      return "UNKNOWN";
+  }
+}
+
 /** 1.CreateRole */
 export interface CreateRoleReq {
   submittedBy: EntityMin | undefined;
@@ -1654,7 +1692,7 @@ export interface RemoveApproverFromApproversReq {
   type: ApproverType;
 }
 
-/** 16.GetDoneRequests */
+/** 16.GetDoneRequests (historyService) */
 export interface GetDoneRequestsByEntityIdReq {
   entityId: string;
   from: number;
@@ -1672,6 +1710,15 @@ export interface GetDoneRequestsByRoleIdReq {
   roleId: string;
   from: number;
   to: number;
+}
+
+export interface CheckIfCreateWasInLegoReq {
+  typeOfCheck: CheckingOpsions;
+  idCheck: string;
+}
+
+export interface BoolCheck {
+  isItCreateInLego: boolean;
 }
 
 export interface UpdateReq {
@@ -25424,6 +25471,158 @@ export const GetDoneRequestsByRoleIdReq = {
   },
 };
 
+const baseCheckIfCreateWasInLegoReq: object = { typeOfCheck: 0, idCheck: "" };
+
+export const CheckIfCreateWasInLegoReq = {
+  encode(
+    message: CheckIfCreateWasInLegoReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.typeOfCheck !== 0) {
+      writer.uint32(8).int32(message.typeOfCheck);
+    }
+    if (message.idCheck !== "") {
+      writer.uint32(18).string(message.idCheck);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): CheckIfCreateWasInLegoReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseCheckIfCreateWasInLegoReq,
+    } as CheckIfCreateWasInLegoReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.typeOfCheck = reader.int32() as any;
+          break;
+        case 2:
+          message.idCheck = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CheckIfCreateWasInLegoReq {
+    const message = {
+      ...baseCheckIfCreateWasInLegoReq,
+    } as CheckIfCreateWasInLegoReq;
+    if (object.typeOfCheck !== undefined && object.typeOfCheck !== null) {
+      message.typeOfCheck = checkingOpsionsFromJSON(object.typeOfCheck);
+    } else {
+      message.typeOfCheck = 0;
+    }
+    if (object.idCheck !== undefined && object.idCheck !== null) {
+      message.idCheck = String(object.idCheck);
+    } else {
+      message.idCheck = "";
+    }
+    return message;
+  },
+
+  toJSON(message: CheckIfCreateWasInLegoReq): unknown {
+    const obj: any = {};
+    message.typeOfCheck !== undefined &&
+      (obj.typeOfCheck = checkingOpsionsToJSON(message.typeOfCheck));
+    message.idCheck !== undefined && (obj.idCheck = message.idCheck);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<CheckIfCreateWasInLegoReq>
+  ): CheckIfCreateWasInLegoReq {
+    const message = {
+      ...baseCheckIfCreateWasInLegoReq,
+    } as CheckIfCreateWasInLegoReq;
+    if (object.typeOfCheck !== undefined && object.typeOfCheck !== null) {
+      message.typeOfCheck = object.typeOfCheck;
+    } else {
+      message.typeOfCheck = 0;
+    }
+    if (object.idCheck !== undefined && object.idCheck !== null) {
+      message.idCheck = object.idCheck;
+    } else {
+      message.idCheck = "";
+    }
+    return message;
+  },
+};
+
+const baseBoolCheck: object = { isItCreateInLego: false };
+
+export const BoolCheck = {
+  encode(
+    message: BoolCheck,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.isItCreateInLego === true) {
+      writer.uint32(8).bool(message.isItCreateInLego);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): BoolCheck {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseBoolCheck } as BoolCheck;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.isItCreateInLego = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): BoolCheck {
+    const message = { ...baseBoolCheck } as BoolCheck;
+    if (
+      object.isItCreateInLego !== undefined &&
+      object.isItCreateInLego !== null
+    ) {
+      message.isItCreateInLego = Boolean(object.isItCreateInLego);
+    } else {
+      message.isItCreateInLego = false;
+    }
+    return message;
+  },
+
+  toJSON(message: BoolCheck): unknown {
+    const obj: any = {};
+    message.isItCreateInLego !== undefined &&
+      (obj.isItCreateInLego = message.isItCreateInLego);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<BoolCheck>): BoolCheck {
+    const message = { ...baseBoolCheck } as BoolCheck;
+    if (
+      object.isItCreateInLego !== undefined &&
+      object.isItCreateInLego !== null
+    ) {
+      message.isItCreateInLego = object.isItCreateInLego;
+    } else {
+      message.isItCreateInLego = false;
+    }
+    return message;
+  },
+};
+
 const baseUpdateReq: object = { id: "" };
 
 export const UpdateReq = {
@@ -31810,6 +32009,7 @@ export interface RequestService {
   GetDoneRequestsSubmittedByEntityId(
     request: GetDoneRequestsByEntityIdReq
   ): Promise<RequestArray>;
+  WasCreateBeenInLego(request: CheckIfCreateWasInLegoReq): Promise<BoolCheck>;
 }
 
 export class RequestServiceClientImpl implements RequestService {
@@ -31870,6 +32070,7 @@ export class RequestServiceClientImpl implements RequestService {
     this.GetDoneRequestsByEntityId = this.GetDoneRequestsByEntityId.bind(this);
     this.GetDoneRequestsSubmittedByEntityId =
       this.GetDoneRequestsSubmittedByEntityId.bind(this);
+    this.WasCreateBeenInLego = this.WasCreateBeenInLego.bind(this);
   }
   CreateRoleRequest(request: CreateRoleReq): Promise<CreateRoleRes> {
     const data = CreateRoleReq.encode(request).finish();
@@ -32383,6 +32584,16 @@ export class RequestServiceClientImpl implements RequestService {
       data
     );
     return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
+  }
+
+  WasCreateBeenInLego(request: CheckIfCreateWasInLegoReq): Promise<BoolCheck> {
+    const data = CheckIfCreateWasInLegoReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "WasCreateBeenInLego",
+      data
+    );
+    return promise.then((data) => BoolCheck.decode(new _m0.Reader(data)));
   }
 }
 
