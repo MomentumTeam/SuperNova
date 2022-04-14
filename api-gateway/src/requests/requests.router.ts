@@ -110,6 +110,11 @@ RequestsRouter.put(
   RequestValidator.isAssignRoleToEntityValid,
   RequestsController.assignRoleToEntityRequest
 );
+RequestsRouter.put(
+  '/request/convertEntityType',
+  RequestValidator.isConvertEntityTypeValid,
+  RequestsController.convertEntityTypeRequest
+);
 
 // POST
 RequestsRouter.post(

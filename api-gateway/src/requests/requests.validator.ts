@@ -29,6 +29,7 @@ import {
   transferRequestToApproversSchema,
   updateApproversCommentsSchema,
   removeApproverFromApproversSchema,
+  convertEntityTypeSchema,
 } from './requests.schema';
 
 export class RequestValidator {
@@ -173,6 +174,14 @@ export class RequestValidator {
     transformRequest(
       req,
       validateObject(req, changeRoleHierarchyReqSchema, { allowUnknown: true })
+    );
+    next();
+  }
+
+  static isConvertEntityTypeValid(req: Request, res: Response, next: NextFunction) {
+    transformRequest(
+      req,
+      validateObject(req, convertEntityTypeSchema, { allowUnknown: true })
     );
     next();
   }

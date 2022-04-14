@@ -20,6 +20,7 @@ import {
   deleteEntity,
   changeRoleOG,
   connectEntityAndDI,
+  convertEntity,
 } from './consumer.kartoffel';
 import { logger } from '../utils/logger';
 import TeaService from '../services/teaService';
@@ -98,6 +99,10 @@ export const requestProcessor = async (incomingRequest: any) => {
         }
         case RequestType.CHANGE_ROLE_HIERARCHY: {
           await changeRoleOG(requestObject.data);
+          break;
+        }
+        case RequestType.CONVERT_ENTITY_TYPE: {
+          await convertEntity(requestObject.data);
           break;
         }
         default: {

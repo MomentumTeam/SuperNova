@@ -324,3 +324,33 @@ export const changeRoleOG = async (changeRoleHierarchyReq: any) => {
     throw error;
   }
 };
+
+export const convertEntity = async (convertEntityRequest: any) => {
+  try {
+    logger.info('convertEntity request received', convertEntityRequest);
+    const { id, uniqueId, newEntityType, identifier, upn } = convertEntityRequest;
+    await KartoffelService.disconnectDIFromEntity({
+      id: id,
+      uniqueId: uniqueId,
+    });
+
+    let updateEntityRequest: any = {
+      id: id,
+      properties: {
+        entityType: newEntityType,
+      },
+    };
+    if (identifier) {
+      if (newEntityType === config.civilian) {
+        updateEntityRequest.properties.identityCard = identifier;
+      } else {
+        updateEntityRequest.properties.personalNumber = identifier;
+      }
+    }
+    await KartoffelService.updateEntity(updateEntityRequest);
+    await KartoffelService.connectEntityAndDI({ id: id, uniqueId: uniqueId, upn: upn });    
+    logger.info('Successfuly converted entity');
+  } catch (error) {
+    throw error;
+  }
+};

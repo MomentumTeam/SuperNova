@@ -81,6 +81,7 @@ import {
   retrieveBrol,
   retrieveTeaByOGId,
   retrieveUPNByEntityId,
+  retrieveUPNByIdentifier,
 } from '../services/teaHelper';
 import { logger } from '../logger';
 import { MailType } from '../interfaces/protoc/proto/mailService';
@@ -129,7 +130,27 @@ export class RequestRepository {
           message: 'Waiting for push, request type does not require AD update',
           failedRetries: 0,
         };
-      } else if (type === RequestType.EDIT_ENTITY) {
+      } else if (
+        type === RequestType.EDIT_ENTITY ||
+        type === RequestType.CONVERT_ENTITY_TYPE
+      ) {
+        if (type === RequestType.CONVERT_ENTITY_TYPE) {
+          let upn;
+          if (createRequestReq.kartoffelParams.identifier) {
+            upn = await retrieveUPNByIdentifier(
+              createRequestReq.kartoffelParams.newEntityType,
+              createRequestReq.kartoffelParams.identifier
+            );
+          } else {
+            upn = await retrieveUPNByEntityId(
+              createRequestReq.kartoffelParams.id,
+              createRequestReq.kartoffelParams.newEntityType
+            );
+          }
+          createRequestReq.kartoffelParams.upn = upn;
+          createRequestReq.adParams.upn = upn;
+        }
+
         //automatically approved
         const approverDecision = {
           approver: createRequestReq.submittedBy
@@ -346,7 +367,10 @@ export class RequestRepository {
         typeof request.type === typeof ''
           ? requestTypeFromJSON(request.type)
           : request.type;
-      if (requestType === RequestType.EDIT_ENTITY) {
+      if (
+        requestType === RequestType.EDIT_ENTITY ||
+        requestType === RequestType.CONVERT_ENTITY_TYPE
+      ) {
         return { isRequestApproved: true };
       } else {
         const needSecurityDecision = request.needSecurityDecision;

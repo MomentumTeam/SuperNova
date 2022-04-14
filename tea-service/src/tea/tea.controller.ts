@@ -156,6 +156,33 @@ export async function retrieveUPNByEntityId(
   }
 }
 
+export async function retrieveUPNByIdentifier(call: any, callback: any) {
+  try {
+    logger.info('Call to retrieveUPNByIdentifier', { request: call.request });
+    const upnMessage: UPNMessage = await teaManager.retrieveUPNByIdentifier(
+      call.request
+    );
+    logger.info('retrieveUPNByIdentifier OK', {
+      response: upnMessage,
+      request: call.request,
+    });
+    callback(null, upnMessage);
+  } catch (error: any) {
+    logger.error('retrieveUPNByIdentifier ERROR', {
+      error: { message: error.message },
+      request: call.request,
+    });
+    callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
 export async function throwTea(call: any, callback: any): Promise<void> {
   try {
     logger.info('Call to throwTea', { request: call.request });
