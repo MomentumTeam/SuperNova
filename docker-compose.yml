@@ -68,7 +68,7 @@ services:
       - notification-service
       - tea-service
       - mail-service
-      - approver-service
+      # - approver-service
     volumes:
       - logs:/logs
     environment:
