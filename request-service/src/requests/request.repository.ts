@@ -30,6 +30,7 @@ import {
   UpdateKartoffelStatusReq,
   stageStatusToJSON,
   ApprovementStatus,
+  CheckingOpsions,
   approvementStatusFromJSON,
   PushErrorReq,
   errorTypeToJSON,
@@ -52,6 +53,8 @@ import {
   GetDoneRequestsByRoleIdReq,
   GetDoneRequestsByGroupIdReq,
   GetDoneRequestsByEntityIdReq,
+  CheckIfCreateWasInLegoReq,
+  BoolCheck,
 } from '../interfaces/protoc/proto/requestService';
 import { createNotifications } from '../services/notificationHelper';
 import { sendMail } from '../services/mailHelper';
@@ -2188,6 +2191,47 @@ export class RequestRepository {
           totalCount: 0,
         };
       }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async wasCreateBeenInLego(
+    checkIfCreateWasInLegoReq: CheckIfCreateWasInLegoReq
+  ): Promise<BoolCheck> {
+    try {
+      const requestTypes = [
+        requestTypeToJSON(RequestType.CREATE_ROLE),
+        requestTypeToJSON(RequestType.CREATE_OG),
+        requestTypeToJSON(RequestType.CREATE_ENTITY),
+      ];
+      const query: any = {
+        status: requestStatusToJSON(RequestStatus.DONE),
+        $or: [
+          { 'kartoffelParams.roleId': checkIfCreateWasInLegoReq.idCheck },
+          {
+            'kartoffelStatus.createdId': checkIfCreateWasInLegoReq.idCheck,
+          },
+        ],
+      };
+      const requests: any = await RequestModel.find(query, {})
+        .sort([['updatedAt', -1]])
+        .limit(1);
+
+      // switch(requests[0].toObject().type)
+      const tempRequest = requests[0].toObject();
+      turnObjectIdsToStrings(tempRequest);
+      const typeOfTheRequest = tempRequest.type;
+      for (let i = 0; i < requestTypes.length; i++) {
+        if (typeOfTheRequest === requestTypes[i]) {
+          return {
+            isItCreateInLego: true,
+          };
+        }
+      }
+      return {
+        isItCreateInLego: false,
+      };
     } catch (error) {
       throw error;
     }

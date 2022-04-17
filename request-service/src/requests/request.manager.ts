@@ -33,6 +33,7 @@ import {
   GetDoneRequestsByRoleIdReq,
   GetDoneRequestsByGroupIdReq,
   GetDoneRequestsByEntityIdReq,
+  CheckIfCreateWasInLegoReq,
 } from '../interfaces/protoc/proto/requestService';
 import { RequestRepository } from './request.repository';
 export class RequestManager {
@@ -356,9 +357,9 @@ export class RequestManager {
     }
   }
 
-
-
-  async getDoneRequestsByRoleId(getDoneRequestsByRoleIdReq: GetDoneRequestsByRoleIdReq) {
+  async getDoneRequestsByRoleId(
+    getDoneRequestsByRoleIdReq: GetDoneRequestsByRoleIdReq
+  ) {
     try {
       return await this.requestRepository.getDoneRequestsByRoleId(
         getDoneRequestsByRoleIdReq
@@ -367,7 +368,9 @@ export class RequestManager {
       throw error;
     }
   }
-  async getDoneRequestsByGroupId(getDoneRequestsByGroupIdReq: GetDoneRequestsByGroupIdReq) {
+  async getDoneRequestsByGroupId(
+    getDoneRequestsByGroupIdReq: GetDoneRequestsByGroupIdReq
+  ) {
     try {
       return await this.requestRepository.getDoneRequestsByGroupId(
         getDoneRequestsByGroupIdReq
@@ -376,7 +379,9 @@ export class RequestManager {
       throw error;
     }
   }
-  async getDoneRequestsByEntityId(getDoneRequestsByEntityIdReq: GetDoneRequestsByEntityIdReq) {
+  async getDoneRequestsByEntityId(
+    getDoneRequestsByEntityIdReq: GetDoneRequestsByEntityIdReq
+  ) {
     try {
       return await this.requestRepository.getDoneRequestsByEntityId(
         getDoneRequestsByEntityIdReq
@@ -385,10 +390,23 @@ export class RequestManager {
       throw error;
     }
   }
-  async getDoneRequestsSubmmitedByEntityId(getDoneRequestsByEntityIdReq: GetDoneRequestsByEntityIdReq) {
+  async getDoneRequestsSubmmitedByEntityId(
+    getDoneRequestsByEntityIdReq: GetDoneRequestsByEntityIdReq
+  ) {
     try {
       return await this.requestRepository.getDoneRequestsSubmmitedByEntityId(
         getDoneRequestsByEntityIdReq
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+  async wasCreateBeenInLego(
+    checkIfCreateWasInLegoReq: CheckIfCreateWasInLegoReq
+  ) {
+    try {
+      return await this.requestRepository.wasCreateBeenInLego(
+        checkIfCreateWasInLegoReq
       );
     } catch (error) {
       throw error;
