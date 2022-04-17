@@ -105,23 +105,24 @@ export const exportHierarchyData = async (hierarchy: any) => {
       newRow['roleId'] = role.roleId;
 
       try {
-        const di = await diRepository.getDIByUniqueId(
-          role.digitalIdentityUniqueId
-        );
+        const di = await diRepository.getDIByUniqueId({
+          uniqueId: role.digitalIdentityUniqueId,
+        });
         newRow['upn'] = di?.upn ? di.upn : '---';
       } catch (error) {
         newRow['upn'] = 'לא ידוע';
       }
 
       try {
-        const entity = await entitiesRepository.getEntityByRoleId(role.roleId);
+        const entity = await entitiesRepository.getEntityByRoleId({
+          roleId: role.roleId,
+        });
         newRow['entity'] = undefined;
 
         if (entity && (entity?.displayName || entity?.fullName)) {
-          newRow['entity'] = entity.displayName
-            ? entity.displayName
-            : entity.fullName +
-              `${entity.jobTitle ? '-' + entity.jobTitle : ''}`;
+          newRow['entity'] = entity.fullName
+            ? entity.fullName
+            : entity.displayName;
         }
       } catch (error) {
         newRow['entity'] = 'לא ידוע';
