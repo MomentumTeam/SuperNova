@@ -28,6 +28,9 @@ import {
   RequestType,
   requestTypeFromJSON,
 } from '../interfaces/protoc/proto/requestService';
+import {
+  Role,
+} from '../interfaces/protoc/proto/kartoffelService';
 
 import { logger } from '../logger';
 import { MailType } from '../interfaces/protoc/proto/mailService';
@@ -56,28 +59,49 @@ export class HistoryRepository {
         totalCount: requestsArr.totalCount,
         till: getDoneRequestsByRoleIdReq.to,
       };
+      //צריך לעשות בקשה שמזחריה אם הבקשה ראשונה הייתה בקשה מסוג יצירת תפקיד (כלומר אם זה קרה בלגו או לא) אם לא נוסיף אחד
+      const doesCreateBeenInLego = this.requestService.wasCreateBeenInLego({
+        idCheck:getDoneRequestsByRoleIdReq.roleId,
+      });
 
       if (requestsArr.requests.length === 0) {
+        if ((getDoneRequestsByRoleIdReq.from === 1)&&(!doesCreateBeenInLego.isItCreateInLego)) {
+          eventArr.totalCount += 1;
+          const temporaryEvent: Event = { message: '', date: new Date().getTime() };
+          const tempRole : Role = this.requestService.getRoleByRoleId;
+          temporaryEvent.message = `  ${tempRole?.createdAt.toLocaleString()} בתאריך ${tempRole?.displayName} בקשת "יצירת תפקיד" קרתה, שם התפקיד - `;
+          eventArr.events.push(temporaryEvent);
+        }
         return eventArr;
       }
       // eventArr.totalCount = requestsArr.totalCount
-      //צריך לעשות בקשה שמזחריה אם הבקשה ראשונה הייתה בקשה מסוג יצירת תפקיד (כלומר אם זה קרה בלגו או לא) אם לא נוסיף אחד
-      const doesCreateBeenInLego = this.requestService.getDoneRequestsByRoleId({
-        idCheck:getDoneRequestsByRoleIdReq.roleId,
-      });
-      const firstRequestType =
-        typeof requestsArr.requests[0].type === typeof ''
-          ? requestTypeFromJSON(requestsArr.requests[0].type)
-          : requestsArr.requests[0].type;
+      
+      // const firstRequestType =
+      //   typeof requestsArr.requests[0].type === typeof ''
+      //     ? requestTypeFromJSON(requestsArr.requests[0].type)
+      //     : requestsArr.requests[0].type;
+
+      // getDoneRequestsByRoleIdReq.from === 1 &&
+      //   firstRequestType !== RequestType.CREATE_ROLE
       if (
-        getDoneRequestsByRoleIdReq.from === 1 &&
-        firstRequestType !== RequestType.CREATE_ROLE
+        !doesCreateBeenInLego.isItCreateInLego
       ) {
         eventArr.totalCount += 1;
-        eventArr.till -= 1;
+        //יכול לקרות מצב שיש פחות בקשות ממה שהפגיניישן רוצה ואז יקרה מצב שזה יפתח את האיבנטים בשני דפים שונים (צריך לבדוק מה עושים במצב כזה) זה קורה שיש מעט מאוד בקשותת
+        if (getDoneRequestsByRoleIdReq.from === 1) {
+          
+          eventArr.till -= 1;
+          const temporaryEvent: Event = { message: '', date: new Date().getTime() };
+          const tempRole : Role = this.requestService.getRoleByRoleId;
+          temporaryEvent.message = `  ${tempRole?.createdAt.toLocaleString()} בתאריך ${tempRole?.displayName} בקשת "יצירת תפקיד" קרתה, שם התפקיד - `;
+          eventArr.events.push(temporaryEvent);
+        }
       }
       // const rows: CreateRoleRow[] = requestsUnderBulk.requests.map(
-      const numberOfRequest = requestsArr.totalCount;
+      // const numberOfRequest = requestsArr.totalCount;
+      const numberOfRequest = eventArr.till -
+      getDoneRequestsByRoleIdReq.from +
+      1;
       for (let i = 0; i++; i < numberOfRequest) {
         const tempEvent: Event = { message: '', date: new Date().getTime() };
         const tempRequest: Request = requestsArr.requests[i];
@@ -105,6 +129,7 @@ export class HistoryRepository {
         }
         eventArr.events.push(tempEvent);
       }
+      return eventArr as EventArray;
       // Request tempR requestsArr.requests.forEach()
       // eventArr.events.
 
