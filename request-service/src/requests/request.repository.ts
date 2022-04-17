@@ -2219,9 +2219,16 @@ export class RequestRepository {
         .limit(1);
 
       // switch(requests[0].toObject().type)
-      const tempRequest = requests[0].toObject();
-      turnObjectIdsToStrings(tempRequest);
-      const typeOfTheRequest = tempRequest.type;
+      const tempRequest = requests[0];
+      // tempRequest.toObject();
+      // turnObjectIdsToStrings(tempRequest);
+      // const typeOfTheRequest = tempRequest.type;
+
+      const typeOfTheRequest =
+      typeof tempRequest.type === typeof ''
+          ? requestTypeFromJSON(tempRequest.type)
+          : tempRequest.type;
+
       for (let i = 0; i < requestTypes.length; i++) {
         if (typeOfTheRequest === requestTypes[i]) {
           return {

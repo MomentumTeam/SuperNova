@@ -62,6 +62,9 @@ export class HistoryRepository {
       }
       // eventArr.totalCount = requestsArr.totalCount
       //צריך לעשות בקשה שמזחריה אם הבקשה ראשונה הייתה בקשה מסוג יצירת תפקיד (כלומר אם זה קרה בלגו או לא) אם לא נוסיף אחד
+      const doesCreateBeenInLego = this.requestService.getDoneRequestsByRoleId({
+        idCheck:getDoneRequestsByRoleIdReq.roleId,
+      });
       const firstRequestType =
         typeof requestsArr.requests[0].type === typeof ''
           ? requestTypeFromJSON(requestsArr.requests[0].type)

@@ -5,9 +5,11 @@ import * as C from '../config';
 import {
 
   GetDoneRequestsByRoleIdReq,
+  CheckIfCreateWasInLegoReq,
   GetRequestByIdReq,
   Request,
   RequestArray,
+  BoolCheck,
 
   RequestType,
 
@@ -32,7 +34,7 @@ export class RequestService {
   async getDoneRequestsByRoleId(req: GetDoneRequestsByRoleIdReq): Promise<RequestArray> {
     logger.info('GetDoneRequestsByRoleId in RequestService', { req });
     return new Promise((resolve, reject) => {
-      this.randomClient().GetDoneRequestsByRoleId(req, (error: any, res: any) => {
+      this.randomClient().getDoneRequestsByRoleId(req, (error: any, res: any) => {
         if (error) {
           logger.error('GetDoneRequestsByRoleId in RequestService ERROR', {
             error: { message: error.message },
@@ -49,20 +51,20 @@ export class RequestService {
   }
 
 
-  async wasawsad(req: GetDoneRequestsByRoleIdReq): Promise<RequestArray> {
-    logger.info('GetDoneRequestsByRoleId in RequestService', { req });
+  async wasCreateBeenInLego(req: CheckIfCreateWasInLegoReq): Promise<BoolCheck> {
+    logger.info('wasCreateBeenInLego in RequestService', { req });
     return new Promise((resolve, reject) => {
-      this.randomClient().GetDoneRequestsByRoleId(req, (error: any, res: any) => {
+      this.randomClient().wasCreateBeenInLego(req, (error: any, res: any) => {
         if (error) {
-          logger.error('GetDoneRequestsByRoleId in RequestService ERROR', {
+          logger.error('wasCreateBeenInLego in RequestService ERROR', {
             error: { message: error.message },
           });
           reject(error);
         } else {
-          logger.info('GetDoneRequestsByRoleId in RequestService OK', {
+          logger.info('wasCreateBeenInLego in RequestService OK', {
             res,
           });
-          resolve(res as RequestArray);
+          resolve(res as BoolCheck);
         }
       });
     });
