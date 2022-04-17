@@ -1106,7 +1106,7 @@ message GetDoneRequestsByRoleIdReq{
 }
 
 message CheckIfCreateWasInLegoReq {
-    CheckingOpsions typeOfCheck = 1;
+    optional CheckingOpsions typeOfCheck = 1;
     string idCheck = 2;
 }
 

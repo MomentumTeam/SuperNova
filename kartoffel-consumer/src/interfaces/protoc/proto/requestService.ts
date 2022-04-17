@@ -1713,7 +1713,7 @@ export interface GetDoneRequestsByRoleIdReq {
 }
 
 export interface CheckIfCreateWasInLegoReq {
-  typeOfCheck: CheckingOpsions;
+  typeOfCheck?: CheckingOpsions | undefined;
   idCheck: string;
 }
 
@@ -25471,14 +25471,14 @@ export const GetDoneRequestsByRoleIdReq = {
   },
 };
 
-const baseCheckIfCreateWasInLegoReq: object = { typeOfCheck: 0, idCheck: "" };
+const baseCheckIfCreateWasInLegoReq: object = { idCheck: "" };
 
 export const CheckIfCreateWasInLegoReq = {
   encode(
     message: CheckIfCreateWasInLegoReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.typeOfCheck !== 0) {
+    if (message.typeOfCheck !== undefined) {
       writer.uint32(8).int32(message.typeOfCheck);
     }
     if (message.idCheck !== "") {
@@ -25520,7 +25520,7 @@ export const CheckIfCreateWasInLegoReq = {
     if (object.typeOfCheck !== undefined && object.typeOfCheck !== null) {
       message.typeOfCheck = checkingOpsionsFromJSON(object.typeOfCheck);
     } else {
-      message.typeOfCheck = 0;
+      message.typeOfCheck = undefined;
     }
     if (object.idCheck !== undefined && object.idCheck !== null) {
       message.idCheck = String(object.idCheck);
@@ -25533,7 +25533,10 @@ export const CheckIfCreateWasInLegoReq = {
   toJSON(message: CheckIfCreateWasInLegoReq): unknown {
     const obj: any = {};
     message.typeOfCheck !== undefined &&
-      (obj.typeOfCheck = checkingOpsionsToJSON(message.typeOfCheck));
+      (obj.typeOfCheck =
+        message.typeOfCheck !== undefined
+          ? checkingOpsionsToJSON(message.typeOfCheck)
+          : undefined);
     message.idCheck !== undefined && (obj.idCheck = message.idCheck);
     return obj;
   },
@@ -25547,7 +25550,7 @@ export const CheckIfCreateWasInLegoReq = {
     if (object.typeOfCheck !== undefined && object.typeOfCheck !== null) {
       message.typeOfCheck = object.typeOfCheck;
     } else {
-      message.typeOfCheck = 0;
+      message.typeOfCheck = undefined;
     }
     if (object.idCheck !== undefined && object.idCheck !== null) {
       message.idCheck = object.idCheck;
