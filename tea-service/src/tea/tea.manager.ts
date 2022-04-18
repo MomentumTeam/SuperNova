@@ -6,6 +6,7 @@ import {
   Prefix,
   PrefixArray,
   RetrieveBrolReq,
+  RetrieveByIdentifierReq,
   RetrieveTeaByOGIdReq,
   RetrieveTeaByPrefixReq,
   SuccessMessage,
@@ -73,6 +74,18 @@ export class TeaManager {
     try {
       return await this.teaRepository.retrieveUPNByEntityId(
         retrieveUPNByEntityIdReq
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async retrieveUPNByIdentifier(
+    retrieveByIdentifierReq: RetrieveByIdentifierReq
+  ): Promise<UPNMessage> {
+    try {
+      return await this.teaRepository.retrieveUPNByIdentifier(
+        retrieveByIdentifierReq
       );
     } catch (error) {
       throw error;

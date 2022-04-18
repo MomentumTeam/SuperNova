@@ -1,3 +1,4 @@
+import { string } from 'joi';
 import { config } from '../config';
 import {
   PersonTypeInRequest,
@@ -305,6 +306,45 @@ export const assignRoleToEntitySchema = Joi.object({
   params: {},
   query: {},
 });
+
+const ConvertEntityTypeKartoffelParamsObj = Joi.object({
+  id: Joi.string().required(),
+  uniqueId: Joi.string().required(),
+  newEntityType: Joi.string().required(),
+  identifier: Joi.string(),
+  identityCard: Joi.string(),
+  personalNumber: Joi.string(),
+});
+
+const ConvertEntityTypeADParamsObj = Joi.object({
+  samAccountName: Joi.string().required(),
+  firstName: Joi.string().required(),
+  lastName: Joi.string().required(),
+  fullName: Joi.string().required(),
+  rank: Joi.string(),
+  roleSerialCode: Joi.string().required(),
+})
+
+export const convertEntityTypeSchema = Joi.object({
+  body: {
+    status: Joi.string().valid(...Object.keys(RequestStatus)),
+    commanderDecision: ApproverDecisionObj,
+    securityDecision: ApproverDecisionObj,
+    superSecurityDecision: ApproverDecisionObj,
+    commanders: Joi.array().items(entityMinObj),
+    securityApprovers: Joi.array().items(entityMinObj),
+    superSecurityApprovers: Joi.array().items(entityMinObj),
+    kartoffelStatus: kartoffelStatusObj,
+    adStatus: ADStatusObj,
+    kartoffelParams: ConvertEntityTypeKartoffelParamsObj.required(),
+    adParams: ConvertEntityTypeADParamsObj.required(),
+    comments: Joi.string().allow(''),
+    approversComments: Joi.string(),
+    due: Joi.number().unsafe(),
+  },
+  params: {},
+  query: {},
+})
 
 const createOGKartoffelParamsObj = Joi.object({
   name: Joi.string().required(),

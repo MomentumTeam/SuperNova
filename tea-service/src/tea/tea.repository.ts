@@ -16,6 +16,7 @@ import {
   DeletePrefixReq,
   RetrieveTeaByOGIdReq,
   RetrieveBrolReq,
+  RetrieveByIdentifierReq,
 } from '../interfaces/protoc/proto/teaService';
 import { getBrol, getUPN } from '../utils/upn';
 import { Entity } from '../interfaces/protoc/proto/kartoffelService';
@@ -131,9 +132,30 @@ export class TeaRepository {
       const entity: Entity = await KartoffelService.getEntityById({
         id: retrieveByEntityIdReq.entityId,
       });
+      if (retrieveByEntityIdReq.entityType) {
+        entity.entityType = retrieveByEntityIdReq.entityType;
+      }
       return await this.retrieveUPNByEntity({
         domain: retrieveByEntityIdReq.domain,
         entity: entity as EntityMin,
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async retrieveUPNByIdentifier(
+    retrieveByIdentifierReq: RetrieveByIdentifierReq
+  ): Promise<UPNMessage> {
+    try {
+      const entityMin: any = {
+        entityType: retrieveByIdentifierReq.entityType,
+        identityCard: retrieveByIdentifierReq.identifier,
+        personalNumber: retrieveByIdentifierReq.identifier,
+      };
+      return await this.retrieveUPNByEntity({
+        domain: retrieveByIdentifierReq.domain,
+        entity: entityMin,
       });
     } catch (error) {
       throw error;

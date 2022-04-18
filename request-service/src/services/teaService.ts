@@ -7,11 +7,13 @@ import {
   RetrieveBrolReq,
   RetrieveByEntityIdReq,
   RetrieveByEntityReq,
+  RetrieveByIdentifierReq,
   RetrieveTeaByOGIdReq,
   SuccessMessage,
   TeaMessage,
   UPNMessage,
 } from '../interfaces/protoc/proto/teaService';
+import { reject } from 'lodash';
 
 const PROTO_PATH = `${findPath('proto')}/teaService.proto`;
 
@@ -100,6 +102,24 @@ export default class TeaService {
     return new Promise((resolve, reject) => {
       randomClient().RetrieveUPNByEntity(
         retrieveUPNByEntityReq,
+        (err: any, upnMessage: UPNMessage) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(upnMessage);
+          }
+        }
+      );
+    });
+  }
+
+  static async retrieveUPNByIdentifier(
+    retrieveByIdentifierReq: RetrieveByIdentifierReq
+  ): Promise<UPNMessage> {
+    console.log('retrieveUPNByIdentifier');
+    return new Promise((resolve, reject) => {
+      randomClient().RetrieveUPNByIdentifier(
+        retrieveByIdentifierReq,
         (err: any, upnMessage: UPNMessage) => {
           if (err) {
             reject(err);
