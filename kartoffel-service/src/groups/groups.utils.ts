@@ -88,7 +88,11 @@ export const getDirectRolesForGroups = async (
   return groups;
 };
 
-export const exportHierarchyData = async (hierarchy: any) => {
+export const exportHierarchyData = async (
+  hierarchy: any,
+  groupsRepository: GroupsRepository,
+  direct: boolean = false
+) => {
   let hierarchyName: any;
   if (hierarchy?.name) {
     hierarchyName = hierarchy?.hierarchy
@@ -100,9 +104,23 @@ export const exportHierarchyData = async (hierarchy: any) => {
     hierarchy.directRoles.map(async (role: any) => {
       let newRow: any = {};
 
-      newRow['hierarchyName'] = hierarchyName;
       newRow['jobTitle'] = role.jobTitle;
       newRow['roleId'] = role.roleId;
+
+      if (!direct) {
+        try {
+          const roleOg = await groupsRepository.getOGById({
+            id: role.directGroup,
+          });
+          newRow['hierarchyName'] = roleOg?.hierarchy
+            ? `${roleOg.hierarchy}/${roleOg.name}`
+            : roleOg.name;
+        } catch (error) {
+          newRow['hierarchyName'] = 'לא ידוע';
+        }
+      } else {
+        newRow['hierarchyName'] = hierarchyName;
+      }
 
       try {
         const di = await diRepository.getDIByUniqueId({

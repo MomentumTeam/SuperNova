@@ -212,7 +212,11 @@ export class GroupsRepository {
 
       const groupData = await this.getOGByHierarchyName(exportHierarchyDataReq);
 
-      const hierarchyData: any[] = await exportHierarchyData(groupData);
+      const hierarchyData: any[] = await exportHierarchyData(
+        groupData,
+        this,
+        exportHierarchyDataReq.direct
+      );
 
       const res: ExportHierarchyDataRes = {
         hierarchyData: hierarchyData,
