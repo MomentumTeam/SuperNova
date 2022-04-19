@@ -8,6 +8,7 @@ import {
   IsApproverValidForOGRes,
   SuccessMessage,
   GetAllApproverTypesRes,
+  GetAdminsAboveGroupIdReq,
 } from '../interfaces/protoc/proto/approverService';
 import { Request } from '../interfaces/protoc/proto/requestService';
 import { logger } from '../logger';
@@ -66,6 +67,33 @@ export async function getAdminsByGroupIds(
       error: { message: error.message },
     });
     callback(
+      {
+        code: 400,
+        message: error.message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function getAdminsAboveGroupId(
+  call: any,
+  callback: any
+): Promise<void> {
+  try {
+    logger.info('Call to getAdminsAboveGroupId', {
+      callRequest: call.request,
+    });
+    const getAdminsAboveGroupIdRes: ApproverArray =
+      await approverManager.getAdminsAboveGroupId(call.request);
+    logger.info('getAdminsAboveGroupId OK', {
+      callRequest: call.request,
+    });
+    callback(null, getAdminsAboveGroupIdRes);
+  } catch (error: any) {
+    logger.error(
+      'getAdminsAboveGroupId ERROR',
       {
         code: 400,
         message: error.message,
@@ -430,7 +458,10 @@ export async function syncApprover(call: any, callback: any): Promise<void> {
   }
 }
 
-export async function includesSpecialGroup(call: any, callback: any): Promise<void> {
+export async function includesSpecialGroup(
+  call: any,
+  callback: any
+): Promise<void> {
   try {
     logger.info(`Call to includesSpecialGroup`, {
       callRequest: call.request,

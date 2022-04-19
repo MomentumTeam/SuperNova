@@ -375,6 +375,8 @@ const RequestSchema = new Schema(
       upn: { type: String, default: null },
       role: { type: Object, default: null },
       entityId: { type: String, default: null },
+      newEntityType: { type: String, default: null },
+      identifier: { type: String, default: null },
     },
     adParams: {
       ouDisplayName: { type: String, default: null },
@@ -431,7 +433,6 @@ const RequestSchema = new Schema(
   },
   { strict: false }
 );
-
 
 RequestSchema.plugin(autoIncrement.plugin, {
   model: 'Request',

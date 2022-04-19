@@ -42,7 +42,6 @@ export const createOG = async (createOGRequest: any) => {
 export const createRole = async (data: any) => {
   try {
     logger.info('createRole request received.', data);
-
     const {
       type,
       source,
@@ -52,6 +51,8 @@ export const createRole = async (data: any) => {
       roleEntityType,
       clearance,
       upn,
+      firstName,
+      lastName,
     } = data;
     const newDI: DigitalIdentity = await KartoffelService.createDI({
       isRoleAttachable: isRoleAttachable,
@@ -82,10 +83,10 @@ export const createRole = async (data: any) => {
 
     if (roleEntityType === config.goalUser && upn !== undefined) {
       //If goal user
+      //TODO add given firstName and lastName
       const goalUserEntity = await KartoffelService.createEntity({
-        firstName: jobTitle,
-        // lastName: jobTitle,
-        // lastName: '',
+        firstName: firstName,
+        lastName: lastName,
         entityType: config.goalUser,
         phone: [],
         mobilePhone: [],
@@ -119,7 +120,7 @@ export const createEntity = async (createEntityRequest: any) => {
       serviceType,
       entityType,
       organization,
-      employeeNumber
+      employeeNumber,
     } = createEntityRequest;
     logger.info('createEntity request received', createEntityRequest);
 
@@ -137,7 +138,7 @@ export const createEntity = async (createEntityRequest: any) => {
       rank: rank !== undefined ? rank : config.civilianDefaultRank,
       serviceType: serviceType,
       organization: organization,
-      employeeNumber: employeeNumber
+      employeeNumber: employeeNumber,
     });
     logger.info('Successfuly created Entity', createdEntity);
     return createdEntity.id;
@@ -319,6 +320,36 @@ export const changeRoleOG = async (changeRoleHierarchyReq: any) => {
         changeRoleHierarchyReq,
       });
     }
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const convertEntity = async (convertEntityRequest: any) => {
+  try {
+    logger.info('convertEntity request received', convertEntityRequest);
+    const { id, uniqueId, newEntityType, identifier, upn } = convertEntityRequest;
+    await KartoffelService.disconnectDIFromEntity({
+      id: id,
+      uniqueId: uniqueId,
+    });
+
+    let updateEntityRequest: any = {
+      id: id,
+      properties: {
+        entityType: newEntityType,
+      },
+    };
+    if (identifier) {
+      if (newEntityType === config.civilian) {
+        updateEntityRequest.properties.identityCard = identifier;
+      } else {
+        updateEntityRequest.properties.personalNumber = identifier;
+      }
+    }
+    await KartoffelService.updateEntity(updateEntityRequest);
+    await KartoffelService.connectEntityAndDI({ id: id, uniqueId: uniqueId, upn: upn });    
+    logger.info('Successfuly converted entity');
   } catch (error) {
     throw error;
   }

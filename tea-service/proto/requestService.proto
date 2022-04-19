@@ -19,6 +19,7 @@ service RequestService {
     rpc ChangeRoleHierarchyRequest(ChangeRoleHierarchyReq) returns (ChangeRoleHierarchyRes){} //שינוי היררכיה לתפקיד May be part of bulk
     rpc CreateRoleBulkRequest(CreateRoleBulkReq) returns (CreateRoleBulkRes){}
     rpc ChangeRoleHierarchyBulkRequest(ChangeRoleHierarchyBulkReq) returns (ChangeRoleHierarchyBulkRes){}
+    rpc ConvertEntityTypeRequest(ConvertEntityTypeReq) returns (ConvertEntityTypeRes){}
 
 
     rpc UpdateRequest(UpdateReq) returns (Request){}
@@ -839,6 +840,58 @@ message ChangeRoleHierarchyBulkADParams{
     optional string newJobTitle = 3;
 }
 
+//16.ConvertEntityTypeRequest
+
+message ConvertEntityTypeReq {
+    EntityMin submittedBy = 1;
+    optional RequestStatus status = 2;
+    optional ApproverDecision commanderDecision = 3;
+    optional ApproverDecision securityDecision = 4;
+    optional ApproverDecision superSecurityDecision = 5;
+    optional ApproverDecision adminDecision = 6;  
+    repeated EntityMin commanders = 7;
+    repeated EntityMin securityApprovers = 8;
+    repeated EntityMin superSecurityApprovers = 9;
+    repeated EntityMin adminApprovers = 10;
+    optional KartoffelStatus kartoffelStatus = 11;
+    optional ADStatus adStatus = 12;
+    ConvertEntityTypeKartoffelParams kartoffelParams = 13;
+    ConvertEntityTypeADParams adParams = 14;
+    optional string comments = 15;
+    optional ApproversComments approversComments = 16;
+    optional int64 due = 17;
+}
+
+message ConvertEntityTypeRes {
+    EntityMin submittedBy = 1;
+    RequestStatus status = 2;
+    ApproverDecision commanderDecision = 3;
+    ApproverDecision securityDecision = 4;
+    ApproverDecision superSecurityDecision = 5;
+    ApproverDecision adminDecision = 6;
+    repeated EntityMin commanders = 7;
+    repeated EntityMin securityApprovers = 8;
+    repeated EntityMin superSecurityApprovers = 9;
+    repeated EntityMin adminApprovers =  10;
+    KartoffelStatus kartoffelStatus = 11;
+    ADStatus adStatus =12;
+    ConvertEntityTypeKartoffelParams kartoffelParams = 13;
+    ConvertEntityTypeADParams adParams = 14;
+    string comments = 15;
+    ApproversComments approversComments = 16;
+    int64 due = 17;
+    string id = 18;
+    int64 createdAt = 19; 
+    int64 updatedAt = 20;
+    RequestType type = 21;
+    string serialNumber = 22;
+    bool needSecurityDecision = 23;
+    bool needSuperSecurityDecision = 24;
+    bool needAdminDecision = 25;
+    bool hasSecurityAdmin = 26;
+}
+
+
 message SendSubmissionMailReq{
     string id = 1;
 }
@@ -1078,6 +1131,25 @@ message RemoveApproverFromApproversReq{
     string id = 1;
     string approverId = 2;
     ApproverType type = 3;
+}
+
+//16.ConvertEntityTypeRequest
+message ConvertEntityTypeKartoffelParams{
+    string id = 1;
+    string uniqueId = 2;
+    string newEntityType = 3;
+    string upn = 4;
+    optional string identifier = 5;
+}
+
+message ConvertEntityTypeADParams{
+    string samAccountName = 1;
+    optional string upn = 2;
+    string firstName = 3;
+    string lastName = 4;
+    string fullName = 5;
+    optional string rank = 6;
+    string roleSerialCode = 7;
 }
 
 // ---------------------------------------------Other Functions Objects------------------------------------------------------------
@@ -1351,6 +1423,9 @@ message KartoffelParams{
     optional string entityId = 36;
 
     optional string rank = 37;
+    // ConvertEntityType
+    optional string newEntityType = 38;
+    optional string identifier = 39;
     //EditEntity
     // string firstName = 25;
     // string lastName = 26;
@@ -1384,7 +1459,7 @@ message ADParams{
     optional string ouName = 2;
     optional string name = 3;
 
-    //CreateRole
+    //CreateRole and ConvertEntityType
     optional string samAccountName = 4;
     // string ouDisplayName = ;
     optional string jobTitle = 5;
@@ -1502,7 +1577,6 @@ message HasSecurityAdminRes{
     bool hasSecurityAdmin = 1;
 }
 
-
 // ---------------------------------------------Enums------------------------------------------------------------
 
 enum ApproverType{
@@ -1533,6 +1607,7 @@ enum RequestType {
     CHANGE_ROLE_HIERARCHY = 12;
     CREATE_ROLE_BULK=13;
     CHANGE_ROLE_HIERARCHY_BULK=14;
+    CONVERT_ENTITY_TYPE=15;
 }
 
 enum RequestStatus{
