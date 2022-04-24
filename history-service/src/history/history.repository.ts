@@ -166,7 +166,7 @@ export class HistoryRepository {
           eventArr.totalCount += 1;
           const temporaryEvent: Event = { message: '', date: new Date().getTime() };
           const tempOG : OrganizationGroup = this.requestService.getOGByOGId;
-          temporaryEvent.message = `  ${tempOG?.createdAt.toLocaleString()} בתאריך ${tempOG?.displayName} בקשת "יצירת OG" קרתה, שם התפקיד - `;
+          temporaryEvent.message = `  ${tempOG?.createdAt.toLocaleString()} בתאריך ${tempOG?.name} בקשת "יצירת OG" קרתה, שם התפקיד - `;
           eventArr.events.push(temporaryEvent);
         }
         return eventArr;
@@ -190,7 +190,7 @@ export class HistoryRepository {
           eventArr.till -= 1;
           const temporaryEvent: Event = { message: '', date: new Date().getTime() };
           const tempOG : OrganizationGroup = this.requestService.getOGByOGId;
-          temporaryEvent.message = `  ${tempOG?.createdAt.toLocaleString()} בתאריך ${tempOG?.displayName} בקשת "יצירת תפקיד" קרתה, שם התפקיד - `;
+          temporaryEvent.message = `  ${tempOG?.createdAt.toLocaleString()} בתאריך ${tempOG?.name} בקשת "יצירת תפקיד" קרתה, שם התפקיד - `;
           eventArr.events.push(temporaryEvent);
         }
       }

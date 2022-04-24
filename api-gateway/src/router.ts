@@ -12,6 +12,7 @@ mainRouter.use('/approvers', ApproverRouter);
 mainRouter.use('/notifications', NotificationRouter);
 mainRouter.use('/kartoffel', KartoffelRouter);
 mainRouter.use('/requests', RequestsRouter);
+// mainRouter.use('/history', HistoryRouter);
 mainRouter.use('/bulk', BulkRouter);
 mainRouter.get("/config", (req, res) =>res.send(config.ui));
 
