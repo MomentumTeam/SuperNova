@@ -33,6 +33,7 @@ export const requestTypeToHebrew = {
   [requestTypeToJSON(RequestType.CHANGE_ROLE_HIERARCHY)]: 'מעבר היררכיה לתפקיד',
   [requestTypeToJSON(RequestType.CHANGE_ROLE_HIERARCHY_BULK)]:
     'שינוי היררכיה מרובה',
+  [requestTypeToJSON(RequestType.CONVERT_ENTITY_TYPE)]: 'שינוי סוג ישות',
 };
 
 export const logPath = process.env.NS_LOG_PATH

@@ -14,6 +14,7 @@ import {
   retrieveTeaByPrefix,
   retrieveUPNByEntity,
   retrieveUPNByEntityId,
+  retrieveUPNByIdentifier,
   throwTea,
   updatePrefix,
 } from './tea/tea.controller';
@@ -70,6 +71,7 @@ export class Server {
         DeletePrefix: deletePrefix,
         GetAllPrefixes: getAllPrefixes,
         RetrieveBrol: retrieveBrol,
+        RetrieveUPNByIdentifier: retrieveUPNByIdentifier,
       });
       logger.info(`Grpc services were successfully added to the server`);
     } catch (error: any) {

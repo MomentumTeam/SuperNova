@@ -50,7 +50,10 @@ import {
   HasSecurityAdminReq,
   HasSecurityAdminRes,
 } from '../interfaces/protoc/proto/requestService';
-import { createNotifications } from '../services/notificationHelper';
+import {
+  createNotifications,
+  createCustomNotification,
+} from '../services/notificationHelper';
 import { sendMail } from '../services/mailHelper';
 import * as C from '../config';
 import { RequestModel } from '../models/request.model';
@@ -58,7 +61,11 @@ import {
   cleanUnderscoreFields,
   turnObjectIdsToStrings,
 } from '../services/requestHelper';
-import { NotificationType } from '../interfaces/protoc/proto/notificationService';
+import ApproverService from '../services/approverService';
+import {
+  NotificationType,
+  OwnerType,
+} from '../interfaces/protoc/proto/notificationService';
 import {
   getAncestorsQuery,
   getPersonQuery,
@@ -74,12 +81,13 @@ import {
   retrieveBrol,
   retrieveTeaByOGId,
   retrieveUPNByEntityId,
+  retrieveUPNByIdentifier,
 } from '../services/teaHelper';
 import { logger } from '../logger';
 import { MailType } from '../interfaces/protoc/proto/mailService';
 import { SocketService } from '../services/socketService';
 import { SocketEventType } from '../interfaces/protoc/proto/socketService';
-import ApproverService from '../services/approverService';
+import { ApproverArray } from '../interfaces/protoc/proto/approverService';
 
 export class RequestRepository {
   async createRequest(
@@ -124,7 +132,27 @@ export class RequestRepository {
           message: 'Waiting for push, request type does not require AD update',
           failedRetries: 0,
         };
-      } else if (type === RequestType.EDIT_ENTITY) {
+      } else if (
+        type === RequestType.EDIT_ENTITY ||
+        type === RequestType.CONVERT_ENTITY_TYPE
+      ) {
+        if (type === RequestType.CONVERT_ENTITY_TYPE) {
+          let upn;
+          if (createRequestReq.kartoffelParams.identifier) {
+            upn = await retrieveUPNByIdentifier(
+              createRequestReq.kartoffelParams.newEntityType,
+              createRequestReq.kartoffelParams.identifier
+            );
+          } else {
+            upn = await retrieveUPNByEntityId(
+              createRequestReq.kartoffelParams.id,
+              createRequestReq.kartoffelParams.newEntityType
+            );
+          }
+          createRequestReq.kartoffelParams.upn = upn;
+          createRequestReq.adParams.upn = upn;
+        }
+
         //automatically approved
         const approverDecision = {
           approver: createRequestReq.submittedBy
@@ -355,7 +383,10 @@ export class RequestRepository {
         typeof request.type === typeof ''
           ? requestTypeFromJSON(request.type)
           : request.type;
-      if (requestType === RequestType.EDIT_ENTITY) {
+      if (
+        requestType === RequestType.EDIT_ENTITY ||
+        requestType === RequestType.CONVERT_ENTITY_TYPE
+      ) {
         return { isRequestApproved: true };
       } else {
         const needSecurityDecision = request.needSecurityDecision;
@@ -1315,7 +1346,9 @@ export class RequestRepository {
     updateKartoffelStatusReq: UpdateKartoffelStatusReq
   ): Promise<Request> {
     let requestStatus: any = RequestStatus.UNRECOGNIZED;
-    let updatedRequest;
+    let requestType: any = RequestType.UNRECOGNIZED;
+
+    let updatedRequest: any;
     try {
       cleanUnderscoreFields(updateKartoffelStatusReq);
       let requestProperties: any = {
@@ -1332,6 +1365,10 @@ export class RequestRepository {
         requestProperties: requestProperties,
       };
       updatedRequest = await this.updateRequest(requestUpdate);
+      requestType =
+        typeof updatedRequest.type === typeof ''
+          ? requestTypeFromJSON(updatedRequest.type)
+          : updatedRequest.type;
       let kartoffelStatus: any =
         typeof updatedRequest.kartoffelStatus?.status === typeof ''
           ? stageStatusFromJSON(updatedRequest.kartoffelStatus?.status)
@@ -1353,17 +1390,6 @@ export class RequestRepository {
         });
       }
 
-      // if (
-      //   (kartoffelStatus === StageStatus.STAGE_DONE ||
-      //     kartoffelStatus === StageStatus.STAGE_FAILED) &&
-      //   updatedRequest.submittedBy
-      // ) {
-      //   const stageNotificationType: NotificationType =
-      //     kartoffelStatus === StageStatus.STAGE_DONE
-      //       ? NotificationType.KARTOFFEL_STAGE_DONE
-      //       : NotificationType.KARTOFFEL_STAGE_FAILED;
-      //   await createNotifications(stageNotificationType, updatedRequest);
-      // }
       if (
         (requestStatus === RequestStatus.DONE ||
           requestStatus === RequestStatus.FAILED) &&
@@ -1380,6 +1406,49 @@ export class RequestRepository {
         try {
           await createNotifications(notificationType, updatedRequest);
           sendMail(mailType, updatedRequest).then().catch();
+        } catch (notificationError: any) {
+          logger.error('Notification error', {
+            error: { message: notificationError.message },
+          });
+        }
+      }
+
+      if (
+        requestStatus === RequestStatus.DONE &&
+        updatedRequest.submittedBy &&
+        requestType === RequestType.CHANGE_ROLE_HIERARCHY &&
+        updatedRequest.kartoffelParams?.directGroup !== undefined
+      ) {
+        try {
+          const adminArray: ApproverArray =
+            await ApproverService.getAdminsAboveGroupId({
+              groupId: updatedRequest.kartoffelParams?.directGroup,
+            });
+          const jobTitle =
+            updatedRequest.kartoffelParams.newJobTitle !== undefined
+              ? updatedRequest.kartoffelParams.newJobTitle
+              : updatedRequest.kartoffelParams.currentJobTitle;
+
+          let message = `תפקיד <b>${jobTitle} (${updatedRequest.adParams.samAccountName})</b> הועבר להיררכיה <b>${updatedRequest.adParams.ouDisplayName}</b> שבאחריותך`;
+          const promises = adminArray.approvers.map((approver) => {
+            return new Promise((resolve, reject) => {
+              createCustomNotification(
+                NotificationType.CHANGE_ROLE_HIERARCHY,
+                approver.entityId,
+                OwnerType.ADMIN,
+                updateKartoffelStatusReq.requestId,
+                message,
+                ''
+              )
+                .then(() => {
+                  resolve('OK');
+                })
+                .catch((error) => {
+                  reject(error);
+                });
+            });
+          });
+          await Promise.all(promises);
         } catch (notificationError: any) {
           logger.error('Notification error', {
             error: { message: notificationError.message },

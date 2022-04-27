@@ -1,4 +1,7 @@
-import { parseExcelFile, parseExcelFileAdmin } from './utils/excel';
+import {
+  parseExcelFile,
+  parseExcelFileAdminAndSecurityAdmin,
+} from './utils/excel';
 import { ApproverType } from './interfaces/protoc/proto/requestService';
 import { addApprovers, validateApprovers } from './utils/approvers.utils';
 import { logger } from './logger';
@@ -9,7 +12,8 @@ async function main() {
     let security: any = await parseExcelFile(1);
     let superSecurity: any = await parseExcelFile(2);
     let bulk: any = await parseExcelFile(3);
-    let adminIo: any = await parseExcelFileAdmin();
+    let admin: any = await parseExcelFileAdminAndSecurityAdmin(4);
+    let securityAdmin: any = await parseExcelFileAdminAndSecurityAdmin(5);
 
     const approversToAdd = [
       {
@@ -29,17 +33,22 @@ async function main() {
         type: ApproverType.BULK,
       },
       {
-        approverDIs: adminIo.admin,
+        approverDIs: admin.admin,
         type: ApproverType.ADMIN,
-        groupInChargeId: adminIo.io,
+        groupInChargeId: admin.io,
+      },
+      {
+        approverDIs: securityAdmin.admin,
+        type: ApproverType.SECURITY_ADMIN,
+        groupInChargeId: securityAdmin.io,
       },
     ];
 
-    approversToAdd.forEach(async (approversToAdd) => {
-      if (validateApprovers(approversToAdd)) {
-        await addApprovers(approversToAdd);
+    for await (const addApprover of approversToAdd) {
+      if (validateApprovers(addApprover)) {
+        await addApprovers(addApprover);
       }
-    });
+    }
   } catch (error) {
     throw error;
   }

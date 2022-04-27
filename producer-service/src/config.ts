@@ -55,3 +55,6 @@ export const storeLogs = process.env.GLOBAL_STORE_LOGS
 export const soldier = process.env.PS_KARTOFFEL_SOLDIER || 'Soldier';
 
 export const external = process.env.PS_KARTOFFEL_EXTERNAL || 'External';
+
+export const brolDefaultLastName =
+  process.env.PS_BROL_DEFAULT_LAST_NAME || 'מס';

@@ -21,6 +21,7 @@ import {
   GetAdminsByGroupIdsReq,
   IncludesSpecialGroupReq,
   IncludesSpecialGroupRes,
+  GetAdminsAboveGroupIdReq,
 } from '../interfaces/protoc/proto/approverService';
 import {
   DigitalIdentity,
@@ -213,7 +214,8 @@ export class ApproverRepository {
 
       let res: GetAllApproverTypesRes = {
         types: [],
-        groupsInCharge: [],
+        securityAdminGroupsInCharge: [],
+        adminGroupsInCharge: [],
       };
       let approvers: Approver[] = getMongoApproverArray(approversRes);
 
@@ -232,11 +234,19 @@ export class ApproverRepository {
                 id: groupId,
               })
                 .then((groupInCharge: OrganizationGroup) => {
-                  res.groupsInCharge.push({
-                    id: groupId,
-                    name: groupInCharge.name,
-                    hierarchy: groupInCharge.hierarchy,
-                  });
+                  if (approverType === ApproverType.ADMIN) {
+                    res.adminGroupsInCharge.push({
+                      id: groupId,
+                      name: groupInCharge.name,
+                      hierarchy: groupInCharge.hierarchy,
+                    });
+                  } else {
+                    res.securityAdminGroupsInCharge.push({
+                      id: groupId,
+                      name: groupInCharge.name,
+                      hierarchy: groupInCharge.hierarchy,
+                    });
+                  }
                   resolve('OK');
                 })
                 .catch((error) => {
@@ -279,6 +289,23 @@ export class ApproverRepository {
       });
       return { approvers: getMongoApproverArray(mongoAdmins) };
     } catch (error: any) {
+      throw error;
+    }
+  }
+
+  async getAdminsAboveGroupId(
+    getAdminsAboveGroupreq: GetAdminsAboveGroupIdReq
+  ): Promise<ApproverArray> {
+    try {
+      const group = await KartoffelService.getOGById({
+        id: getAdminsAboveGroupreq.groupId,
+      });
+      const groupIds = [...group.ancestors, getAdminsAboveGroupreq.groupId];
+      const approverArray = await this.getAdminsByGroupIds({
+        groupIds: groupIds,
+      });
+      return approverArray;
+    } catch (error) {
       throw error;
     }
   }

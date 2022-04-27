@@ -22,6 +22,7 @@ export enum NotificationType {
   REQUEST_DONE = 13,
   REQUEST_FAILED = 14,
   REQUEST_DELETED = 15,
+  CHANGE_ROLE_HIERARCHY = 16,
   UNRECOGNIZED = -1,
 }
 
@@ -75,6 +76,9 @@ export function notificationTypeFromJSON(object: any): NotificationType {
     case 15:
     case "REQUEST_DELETED":
       return NotificationType.REQUEST_DELETED;
+    case 16:
+    case "CHANGE_ROLE_HIERARCHY":
+      return NotificationType.CHANGE_ROLE_HIERARCHY;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -116,6 +120,8 @@ export function notificationTypeToJSON(object: NotificationType): string {
       return "REQUEST_FAILED";
     case NotificationType.REQUEST_DELETED:
       return "REQUEST_DELETED";
+    case NotificationType.CHANGE_ROLE_HIERARCHY:
+      return "CHANGE_ROLE_HIERARCHY";
     default:
       return "UNKNOWN";
   }
@@ -126,6 +132,7 @@ export enum OwnerType {
   COMMANDER = 1,
   SECURITY_APPROVER = 2,
   SUPER_SECURITY_APPROVER = 3,
+  ADMIN = 4,
   UNRECOGNIZED = -1,
 }
 
@@ -143,6 +150,9 @@ export function ownerTypeFromJSON(object: any): OwnerType {
     case 3:
     case "SUPER_SECURITY_APPROVER":
       return OwnerType.SUPER_SECURITY_APPROVER;
+    case 4:
+    case "ADMIN":
+      return OwnerType.ADMIN;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -160,6 +170,8 @@ export function ownerTypeToJSON(object: OwnerType): string {
       return "SECURITY_APPROVER";
     case OwnerType.SUPER_SECURITY_APPROVER:
       return "SUPER_SECURITY_APPROVER";
+    case OwnerType.ADMIN:
+      return "ADMIN";
     default:
       return "UNKNOWN";
   }

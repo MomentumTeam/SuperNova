@@ -95,6 +95,7 @@ export enum RequestType {
   CHANGE_ROLE_HIERARCHY = 12,
   CREATE_ROLE_BULK = 13,
   CHANGE_ROLE_HIERARCHY_BULK = 14,
+  CONVERT_ENTITY_TYPE = 15,
   UNRECOGNIZED = -1,
 }
 
@@ -145,6 +146,9 @@ export function requestTypeFromJSON(object: any): RequestType {
     case 14:
     case "CHANGE_ROLE_HIERARCHY_BULK":
       return RequestType.CHANGE_ROLE_HIERARCHY_BULK;
+    case 15:
+    case "CONVERT_ENTITY_TYPE":
+      return RequestType.CONVERT_ENTITY_TYPE;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -184,6 +188,8 @@ export function requestTypeToJSON(object: RequestType): string {
       return "CREATE_ROLE_BULK";
     case RequestType.CHANGE_ROLE_HIERARCHY_BULK:
       return "CHANGE_ROLE_HIERARCHY_BULK";
+    case RequestType.CONVERT_ENTITY_TYPE:
+      return "CONVERT_ENTITY_TYPE";
     default:
       return "UNKNOWN";
   }
@@ -1410,6 +1416,55 @@ export interface ChangeRoleHierarchyBulkADParams {
   newJobTitle?: string | undefined;
 }
 
+export interface ConvertEntityTypeReq {
+  submittedBy: EntityMin | undefined;
+  status?: RequestStatus | undefined;
+  commanderDecision?: ApproverDecision | undefined;
+  securityDecision?: ApproverDecision | undefined;
+  superSecurityDecision?: ApproverDecision | undefined;
+  adminDecision?: ApproverDecision | undefined;
+  commanders: EntityMin[];
+  securityApprovers: EntityMin[];
+  superSecurityApprovers: EntityMin[];
+  adminApprovers: EntityMin[];
+  kartoffelStatus?: KartoffelStatus | undefined;
+  adStatus?: ADStatus | undefined;
+  kartoffelParams: ConvertEntityTypeKartoffelParams | undefined;
+  adParams: ConvertEntityTypeADParams | undefined;
+  comments?: string | undefined;
+  approversComments?: ApproversComments | undefined;
+  due?: number | undefined;
+}
+
+export interface ConvertEntityTypeRes {
+  submittedBy: EntityMin | undefined;
+  status: RequestStatus;
+  commanderDecision: ApproverDecision | undefined;
+  securityDecision: ApproverDecision | undefined;
+  superSecurityDecision: ApproverDecision | undefined;
+  adminDecision: ApproverDecision | undefined;
+  commanders: EntityMin[];
+  securityApprovers: EntityMin[];
+  superSecurityApprovers: EntityMin[];
+  adminApprovers: EntityMin[];
+  kartoffelStatus: KartoffelStatus | undefined;
+  adStatus: ADStatus | undefined;
+  kartoffelParams: ConvertEntityTypeKartoffelParams | undefined;
+  adParams: ConvertEntityTypeADParams | undefined;
+  comments: string;
+  approversComments: ApproversComments | undefined;
+  due: number;
+  id: string;
+  createdAt: number;
+  updatedAt: number;
+  type: RequestType;
+  serialNumber: string;
+  needSecurityDecision: boolean;
+  needSuperSecurityDecision: boolean;
+  needAdminDecision: boolean;
+  hasSecurityAdmin: boolean;
+}
+
 export interface SendSubmissionMailReq {
   id: string;
 }
@@ -1652,6 +1707,25 @@ export interface RemoveApproverFromApproversReq {
   id: string;
   approverId: string;
   type: ApproverType;
+}
+
+/** 16.ConvertEntityTypeRequest */
+export interface ConvertEntityTypeKartoffelParams {
+  id: string;
+  uniqueId: string;
+  newEntityType: string;
+  upn: string;
+  identifier?: string | undefined;
+}
+
+export interface ConvertEntityTypeADParams {
+  samAccountName: string;
+  upn?: string | undefined;
+  firstName: string;
+  lastName: string;
+  fullName: string;
+  rank?: string | undefined;
+  roleSerialCode: string;
 }
 
 export interface UpdateReq {
@@ -1910,6 +1984,9 @@ export interface KartoffelParams {
   upn?: string | undefined;
   role?: Role | undefined;
   entityId?: string | undefined;
+  rank?: string | undefined;
+  /** ConvertEntityType */
+  newEntityType?: string | undefined;
   /**
    * EditEntity
    * string firstName = 25;
@@ -1926,7 +2003,7 @@ export interface KartoffelParams {
    * string entityType = 36;
    * string id =
    */
-  rank?: string | undefined;
+  identifier?: string | undefined;
 }
 
 export interface ADParams {
@@ -1934,7 +2011,7 @@ export interface ADParams {
   ouDisplayName?: string | undefined;
   ouName?: string | undefined;
   name?: string | undefined;
-  /** CreateRole */
+  /** CreateRole and ConvertEntityType */
   samAccountName?: string | undefined;
   /** string ouDisplayName = ; */
   jobTitle?: string | undefined;
@@ -21297,6 +21374,1262 @@ export const ChangeRoleHierarchyBulkADParams = {
   },
 };
 
+const baseConvertEntityTypeReq: object = {};
+
+export const ConvertEntityTypeReq = {
+  encode(
+    message: ConvertEntityTypeReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.submittedBy !== undefined) {
+      EntityMin.encode(message.submittedBy, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.status !== undefined) {
+      writer.uint32(16).int32(message.status);
+    }
+    if (message.commanderDecision !== undefined) {
+      ApproverDecision.encode(
+        message.commanderDecision,
+        writer.uint32(26).fork()
+      ).ldelim();
+    }
+    if (message.securityDecision !== undefined) {
+      ApproverDecision.encode(
+        message.securityDecision,
+        writer.uint32(34).fork()
+      ).ldelim();
+    }
+    if (message.superSecurityDecision !== undefined) {
+      ApproverDecision.encode(
+        message.superSecurityDecision,
+        writer.uint32(42).fork()
+      ).ldelim();
+    }
+    if (message.adminDecision !== undefined) {
+      ApproverDecision.encode(
+        message.adminDecision,
+        writer.uint32(50).fork()
+      ).ldelim();
+    }
+    for (const v of message.commanders) {
+      EntityMin.encode(v!, writer.uint32(58).fork()).ldelim();
+    }
+    for (const v of message.securityApprovers) {
+      EntityMin.encode(v!, writer.uint32(66).fork()).ldelim();
+    }
+    for (const v of message.superSecurityApprovers) {
+      EntityMin.encode(v!, writer.uint32(74).fork()).ldelim();
+    }
+    for (const v of message.adminApprovers) {
+      EntityMin.encode(v!, writer.uint32(82).fork()).ldelim();
+    }
+    if (message.kartoffelStatus !== undefined) {
+      KartoffelStatus.encode(
+        message.kartoffelStatus,
+        writer.uint32(90).fork()
+      ).ldelim();
+    }
+    if (message.adStatus !== undefined) {
+      ADStatus.encode(message.adStatus, writer.uint32(98).fork()).ldelim();
+    }
+    if (message.kartoffelParams !== undefined) {
+      ConvertEntityTypeKartoffelParams.encode(
+        message.kartoffelParams,
+        writer.uint32(106).fork()
+      ).ldelim();
+    }
+    if (message.adParams !== undefined) {
+      ConvertEntityTypeADParams.encode(
+        message.adParams,
+        writer.uint32(114).fork()
+      ).ldelim();
+    }
+    if (message.comments !== undefined) {
+      writer.uint32(122).string(message.comments);
+    }
+    if (message.approversComments !== undefined) {
+      ApproversComments.encode(
+        message.approversComments,
+        writer.uint32(130).fork()
+      ).ldelim();
+    }
+    if (message.due !== undefined) {
+      writer.uint32(136).int64(message.due);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): ConvertEntityTypeReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseConvertEntityTypeReq } as ConvertEntityTypeReq;
+    message.commanders = [];
+    message.securityApprovers = [];
+    message.superSecurityApprovers = [];
+    message.adminApprovers = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.submittedBy = EntityMin.decode(reader, reader.uint32());
+          break;
+        case 2:
+          message.status = reader.int32() as any;
+          break;
+        case 3:
+          message.commanderDecision = ApproverDecision.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 4:
+          message.securityDecision = ApproverDecision.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 5:
+          message.superSecurityDecision = ApproverDecision.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 6:
+          message.adminDecision = ApproverDecision.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 7:
+          message.commanders.push(EntityMin.decode(reader, reader.uint32()));
+          break;
+        case 8:
+          message.securityApprovers.push(
+            EntityMin.decode(reader, reader.uint32())
+          );
+          break;
+        case 9:
+          message.superSecurityApprovers.push(
+            EntityMin.decode(reader, reader.uint32())
+          );
+          break;
+        case 10:
+          message.adminApprovers.push(
+            EntityMin.decode(reader, reader.uint32())
+          );
+          break;
+        case 11:
+          message.kartoffelStatus = KartoffelStatus.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 12:
+          message.adStatus = ADStatus.decode(reader, reader.uint32());
+          break;
+        case 13:
+          message.kartoffelParams = ConvertEntityTypeKartoffelParams.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 14:
+          message.adParams = ConvertEntityTypeADParams.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 15:
+          message.comments = reader.string();
+          break;
+        case 16:
+          message.approversComments = ApproversComments.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 17:
+          message.due = longToNumber(reader.int64() as Long);
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ConvertEntityTypeReq {
+    const message = { ...baseConvertEntityTypeReq } as ConvertEntityTypeReq;
+    message.commanders = [];
+    message.securityApprovers = [];
+    message.superSecurityApprovers = [];
+    message.adminApprovers = [];
+    if (object.submittedBy !== undefined && object.submittedBy !== null) {
+      message.submittedBy = EntityMin.fromJSON(object.submittedBy);
+    } else {
+      message.submittedBy = undefined;
+    }
+    if (object.status !== undefined && object.status !== null) {
+      message.status = requestStatusFromJSON(object.status);
+    } else {
+      message.status = undefined;
+    }
+    if (
+      object.commanderDecision !== undefined &&
+      object.commanderDecision !== null
+    ) {
+      message.commanderDecision = ApproverDecision.fromJSON(
+        object.commanderDecision
+      );
+    } else {
+      message.commanderDecision = undefined;
+    }
+    if (
+      object.securityDecision !== undefined &&
+      object.securityDecision !== null
+    ) {
+      message.securityDecision = ApproverDecision.fromJSON(
+        object.securityDecision
+      );
+    } else {
+      message.securityDecision = undefined;
+    }
+    if (
+      object.superSecurityDecision !== undefined &&
+      object.superSecurityDecision !== null
+    ) {
+      message.superSecurityDecision = ApproverDecision.fromJSON(
+        object.superSecurityDecision
+      );
+    } else {
+      message.superSecurityDecision = undefined;
+    }
+    if (object.adminDecision !== undefined && object.adminDecision !== null) {
+      message.adminDecision = ApproverDecision.fromJSON(object.adminDecision);
+    } else {
+      message.adminDecision = undefined;
+    }
+    if (object.commanders !== undefined && object.commanders !== null) {
+      for (const e of object.commanders) {
+        message.commanders.push(EntityMin.fromJSON(e));
+      }
+    }
+    if (
+      object.securityApprovers !== undefined &&
+      object.securityApprovers !== null
+    ) {
+      for (const e of object.securityApprovers) {
+        message.securityApprovers.push(EntityMin.fromJSON(e));
+      }
+    }
+    if (
+      object.superSecurityApprovers !== undefined &&
+      object.superSecurityApprovers !== null
+    ) {
+      for (const e of object.superSecurityApprovers) {
+        message.superSecurityApprovers.push(EntityMin.fromJSON(e));
+      }
+    }
+    if (object.adminApprovers !== undefined && object.adminApprovers !== null) {
+      for (const e of object.adminApprovers) {
+        message.adminApprovers.push(EntityMin.fromJSON(e));
+      }
+    }
+    if (
+      object.kartoffelStatus !== undefined &&
+      object.kartoffelStatus !== null
+    ) {
+      message.kartoffelStatus = KartoffelStatus.fromJSON(
+        object.kartoffelStatus
+      );
+    } else {
+      message.kartoffelStatus = undefined;
+    }
+    if (object.adStatus !== undefined && object.adStatus !== null) {
+      message.adStatus = ADStatus.fromJSON(object.adStatus);
+    } else {
+      message.adStatus = undefined;
+    }
+    if (
+      object.kartoffelParams !== undefined &&
+      object.kartoffelParams !== null
+    ) {
+      message.kartoffelParams = ConvertEntityTypeKartoffelParams.fromJSON(
+        object.kartoffelParams
+      );
+    } else {
+      message.kartoffelParams = undefined;
+    }
+    if (object.adParams !== undefined && object.adParams !== null) {
+      message.adParams = ConvertEntityTypeADParams.fromJSON(object.adParams);
+    } else {
+      message.adParams = undefined;
+    }
+    if (object.comments !== undefined && object.comments !== null) {
+      message.comments = String(object.comments);
+    } else {
+      message.comments = undefined;
+    }
+    if (
+      object.approversComments !== undefined &&
+      object.approversComments !== null
+    ) {
+      message.approversComments = ApproversComments.fromJSON(
+        object.approversComments
+      );
+    } else {
+      message.approversComments = undefined;
+    }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = Number(object.due);
+    } else {
+      message.due = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: ConvertEntityTypeReq): unknown {
+    const obj: any = {};
+    message.submittedBy !== undefined &&
+      (obj.submittedBy = message.submittedBy
+        ? EntityMin.toJSON(message.submittedBy)
+        : undefined);
+    message.status !== undefined &&
+      (obj.status =
+        message.status !== undefined
+          ? requestStatusToJSON(message.status)
+          : undefined);
+    message.commanderDecision !== undefined &&
+      (obj.commanderDecision = message.commanderDecision
+        ? ApproverDecision.toJSON(message.commanderDecision)
+        : undefined);
+    message.securityDecision !== undefined &&
+      (obj.securityDecision = message.securityDecision
+        ? ApproverDecision.toJSON(message.securityDecision)
+        : undefined);
+    message.superSecurityDecision !== undefined &&
+      (obj.superSecurityDecision = message.superSecurityDecision
+        ? ApproverDecision.toJSON(message.superSecurityDecision)
+        : undefined);
+    message.adminDecision !== undefined &&
+      (obj.adminDecision = message.adminDecision
+        ? ApproverDecision.toJSON(message.adminDecision)
+        : undefined);
+    if (message.commanders) {
+      obj.commanders = message.commanders.map((e) =>
+        e ? EntityMin.toJSON(e) : undefined
+      );
+    } else {
+      obj.commanders = [];
+    }
+    if (message.securityApprovers) {
+      obj.securityApprovers = message.securityApprovers.map((e) =>
+        e ? EntityMin.toJSON(e) : undefined
+      );
+    } else {
+      obj.securityApprovers = [];
+    }
+    if (message.superSecurityApprovers) {
+      obj.superSecurityApprovers = message.superSecurityApprovers.map((e) =>
+        e ? EntityMin.toJSON(e) : undefined
+      );
+    } else {
+      obj.superSecurityApprovers = [];
+    }
+    if (message.adminApprovers) {
+      obj.adminApprovers = message.adminApprovers.map((e) =>
+        e ? EntityMin.toJSON(e) : undefined
+      );
+    } else {
+      obj.adminApprovers = [];
+    }
+    message.kartoffelStatus !== undefined &&
+      (obj.kartoffelStatus = message.kartoffelStatus
+        ? KartoffelStatus.toJSON(message.kartoffelStatus)
+        : undefined);
+    message.adStatus !== undefined &&
+      (obj.adStatus = message.adStatus
+        ? ADStatus.toJSON(message.adStatus)
+        : undefined);
+    message.kartoffelParams !== undefined &&
+      (obj.kartoffelParams = message.kartoffelParams
+        ? ConvertEntityTypeKartoffelParams.toJSON(message.kartoffelParams)
+        : undefined);
+    message.adParams !== undefined &&
+      (obj.adParams = message.adParams
+        ? ConvertEntityTypeADParams.toJSON(message.adParams)
+        : undefined);
+    message.comments !== undefined && (obj.comments = message.comments);
+    message.approversComments !== undefined &&
+      (obj.approversComments = message.approversComments
+        ? ApproversComments.toJSON(message.approversComments)
+        : undefined);
+    message.due !== undefined && (obj.due = message.due);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<ConvertEntityTypeReq>): ConvertEntityTypeReq {
+    const message = { ...baseConvertEntityTypeReq } as ConvertEntityTypeReq;
+    message.commanders = [];
+    message.securityApprovers = [];
+    message.superSecurityApprovers = [];
+    message.adminApprovers = [];
+    if (object.submittedBy !== undefined && object.submittedBy !== null) {
+      message.submittedBy = EntityMin.fromPartial(object.submittedBy);
+    } else {
+      message.submittedBy = undefined;
+    }
+    if (object.status !== undefined && object.status !== null) {
+      message.status = object.status;
+    } else {
+      message.status = undefined;
+    }
+    if (
+      object.commanderDecision !== undefined &&
+      object.commanderDecision !== null
+    ) {
+      message.commanderDecision = ApproverDecision.fromPartial(
+        object.commanderDecision
+      );
+    } else {
+      message.commanderDecision = undefined;
+    }
+    if (
+      object.securityDecision !== undefined &&
+      object.securityDecision !== null
+    ) {
+      message.securityDecision = ApproverDecision.fromPartial(
+        object.securityDecision
+      );
+    } else {
+      message.securityDecision = undefined;
+    }
+    if (
+      object.superSecurityDecision !== undefined &&
+      object.superSecurityDecision !== null
+    ) {
+      message.superSecurityDecision = ApproverDecision.fromPartial(
+        object.superSecurityDecision
+      );
+    } else {
+      message.superSecurityDecision = undefined;
+    }
+    if (object.adminDecision !== undefined && object.adminDecision !== null) {
+      message.adminDecision = ApproverDecision.fromPartial(
+        object.adminDecision
+      );
+    } else {
+      message.adminDecision = undefined;
+    }
+    if (object.commanders !== undefined && object.commanders !== null) {
+      for (const e of object.commanders) {
+        message.commanders.push(EntityMin.fromPartial(e));
+      }
+    }
+    if (
+      object.securityApprovers !== undefined &&
+      object.securityApprovers !== null
+    ) {
+      for (const e of object.securityApprovers) {
+        message.securityApprovers.push(EntityMin.fromPartial(e));
+      }
+    }
+    if (
+      object.superSecurityApprovers !== undefined &&
+      object.superSecurityApprovers !== null
+    ) {
+      for (const e of object.superSecurityApprovers) {
+        message.superSecurityApprovers.push(EntityMin.fromPartial(e));
+      }
+    }
+    if (object.adminApprovers !== undefined && object.adminApprovers !== null) {
+      for (const e of object.adminApprovers) {
+        message.adminApprovers.push(EntityMin.fromPartial(e));
+      }
+    }
+    if (
+      object.kartoffelStatus !== undefined &&
+      object.kartoffelStatus !== null
+    ) {
+      message.kartoffelStatus = KartoffelStatus.fromPartial(
+        object.kartoffelStatus
+      );
+    } else {
+      message.kartoffelStatus = undefined;
+    }
+    if (object.adStatus !== undefined && object.adStatus !== null) {
+      message.adStatus = ADStatus.fromPartial(object.adStatus);
+    } else {
+      message.adStatus = undefined;
+    }
+    if (
+      object.kartoffelParams !== undefined &&
+      object.kartoffelParams !== null
+    ) {
+      message.kartoffelParams = ConvertEntityTypeKartoffelParams.fromPartial(
+        object.kartoffelParams
+      );
+    } else {
+      message.kartoffelParams = undefined;
+    }
+    if (object.adParams !== undefined && object.adParams !== null) {
+      message.adParams = ConvertEntityTypeADParams.fromPartial(object.adParams);
+    } else {
+      message.adParams = undefined;
+    }
+    if (object.comments !== undefined && object.comments !== null) {
+      message.comments = object.comments;
+    } else {
+      message.comments = undefined;
+    }
+    if (
+      object.approversComments !== undefined &&
+      object.approversComments !== null
+    ) {
+      message.approversComments = ApproversComments.fromPartial(
+        object.approversComments
+      );
+    } else {
+      message.approversComments = undefined;
+    }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = object.due;
+    } else {
+      message.due = undefined;
+    }
+    return message;
+  },
+};
+
+const baseConvertEntityTypeRes: object = {
+  status: 0,
+  comments: "",
+  due: 0,
+  id: "",
+  createdAt: 0,
+  updatedAt: 0,
+  type: 0,
+  serialNumber: "",
+  needSecurityDecision: false,
+  needSuperSecurityDecision: false,
+  needAdminDecision: false,
+  hasSecurityAdmin: false,
+};
+
+export const ConvertEntityTypeRes = {
+  encode(
+    message: ConvertEntityTypeRes,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.submittedBy !== undefined) {
+      EntityMin.encode(message.submittedBy, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.status !== 0) {
+      writer.uint32(16).int32(message.status);
+    }
+    if (message.commanderDecision !== undefined) {
+      ApproverDecision.encode(
+        message.commanderDecision,
+        writer.uint32(26).fork()
+      ).ldelim();
+    }
+    if (message.securityDecision !== undefined) {
+      ApproverDecision.encode(
+        message.securityDecision,
+        writer.uint32(34).fork()
+      ).ldelim();
+    }
+    if (message.superSecurityDecision !== undefined) {
+      ApproverDecision.encode(
+        message.superSecurityDecision,
+        writer.uint32(42).fork()
+      ).ldelim();
+    }
+    if (message.adminDecision !== undefined) {
+      ApproverDecision.encode(
+        message.adminDecision,
+        writer.uint32(50).fork()
+      ).ldelim();
+    }
+    for (const v of message.commanders) {
+      EntityMin.encode(v!, writer.uint32(58).fork()).ldelim();
+    }
+    for (const v of message.securityApprovers) {
+      EntityMin.encode(v!, writer.uint32(66).fork()).ldelim();
+    }
+    for (const v of message.superSecurityApprovers) {
+      EntityMin.encode(v!, writer.uint32(74).fork()).ldelim();
+    }
+    for (const v of message.adminApprovers) {
+      EntityMin.encode(v!, writer.uint32(82).fork()).ldelim();
+    }
+    if (message.kartoffelStatus !== undefined) {
+      KartoffelStatus.encode(
+        message.kartoffelStatus,
+        writer.uint32(90).fork()
+      ).ldelim();
+    }
+    if (message.adStatus !== undefined) {
+      ADStatus.encode(message.adStatus, writer.uint32(98).fork()).ldelim();
+    }
+    if (message.kartoffelParams !== undefined) {
+      ConvertEntityTypeKartoffelParams.encode(
+        message.kartoffelParams,
+        writer.uint32(106).fork()
+      ).ldelim();
+    }
+    if (message.adParams !== undefined) {
+      ConvertEntityTypeADParams.encode(
+        message.adParams,
+        writer.uint32(114).fork()
+      ).ldelim();
+    }
+    if (message.comments !== "") {
+      writer.uint32(122).string(message.comments);
+    }
+    if (message.approversComments !== undefined) {
+      ApproversComments.encode(
+        message.approversComments,
+        writer.uint32(130).fork()
+      ).ldelim();
+    }
+    if (message.due !== 0) {
+      writer.uint32(136).int64(message.due);
+    }
+    if (message.id !== "") {
+      writer.uint32(146).string(message.id);
+    }
+    if (message.createdAt !== 0) {
+      writer.uint32(152).int64(message.createdAt);
+    }
+    if (message.updatedAt !== 0) {
+      writer.uint32(160).int64(message.updatedAt);
+    }
+    if (message.type !== 0) {
+      writer.uint32(168).int32(message.type);
+    }
+    if (message.serialNumber !== "") {
+      writer.uint32(178).string(message.serialNumber);
+    }
+    if (message.needSecurityDecision === true) {
+      writer.uint32(184).bool(message.needSecurityDecision);
+    }
+    if (message.needSuperSecurityDecision === true) {
+      writer.uint32(192).bool(message.needSuperSecurityDecision);
+    }
+    if (message.needAdminDecision === true) {
+      writer.uint32(200).bool(message.needAdminDecision);
+    }
+    if (message.hasSecurityAdmin === true) {
+      writer.uint32(208).bool(message.hasSecurityAdmin);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): ConvertEntityTypeRes {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseConvertEntityTypeRes } as ConvertEntityTypeRes;
+    message.commanders = [];
+    message.securityApprovers = [];
+    message.superSecurityApprovers = [];
+    message.adminApprovers = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.submittedBy = EntityMin.decode(reader, reader.uint32());
+          break;
+        case 2:
+          message.status = reader.int32() as any;
+          break;
+        case 3:
+          message.commanderDecision = ApproverDecision.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 4:
+          message.securityDecision = ApproverDecision.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 5:
+          message.superSecurityDecision = ApproverDecision.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 6:
+          message.adminDecision = ApproverDecision.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 7:
+          message.commanders.push(EntityMin.decode(reader, reader.uint32()));
+          break;
+        case 8:
+          message.securityApprovers.push(
+            EntityMin.decode(reader, reader.uint32())
+          );
+          break;
+        case 9:
+          message.superSecurityApprovers.push(
+            EntityMin.decode(reader, reader.uint32())
+          );
+          break;
+        case 10:
+          message.adminApprovers.push(
+            EntityMin.decode(reader, reader.uint32())
+          );
+          break;
+        case 11:
+          message.kartoffelStatus = KartoffelStatus.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 12:
+          message.adStatus = ADStatus.decode(reader, reader.uint32());
+          break;
+        case 13:
+          message.kartoffelParams = ConvertEntityTypeKartoffelParams.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 14:
+          message.adParams = ConvertEntityTypeADParams.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 15:
+          message.comments = reader.string();
+          break;
+        case 16:
+          message.approversComments = ApproversComments.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 17:
+          message.due = longToNumber(reader.int64() as Long);
+          break;
+        case 18:
+          message.id = reader.string();
+          break;
+        case 19:
+          message.createdAt = longToNumber(reader.int64() as Long);
+          break;
+        case 20:
+          message.updatedAt = longToNumber(reader.int64() as Long);
+          break;
+        case 21:
+          message.type = reader.int32() as any;
+          break;
+        case 22:
+          message.serialNumber = reader.string();
+          break;
+        case 23:
+          message.needSecurityDecision = reader.bool();
+          break;
+        case 24:
+          message.needSuperSecurityDecision = reader.bool();
+          break;
+        case 25:
+          message.needAdminDecision = reader.bool();
+          break;
+        case 26:
+          message.hasSecurityAdmin = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ConvertEntityTypeRes {
+    const message = { ...baseConvertEntityTypeRes } as ConvertEntityTypeRes;
+    message.commanders = [];
+    message.securityApprovers = [];
+    message.superSecurityApprovers = [];
+    message.adminApprovers = [];
+    if (object.submittedBy !== undefined && object.submittedBy !== null) {
+      message.submittedBy = EntityMin.fromJSON(object.submittedBy);
+    } else {
+      message.submittedBy = undefined;
+    }
+    if (object.status !== undefined && object.status !== null) {
+      message.status = requestStatusFromJSON(object.status);
+    } else {
+      message.status = 0;
+    }
+    if (
+      object.commanderDecision !== undefined &&
+      object.commanderDecision !== null
+    ) {
+      message.commanderDecision = ApproverDecision.fromJSON(
+        object.commanderDecision
+      );
+    } else {
+      message.commanderDecision = undefined;
+    }
+    if (
+      object.securityDecision !== undefined &&
+      object.securityDecision !== null
+    ) {
+      message.securityDecision = ApproverDecision.fromJSON(
+        object.securityDecision
+      );
+    } else {
+      message.securityDecision = undefined;
+    }
+    if (
+      object.superSecurityDecision !== undefined &&
+      object.superSecurityDecision !== null
+    ) {
+      message.superSecurityDecision = ApproverDecision.fromJSON(
+        object.superSecurityDecision
+      );
+    } else {
+      message.superSecurityDecision = undefined;
+    }
+    if (object.adminDecision !== undefined && object.adminDecision !== null) {
+      message.adminDecision = ApproverDecision.fromJSON(object.adminDecision);
+    } else {
+      message.adminDecision = undefined;
+    }
+    if (object.commanders !== undefined && object.commanders !== null) {
+      for (const e of object.commanders) {
+        message.commanders.push(EntityMin.fromJSON(e));
+      }
+    }
+    if (
+      object.securityApprovers !== undefined &&
+      object.securityApprovers !== null
+    ) {
+      for (const e of object.securityApprovers) {
+        message.securityApprovers.push(EntityMin.fromJSON(e));
+      }
+    }
+    if (
+      object.superSecurityApprovers !== undefined &&
+      object.superSecurityApprovers !== null
+    ) {
+      for (const e of object.superSecurityApprovers) {
+        message.superSecurityApprovers.push(EntityMin.fromJSON(e));
+      }
+    }
+    if (object.adminApprovers !== undefined && object.adminApprovers !== null) {
+      for (const e of object.adminApprovers) {
+        message.adminApprovers.push(EntityMin.fromJSON(e));
+      }
+    }
+    if (
+      object.kartoffelStatus !== undefined &&
+      object.kartoffelStatus !== null
+    ) {
+      message.kartoffelStatus = KartoffelStatus.fromJSON(
+        object.kartoffelStatus
+      );
+    } else {
+      message.kartoffelStatus = undefined;
+    }
+    if (object.adStatus !== undefined && object.adStatus !== null) {
+      message.adStatus = ADStatus.fromJSON(object.adStatus);
+    } else {
+      message.adStatus = undefined;
+    }
+    if (
+      object.kartoffelParams !== undefined &&
+      object.kartoffelParams !== null
+    ) {
+      message.kartoffelParams = ConvertEntityTypeKartoffelParams.fromJSON(
+        object.kartoffelParams
+      );
+    } else {
+      message.kartoffelParams = undefined;
+    }
+    if (object.adParams !== undefined && object.adParams !== null) {
+      message.adParams = ConvertEntityTypeADParams.fromJSON(object.adParams);
+    } else {
+      message.adParams = undefined;
+    }
+    if (object.comments !== undefined && object.comments !== null) {
+      message.comments = String(object.comments);
+    } else {
+      message.comments = "";
+    }
+    if (
+      object.approversComments !== undefined &&
+      object.approversComments !== null
+    ) {
+      message.approversComments = ApproversComments.fromJSON(
+        object.approversComments
+      );
+    } else {
+      message.approversComments = undefined;
+    }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = Number(object.due);
+    } else {
+      message.due = 0;
+    }
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    if (object.createdAt !== undefined && object.createdAt !== null) {
+      message.createdAt = Number(object.createdAt);
+    } else {
+      message.createdAt = 0;
+    }
+    if (object.updatedAt !== undefined && object.updatedAt !== null) {
+      message.updatedAt = Number(object.updatedAt);
+    } else {
+      message.updatedAt = 0;
+    }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = requestTypeFromJSON(object.type);
+    } else {
+      message.type = 0;
+    }
+    if (object.serialNumber !== undefined && object.serialNumber !== null) {
+      message.serialNumber = String(object.serialNumber);
+    } else {
+      message.serialNumber = "";
+    }
+    if (
+      object.needSecurityDecision !== undefined &&
+      object.needSecurityDecision !== null
+    ) {
+      message.needSecurityDecision = Boolean(object.needSecurityDecision);
+    } else {
+      message.needSecurityDecision = false;
+    }
+    if (
+      object.needSuperSecurityDecision !== undefined &&
+      object.needSuperSecurityDecision !== null
+    ) {
+      message.needSuperSecurityDecision = Boolean(
+        object.needSuperSecurityDecision
+      );
+    } else {
+      message.needSuperSecurityDecision = false;
+    }
+    if (
+      object.needAdminDecision !== undefined &&
+      object.needAdminDecision !== null
+    ) {
+      message.needAdminDecision = Boolean(object.needAdminDecision);
+    } else {
+      message.needAdminDecision = false;
+    }
+    if (
+      object.hasSecurityAdmin !== undefined &&
+      object.hasSecurityAdmin !== null
+    ) {
+      message.hasSecurityAdmin = Boolean(object.hasSecurityAdmin);
+    } else {
+      message.hasSecurityAdmin = false;
+    }
+    return message;
+  },
+
+  toJSON(message: ConvertEntityTypeRes): unknown {
+    const obj: any = {};
+    message.submittedBy !== undefined &&
+      (obj.submittedBy = message.submittedBy
+        ? EntityMin.toJSON(message.submittedBy)
+        : undefined);
+    message.status !== undefined &&
+      (obj.status = requestStatusToJSON(message.status));
+    message.commanderDecision !== undefined &&
+      (obj.commanderDecision = message.commanderDecision
+        ? ApproverDecision.toJSON(message.commanderDecision)
+        : undefined);
+    message.securityDecision !== undefined &&
+      (obj.securityDecision = message.securityDecision
+        ? ApproverDecision.toJSON(message.securityDecision)
+        : undefined);
+    message.superSecurityDecision !== undefined &&
+      (obj.superSecurityDecision = message.superSecurityDecision
+        ? ApproverDecision.toJSON(message.superSecurityDecision)
+        : undefined);
+    message.adminDecision !== undefined &&
+      (obj.adminDecision = message.adminDecision
+        ? ApproverDecision.toJSON(message.adminDecision)
+        : undefined);
+    if (message.commanders) {
+      obj.commanders = message.commanders.map((e) =>
+        e ? EntityMin.toJSON(e) : undefined
+      );
+    } else {
+      obj.commanders = [];
+    }
+    if (message.securityApprovers) {
+      obj.securityApprovers = message.securityApprovers.map((e) =>
+        e ? EntityMin.toJSON(e) : undefined
+      );
+    } else {
+      obj.securityApprovers = [];
+    }
+    if (message.superSecurityApprovers) {
+      obj.superSecurityApprovers = message.superSecurityApprovers.map((e) =>
+        e ? EntityMin.toJSON(e) : undefined
+      );
+    } else {
+      obj.superSecurityApprovers = [];
+    }
+    if (message.adminApprovers) {
+      obj.adminApprovers = message.adminApprovers.map((e) =>
+        e ? EntityMin.toJSON(e) : undefined
+      );
+    } else {
+      obj.adminApprovers = [];
+    }
+    message.kartoffelStatus !== undefined &&
+      (obj.kartoffelStatus = message.kartoffelStatus
+        ? KartoffelStatus.toJSON(message.kartoffelStatus)
+        : undefined);
+    message.adStatus !== undefined &&
+      (obj.adStatus = message.adStatus
+        ? ADStatus.toJSON(message.adStatus)
+        : undefined);
+    message.kartoffelParams !== undefined &&
+      (obj.kartoffelParams = message.kartoffelParams
+        ? ConvertEntityTypeKartoffelParams.toJSON(message.kartoffelParams)
+        : undefined);
+    message.adParams !== undefined &&
+      (obj.adParams = message.adParams
+        ? ConvertEntityTypeADParams.toJSON(message.adParams)
+        : undefined);
+    message.comments !== undefined && (obj.comments = message.comments);
+    message.approversComments !== undefined &&
+      (obj.approversComments = message.approversComments
+        ? ApproversComments.toJSON(message.approversComments)
+        : undefined);
+    message.due !== undefined && (obj.due = message.due);
+    message.id !== undefined && (obj.id = message.id);
+    message.createdAt !== undefined && (obj.createdAt = message.createdAt);
+    message.updatedAt !== undefined && (obj.updatedAt = message.updatedAt);
+    message.type !== undefined && (obj.type = requestTypeToJSON(message.type));
+    message.serialNumber !== undefined &&
+      (obj.serialNumber = message.serialNumber);
+    message.needSecurityDecision !== undefined &&
+      (obj.needSecurityDecision = message.needSecurityDecision);
+    message.needSuperSecurityDecision !== undefined &&
+      (obj.needSuperSecurityDecision = message.needSuperSecurityDecision);
+    message.needAdminDecision !== undefined &&
+      (obj.needAdminDecision = message.needAdminDecision);
+    message.hasSecurityAdmin !== undefined &&
+      (obj.hasSecurityAdmin = message.hasSecurityAdmin);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<ConvertEntityTypeRes>): ConvertEntityTypeRes {
+    const message = { ...baseConvertEntityTypeRes } as ConvertEntityTypeRes;
+    message.commanders = [];
+    message.securityApprovers = [];
+    message.superSecurityApprovers = [];
+    message.adminApprovers = [];
+    if (object.submittedBy !== undefined && object.submittedBy !== null) {
+      message.submittedBy = EntityMin.fromPartial(object.submittedBy);
+    } else {
+      message.submittedBy = undefined;
+    }
+    if (object.status !== undefined && object.status !== null) {
+      message.status = object.status;
+    } else {
+      message.status = 0;
+    }
+    if (
+      object.commanderDecision !== undefined &&
+      object.commanderDecision !== null
+    ) {
+      message.commanderDecision = ApproverDecision.fromPartial(
+        object.commanderDecision
+      );
+    } else {
+      message.commanderDecision = undefined;
+    }
+    if (
+      object.securityDecision !== undefined &&
+      object.securityDecision !== null
+    ) {
+      message.securityDecision = ApproverDecision.fromPartial(
+        object.securityDecision
+      );
+    } else {
+      message.securityDecision = undefined;
+    }
+    if (
+      object.superSecurityDecision !== undefined &&
+      object.superSecurityDecision !== null
+    ) {
+      message.superSecurityDecision = ApproverDecision.fromPartial(
+        object.superSecurityDecision
+      );
+    } else {
+      message.superSecurityDecision = undefined;
+    }
+    if (object.adminDecision !== undefined && object.adminDecision !== null) {
+      message.adminDecision = ApproverDecision.fromPartial(
+        object.adminDecision
+      );
+    } else {
+      message.adminDecision = undefined;
+    }
+    if (object.commanders !== undefined && object.commanders !== null) {
+      for (const e of object.commanders) {
+        message.commanders.push(EntityMin.fromPartial(e));
+      }
+    }
+    if (
+      object.securityApprovers !== undefined &&
+      object.securityApprovers !== null
+    ) {
+      for (const e of object.securityApprovers) {
+        message.securityApprovers.push(EntityMin.fromPartial(e));
+      }
+    }
+    if (
+      object.superSecurityApprovers !== undefined &&
+      object.superSecurityApprovers !== null
+    ) {
+      for (const e of object.superSecurityApprovers) {
+        message.superSecurityApprovers.push(EntityMin.fromPartial(e));
+      }
+    }
+    if (object.adminApprovers !== undefined && object.adminApprovers !== null) {
+      for (const e of object.adminApprovers) {
+        message.adminApprovers.push(EntityMin.fromPartial(e));
+      }
+    }
+    if (
+      object.kartoffelStatus !== undefined &&
+      object.kartoffelStatus !== null
+    ) {
+      message.kartoffelStatus = KartoffelStatus.fromPartial(
+        object.kartoffelStatus
+      );
+    } else {
+      message.kartoffelStatus = undefined;
+    }
+    if (object.adStatus !== undefined && object.adStatus !== null) {
+      message.adStatus = ADStatus.fromPartial(object.adStatus);
+    } else {
+      message.adStatus = undefined;
+    }
+    if (
+      object.kartoffelParams !== undefined &&
+      object.kartoffelParams !== null
+    ) {
+      message.kartoffelParams = ConvertEntityTypeKartoffelParams.fromPartial(
+        object.kartoffelParams
+      );
+    } else {
+      message.kartoffelParams = undefined;
+    }
+    if (object.adParams !== undefined && object.adParams !== null) {
+      message.adParams = ConvertEntityTypeADParams.fromPartial(object.adParams);
+    } else {
+      message.adParams = undefined;
+    }
+    if (object.comments !== undefined && object.comments !== null) {
+      message.comments = object.comments;
+    } else {
+      message.comments = "";
+    }
+    if (
+      object.approversComments !== undefined &&
+      object.approversComments !== null
+    ) {
+      message.approversComments = ApproversComments.fromPartial(
+        object.approversComments
+      );
+    } else {
+      message.approversComments = undefined;
+    }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = object.due;
+    } else {
+      message.due = 0;
+    }
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    if (object.createdAt !== undefined && object.createdAt !== null) {
+      message.createdAt = object.createdAt;
+    } else {
+      message.createdAt = 0;
+    }
+    if (object.updatedAt !== undefined && object.updatedAt !== null) {
+      message.updatedAt = object.updatedAt;
+    } else {
+      message.updatedAt = 0;
+    }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = object.type;
+    } else {
+      message.type = 0;
+    }
+    if (object.serialNumber !== undefined && object.serialNumber !== null) {
+      message.serialNumber = object.serialNumber;
+    } else {
+      message.serialNumber = "";
+    }
+    if (
+      object.needSecurityDecision !== undefined &&
+      object.needSecurityDecision !== null
+    ) {
+      message.needSecurityDecision = object.needSecurityDecision;
+    } else {
+      message.needSecurityDecision = false;
+    }
+    if (
+      object.needSuperSecurityDecision !== undefined &&
+      object.needSuperSecurityDecision !== null
+    ) {
+      message.needSuperSecurityDecision = object.needSuperSecurityDecision;
+    } else {
+      message.needSuperSecurityDecision = false;
+    }
+    if (
+      object.needAdminDecision !== undefined &&
+      object.needAdminDecision !== null
+    ) {
+      message.needAdminDecision = object.needAdminDecision;
+    } else {
+      message.needAdminDecision = false;
+    }
+    if (
+      object.hasSecurityAdmin !== undefined &&
+      object.hasSecurityAdmin !== null
+    ) {
+      message.hasSecurityAdmin = object.hasSecurityAdmin;
+    } else {
+      message.hasSecurityAdmin = false;
+    }
+    return message;
+  },
+};
+
 const baseSendSubmissionMailReq: object = { id: "" };
 
 export const SendSubmissionMailReq = {
@@ -25069,6 +26402,328 @@ export const RemoveApproverFromApproversReq = {
   },
 };
 
+const baseConvertEntityTypeKartoffelParams: object = {
+  id: "",
+  uniqueId: "",
+  newEntityType: "",
+  upn: "",
+};
+
+export const ConvertEntityTypeKartoffelParams = {
+  encode(
+    message: ConvertEntityTypeKartoffelParams,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.uniqueId !== "") {
+      writer.uint32(18).string(message.uniqueId);
+    }
+    if (message.newEntityType !== "") {
+      writer.uint32(26).string(message.newEntityType);
+    }
+    if (message.upn !== "") {
+      writer.uint32(34).string(message.upn);
+    }
+    if (message.identifier !== undefined) {
+      writer.uint32(42).string(message.identifier);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): ConvertEntityTypeKartoffelParams {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseConvertEntityTypeKartoffelParams,
+    } as ConvertEntityTypeKartoffelParams;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        case 2:
+          message.uniqueId = reader.string();
+          break;
+        case 3:
+          message.newEntityType = reader.string();
+          break;
+        case 4:
+          message.upn = reader.string();
+          break;
+        case 5:
+          message.identifier = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ConvertEntityTypeKartoffelParams {
+    const message = {
+      ...baseConvertEntityTypeKartoffelParams,
+    } as ConvertEntityTypeKartoffelParams;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    if (object.uniqueId !== undefined && object.uniqueId !== null) {
+      message.uniqueId = String(object.uniqueId);
+    } else {
+      message.uniqueId = "";
+    }
+    if (object.newEntityType !== undefined && object.newEntityType !== null) {
+      message.newEntityType = String(object.newEntityType);
+    } else {
+      message.newEntityType = "";
+    }
+    if (object.upn !== undefined && object.upn !== null) {
+      message.upn = String(object.upn);
+    } else {
+      message.upn = "";
+    }
+    if (object.identifier !== undefined && object.identifier !== null) {
+      message.identifier = String(object.identifier);
+    } else {
+      message.identifier = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: ConvertEntityTypeKartoffelParams): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    message.uniqueId !== undefined && (obj.uniqueId = message.uniqueId);
+    message.newEntityType !== undefined &&
+      (obj.newEntityType = message.newEntityType);
+    message.upn !== undefined && (obj.upn = message.upn);
+    message.identifier !== undefined && (obj.identifier = message.identifier);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<ConvertEntityTypeKartoffelParams>
+  ): ConvertEntityTypeKartoffelParams {
+    const message = {
+      ...baseConvertEntityTypeKartoffelParams,
+    } as ConvertEntityTypeKartoffelParams;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    if (object.uniqueId !== undefined && object.uniqueId !== null) {
+      message.uniqueId = object.uniqueId;
+    } else {
+      message.uniqueId = "";
+    }
+    if (object.newEntityType !== undefined && object.newEntityType !== null) {
+      message.newEntityType = object.newEntityType;
+    } else {
+      message.newEntityType = "";
+    }
+    if (object.upn !== undefined && object.upn !== null) {
+      message.upn = object.upn;
+    } else {
+      message.upn = "";
+    }
+    if (object.identifier !== undefined && object.identifier !== null) {
+      message.identifier = object.identifier;
+    } else {
+      message.identifier = undefined;
+    }
+    return message;
+  },
+};
+
+const baseConvertEntityTypeADParams: object = {
+  samAccountName: "",
+  firstName: "",
+  lastName: "",
+  fullName: "",
+  roleSerialCode: "",
+};
+
+export const ConvertEntityTypeADParams = {
+  encode(
+    message: ConvertEntityTypeADParams,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.samAccountName !== "") {
+      writer.uint32(10).string(message.samAccountName);
+    }
+    if (message.upn !== undefined) {
+      writer.uint32(18).string(message.upn);
+    }
+    if (message.firstName !== "") {
+      writer.uint32(26).string(message.firstName);
+    }
+    if (message.lastName !== "") {
+      writer.uint32(34).string(message.lastName);
+    }
+    if (message.fullName !== "") {
+      writer.uint32(42).string(message.fullName);
+    }
+    if (message.rank !== undefined) {
+      writer.uint32(50).string(message.rank);
+    }
+    if (message.roleSerialCode !== "") {
+      writer.uint32(58).string(message.roleSerialCode);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): ConvertEntityTypeADParams {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseConvertEntityTypeADParams,
+    } as ConvertEntityTypeADParams;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.samAccountName = reader.string();
+          break;
+        case 2:
+          message.upn = reader.string();
+          break;
+        case 3:
+          message.firstName = reader.string();
+          break;
+        case 4:
+          message.lastName = reader.string();
+          break;
+        case 5:
+          message.fullName = reader.string();
+          break;
+        case 6:
+          message.rank = reader.string();
+          break;
+        case 7:
+          message.roleSerialCode = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ConvertEntityTypeADParams {
+    const message = {
+      ...baseConvertEntityTypeADParams,
+    } as ConvertEntityTypeADParams;
+    if (object.samAccountName !== undefined && object.samAccountName !== null) {
+      message.samAccountName = String(object.samAccountName);
+    } else {
+      message.samAccountName = "";
+    }
+    if (object.upn !== undefined && object.upn !== null) {
+      message.upn = String(object.upn);
+    } else {
+      message.upn = undefined;
+    }
+    if (object.firstName !== undefined && object.firstName !== null) {
+      message.firstName = String(object.firstName);
+    } else {
+      message.firstName = "";
+    }
+    if (object.lastName !== undefined && object.lastName !== null) {
+      message.lastName = String(object.lastName);
+    } else {
+      message.lastName = "";
+    }
+    if (object.fullName !== undefined && object.fullName !== null) {
+      message.fullName = String(object.fullName);
+    } else {
+      message.fullName = "";
+    }
+    if (object.rank !== undefined && object.rank !== null) {
+      message.rank = String(object.rank);
+    } else {
+      message.rank = undefined;
+    }
+    if (object.roleSerialCode !== undefined && object.roleSerialCode !== null) {
+      message.roleSerialCode = String(object.roleSerialCode);
+    } else {
+      message.roleSerialCode = "";
+    }
+    return message;
+  },
+
+  toJSON(message: ConvertEntityTypeADParams): unknown {
+    const obj: any = {};
+    message.samAccountName !== undefined &&
+      (obj.samAccountName = message.samAccountName);
+    message.upn !== undefined && (obj.upn = message.upn);
+    message.firstName !== undefined && (obj.firstName = message.firstName);
+    message.lastName !== undefined && (obj.lastName = message.lastName);
+    message.fullName !== undefined && (obj.fullName = message.fullName);
+    message.rank !== undefined && (obj.rank = message.rank);
+    message.roleSerialCode !== undefined &&
+      (obj.roleSerialCode = message.roleSerialCode);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<ConvertEntityTypeADParams>
+  ): ConvertEntityTypeADParams {
+    const message = {
+      ...baseConvertEntityTypeADParams,
+    } as ConvertEntityTypeADParams;
+    if (object.samAccountName !== undefined && object.samAccountName !== null) {
+      message.samAccountName = object.samAccountName;
+    } else {
+      message.samAccountName = "";
+    }
+    if (object.upn !== undefined && object.upn !== null) {
+      message.upn = object.upn;
+    } else {
+      message.upn = undefined;
+    }
+    if (object.firstName !== undefined && object.firstName !== null) {
+      message.firstName = object.firstName;
+    } else {
+      message.firstName = "";
+    }
+    if (object.lastName !== undefined && object.lastName !== null) {
+      message.lastName = object.lastName;
+    } else {
+      message.lastName = "";
+    }
+    if (object.fullName !== undefined && object.fullName !== null) {
+      message.fullName = object.fullName;
+    } else {
+      message.fullName = "";
+    }
+    if (object.rank !== undefined && object.rank !== null) {
+      message.rank = object.rank;
+    } else {
+      message.rank = undefined;
+    }
+    if (object.roleSerialCode !== undefined && object.roleSerialCode !== null) {
+      message.roleSerialCode = object.roleSerialCode;
+    } else {
+      message.roleSerialCode = "";
+    }
+    return message;
+  },
+};
+
 const baseUpdateReq: object = { id: "" };
 
 export const UpdateReq = {
@@ -28705,6 +30360,12 @@ export const KartoffelParams = {
     if (message.rank !== undefined) {
       writer.uint32(298).string(message.rank);
     }
+    if (message.newEntityType !== undefined) {
+      writer.uint32(306).string(message.newEntityType);
+    }
+    if (message.identifier !== undefined) {
+      writer.uint32(314).string(message.identifier);
+    }
     return writer;
   },
 
@@ -28827,6 +30488,12 @@ export const KartoffelParams = {
           break;
         case 37:
           message.rank = reader.string();
+          break;
+        case 38:
+          message.newEntityType = reader.string();
+          break;
+        case 39:
+          message.identifier = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -29031,6 +30698,16 @@ export const KartoffelParams = {
     } else {
       message.rank = undefined;
     }
+    if (object.newEntityType !== undefined && object.newEntityType !== null) {
+      message.newEntityType = String(object.newEntityType);
+    } else {
+      message.newEntityType = undefined;
+    }
+    if (object.identifier !== undefined && object.identifier !== null) {
+      message.identifier = String(object.identifier);
+    } else {
+      message.identifier = undefined;
+    }
     return message;
   },
 
@@ -29095,6 +30772,9 @@ export const KartoffelParams = {
       (obj.role = message.role ? Role.toJSON(message.role) : undefined);
     message.entityId !== undefined && (obj.entityId = message.entityId);
     message.rank !== undefined && (obj.rank = message.rank);
+    message.newEntityType !== undefined &&
+      (obj.newEntityType = message.newEntityType);
+    message.identifier !== undefined && (obj.identifier = message.identifier);
     return obj;
   },
 
@@ -29292,6 +30972,16 @@ export const KartoffelParams = {
       message.rank = object.rank;
     } else {
       message.rank = undefined;
+    }
+    if (object.newEntityType !== undefined && object.newEntityType !== null) {
+      message.newEntityType = object.newEntityType;
+    } else {
+      message.newEntityType = undefined;
+    }
+    if (object.identifier !== undefined && object.identifier !== null) {
+      message.identifier = object.identifier;
+    } else {
+      message.identifier = undefined;
     }
     return message;
   },
@@ -31399,6 +33089,9 @@ export interface RequestService {
   ChangeRoleHierarchyBulkRequest(
     request: ChangeRoleHierarchyBulkReq
   ): Promise<ChangeRoleHierarchyBulkRes>;
+  ConvertEntityTypeRequest(
+    request: ConvertEntityTypeReq
+  ): Promise<ConvertEntityTypeRes>;
   UpdateRequest(request: UpdateReq): Promise<Request>;
   UpdateKartoffelStatus(request: UpdateKartoffelStatusReq): Promise<Request>;
   UpdateADStatus(request: UpdateADStatusReq): Promise<Request>;
@@ -31467,6 +33160,7 @@ export class RequestServiceClientImpl implements RequestService {
     this.CreateRoleBulkRequest = this.CreateRoleBulkRequest.bind(this);
     this.ChangeRoleHierarchyBulkRequest =
       this.ChangeRoleHierarchyBulkRequest.bind(this);
+    this.ConvertEntityTypeRequest = this.ConvertEntityTypeRequest.bind(this);
     this.UpdateRequest = this.UpdateRequest.bind(this);
     this.UpdateKartoffelStatus = this.UpdateKartoffelStatus.bind(this);
     this.UpdateADStatus = this.UpdateADStatus.bind(this);
@@ -31670,6 +33364,20 @@ export class RequestServiceClientImpl implements RequestService {
     );
     return promise.then((data) =>
       ChangeRoleHierarchyBulkRes.decode(new _m0.Reader(data))
+    );
+  }
+
+  ConvertEntityTypeRequest(
+    request: ConvertEntityTypeReq
+  ): Promise<ConvertEntityTypeRes> {
+    const data = ConvertEntityTypeReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "ConvertEntityTypeRequest",
+      data
+    );
+    return promise.then((data) =>
+      ConvertEntityTypeRes.decode(new _m0.Reader(data))
     );
   }
 

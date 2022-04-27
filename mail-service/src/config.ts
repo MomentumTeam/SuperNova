@@ -56,6 +56,7 @@ export const requestTypeToHebrew = {
   [requestTypeToJSON(RequestType.CHANGE_ROLE_HIERARCHY)]: 'מעבר היררכיה לתפקיד',
   [requestTypeToJSON(RequestType.CHANGE_ROLE_HIERARCHY_BULK)]:
     'שינוי היררכיות לתפקידים',
+  [requestTypeToJSON(RequestType.CONVERT_ENTITY_TYPE)]: 'שינוי סוג ישות',
 };
 
 export const legoAddress =
