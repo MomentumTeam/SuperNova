@@ -16,6 +16,7 @@ import {
 } from '../interfaces/protoc/proto/requestService';
 import { findPath } from '../utils/path';
 import { logger } from '../logger';
+import { GetDoneRequestsByGroupIdReq } from '../interfaces/protoc/proto/historyService';
 
 const PROTO_PATH = `${findPath('proto')}/requestService.proto`;
 
@@ -32,6 +33,26 @@ export class RequestService {
 
 
   async getDoneRequestsByRoleId(req: GetDoneRequestsByRoleIdReq): Promise<RequestArray> {
+    logger.info('GetDoneRequestsByRoleId in RequestService', { req });
+    return new Promise((resolve, reject) => {
+      this.randomClient().getDoneRequestsByRoleId(req, (error: any, res: any) => {
+        if (error) {
+          logger.error('GetDoneRequestsByRoleId in RequestService ERROR', {
+            error: { message: error.message },
+          });
+          reject(error);
+        } else {
+          logger.info('GetDoneRequestsByRoleId in RequestService OK', {
+            res,
+          });
+          resolve(res as RequestArray);
+        }
+      });
+    });
+  }
+
+  //TODO ADD THE OTHER FUNCTIONS
+  async getDoneRequestsByOG(req: GetDoneRequestsByGroupIdReq): Promise<RequestArray> {
     logger.info('GetDoneRequestsByRoleId in RequestService', { req });
     return new Promise((resolve, reject) => {
       this.randomClient().getDoneRequestsByRoleId(req, (error: any, res: any) => {

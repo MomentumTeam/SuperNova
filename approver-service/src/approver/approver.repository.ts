@@ -174,7 +174,7 @@ export class ApproverRepository {
             type: approverTypeToJSON(approverType),
           },
           { $addToSet: { groupsInCharge: addApproverReq.groupInChargeId } },
-          { new: true }
+          { new: true}
         );
         const updatedAdmin = updatedAdminDocument.toObject();
         turnObjectIdsToStrings(updatedAdmin);

@@ -1,60 +1,49 @@
-import {
-    CanPushToQueueReq,
-    CanPushToQueueRes,
-    DeleteReq,
-    GetRequestByIdReq,
-    GetRequestBySerialNumberReq,
-    GetRequestsByPersonReq,
-    GetRequestsInProgressByDueReq,
-    IncrementRetriesReq,
-    PersonTypeInRequest,
-    personTypeInRequestFromJSON,
-    Request,
-    RequestArray,
-    RequestIdArray,
-    RequestReq,
-    RequestType,
-    SuccessMessage,
-    UpdateADStatusReq,
-    UpdateApproversReq,
-    UpdateApproverDecisionReq,
-    UpdateKartoffelStatusReq,
-    IsRequestApprovedRes,
-    IsRequestApprovedReq,
-    PushErrorReq,
-    SyncBulkRequestReq,
-    GetRequestsUnderBulkReq,
-    TransferRequestToApproversReq,
-    AreAllSubRequestsFinishedReq,
-    AreAllSubRequestsFinishedRes,
-    SendSubmissionMailReq,
-    RemoveApproverFromApproversReq,
-    HasSecurityAdminReq,
-    GetDoneRequestsByRoleIdReq,
-    GetDoneRequestsByGroupIdReq,
-    GetDoneRequestsByEntityIdReq,
-  } from '../interfaces/protoc/proto/requestService';
-  import { RequestRepository } from './request.repository';
-  export class RequestManager {
-    private requestRepository: RequestRepository;
-    constructor() {
-      this.requestRepository = new RequestRepository();
+import { GetDoneRequestsByRoleIdReq, EventArray, GetDoneRequestsByGroupIdReq, GetDoneRequestsByEntityIdReq } from '../interfaces/protoc/proto/historyService';
+import { HistoryRepository } from './history.repository';
+
+export class HistoryManager {
+  private historyRepository: HistoryRepository;
+  constructor() {
+    this.historyRepository = new HistoryRepository();
+  }
+
+  async getEventsByRoleId(
+    getDoneRequestsByRoleIdReq: GetDoneRequestsByRoleIdReq
+  ): Promise<EventArray> {
+    try {
+      return await this.historyRepository.getEventsByRoleId(getDoneRequestsByRoleIdReq);
+    } catch (error) {
+      throw error;
     }
-  
-    async createRequest(
-      createRequest: RequestReq,
-      type: RequestType
-    ): Promise<Request> {
-      try {
-        return (await this.requestRepository.createRequest(
-          createRequest,
-          type
-        )) as Request;
-      } catch (error) {
-        throw error;
-      }
+  }
+
+  async getOGByOGId(
+    getDoneRequestsByOGIdReq: GetDoneRequestsByGroupIdReq
+  ): Promise<EventArray> {
+    try {
+      return await this.historyRepository.getOGByOGId(getDoneRequestsByOGIdReq);
+    } catch (error) {
+      throw error;
     }
+  }
 
+  async getEventsByEntityId(
+    getDoneRequestsByEntityIdReq: GetDoneRequestsByEntityIdReq
+  ): Promise<EventArray> {
+    try {
+      return await this.historyRepository.getEventsByEntityId(getDoneRequestsByEntityIdReq);
+    } catch (error) {
+      throw error;
+    }
+  }
 
-
+  async getEventsBySubmittedEntityId(
+    getDoneRequestsByEntityIdReq: GetDoneRequestsByEntityIdReq
+  ): Promise<EventArray> {
+    try {
+      return await this.historyRepository.getEventsBySubmittedEntityId(getDoneRequestsByEntityIdReq);
+    } catch (error) {
+      throw error;
+    }
+  }
 }

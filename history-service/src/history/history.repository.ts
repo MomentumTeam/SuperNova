@@ -5,21 +5,8 @@ import {
   GetDoneRequestsByGroupIdReq,
   GetDoneRequestsByEntityIdReq,
 } from '../interfaces/protoc/proto/historyService';
-//   import { createNotifications } from '../services/notificationHelper';
-//   import { sendMail } from '../services/mailHelper';
 import * as C from '../config';
-import { RequestService } from '../services/request.service';
-
-//   import {
-//     getAncestorsQuery,
-//     getPersonQuery,
-//     getRequestTypeQuery,
-//     getSearchQuery,
-//     getSortQuery,
-//     getStatusQuery,
-//     getWaitingForApproveCountQuery,
-//     removeApproverFromArray,
-//   } from '../utils/query';
+import { RequestService } from '../services/requestService';
 import {
   Request,
   RequestArray,
@@ -35,17 +22,16 @@ import {
 
 import { logger } from '../logger';
 import { MailType } from '../interfaces/protoc/proto/mailService';
-//   import ApproverService from '../services/approverService';
 import { isNaN } from 'lodash';
 import { HandleCall } from '@grpc/grpc-js/build/src/server-call';
-//   import { getDoneRequestsByRoleId } from './request.controller';
+import KartoffelService from '../services/kartoffelService';
 
 export class HistoryRepository {
   private requestService: RequestService;
   constructor() {
     this.requestService = new RequestService();
   }
-  async GetEventsByRoleId(
+  async getEventsByRoleId(
     getDoneRequestsByRoleIdReq: GetDoneRequestsByRoleIdReq
   ): Promise<EventArray> {
     try {
@@ -61,7 +47,7 @@ export class HistoryRepository {
         till: getDoneRequestsByRoleIdReq.to,
       };
       //צריך לעשות בקשה שמזחריה אם הבקשה ראשונה הייתה בקשה מסוג יצירת תפקיד (כלומר אם זה קרה בלגו או לא) אם לא נוסיף אחד
-      const doesCreateBeenInLego = this.requestService.wasCreateBeenInLego({
+      const doesCreateBeenInLego = await this.requestService.wasCreateBeenInLego({
         idCheck:getDoneRequestsByRoleIdReq.roleId,
       });
 
@@ -69,7 +55,7 @@ export class HistoryRepository {
         if ((getDoneRequestsByRoleIdReq.from === 1)&&(!doesCreateBeenInLego.isItCreateInLego)) {
           eventArr.totalCount += 1;
           const temporaryEvent: Event = { message: '', date: new Date().getTime() };
-          const tempRole : Role = this.requestService.getRoleByRoleId;
+          const tempRole : Role = await KartoffelService.GetRoleByRoleId({roleId:getDoneRequestsByRoleIdReq.roleId});
           temporaryEvent.message = `  ${tempRole?.createdAt.toLocaleString()} בתאריך ${tempRole?.displayName} בקשת "יצירת תפקיד" קרתה, שם התפקיד - `;
           eventArr.events.push(temporaryEvent);
         }
@@ -93,7 +79,7 @@ export class HistoryRepository {
           
           eventArr.till -= 1;
           const temporaryEvent: Event = { message: '', date: new Date().getTime() };
-          const tempRole : Role = this.requestService.getRoleByRoleId;
+          const tempRole : Role = await KartoffelService.GetRoleByRoleId({roleId:getDoneRequestsByRoleIdReq.roleId});
           temporaryEvent.message = `  ${tempRole?.createdAt.toLocaleString()} בתאריך ${tempRole?.displayName} בקשת "יצירת תפקיד" קרתה, שם התפקיד - `;
           eventArr.events.push(temporaryEvent);
         }
@@ -141,12 +127,12 @@ export class HistoryRepository {
   }
 
 
-  async GetOGByOGId(
+  async getOGByOGId(
     getDoneRequestsByOGIdReq: GetDoneRequestsByGroupIdReq
   ): Promise<EventArray> {
     try {
       const requestsArr: RequestArray =
-        await this.requestService.getDoneRequestsByEntityId({
+        await this.requestService.getDoneRequestsByOGId({
           ogId: getDoneRequestsByOGIdReq.groupId,
           from: getDoneRequestsByOGIdReq.from,
           to: getDoneRequestsByOGIdReq.to,
@@ -234,7 +220,7 @@ export class HistoryRepository {
   }
 
 
-  async GetEventsByEntityId(
+  async getEventsByEntityId(
     getDoneRequestsByEntityIdReq: GetDoneRequestsByEntityIdReq
   ): Promise<EventArray> {
     try {
@@ -326,7 +312,7 @@ export class HistoryRepository {
     }
   }
 
-  async GetEventsBySubmittedEntityId(
+  async getEventsBySubmittedEntityId(
     getDoneRequestsByEntityIdReq: GetDoneRequestsByEntityIdReq
   ): Promise<EventArray> {
     try {
