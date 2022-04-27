@@ -242,6 +242,7 @@ export class RequestRepository {
           requestProperties: {
             status: requestStatusToJSON(RequestStatus.APPROVED_BY_ADMIN),
           },
+          sendSocket: false
         });
       } else if (this.isRequestApprovedByCommander(request)) {
         await this.updateRequest({
@@ -262,7 +263,6 @@ export class RequestRepository {
           requestProperties: {
             status: requestStatusToJSON(RequestStatus.IN_PROGRESS),
           },
-          sendSocket: false,
         });
         if (
           type !== RequestType.CHANGE_ROLE_HIERARCHY_BULK &&
