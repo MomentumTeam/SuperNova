@@ -6,39 +6,74 @@ import {
   FavoriteCommanderReq,
 } from "../interfaces/protoc/proto/optionsService";
 import { OptionsModel } from "../models/options.model";
-// import { logger } from '../logger';
+import { logger } from "../logger";
 
 export class OptionsRepository {
   async getOptionsByEntityId(
     getOptionsByEntityIdRequest: GetOptionsByEntityIdReq
   ): Promise<Options> {
-    const entityId = getOptionsByEntityIdRequest.entityId;
-    const document = await OptionsModel.findOne({ entityId });
-    if (!document) return this.createAndReturnUserOptions(entityId);
+    const { entityId } = getOptionsByEntityIdRequest;
+    const setOnInsert = {
+      $setOnInsert: {
+        toggleProfilePicture: C.defaultOptions.toggleProfilePicture,
+        getMailNotifications: C.defaultOptions.getMailNotifications,
+        showPhoneNumber: C.defaultOptions.showPhoneNumber,
+        favoriteCommanders: C.defaultOptions.favoriteCommanders,
+      },
+    };
+    const document = await OptionsModel.findOneAndUpdate(
+      { entityId },
+      setOnInsert,
+      {
+        upsert: true,
+      }
+    );
     return document;
   }
 
   async updateUserOptions(
     updateUserOptionsRequest: UpdateUserOptionsReq
   ): Promise<Options> {
-    const entityId = updateUserOptionsRequest.entityId;
-    const updatedOptions = await OptionsModel.findOneAndUpdate(
+    const { entityId, toggleProfilePicture, getMailNotifications, showPhoneNumber } = updateUserOptionsRequest;
+    const setAndSetOnInsert = {
+      $set: updateUserOptionsRequest,
+
+      $setOnInsert: {
+        entityId,
+        toggleProfilePicture: toggleProfilePicture || C.defaultOptions.toggleProfilePicture,
+        getMailNotifications: getMailNotifications || C.defaultOptions.getMailNotifications,
+        showPhoneNumber: showPhoneNumber || C.defaultOptions.showPhoneNumber,
+        favoriteCommanders: C.defaultOptions.favoriteCommanders,
+      },
+    };
+    const document = await OptionsModel.findOneAndUpdate(
       { entityId },
-      updateUserOptionsRequest,
-      { new: true }
+      setAndSetOnInsert,
+      {
+        new: true,
+        upsert: true,
+      }
     );
-    if (!updatedOptions) return this.createAndReturnUserOptions(entityId);
-    return updatedOptions;
+    return document;
   }
 
   async addFavoriteCommander(
     addFavoriteCommanderReq: FavoriteCommanderReq
   ): Promise<Options> {
     const { entityId, commanderId } = addFavoriteCommanderReq;
+    const setOnInsert = {
+      $setOnInsert: {
+        entityId,
+        toggleProfilePicture: C.defaultOptions.toggleProfilePicture,
+        getMailNotifications: C.defaultOptions.getMailNotifications,
+        showPhoneNumber: C.defaultOptions.showPhoneNumber,
+        favoriteCommanders: C.defaultOptions.favoriteCommanders,
+      },
+    };
     const userOptions = await OptionsModel.findOneAndUpdate(
       { entityId },
-      { $addToSet: { favoriteCommanders: commanderId } },
-      { new: true }
+      { setOnInsert, $addToSet: { favoriteCommanders: commanderId } },
+      { new: true, upsert: true }
     );
     return userOptions;
   }
@@ -47,27 +82,20 @@ export class OptionsRepository {
     removeFavoriteCommanderReq: FavoriteCommanderReq
   ): Promise<Options> {
     const { entityId, commanderId } = removeFavoriteCommanderReq;
+    const setOnInsert = {
+      $setOnInsert: {
+        entityId,
+        toggleProfilePicture: C.defaultOptions.toggleProfilePicture,
+        getMailNotifications: C.defaultOptions.getMailNotifications,
+        showPhoneNumber: C.defaultOptions.showPhoneNumber,
+        favoriteCommanders: C.defaultOptions.favoriteCommanders,
+      },
+    };
     const userOptions = await OptionsModel.findOneAndUpdate(
       { entityId },
-      { $pull: { favoriteCommanders: commanderId } },
-      { new: true }
+      { setOnInsert, $pull: { favoriteCommanders: commanderId } },
+      { new: true, upsert: true }
     );
     return userOptions;
-  }
-
-  async createAndReturnUserOptions(entityId: string): Promise<Options> {
-    const {
-      toggleProfilePicture,
-      getMailNotifications,
-      showPhoneNumber,
-      favoriteCommanders,
-    } = C.defaultOptions;
-    return OptionsModel.create({
-      entityId,
-      toggleProfilePicture,
-      getMailNotifications,
-      showPhoneNumber,
-      favoriteCommanders,
-    });
   }
 }

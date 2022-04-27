@@ -11,21 +11,22 @@ OptionsRouter.get(
   OptionsController.getMyOptions
 );
 
-// PUT
-OptionsRouter.put(
+// PATCH
+OptionsRouter.patch(
   "/update",
   OptionsValidator.isUpdateUserOptionsValid,
   OptionsController.updateMyOptions
 );
 
-OptionsRouter.put(
-  "/add-favorite-commander",
+// POST
+OptionsRouter.post(
+  "/favorite-commander",
   OptionsValidator.isModifyUserFavoriteCommandersValid,
   OptionsController.addFavoriteCommander
 );
 
-OptionsRouter.put(
-  "/remove-favorite-commander",
+OptionsRouter.delete(
+  "/favorite-commander",
   OptionsValidator.isModifyUserFavoriteCommandersValid,
   OptionsController.removeFavoriteCommander
 );

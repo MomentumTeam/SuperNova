@@ -1,6 +1,7 @@
 import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
-// import { logger } from './logger';
+import { logger } from './logger';
+import * as C from './config';
 import { findPath } from './utils/path';
 import { addHealthService } from './health';
 import { addFavoriteCommander, getOptionsByEntityId, removeFavoriteCommander, updateUserOptions } from './options/options.controller';
@@ -29,9 +30,9 @@ export class Server {
       const optionsServiceDescriptor: any = protoDescriptor.OptionsService;
       return optionsServiceDescriptor;
     } catch (error: any) {
-      // logger.error(`Error while loading the proto file`, {
-        // error: { message: error.message },
-      // });
+      logger.error(`Error while loading the proto file`, {
+        error: { message: error.message },
+      });
       throw error;
     }
   }
@@ -39,23 +40,23 @@ export class Server {
   initServer() {
     try {
       const optionsServiceDescriptor: any = this.getProtoDescriptor();
-      // logger.info(`Proto was loaded successfully from file: ${PROTO_PATH}`);
+      logger.info(`Proto was loaded successfully from file: ${PROTO_PATH}`);
       this.server.addService(optionsServiceDescriptor.OptionsService.service, {
         GetOptionsByEntityId: getOptionsByEntityId,
         UpdateUserOptions: updateUserOptions,
         AddFavoriteCommander: addFavoriteCommander,
         RemoveFavoriteCommander: removeFavoriteCommander 
       });
-      // logger.info(`Grpc services were successfully added to the server`);
+      logger.info(`Grpc services were successfully added to the server`);
     } catch (error: any) {
-      //logger.error(`Error while initializing the server: ${error.message}`);
+      logger.error(`Error while initializing the server: ${error.message}`);
     }
   }
 
   async startServer(): Promise<void> {
     return new Promise((resolve, reject) => {
       this.server.bindAsync(
-        `0.0.0.0:3030`,
+        `${C.host}:${C.port}`,
         grpc.ServerCredentials.createInsecure(),
         (bindError) => {
           if (bindError) {

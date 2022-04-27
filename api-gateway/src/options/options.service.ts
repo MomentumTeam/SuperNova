@@ -6,8 +6,8 @@ import { FavoriteCommanderReq, GetOptionsByEntityIdReq, Options, UpdateUserOptio
 import { logger } from '../utils/logger/logger';
 
 const PROTO_PATH = __dirname.includes('dist')
-  ? path.join(__dirname, '../../../proto/notificationService.proto')
-  : path.join(__dirname, '../../proto/notificationService.proto');
+  ? path.join(__dirname, '../../../proto/optionsService.proto')
+  : path.join(__dirname, '../../proto/optionsService.proto');
 
 const packageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(
   PROTO_PATH,
@@ -21,13 +21,13 @@ const packageDefinition: protoLoader.PackageDefinition = protoLoader.loadSync(
 );
 
 const protoDescriptor: any =
-  grpc.loadPackageDefinition(packageDefinition).NotificationService;
+  grpc.loadPackageDefinition(packageDefinition).OptionsService;
 
 const clients: any = [];
 for (let i = 0; i < config.fields.grpcPoolSize; i++) {
   clients.push(
-    new protoDescriptor.NotificationService(
-      config.endpoints.notification,
+    new protoDescriptor.OptionsService(
+      config.endpoints.options,
       grpc.credentials.createInsecure(),
       { 'grpc.keepalive_timeout_ms': 5000 }
     )

@@ -1,19 +1,48 @@
-export const mongoUrl =
-  process.env.OS_MONGO_URL || 'mongodb://127.0.0.1:27017/supernova';
+import * as env from 'env-var';
 
-export const maxQueueRetries = process.env.RS_MAX_QUEUE_RETRIES
-  ? parseInt(process.env.RS_MAX_QUEUE_RETRIES)
-  : 5;
+export const host = env
+  .get('OS_HOST')
+  .default('0.0.0.0')
+  .asString();
 
-export const mongoConnectionRetries =
-  process.env.MONGO_RECONNECT_ATTEMPTS || '5';
+export const port = env
+  .get('NODE_ENV').asString() === 'production' ?
+  '8080'
+  : env.get('OS_PORT')
+    .default('8089');
 
-export const mongoReconnectTimeout =
-  process.env.MONGO_RECONNECT_TIMEOUT || '2000';
+export const mongoUrl = env
+  .get('OS_MONGO_URL')
+  .default('mongodb://127.0.0.1:27017/supernova')
+  .asString();
+
+export const maxQueueRetries = env
+  .get('OS_MAX_QUEUE_RETRIES')
+  .default('5')
+  .asIntPositive();
+
+export const mongoConnectionRetries = env
+  .get('MONGO_RECONNECT_ATTEMPTS')
+  .default('5')
+  .asString();
+
+export const mongoReconnectTimeout = env
+  .get('MONGO_RECONNECT_TIMEOUT')
+  .default('2000')
+  .asString();
 
 export const defaultOptions = {
-  toggleProfilePicture: true,
-  getMailNotifications: true,
-  showPhoneNumber: true,
+  toggleProfilePicture: env
+    .get('OS_TOGGLE_PROFILE_PICTURE')
+    .default('true')
+    .asBool(),
+  getMailNotifications: env
+    .get('OS_TOGGLE_MAIL_NOTIFICATIONS')
+    .default('true')
+    .asBool(),
+  showPhoneNumber: env
+    .get('OS_TOGGLE_PHONE_NUMBER')
+    .default('true')
+    .asBool(),
   favoriteCommanders: []
 };

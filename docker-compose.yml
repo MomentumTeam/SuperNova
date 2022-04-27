@@ -404,6 +404,19 @@ services:
       - GATEWAY_ROOT_ID=619e3193f235dc001846bb4f
       - GATEWAY_LOG_PATH=/logs
 
+    options-service:
+      image: options-service
+      build: ./options-service/
+      env_file:
+        - ./supernova.env
+      volumes:
+        - logs:/logs
+      ports:
+        - '8089:8080'
+      environment:
+        - OS_MONGO_URL=mongodb://mongo:27017/supernova
+        - OS_LOG_PATH=/logs
+
   # supernova-ui:
   #   image: supernova-ui
   #   build: ./SuperNovaUI/

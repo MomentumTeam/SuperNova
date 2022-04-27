@@ -4,8 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "NODE_ENV='development' ts-node ./src/index.ts",
+    "prod": "NODE_ENV='production' ts-node ./src/index.ts",
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "ts-node ./src/index.ts"
+    "start_windows": "set NODE_ENV='development' && ts-node ./src/index.ts"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +17,7 @@
     "@grpc/grpc-js": "^1.4.4",
     "@grpc/proto-loader": "^0.6.2",
     "dotenv": "^10.0.0",
+    "env-var": "^7.1.1",
     "grpc-js-health-check": "^1.0.2",
     "mongodb": "^4.4.1",
     "mongoose": "^6.2.8",
