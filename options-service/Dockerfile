@@ -28,7 +28,7 @@ RUN apk update
 RUN apk add --no-cache nano vim
 
 RUN mkdir -p /logs && chown -R node:node /logs
-RUN mkdir -p /logs/approver-service && chown -R node:node /logs/approver-service
+RUN mkdir -p /logs/options-service && chown -R node:node /logs/options-service
 RUN mkdir -p /usr/src/app && chown -R node:node /usr/src/app
 WORKDIR /usr/src/app
 

@@ -9,7 +9,7 @@ export const port = env
   .get('NODE_ENV').asString() === 'production' ?
   '8080'
   : env.get('OS_PORT')
-    .default('8089');
+    .default('8088');
 
 export const mongoUrl = env
   .get('OS_MONGO_URL')

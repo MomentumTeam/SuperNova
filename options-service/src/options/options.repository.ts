@@ -14,18 +14,14 @@ export class OptionsRepository {
   ): Promise<Options> {
     const { entityId } = getOptionsByEntityIdRequest;
     const setOnInsert = {
-      $setOnInsert: {
-        toggleProfilePicture: C.defaultOptions.toggleProfilePicture,
-        getMailNotifications: C.defaultOptions.getMailNotifications,
-        showPhoneNumber: C.defaultOptions.showPhoneNumber,
-        favoriteCommanders: C.defaultOptions.favoriteCommanders,
-      },
+      $setOnInsert: C.defaultOptions,
     };
     const document = await OptionsModel.findOneAndUpdate(
       { entityId },
       setOnInsert,
       {
         upsert: true,
+        new: true
       }
     );
     return document;
@@ -39,11 +35,8 @@ export class OptionsRepository {
       $set: updateUserOptionsRequest,
 
       $setOnInsert: {
-        entityId,
-        toggleProfilePicture: toggleProfilePicture || C.defaultOptions.toggleProfilePicture,
-        getMailNotifications: getMailNotifications || C.defaultOptions.getMailNotifications,
-        showPhoneNumber: showPhoneNumber || C.defaultOptions.showPhoneNumber,
-        favoriteCommanders: C.defaultOptions.favoriteCommanders,
+        ...C.defaultOptions,
+        ...updateUserOptionsRequest
       },
     };
     const document = await OptionsModel.findOneAndUpdate(
@@ -64,10 +57,7 @@ export class OptionsRepository {
     const setOnInsert = {
       $setOnInsert: {
         entityId,
-        toggleProfilePicture: C.defaultOptions.toggleProfilePicture,
-        getMailNotifications: C.defaultOptions.getMailNotifications,
-        showPhoneNumber: C.defaultOptions.showPhoneNumber,
-        favoriteCommanders: C.defaultOptions.favoriteCommanders,
+        ...C.defaultOptions
       },
     };
     const userOptions = await OptionsModel.findOneAndUpdate(

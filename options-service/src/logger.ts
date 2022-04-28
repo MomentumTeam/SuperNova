@@ -1,7 +1,7 @@
 const ecsFormat = require('@elastic/ecs-winston-format');
 const DailyRotateFile = require('winston-daily-rotate-file');
 import winston from 'winston';
-// import * as C from './src/config';
+import * as C from './config';
 
 let transports: any = [new winston.transports.Console()];
 
