@@ -8,7 +8,7 @@ export const getUserOptionsSchema = Joi.object({
   query: {},
 });
 
-// PUT
+// PATCH
 export const updateUserOptionsSchema = Joi.object({
   body: {
     toggleProfilePicture: Joi.boolean(),
