@@ -30,7 +30,7 @@ export class OptionsRepository {
   async updateUserOptions(
     updateUserOptionsRequest: UpdateUserOptionsReq
   ): Promise<Options> {
-    const { entityId, toggleProfilePicture, getMailNotifications, showPhoneNumber } = updateUserOptionsRequest;
+    const { entityId } = updateUserOptionsRequest;
     const setAndSetOnInsert = {
       $set: updateUserOptionsRequest,
 
