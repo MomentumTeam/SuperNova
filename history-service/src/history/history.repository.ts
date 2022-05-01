@@ -7,11 +7,13 @@ import {
 } from '../interfaces/protoc/proto/historyService';
 import * as C from '../config';
 import { RequestService } from '../services/requestService';
+import KartoffelService from '../services/kartoffelService';
 import {
   Request,
   RequestArray,
   requestTypeToJSON,
   RequestType,
+  BoolCheck,
   requestTypeFromJSON,
 } from '../interfaces/protoc/proto/requestService';
 import {
@@ -24,7 +26,7 @@ import { logger } from '../logger';
 import { MailType } from '../interfaces/protoc/proto/mailService';
 import { isNaN } from 'lodash';
 import { HandleCall } from '@grpc/grpc-js/build/src/server-call';
-import KartoffelService from '../services/kartoffelService';
+
 
 export class HistoryRepository {
   private requestService: RequestService;
@@ -47,7 +49,7 @@ export class HistoryRepository {
         till: getDoneRequestsByRoleIdReq.to,
       };
       //צריך לעשות בקשה שמזחריה אם הבקשה ראשונה הייתה בקשה מסוג יצירת תפקיד (כלומר אם זה קרה בלגו או לא) אם לא נוסיף אחד
-      const doesCreateBeenInLego = await this.requestService.wasCreateBeenInLego({
+      const doesCreateBeenInLego : BoolCheck = await this.requestService.wasCreateBeenInLego({
         idCheck:getDoneRequestsByRoleIdReq.roleId,
       });
 
@@ -127,15 +129,16 @@ export class HistoryRepository {
   }
 
 
-  async getOGByOGId(
+  async getEventsOGByOGId(
     getDoneRequestsByOGIdReq: GetDoneRequestsByGroupIdReq
   ): Promise<EventArray> {
     try {
       const requestsArr: RequestArray =
-        await this.requestService.getDoneRequestsByOGId({
-          ogId: getDoneRequestsByOGIdReq.groupId,
+        await this.requestService.getDoneRequestsByOG({
+          groupId: getDoneRequestsByOGIdReq.groupId,
           from: getDoneRequestsByOGIdReq.from,
           to: getDoneRequestsByOGIdReq.to,
+          showRoles: getDoneRequestsByOGIdReq.showRoles?getDoneRequestsByOGIdReq.showRoles:false,
         });
       const eventArr: EventArray = {
         events: [],
@@ -143,7 +146,7 @@ export class HistoryRepository {
         till: getDoneRequestsByOGIdReq.to,
       };
       //צריך לעשות בקשה שמזחריה אם הבקשה ראשונה הייתה בקשה מסוג יצירת תפקיד (כלומר אם זה קרה בלגו או לא) אם לא נוסיף אחד
-      const doesCreateBeenInLego = this.requestService.wasCreateBeenInLego({
+      const doesCreateBeenInLego : BoolCheck = await this.requestService.wasCreateBeenInLego({
         idCheck:getDoneRequestsByOGIdReq.groupId,
       });
 
@@ -151,7 +154,7 @@ export class HistoryRepository {
         if ((getDoneRequestsByOGIdReq.from === 1)&&(!doesCreateBeenInLego.isItCreateInLego)) {
           eventArr.totalCount += 1;
           const temporaryEvent: Event = { message: '', date: new Date().getTime() };
-          const tempOG : OrganizationGroup = this.requestService.getOGByOGId;
+          const tempOG : OrganizationGroup = await KartoffelService.GetOGById({groupId: getDoneRequestsByOGIdReq.groupId,});
           temporaryEvent.message = `  ${tempOG?.createdAt.toLocaleString()} בתאריך ${tempOG?.name} בקשת "יצירת OG" קרתה, שם התפקיד - `;
           eventArr.events.push(temporaryEvent);
         }
@@ -175,7 +178,7 @@ export class HistoryRepository {
           
           eventArr.till -= 1;
           const temporaryEvent: Event = { message: '', date: new Date().getTime() };
-          const tempOG : OrganizationGroup = this.requestService.getOGByOGId;
+          const tempOG : OrganizationGroup = await KartoffelService.getOGByOGId({});
           temporaryEvent.message = `  ${tempOG?.createdAt.toLocaleString()} בתאריך ${tempOG?.name} בקשת "יצירת תפקיד" קרתה, שם התפקיד - `;
           eventArr.events.push(temporaryEvent);
         }
@@ -225,7 +228,7 @@ export class HistoryRepository {
   ): Promise<EventArray> {
     try {
       const requestsArr: RequestArray =
-        await this.requestService.getDoneRequestsByEntityId({
+        await this.requestService.getEventsByEntityId({
           entityId: getDoneRequestsByEntityIdReq.entityId,
           from: getDoneRequestsByEntityIdReq.from,
           to: getDoneRequestsByEntityIdReq.to,
@@ -236,7 +239,7 @@ export class HistoryRepository {
         till: getDoneRequestsByEntityIdReq.to,
       };
       //צריך לעשות בקשה שמזחריה אם הבקשה ראשונה הייתה בקשה מסוג יצירת תפקיד (כלומר אם זה קרה בלגו או לא) אם לא נוסיף אחד
-      const doesCreateBeenInLego = this.requestService.wasCreateBeenInLego({
+      const doesCreateBeenInLego : BoolCheck = await this.requestService.wasCreateBeenInLego({
         idCheck:getDoneRequestsByEntityIdReq.entityId,
       });
 
@@ -244,7 +247,7 @@ export class HistoryRepository {
         if ((getDoneRequestsByEntityIdReq.from === 1)&&(!doesCreateBeenInLego.isItCreateInLego)) {
           eventArr.totalCount += 1;
           const temporaryEvent: Event = { message: '', date: new Date().getTime() };
-          const tempEntity : Entity = this.requestService.getEntityByEntityId;
+          const tempEntity : Entity = await KartoffelService.getEntityById({entityId: getDoneRequestsByEntityIdReq.entityId,});
           temporaryEvent.message = `  ${tempEntity?.createdAt.toLocaleString()} בתאריך ${tempEntity?.displayName} בקשת "יצירת תפקיד" קרתה, שם התפקיד - `;
           eventArr.events.push(temporaryEvent);
         }
@@ -268,7 +271,7 @@ export class HistoryRepository {
           
           eventArr.till -= 1;
           const temporaryEvent: Event = { message: '', date: new Date().getTime() };
-          const tempEntity : Entity = this.requestService.getEntityByEntityId;
+          const tempEntity : Entity = await KartoffelService.getEntityById({entityId: getDoneRequestsByEntityIdReq.entityId,});
           temporaryEvent.message = `  ${tempEntity?.createdAt.toLocaleString()} בתאריך ${tempEntity?.displayName} בקשת "יצירת תפקיד" קרתה, שם התפקיד - `;
           eventArr.events.push(temporaryEvent);
         }
@@ -317,7 +320,7 @@ export class HistoryRepository {
   ): Promise<EventArray> {
     try {
       const requestsArr: RequestArray =
-        await this.requestService.getDoneRequestsByEntityId({
+        await this.requestService.getEventsByEntityId({
           entityId: getDoneRequestsByEntityIdReq.entityId,
           from: getDoneRequestsByEntityIdReq.from,
           to: getDoneRequestsByEntityIdReq.to,

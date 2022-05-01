@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/MomentumTeam/SuperNova#readme",
   "dependencies": {
+    "grpc": "^1.24.11",
     "ts-proto": "^1.83.0"
   }
 }
