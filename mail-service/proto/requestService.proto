@@ -1039,8 +1039,6 @@ message DeleteOGKartoffelParams{
 
 message DeleteOGADParams{
     string ouDisplayName = 1;
-    string ouName = 2;
-    string name = 3;
 }
 
 //9.DeleteRoleRequest

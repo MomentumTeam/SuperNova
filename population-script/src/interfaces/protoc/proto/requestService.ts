@@ -1614,8 +1614,6 @@ export interface DeleteOGKartoffelParams {
 
 export interface DeleteOGADParams {
   ouDisplayName: string;
-  ouName: string;
-  name: string;
 }
 
 /** 9.DeleteRoleRequest */
@@ -24845,11 +24843,7 @@ export const DeleteOGKartoffelParams = {
   },
 };
 
-const baseDeleteOGADParams: object = {
-  ouDisplayName: "",
-  ouName: "",
-  name: "",
-};
+const baseDeleteOGADParams: object = { ouDisplayName: "" };
 
 export const DeleteOGADParams = {
   encode(
@@ -24858,12 +24852,6 @@ export const DeleteOGADParams = {
   ): _m0.Writer {
     if (message.ouDisplayName !== "") {
       writer.uint32(10).string(message.ouDisplayName);
-    }
-    if (message.ouName !== "") {
-      writer.uint32(18).string(message.ouName);
-    }
-    if (message.name !== "") {
-      writer.uint32(26).string(message.name);
     }
     return writer;
   },
@@ -24877,12 +24865,6 @@ export const DeleteOGADParams = {
       switch (tag >>> 3) {
         case 1:
           message.ouDisplayName = reader.string();
-          break;
-        case 2:
-          message.ouName = reader.string();
-          break;
-        case 3:
-          message.name = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -24899,16 +24881,6 @@ export const DeleteOGADParams = {
     } else {
       message.ouDisplayName = "";
     }
-    if (object.ouName !== undefined && object.ouName !== null) {
-      message.ouName = String(object.ouName);
-    } else {
-      message.ouName = "";
-    }
-    if (object.name !== undefined && object.name !== null) {
-      message.name = String(object.name);
-    } else {
-      message.name = "";
-    }
     return message;
   },
 
@@ -24916,8 +24888,6 @@ export const DeleteOGADParams = {
     const obj: any = {};
     message.ouDisplayName !== undefined &&
       (obj.ouDisplayName = message.ouDisplayName);
-    message.ouName !== undefined && (obj.ouName = message.ouName);
-    message.name !== undefined && (obj.name = message.name);
     return obj;
   },
 
@@ -24927,16 +24897,6 @@ export const DeleteOGADParams = {
       message.ouDisplayName = object.ouDisplayName;
     } else {
       message.ouDisplayName = "";
-    }
-    if (object.ouName !== undefined && object.ouName !== null) {
-      message.ouName = object.ouName;
-    } else {
-      message.ouName = "";
-    }
-    if (object.name !== undefined && object.name !== null) {
-      message.name = object.name;
-    } else {
-      message.name = "";
     }
     return message;
   },
