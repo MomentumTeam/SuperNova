@@ -2,7 +2,13 @@ import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 import * as config from '../config';
 import { findPath } from '../utils/path';
-import { IncludesSpecialGroupReq ,IncludesSpecialGroupRes} from '../interfaces/protoc/proto/approverService';
+import {
+  ApproverArray,
+  GetAdminsAboveGroupIdReq,
+  IncludesSpecialGroupReq,
+  IncludesSpecialGroupRes,
+} from '../interfaces/protoc/proto/approverService';
+import { reject } from 'lodash';
 
 const PROTO_PATH = `${findPath('proto')}/approverService.proto`;
 
@@ -53,6 +59,20 @@ export default class ApproverService {
     });
   }
 
-
-  
+  static async getAdminsAboveGroupId(
+    getAdminsAboveGroupIdReq: GetAdminsAboveGroupIdReq
+  ): Promise<ApproverArray> {
+    return new Promise((resolve, reject) => {
+      randomClient().GetAdminsAboveGroupId(
+        getAdminsAboveGroupIdReq,
+        (err: any, approverArray: ApproverArray) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(approverArray);
+          }
+        }
+      );
+    });
+  }
 }

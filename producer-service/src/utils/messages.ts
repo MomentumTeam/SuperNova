@@ -1,4 +1,5 @@
 import {
+  KartoffelParams,
   Request,
   RequestType,
   requestTypeToJSON,
@@ -19,6 +20,26 @@ function isValidMobilePhone(mobilePhone: any) {
     const re = /^\d{2,3}-?\d{7}$/;
     return re.test(mobilePhone[0]);
   }
+}
+
+function splitFullName(jobTitle: string) {
+  let lastName: string;
+  let firstName: string;
+  let fullName: string;
+  let arrayName: string[] = jobTitle.trim().split(/[,.\s/]+/g);
+  firstName = arrayName[0];
+  if (arrayName.length > 1) {
+    let sliceFullName: string[] = arrayName.slice(1);
+    lastName = sliceFullName.join(' ');
+  } else {
+    lastName = C.brolDefaultLastName;
+  }
+  fullName = `${firstName} ${lastName}`;
+  return {
+    fullName,
+    firstName,
+    lastName,
+  };
 }
 
 function isValidPhone(phone: any) {
@@ -70,7 +91,10 @@ export function generateKartoffelQueueMessage(request: Request): any {
         roleEntityType: kartoffelParams.roleEntityType,
       };
       if (kartoffelParams.upn !== undefined) {
-        // the brol
+        const getJobTitle = splitFullName(kartoffelParams.jobTitle);
+        message.data.firstName = getJobTitle.firstName;
+        message.data.lastName = getJobTitle.lastName;
+        message.data.fullName = getJobTitle.fullName;
         message.data.upn = kartoffelParams.upn;
       }
       break;
@@ -178,6 +202,17 @@ export function generateKartoffelQueueMessage(request: Request): any {
         message.data.newJobTitle = kartoffelParams.newJobTitle;
       }
       break;
+    case RequestType.CONVERT_ENTITY_TYPE:
+      message.data = {
+        id: kartoffelParams.id,
+        uniqueId: kartoffelParams.uniqueId,
+        newEntityType: kartoffelParams.newEntityType,
+        upn: kartoffelParams.upn,
+      };
+      if (kartoffelParams.identifier) {
+        message.data.identifier = kartoffelParams.identifier;
+      }
+      break;
     default:
       throw new Error('type not supported!');
   }
@@ -232,12 +267,13 @@ export function generateADQueueMessage(
             C.shmuelRequestTypes[
               requestTypeToJSON(RequestType.ASSIGN_ROLE_TO_ENTITY)
             ];
+          const getJobTitle = splitFullName(adParams.jobTitle);
           message.data = {
             userID: adParams.samAccountName,
             UPN: `${adParams.upn}@${C.upnSuffix}`,
-            firstName: adParams.jobTitle,
-            lastName: adParams.jobTitle,
-            fullName: adParams.jobTitle,
+            firstName: getJobTitle.firstName,
+            lastName: getJobTitle.lastName,
+            fullName: getJobTitle.fullName,
             rank: 'לא ידוע',
             ID: adParams.samAccountName,
             // pdoName: 'x',
@@ -322,6 +358,20 @@ export function generateADQueueMessage(
         message.data.newName = adParams.newJobTitle;
       }
       break;
+      case RequestType.CONVERT_ENTITY_TYPE:
+        message.data = {
+          samAccountName: adParams.samAccountName,
+          firstName: adParams.firstName,
+          lastName: adParams.lastName,
+          fullName: adParams.fullName,
+          roleSerialCode: adParams.roleSerialCode,
+        };
+        if (adParams.upn) {
+          message.data.upn = adParams.upn;
+        }else if (adParams.rank) {
+          message.data.rank = adParams.rank;
+        };
+        break;
     default:
       throw new Error('type not supported!');
   }

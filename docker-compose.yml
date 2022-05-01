@@ -78,7 +78,7 @@ services:
       - RS_MS_URL=mail-service:8080
       - RS_APS_URL=approver-service:8080
       - RS_ROOT_ID=619e3193f235dc001846bb4f
-      - RS_KARTOFFEL_GOAL_USER=GoalUser
+      - RS_KARTOFFEL_GOAL_USER=goalUser
       - RS_LOG_PATH=/logs
 
   kartoffel-service:

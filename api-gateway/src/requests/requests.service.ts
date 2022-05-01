@@ -54,6 +54,8 @@ import {
   UpdateApproversReq,
   UpdateKartoffelStatusReq,
   UpdateReq,
+  ConvertEntityTypeReq,
+  ConvertEntityTypeRes,
 } from '../interfaces/protoc/proto/requestService';
 import { logger } from '../utils/logger/logger';
 import { ApproverService } from '../approver/approver.service';
@@ -708,6 +710,32 @@ export class RequestsService {
   // DELETE
 
   // PUT
+
+  static async convertEntityTypeRequest(convertEntityTypeReq: ConvertEntityTypeReq) {
+    logger.info(`Call to convertEntityTypeRequest in GTW`, convertEntityTypeReq);
+
+    return new Promise((resolve, reject) => {
+      randomClient().ConvertEntityTypeRequest(
+        convertEntityTypeReq,
+        (err: any, response: ConvertEntityTypeRes) => {
+          if (err) {
+            logger.error(`convertEntityTypeRequest ERROR in GTW`, {
+              err,
+              callRequest: convertEntityTypeReq,
+            });
+            reject(err);
+          }
+
+          logger.info(`convertEntityTypeRequest OK in GTW`, {
+            callRequest: convertEntityTypeReq,
+          });
+          resolve(response);
+        }
+      );
+    });
+  }
+
+
   static async removeApproverFromApprovers(
     removeApproverFromApproversReq: RemoveApproverFromApproversReq
   ) {
