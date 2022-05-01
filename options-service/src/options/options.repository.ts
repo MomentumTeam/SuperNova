@@ -21,7 +21,7 @@ export class OptionsRepository {
       setOnInsert,
       {
         upsert: true,
-        new: true
+        new: true,
       }
     );
     return document;
@@ -30,24 +30,16 @@ export class OptionsRepository {
   async updateUserOptions(
     updateUserOptionsRequest: UpdateUserOptionsReq
   ): Promise<Options> {
-    const { entityId } = updateUserOptionsRequest;
-    const setAndSetOnInsert = {
-      $set: updateUserOptionsRequest,
-
-      $setOnInsert: {
-        ...C.defaultOptions,
-        ...updateUserOptionsRequest
-      },
-    };
-    const document = await OptionsModel.findOneAndUpdate(
+    const { entityId, ...updateQuery } = updateUserOptionsRequest;
+    const updatedDocument = await OptionsModel.findOneAndUpdate(
       { entityId },
-      setAndSetOnInsert,
+      updateQuery,
       {
         new: true,
-        upsert: true,
       }
     );
-    return document;
+    if(!updatedDocument) return OptionsModel.create(updateUserOptionsRequest);
+    return updatedDocument;
   }
 
   async addFavoriteCommander(
@@ -57,7 +49,7 @@ export class OptionsRepository {
     const setOnInsert = {
       $setOnInsert: {
         entityId,
-        ...C.defaultOptions
+        ...C.defaultOptions,
       },
     };
     const userOptions = await OptionsModel.findOneAndUpdate(

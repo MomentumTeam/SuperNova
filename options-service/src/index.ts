@@ -11,7 +11,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 import { Server } from './server';
-import { logger } from '../logger';
+import { logger } from './logger';
 
 async function main() {
   try {

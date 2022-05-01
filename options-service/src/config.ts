@@ -1,5 +1,13 @@
 import * as env from 'env-var';
 
+export const logPath = process.env.RS_LOG_PATH
+  ? `${process.env.RS_LOG_PATH}/request-service`
+  : './logs/request-service';
+
+export const storeLogs = process.env.GLOBAL_STORE_LOGS
+  ? process.env.GLOBAL_STORE_LOGS === 'true'
+  : false;
+
 export const host = env
   .get('OS_HOST')
   .default('0.0.0.0')
@@ -9,7 +17,8 @@ export const port = env
   .get('NODE_ENV').asString() === 'production' ?
   '8080'
   : env.get('OS_PORT')
-    .default('8088');
+    .default('8088')
+    .asPortNumber();
 
 export const mongoUrl = env
   .get('OS_MONGO_URL')

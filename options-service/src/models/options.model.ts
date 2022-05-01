@@ -2,7 +2,15 @@ import mongoose from "mongoose";
 import _ from "lodash";
 const { Schema } = mongoose;
 
-export const OptionsSchema = new Schema({
+interface IOptions {
+  entityId: mongoose.Schema.Types.ObjectId,
+  toggleProfilePicture: Boolean,
+  getMailNotifications: Boolean,
+  showPhoneNumber: Boolean, 
+  favoriteCommanders: String[]
+}
+
+export const OptionsSchema = new Schema<IOptions>({
   entityId: {
     type: mongoose.Schema.Types.ObjectId,
     unique: true,
@@ -25,8 +33,8 @@ export const OptionsSchema = new Schema({
   favoriteCommanders: [{ type: String, default: "" }],
 });
 
-OptionsSchema.pre("save", function (next) {
-  this.tags = _.uniq(this.tags);
+OptionsSchema.pre('save', function (next) {
+  this.favoriteCommanders = _.uniq(this.favoriteCommanders);
   next();
 });
 

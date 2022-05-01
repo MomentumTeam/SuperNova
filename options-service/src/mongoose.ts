@@ -42,7 +42,7 @@ async function startConnectionAttempts() {
     const connectionRes: { success: boolean; error: Error | null } =
       await connect();
 
-    if mongo connection attempt has failed
+    // if mongo connection attempt has failed
     if (!connectionRes.success) {
       logger.error(
         `connectDB - connection retry (${i}/${retries}) ${connectionRes.error}`,
@@ -67,15 +67,13 @@ async function startConnectionAttempts() {
  */
 async function connect(): Promise<{ success: boolean; error: Error | null }> {
   await mongoose.connect(
-    C.mongoUrl
-    ,
+    C.mongoUrl,
     {
       useCreateIndex: true,
       useNewUrlParser: true,
       useFindAndModify: false,
       useUnifiedTopology: true,
-    }
-    ,
+    },
     async (err: any) => {
       return { success: false, error: err };
     }
