@@ -44,7 +44,12 @@ export class Server {
       logger.info(`Proto was loaded successfully from file: ${PROTO_PATH}`);
       this.server.addService(
         historyServiceDescriptor.HistoryService.service,
-        {}
+        {
+          GetEventsByRoleId: getEventsByRoleId,
+          GetEventsOGByOGId: getEventsOGByOGId,
+          GetEventsByEntityId: getEventsByEntityId,
+          GetEventsBySubmittedEntityId: getEventsBySubmittedEntityId,
+          
       );
       logger.info(`Grpc services were successfully added to the server`);
     } catch (error: any) {
