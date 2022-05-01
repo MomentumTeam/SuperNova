@@ -5,6 +5,8 @@ import * as C from '../config';
 import {
 
   GetDoneRequestsByRoleIdReq,
+  GetDoneRequestsByEntityIdReq,
+  GetDoneRequestsByGroupIdReq,
   CheckIfCreateWasInLegoReq,
   GetRequestByIdReq,
   Request,
@@ -16,7 +18,7 @@ import {
 } from '../interfaces/protoc/proto/requestService';
 import { findPath } from '../utils/path';
 import { logger } from '../logger';
-import { GetDoneRequestsByGroupIdReq } from '../interfaces/protoc/proto/historyService';
+//import { GetDoneRequestsByGroupIdReq } from '../interfaces/protoc/proto/historyService';
 
 const PROTO_PATH = `${findPath('proto')}/requestService.proto`;
 
@@ -53,16 +55,54 @@ export class RequestService {
 
   //TODO ADD THE OTHER FUNCTIONS
   async getDoneRequestsByOG(req: GetDoneRequestsByGroupIdReq): Promise<RequestArray> {
-    logger.info('GetDoneRequestsByRoleId in RequestService', { req });
+    logger.info('GetDoneRequestsByGroupIdReq in RequestService', { req });
     return new Promise((resolve, reject) => {
-      this.randomClient().getDoneRequestsByRoleId(req, (error: any, res: any) => {
+      this.randomClient().getDoneRequestsByGroupId(req, (error: any, res: any) => {
         if (error) {
-          logger.error('GetDoneRequestsByRoleId in RequestService ERROR', {
+          logger.error('GetDoneRequestsByGroupIdReq in RequestService ERROR', {
             error: { message: error.message },
           });
           reject(error);
         } else {
-          logger.info('GetDoneRequestsByRoleId in RequestService OK', {
+          logger.info('GetDoneRequestsByGroupIdReq in RequestService OK', {
+            res,
+          });
+          resolve(res as RequestArray);
+        }
+      });
+    });
+  }
+
+  async getEventsByEntityId(req: GetDoneRequestsByEntityIdReq): Promise<RequestArray> {
+    logger.info('GetDoneRequestsByEntityIdReq in RequestService', { req });
+    return new Promise((resolve, reject) => {
+      this.randomClient().getDoneRequestsByEntityId(req, (error: any, res: any) => {
+        if (error) {
+          logger.error('GetDoneRequestsByEntityIdReq in RequestService ERROR', {
+            error: { message: error.message },
+          });
+          reject(error);
+        } else {
+          logger.info('GetDoneRequestsByEntityIdReq in RequestService OK', {
+            res,
+          });
+          resolve(res as RequestArray);
+        }
+      });
+    });
+  }
+
+  async getEventsBySubmittedEntityId(req: GetDoneRequestsByEntityIdReq): Promise<RequestArray> {
+    logger.info('getEventsBySubmittedEntityId in RequestService', { req });
+    return new Promise((resolve, reject) => {
+      this.randomClient().getDoneRequestsSubmmitedByEntityId(req, (error: any, res: any) => {
+        if (error) {
+          logger.error('getEventsBySubmittedEntityId in RequestService ERROR', {
+            error: { message: error.message },
+          });
+          reject(error);
+        } else {
+          logger.info('getEventsBySubmittedEntityId in RequestService OK', {
             res,
           });
           resolve(res as RequestArray);

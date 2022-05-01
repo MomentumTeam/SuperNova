@@ -154,7 +154,7 @@ export class HistoryRepository {
         if ((getDoneRequestsByOGIdReq.from === 1)&&(!doesCreateBeenInLego.isItCreateInLego)) {
           eventArr.totalCount += 1;
           const temporaryEvent: Event = { message: '', date: new Date().getTime() };
-          const tempOG : OrganizationGroup = await KartoffelService.GetOGById({groupId: getDoneRequestsByOGIdReq.groupId,});
+          const tempOG : OrganizationGroup = await KartoffelService.GetOGById({id: getDoneRequestsByOGIdReq.groupId,});
           temporaryEvent.message = `  ${tempOG?.createdAt.toLocaleString()} בתאריך ${tempOG?.name} בקשת "יצירת OG" קרתה, שם התפקיד - `;
           eventArr.events.push(temporaryEvent);
         }
@@ -178,7 +178,7 @@ export class HistoryRepository {
           
           eventArr.till -= 1;
           const temporaryEvent: Event = { message: '', date: new Date().getTime() };
-          const tempOG : OrganizationGroup = await KartoffelService.getOGByOGId({});
+          const tempOG : OrganizationGroup = await KartoffelService.GetOGById({id: getDoneRequestsByOGIdReq.groupId,});
           temporaryEvent.message = `  ${tempOG?.createdAt.toLocaleString()} בתאריך ${tempOG?.name} בקשת "יצירת תפקיד" קרתה, שם התפקיד - `;
           eventArr.events.push(temporaryEvent);
         }
@@ -247,7 +247,7 @@ export class HistoryRepository {
         if ((getDoneRequestsByEntityIdReq.from === 1)&&(!doesCreateBeenInLego.isItCreateInLego)) {
           eventArr.totalCount += 1;
           const temporaryEvent: Event = { message: '', date: new Date().getTime() };
-          const tempEntity : Entity = await KartoffelService.getEntityById({entityId: getDoneRequestsByEntityIdReq.entityId,});
+          const tempEntity : Entity = await KartoffelService.getEntityById({id: getDoneRequestsByEntityIdReq.entityId,});
           temporaryEvent.message = `  ${tempEntity?.createdAt.toLocaleString()} בתאריך ${tempEntity?.displayName} בקשת "יצירת תפקיד" קרתה, שם התפקיד - `;
           eventArr.events.push(temporaryEvent);
         }
@@ -271,7 +271,7 @@ export class HistoryRepository {
           
           eventArr.till -= 1;
           const temporaryEvent: Event = { message: '', date: new Date().getTime() };
-          const tempEntity : Entity = await KartoffelService.getEntityById({entityId: getDoneRequestsByEntityIdReq.entityId,});
+          const tempEntity : Entity = await KartoffelService.getEntityById({id: getDoneRequestsByEntityIdReq.entityId,});
           temporaryEvent.message = `  ${tempEntity?.createdAt.toLocaleString()} בתאריך ${tempEntity?.displayName} בקשת "יצירת תפקיד" קרתה, שם התפקיד - `;
           eventArr.events.push(temporaryEvent);
         }

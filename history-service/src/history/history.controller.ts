@@ -42,7 +42,7 @@ export async function getEventsByRoleId(
   }
 }
 
-export async function getOGByOGId(
+export async function getEventsOGByOGId(
   call: any,
   callback: any
 ): Promise<void> {
@@ -50,7 +50,7 @@ export async function getOGByOGId(
     logger.info(`Call to getOGByOGId`, {
       callRequest: call.request,
     });
-    const response = await historyManager.getOGByOGId(call.request);
+    const response = await historyManager.getEventsOGByOGId(call.request);
     logger.info(`getOGByOGId OK`, {
       callRequest: call.request,
     });

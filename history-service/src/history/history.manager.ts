@@ -17,11 +17,11 @@ export class HistoryManager {
     }
   }
 
-  async getOGByOGId(
+  async getEventsOGByOGId(
     getDoneRequestsByOGIdReq: GetDoneRequestsByGroupIdReq
   ): Promise<EventArray> {
     try {
-      return await this.historyRepository.getOGByOGId(getDoneRequestsByOGIdReq);
+      return await this.historyRepository.getEventsOGByOGId(getDoneRequestsByOGIdReq);
     } catch (error) {
       throw error;
     }

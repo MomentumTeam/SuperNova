@@ -4,6 +4,7 @@ import path from 'path';
 import * as config from '../config';
 import {
   Entity,
+  OrganizationGroup,
   GetEntityByIdRequest,
   GetRoleByRoleIdRequest,
   GetOGByIdRequest,
@@ -61,11 +62,11 @@ export default class KartoffelService {
 
   static async GetOGById(
     getOGByIdReq: GetOGByIdRequest
-  ): Promise<Entity> {
+  ): Promise<OrganizationGroup> {
     return new Promise((resolve, reject) => {
       kartoffelClient.GetOGById(
         getOGByIdReq,
-        (err: any, entity: Entity) => {
+        (err: any, organizationGroup: OrganizationGroup) => {
           if (err) {
             logger.error('GetOGById in KartoffelService ERROR', {
               getOGByIdReq,
@@ -75,9 +76,9 @@ export default class KartoffelService {
           } else {
             logger.info('GetOGById in KartoffelService', {
               getOGByIdReq,
-              entity,
+              organizationGroup,
             });
-            resolve(entity);
+            resolve(organizationGroup);
           }
         }
       );
