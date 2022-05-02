@@ -1,0 +1,40 @@
+name: "options-service"
+# If you want to overide the full name you can include the 'fullnameOverride' value
+#fullname:
+replicaCount: 1
+
+images:
+  PullSecrets:
+    name: momentumacr
+  repository: momentumacr.azurecr.io/options-service
+  tag: "latest"
+
+service:
+  ports:
+  - name: http
+    port: "8080"
+
+volume: 
+  - name: logs
+    mounts:
+      - mountPath: /logs
+    secretName: azure-secret
+    shareName: momentum/logs
+    type: azurefile
+
+livenessProbe:
+  exec:
+    command: ["/bin/grpc_health_probe", "-addr=:8080"]
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 3
+readinessProbe:
+  exec:
+    command: ["/bin/grpc_health_probe", "-addr=:8080"]
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 3

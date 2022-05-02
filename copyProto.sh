@@ -15,5 +15,6 @@ cp -r ./proto ./spike-service/
 cp -r ./proto ./mail-service/
 cp -r ./proto ./kartoffel-consumer/
 cp -r ./proto ./authentication-service/
+cp -r ./proto ./options-service/
 
 cp -r ./proto ./proto-builder/
