@@ -1,8 +1,10 @@
 import { ApproverService } from '../approver/approver.service';
 import {
+  approvementStatusToJSON,
   ApproverDecision,
   ApproverType,
   approverTypeFromJSON,
+  approverTypeToJSON,
   Decision,
   EntityMin,
   PersonTypeInRequest,
@@ -65,7 +67,15 @@ export const approveUserRequest = async (
                 (approverToAddType === ApproverType.ADMIN &&
                   !config.ui.CREATE_ADMIN_APPROVERS.includes(req.user.id)) ||
                 (approverToAddType === ApproverType.BULK &&
-                  !config.ui.CREATE_BULK_APPROVERS.includes(req.user.id))
+                  !config.ui.CREATE_BULK_APPROVERS.includes(req.user.id)) ||
+                (approverToAddType === ApproverType.SPECIAL_GROUP &&
+                  !config.ui.CREATE_SPECIAL_GROUP_APPROVERS.includes(
+                    req.user.id
+                  )) ||
+                (approverToAddType === ApproverType.SECURITY_ADMIN &&
+                  !config.ui.CREATE_SECURITY_ADMIN_APPROVERS.includes(
+                    req.user.id
+                  ))
               ) {
                 break;
               }
@@ -83,59 +93,69 @@ export const approveUserRequest = async (
             }
 
             let valid = true;
-            if (groupId) {
-              const response: any = await ApproverService.isApproverValidForOG({
-                approverId: req.user.id,
-                groupId: groupId,
-              });
-              if (!response.isValid) valid = false;
-            }
 
-            if (highCommander) {
-              if (
-                !req.user?.rank ||
-                !config.fields.highCommandersRanks.includes(req.user.rank)
-              ) {
-                valid = false;
+            if (
+              req.user.types.includes(
+                approverTypeToJSON(ApproverType.COMMANDER)
+              )
+            ) {
+              if (groupId) {
+                const response: any =
+                  await ApproverService.isApproverValidForOG({
+                    approverId: req.user.id,
+                    groupId: groupId,
+                  });
+                if (!response.isValid) valid = false;
+              }
+
+              if (highCommander) {
+                if (
+                  !req.user?.rank ||
+                  !config.fields.highCommandersRanks.includes(req.user.rank)
+                ) {
+                  valid = false;
+                }
               }
             }
 
             if (valid) {
               let ancestors = [];
-              if(request && request.submittedBy?.ancestors?.length) {
+              if (request && request.submittedBy?.ancestors?.length) {
                 ancestors = request.submittedBy.ancestors;
               }
               const groupIds: string[] = [
                 request?.submittedBy?.directGroup,
-                ...ancestors
+                ...ancestors,
               ];
-              
-              const needAdminDecision = await ApproverService.includesSpecialGroup({ groupIds: groupIds })
+
+              const needAdminDecision: any =
+                await ApproverService.includesSpecialGroup({
+                  groupIds: groupIds,
+                });
               if (
-                needAdminDecision &&
+                needAdminDecision.includes &&
                 approverType === PersonTypeInRequest.ADMIN_APPROVER
               ) {
-                  request.adminApprovers = request.adminApprovers
-                    ? [...request.adminApprovers, entityUser]
-                    : [entityUser];
-                  request.adminDecision = decision;
-                  request.adminApprovers = request.adminApprovers.filter(
-                    (v: any, i: any, a: any) =>
-                      a.findIndex((t: any) => t.id === v.id) === i
-                  );
-                }
-               else {
-                request.commanders = request.commanders
-                  ? [...request.commanders, entityUser]
+                request.adminApprovers = request.adminApprovers
+                  ? [...request.adminApprovers, entityUser]
                   : [entityUser];
-                request.commanderDecision = decision;
-
-                // remove duplicate commanders
-                request.commanders = request.commanders.filter(
+                request.adminDecision = decision;
+                request.adminApprovers = request.adminApprovers.filter(
                   (v: any, i: any, a: any) =>
                     a.findIndex((t: any) => t.id === v.id) === i
                 );
               }
+
+              request.commanders = request.commanders
+                ? [...request.commanders, entityUser]
+                : [entityUser];
+              request.commanderDecision = decision;
+
+              // remove duplicate commanders
+              request.commanders = request.commanders.filter(
+                (v: any, i: any, a: any) =>
+                  a.findIndex((t: any) => t.id === v.id) === i
+              );
             }
             break;
           default:
@@ -147,6 +167,7 @@ export const approveUserRequest = async (
 
   return request;
 };
+
 
 export const parseFromApproverTypeToPersonInRequest = (type: string) => {
   const approverType = approverTypeFromJSON(type);

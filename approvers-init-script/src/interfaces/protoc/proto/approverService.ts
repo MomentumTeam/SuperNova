@@ -61,6 +61,10 @@ export function requestStatusToJSON(object: RequestStatus): string {
   }
 }
 
+export interface GetAdminsAboveGroupIdReq {
+  groupId: string;
+}
+
 export interface IncludesSpecialGroupRes {
   includes: boolean;
 }
@@ -178,14 +182,84 @@ export interface GetAllApproverTypesReq {
 
 export interface GetAllApproverTypesRes {
   types: ApproverType[];
-  groupsInCharge: groupsInCharge[];
+  securityAdminGroupsInCharge: GroupInCharge[];
+  adminGroupsInCharge: GroupInCharge[];
 }
 
-export interface groupsInCharge {
+export interface GroupInCharge {
   id: string;
   name: string;
   hierarchy: string;
 }
+
+const baseGetAdminsAboveGroupIdReq: object = { groupId: "" };
+
+export const GetAdminsAboveGroupIdReq = {
+  encode(
+    message: GetAdminsAboveGroupIdReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.groupId !== "") {
+      writer.uint32(10).string(message.groupId);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GetAdminsAboveGroupIdReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseGetAdminsAboveGroupIdReq,
+    } as GetAdminsAboveGroupIdReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.groupId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetAdminsAboveGroupIdReq {
+    const message = {
+      ...baseGetAdminsAboveGroupIdReq,
+    } as GetAdminsAboveGroupIdReq;
+    if (object.groupId !== undefined && object.groupId !== null) {
+      message.groupId = String(object.groupId);
+    } else {
+      message.groupId = "";
+    }
+    return message;
+  },
+
+  toJSON(message: GetAdminsAboveGroupIdReq): unknown {
+    const obj: any = {};
+    message.groupId !== undefined && (obj.groupId = message.groupId);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<GetAdminsAboveGroupIdReq>
+  ): GetAdminsAboveGroupIdReq {
+    const message = {
+      ...baseGetAdminsAboveGroupIdReq,
+    } as GetAdminsAboveGroupIdReq;
+    if (object.groupId !== undefined && object.groupId !== null) {
+      message.groupId = object.groupId;
+    } else {
+      message.groupId = "";
+    }
+    return message;
+  },
+};
 
 const baseIncludesSpecialGroupRes: object = { includes: false };
 
@@ -2167,8 +2241,11 @@ export const GetAllApproverTypesRes = {
       writer.int32(v);
     }
     writer.ldelim();
-    for (const v of message.groupsInCharge) {
-      groupsInCharge.encode(v!, writer.uint32(18).fork()).ldelim();
+    for (const v of message.securityAdminGroupsInCharge) {
+      GroupInCharge.encode(v!, writer.uint32(18).fork()).ldelim();
+    }
+    for (const v of message.adminGroupsInCharge) {
+      GroupInCharge.encode(v!, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -2181,7 +2258,8 @@ export const GetAllApproverTypesRes = {
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseGetAllApproverTypesRes } as GetAllApproverTypesRes;
     message.types = [];
-    message.groupsInCharge = [];
+    message.securityAdminGroupsInCharge = [];
+    message.adminGroupsInCharge = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2196,8 +2274,13 @@ export const GetAllApproverTypesRes = {
           }
           break;
         case 2:
-          message.groupsInCharge.push(
-            groupsInCharge.decode(reader, reader.uint32())
+          message.securityAdminGroupsInCharge.push(
+            GroupInCharge.decode(reader, reader.uint32())
+          );
+          break;
+        case 3:
+          message.adminGroupsInCharge.push(
+            GroupInCharge.decode(reader, reader.uint32())
           );
           break;
         default:
@@ -2211,15 +2294,27 @@ export const GetAllApproverTypesRes = {
   fromJSON(object: any): GetAllApproverTypesRes {
     const message = { ...baseGetAllApproverTypesRes } as GetAllApproverTypesRes;
     message.types = [];
-    message.groupsInCharge = [];
+    message.securityAdminGroupsInCharge = [];
+    message.adminGroupsInCharge = [];
     if (object.types !== undefined && object.types !== null) {
       for (const e of object.types) {
         message.types.push(approverTypeFromJSON(e));
       }
     }
-    if (object.groupsInCharge !== undefined && object.groupsInCharge !== null) {
-      for (const e of object.groupsInCharge) {
-        message.groupsInCharge.push(groupsInCharge.fromJSON(e));
+    if (
+      object.securityAdminGroupsInCharge !== undefined &&
+      object.securityAdminGroupsInCharge !== null
+    ) {
+      for (const e of object.securityAdminGroupsInCharge) {
+        message.securityAdminGroupsInCharge.push(GroupInCharge.fromJSON(e));
+      }
+    }
+    if (
+      object.adminGroupsInCharge !== undefined &&
+      object.adminGroupsInCharge !== null
+    ) {
+      for (const e of object.adminGroupsInCharge) {
+        message.adminGroupsInCharge.push(GroupInCharge.fromJSON(e));
       }
     }
     return message;
@@ -2232,12 +2327,19 @@ export const GetAllApproverTypesRes = {
     } else {
       obj.types = [];
     }
-    if (message.groupsInCharge) {
-      obj.groupsInCharge = message.groupsInCharge.map((e) =>
-        e ? groupsInCharge.toJSON(e) : undefined
+    if (message.securityAdminGroupsInCharge) {
+      obj.securityAdminGroupsInCharge = message.securityAdminGroupsInCharge.map(
+        (e) => (e ? GroupInCharge.toJSON(e) : undefined)
       );
     } else {
-      obj.groupsInCharge = [];
+      obj.securityAdminGroupsInCharge = [];
+    }
+    if (message.adminGroupsInCharge) {
+      obj.adminGroupsInCharge = message.adminGroupsInCharge.map((e) =>
+        e ? GroupInCharge.toJSON(e) : undefined
+      );
+    } else {
+      obj.adminGroupsInCharge = [];
     }
     return obj;
   },
@@ -2247,26 +2349,38 @@ export const GetAllApproverTypesRes = {
   ): GetAllApproverTypesRes {
     const message = { ...baseGetAllApproverTypesRes } as GetAllApproverTypesRes;
     message.types = [];
-    message.groupsInCharge = [];
+    message.securityAdminGroupsInCharge = [];
+    message.adminGroupsInCharge = [];
     if (object.types !== undefined && object.types !== null) {
       for (const e of object.types) {
         message.types.push(e);
       }
     }
-    if (object.groupsInCharge !== undefined && object.groupsInCharge !== null) {
-      for (const e of object.groupsInCharge) {
-        message.groupsInCharge.push(groupsInCharge.fromPartial(e));
+    if (
+      object.securityAdminGroupsInCharge !== undefined &&
+      object.securityAdminGroupsInCharge !== null
+    ) {
+      for (const e of object.securityAdminGroupsInCharge) {
+        message.securityAdminGroupsInCharge.push(GroupInCharge.fromPartial(e));
+      }
+    }
+    if (
+      object.adminGroupsInCharge !== undefined &&
+      object.adminGroupsInCharge !== null
+    ) {
+      for (const e of object.adminGroupsInCharge) {
+        message.adminGroupsInCharge.push(GroupInCharge.fromPartial(e));
       }
     }
     return message;
   },
 };
 
-const basegroupsInCharge: object = { id: "", name: "", hierarchy: "" };
+const baseGroupInCharge: object = { id: "", name: "", hierarchy: "" };
 
-export const groupsInCharge = {
+export const GroupInCharge = {
   encode(
-    message: groupsInCharge,
+    message: GroupInCharge,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.id !== "") {
@@ -2281,10 +2395,10 @@ export const groupsInCharge = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): groupsInCharge {
+  decode(input: _m0.Reader | Uint8Array, length?: number): GroupInCharge {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...basegroupsInCharge } as groupsInCharge;
+    const message = { ...baseGroupInCharge } as GroupInCharge;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2305,8 +2419,8 @@ export const groupsInCharge = {
     return message;
   },
 
-  fromJSON(object: any): groupsInCharge {
-    const message = { ...basegroupsInCharge } as groupsInCharge;
+  fromJSON(object: any): GroupInCharge {
+    const message = { ...baseGroupInCharge } as GroupInCharge;
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
@@ -2325,7 +2439,7 @@ export const groupsInCharge = {
     return message;
   },
 
-  toJSON(message: groupsInCharge): unknown {
+  toJSON(message: GroupInCharge): unknown {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
     message.name !== undefined && (obj.name = message.name);
@@ -2333,8 +2447,8 @@ export const groupsInCharge = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<groupsInCharge>): groupsInCharge {
-    const message = { ...basegroupsInCharge } as groupsInCharge;
+  fromPartial(object: DeepPartial<GroupInCharge>): GroupInCharge {
+    const message = { ...baseGroupInCharge } as GroupInCharge;
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
@@ -2379,6 +2493,9 @@ export interface ApproverService {
     request: IsApproverValidForOGReq
   ): Promise<IsApproverValidForOGRes>;
   GetAdminsByGroupIds(request: GetAdminsByGroupIdsReq): Promise<ApproverArray>;
+  GetAdminsAboveGroupId(
+    request: GetAdminsAboveGroupIdReq
+  ): Promise<ApproverArray>;
   IncludesSpecialGroup(
     request: IncludesSpecialGroupReq
   ): Promise<IncludesSpecialGroupRes>;
@@ -2405,6 +2522,7 @@ export class ApproverServiceClientImpl implements ApproverService {
     this.DeleteApprover = this.DeleteApprover.bind(this);
     this.IsApproverValidForOG = this.IsApproverValidForOG.bind(this);
     this.GetAdminsByGroupIds = this.GetAdminsByGroupIds.bind(this);
+    this.GetAdminsAboveGroupId = this.GetAdminsAboveGroupId.bind(this);
     this.IncludesSpecialGroup = this.IncludesSpecialGroup.bind(this);
   }
   AddApprover(request: AddApproverReq): Promise<Approver> {
@@ -2556,6 +2674,18 @@ export class ApproverServiceClientImpl implements ApproverService {
     const promise = this.rpc.request(
       "ApproverService.ApproverService",
       "GetAdminsByGroupIds",
+      data
+    );
+    return promise.then((data) => ApproverArray.decode(new _m0.Reader(data)));
+  }
+
+  GetAdminsAboveGroupId(
+    request: GetAdminsAboveGroupIdReq
+  ): Promise<ApproverArray> {
+    const data = GetAdminsAboveGroupIdReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "ApproverService.ApproverService",
+      "GetAdminsAboveGroupId",
       data
     );
     return promise.then((data) => ApproverArray.decode(new _m0.Reader(data)));

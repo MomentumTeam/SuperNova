@@ -21,12 +21,12 @@ export async function parseExcelFile(index: any) {
   }
 }
 
-export async function parseExcelFileAdmin() {
+export async function parseExcelFileAdminAndSecurityAdmin(index: any) {
   try {
     let rows: any = await readXlsxFile(`${C.excelFilePath}`);
     rows.shift();
     let approvers: Array<string> = rows.map((row: any) => {
-      return row[4];
+      return row[index];
     });
 
     let admin = approvers

@@ -6,6 +6,7 @@ service Tea {
     rpc RetrieveTeaByPrefix(RetrieveTeaByPrefixReq) returns (TeaMessage){}
     rpc RetrieveUPNByEntity(RetrieveByEntityReq) returns (UPNMessage) {}
     rpc RetrieveUPNByEntityId(RetrieveByEntityIdReq) returns (UPNMessage) {}
+    rpc RetrieveUPNByIdentifier(RetrieveByIdentifierReq) returns (UPNMessage) {}
     rpc ReportTeaSuccess(ReportTeaReq) returns (SuccessMessage) {}
     rpc ReportTeaFail(ReportTeaReq) returns (SuccessMessage) {}
     rpc ThrowTea(ReportTeaReq) returns (SuccessMessage) {}
@@ -104,6 +105,13 @@ message RetrieveByEntityReq{
 message RetrieveByEntityIdReq{
     Domain domain = 1;
     string entityId = 2;
+    optional string entityType = 3;
+}
+
+message RetrieveByIdentifierReq{
+    Domain domain = 1;
+    string identifier = 2;
+    string entityType = 3;
 }
 
 message EntityMin{

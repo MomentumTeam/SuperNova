@@ -45,6 +45,7 @@ enum NotificationType{
     REQUEST_DONE = 13;
     REQUEST_FAILED = 14;
     REQUEST_DELETED = 15;
+    CHANGE_ROLE_HIERARCHY = 16;
 
 }
 
@@ -53,6 +54,7 @@ enum OwnerType{
     COMMANDER = 1;
     SECURITY_APPROVER = 2;
     SUPER_SECURITY_APPROVER = 3;
+    ADMIN = 4;
 }
 
 message CreateCustomNotificationReq{
