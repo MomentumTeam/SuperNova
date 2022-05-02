@@ -31,15 +31,20 @@ export class OptionsRepository {
     updateUserOptionsRequest: UpdateUserOptionsReq
   ): Promise<Options> {
     const { entityId, ...updateQuery } = updateUserOptionsRequest;
-    const updatedDocument = await OptionsModel.findOneAndUpdate(
+    const subtractFields = (obj1: any, obj2: any) =>
+      Object.fromEntries(
+        Object.entries(obj1).filter(([key]) => !(key in obj2))
+      );
+    const document = await OptionsModel.findOneAndUpdate(
       { entityId },
-      updateQuery,
       {
-        new: true,
-      }
+        $set: updateQuery,
+        $setOnInsert: subtractFields(C.defaultOptions, updateQuery),
+      },
+      { new: true, upsert: true }
     );
-    if(!updatedDocument) return OptionsModel.create({ ...C.defaultOptions, ...updateUserOptionsRequest });
-    return updatedDocument;
+
+    return document;
   }
 
   async addFavoriteCommander(
@@ -67,10 +72,7 @@ export class OptionsRepository {
     const setOnInsert = {
       $setOnInsert: {
         entityId,
-        toggleProfilePicture: C.defaultOptions.toggleProfilePicture,
-        getMailNotifications: C.defaultOptions.getMailNotifications,
-        showPhoneNumber: C.defaultOptions.showPhoneNumber,
-        favoriteCommanders: C.defaultOptions.favoriteCommanders,
+        ...C.defaultOptions
       },
     };
     const userOptions = await OptionsModel.findOneAndUpdate(
