@@ -22,6 +22,8 @@ import {
   OrganizationGroup,
 } from '../interfaces/protoc/proto/kartoffelService';
 
+// import { wasCreateBeenInLego, } from '../services/requestService';
+
 import { logger } from '../logger';
 import { MailType } from '../interfaces/protoc/proto/mailService';
 import { isNaN } from 'lodash';
@@ -49,7 +51,7 @@ export class HistoryRepository {
         till: getDoneRequestsByRoleIdReq.to,
       };
       //צריך לעשות בקשה שמזחריה אם הבקשה ראשונה הייתה בקשה מסוג יצירת תפקיד (כלומר אם זה קרה בלגו או לא) אם לא נוסיף אחד
-      const doesCreateBeenInLego : BoolCheck = await this.requestService.wasCreateBeenInLego({
+      const doesCreateBeenInLego : BoolCheck = await RequestService.wasCreateBeenInLego({
         idCheck:getDoneRequestsByRoleIdReq.roleId,
       });
 

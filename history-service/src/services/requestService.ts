@@ -23,6 +23,9 @@ import { logger } from '../logger';
 const PROTO_PATH = `${findPath('proto')}/requestService.proto`;
 
 export class RequestService {
+  static wasCreateBeenInLego(arg0: { idCheck: string; }): BoolCheck | PromiseLike<BoolCheck> {
+    throw new Error('Method not implemented.');
+  }
   clients: any[];
   constructor() {
     this.clients = [];

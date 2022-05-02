@@ -4,6 +4,12 @@ import * as C from './config';
 import { logger } from './logger';
 import { findPath } from './utils/path';
 // import { addHealthService } from './health';
+import {
+  getEventsOGByOGId,
+  getEventsByEntityId,
+  getEventsBySubmittedEntityId,
+  getEventsByRoleId,
+} from './history/history.controller';
 
 const PROTO_PATH = `${findPath('proto')}/historyService.proto`;
 
@@ -49,6 +55,7 @@ export class Server {
           GetEventsOGByOGId: getEventsOGByOGId,
           GetEventsByEntityId: getEventsByEntityId,
           GetEventsBySubmittedEntityId: getEventsBySubmittedEntityId,
+        }
           
       );
       logger.info(`Grpc services were successfully added to the server`);
