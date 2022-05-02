@@ -38,7 +38,7 @@ export class OptionsRepository {
         new: true,
       }
     );
-    if(!updatedDocument) return OptionsModel.create(updateUserOptionsRequest);
+    if(!updatedDocument) return OptionsModel.create({ ...C.defaultOptions, ...updateUserOptionsRequest });
     return updatedDocument;
   }
 
