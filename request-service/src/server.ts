@@ -34,6 +34,7 @@ import {
   getDoneRequestsByEntityId,
   getDoneRequestsByGroupId,
   getDoneRequestsByRoleId,
+  wasCreateBeenInLego,
 } from './requests/request.controller';
 import { RequestType } from './interfaces/protoc/proto/requestService';
 import { findPath } from './utils/path';
@@ -130,6 +131,7 @@ export class Server {
         GetDoneRequestsByEntityId: getDoneRequestsByEntityId,
         GetDoneRequestsByGroupId: getDoneRequestsByGroupId,
         GetDoneRequestsByRoleId: getDoneRequestsByRoleId,
+        WasCreateBeenInLego: wasCreateBeenInLego,
       });
       logger.info(`Grpc services were successfully added to the server`);
     } catch (error: any) {

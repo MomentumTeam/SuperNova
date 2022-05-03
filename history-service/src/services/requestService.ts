@@ -40,7 +40,7 @@ export class RequestService {
   async getDoneRequestsByRoleId(req: GetDoneRequestsByRoleIdReq): Promise<RequestArray> {
     logger.info('GetDoneRequestsByRoleId in RequestService', { req });
     return new Promise((resolve, reject) => {
-      this.randomClient().getDoneRequestsByRoleId(req, (error: any, res: any) => {
+      this.randomClient().GetDoneRequestsByRoleId(req, (error: any, res: any) => {
         if (error) {
           logger.error('GetDoneRequestsByRoleId in RequestService ERROR', {
             error: { message: error.message },
@@ -60,7 +60,7 @@ export class RequestService {
   async getDoneRequestsByOG(req: GetDoneRequestsByGroupIdReq): Promise<RequestArray> {
     logger.info('GetDoneRequestsByGroupIdReq in RequestService', { req });
     return new Promise((resolve, reject) => {
-      this.randomClient().getDoneRequestsByGroupId(req, (error: any, res: any) => {
+      this.randomClient().GetDoneRequestsByGroupId(req, (error: any, res: any) => {
         if (error) {
           logger.error('GetDoneRequestsByGroupIdReq in RequestService ERROR', {
             error: { message: error.message },
@@ -79,7 +79,7 @@ export class RequestService {
   async getEventsByEntityId(req: GetDoneRequestsByEntityIdReq): Promise<RequestArray> {
     logger.info('GetDoneRequestsByEntityIdReq in RequestService', { req });
     return new Promise((resolve, reject) => {
-      this.randomClient().getDoneRequestsByEntityId(req, (error: any, res: any) => {
+      this.randomClient().GetDoneRequestsByEntityId(req, (error: any, res: any) => {
         if (error) {
           logger.error('GetDoneRequestsByEntityIdReq in RequestService ERROR', {
             error: { message: error.message },
@@ -98,7 +98,7 @@ export class RequestService {
   async getEventsBySubmittedEntityId(req: GetDoneRequestsByEntityIdReq): Promise<RequestArray> {
     logger.info('getEventsBySubmittedEntityId in RequestService', { req });
     return new Promise((resolve, reject) => {
-      this.randomClient().getDoneRequestsSubmmitedByEntityId(req, (error: any, res: any) => {
+      this.randomClient().GetDoneRequestsSubmmitedByEntityId(req, (error: any, res: any) => {
         if (error) {
           logger.error('getEventsBySubmittedEntityId in RequestService ERROR', {
             error: { message: error.message },
@@ -118,7 +118,7 @@ export class RequestService {
   async wasCreateBeenInLego(req: CheckIfCreateWasInLegoReq): Promise<BoolCheck> {
     logger.info('wasCreateBeenInLego in RequestService', { req });
     return new Promise((resolve, reject) => {
-      this.randomClient().wasCreateBeenInLego(req, (error: any, res: any) => {
+      this.randomClient().WasCreateBeenInLego(req, (error: any, res: any) => {
         if (error) {
           logger.error('wasCreateBeenInLego in RequestService ERROR', {
             error: { message: error.message },
