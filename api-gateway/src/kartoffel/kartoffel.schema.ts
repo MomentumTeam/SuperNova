@@ -123,12 +123,23 @@ export const GetOGByIdSchema = Joi.object({
   query: {},
 });
 
+export const exportHierarchyDataSchema = Joi.object({
+  body: {},
+  params: {},
+  query: {
+    hierarchy: Joi.string().required(),
+    withRoles: Joi.boolean().default(false),
+    direct: Joi.boolean().default(true),
+  },
+});
+
 export const GetOGByHierarchyNameSchema = Joi.object({
   body: {},
   params: {},
   query: {
     hierarchy: Joi.string().required(),
     withRoles: Joi.boolean().default(false),
+    direct: Joi.boolean().default(true),
   },
 });
 
