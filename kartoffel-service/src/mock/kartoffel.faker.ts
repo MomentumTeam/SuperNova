@@ -252,7 +252,7 @@ export class KartoffelFaker {
         displayName: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
         directGroup: mongoose.Types.ObjectId().toString(),
         hierarchy: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
-        entityType: 'soldier',
+        entityType: 'Soldier',
         identityCard: this.randomIdentityCard(),
         personalNumber: faker.datatype
           .number({ min: 100000000, max: 999999999 })
