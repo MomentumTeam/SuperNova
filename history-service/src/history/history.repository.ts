@@ -48,7 +48,7 @@ export class HistoryRepository {
       const eventArr: EventArray = {
         events: [],
         totalCount: requestsArr.totalCount,
-        till: getDoneRequestsByRoleIdReq.to,
+        till: Math.min(getDoneRequestsByRoleIdReq.to,requestsArr.totalCount),
       };
       //צריך לעשות בקשה שמזחריה אם הבקשה ראשונה הייתה בקשה מסוג יצירת תפקיד (כלומר אם זה קרה בלגו או לא) אם לא נוסיף אחד
       const doesCreateBeenInLego : BoolCheck = await this.requestService.wasCreateBeenInLego({
@@ -93,33 +93,39 @@ export class HistoryRepository {
       const numberOfRequest = eventArr.till -
       getDoneRequestsByRoleIdReq.from +
       1;
-      for (let i = 0; i++; i < numberOfRequest) {
+      for (let i = 0; i < numberOfRequest; i++) {
         const tempEvent: Event = { message: '', date: new Date().getTime() };
         const tempRequest: Request = requestsArr.requests[i];
-        const typeOfRequest = tempRequest.type;
+        // const typeOfRequest = tempRequest.type;
+
+        const typeOfTheRequest =
+        typeof tempRequest.type === typeof ''
+          ? requestTypeFromJSON(tempRequest.type)
+          : tempRequest.type;
         //צריך לבדוק איך להחזיר את הזמנים
         const tempDate = tempRequest.updatedAt.toLocaleString();
 
-        switch (typeOfRequest) {
-          case RequestType.CREATE_ROLE:
+        switch (typeOfTheRequest) {
+          case requestTypeFromJSON(RequestType.CREATE_ROLE):
             tempEvent.message = `  ${tempDate} בתאריך ${tempRequest?.kartoffelParams?.name} בקשת "יצירת תפקיד" קרתה עבור `;
             break;
-          case RequestType.RENAME_ROLE:
+          case requestTypeFromJSON(RequestType.RENAME_ROLE):
             tempEvent.message = `  ${tempDate} בתאריך ${tempRequest?.kartoffelParams?.name} בקשת "שינוי שם תפקיד" קרתה עבור `;
             break;
-          case RequestType.EDIT_ENTITY:
+          case requestTypeFromJSON(RequestType.EDIT_ENTITY):
             tempEvent.message = ` ${tempDate} בתאריך ${tempRequest?.kartoffelParams?.name} בקשת "שינוי האדם שמחזיר בתפקיד" קרתה עבור `;
             break;
-          case RequestType.ASSIGN_ROLE_TO_ENTITY:
+          case requestTypeFromJSON(RequestType.ASSIGN_ROLE_TO_ENTITY):
             tempEvent.message = `${tempDate} בתאריך ${tempRequest?.kartoffelParams?.name} בקשת "שיוך אדם לתפקיד" קרתה עבור `;
             break;
-          case RequestType.CHANGE_ROLE_HIERARCHY:
+          case requestTypeFromJSON(RequestType.CHANGE_ROLE_HIERARCHY):
             tempEvent.message = `  ${tempDate} בתאריך ${tempRequest?.kartoffelParams?.name} בקשת "שינוי היררכיית תפקיד" קרתה עבור `;
 
           default:
         }
         eventArr.events.push(tempEvent);
       }
+      eventArr.events.reverse();
       return eventArr as EventArray;
       // Request tempR requestsArr.requests.forEach()
       // eventArr.events.

@@ -2009,7 +2009,7 @@ export class RequestRepository {
       };
       const totalCount = await RequestModel.count(query);
       const requests: any = await RequestModel.find(query, {}, pagination).sort(
-        [['updatedAt', -1]]
+        [['updatedAt', 1]]
       );
 
       if (requests) {
@@ -2215,7 +2215,7 @@ export class RequestRepository {
         ],
       };
       const requests: any = await RequestModel.find(query, {})
-        .sort([['updatedAt', -1]])
+        .sort([['updatedAt', 1]])
         .limit(1);
 
       // switch(requests[0].toObject().type)
@@ -2230,7 +2230,7 @@ export class RequestRepository {
           : tempRequest.type;
 
       for (let i = 0; i < requestTypes.length; i++) {
-        if (typeOfTheRequest === requestTypes[i]) {
+        if ((typeOfTheRequest === requestTypes[i]) || (tempRequest.type === requestTypes[i])) {
           return {
             isItCreateInLego: true,
           };
