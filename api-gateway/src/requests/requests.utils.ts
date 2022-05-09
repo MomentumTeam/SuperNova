@@ -19,7 +19,7 @@ export const approveUserRequest = async (
   groupId?: string,
   highCommander = false
 ) => {
-  // Approver request if the user has type different than soldier
+  // Approver request if the user has type different than Soldier
   if (req.user.types.length > 0 && req.user.types !== [ApproverType.SOLDIER]) {
     const entityUser: EntityMin = getEntityFromConnectedUser(req);
     const decision: ApproverDecision = getApprovedDecision(entityUser);
@@ -167,7 +167,6 @@ export const approveUserRequest = async (
 
   return request;
 };
-
 
 export const parseFromApproverTypeToPersonInRequest = (type: string) => {
   const approverType = approverTypeFromJSON(type);
