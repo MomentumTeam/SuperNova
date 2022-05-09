@@ -269,40 +269,40 @@ services:
       - KC_CIVILIAN_DEFAULT_RANK=לא ידוע
       - KC_LOG_PATH=/logs
 
-  # execution-script:
-  #   image: execution-script
-  #   build: ./execution-script/
-  #   env_file:
-  #     - ./supernova.env
-  #   depends_on:
-  #     - request-service
-  #     - producer-service
-  #   volumes:
-  #     - logs:/logs
-  #   environment:
-  #     - EXS_RS_URL=request-service:8080
-  #     - EXS_PS_URL=producer-service:8080
-  #     - EXS_APS_URL=approver-service:8080
-  #     - EXS_MINUTE=5
-  #     - EXS_CRON_JOB=false
-  #     - EXS_ROOT_ID=619e3193f235dc001846bb4f
-  #     - EXS_LOG_PATH=/logs
+  execution-script:
+    image: execution-script
+    build: ./execution-script/
+    env_file:
+      - ./supernova.env
+    depends_on:
+      - request-service
+      - producer-service
+    volumes:
+      - logs:/logs
+    environment:
+      - EXS_RS_URL=request-service:8080
+      - EXS_PS_URL=producer-service:8080
+      - EXS_APS_URL=approver-service:8080
+      - EXS_MINUTE=5
+      - EXS_CRON_JOB=false
+      - EXS_ROOT_ID=619e3193f235dc001846bb4f
+      - EXS_LOG_PATH=/logs
 
-  # whiteListSync-script:
-  #   image: whitelistsync-script
-  #   build: ./whiteListSync-script/
-  #   env_file:
-  #     - ./supernova.env
-  #   depends_on:
-  #     - approver-service
-  #   volumes:
-  #     - logs:/logs
-  #   environment:
-  #     - WLS_APS_URL=approver-service:8080
-  #     - WLS_HOUR=10
-  #     - WLS_MINUTE=0
-  #     - WLS_CRON_JOB=false
-  #     - WLS_LOG_PATH=/logs
+  whiteListSync-script:
+    image: whitelistsync-script
+    build: ./whiteListSync-script/
+    env_file:
+      - ./supernova.env
+    depends_on:
+      - approver-service
+    volumes:
+      - logs:/logs
+    environment:
+      - WLS_APS_URL=approver-service:8080
+      - WLS_HOUR=10
+      - WLS_MINUTE=0
+      - WLS_CRON_JOB=false
+      - WLS_LOG_PATH=/logs
 
   # approvers-init-script:
   #   image: approvers-init-script
@@ -404,19 +404,19 @@ services:
       - GATEWAY_ROOT_ID=619e3193f235dc001846bb4f
       - GATEWAY_LOG_PATH=/logs
 
-  # supernova-ui:
-  #   image: supernova-ui
-  #   build: ./SuperNovaUI/
-  #   env_file:
-  #     - ./supernova.env
-  #   depends_on:
-  #     - api-gateway
-  #   ports:
-  #     - '3000:80'
-  #   environment:
-  #     - UI_REACT_APP_BASE_URL=http://localhost:2000
-  #     - UI_REACT_TOKEN_NAME=sp-token
-  #     - UI_USER_SOURCE_DI=es_name
+  supernova-ui:
+    image: supernova-ui
+    build: ./SuperNovaUI/
+    env_file:
+      - ./supernova.env
+    depends_on:
+      - api-gateway
+    ports:
+      - '3000:80'
+    environment:
+      - UI_REACT_APP_BASE_URL=http://localhost:2000
+      - UI_REACT_TOKEN_NAME=sp-token
+      - UI_USER_SOURCE_DI=es_name
 
 volumes:
   bulk-files:
