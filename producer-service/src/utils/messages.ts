@@ -358,20 +358,12 @@ export function generateADQueueMessage(
         message.data.newName = adParams.newJobTitle;
       }
       break;
-      case RequestType.CONVERT_ENTITY_TYPE:
-        message.data = {
-          samAccountName: adParams.samAccountName,
-          firstName: adParams.firstName,
-          lastName: adParams.lastName,
-          fullName: adParams.fullName,
-          roleSerialCode: adParams.roleSerialCode,
-        };
-        if (adParams.upn) {
-          message.data.upn = adParams.upn;
-        }else if (adParams.rank) {
-          message.data.rank = adParams.rank;
-        };
-        break;
+    case RequestType.CONVERT_ENTITY_TYPE:
+      message.data = {
+        samAccountName: adParams.samAccountName,
+        upn: adParams.upn,
+      };
+      break;
     default:
       throw new Error('type not supported!');
   }
