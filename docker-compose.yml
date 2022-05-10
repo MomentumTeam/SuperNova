@@ -56,53 +56,53 @@ services:
       - SS_KARTOFFEL_AUDIENCE=kartoffel
       - SS_LOG_PATH=/logs
 
-  request-service:
-    image: request-service
-    build: ./request-service
-    env_file:
-      - ./supernova.env
-    ports:
-      - '8081:8080'
-    depends_on:
-      - mongo
-      - notification-service
-      - tea-service
-      - mail-service
-      # - approver-service
-    volumes:
-      - logs:/logs
-    environment:
-      - RS_MONGO_URL=mongodb://mongo:27017/supernova
-      - RS_NS_URL=notification-service:8080
-      - RS_TS_URL=tea-service:8080
-      - RS_MS_URL=mail-service:8080
-      - RS_APS_URL=approver-service:8080
-      - RS_ROOT_ID=619e3193f235dc001846bb4f
-      - RS_KARTOFFEL_GOAL_USER=GoalUser
-      - RS_LOG_PATH=/logs
+  # request-service:
+  #   image: request-service
+  #   build: ./request-service
+  #   env_file:
+  #     - ./supernova.env
+  #   ports:
+  #     - '8081:8080'
+  #   depends_on:
+  #     - mongo
+  #     - notification-service
+  #     - tea-service
+  #     - mail-service
+  #     # - approver-service
+  #   volumes:
+  #     - logs:/logs
+  #   environment:
+  #     - RS_MONGO_URL=mongodb://mongo:27017/supernova
+  #     - RS_NS_URL=notification-service:8080
+  #     - RS_TS_URL=tea-service:8080
+  #     - RS_MS_URL=mail-service:8080
+  #     - RS_APS_URL=approver-service:8080
+  #     - RS_ROOT_ID=619e3193f235dc001846bb4f
+  #     - RS_KARTOFFEL_GOAL_USER=GoalUser
+  #     - RS_LOG_PATH=/logs
 
-  kartoffel-service:
-    image: kartoffel-service
-    build: ./kartoffel-service/
-    env_file:
-      - ./supernova.env
-    ports:
-      - '8082:8080'
-    depends_on:
-      - spike-service
-    volumes:
-      - logs:/logs
-    environment:
-      - KS_USE_FAKER=false
-      - KS_SS_URL=spike-service:8080
-      - KS_ROOT_ID=6184af202da776001134110b
-      - KS_DEFAULT_ROLE_SOURCE=sf_name
-      - KS_DEFAULT_DI_SOURCE=es_name
-      - KS_DEFAULT_OG_SOURCE=sf_name
-      - KS_DI_SOURCES=es_name,es_name
-      - KS_DEFAULT_ROLE_ID_SUFFIX=oneTree
-      - KS_SEARCH_WITH_RANKS=true
-      - KS_LOG_PATH=/logs
+  # kartoffel-service:
+  #   image: kartoffel-service
+  #   build: ./kartoffel-service/
+  #   env_file:
+  #     - ./supernova.env
+  #   ports:
+  #     - '8082:8080'
+  #   depends_on:
+  #     - spike-service
+  #   volumes:
+  #     - logs:/logs
+  #   environment:
+  #     - KS_USE_FAKER=false
+  #     - KS_SS_URL=spike-service:8080
+  #     - KS_ROOT_ID=6184af202da776001134110b
+  #     - KS_DEFAULT_ROLE_SOURCE=sf_name
+  #     - KS_DEFAULT_DI_SOURCE=es_name
+  #     - KS_DEFAULT_OG_SOURCE=sf_name
+  #     - KS_DI_SOURCES=es_name,es_name
+  #     - KS_DEFAULT_ROLE_ID_SUFFIX=oneTree
+  #     - KS_SEARCH_WITH_RANKS=true
+  #     - KS_LOG_PATH=/logs
 
   producer-service:
     image: producer-service

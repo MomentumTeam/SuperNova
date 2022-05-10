@@ -35,29 +35,43 @@ export class HistoryRepository {
   constructor() {
     this.requestService = new RequestService();
   }
+
+  //צריך לחסום את ה'פרום' בערך עליון
   async getEventsByRoleId(
     getDoneRequestsByRoleIdReq: GetDoneRequestsByRoleIdReq
   ): Promise<EventArray> {
     try {
-      const requestsArr: RequestArray =
-        await this.requestService.getDoneRequestsByRoleId({
-          roleId: getDoneRequestsByRoleIdReq.roleId,
-          from: getDoneRequestsByRoleIdReq.from,
-          to: getDoneRequestsByRoleIdReq.to,
-        });
-      const eventArr: EventArray = {
-        events: [],
-        totalCount: requestsArr.totalCount,
-        till: Math.min(getDoneRequestsByRoleIdReq.to,requestsArr.totalCount),
-      };
       //צריך לעשות בקשה שמזחריה אם הבקשה ראשונה הייתה בקשה מסוג יצירת תפקיד (כלומר אם זה קרה בלגו או לא) אם לא נוסיף אחד
       const doesCreateBeenInLego : BoolCheck = await this.requestService.wasCreateBeenInLego({
         idCheck:getDoneRequestsByRoleIdReq.roleId,
       });
-
-      if (requestsArr.requests.length === 0) {
+      let fromVal = getDoneRequestsByRoleIdReq.from;
+      let toVal = getDoneRequestsByRoleIdReq.to;
+      
+      if(!doesCreateBeenInLego.isItCreateInLego) {
+        const tempVar = getDoneRequestsByRoleIdReq.from;
+        fromVal = tempVar !== 1 ? tempVar-1 : tempVar;
+        const tempVar2 = getDoneRequestsByRoleIdReq.to;
+        toVal = tempVar !== 1 ? tempVar2-1 : tempVar2;
+      }
+      const requestsArr: RequestArray =
+        await this.requestService.getDoneRequestsByRoleId({
+          roleId: getDoneRequestsByRoleIdReq.roleId,
+          from: fromVal,
+          to: toVal,
+        });
+      const eventArr: EventArray = {
+        events: [],
+        totalCount: requestsArr.totalCount,
+        ////////till: requestsArr.totalCount>=getDoneRequestsByRoleIdReq.to ? getDoneRequestsByRoleIdReq.to: requestsArr.totalCount,
+        till: doesCreateBeenInLego.isItCreateInLego?getDoneRequestsByRoleIdReq.to:getDoneRequestsByRoleIdReq.to - 1,
+        //till: Math.min(getDoneRequestsByRoleIdReq.to,requestsArr.totalCount),
+      };
+      
+      if (requestsArr?.totalCount === 0) {
         if ((getDoneRequestsByRoleIdReq.from === 1)&&(!doesCreateBeenInLego.isItCreateInLego)) {
           eventArr.totalCount += 1;
+          eventArr.till = 1;
           const temporaryEvent: Event = { message: '', date: new Date().getTime() };
           const tempRole : Role = await KartoffelService.GetRoleByRoleId({roleId:getDoneRequestsByRoleIdReq.roleId});
           temporaryEvent.message = `  ${tempRole?.createdAt.toLocaleString()} בתאריך ${tempRole?.displayName} בקשת "יצירת תפקיד" קרתה, שם התפקיד - `;
@@ -77,11 +91,14 @@ export class HistoryRepository {
       if (
         !doesCreateBeenInLego.isItCreateInLego
       ) {
-        eventArr.totalCount += 1;
+        eventArr.totalCount += 1; //////////////////////////////////////////////////////////////from =1
         //יכול לקרות מצב שיש פחות בקשות ממה שהפגיניישן רוצה ואז יקרה מצב שזה יפתח את האיבנטים בשני דפים שונים (צריך לבדוק מה עושים במצב כזה) זה קורה שיש מעט מאוד בקשותת
         if (getDoneRequestsByRoleIdReq.from === 1) {
-          
-          eventArr.till -= 1;
+
+          /////// if ((eventArr.till !== 1)||(getDoneRequestsByRoleIdReq.to === 1)) {
+          ///////   eventArr.till -= 1;
+          /////// }
+
           const temporaryEvent: Event = { message: '', date: new Date().getTime() };
           const tempRole : Role = await KartoffelService.GetRoleByRoleId({roleId:getDoneRequestsByRoleIdReq.roleId});
           temporaryEvent.message = `  ${tempRole?.createdAt.toLocaleString()} בתאריך ${tempRole?.displayName} בקשת "יצירת תפקיד" קרתה, שם התפקיד - `;
@@ -90,9 +107,18 @@ export class HistoryRepository {
       }
       // const rows: CreateRoleRow[] = requestsUnderBulk.requests.map(
       // const numberOfRequest = requestsArr.totalCount;
-      const numberOfRequest = eventArr.till -
-      getDoneRequestsByRoleIdReq.from +
-      1;
+
+      // let numberOfRequest = toVal -
+      // fromVal +
+      // 1;
+
+      let numberOfRequest = requestsArr.requests.length;
+      //if (numberOfRequest > )                                                                                   /// שים לב
+      ////////////////////////////const theMin = Math.min(toVal, requestsArr.totalCount);
+      /////////////////////////let numberOfRequest = Math.min(toVal - fromVal + 1, requestsArr.totalCount);
+      // if ((!doesCreateBeenInLego.isItCreateInLego) && (getDoneRequestsByRoleIdReq.from === 1)) {
+      //   --numberOfRequest;
+      // }
       for (let i = 0; i < numberOfRequest; i++) {
         const tempEvent: Event = { message: '', date: new Date().getTime() };
         const tempRequest: Request = requestsArr.requests[i];
@@ -125,7 +151,10 @@ export class HistoryRepository {
         }
         eventArr.events.push(tempEvent);
       }
-      eventArr.events.reverse();
+      // eventArr.events.reverse();
+      if (!doesCreateBeenInLego.isItCreateInLego) {
+        eventArr.till+=1;
+      }
       return eventArr as EventArray;
       // Request tempR requestsArr.requests.forEach()
       // eventArr.events.

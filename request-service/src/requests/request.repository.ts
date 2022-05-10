@@ -2218,6 +2218,11 @@ export class RequestRepository {
         .sort([['updatedAt', 1]])
         .limit(1);
 
+      if(requests.length === 0) {
+        return {
+          isItCreateInLego: false,
+        };
+      }
       // switch(requests[0].toObject().type)
       const tempRequest = requests[0];
       // tempRequest.toObject();
