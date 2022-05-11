@@ -212,6 +212,10 @@ export const config = {
       .default('טוראי,רב"ט,סמל,סמ"ר')
       .asString()
       ?.split(','),
+    SHOW_CONVERT_BUTTON: env
+      .get('UI_SHOW_CONVERT_BUTTON')
+      .default('true')
+      .asBool(),
     KARTOFFEL_SERVICE_TYPES: env
       .get('UI_KARTOFFEL_SERVICE_TYPES')
       .default('חובה,חובה בתנאי קבע,קבע,מילואים')
