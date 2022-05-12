@@ -613,6 +613,11 @@ export const changeRoleHierarchyReqSchema = Joi.object({
 const deleteRoleKartoffelParamsObj = Joi.object({
   roleId: Joi.string().required(),
   uniqueId: Joi.string().required(),
+  jobTitle: Joi.string(),
+  firstName: Joi.string(),
+  lastName: Joi.string(),
+  identityCard: Joi.string(),
+  personalNumber: Joi.string(),
 });
 
 const deleteRoleADParamsObj = Joi.object({
@@ -642,12 +647,11 @@ export const deleteRoleSchema = Joi.object({
 
 const deleteOGKartoffelParamsObj = Joi.object({
   id: Joi.string().required(),
+  name: Joi.string()
 });
 
 const deleteOGADParamsObj = Joi.object({
   ouDisplayName: Joi.string().required(),
-  ouName: Joi.string().required(),
-  name: Joi.string().required(),
 });
 
 export const deleteOGSchema = Joi.object({
