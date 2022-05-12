@@ -35,6 +35,7 @@ service Kartoffel {
     rpc RenameOG(RenameOGRequest) returns (SuccessMessage){}
     rpc GetPrefixByOGId(GetPrefixByOGIdRequest) returns (OGPrefix){}
     rpc IsOGNameAlreadyTaken(IsOGNameAlreadyTakenReq) returns (IsOGNameAlreadyTakenRes){}
+    rpc ExportHierarchyData(ExportHierarchyDataReq) returns (ExportHierarchyDataRes){}
 
     //DI    
     rpc CreateDI(CreateDIRequest) returns (UniqueIdMessage){}
@@ -93,6 +94,24 @@ message IsOGNameAlreadyTakenRes{
     bool isOGNameAlreadyTaken = 1;
 }
 
+message ExportHierarchyDataReq{
+    string hierarchy = 1;
+    bool withRoles = 2;
+    optional bool direct = 3;
+}
+
+message ExportHierarchyDataRes{
+    repeated HierarchyData hierarchyData=1;
+    string fatherHierarchyName = 2;
+}
+
+message HierarchyData{
+    string hierarchyName=1;
+    string jobTitle=2;
+    string roleId=3; 
+    string upn=4; 
+    string entity=5; 
+}
 
 message IsJobTitleAlreadyTakenReq{
     string jobTitle = 1;
@@ -163,6 +182,8 @@ message GetOGByIdRequest{
 message GetOGByHierarchyNameRequest{
     string hierarchy = 1;
     bool withRoles = 2;
+    optional bool direct = 3;
+
 }
 
 message DeleteEntityRequest{

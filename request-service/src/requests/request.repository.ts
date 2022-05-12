@@ -1599,6 +1599,10 @@ export class RequestRepository {
         request.needSecurityDecision = true;
         request.needSuperSecurityDecision = true;
         break;
+      case RequestType.CONVERT_ENTITY_TYPE:
+        request.needSecurityDecision = false;
+        request.needSuperSecurityDecision = false;
+        break;
       case RequestType.ADD_APPROVER:
         const approverType = approverTypeFromJSON(
           request.additionalParams.type

@@ -121,7 +121,7 @@ export const config = {
       .asString(),
     USER_EXTERNAL_ENTITY_TYPE: env
       .get('UI_USER_EXTERNAL_ENTITY_TYPE')
-      .default('external')
+      .default('External')
       .asString(),
     USER_CLEARANCE: env
       .get('UI_USER_CLEARANCE')
@@ -141,7 +141,7 @@ export const config = {
     USER_DI_TYPE: env.get('UI_DI_TYPE').default('domainUser').asString(),
     USER_ROLE_ENTITY_TYPE: env
       .get('UI_ROLE_ENTITY_TYPE')
-      .default('goalUser')
+      .default('GoalUser')
       .asString(),
     SECURITY_MAIL: env
       .get('UI_SECURITY_MAIL')
@@ -212,6 +212,10 @@ export const config = {
       .default('טוראי,רב"ט,סמל,סמ"ר')
       .asString()
       ?.split(','),
+    SHOW_CONVERT_BUTTON: env
+      .get('UI_SHOW_CONVERT_BUTTON')
+      .default('true')
+      .asBool(),
     KARTOFFEL_SERVICE_TYPES: env
       .get('UI_KARTOFFEL_SERVICE_TYPES')
       .default('חובה,חובה בתנאי קבע,קבע,מילואים')

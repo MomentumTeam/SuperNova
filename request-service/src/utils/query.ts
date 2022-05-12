@@ -128,8 +128,17 @@ export function getIdQuery(
 export function getStatusQuery(status: any) {
   const requestStatus =
     typeof status === typeof '' ? status : requestStatusToJSON(status);
-  if (requestStatus === requestStatusToJSON(RequestStatus.APPROVED_BY_COMMANDER)) {
-    return { status: { $in: [requestStatus, requestStatusToJSON(RequestStatus.APPROVED_BY_ADMIN)] } };
+  if (
+    requestStatus === requestStatusToJSON(RequestStatus.APPROVED_BY_COMMANDER)
+  ) {
+    return {
+      status: {
+        $in: [
+          requestStatus,
+          requestStatusToJSON(RequestStatus.APPROVED_BY_ADMIN),
+        ],
+      },
+    };
   }
   return { status: requestStatus };
 }
