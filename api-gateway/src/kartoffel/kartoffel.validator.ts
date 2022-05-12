@@ -29,6 +29,7 @@ import {
   searchOGSchema,
   SearchRolesByRoleIdValidSchema,
   exportHierarchyDataSchema,
+  SearchSamAccountNameValidSchema,
 } from './kartoffel.schema';
 export class KartoffelValidator {
   // Entities
@@ -311,6 +312,19 @@ export class KartoffelValidator {
     transformRequest(
       req,
       validateObject(req, GetDIByUniqueIdValidSchema, { allowUnknown: true })
+    );
+    next();
+  }
+
+  // LDAP
+    static isSearchSamAccountNameValid(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    transformRequest(
+      req,
+      validateObject(req, SearchSamAccountNameValidSchema, { allowUnknown: true })
     );
     next();
   }
