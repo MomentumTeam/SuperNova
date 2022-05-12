@@ -5,11 +5,11 @@ export const port =
     : process.env.TS_PORT || '8086';
 export const mongoUrl =
   process.env.TS_MONGO_URL || 'mongodb://127.0.0.1:27017/supernova';
-export const soldier = process.env.TS_SOLDIER || 'soldier';
-export const external = process.env.TS_EXTERNAL || 'external';
-export const reserved = process.env.TS_RESERVED || 'reserved';
-export const civilian = process.env.TS_CIVILIAN || 'civilian';
-export const goalUser = process.env.TS_GOAL_USER || 'goalUser';
+export const soldier = process.env.TS_SOLDIER || 'Soldier';
+export const external = process.env.TS_EXTERNAL || 'External';
+export const reserved = process.env.TS_RESERVED || 'Reserved';
+export const civilian = process.env.TS_CIVILIAN || 'Civilian';
+export const goalUser = process.env.TS_GOAL_USER || 'GoalUser';
 export const kartoffelServiceUrl = process.env.TS_KS_URL || '0.0.0.0:8082';
 
 export const needInit = process.env.TS_NEED_INIT

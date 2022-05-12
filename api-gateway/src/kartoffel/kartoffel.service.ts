@@ -9,6 +9,7 @@ import {
   DigitalIdentity,
   Entity,
   EntityArray,
+  ExportHierarchyDataRes,
   GetAllOGsRequest,
   GetAllRolesRequest,
   GetChildrenOfOGRequest,
@@ -477,6 +478,32 @@ export class KartoffelService {
 
           logger.info(`getOGByHierarchyName OK in GTW`, {
             callRequest: getOGByHierarchyNameReq,
+          });
+          resolve(response);
+        }
+      );
+    });
+  }
+
+  static async exportHierarchyData(
+    exportHierarchyDataReq: ExportHierarchyDataRes
+  ) {
+    logger.info(`Call to exportHierarchyData in GTW`, exportHierarchyDataReq);
+
+    return new Promise((resolve, reject) => {
+      randomClient().ExportHierarchyData(
+        exportHierarchyDataReq,
+        (err: any, response: ExportHierarchyDataRes) => {
+          if (err) {
+            logger.error(`exportHierarchyData ERROR in GTW`, {
+              err,
+              callRequest: exportHierarchyDataReq,
+            });
+            reject(err);
+          }
+
+          logger.info(`exportHierarchyData OK in GTW`, {
+            callRequest: exportHierarchyDataReq,
           });
           resolve(response);
         }

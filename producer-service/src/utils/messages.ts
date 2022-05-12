@@ -356,16 +356,8 @@ export function generateADQueueMessage(
     case RequestType.CONVERT_ENTITY_TYPE:
       message.data = {
         samAccountName: adParams.samAccountName,
-        firstName: adParams.firstName,
-        lastName: adParams.lastName,
-        fullName: adParams.fullName,
-        roleSerialCode: adParams.roleSerialCode,
+        upn: `${adParams.upn}@${C.upnSuffix}`,
       };
-      if (adParams.upn) {
-        message.data.upn = adParams.upn;
-      } else if (adParams.rank) {
-        message.data.rank = adParams.rank;
-      }
       break;
     default:
       throw new Error("type not supported!");

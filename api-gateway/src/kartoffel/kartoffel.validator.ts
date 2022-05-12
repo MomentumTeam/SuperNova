@@ -28,6 +28,7 @@ import {
   searchEntitiesByFullNameSchema,
   searchOGSchema,
   SearchRolesByRoleIdValidSchema,
+  exportHierarchyDataSchema,
 } from './kartoffel.schema';
 export class KartoffelValidator {
   // Entities
@@ -124,7 +125,9 @@ export class KartoffelValidator {
   ) {
     transformRequest(
       req,
-      validateObject(req, getPictureByEntityIdentifierSchema, { allowUnknown: true })
+      validateObject(req, getPictureByEntityIdentifierSchema, {
+        allowUnknown: true,
+      })
     );
     next();
   }
@@ -162,6 +165,18 @@ export class KartoffelValidator {
     transformRequest(
       req,
       validateObject(req, GetOGByIdSchema, { allowUnknown: true })
+    );
+    next();
+  }
+
+  static isExportHierarchyDataValid(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    transformRequest(
+      req,
+      validateObject(req, exportHierarchyDataSchema, { allowUnknown: true })
     );
     next();
   }
@@ -264,17 +279,27 @@ export class KartoffelValidator {
     res: Response,
     next: NextFunction
   ) {
-    transformRequest(req, validateObject(req, SearchRolesByRoleIdValidSchema, { allowUnknown: true }));
+    transformRequest(
+      req,
+      validateObject(req, SearchRolesByRoleIdValidSchema, {
+        allowUnknown: true,
+      })
+    );
     next();
   }
 
   // DI
-   static isSearchDIsByUniqueIdValid(
+  static isSearchDIsByUniqueIdValid(
     req: Request,
     res: Response,
     next: NextFunction
   ) {
-    transformRequest(req, validateObject(req, SearchDIsByUniqueIdValidSchema, { allowUnknown: true }));
+    transformRequest(
+      req,
+      validateObject(req, SearchDIsByUniqueIdValidSchema, {
+        allowUnknown: true,
+      })
+    );
     next();
   }
 
@@ -283,7 +308,10 @@ export class KartoffelValidator {
     res: Response,
     next: NextFunction
   ) {
-    transformRequest(req, validateObject(req, GetDIByUniqueIdValidSchema, { allowUnknown: true }));
+    transformRequest(
+      req,
+      validateObject(req, GetDIByUniqueIdValidSchema, { allowUnknown: true })
+    );
     next();
   }
 }

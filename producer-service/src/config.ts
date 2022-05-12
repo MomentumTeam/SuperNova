@@ -32,6 +32,7 @@ export const shmuelRequestTypes: any = {
   DISCONNECT_ROLE: 'DisconnectRole',
   CHANGE_ROLE_HIERARCHY: 'ChangeRole',
   DELETE_ROLE: 'PurgeRole',
+  CONVERT_ENTITY_TYPE: 'ChangeUPN',
 };
 
 export const adAllowedSubmitters = process.env.PS_AD_ALLOWED_SUBMITTERS
