@@ -64,6 +64,17 @@ service Kartoffel {
 
     // Health
     rpc GetIsHealthy(GetIsHealthyReq) returns (GetIsHealthyRes){}
+
+    // LDAP
+    rpc SearchSamAccountName(SearchSamAccountNameReq) returns (SearchSamAccountNameRes) {}
+}
+
+message SearchSamAccountNameReq {
+    string samAccountName = 1;
+}
+
+message SearchSamAccountNameRes {
+    string lastLogonTimestamp = 1;
 }
 
 message GetRoleIdSuffixByOGReq{

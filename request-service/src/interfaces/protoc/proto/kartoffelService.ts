@@ -4,6 +4,14 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "Kartoffel";
 
+export interface SearchSamAccountNameReq {
+  samAccountName: string;
+}
+
+export interface SearchSamAccountNameRes {
+  lastLogonTimestamp: string;
+}
+
 export interface GetRoleIdSuffixByOGReq {
   id: string;
 }
@@ -504,6 +512,152 @@ export interface RoleIdMessage {
 export interface UniqueIdMessage {
   uniqueId: string;
 }
+
+const baseSearchSamAccountNameReq: object = { samAccountName: "" };
+
+export const SearchSamAccountNameReq = {
+  encode(
+    message: SearchSamAccountNameReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.samAccountName !== "") {
+      writer.uint32(10).string(message.samAccountName);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): SearchSamAccountNameReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseSearchSamAccountNameReq,
+    } as SearchSamAccountNameReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.samAccountName = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SearchSamAccountNameReq {
+    const message = {
+      ...baseSearchSamAccountNameReq,
+    } as SearchSamAccountNameReq;
+    if (object.samAccountName !== undefined && object.samAccountName !== null) {
+      message.samAccountName = String(object.samAccountName);
+    } else {
+      message.samAccountName = "";
+    }
+    return message;
+  },
+
+  toJSON(message: SearchSamAccountNameReq): unknown {
+    const obj: any = {};
+    message.samAccountName !== undefined &&
+      (obj.samAccountName = message.samAccountName);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<SearchSamAccountNameReq>
+  ): SearchSamAccountNameReq {
+    const message = {
+      ...baseSearchSamAccountNameReq,
+    } as SearchSamAccountNameReq;
+    if (object.samAccountName !== undefined && object.samAccountName !== null) {
+      message.samAccountName = object.samAccountName;
+    } else {
+      message.samAccountName = "";
+    }
+    return message;
+  },
+};
+
+const baseSearchSamAccountNameRes: object = { lastLogonTimestamp: "" };
+
+export const SearchSamAccountNameRes = {
+  encode(
+    message: SearchSamAccountNameRes,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.lastLogonTimestamp !== "") {
+      writer.uint32(10).string(message.lastLogonTimestamp);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): SearchSamAccountNameRes {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseSearchSamAccountNameRes,
+    } as SearchSamAccountNameRes;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.lastLogonTimestamp = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SearchSamAccountNameRes {
+    const message = {
+      ...baseSearchSamAccountNameRes,
+    } as SearchSamAccountNameRes;
+    if (
+      object.lastLogonTimestamp !== undefined &&
+      object.lastLogonTimestamp !== null
+    ) {
+      message.lastLogonTimestamp = String(object.lastLogonTimestamp);
+    } else {
+      message.lastLogonTimestamp = "";
+    }
+    return message;
+  },
+
+  toJSON(message: SearchSamAccountNameRes): unknown {
+    const obj: any = {};
+    message.lastLogonTimestamp !== undefined &&
+      (obj.lastLogonTimestamp = message.lastLogonTimestamp);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<SearchSamAccountNameRes>
+  ): SearchSamAccountNameRes {
+    const message = {
+      ...baseSearchSamAccountNameRes,
+    } as SearchSamAccountNameRes;
+    if (
+      object.lastLogonTimestamp !== undefined &&
+      object.lastLogonTimestamp !== null
+    ) {
+      message.lastLogonTimestamp = object.lastLogonTimestamp;
+    } else {
+      message.lastLogonTimestamp = "";
+    }
+    return message;
+  },
+};
 
 const baseGetRoleIdSuffixByOGReq: object = { id: "" };
 
@@ -8336,6 +8490,10 @@ export interface Kartoffel {
   SearchRoleByRoleId(request: SearchRoleByRoleIdReq): Promise<RoleArray>;
   /** Health */
   GetIsHealthy(request: GetIsHealthyReq): Promise<GetIsHealthyRes>;
+  /** LDAP */
+  SearchSamAccountName(
+    request: SearchSamAccountNameReq
+  ): Promise<SearchSamAccountNameRes>;
 }
 
 export class KartoffelClientImpl implements Kartoffel {
@@ -8396,6 +8554,7 @@ export class KartoffelClientImpl implements Kartoffel {
     this.GetRoleIdSuffixByOG = this.GetRoleIdSuffixByOG.bind(this);
     this.SearchRoleByRoleId = this.SearchRoleByRoleId.bind(this);
     this.GetIsHealthy = this.GetIsHealthy.bind(this);
+    this.SearchSamAccountName = this.SearchSamAccountName.bind(this);
   }
   CreateEntity(request: CreateEntityRequest): Promise<IdMessage> {
     const data = CreateEntityRequest.encode(request).finish();
@@ -8895,6 +9054,20 @@ export class KartoffelClientImpl implements Kartoffel {
       data
     );
     return promise.then((data) => GetIsHealthyRes.decode(new _m0.Reader(data)));
+  }
+
+  SearchSamAccountName(
+    request: SearchSamAccountNameReq
+  ): Promise<SearchSamAccountNameRes> {
+    const data = SearchSamAccountNameReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "SearchSamAccountName",
+      data
+    );
+    return promise.then((data) =>
+      SearchSamAccountNameRes.decode(new _m0.Reader(data))
+    );
   }
 }
 
