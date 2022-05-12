@@ -15,6 +15,7 @@ import {
   UpdateEntityRequest,
   DisconnectRoleAndDIRequest,
   DeleteEntityRequest,
+  DisconnectDIFromEntityRequest,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { logger } from '../utils/logger';
 import { config } from '../config';
@@ -280,21 +281,21 @@ export const updateEntity = async (
   }
 };
 
-export const disconnectRoleAndDI = async (
-  disconnectRoleAndDIRequest: DisconnectRoleAndDIRequest
+export const disconnectDIFromEntity = async (
+  disconnectDIFromEntityRequest: DisconnectDIFromEntityRequest
 ) => {
   try {
     logger.info(
-      'disconnectRoleAndDI request received',
-      disconnectRoleAndDIRequest
+      'disconnectDIFromEntity request received',
+      disconnectDIFromEntityRequest
     );
-    const { roleId, uniqueId } = disconnectRoleAndDIRequest;
+    const { id, uniqueId } = disconnectDIFromEntityRequest;
     const successMessage: SuccessMessage =
-      await KartoffelService.disconnectRoleAndDI({
-        roleId: roleId,
+      await KartoffelService.disconnectDIFromEntity({
+        id: id,
         uniqueId: uniqueId,
       });
-    logger.info('Successfuly disconnected role from DI', successMessage);
+    logger.info('Successfuly disconnected role from entity', successMessage);
   } catch (error) {
     throw error;
   }
