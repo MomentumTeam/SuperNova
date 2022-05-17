@@ -1,11 +1,10 @@
-import { ldapCN, ldapConnectionTimeout, ldapDC, ldapOU, ldapPassword, ldapUrl } from "../config";
+import { ldapBaseDN, ldapCN, ldapConnectionTimeout, ldapPassword, ldapUrl } from "../config";
 import { logger } from "../logger";
 import { Client } from "ldapts";
 
 
 export class LdapUtils {
   private ldapClient: Client;
-  private baseDN: string = `OU=${ldapOU},${ldapDC.map((ldapdc) => `dc=${ldapdc}`).join(",")}`;
 
   constructor() {
     this.ldapClient = new Client({ url: ldapUrl, connectTimeout: parseInt(ldapConnectionTimeout, 10) });
@@ -15,8 +14,9 @@ export class LdapUtils {
   async bindClient() {
     try {
       logger.info("LDAP BIND-START");
-      await this.ldapSearch.bind(`cn=${ldapCN}`, ldapPassword);
+      await this.ldapClient.bind(ldapCN, ldapPassword)
       logger.info("LDAP BIND-OK");
+  
     } catch (ex: any) {
       logger.error(`LDAP bind - ERROR`, {
         error: { message: ex.message },
@@ -32,8 +32,7 @@ export class LdapUtils {
   async ldapSearch(filter: string, attributes: any = []): Promise<any> {
     return new Promise((resolve, reject) => {
       this.ldapClient
-        .search(this.baseDN, {
-          scope: "sub",
+        .search(ldapBaseDN, {
           filter: filter,
           attributes: attributes,
         })

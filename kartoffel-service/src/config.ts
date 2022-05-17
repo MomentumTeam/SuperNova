@@ -71,8 +71,7 @@ export const healthCheckInterval = parseInt(process.env.KS_HEALTH_CHECK_INTERVAL
 
 export const ldapUrl = process.env.KS_LDAP_URL || "ldap://ldap.forumsys.com:389";
 
-export const ldapOU = process.env.KS_LDAP_OU || "mathematicians";
-export const ldapDC = process.env.KS_LDAP_DC ? process.env.KS_LDAP_DC.split(",") : ["example","com"];
-export const ldapCN = process.env.KS_LDAP_CN || "read-only-admin";
+export const ldapBaseDN = process.env.KS_LDAP_BASE_DN || "OU=mathematicians,DC=example,DC=com";
+export const ldapCN = process.env.KS_LDAP_CN || "cn=read-only-admin";
 export const ldapPassword = process.env.KS_LDAP_PASSWORD || "password";
 export const ldapConnectionTimeout = process.env.KS_LDAP_TIMEOUT || "2000";

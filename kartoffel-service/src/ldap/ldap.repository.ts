@@ -11,12 +11,15 @@ export class LdapRepository {
   async searchSamAccountName(searchSamAccountNameReq: SearchSamAccountNameReq): Promise<SearchSamAccountNameRes> {
     try {
       cleanUnderscoreFields(searchSamAccountNameReq);
-      const res: SearchSamAccountNameRes = await this.ldapUtils.ldapSearch(
+      const res: any = await this.ldapUtils.ldapSearch(
         `(samAccountName=${searchSamAccountNameReq.samAccountName})`,
         ["lastLogonTimestamp", "givenName"]
       );
 
-      if (res?.lastLogonTimestamp) return res
+      if (res?.searchEntries && res.searchEntries.length > 0 && res.searchEntries[0]?.lastLogonTimestamp) {
+        return res.searchEntries[0].lastLogonTimestamp;
+      }
+
       return {lastLogonTimestamp: 'unknown'}
     } catch (error) {
       throw error;
