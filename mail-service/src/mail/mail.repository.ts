@@ -231,9 +231,9 @@ ${
 <a href="${C.legoAddress}"> כאן. </a></p>
 <hr class="rounded" />
 <div style="line-height: 10px;" align="center">
-<img src="cid:svg@cid"  width="90"/>
-<img src="cid:lego2@cid" style="margin-right: 40px;margin-left: 40px;" width="70" />
-<img src="cid:logo@cid"  width="128"/></div>
+<img src="cid:sapirLogo@cid"  width="90"/>
+<img src="cid:lego@cid" style="margin-right: 40px;margin-left: 40px;" width="70" />
+<img src="cid:yesodotLogo@cid"  width="128"/></div>
 <hr class="rounded" /></td>
 </tr>
 </tbody>

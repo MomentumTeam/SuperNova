@@ -222,6 +222,7 @@ services:
       - ./supernova.env
     volumes:
       - logs:/logs
+      - mail-images:/mailImages
     ports:
       - '8088:8080'
     depends_on:
@@ -238,6 +239,8 @@ services:
       - MS_IS_TEST=true
       - MS_EMAILS_FOR_TEST=steindl.barak@gmail.com,liorayacob10@gmail.com
       - MS_LEGO_ADDRESS=http://localhost:3000
+      - MS_IMAGES_PATH=/mailImages
+
 
   kartoffel-consumer:
     image: kartoffel-consumer
@@ -303,7 +306,7 @@ services:
       - WLS_MINUTE=0
       - WLS_CRON_JOB=false
       - WLS_LOG_PATH=/logs
-
+      
   # approvers-init-script:
   #   image: approvers-init-script
   #   build: ./approvers-init-script/
@@ -369,6 +372,7 @@ services:
     volumes:
       - bulk-files:/bulkFiles
       - spike-utils:/spikeUtils
+      - mail-images:/mailImages
       - logs:/logs
     ports:
       - '2000:8080'
@@ -422,6 +426,7 @@ services:
 volumes:
   bulk-files:
   spike-utils:
+  mail-images:
   ais-excel-files:
   tea-utils:
   logs:

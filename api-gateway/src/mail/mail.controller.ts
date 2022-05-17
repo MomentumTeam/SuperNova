@@ -17,10 +17,7 @@ export default class MailController {
     };
 
     try {
-      const successMessage = await MailService.sendHierarchyDataMail(
-        sendHierarchyDataReq
-      );
-      res.send(successMessage);
+      await MailService.sendHierarchyDataMail(sendHierarchyDataReq);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);

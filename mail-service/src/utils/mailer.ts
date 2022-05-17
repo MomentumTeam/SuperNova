@@ -14,23 +14,18 @@ import path from 'path';
 const images = [
   {
     filename: 'yesodotLogo.png',
-    path: path.join(__dirname, '../images/logo.png'),
-    cid: 'logo@cid',
+    path: path.join(`${C.localMailImagesFullPath}/logo.png`),
+    cid: 'yesodotLogo@cid',
   },
   {
-    filename: 'lego2.png',
-    path: path.join(__dirname, '../images/lego2.png'),
-    cid: 'lego2@cid',
+    filename: 'lego.png',
+    path: path.join(`${C.localMailImagesFullPath}/lego2.png`),
+    cid: 'lego@cid',
   },
   {
-    filename: 'sapirLogo.png',
-    path: path.join(__dirname, '../images/icon-label2.png'),
+    filename: 'sapirLogo.svg',
+    path: path.join(`${C.localMailImagesFullPath}/sapirL.svg`),
     cid: 'sapirLogo@cid',
-  },
-  {
-    filename: 'sapirL.svg',
-    path: path.join(__dirname, '../images/sapirL.svg'),
-    cid: 'svg@cid',
   },
 ];
 
@@ -51,7 +46,7 @@ export function sendMail(mailOptions: any) {
         pass: C.mailPassword,
       },
     });
-    
+
     transporter.sendMail(mailOptions, function (error: any, info: any) {
       if (error) {
         reject(error);
