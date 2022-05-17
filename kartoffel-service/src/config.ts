@@ -69,9 +69,10 @@ export const defaultImage =
 export const healthCheckInterval = parseInt(process.env.KS_HEALTH_CHECK_INTERVAL || '30000');
 
 
-export const ldapUrl = process.env.KS_LDAP_URL || "ldap://services.idf:1389";
+export const ldapUrl = process.env.KS_LDAP_URL || "ldap://ldap.forumsys.com:389";
 
-export const ldapOU = process.env.KS_LDAP_OU || "Hagdarot";
-export const ldapDC = process.env.KS_LDAP_DC ? process.env.KS_LDAP_DC.split(",") : ["services", "idf"];
-export const ldapCN = process.env.KS_LDAP_CN || "srv_lego_ldap_query";
+export const ldapOU = process.env.KS_LDAP_OU || "mathematicians";
+export const ldapDC = process.env.KS_LDAP_DC ? process.env.KS_LDAP_DC.split(",") : ["example","com"];
+export const ldapCN = process.env.KS_LDAP_CN || "read-only-admin";
 export const ldapPassword = process.env.KS_LDAP_PASSWORD || "password";
+export const ldapConnectionTimeout = process.env.KS_LDAP_TIMEOUT || "2000";

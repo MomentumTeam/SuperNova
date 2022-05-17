@@ -15,7 +15,9 @@ export class LdapRepository {
         `(samAccountName=${searchSamAccountNameReq.samAccountName})`,
         ["lastLogonTimestamp", "givenName"]
       );
-        return res;
+
+      if (res?.lastLogonTimestamp) return res
+      return {lastLogonTimestamp: 'unknown'}
     } catch (error) {
       throw error;
     }

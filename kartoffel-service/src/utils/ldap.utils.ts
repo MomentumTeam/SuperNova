@@ -1,34 +1,48 @@
-import { ldapCN, ldapDC, ldapOU, ldapPassword, ldapUrl } from "../config";
+import { ldapCN, ldapConnectionTimeout, ldapDC, ldapOU, ldapPassword, ldapUrl } from "../config";
 import { logger } from "../logger";
+import { Client } from "ldapts";
 
-const SimpleLDAP = require("simple-ldap-search");
 
 export class LdapUtils {
-  private ldapClient: any;
+  private ldapClient: Client;
+  private baseDN: string = `OU=${ldapOU},${ldapDC.map((ldapdc) => `dc=${ldapdc}`).join(",")}`;
 
-  // TODO: add encode uri here
   constructor() {
-    const config = {
-      url: ldapUrl,
-      base: `OU=${ldapOU} ${ldapDC.map((ldapdc) => `,dc=${ldapdc}`)}`,
-      dn: `cn=${ldapCN}`,
-      password: ldapPassword,
-      // optionally pass tls options to ldapjs
-      tlsOptions: {
-        // tls options ...
-      },
-    };
-    this.ldapClient = new SimpleLDAP(config);
+    this.ldapClient = new Client({ url: ldapUrl, connectTimeout: parseInt(ldapConnectionTimeout, 10) });
+    this.bindClient();
+  }
+
+  async bindClient() {
+    try {
+      logger.info("LDAP BIND-START");
+      await this.ldapSearch.bind(`cn=${ldapCN}`, ldapPassword);
+      logger.info("LDAP BIND-OK");
+    } catch (ex: any) {
+      logger.error(`LDAP bind - ERROR`, {
+        error: { message: ex.message },
+      });
+      throw ex;
+    }
+  }
+
+  async unbindClient() {
+    await this.ldapClient.unbind();
   }
 
   async ldapSearch(filter: string, attributes: any = []): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.ldapClient.search(filter, attributes)
+      this.ldapClient
+        .search(this.baseDN, {
+          scope: "sub",
+          filter: filter,
+          attributes: attributes,
+        })
         .then((res: any) => {
           logger.info(`LDAP SEARCH Request - OK`, {
             filter: filter,
-            attributes: attributes
+            attributes: attributes,
           });
+          console.log(res.data)
           resolve(res.data);
         })
         .catch((error: any) => {
