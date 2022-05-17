@@ -128,7 +128,7 @@ export const exportHierarchyDataSchema = Joi.object({
   params: {},
   query: {
     hierarchy: Joi.string().required(),
-    withRoles: Joi.boolean().default(false),
+    withRoles: Joi.boolean().default(true),
     direct: Joi.boolean().default(true),
   },
 });

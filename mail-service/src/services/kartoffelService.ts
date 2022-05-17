@@ -4,6 +4,8 @@ import path from 'path';
 import * as config from '../config';
 import {
   Entity,
+  ExportHierarchyDataReq,
+  ExportHierarchyDataRes,
   GetEntityByIdRequest,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { logger } from '../logger';
@@ -50,6 +52,38 @@ export default class KartoffelService {
               entity,
             });
             resolve(entity);
+          }
+        }
+      );
+    });
+  }
+
+  static async exportHierarchyData(
+    exportHierarchyDataReq: ExportHierarchyDataReq
+  ): Promise<ExportHierarchyDataRes> {
+    return new Promise((resolve, reject) => {
+      kartoffelClient.ExportHierarchyData(
+        exportHierarchyDataReq,
+        (err: any, hierarchyData: ExportHierarchyDataRes) => {
+          if (err) {
+            logger.error('exportHierarchyData in KartoffelService ERROR', {
+              exportHierarchyDataReq,
+              err,
+            });
+            reject(err);
+          } else {
+            const hierarchyName = {
+              fatherHierarchyName: hierarchyData?.fatherHierarchyName
+            };
+            logger.info('exportHierarchyData in KartoffelService', {
+              exportHierarchyDataReq,
+              hierarchyInfo: {
+                fatherHierarchyName: hierarchyData?.fatherHierarchyName,
+                rowsNumber: hierarchyData.hierarchyData.length,
+              },
+            });
+      
+            resolve(hierarchyData);
           }
         }
       );

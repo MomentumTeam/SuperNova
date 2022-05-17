@@ -211,6 +211,10 @@ export class GroupsRepository {
       //TODO - add faker
 
       const groupData = await this.getOGByHierarchyName(exportHierarchyDataReq);
+     
+      groupData.directRoles.sort((a: any, b: any) =>
+        a.directGroup > b.directGroup ? 1 : -1
+      );
 
       const hierarchyData: any[] = await exportHierarchyData(
         groupData,
