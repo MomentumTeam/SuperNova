@@ -17,7 +17,7 @@ export class LdapRepository {
       );
 
       if (res && res.length > 0 && res[0]?.lastLogonTimestamp) {
-        return res[0].lastLogonTimestamp;
+        return res[0];
       }
 
       return {lastLogonTimestamp: 'unknown'}
