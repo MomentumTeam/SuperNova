@@ -41,8 +41,8 @@ export class LdapUtils {
             filter: filter,
             attributes: attributes,
           });
-          console.log(res.data)
-          resolve(res.data);
+          console.log(res?.searchEntries);
+          resolve(res?.searchEntries);
         })
         .catch((error: any) => {
           logger.error(`LDAP SEARCH Request - ERROR`, {
