@@ -15,6 +15,7 @@ import {
   UpdateEntityRequest,
   DisconnectRoleAndDIRequest,
   DeleteEntityRequest,
+  DisconnectDIFromEntityRequest,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { logger } from '../utils/logger';
 import { config } from '../config';
@@ -235,6 +236,24 @@ export const deleteEntity = async (
   }
 };
 
+export const disconnectDIFromEntity = async (
+  disconnectDIFromEntityRequest: DisconnectDIFromEntityRequest
+) => {
+  try {
+    logger.info(
+      'disconnectDIFromEntity request received',
+      disconnectDIFromEntityRequest
+    );
+    const successMessage: SuccessMessage =
+      await KartoffelService.disconnectDIFromEntity(
+        disconnectDIFromEntityRequest
+      );
+    logger.info('Successfuly disconnect DI from entity');
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const renameRole = async (renameRoleRequest: RenameRoleRequest) => {
   try {
     logger.info('renameRole request received', renameRoleRequest);
@@ -328,7 +347,8 @@ export const changeRoleOG = async (changeRoleHierarchyReq: any) => {
 export const convertEntity = async (convertEntityRequest: any) => {
   try {
     logger.info('convertEntity request received', convertEntityRequest);
-    const { id, uniqueId, newEntityType, identifier, upn } = convertEntityRequest;
+    const { id, uniqueId, newEntityType, identifier, upn } =
+      convertEntityRequest;
     await KartoffelService.disconnectDIFromEntity({
       id: id,
       uniqueId: uniqueId,
@@ -348,7 +368,11 @@ export const convertEntity = async (convertEntityRequest: any) => {
       }
     }
     await KartoffelService.updateEntity(updateEntityRequest);
-    await KartoffelService.connectEntityAndDI({ id: id, uniqueId: uniqueId, upn: upn });    
+    await KartoffelService.connectEntityAndDI({
+      id: id,
+      uniqueId: uniqueId,
+      upn: upn,
+    });
     logger.info('Successfuly converted entity');
   } catch (error) {
     throw error;

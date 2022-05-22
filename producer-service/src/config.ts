@@ -6,6 +6,7 @@ export const port =
 export const queueApi =
   process.env.PS_QUEUE_API_URL || 'https://www.google.com';
 export const requestServiceUrl = process.env.PS_RS_URL || '0.0.0.0:8081';
+export const teaServiceUrl = process.env.PS_TS_URL || '0.0.0.0:8086';
 export const devMode = process.env.PS_DEV_MODE
   ? process.env.PS_DEV_MODE === 'true'
   : true;
@@ -32,6 +33,7 @@ export const shmuelRequestTypes: any = {
   DISCONNECT_ROLE: 'DisconnectRole',
   CHANGE_ROLE_HIERARCHY: 'ChangeRole',
   DELETE_ROLE: 'PurgeRole',
+  CONVERT_ENTITY_TYPE: 'ChangeUPN',
 };
 
 export const adAllowedSubmitters = process.env.PS_AD_ALLOWED_SUBMITTERS

@@ -1,0 +1,171 @@
+syntax = "proto3";
+import "requestService.proto"; 
+
+package ApproverService;
+
+service ApproverService {
+    rpc AddApprover(AddApproverReq) returns (Approver) {}
+    rpc GetUserType(GetUserTypeReq) returns (GetUserTypeRes) {}
+    rpc SearchApproverByDisplayName(SearchByDisplayNameReq) returns (ApproverArray) {}
+    rpc SearchApproverByDomainUser(SearchByDomainUserReq) returns (ApproverArray) {}
+    rpc GetApproverByEntityId(GetApproverByEntityIdReq) returns (Approver){}
+    rpc GetAllMyApproverTypes(GetAllApproverTypesReq) returns (GetAllApproverTypesRes){}
+    
+    rpc UpdateApproverDecision(UpdateApproverDecisionReq) returns (RequestService.Request) {}
+
+    rpc SearchHighCommandersByDisplayName(SearchHighCommandersByDisplayNameReq) returns (ApproverArray) {}
+
+    rpc GetAllApprovers(GetAllApproversReq) returns (ApproverArray) {}
+    rpc GetAllApproverIds(GetAllApproversReq) returns (ApproverIdArray) {}
+    rpc SyncApprover(SyncApproverReq) returns (ApproverArray){}
+    rpc DeleteApprover(DeleteApproverReq) returns (SuccessMessage){}
+    rpc IsApproverValidForOG(IsApproverValidForOGReq) returns (IsApproverValidForOGRes){}
+    rpc GetAdminsByGroupIds(GetAdminsByGroupIdsReq) returns (ApproverArray){}
+    rpc GetAdminsAboveGroupId(GetAdminsAboveGroupIdReq) returns (ApproverArray){}
+
+    rpc IncludesSpecialGroup(IncludesSpecialGroupReq) returns (IncludesSpecialGroupRes){}
+
+}
+
+message GetAdminsAboveGroupIdReq{
+    string groupId = 1;
+}
+
+message IncludesSpecialGroupRes{
+    bool includes= 1;
+}
+
+message IncludesSpecialGroupReq{
+    repeated string groupIds = 1;
+}
+
+
+message GetAdminsByGroupIdsReq{
+    repeated string groupIds = 1;
+}
+
+message IsApproverValidForOGReq{
+    string approverId = 1;
+    string groupId = 2;
+    optional bool isOrganization = 3;
+}
+
+message IsApproverValidForOGRes{
+    bool isValid = 1;
+}
+
+message GetApproverByEntityIdReq{
+    string entityId = 1;
+    optional RequestService.ApproverType type = 2;
+}
+
+
+message SyncApproverReq{
+    string approverId = 1;
+}
+
+message DeleteApproverReq{
+    string approverId = 1;
+    RequestService.ApproverType type =2;
+    optional string groupInChargeId = 3;
+}
+
+message ApproverIdArray{
+    repeated string approverIds = 1;
+}
+
+message GetAllApproversReq{
+    oneof option {
+        RequestService.ApproverType type =1;
+    } 
+}
+
+message SuccessMessage{
+    bool success = 1;
+}
+
+message SearchByDisplayNameReq{
+    string displayName = 1;
+    RequestService.ApproverType type = 2;
+    int32 from = 3;
+    int32 to = 4;
+
+}
+message SearchByDomainUserReq{
+    string domainUser = 1;
+    RequestService.ApproverType type = 2;
+}
+
+message ApproverArray{
+    repeated Approver approvers = 1;
+}
+
+message SearchHighCommandersByDisplayNameReq{
+    string displayName = 1;
+}
+
+message GetUserTypeReq{
+    string entityId = 1;
+}
+
+message GetUserTypeRes{
+    string entityId = 1;
+    repeated RequestService.ApproverType type = 2;
+}
+
+message AddApproverReq{
+    string entityId = 1;
+    string displayName = 2;
+    repeated string domainUsers = 3;
+    optional string akaUnit = 4;
+    RequestService.ApproverType type = 5;
+    optional string personalNumber = 6;
+    optional string identityCard = 7;
+    string directGroup = 8;
+    optional string groupInChargeId = 9;
+    optional string specialGroupId = 10;
+}
+
+message UpdateApproverDecisionReq{
+    string id = 1;
+    RequestService.ApproverDecision approverDecision = 2;
+}
+
+message Approver{
+    string entityId = 1;
+    string displayName = 2;
+    repeated string domainUsers = 3; //entity may have multiple emails
+    RequestService.ApproverType type = 4;
+    string akaUnit = 5;
+    string id = 6;
+    string personalNumber = 7;
+    string identityCard = 8;
+    string directGroup = 9;
+    repeated string groupsInCharge = 10;
+    optional string specialGroupId = 11;
+    
+}
+
+message GetAllApproverTypesReq {
+    string entityId = 1;
+}
+
+message GetAllApproverTypesRes {
+    repeated RequestService.ApproverType types = 1;
+    repeated GroupInCharge securityAdminGroupsInCharge = 2;
+    repeated GroupInCharge adminGroupsInCharge = 3;
+}
+
+message GroupInCharge {
+    string id = 1;
+    string name = 2;
+    string hierarchy = 3;
+}
+
+enum RequestStatus{
+    SUBMITTED = 0;
+    DECLINED = 1;
+    IN_PROGRESS = 2;
+    DONE = 3;
+    FAILED = 4;
+}

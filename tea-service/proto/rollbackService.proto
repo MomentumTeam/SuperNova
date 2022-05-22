@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package RollbackService;
+
+service RollbackService {
+    rpc IsRollbackValid(IsRollbackValidReq) returns (IsRollbackValidRes) {}
+    rpc RollbackInAD (RollbackReq) returns (RollbackRes) {}
+    rpc RollbackInKartoffel (RollbackReq) returns (RollbackRes);
+}
+
+message IsRollbackValidReq {
+    string id = 1;
+}
+
+message IsRollbackValidRes {
+    bool isValid = 1;
+    string message = 2;
+}
+
+message RollbackReq {
+    string id = 1;
+}
+
+message RollbackRes {
+    bool success = 1;
+    string message = 2;
+}

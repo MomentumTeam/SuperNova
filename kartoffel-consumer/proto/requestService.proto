@@ -975,6 +975,7 @@ message AdditionalParams{
     string directGroup = 8;
     optional string groupInChargeId = 9;
     optional string specialGroupId = 10;
+    optional string oldOGId = 11;
     
 }
 
@@ -999,8 +1000,9 @@ message RenameRoleKartoffelParams{
     string roleId = 2;
     optional string oldJobTitle=3;
     optional string clearance=4;
-    Kartoffel.Role role = 5;
-    optional string entityId = 6;
+    string oldClearance = 5;
+    Kartoffel.Role role = 6;
+    optional string entityId = 7;
 }
 
 message RenameRoleADParams{
@@ -1013,16 +1015,18 @@ message EditEntityKartoffelParams{
     string id = 1;
     string firstName = 2;
     string lastName = 3;
-    optional string identityCard = 4;
-    optional string personalNumber = 5;
-    optional string serviceType = 6;
-    repeated string phone = 7;
-    repeated string mobilePhone = 8;
-    optional string address = 9;
-    optional string clearance = 10;
-    optional string sex = 11;
-    optional int64 birthdate = 12;
-    optional string entityType = 13;
+    string oldFirstName = 4;
+    string oldLastName = 5;
+    optional string identityCard = 6;
+    optional string personalNumber = 7;
+    optional string serviceType = 8;
+    repeated string phone = 9;
+    repeated string mobilePhone = 10;
+    optional string address = 11;
+    optional string clearance = 12;
+    optional string sex = 13;
+    optional int64 birthdate = 14;
+    optional string entityType = 15;
 }
 
 message EditEntityADParams{
@@ -1073,6 +1077,7 @@ message AssignRoleToEntityKartoffelParams{
     optional string upn = 7;
     Kartoffel.Role role = 8;
     optional string name = 9; // currentroleat name
+    string oldUniqueId = 10;
 }
 
 message AssignRoleToEntityADParams{
@@ -1100,11 +1105,13 @@ message DisconectRoleFromEntityADParams{
 message ChangeRoleHierarchyKartoffelParams{
     string roleId = 1;
     string directGroup = 2;
-    string currentJobTitle = 3;
-    optional string newJobTitle = 4;
-    string hierarchy = 5;
-    string oldHierarchy = 6;
-    Kartoffel.Role role = 7;
+    string oldDirectGroup =3;
+    string currentJobTitle = 4;
+    optional string newJobTitle = 5;
+    string hierarchy = 6;
+    string oldHierarchy = 7;
+    Kartoffel.Role role = 8;
+    string oldOGId = 9;
 }
 
 message ChangeRoleHierarchyADParams{
@@ -1149,7 +1156,6 @@ message ConvertEntityTypeADParams{
     string lastName = 4;
     string fullName = 5;
     optional string rank = 6;
-    string roleSerialCode = 7;
 }
 
 // ---------------------------------------------Other Functions Objects------------------------------------------------------------
@@ -1386,49 +1392,55 @@ message KartoffelParams{
 
     //AssignRoleToEntity, same as changing role to entity
     optional string id = 11;
+    optional string oldUniqueId = 12;
     // string uniqueId = 8;
-    bool needDisconnect = 12;
+    bool needDisconnect = 13;
     //CreateEntity
-    optional string firstName = 13;
-    optional string lastName = 14;
-    optional string identityCard = 15;
-    optional string personalNumber = 16;
-    optional string serviceType = 17;
-    repeated string phone = 18;
-    repeated string mobilePhone = 19;
-    optional string address = 20;
-    optional string clearance = 21; //for createRole too
-    optional string sex = 22;
-    optional int64 birthdate = 23;
-    optional string entityType = 24;
+    optional string firstName = 14;
+    optional string lastName = 15;
+    optional string identityCard = 16;
+    optional string personalNumber = 17;
+    optional string serviceType = 18;
+    repeated string phone = 19;
+    repeated string mobilePhone = 20;
+    optional string address = 21;
+    optional string clearance = 22; //for createRole too
+    optional string oldClearance = 23;
+    optional string sex = 24;
+    optional int64 birthdate = 25;
+    optional string entityType = 26;
 
-    optional string roleEntityType = 25;
+    optional string roleEntityType = 27;
 
-    optional string currentJobTitle = 26;
-    optional string newJobTitle = 27;
-    optional string organization = 28;
-    optional string employeeNumber = 29;
-    optional string employeeId = 30;
+    optional string currentJobTitle = 28;
+    optional string newJobTitle = 29;
+    optional string organization = 30;
+    optional string employeeNumber = 31;
+    optional string employeeId = 32;
+    
 
     //RenameOG
     // ?
 
     //RenameRole
     // ?
-    optional string oldJobTitle = 31;
-    optional string hierarchy = 32;
-    optional string oldHierarchy = 33;
-    optional string upn = 34;
-    optional Kartoffel.Role role = 35;
-    optional string entityId = 36;
+    optional string oldJobTitle = 33;
+    optional string hierarchy = 34;
+    optional string oldHierarchy = 35;
+    optional string upn = 36;
+    optional Kartoffel.Role role = 37;
+    optional string entityId = 38;
 
-    optional string rank = 37;
+    optional string rank = 39;
     // ConvertEntityType
-    optional string newEntityType = 38;
-    optional string identifier = 39;
+    optional string newEntityType = 40;
+    optional string identifier = 41;
+    // ChangeRoleHierarchyRequest
+    optional string oldDirectGroup = 42;
+    optional string oldOGId = 43;
     //EditEntity
-    // string firstName = 25;
-    // string lastName = 26;
+    optional string oldFirstName = 44;
+    optional string oldLastName = 45;
     // string identityCard = 27;
     // string personalNumber = 28;
     // string serviceType = 29;

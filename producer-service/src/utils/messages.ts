@@ -9,6 +9,8 @@ import {
   ADStage,
   aDStageFromJSON,
 } from '../interfaces/protoc/proto/producerService';
+import TeaService from '../services/tea.service';
+import { UPNMessage } from '../interfaces/protoc/proto/teaService';
 
 function isValidMobilePhone(mobilePhone: any) {
   if (mobilePhone === undefined || mobilePhone === null) {
@@ -54,168 +56,247 @@ function isValidPhone(phone: any) {
   }
 }
 
-export function generateKartoffelQueueMessage(request: Request): any {
+export async function generateKartoffelQueueMessage(
+  request: Request,
+  isRollback: boolean
+): Promise<any> {
   const message: any = {
     id: request.id,
     type: requestTypeToJSON(request.type),
     source: C.oldDomain,
   };
   const kartoffelParams: any = request.kartoffelParams;
-  switch (request.type) {
-    case RequestType.CREATE_OG:
-      message.data = {
-        name: kartoffelParams.name,
-        directGroup: kartoffelParams.parent,
-        source: kartoffelParams.source
-          ? kartoffelParams.source
-          : C.defaultSource,
-      };
-      break;
-    case RequestType.CREATE_ROLE:
-      message.data = {
-        //for role
-        jobTitle: kartoffelParams.jobTitle,
-        directGroup: kartoffelParams.directGroup,
-        roleId: kartoffelParams.roleId,
-        clearance: kartoffelParams.clearance,
-        //for digitalIdentity
-        type: kartoffelParams.type ? kartoffelParams.type : 'domainUser',
-        source: kartoffelParams.source
-          ? kartoffelParams.source
-          : C.defaultSource,
-        uniqueId: kartoffelParams.uniqueId,
-        mail: kartoffelParams.mail,
-        isRoleAttachable: kartoffelParams.isRoleAttachable,
+  const kartoffelStatus: any = request.kartoffelStatus;
+  if (isRollback) {
+    let upn: UPNMessage;
+    message.isRollback = true;
+    switch (request.type) {
+      case RequestType.CREATE_OG:
+        message.data = {
+          id: kartoffelStatus.id,
+        };
+        break;
+      case RequestType.CREATE_ROLE:
+        message.data = {
+          roleId: kartoffelParams.roleId,
+          uniqueId: kartoffelParams.uniqueId,
+        };
+        break;
+      case RequestType.CREATE_ENTITY:
+        message.data = {
+          id: kartoffelStatus.id,
+        };
+        break;
+      case RequestType.ASSIGN_ROLE_TO_ENTITY:
+        message.data = {
+          id: kartoffelParams.id,
+          uniqueId: kartoffelParams.uniqueId,
+          needDisconnect: kartoffelParams.needDisconnect,
+        };
+        if (
+          !kartoffelParams.needDisconnect ||
+          kartoffelParams.needDisconnect === undefined ||
+          kartoffelParams.needDisconnect === null
+        ) {
+          message.data.needDisconnect = false;
+        }
+        if (message.data.needDisconnect) {
+          message.data.oldUniqueId = kartoffelParams.oldUniqueId;
+        }
+        upn = await TeaService.retrieveUPNByEntityId(kartoffelParams.id);
+        message.data.upn = upn;
+        break;
+      case RequestType.RENAME_OG:
+        const oldHierarchyArray: any =
+          kartoffelParams?.oldHierarchy?.split('/');
+        message.data = {
+          id: kartoffelParams.id,
+          name: oldHierarchyArray[oldHierarchyArray.length - 1],
+        };
+        break;
+      case RequestType.RENAME_ROLE:
+        message.data = {
+          roleId: kartoffelParams.roleId,
+          jobTitle: kartoffelParams.oldJobTitle,
+          clearance: kartoffelParams.oldClearance,
+        };
+        break;
+      case RequestType.DISCONNECT_ROLE:
+        upn = await TeaService.retrieveUPNByEntityId(kartoffelParams.id);
+        message.data = {
+          id: kartoffelParams.id,
+          uniqueId: kartoffelParams.uniqueId,
+          needDisconnect: true,
+          upn: upn,
+        };
+        break;
+      case RequestType.CHANGE_ROLE_HIERARCHY:
+        message.data = {
+          roleId: kartoffelParams.roleId,
+          directGroup: kartoffelParams.oldDirectGroup,
+        };
+        break;
+      default:
+        throw new Error('type not supported!');
+    }
+  } else {
+    switch (request.type) {
+      case RequestType.CREATE_OG:
+        message.data = {
+          name: kartoffelParams.name,
+          directGroup: kartoffelParams.parent,
+          source: kartoffelParams.source
+            ? kartoffelParams.source
+            : C.defaultSource,
+        };
+        break;
+      case RequestType.CREATE_ROLE:
+        message.data = {
+          //for role
+          jobTitle: kartoffelParams.jobTitle,
+          directGroup: kartoffelParams.directGroup,
+          roleId: kartoffelParams.roleId,
+          clearance: kartoffelParams.clearance,
+          //for digitalIdentity
+          type: kartoffelParams.type ? kartoffelParams.type : 'domainUser',
+          source: kartoffelParams.source
+            ? kartoffelParams.source
+            : C.defaultSource,
+          uniqueId: kartoffelParams.uniqueId,
+          mail: kartoffelParams.mail,
+          isRoleAttachable: kartoffelParams.isRoleAttachable,
 
-        //in case of goalUser - need to create an entity and assign it to the role
-        roleEntityType: kartoffelParams.roleEntityType,
-      };
-      if (kartoffelParams.upn !== undefined) {
-        const getJobTitle = splitFullName(kartoffelParams.jobTitle);
-        message.data.firstName = getJobTitle.firstName;
-        message.data.lastName = getJobTitle.lastName;
-        message.data.fullName = getJobTitle.fullName;
-        message.data.upn = kartoffelParams.upn;
-      }
-      break;
-    case RequestType.CREATE_ENTITY:
-      message.data = {
-        firstName: kartoffelParams.firstName,
-        lastName: kartoffelParams.lastName,
-        identityCard: kartoffelParams.identityCard,
-        clearance: kartoffelParams.clearance,
-        sex:
-          !kartoffelParams.sex || kartoffelParams.sex === ''
-            ? undefined
-            : kartoffelParams.sex,
-        birthDate: kartoffelParams.birthdate,
-        entityType: kartoffelParams.entityType,
-      };
-      if (isValidMobilePhone(kartoffelParams.mobilePhone)) {
-        message.data.mobilePhone = kartoffelParams.phone;
-      } else if (isValidPhone(kartoffelParams.phone)) {
-        message.data.phone = kartoffelParams.phone;
-      }
-      if (kartoffelParams.entityType === C.soldier) {
-        message.data.personalNumber = kartoffelParams.personalNumber;
-        message.data.rank = kartoffelParams.rank;
-        message.data.serviceType = kartoffelParams.serviceType;
-      } else if (kartoffelParams.entityType === C.external) {
-        message.data.organization = kartoffelParams.organization;
-        message.data.employeeNumber = kartoffelParams.employeeNumber;
-      }
-      break;
-    case RequestType.ASSIGN_ROLE_TO_ENTITY:
-      message.data = {
-        id: kartoffelParams.id,
-        uniqueId: kartoffelParams.uniqueId,
-        needDisconnect: kartoffelParams.needDisconnect,
-      };
-      if (
-        !kartoffelParams.needDisconnect ||
-        kartoffelParams.needDisconnect === undefined ||
-        kartoffelParams.needDisconnect === null
-      ) {
-        message.data.needDisconnect = false;
-      }
-      if (kartoffelParams.upn !== undefined) {
-        message.data.upn = kartoffelParams.upn;
-      }
-      break;
-    case RequestType.RENAME_OG:
-      message.data = {
-        id: kartoffelParams.id,
-        name: kartoffelParams.name,
-      };
-      break;
-    case RequestType.RENAME_ROLE:
-      message.data = {
-        roleId: kartoffelParams.roleId,
-        jobTitle: kartoffelParams.jobTitle,
-        clearance: kartoffelParams.clearance,
-      };
-      break;
-    case RequestType.EDIT_ENTITY:
-      message.data = {
-        id: kartoffelParams.id,
-        properties: {
+          //in case of goalUser - need to create an entity and assign it to the role
+          roleEntityType: kartoffelParams.roleEntityType,
+        };
+        if (kartoffelParams.upn !== undefined) {
+          const getJobTitle = splitFullName(kartoffelParams.jobTitle);
+          message.data.firstName = getJobTitle.firstName;
+          message.data.lastName = getJobTitle.lastName;
+          message.data.fullName = getJobTitle.fullName;
+          message.data.upn = kartoffelParams.upn;
+        }
+        break;
+      case RequestType.CREATE_ENTITY:
+        message.data = {
           firstName: kartoffelParams.firstName,
           lastName: kartoffelParams.lastName,
-        },
-      };
-      if (isValidMobilePhone(kartoffelParams.mobilePhone)) {
-        message.data.properties.mobilePhone = kartoffelParams.mobilePhone;
-      }
-      if (kartoffelParams.birthdate) {
-        message.data.properties.birthDate = kartoffelParams.birthdate;
-      }
-      break;
-    case RequestType.DELETE_OG:
-      message.data = {
-        id: kartoffelParams.id,
-      };
-      break;
-    case RequestType.DELETE_ROLE:
-      message.data = {
-        roleId: kartoffelParams.roleId,
-        uniqueId: kartoffelParams.uniqueId,
-      };
-      break;
-    case RequestType.DISCONNECT_ROLE:
-      message.data = {
-        id: kartoffelParams.id,
-        uniqueId: kartoffelParams.uniqueId,
-      };
-      break;
-    case RequestType.DELETE_ENTITY:
-      message.data = {
-        id: kartoffelParams.id,
-      };
-      break;
-    case RequestType.CHANGE_ROLE_HIERARCHY:
-      message.data = {
-        roleId: kartoffelParams.roleId,
-        directGroup: kartoffelParams.directGroup,
-        currentJobTitle: kartoffelParams.currentJobTitle,
-      };
-      if (kartoffelParams.newJobTitle) {
-        message.data.newJobTitle = kartoffelParams.newJobTitle;
-      }
-      break;
-    case RequestType.CONVERT_ENTITY_TYPE:
-      message.data = {
-        id: kartoffelParams.id,
-        uniqueId: kartoffelParams.uniqueId,
-        newEntityType: kartoffelParams.newEntityType,
-        upn: kartoffelParams.upn,
-      };
-      if (kartoffelParams.identifier) {
-        message.data.identifier = kartoffelParams.identifier;
-      }
-      break;
-    default:
-      throw new Error('type not supported!');
+          identityCard: kartoffelParams.identityCard,
+          clearance: kartoffelParams.clearance,
+          sex:
+            !kartoffelParams.sex || kartoffelParams.sex === ''
+              ? undefined
+              : kartoffelParams.sex,
+          birthDate: kartoffelParams.birthdate,
+          entityType: kartoffelParams.entityType,
+        };
+        if (isValidMobilePhone(kartoffelParams.mobilePhone)) {
+          message.data.mobilePhone = kartoffelParams.phone;
+        } else if (isValidPhone(kartoffelParams.phone)) {
+          message.data.phone = kartoffelParams.phone;
+        }
+        if (kartoffelParams.entityType === C.soldier) {
+          message.data.personalNumber = kartoffelParams.personalNumber;
+          message.data.rank = kartoffelParams.rank;
+          message.data.serviceType = kartoffelParams.serviceType;
+        } else if (kartoffelParams.entityType === C.external) {
+          message.data.organization = kartoffelParams.organization;
+          message.data.employeeNumber = kartoffelParams.employeeNumber;
+        }
+        break;
+      case RequestType.ASSIGN_ROLE_TO_ENTITY:
+        message.data = {
+          id: kartoffelParams.id,
+          uniqueId: kartoffelParams.uniqueId,
+          needDisconnect: kartoffelParams.needDisconnect,
+        };
+        if (
+          !kartoffelParams.needDisconnect ||
+          kartoffelParams.needDisconnect === undefined ||
+          kartoffelParams.needDisconnect === null
+        ) {
+          message.data.needDisconnect = false;
+        }
+        if (kartoffelParams.upn !== undefined) {
+          message.data.upn = kartoffelParams.upn;
+        }
+        break;
+      case RequestType.RENAME_OG:
+        message.data = {
+          id: kartoffelParams.id,
+          name: kartoffelParams.name,
+        };
+        break;
+      case RequestType.RENAME_ROLE:
+        message.data = {
+          roleId: kartoffelParams.roleId,
+          jobTitle: kartoffelParams.jobTitle,
+          clearance: kartoffelParams.clearance,
+        };
+        break;
+      case RequestType.EDIT_ENTITY:
+        message.data = {
+          id: kartoffelParams.id,
+          properties: {
+            firstName: kartoffelParams.firstName,
+            lastName: kartoffelParams.lastName,
+          },
+        };
+        if (isValidMobilePhone(kartoffelParams.mobilePhone)) {
+          message.data.properties.mobilePhone = kartoffelParams.mobilePhone;
+        }
+        if (kartoffelParams.birthdate) {
+          message.data.properties.birthDate = kartoffelParams.birthdate;
+        }
+        break;
+      case RequestType.DELETE_OG:
+        message.data = {
+          id: kartoffelParams.id,
+        };
+        break;
+      case RequestType.DELETE_ROLE:
+        message.data = {
+          roleId: kartoffelParams.roleId,
+          uniqueId: kartoffelParams.uniqueId,
+        };
+        break;
+      case RequestType.DISCONNECT_ROLE:
+        message.data = {
+          id: kartoffelParams.id,
+          uniqueId: kartoffelParams.uniqueId,
+        };
+        break;
+      case RequestType.DELETE_ENTITY:
+        message.data = {
+          id: kartoffelParams.id,
+        };
+        break;
+      case RequestType.CHANGE_ROLE_HIERARCHY:
+        message.data = {
+          roleId: kartoffelParams.roleId,
+          directGroup: kartoffelParams.directGroup,
+          currentJobTitle: kartoffelParams.currentJobTitle,
+        };
+        if (kartoffelParams.newJobTitle) {
+          message.data.newJobTitle = kartoffelParams.newJobTitle;
+        }
+        break;
+      case RequestType.CONVERT_ENTITY_TYPE:
+        message.data = {
+          id: kartoffelParams.id,
+          uniqueId: kartoffelParams.uniqueId,
+          newEntityType: kartoffelParams.newEntityType,
+          upn: kartoffelParams.upn,
+        };
+        if (kartoffelParams.identifier) {
+          message.data.identifier = kartoffelParams.identifier;
+        }
+        break;
+      default:
+        throw new Error('type not supported!');
+    }
   }
+
   return message;
 }
 
@@ -358,20 +439,12 @@ export function generateADQueueMessage(
         message.data.newName = adParams.newJobTitle;
       }
       break;
-      case RequestType.CONVERT_ENTITY_TYPE:
-        message.data = {
-          samAccountName: adParams.samAccountName,
-          firstName: adParams.firstName,
-          lastName: adParams.lastName,
-          fullName: adParams.fullName,
-          roleSerialCode: adParams.roleSerialCode,
-        };
-        if (adParams.upn) {
-          message.data.upn = adParams.upn;
-        }else if (adParams.rank) {
-          message.data.rank = adParams.rank;
-        };
-        break;
+    case RequestType.CONVERT_ENTITY_TYPE:
+      message.data = {
+        samAccountName: adParams.samAccountName,
+        upn: adParams.upn,
+      };
+      break;
     default:
       throw new Error('type not supported!');
   }

@@ -1552,6 +1552,7 @@ export interface AdditionalParams {
   directGroup: string;
   groupInChargeId?: string | undefined;
   specialGroupId?: string | undefined;
+  oldOGId?: string | undefined;
 }
 
 /** 5.RenameOGRequest */
@@ -1574,6 +1575,7 @@ export interface RenameRoleKartoffelParams {
   roleId: string;
   oldJobTitle?: string | undefined;
   clearance?: string | undefined;
+  oldClearance: string;
   role: Role | undefined;
   entityId?: string | undefined;
 }
@@ -1588,6 +1590,8 @@ export interface EditEntityKartoffelParams {
   id: string;
   firstName: string;
   lastName: string;
+  oldFirstName: string;
+  oldLastName: string;
   identityCard?: string | undefined;
   personalNumber?: string | undefined;
   serviceType?: string | undefined;
@@ -1648,6 +1652,7 @@ export interface AssignRoleToEntityKartoffelParams {
   role: Role | undefined;
   /** currentroleat name */
   name?: string | undefined;
+  oldUniqueId: string;
 }
 
 export interface AssignRoleToEntityADParams {
@@ -1675,11 +1680,13 @@ export interface DisconectRoleFromEntityADParams {
 export interface ChangeRoleHierarchyKartoffelParams {
   roleId: string;
   directGroup: string;
+  oldDirectGroup: string;
   currentJobTitle: string;
   newJobTitle?: string | undefined;
   hierarchy: string;
   oldHierarchy: string;
   role: Role | undefined;
+  oldOGId: string;
 }
 
 export interface ChangeRoleHierarchyADParams {
@@ -1725,7 +1732,6 @@ export interface ConvertEntityTypeADParams {
   lastName: string;
   fullName: string;
   rank?: string | undefined;
-  roleSerialCode: string;
 }
 
 export interface UpdateReq {
@@ -1952,6 +1958,7 @@ export interface KartoffelParams {
   isRoleAttachable?: boolean | undefined;
   /** AssignRoleToEntity, same as changing role to entity */
   id?: string | undefined;
+  oldUniqueId?: string | undefined;
   /** string uniqueId = 8; */
   needDisconnect: boolean;
   /** CreateEntity */
@@ -1965,6 +1972,7 @@ export interface KartoffelParams {
   address?: string | undefined;
   /** for createRole too */
   clearance?: string | undefined;
+  oldClearance?: string | undefined;
   sex?: string | undefined;
   birthdate?: number | undefined;
   entityType?: string | undefined;
@@ -1987,10 +1995,13 @@ export interface KartoffelParams {
   rank?: string | undefined;
   /** ConvertEntityType */
   newEntityType?: string | undefined;
+  identifier?: string | undefined;
+  /** ChangeRoleHierarchyRequest */
+  oldDirectGroup?: string | undefined;
+  oldOGId?: string | undefined;
+  /** EditEntity */
+  oldFirstName?: string | undefined;
   /**
-   * EditEntity
-   * string firstName = 25;
-   * string lastName = 26;
    * string identityCard = 27;
    * string personalNumber = 28;
    * string serviceType = 29;
@@ -2003,7 +2014,7 @@ export interface KartoffelParams {
    * string entityType = 36;
    * string id =
    */
-  identifier?: string | undefined;
+  oldLastName?: string | undefined;
 }
 
 export interface ADParams {
@@ -23718,6 +23729,9 @@ export const AdditionalParams = {
     if (message.specialGroupId !== undefined) {
       writer.uint32(82).string(message.specialGroupId);
     }
+    if (message.oldOGId !== undefined) {
+      writer.uint32(90).string(message.oldOGId);
+    }
     return writer;
   },
 
@@ -23758,6 +23772,9 @@ export const AdditionalParams = {
           break;
         case 10:
           message.specialGroupId = reader.string();
+          break;
+        case 11:
+          message.oldOGId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -23823,6 +23840,11 @@ export const AdditionalParams = {
     } else {
       message.specialGroupId = undefined;
     }
+    if (object.oldOGId !== undefined && object.oldOGId !== null) {
+      message.oldOGId = String(object.oldOGId);
+    } else {
+      message.oldOGId = undefined;
+    }
     return message;
   },
 
@@ -23848,6 +23870,7 @@ export const AdditionalParams = {
       (obj.groupInChargeId = message.groupInChargeId);
     message.specialGroupId !== undefined &&
       (obj.specialGroupId = message.specialGroupId);
+    message.oldOGId !== undefined && (obj.oldOGId = message.oldOGId);
     return obj;
   },
 
@@ -23906,6 +23929,11 @@ export const AdditionalParams = {
       message.specialGroupId = object.specialGroupId;
     } else {
       message.specialGroupId = undefined;
+    }
+    if (object.oldOGId !== undefined && object.oldOGId !== null) {
+      message.oldOGId = object.oldOGId;
+    } else {
+      message.oldOGId = undefined;
     }
     return message;
   },
@@ -24134,7 +24162,11 @@ export const RenameOGADParams = {
   },
 };
 
-const baseRenameRoleKartoffelParams: object = { jobTitle: "", roleId: "" };
+const baseRenameRoleKartoffelParams: object = {
+  jobTitle: "",
+  roleId: "",
+  oldClearance: "",
+};
 
 export const RenameRoleKartoffelParams = {
   encode(
@@ -24153,11 +24185,14 @@ export const RenameRoleKartoffelParams = {
     if (message.clearance !== undefined) {
       writer.uint32(34).string(message.clearance);
     }
+    if (message.oldClearance !== "") {
+      writer.uint32(42).string(message.oldClearance);
+    }
     if (message.role !== undefined) {
-      Role.encode(message.role, writer.uint32(42).fork()).ldelim();
+      Role.encode(message.role, writer.uint32(50).fork()).ldelim();
     }
     if (message.entityId !== undefined) {
-      writer.uint32(50).string(message.entityId);
+      writer.uint32(58).string(message.entityId);
     }
     return writer;
   },
@@ -24187,9 +24222,12 @@ export const RenameRoleKartoffelParams = {
           message.clearance = reader.string();
           break;
         case 5:
-          message.role = Role.decode(reader, reader.uint32());
+          message.oldClearance = reader.string();
           break;
         case 6:
+          message.role = Role.decode(reader, reader.uint32());
+          break;
+        case 7:
           message.entityId = reader.string();
           break;
         default:
@@ -24224,6 +24262,11 @@ export const RenameRoleKartoffelParams = {
     } else {
       message.clearance = undefined;
     }
+    if (object.oldClearance !== undefined && object.oldClearance !== null) {
+      message.oldClearance = String(object.oldClearance);
+    } else {
+      message.oldClearance = "";
+    }
     if (object.role !== undefined && object.role !== null) {
       message.role = Role.fromJSON(object.role);
     } else {
@@ -24244,6 +24287,8 @@ export const RenameRoleKartoffelParams = {
     message.oldJobTitle !== undefined &&
       (obj.oldJobTitle = message.oldJobTitle);
     message.clearance !== undefined && (obj.clearance = message.clearance);
+    message.oldClearance !== undefined &&
+      (obj.oldClearance = message.oldClearance);
     message.role !== undefined &&
       (obj.role = message.role ? Role.toJSON(message.role) : undefined);
     message.entityId !== undefined && (obj.entityId = message.entityId);
@@ -24275,6 +24320,11 @@ export const RenameRoleKartoffelParams = {
       message.clearance = object.clearance;
     } else {
       message.clearance = undefined;
+    }
+    if (object.oldClearance !== undefined && object.oldClearance !== null) {
+      message.oldClearance = object.oldClearance;
+    } else {
+      message.oldClearance = "";
     }
     if (object.role !== undefined && object.role !== null) {
       message.role = Role.fromPartial(object.role);
@@ -24370,6 +24420,8 @@ const baseEditEntityKartoffelParams: object = {
   id: "",
   firstName: "",
   lastName: "",
+  oldFirstName: "",
+  oldLastName: "",
   phone: "",
   mobilePhone: "",
 };
@@ -24388,35 +24440,41 @@ export const EditEntityKartoffelParams = {
     if (message.lastName !== "") {
       writer.uint32(26).string(message.lastName);
     }
+    if (message.oldFirstName !== "") {
+      writer.uint32(34).string(message.oldFirstName);
+    }
+    if (message.oldLastName !== "") {
+      writer.uint32(42).string(message.oldLastName);
+    }
     if (message.identityCard !== undefined) {
-      writer.uint32(34).string(message.identityCard);
+      writer.uint32(50).string(message.identityCard);
     }
     if (message.personalNumber !== undefined) {
-      writer.uint32(42).string(message.personalNumber);
+      writer.uint32(58).string(message.personalNumber);
     }
     if (message.serviceType !== undefined) {
-      writer.uint32(50).string(message.serviceType);
+      writer.uint32(66).string(message.serviceType);
     }
     for (const v of message.phone) {
-      writer.uint32(58).string(v!);
+      writer.uint32(74).string(v!);
     }
     for (const v of message.mobilePhone) {
-      writer.uint32(66).string(v!);
+      writer.uint32(82).string(v!);
     }
     if (message.address !== undefined) {
-      writer.uint32(74).string(message.address);
+      writer.uint32(90).string(message.address);
     }
     if (message.clearance !== undefined) {
-      writer.uint32(82).string(message.clearance);
+      writer.uint32(98).string(message.clearance);
     }
     if (message.sex !== undefined) {
-      writer.uint32(90).string(message.sex);
+      writer.uint32(106).string(message.sex);
     }
     if (message.birthdate !== undefined) {
-      writer.uint32(96).int64(message.birthdate);
+      writer.uint32(112).int64(message.birthdate);
     }
     if (message.entityType !== undefined) {
-      writer.uint32(106).string(message.entityType);
+      writer.uint32(122).string(message.entityType);
     }
     return writer;
   },
@@ -24445,33 +24503,39 @@ export const EditEntityKartoffelParams = {
           message.lastName = reader.string();
           break;
         case 4:
-          message.identityCard = reader.string();
+          message.oldFirstName = reader.string();
           break;
         case 5:
-          message.personalNumber = reader.string();
+          message.oldLastName = reader.string();
           break;
         case 6:
-          message.serviceType = reader.string();
+          message.identityCard = reader.string();
           break;
         case 7:
-          message.phone.push(reader.string());
+          message.personalNumber = reader.string();
           break;
         case 8:
-          message.mobilePhone.push(reader.string());
+          message.serviceType = reader.string();
           break;
         case 9:
-          message.address = reader.string();
+          message.phone.push(reader.string());
           break;
         case 10:
-          message.clearance = reader.string();
+          message.mobilePhone.push(reader.string());
           break;
         case 11:
-          message.sex = reader.string();
+          message.address = reader.string();
           break;
         case 12:
-          message.birthdate = longToNumber(reader.int64() as Long);
+          message.clearance = reader.string();
           break;
         case 13:
+          message.sex = reader.string();
+          break;
+        case 14:
+          message.birthdate = longToNumber(reader.int64() as Long);
+          break;
+        case 15:
           message.entityType = reader.string();
           break;
         default:
@@ -24502,6 +24566,16 @@ export const EditEntityKartoffelParams = {
       message.lastName = String(object.lastName);
     } else {
       message.lastName = "";
+    }
+    if (object.oldFirstName !== undefined && object.oldFirstName !== null) {
+      message.oldFirstName = String(object.oldFirstName);
+    } else {
+      message.oldFirstName = "";
+    }
+    if (object.oldLastName !== undefined && object.oldLastName !== null) {
+      message.oldLastName = String(object.oldLastName);
+    } else {
+      message.oldLastName = "";
     }
     if (object.identityCard !== undefined && object.identityCard !== null) {
       message.identityCard = String(object.identityCard);
@@ -24561,6 +24635,10 @@ export const EditEntityKartoffelParams = {
     message.id !== undefined && (obj.id = message.id);
     message.firstName !== undefined && (obj.firstName = message.firstName);
     message.lastName !== undefined && (obj.lastName = message.lastName);
+    message.oldFirstName !== undefined &&
+      (obj.oldFirstName = message.oldFirstName);
+    message.oldLastName !== undefined &&
+      (obj.oldLastName = message.oldLastName);
     message.identityCard !== undefined &&
       (obj.identityCard = message.identityCard);
     message.personalNumber !== undefined &&
@@ -24607,6 +24685,16 @@ export const EditEntityKartoffelParams = {
       message.lastName = object.lastName;
     } else {
       message.lastName = "";
+    }
+    if (object.oldFirstName !== undefined && object.oldFirstName !== null) {
+      message.oldFirstName = object.oldFirstName;
+    } else {
+      message.oldFirstName = "";
+    }
+    if (object.oldLastName !== undefined && object.oldLastName !== null) {
+      message.oldLastName = object.oldLastName;
+    } else {
+      message.oldLastName = "";
     }
     if (object.identityCard !== undefined && object.identityCard !== null) {
       message.identityCard = object.identityCard;
@@ -25207,6 +25295,7 @@ const baseAssignRoleToEntityKartoffelParams: object = {
   roleId: "",
   hierarchy: "",
   directGroup: "",
+  oldUniqueId: "",
 };
 
 export const AssignRoleToEntityKartoffelParams = {
@@ -25240,6 +25329,9 @@ export const AssignRoleToEntityKartoffelParams = {
     }
     if (message.name !== undefined) {
       writer.uint32(74).string(message.name);
+    }
+    if (message.oldUniqueId !== "") {
+      writer.uint32(82).string(message.oldUniqueId);
     }
     return writer;
   },
@@ -25282,6 +25374,9 @@ export const AssignRoleToEntityKartoffelParams = {
           break;
         case 9:
           message.name = reader.string();
+          break;
+        case 10:
+          message.oldUniqueId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -25340,6 +25435,11 @@ export const AssignRoleToEntityKartoffelParams = {
     } else {
       message.name = undefined;
     }
+    if (object.oldUniqueId !== undefined && object.oldUniqueId !== null) {
+      message.oldUniqueId = String(object.oldUniqueId);
+    } else {
+      message.oldUniqueId = "";
+    }
     return message;
   },
 
@@ -25357,6 +25457,8 @@ export const AssignRoleToEntityKartoffelParams = {
     message.role !== undefined &&
       (obj.role = message.role ? Role.toJSON(message.role) : undefined);
     message.name !== undefined && (obj.name = message.name);
+    message.oldUniqueId !== undefined &&
+      (obj.oldUniqueId = message.oldUniqueId);
     return obj;
   },
 
@@ -25410,6 +25512,11 @@ export const AssignRoleToEntityKartoffelParams = {
       message.name = object.name;
     } else {
       message.name = undefined;
+    }
+    if (object.oldUniqueId !== undefined && object.oldUniqueId !== null) {
+      message.oldUniqueId = object.oldUniqueId;
+    } else {
+      message.oldUniqueId = "";
     }
     return message;
   },
@@ -25786,9 +25893,11 @@ export const DisconectRoleFromEntityADParams = {
 const baseChangeRoleHierarchyKartoffelParams: object = {
   roleId: "",
   directGroup: "",
+  oldDirectGroup: "",
   currentJobTitle: "",
   hierarchy: "",
   oldHierarchy: "",
+  oldOGId: "",
 };
 
 export const ChangeRoleHierarchyKartoffelParams = {
@@ -25802,20 +25911,26 @@ export const ChangeRoleHierarchyKartoffelParams = {
     if (message.directGroup !== "") {
       writer.uint32(18).string(message.directGroup);
     }
+    if (message.oldDirectGroup !== "") {
+      writer.uint32(26).string(message.oldDirectGroup);
+    }
     if (message.currentJobTitle !== "") {
-      writer.uint32(26).string(message.currentJobTitle);
+      writer.uint32(34).string(message.currentJobTitle);
     }
     if (message.newJobTitle !== undefined) {
-      writer.uint32(34).string(message.newJobTitle);
+      writer.uint32(42).string(message.newJobTitle);
     }
     if (message.hierarchy !== "") {
-      writer.uint32(42).string(message.hierarchy);
+      writer.uint32(50).string(message.hierarchy);
     }
     if (message.oldHierarchy !== "") {
-      writer.uint32(50).string(message.oldHierarchy);
+      writer.uint32(58).string(message.oldHierarchy);
     }
     if (message.role !== undefined) {
-      Role.encode(message.role, writer.uint32(58).fork()).ldelim();
+      Role.encode(message.role, writer.uint32(66).fork()).ldelim();
+    }
+    if (message.oldOGId !== "") {
+      writer.uint32(74).string(message.oldOGId);
     }
     return writer;
   },
@@ -25839,19 +25954,25 @@ export const ChangeRoleHierarchyKartoffelParams = {
           message.directGroup = reader.string();
           break;
         case 3:
-          message.currentJobTitle = reader.string();
+          message.oldDirectGroup = reader.string();
           break;
         case 4:
-          message.newJobTitle = reader.string();
+          message.currentJobTitle = reader.string();
           break;
         case 5:
-          message.hierarchy = reader.string();
+          message.newJobTitle = reader.string();
           break;
         case 6:
-          message.oldHierarchy = reader.string();
+          message.hierarchy = reader.string();
           break;
         case 7:
+          message.oldHierarchy = reader.string();
+          break;
+        case 8:
           message.role = Role.decode(reader, reader.uint32());
+          break;
+        case 9:
+          message.oldOGId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -25874,6 +25995,11 @@ export const ChangeRoleHierarchyKartoffelParams = {
       message.directGroup = String(object.directGroup);
     } else {
       message.directGroup = "";
+    }
+    if (object.oldDirectGroup !== undefined && object.oldDirectGroup !== null) {
+      message.oldDirectGroup = String(object.oldDirectGroup);
+    } else {
+      message.oldDirectGroup = "";
     }
     if (
       object.currentJobTitle !== undefined &&
@@ -25903,6 +26029,11 @@ export const ChangeRoleHierarchyKartoffelParams = {
     } else {
       message.role = undefined;
     }
+    if (object.oldOGId !== undefined && object.oldOGId !== null) {
+      message.oldOGId = String(object.oldOGId);
+    } else {
+      message.oldOGId = "";
+    }
     return message;
   },
 
@@ -25911,6 +26042,8 @@ export const ChangeRoleHierarchyKartoffelParams = {
     message.roleId !== undefined && (obj.roleId = message.roleId);
     message.directGroup !== undefined &&
       (obj.directGroup = message.directGroup);
+    message.oldDirectGroup !== undefined &&
+      (obj.oldDirectGroup = message.oldDirectGroup);
     message.currentJobTitle !== undefined &&
       (obj.currentJobTitle = message.currentJobTitle);
     message.newJobTitle !== undefined &&
@@ -25920,6 +26053,7 @@ export const ChangeRoleHierarchyKartoffelParams = {
       (obj.oldHierarchy = message.oldHierarchy);
     message.role !== undefined &&
       (obj.role = message.role ? Role.toJSON(message.role) : undefined);
+    message.oldOGId !== undefined && (obj.oldOGId = message.oldOGId);
     return obj;
   },
 
@@ -25938,6 +26072,11 @@ export const ChangeRoleHierarchyKartoffelParams = {
       message.directGroup = object.directGroup;
     } else {
       message.directGroup = "";
+    }
+    if (object.oldDirectGroup !== undefined && object.oldDirectGroup !== null) {
+      message.oldDirectGroup = object.oldDirectGroup;
+    } else {
+      message.oldDirectGroup = "";
     }
     if (
       object.currentJobTitle !== undefined &&
@@ -25966,6 +26105,11 @@ export const ChangeRoleHierarchyKartoffelParams = {
       message.role = Role.fromPartial(object.role);
     } else {
       message.role = undefined;
+    }
+    if (object.oldOGId !== undefined && object.oldOGId !== null) {
+      message.oldOGId = object.oldOGId;
+    } else {
+      message.oldOGId = "";
     }
     return message;
   },
@@ -26550,7 +26694,6 @@ const baseConvertEntityTypeADParams: object = {
   firstName: "",
   lastName: "",
   fullName: "",
-  roleSerialCode: "",
 };
 
 export const ConvertEntityTypeADParams = {
@@ -26575,9 +26718,6 @@ export const ConvertEntityTypeADParams = {
     }
     if (message.rank !== undefined) {
       writer.uint32(50).string(message.rank);
-    }
-    if (message.roleSerialCode !== "") {
-      writer.uint32(58).string(message.roleSerialCode);
     }
     return writer;
   },
@@ -26611,9 +26751,6 @@ export const ConvertEntityTypeADParams = {
           break;
         case 6:
           message.rank = reader.string();
-          break;
-        case 7:
-          message.roleSerialCode = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -26657,11 +26794,6 @@ export const ConvertEntityTypeADParams = {
     } else {
       message.rank = undefined;
     }
-    if (object.roleSerialCode !== undefined && object.roleSerialCode !== null) {
-      message.roleSerialCode = String(object.roleSerialCode);
-    } else {
-      message.roleSerialCode = "";
-    }
     return message;
   },
 
@@ -26674,8 +26806,6 @@ export const ConvertEntityTypeADParams = {
     message.lastName !== undefined && (obj.lastName = message.lastName);
     message.fullName !== undefined && (obj.fullName = message.fullName);
     message.rank !== undefined && (obj.rank = message.rank);
-    message.roleSerialCode !== undefined &&
-      (obj.roleSerialCode = message.roleSerialCode);
     return obj;
   },
 
@@ -26714,11 +26844,6 @@ export const ConvertEntityTypeADParams = {
       message.rank = object.rank;
     } else {
       message.rank = undefined;
-    }
-    if (object.roleSerialCode !== undefined && object.roleSerialCode !== null) {
-      message.roleSerialCode = object.roleSerialCode;
-    } else {
-      message.roleSerialCode = "";
     }
     return message;
   },
@@ -30282,89 +30407,107 @@ export const KartoffelParams = {
     if (message.id !== undefined) {
       writer.uint32(90).string(message.id);
     }
+    if (message.oldUniqueId !== undefined) {
+      writer.uint32(98).string(message.oldUniqueId);
+    }
     if (message.needDisconnect === true) {
-      writer.uint32(96).bool(message.needDisconnect);
+      writer.uint32(104).bool(message.needDisconnect);
     }
     if (message.firstName !== undefined) {
-      writer.uint32(106).string(message.firstName);
+      writer.uint32(114).string(message.firstName);
     }
     if (message.lastName !== undefined) {
-      writer.uint32(114).string(message.lastName);
+      writer.uint32(122).string(message.lastName);
     }
     if (message.identityCard !== undefined) {
-      writer.uint32(122).string(message.identityCard);
+      writer.uint32(130).string(message.identityCard);
     }
     if (message.personalNumber !== undefined) {
-      writer.uint32(130).string(message.personalNumber);
+      writer.uint32(138).string(message.personalNumber);
     }
     if (message.serviceType !== undefined) {
-      writer.uint32(138).string(message.serviceType);
+      writer.uint32(146).string(message.serviceType);
     }
     for (const v of message.phone) {
-      writer.uint32(146).string(v!);
-    }
-    for (const v of message.mobilePhone) {
       writer.uint32(154).string(v!);
     }
+    for (const v of message.mobilePhone) {
+      writer.uint32(162).string(v!);
+    }
     if (message.address !== undefined) {
-      writer.uint32(162).string(message.address);
+      writer.uint32(170).string(message.address);
     }
     if (message.clearance !== undefined) {
-      writer.uint32(170).string(message.clearance);
+      writer.uint32(178).string(message.clearance);
+    }
+    if (message.oldClearance !== undefined) {
+      writer.uint32(186).string(message.oldClearance);
     }
     if (message.sex !== undefined) {
-      writer.uint32(178).string(message.sex);
+      writer.uint32(194).string(message.sex);
     }
     if (message.birthdate !== undefined) {
-      writer.uint32(184).int64(message.birthdate);
+      writer.uint32(200).int64(message.birthdate);
     }
     if (message.entityType !== undefined) {
-      writer.uint32(194).string(message.entityType);
+      writer.uint32(210).string(message.entityType);
     }
     if (message.roleEntityType !== undefined) {
-      writer.uint32(202).string(message.roleEntityType);
+      writer.uint32(218).string(message.roleEntityType);
     }
     if (message.currentJobTitle !== undefined) {
-      writer.uint32(210).string(message.currentJobTitle);
+      writer.uint32(226).string(message.currentJobTitle);
     }
     if (message.newJobTitle !== undefined) {
-      writer.uint32(218).string(message.newJobTitle);
+      writer.uint32(234).string(message.newJobTitle);
     }
     if (message.organization !== undefined) {
-      writer.uint32(226).string(message.organization);
+      writer.uint32(242).string(message.organization);
     }
     if (message.employeeNumber !== undefined) {
-      writer.uint32(234).string(message.employeeNumber);
+      writer.uint32(250).string(message.employeeNumber);
     }
     if (message.employeeId !== undefined) {
-      writer.uint32(242).string(message.employeeId);
+      writer.uint32(258).string(message.employeeId);
     }
     if (message.oldJobTitle !== undefined) {
-      writer.uint32(250).string(message.oldJobTitle);
+      writer.uint32(266).string(message.oldJobTitle);
     }
     if (message.hierarchy !== undefined) {
-      writer.uint32(258).string(message.hierarchy);
+      writer.uint32(274).string(message.hierarchy);
     }
     if (message.oldHierarchy !== undefined) {
-      writer.uint32(266).string(message.oldHierarchy);
+      writer.uint32(282).string(message.oldHierarchy);
     }
     if (message.upn !== undefined) {
-      writer.uint32(274).string(message.upn);
+      writer.uint32(290).string(message.upn);
     }
     if (message.role !== undefined) {
-      Role.encode(message.role, writer.uint32(282).fork()).ldelim();
+      Role.encode(message.role, writer.uint32(298).fork()).ldelim();
     }
     if (message.entityId !== undefined) {
-      writer.uint32(290).string(message.entityId);
+      writer.uint32(306).string(message.entityId);
     }
     if (message.rank !== undefined) {
-      writer.uint32(298).string(message.rank);
+      writer.uint32(314).string(message.rank);
     }
     if (message.newEntityType !== undefined) {
-      writer.uint32(306).string(message.newEntityType);
+      writer.uint32(322).string(message.newEntityType);
     }
     if (message.identifier !== undefined) {
-      writer.uint32(314).string(message.identifier);
+      writer.uint32(330).string(message.identifier);
+    }
+    if (message.oldDirectGroup !== undefined) {
+      writer.uint32(338).string(message.oldDirectGroup);
+    }
+    if (message.oldOGId !== undefined) {
+      writer.uint32(346).string(message.oldOGId);
+    }
+    if (message.oldFirstName !== undefined) {
+      writer.uint32(354).string(message.oldFirstName);
+    }
+    if (message.oldLastName !== undefined) {
+      writer.uint32(362).string(message.oldLastName);
     }
     return writer;
   },
@@ -30412,88 +30555,106 @@ export const KartoffelParams = {
           message.id = reader.string();
           break;
         case 12:
-          message.needDisconnect = reader.bool();
+          message.oldUniqueId = reader.string();
           break;
         case 13:
-          message.firstName = reader.string();
+          message.needDisconnect = reader.bool();
           break;
         case 14:
-          message.lastName = reader.string();
+          message.firstName = reader.string();
           break;
         case 15:
-          message.identityCard = reader.string();
+          message.lastName = reader.string();
           break;
         case 16:
-          message.personalNumber = reader.string();
+          message.identityCard = reader.string();
           break;
         case 17:
-          message.serviceType = reader.string();
+          message.personalNumber = reader.string();
           break;
         case 18:
-          message.phone.push(reader.string());
+          message.serviceType = reader.string();
           break;
         case 19:
-          message.mobilePhone.push(reader.string());
+          message.phone.push(reader.string());
           break;
         case 20:
-          message.address = reader.string();
+          message.mobilePhone.push(reader.string());
           break;
         case 21:
-          message.clearance = reader.string();
+          message.address = reader.string();
           break;
         case 22:
-          message.sex = reader.string();
+          message.clearance = reader.string();
           break;
         case 23:
-          message.birthdate = longToNumber(reader.int64() as Long);
+          message.oldClearance = reader.string();
           break;
         case 24:
-          message.entityType = reader.string();
+          message.sex = reader.string();
           break;
         case 25:
-          message.roleEntityType = reader.string();
+          message.birthdate = longToNumber(reader.int64() as Long);
           break;
         case 26:
-          message.currentJobTitle = reader.string();
+          message.entityType = reader.string();
           break;
         case 27:
-          message.newJobTitle = reader.string();
+          message.roleEntityType = reader.string();
           break;
         case 28:
-          message.organization = reader.string();
+          message.currentJobTitle = reader.string();
           break;
         case 29:
-          message.employeeNumber = reader.string();
+          message.newJobTitle = reader.string();
           break;
         case 30:
-          message.employeeId = reader.string();
+          message.organization = reader.string();
           break;
         case 31:
-          message.oldJobTitle = reader.string();
+          message.employeeNumber = reader.string();
           break;
         case 32:
-          message.hierarchy = reader.string();
+          message.employeeId = reader.string();
           break;
         case 33:
-          message.oldHierarchy = reader.string();
+          message.oldJobTitle = reader.string();
           break;
         case 34:
-          message.upn = reader.string();
+          message.hierarchy = reader.string();
           break;
         case 35:
-          message.role = Role.decode(reader, reader.uint32());
+          message.oldHierarchy = reader.string();
           break;
         case 36:
-          message.entityId = reader.string();
+          message.upn = reader.string();
           break;
         case 37:
-          message.rank = reader.string();
+          message.role = Role.decode(reader, reader.uint32());
           break;
         case 38:
-          message.newEntityType = reader.string();
+          message.entityId = reader.string();
           break;
         case 39:
+          message.rank = reader.string();
+          break;
+        case 40:
+          message.newEntityType = reader.string();
+          break;
+        case 41:
           message.identifier = reader.string();
+          break;
+        case 42:
+          message.oldDirectGroup = reader.string();
+          break;
+        case 43:
+          message.oldOGId = reader.string();
+          break;
+        case 44:
+          message.oldFirstName = reader.string();
+          break;
+        case 45:
+          message.oldLastName = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -30565,6 +30726,11 @@ export const KartoffelParams = {
     } else {
       message.id = undefined;
     }
+    if (object.oldUniqueId !== undefined && object.oldUniqueId !== null) {
+      message.oldUniqueId = String(object.oldUniqueId);
+    } else {
+      message.oldUniqueId = undefined;
+    }
     if (object.needDisconnect !== undefined && object.needDisconnect !== null) {
       message.needDisconnect = Boolean(object.needDisconnect);
     } else {
@@ -30614,6 +30780,11 @@ export const KartoffelParams = {
       message.clearance = String(object.clearance);
     } else {
       message.clearance = undefined;
+    }
+    if (object.oldClearance !== undefined && object.oldClearance !== null) {
+      message.oldClearance = String(object.oldClearance);
+    } else {
+      message.oldClearance = undefined;
     }
     if (object.sex !== undefined && object.sex !== null) {
       message.sex = String(object.sex);
@@ -30708,6 +30879,26 @@ export const KartoffelParams = {
     } else {
       message.identifier = undefined;
     }
+    if (object.oldDirectGroup !== undefined && object.oldDirectGroup !== null) {
+      message.oldDirectGroup = String(object.oldDirectGroup);
+    } else {
+      message.oldDirectGroup = undefined;
+    }
+    if (object.oldOGId !== undefined && object.oldOGId !== null) {
+      message.oldOGId = String(object.oldOGId);
+    } else {
+      message.oldOGId = undefined;
+    }
+    if (object.oldFirstName !== undefined && object.oldFirstName !== null) {
+      message.oldFirstName = String(object.oldFirstName);
+    } else {
+      message.oldFirstName = undefined;
+    }
+    if (object.oldLastName !== undefined && object.oldLastName !== null) {
+      message.oldLastName = String(object.oldLastName);
+    } else {
+      message.oldLastName = undefined;
+    }
     return message;
   },
 
@@ -30726,6 +30917,8 @@ export const KartoffelParams = {
     message.isRoleAttachable !== undefined &&
       (obj.isRoleAttachable = message.isRoleAttachable);
     message.id !== undefined && (obj.id = message.id);
+    message.oldUniqueId !== undefined &&
+      (obj.oldUniqueId = message.oldUniqueId);
     message.needDisconnect !== undefined &&
       (obj.needDisconnect = message.needDisconnect);
     message.firstName !== undefined && (obj.firstName = message.firstName);
@@ -30748,6 +30941,8 @@ export const KartoffelParams = {
     }
     message.address !== undefined && (obj.address = message.address);
     message.clearance !== undefined && (obj.clearance = message.clearance);
+    message.oldClearance !== undefined &&
+      (obj.oldClearance = message.oldClearance);
     message.sex !== undefined && (obj.sex = message.sex);
     message.birthdate !== undefined && (obj.birthdate = message.birthdate);
     message.entityType !== undefined && (obj.entityType = message.entityType);
@@ -30775,6 +30970,13 @@ export const KartoffelParams = {
     message.newEntityType !== undefined &&
       (obj.newEntityType = message.newEntityType);
     message.identifier !== undefined && (obj.identifier = message.identifier);
+    message.oldDirectGroup !== undefined &&
+      (obj.oldDirectGroup = message.oldDirectGroup);
+    message.oldOGId !== undefined && (obj.oldOGId = message.oldOGId);
+    message.oldFirstName !== undefined &&
+      (obj.oldFirstName = message.oldFirstName);
+    message.oldLastName !== undefined &&
+      (obj.oldLastName = message.oldLastName);
     return obj;
   },
 
@@ -30840,6 +31042,11 @@ export const KartoffelParams = {
     } else {
       message.id = undefined;
     }
+    if (object.oldUniqueId !== undefined && object.oldUniqueId !== null) {
+      message.oldUniqueId = object.oldUniqueId;
+    } else {
+      message.oldUniqueId = undefined;
+    }
     if (object.needDisconnect !== undefined && object.needDisconnect !== null) {
       message.needDisconnect = object.needDisconnect;
     } else {
@@ -30889,6 +31096,11 @@ export const KartoffelParams = {
       message.clearance = object.clearance;
     } else {
       message.clearance = undefined;
+    }
+    if (object.oldClearance !== undefined && object.oldClearance !== null) {
+      message.oldClearance = object.oldClearance;
+    } else {
+      message.oldClearance = undefined;
     }
     if (object.sex !== undefined && object.sex !== null) {
       message.sex = object.sex;
@@ -30982,6 +31194,26 @@ export const KartoffelParams = {
       message.identifier = object.identifier;
     } else {
       message.identifier = undefined;
+    }
+    if (object.oldDirectGroup !== undefined && object.oldDirectGroup !== null) {
+      message.oldDirectGroup = object.oldDirectGroup;
+    } else {
+      message.oldDirectGroup = undefined;
+    }
+    if (object.oldOGId !== undefined && object.oldOGId !== null) {
+      message.oldOGId = object.oldOGId;
+    } else {
+      message.oldOGId = undefined;
+    }
+    if (object.oldFirstName !== undefined && object.oldFirstName !== null) {
+      message.oldFirstName = object.oldFirstName;
+    } else {
+      message.oldFirstName = undefined;
+    }
+    if (object.oldLastName !== undefined && object.oldLastName !== null) {
+      message.oldLastName = object.oldLastName;
+    } else {
+      message.oldLastName = undefined;
     }
     return message;
   },

@@ -21,6 +21,7 @@ import {
   changeRoleOG,
   connectEntityAndDI,
   convertEntity,
+  disconnectDIFromEntity,
 } from './consumer.kartoffel';
 import { logger } from '../utils/logger';
 import TeaService from '../services/teaService';
@@ -46,6 +47,7 @@ export const requestProcessor = async (incomingRequest: any) => {
       incomingRequest: incomingRequest,
       requestObject: JSON.stringify(requestObject),
     });
+    let isRollback = requestObject.data.isRollback;
 
     if (requestObject && requestObject.type) {
       type =
@@ -54,27 +56,63 @@ export const requestProcessor = async (incomingRequest: any) => {
           : requestObject.type;
       switch (type) {
         case RequestType.CREATE_OG: {
-          createdObjectId = await createOG(requestObject.data);
+          if (isRollback) {
+            await deleteOG(requestObject.data);
+          } else {
+            createdObjectId = await createOG(requestObject.data);
+          }
           break;
         }
         case RequestType.CREATE_ROLE: {
-          createdObjectId = await createRole(requestObject.data);
+          if (isRollback) {
+            await deleteRole(requestObject.data);
+          } else {
+            createdObjectId = await createRole(requestObject.data);
+          }
           break;
         }
         case RequestType.ASSIGN_ROLE_TO_ENTITY: {
-          await connectEntityAndDI(requestObject.data);
+          if (isRollback) {
+            if (requestObject.data.needDisconnect) {
+              await connectEntityAndDI({
+                id: requestObject.data,
+                uniqueId: requestObject.data.oldUniqueId,
+                upn: requestObject.data.upn,
+                needDisconnect: requestObject.data.needDisconnect,
+              });
+            } else {
+              await disconnectDIFromEntity({
+                id: requestObject.data.id,
+                uniqueId: requestObject.data.uniqueId,
+              });
+            }
+          } else {
+            await connectEntityAndDI(requestObject.data);
+          }
           break;
         }
         case RequestType.CREATE_ENTITY: {
-          createdObjectId = await createEntity(requestObject.data);
+          if (isRollback) {
+            await deleteEntity(requestObject.data);
+          } else {
+            createdObjectId = await createEntity(requestObject.data);
+          }
           break;
         }
         case RequestType.RENAME_OG: {
-          await renameOG(requestObject.data);
+          if (isRollback) {
+            await renameOG(requestObject.data);
+          } else {
+            await renameOG(requestObject.data);
+          }
           break;
         }
         case RequestType.RENAME_ROLE: {
-          await renameRole(requestObject.data);
+          if (isRollback) {
+            await renameRole(requestObject.data);
+          } else {
+            await renameRole(requestObject.data);
+          }
           break;
         }
         case RequestType.EDIT_ENTITY: {
@@ -94,7 +132,16 @@ export const requestProcessor = async (incomingRequest: any) => {
           break;
         }
         case RequestType.DISCONNECT_ROLE: {
-          await disconnectRoleAndDI(requestObject.data);
+          if (isRollback) {
+            await connectEntityAndDI({
+              id: requestObject.data,
+              uniqueId: requestObject.data.oldUniqueId,
+              upn: requestObject.data.upn,
+              needDisconnect: requestObject.data.needDisconnect,
+            });
+          } else {
+            await disconnectRoleAndDI(requestObject.data);
+          }
           break;
         }
         case RequestType.CHANGE_ROLE_HIERARCHY: {

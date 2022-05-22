@@ -1477,10 +1477,16 @@ export class RequestRepository {
         request.needSuperSecurityDecision = false;
         break;
 
+      case RequestType.CONVERT_ENTITY_TYPE:
+        request.needSecurityDecision = false;
+        request.needSuperSecurityDecision = false;
+        break;
+
       case RequestType.CREATE_ROLE:
         request.needSecurityDecision = true;
         request.needSuperSecurityDecision = false;
         break;
+        
       case RequestType.ASSIGN_ROLE_TO_ENTITY:
         request.needSecurityDecision = true;
         request.needSuperSecurityDecision = false;

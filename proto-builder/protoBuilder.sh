@@ -18,3 +18,4 @@ cp -r ./protocOutput/* ../spike-service/src/interfaces/protoc/proto
 cp -r ./protocOutput/* ../bulk-service/src/interfaces/protoc/proto
 cp -r ./protocOutput/* ../authentication-service/src/interfaces/protoc/proto
 cp -r ./protocOutput/* ../mail-service/src/interfaces/protoc/proto
+cp -r ./protocOutput/* ../rollback-service/src/interfaces/protoc/proto

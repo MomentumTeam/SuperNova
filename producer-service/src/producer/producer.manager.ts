@@ -98,7 +98,10 @@ export class RequestManager {
           message: 'ADD_APPROVER',
         };
       } else {
-        const message = generateKartoffelQueueMessage(request);
+        const isRollback: any = produceRequest.isRollback
+          ? produceRequest.isRollback
+          : undefined;
+        const message = generateKartoffelQueueMessage(request, isRollback);
         logger.info(
           `produceToKafkaQueue generated queue message : ${JSON.stringify(
             message

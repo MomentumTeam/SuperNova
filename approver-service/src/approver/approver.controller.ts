@@ -8,7 +8,6 @@ import {
   IsApproverValidForOGRes,
   SuccessMessage,
   GetAllApproverTypesRes,
-  GetAdminsAboveGroupIdReq,
 } from '../interfaces/protoc/proto/approverService';
 import { Request } from '../interfaces/protoc/proto/requestService';
 import { logger } from '../logger';

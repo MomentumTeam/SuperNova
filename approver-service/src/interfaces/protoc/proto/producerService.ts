@@ -40,6 +40,7 @@ export interface ProduceRequest {
   id: string;
   force?: boolean | undefined;
   adStage?: ADStage | undefined;
+  isRollback?: boolean | undefined;
 }
 
 export interface SuccessMessage {
@@ -63,6 +64,9 @@ export const ProduceRequest = {
     if (message.adStage !== undefined) {
       writer.uint32(24).int32(message.adStage);
     }
+    if (message.isRollback !== undefined) {
+      writer.uint32(32).bool(message.isRollback);
+    }
     return writer;
   },
 
@@ -81,6 +85,9 @@ export const ProduceRequest = {
           break;
         case 3:
           message.adStage = reader.int32() as any;
+          break;
+        case 4:
+          message.isRollback = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -107,6 +114,11 @@ export const ProduceRequest = {
     } else {
       message.adStage = undefined;
     }
+    if (object.isRollback !== undefined && object.isRollback !== null) {
+      message.isRollback = Boolean(object.isRollback);
+    } else {
+      message.isRollback = undefined;
+    }
     return message;
   },
 
@@ -119,6 +131,7 @@ export const ProduceRequest = {
         message.adStage !== undefined
           ? aDStageToJSON(message.adStage)
           : undefined);
+    message.isRollback !== undefined && (obj.isRollback = message.isRollback);
     return obj;
   },
 
@@ -138,6 +151,11 @@ export const ProduceRequest = {
       message.adStage = object.adStage;
     } else {
       message.adStage = undefined;
+    }
+    if (object.isRollback !== undefined && object.isRollback !== null) {
+      message.isRollback = object.isRollback;
+    } else {
+      message.isRollback = undefined;
     }
     return message;
   },
