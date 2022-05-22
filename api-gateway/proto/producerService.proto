@@ -11,6 +11,7 @@ message ProduceRequest{
     string id = 1;
     optional bool force = 2;
     optional ADStage adStage = 3;
+    optional bool isRollback = 4;
 }
 
 message SuccessMessage{
