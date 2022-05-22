@@ -24,7 +24,7 @@ const images = [
   },
   {
     filename: 'sapirLogo.svg',
-    path: path.join(`${C.localMailImagesFullPath}/sapirL.svg`),
+    path: path.join(`${C.localMailImagesFullPath}/sapirLogo.svg`),
     cid: 'sapirLogo@cid',
   },
 ];
