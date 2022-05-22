@@ -21,7 +21,6 @@ import {
   Entity,
   OrganizationGroup,
 } from '../interfaces/protoc/proto/kartoffelService';
-
 // import { wasCreateBeenInLego, } from '../services/requestService';
 
 import { logger } from '../logger';
@@ -67,7 +66,7 @@ export class HistoryRepository {
         till: doesCreateBeenInLego.isItCreateInLego?getDoneRequestsByRoleIdReq.to:getDoneRequestsByRoleIdReq.to - 1,
         //till: Math.min(getDoneRequestsByRoleIdReq.to,requestsArr.totalCount),
       };
-      
+      ///sgdgdgdgdgdgagdgdsag
       if (requestsArr?.totalCount === 0) {
         if ((getDoneRequestsByRoleIdReq.from === 1)&&(!doesCreateBeenInLego.isItCreateInLego)) {
           eventArr.totalCount += 1;

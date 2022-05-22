@@ -56,53 +56,53 @@ services:
       - SS_KARTOFFEL_AUDIENCE=kartoffel
       - SS_LOG_PATH=/logs
 
-  # request-service:
-  #   image: request-service
-  #   build: ./request-service
-  #   env_file:
-  #     - ./supernova.env
-  #   ports:
-  #     - '8081:8080'
-  #   depends_on:
-  #     - mongo
-  #     - notification-service
-  #     - tea-service
-  #     - mail-service
-  #     # - approver-service
-  #   volumes:
-  #     - logs:/logs
-  #   environment:
-  #     - RS_MONGO_URL=mongodb://mongo:27017/supernova
-  #     - RS_NS_URL=notification-service:8080
-  #     - RS_TS_URL=tea-service:8080
-  #     - RS_MS_URL=mail-service:8080
-  #     - RS_APS_URL=approver-service:8080
-  #     - RS_ROOT_ID=619e3193f235dc001846bb4f
-  #     - RS_KARTOFFEL_GOAL_USER=GoalUser
-  #     - RS_LOG_PATH=/logs
+  request-service:
+    image: request-service
+    build: ./request-service
+    env_file:
+      - ./supernova.env
+    ports:
+      - '8081:8080'
+    depends_on:
+      - mongo
+      - notification-service
+      - tea-service
+      - mail-service
+      # - approver-service
+    volumes:
+      - logs:/logs
+    environment:
+      - RS_MONGO_URL=mongodb://mongo:27017/supernova
+      - RS_NS_URL=notification-service:8080
+      - RS_TS_URL=tea-service:8080
+      - RS_MS_URL=mail-service:8080
+      - RS_APS_URL=approver-service:8080
+      - RS_ROOT_ID=619e3193f235dc001846bb4f
+      - RS_KARTOFFEL_GOAL_USER=GoalUser
+      - RS_LOG_PATH=/logs
 
-  # kartoffel-service:
-  #   image: kartoffel-service
-  #   build: ./kartoffel-service/
-  #   env_file:
-  #     - ./supernova.env
-  #   ports:
-  #     - '8082:8080'
-  #   depends_on:
-  #     - spike-service
-  #   volumes:
-  #     - logs:/logs
-  #   environment:
-  #     - KS_USE_FAKER=false
-  #     - KS_SS_URL=spike-service:8080
-  #     - KS_ROOT_ID=6184af202da776001134110b
-  #     - KS_DEFAULT_ROLE_SOURCE=sf_name
-  #     - KS_DEFAULT_DI_SOURCE=es_name
-  #     - KS_DEFAULT_OG_SOURCE=sf_name
-  #     - KS_DI_SOURCES=es_name,es_name
-  #     - KS_DEFAULT_ROLE_ID_SUFFIX=oneTree
-  #     - KS_SEARCH_WITH_RANKS=true
-  #     - KS_LOG_PATH=/logs
+  kartoffel-service:
+    image: kartoffel-service
+    build: ./kartoffel-service/
+    env_file:
+      - ./supernova.env
+    ports:
+      - '8082:8080'
+    depends_on:
+      - spike-service
+    volumes:
+      - logs:/logs
+    environment:
+      - KS_USE_FAKER=false
+      - KS_SS_URL=spike-service:8080
+      - KS_ROOT_ID=6184af202da776001134110b
+      - KS_DEFAULT_ROLE_SOURCE=sf_name
+      - KS_DEFAULT_DI_SOURCE=es_name
+      - KS_DEFAULT_OG_SOURCE=sf_name
+      - KS_DI_SOURCES=es_name,es_name
+      - KS_DEFAULT_ROLE_ID_SUFFIX=oneTree
+      - KS_SEARCH_WITH_RANKS=true
+      - KS_LOG_PATH=/logs
 
   producer-service:
     image: producer-service
@@ -166,27 +166,27 @@ services:
       - APS_CREATE_EXTERNAL_ALLOWED_APPROVERS=619e3193f235dc001846bb4f,619a44fe5ce9f30018d8abba
       - APS_LOG_PATH=/logs
 
-  # tea-service:
-  #   image: tea-service
-  #   build: ./tea-service/
-  #   env_file:
-  #     - ./supernova.env
-  #   volumes:
-  #     - logs:/logs
-  #     - ./tea-service/src/excelFiles:/teaUtils
-  #   ports:
-  #     - '8086:8080'
-  #   environment:
-  #     - TS_KS_URL=0.0.0.0:8082
-  #     - TS_MONGO_URL=mongodb://mongo:27017/supernova
-  #     - TS_LOG_PATH=/logs
-  #     - TS_NEED_INIT=true
-  #     - TS_INIT_EMPTY_ARRAYS=true
-  #     - TS_EXCEL_INIT_FOLDER=/teaUtils
-  #     - TS_EXCEL_INIT_FILE=initPrefixes.xlsx
-  #     - TS_OLD_SUFFIX=gmail.com
-  #     - TS_NEW_SUFFIX=gmail.com
-  #     - TS_BROL=brol
+  tea-service:
+    image: tea-service
+    build: ./tea-service/
+    env_file:
+      - ./supernova.env
+    volumes:
+      - logs:/logs
+      - ./tea-service/src/excelFiles:/teaUtils
+    ports:
+      - '8086:8080'
+    environment:
+      - TS_KS_URL=0.0.0.0:8082
+      - TS_MONGO_URL=mongodb://mongo:27017/supernova
+      - TS_LOG_PATH=/logs
+      - TS_NEED_INIT=true
+      - TS_INIT_EMPTY_ARRAYS=true
+      - TS_EXCEL_INIT_FOLDER=/teaUtils
+      - TS_EXCEL_INIT_FILE=initPrefixes.xlsx
+      - TS_OLD_SUFFIX=gmail.com
+      - TS_NEW_SUFFIX=gmail.com
+      - TS_BROL=brol
 
   bulk-service:
     image: bulk-service
