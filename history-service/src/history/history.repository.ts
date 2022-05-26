@@ -49,16 +49,27 @@ export class HistoryRepository {
       
       if(!doesCreateBeenInLego.isItCreateInLego) {
         const tempVar = getDoneRequestsByRoleIdReq.from;
-        fromVal = tempVar !== 1 ? tempVar-1 : tempVar;
+        fromVal = (tempVar !== 1 ? tempVar-1 : tempVar);
         const tempVar2 = getDoneRequestsByRoleIdReq.to;
-        toVal = tempVar !== 1 ? tempVar2-1 : tempVar2;
+        toVal = (tempVar2 !== 1 ? tempVar2-1 : tempVar2);
       }
-      const requestsArr: RequestArray =
+      //נוסיף תנאי של 1-1
+      let requestsArr: RequestArray = {requests:[],totalCount:0};
+      // כל עוד אנחנו לא במצב שזה גם לא נוצר בלגו וגם לא שפרום והטו 1 אז תפעיל את הפונקציה 
+      if (!((!doesCreateBeenInLego.isItCreateInLego) && (getDoneRequestsByRoleIdReq.to === 1) && (getDoneRequestsByRoleIdReq.from === 1))) {
+        requestsArr =
         await this.requestService.getDoneRequestsByRoleId({
           roleId: getDoneRequestsByRoleIdReq.roleId,
           from: fromVal,
           to: toVal,
         });
+      }
+      // requestsArr =
+      //   await this.requestService.getDoneRequestsByRoleId({
+      //     roleId: getDoneRequestsByRoleIdReq.roleId,
+      //     from: fromVal,
+      //     to: toVal,
+      //   });
       const eventArr: EventArray = {
         events: [],
         totalCount: requestsArr.totalCount,
