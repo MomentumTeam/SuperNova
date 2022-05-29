@@ -17,6 +17,7 @@ export const storeLogs = process.env.GLOBAL_STORE_LOGS
   : false;
 
 export const kartoffelServiceUrl = process.env.MS_KS_URL || '0.0.0.0:8082';
+export const optionsServiceUrl = process.env.MS_OS_URL || '0.0.0.0:8089';
 
 export const mailServerHost =
   process.env.MS_MAIL_SERVER_HOST || 'smtp-mail.outlook.com';

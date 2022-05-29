@@ -71,7 +71,7 @@ export const config = {
     approver: env.get('GATEWAY_APS_URL').default('0.0.0.0:8085').asString(),
     tea: env.get('GATEWAY_TS_URL').default('0.0.0.0:8086').asString(),
     bulk: env.get('GATEWAY_BS_URL').default('0.0.0.0:8087').asString(),
-    options: env.get('GATEWAY_OS_URL').default('0.0.0.0:8088').asString(),
+    options: env.get('GATEWAY_OS_URL').default('0.0.0.0:8089').asString(),
     apm: env
       .get('GATEWAY_APM_URL')
       .default('http://52.169.23.32:8200')

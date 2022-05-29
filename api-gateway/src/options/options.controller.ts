@@ -36,7 +36,6 @@ export default class OptionsController {
   // PUT
   static async updateMyOptions(req: any, res: Response) {
     if (!req.user && !req.user.id) throw new AuthenticationError();
-
     const updateOptionsByEntityIdReq: UpdateUserOptionsReq = {
       entityId: req.user.id,
       ...req.body,

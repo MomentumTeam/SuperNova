@@ -1,12 +1,16 @@
 import * as grpc from '@grpc/grpc-js';
 import { logger } from '../logger';
 import { MailManager } from './mail.manager';
+import OptionsService from '../services/optionsService';
 
 const mailManager: MailManager = new MailManager();
 
 export async function sendMail(call: any, callback: any): Promise<void> {
   try {
     logger.info('Call to sendMail', { callRequest: call.request });
+    const mailNotificationsEnabled = await checkIfUserHasMailNotificationsEnabled(call.request.request.id);
+    if(!mailNotificationsEnabled) return;
+
     const mail = await mailManager.sendMail(call.request);
     logger.info('sendMail OK', {
       callRequest: call.request,
@@ -32,6 +36,9 @@ export async function sendMail(call: any, callback: any): Promise<void> {
 export async function sendCustomMail(call: any, callback: any): Promise<void> {
   try {
     logger.info('Call to sendCustomMail', { callRequest: call.request });
+    const mailNotificationsEnabled = await checkIfUserHasMailNotificationsEnabled(call.request.request.id);
+    if(!mailNotificationsEnabled) return;
+
     const mail = await mailManager.sendCustomMail(call.request);
     logger.info('sendCustomMail OK', {
       callRequest: call.request,
@@ -52,4 +59,9 @@ export async function sendCustomMail(call: any, callback: any): Promise<void> {
       null
     );
   }
+}
+
+async function checkIfUserHasMailNotificationsEnabled(entityId: string): Promise<boolean> {
+    const userOptions = await OptionsService.getUserOptions({ entityId });
+    return userOptions.getMailNotifications;
 }
