@@ -565,7 +565,122 @@ export class HistoryRepository {
     }
   }
 
+  
   async getEventsBySubmittedEntityId(
+    getDoneRequestsByEntityIdReq: GetDoneRequestsByEntityIdReq
+  ): Promise<EventArray> {
+    try {
+      //צריך לעשות בקשה שמזחריה אם הבקשה ראשונה הייתה בקשה מסוג יצירת תפקיד (כלומר אם זה קרה בלגו או לא) אם לא נוסיף אחד
+      // const doesCreateBeenInLego : BoolCheck = await this.requestService.wasCreateBeenInLego({
+      //   idCheck:getDoneRequestsByEntityIdReq.entityId,
+      // });
+      let fromVal = getDoneRequestsByEntityIdReq.from;
+      let toVal = getDoneRequestsByEntityIdReq.to;
+      
+      // if(!doesCreateBeenInLego.isItCreateInLego) {
+      //   const tempVar = getDoneRequestsByEntityIdReq.from;
+      //   fromVal = (tempVar !== 1 ? tempVar-1 : tempVar);
+      //   const tempVar2 = getDoneRequestsByEntityIdReq.to;
+      //   toVal = (tempVar2 !== 1 ? tempVar2-1 : tempVar2);
+      // }
+      
+      const requestsArr: RequestArray =
+      await this.requestService.getEventsByEntityId({
+        entityId: getDoneRequestsByEntityIdReq.entityId,
+        from: fromVal,
+        to: toVal,
+      });
+
+      //נוסיף תנאי של 1-1
+      // let requestsArr: RequestArray = {requests:[],totalCount:0};
+      // כל עוד אנחנו במצב שזה גם לא נוצר בלגו וגם שפרום והטו 1 אז תאפס את הפונקציה 
+      // if (((!doesCreateBeenInLego.isItCreateInLego) && (getDoneRequestsByEntityIdReq.to === 1) && (getDoneRequestsByEntityIdReq.from === 1))) {
+      //   requestsArr.requests = [];
+      // }
+
+      const eventArr: EventArray = {
+        events: [],
+        totalCount: requestsArr.totalCount,
+        till: getDoneRequestsByEntityIdReq.to,
+
+      };
+
+      if (requestsArr?.totalCount === 0) {
+        // if ((getDoneRequestsByEntityIdReq.from === 1)&&(!doesCreateBeenInLego.isItCreateInLego)) {
+        //   eventArr.totalCount += 1;
+        //   eventArr.till = 1;
+        //   const temporaryEvent: Event = { message: '', date: new Date().getTime() };
+        //   try {
+        //   const tempEntity : Entity = await KartoffelService.getEntityById({id:getDoneRequestsByEntityIdReq.entityId});
+        //   temporaryEvent.message = `  ${tempEntity?.createdAt.toLocaleString()} בתאריך ${tempEntity?.displayName} בקשת "יצירת תפקיד" קרתה, שם התפקיד - `;
+        //   eventArr.events.push(temporaryEvent);
+        //   } catch (error) {
+        //     eventArr.totalCount = 0;
+        //     console.log(error, 'faild to get Kartoffel entityId');
+        //   }
+        // }
+        return eventArr;
+      }
+
+      // if (
+      //   !doesCreateBeenInLego.isItCreateInLego
+      // ) {
+      //   eventArr.totalCount += 1; //////////////////////////////////////////////////////////////from =1
+      //   //יכול לקרות מצב שיש פחות בקשות ממה שהפגיניישן רוצה ואז יקרה מצב שזה יפתח את האיבנטים בשני דפים שונים (צריך לבדוק מה עושים במצב כזה) זה קורה שיש מעט מאוד בקשותת
+      //   if (getDoneRequestsByEntityIdReq.from === 1) {
+
+      //     const temporaryEvent: Event = { message: '', date: new Date().getTime() };
+      //     const tempEntity : Entity = await KartoffelService.getEntityById({id:getDoneRequestsByEntityIdReq.entityId});
+      //     temporaryEvent.message = `  ${tempEntity?.createdAt.toLocaleString()} בתאריך ${tempEntity?.displayName} בקשת "יצירת תפקיד" קרתה, שם התפקיד - `;
+      //     eventArr.events.push(temporaryEvent);
+      //   }
+      // }
+
+      let numberOfRequest = requestsArr.requests.length;
+
+      for (let i = 0; i < numberOfRequest; i++) {
+        const tempEvent: Event = { message: '', date: new Date().getTime() };
+        const tempRequest: Request = requestsArr.requests[i];
+
+        const typeOfTheRequest =
+        typeof tempRequest.type === typeof ''
+          ? requestTypeFromJSON(tempRequest.type)
+          : tempRequest.type;
+        //צריך לבדוק איך להחזיר את הזמנים
+        const tempDate = tempRequest.updatedAt.toLocaleString();
+
+        switch (typeOfTheRequest) {
+          case requestTypeFromJSON(RequestType.CREATE_ENTITY):
+            tempEvent.message = `  ${tempDate} בתאריך ${tempRequest?.kartoffelParams?.name} בקשת "יצירת אדם חדש במערכת" קרתה עבור `;
+            break;
+          case requestTypeFromJSON(RequestType.ADD_APPROVER):
+            tempEvent.message = `  ${tempDate} בתאריך ${tempRequest?.kartoffelParams?.name} בקשת "הוספת גורם מאשר" קרתה עבור `;
+            break;
+          case requestTypeFromJSON(RequestType.EDIT_ENTITY):
+            tempEvent.message = ` ${tempDate} בתאריך ${tempRequest?.kartoffelParams?.name} בקשת "שינוי האדם שמחזיר בתפקיד" קרתה עבור `;
+            break;
+          case requestTypeFromJSON(RequestType.ASSIGN_ROLE_TO_ENTITY):
+            tempEvent.message = `${tempDate} בתאריך ${tempRequest?.kartoffelParams?.name} בקשת "שיוך אדם לתפקיד" קרתה עבור `;
+            break;
+
+          default:
+            tempEvent.message = `${tempDate} בתאריך ${tempRequest?.type} בקשת מסוג ${tempRequest?.kartoffelParams?.name} "סוג בקשה שעוד לא נכתבה הודעת איבנט לגביו שאל את שלו" קרתה עבור `;
+            break;
+        }
+        eventArr.events.push(tempEvent);
+      }
+      // eventArr.events.reverse();
+      // if (!doesCreateBeenInLego.isItCreateInLego) {
+      //   eventArr.till+=1;
+      // }
+      return eventArr as EventArray;
+
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async olddddgetEventsBySubmittedEntityId(
     getDoneRequestsByEntityIdReq: GetDoneRequestsByEntityIdReq
   ): Promise<EventArray> {
     try {

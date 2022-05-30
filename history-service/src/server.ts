@@ -7,7 +7,7 @@ import { findPath } from './utils/path';
 import {
   getEventsByGroupId,
   getEventsByEntityId,
-  getEventsBySubmittedEntityId,
+  getEventsSubmmitedByEntityId,
   getEventsByRoleId,
 } from './history/history.controller';
 
@@ -54,7 +54,7 @@ export class Server {
           GetEventsByRoleId: getEventsByRoleId,
           GetEventsByGroupId: getEventsByGroupId,
           GetEventsByEntityId: getEventsByEntityId,
-          GetEventsBySubmittedEntityId: getEventsBySubmittedEntityId,
+          GetEventsSubmmitedByEntityId: getEventsSubmmitedByEntityId,
         }
           
       );
