@@ -5,7 +5,7 @@ import { logger } from './logger';
 import { findPath } from './utils/path';
 // import { addHealthService } from './health';
 import {
-  getEventsOGByOGId,
+  getEventsByGroupId,
   getEventsByEntityId,
   getEventsBySubmittedEntityId,
   getEventsByRoleId,
@@ -52,7 +52,7 @@ export class Server {
         historyServiceDescriptor.HistoryService.service,
         {
           GetEventsByRoleId: getEventsByRoleId,
-          GetEventsOGByOGId: getEventsOGByOGId,
+          GetEventsByGroupId: getEventsByGroupId,
           GetEventsByEntityId: getEventsByEntityId,
           GetEventsBySubmittedEntityId: getEventsBySubmittedEntityId,
         }

@@ -42,7 +42,7 @@ export async function getEventsByRoleId(
   }
 }
 
-export async function GetEventsByGroupId(
+export async function getEventsByGroupId(
   call: any,
   callback: any
 ): Promise<void> {
