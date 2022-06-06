@@ -17,7 +17,7 @@ message Options {
     bool toggleProfilePicture = 1;
     bool getMailNotifications = 2;
     bool showPhoneNumber = 3;
-    repeated string favoriteCommandersIds = 4;
+    repeated string favoriteCommanders = 4;
 }
 
 message UpdateUserOptionsReq {
@@ -28,8 +28,8 @@ message UpdateUserOptionsReq {
 }
 
 message FavoriteCommanderReq {
-string entityId = 1;
-string commanderId = 2;
+    string entityId = 1;
+    repeated string commandersIds = 2;
 }
 
 

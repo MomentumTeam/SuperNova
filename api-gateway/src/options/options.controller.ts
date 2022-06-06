@@ -56,7 +56,7 @@ export default class OptionsController {
     if (!req.user && !req.user.id) throw new AuthenticationError();
     const addFavoriteCommanderReq: FavoriteCommanderReq = {
       entityId: req.user.id,
-      commanderId: req.params.commanderId,
+      commandersIds: req.body.commanderIds,
     };
 
     try {
@@ -74,7 +74,7 @@ export default class OptionsController {
     if (!req.user && !req.user.id) throw new AuthenticationError();
     const removeFavoriteCommanderReq: FavoriteCommanderReq = {
       entityId: req.user.id,
-      commanderId: req.params.commanderId,
+      commandersIds: req.body.commandersIds,
     };
 
     try {

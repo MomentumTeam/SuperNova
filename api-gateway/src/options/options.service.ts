@@ -99,7 +99,6 @@ export class OptionsService {
       `Call to addFavoriteCommander in GTW`,
       favoriteCommanderReq
     );
-
     return new Promise((resolve, reject) => {
       randomClient().AddFavoriteCommander(
         favoriteCommanderReq,

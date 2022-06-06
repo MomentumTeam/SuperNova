@@ -9,7 +9,7 @@ export async function sendMail(call: any, callback: any): Promise<void> {
   try {
     logger.info('Call to sendMail', { callRequest: call.request });
     const mailNotificationsEnabled = await checkIfUserHasMailNotificationsEnabled(call.request.request.id);
-    if(!mailNotificationsEnabled) return;
+    if(!mailNotificationsEnabled) callback(null, {success: true, message: 'Mail notifications are disabled for this user'});
 
     const mail = await mailManager.sendMail(call.request);
     logger.info('sendMail OK', {

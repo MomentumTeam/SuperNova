@@ -28,8 +28,8 @@ message UpdateUserOptionsReq {
 }
 
 message FavoriteCommanderReq {
-string entityId = 1;
-string commanderId = 2;
+    string entityId = 1;
+    repeated string commandersIds = 2;
 }
 
 

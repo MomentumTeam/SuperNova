@@ -50,16 +50,16 @@ export class OptionsRepository {
   async addFavoriteCommander(
     addFavoriteCommanderReq: FavoriteCommanderReq
   ): Promise<Options> {
-    const { entityId, commanderId } = addFavoriteCommanderReq;
-    const setOnInsert = {
-      $setOnInsert: {
+    const { entityId, commandersIds } = addFavoriteCommanderReq;
+    const { favoriteCommanders, ...defaultOptions } = C.defaultOptions;
+    const setOnInsert = 
+      {
         entityId,
-        ...C.defaultOptions,
-      },
-    };
+        ...defaultOptions
+      };
     const userOptions = await OptionsModel.findOneAndUpdate(
       { entityId },
-      { setOnInsert, $addToSet: { favoriteCommanders: commanderId } },
+      { $setOnInsert: setOnInsert, $addToSet: { favoriteCommanders: { $each: commandersIds } } },
       { new: true, upsert: true }
     );
     return userOptions;
@@ -68,18 +68,14 @@ export class OptionsRepository {
   async removeFavoriteCommander(
     removeFavoriteCommanderReq: FavoriteCommanderReq
   ): Promise<Options> {
-    const { entityId, commanderId } = removeFavoriteCommanderReq;
-    const setOnInsert = {
-      $setOnInsert: {
-        entityId,
-        ...C.defaultOptions
-      },
-    };
-    const userOptions = await OptionsModel.findOneAndUpdate(
+    const { entityId, commandersIds } = removeFavoriteCommanderReq;
+    let updateQuery: any = { $pullAll: { favoriteCommanders: commandersIds } };
+    const doesDocExist = await OptionsModel.exists({ entityId });
+    if(!doesDocExist) updateQuery = { $setOnInsert: { entityId, ...C.defaultOptions } };
+    return  OptionsModel.findOneAndUpdate(
       { entityId },
-      { setOnInsert, $pull: { favoriteCommanders: commanderId } },
+      updateQuery,
       { new: true, upsert: true }
     );
-    return userOptions;
   }
 }

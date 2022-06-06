@@ -24,7 +24,7 @@ export interface UpdateUserOptionsReq {
 
 export interface FavoriteCommanderReq {
   entityId: string;
-  commanderId: string;
+  commandersIds: string[];
 }
 
 const baseGetOptionsByEntityIdReq: object = { entityId: "" };
@@ -377,7 +377,7 @@ export const UpdateUserOptionsReq = {
   },
 };
 
-const baseFavoriteCommanderReq: object = { entityId: "", commanderId: "" };
+const baseFavoriteCommanderReq: object = { entityId: "", commandersIds: "" };
 
 export const FavoriteCommanderReq = {
   encode(
@@ -387,8 +387,8 @@ export const FavoriteCommanderReq = {
     if (message.entityId !== "") {
       writer.uint32(10).string(message.entityId);
     }
-    if (message.commanderId !== "") {
-      writer.uint32(18).string(message.commanderId);
+    for (const v of message.commandersIds) {
+      writer.uint32(18).string(v!);
     }
     return writer;
   },
@@ -400,6 +400,7 @@ export const FavoriteCommanderReq = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseFavoriteCommanderReq } as FavoriteCommanderReq;
+    message.commandersIds = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -407,7 +408,7 @@ export const FavoriteCommanderReq = {
           message.entityId = reader.string();
           break;
         case 2:
-          message.commanderId = reader.string();
+          message.commandersIds.push(reader.string());
           break;
         default:
           reader.skipType(tag & 7);
@@ -419,15 +420,16 @@ export const FavoriteCommanderReq = {
 
   fromJSON(object: any): FavoriteCommanderReq {
     const message = { ...baseFavoriteCommanderReq } as FavoriteCommanderReq;
+    message.commandersIds = [];
     if (object.entityId !== undefined && object.entityId !== null) {
       message.entityId = String(object.entityId);
     } else {
       message.entityId = "";
     }
-    if (object.commanderId !== undefined && object.commanderId !== null) {
-      message.commanderId = String(object.commanderId);
-    } else {
-      message.commanderId = "";
+    if (object.commandersIds !== undefined && object.commandersIds !== null) {
+      for (const e of object.commandersIds) {
+        message.commandersIds.push(String(e));
+      }
     }
     return message;
   },
@@ -435,22 +437,26 @@ export const FavoriteCommanderReq = {
   toJSON(message: FavoriteCommanderReq): unknown {
     const obj: any = {};
     message.entityId !== undefined && (obj.entityId = message.entityId);
-    message.commanderId !== undefined &&
-      (obj.commanderId = message.commanderId);
+    if (message.commandersIds) {
+      obj.commandersIds = message.commandersIds.map((e) => e);
+    } else {
+      obj.commandersIds = [];
+    }
     return obj;
   },
 
   fromPartial(object: DeepPartial<FavoriteCommanderReq>): FavoriteCommanderReq {
     const message = { ...baseFavoriteCommanderReq } as FavoriteCommanderReq;
+    message.commandersIds = [];
     if (object.entityId !== undefined && object.entityId !== null) {
       message.entityId = object.entityId;
     } else {
       message.entityId = "";
     }
-    if (object.commanderId !== undefined && object.commanderId !== null) {
-      message.commanderId = object.commanderId;
-    } else {
-      message.commanderId = "";
+    if (object.commandersIds !== undefined && object.commandersIds !== null) {
+      for (const e of object.commandersIds) {
+        message.commandersIds.push(e);
+      }
     }
     return message;
   },

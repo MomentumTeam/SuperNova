@@ -20,9 +20,9 @@ export const updateUserOptionsSchema = Joi.object({
 });
 
 export const modifyFavoriteCommandersSchema = Joi.object({
-  body: {},
-  params: {
-    commanderId: Joi.objectId().required(),
+  body: { 
+    commanderIds: Joi.array().items(Joi.string()).required(),
   },
+  params: {},
   query: {},
 });
