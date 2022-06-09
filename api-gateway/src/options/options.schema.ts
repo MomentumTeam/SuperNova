@@ -21,7 +21,7 @@ export const updateUserOptionsSchema = Joi.object({
 
 export const modifyFavoriteCommandersSchema = Joi.object({
   body: { 
-    commanderIds: Joi.array().items(Joi.string()).required(),
+    commandersIds: Joi.array().items(Joi.string()).required(),
   },
   params: {},
   query: {},

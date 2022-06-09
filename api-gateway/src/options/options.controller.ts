@@ -56,7 +56,7 @@ export default class OptionsController {
     if (!req.user && !req.user.id) throw new AuthenticationError();
     const addFavoriteCommanderReq: FavoriteCommanderReq = {
       entityId: req.user.id,
-      commandersIds: req.body.commanderIds,
+      commandersIds: req.body.commandersIds,
     };
 
     try {
