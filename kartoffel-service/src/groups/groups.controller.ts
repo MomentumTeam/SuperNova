@@ -1,5 +1,6 @@
 import * as grpc from '@grpc/grpc-js';
 import {
+  ExportHierarchyDataRes,
   IdMessage,
   IsOGNameAlreadyTakenRes,
   OGArray,
@@ -184,6 +185,7 @@ export async function getOGByHierarchyName(
     logger.info(`Call to getOGByHierarchy`, {
       callRequest: call.request,
     });
+    
     const og: OrganizationGroup = await groupsManager.getOGByHierarchyName(
       call.request
     );
@@ -196,6 +198,36 @@ export async function getOGByHierarchyName(
     const message = getErrorMessage(error);
 
     logger.error(`getOGByHierarchy ERROR`, {
+      callRequest: call.request,
+      error: { message },
+    });
+    callback(
+      {
+        code: status,
+        message,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}
+
+export async function exportHierarchyData(call: any, callback: any): Promise<void> {
+  try {
+    logger.info(`Call to exportHierarchyData`, {
+      callRequest: call.request,
+    });
+    const ogExportData: ExportHierarchyDataRes =
+      await groupsManager.exportHierarchyData(call.request);
+    logger.info(`exportHierarchyData OK`, {
+      callRequest: call.request,
+    });
+    callback(null, ogExportData);
+  } catch (error: any) {
+    const status = getStatusCode(error);
+    const message = getErrorMessage(error);
+
+    logger.error(`exportHierarchyData ERROR`, {
       callRequest: call.request,
       error: { message },
     });

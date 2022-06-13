@@ -442,7 +442,7 @@ export function generateADQueueMessage(
     case RequestType.CONVERT_ENTITY_TYPE:
       message.data = {
         samAccountName: adParams.samAccountName,
-        upn: adParams.upn,
+        upn: `${adParams.upn}@${C.upnSuffix}`,
       };
       break;
     default:

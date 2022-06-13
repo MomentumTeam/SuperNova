@@ -16,7 +16,6 @@ import {
   renameRole,
   renameOG,
   updateEntity,
-  disconnectRoleAndDI,
   deleteEntity,
   changeRoleOG,
   connectEntityAndDI,
@@ -140,7 +139,7 @@ export const requestProcessor = async (incomingRequest: any) => {
               needDisconnect: requestObject.data.needDisconnect,
             });
           } else {
-            await disconnectRoleAndDI(requestObject.data);
+            await disconnectDIFromEntity(requestObject.data);
           }
           break;
         }

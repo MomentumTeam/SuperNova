@@ -18,6 +18,8 @@ import {
   IsOGNameAlreadyTakenReq,
   IsOGNameAlreadyTakenRes,
   IdMessage,
+  ExportHierarchyDataReq,
+  ExportHierarchyDataRes,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { KartoffelFaker } from '../mock/kartoffel.faker';
 import { KartoffelUtils } from '../utils/kartoffel.utils';
@@ -86,6 +88,18 @@ export class GroupsManager {
     try {
       return await this.groupsRepository.getOGByHierarchyName(
         getOGByHierarchyName
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async exportHierarchyData(
+    exportHierarchyDataReq: ExportHierarchyDataReq
+  ): Promise<ExportHierarchyDataRes> {
+    try {
+      return await this.groupsRepository.exportHierarchyData(
+        exportHierarchyDataReq
       );
     } catch (error) {
       throw error;
