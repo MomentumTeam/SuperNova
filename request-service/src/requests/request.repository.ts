@@ -1311,14 +1311,28 @@ export class RequestRepository {
         typeof updatedRequest.kartoffelStatus?.status === typeof ''
           ? stageStatusFromJSON(updatedRequest.kartoffelStatus?.status)
           : updatedRequest.kartoffelStatus?.status;
+
       if (
         kartoffelStatus === StageStatus.STAGE_DONE ||
-        kartoffelStatus === StageStatus.STAGE_FAILED
+        kartoffelStatus === StageStatus.STAGE_ROLLBACK_DONE ||
+        kartoffelStatus === StageStatus.STAGE_FAILED ||
+        kartoffelStatus === StageStatus.STAGE_ROLLBACK_FAILED
       ) {
-        requestStatus =
-          kartoffelStatus === StageStatus.STAGE_DONE
-            ? RequestStatus.DONE
-            : RequestStatus.FAILED;
+        switch (kartoffelStatus) {
+          case StageStatus.STAGE_DONE:
+            requestStatus = RequestStatus.DONE;
+            break;
+          case StageStatus.STAGE_ROLLBACK_DONE:
+            requestStatus = RequestStatus.ROLLBACK_DONE;
+            break;
+          case StageStatus.STAGE_FAILED:
+            requestStatus = RequestStatus.FAILED;
+            break;
+          case StageStatus.STAGE_ROLLBACK_FAILED:
+            requestStatus = RequestStatus.ROLLBACK_FAILED;
+            break;
+        }
+
         let properties: any = {
           status: requestStatusToJSON(requestStatus),
         };
@@ -1343,7 +1357,7 @@ export class RequestRepository {
             : MailType.REQUEST_FAILED;
         try {
           await createNotifications(notificationType, updatedRequest);
-          sendMail(mailType, updatedRequest).then().catch();
+          await sendMail(mailType, updatedRequest);
         } catch (notificationError: any) {
           logger.error('Notification error', {
             error: { message: notificationError.message },
@@ -1423,8 +1437,14 @@ export class RequestRepository {
         typeof updatedRequest.adStatus?.status === typeof ''
           ? stageStatusFromJSON(updatedRequest.adStatus?.status)
           : updatedRequest.adStatus?.status;
-      if (adStatus === StageStatus.STAGE_FAILED) {
-        requestStatus = RequestStatus.FAILED;
+      if (
+        adStatus === StageStatus.STAGE_FAILED ||
+        adStatus === StageStatus.STAGE_ROLLBACK_FAILED
+      ) {
+        requestStatus =
+          adStatus === StageStatus.STAGE_FAILED
+            ? RequestStatus.FAILED
+            : RequestStatus.ROLLBACK_FAILED;
         updatedRequest = await this.updateRequest({
           id: updateADStatusReq.requestId,
           requestProperties: {
@@ -1486,7 +1506,7 @@ export class RequestRepository {
         request.needSecurityDecision = true;
         request.needSuperSecurityDecision = false;
         break;
-        
+
       case RequestType.ASSIGN_ROLE_TO_ENTITY:
         request.needSecurityDecision = true;
         request.needSuperSecurityDecision = false;

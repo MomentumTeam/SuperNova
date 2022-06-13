@@ -302,7 +302,8 @@ export async function generateKartoffelQueueMessage(
 
 export function generateADQueueMessage(
   request: Request,
-  adStage: any = undefined
+  adStage: any = undefined,
+  isRollback: boolean
 ): any {
   if (adStage !== undefined) {
     adStage = typeof adStage === typeof '' ? aDStageFromJSON(adStage) : adStage;
@@ -312,6 +313,9 @@ export function generateADQueueMessage(
     type: C.shmuelRequestTypes[requestTypeToJSON(request.type)],
     source: C.oldDomain,
   };
+  if (isRollback) {
+    message.id = message.id + '#rollback';
+  }
   if (
     request.type === RequestType.ASSIGN_ROLE_TO_ENTITY &&
     request.kartoffelParams?.needDisconnect
@@ -319,134 +323,201 @@ export function generateADQueueMessage(
     message.type = 'MoveRole';
   }
   const adParams: any = request.adParams;
-  switch (request.type) {
-    case RequestType.CREATE_OG: //Reviewed with Orin, CreateOU
-      message.data = {
-        ouDName: adParams.ouDisplayName,
-        hierarchyOu: adParams.ouName,
-        newOuName: adParams.name,
-      };
-      break;
-    case RequestType.CREATE_ROLE: //reviewed with Orin, CreateRole
-      if (
-        request.adParams &&
-        request.adParams.upn !== undefined &&
-        request.adParams.upn !== null
-      ) {
-        if (adStage === undefined || adStage === ADStage.FIRST_AD_STAGE) {
-          //First Stage - Create Role
-          message.id = `${message.id}@1`;
+  if (isRollback) {
+    switch (request.type) {
+      case RequestType.CREATE_OG: //Reviewed with Orin, CreateOU
+        message.data = {
+          ouDName: adParams.ouDisplayName,
+          hierarchyOu: adParams.ouName,
+          newOuName: adParams.name,
+        };
+        break;
+      case RequestType.CREATE_ROLE: //reviewed with Orin, CreateRole
+        message.data = {
+          userT: adParams.samAccountName,
+        };
+        break;
+      case RequestType.ASSIGN_ROLE_TO_ENTITY: //reviewed with Orin
+        if (
+          request.kartoffelParams?.needDisconnect &&
+          adParams.oldSAMAccountName
+        ) {
+          //MoveRole
+          message.data = {
+            samAccountName: adParams.newSAMAccountName,
+            toSamAccountName: adParams.oldSAMAccountName,
+            upn: `${adParams.upn}@${C.upnSuffix}`,
+            firstName: adParams.firstName,
+            lastName: adParams.lastName,
+            fullName: adParams.fullName,
+            nickname: adParams.fullName,
+            rank: adParams.rank ? adParams.rank : 'לא ידוע',
+            jobNumber: '0',
+          };
+        } else {
+          //DisconnectRole
+          message.data = {
+            userID: adParams.samAccountName,
+          };
+        }
+        break;
+      case RequestType.RENAME_OG: //Reviewed with Orin, EditOU
+        message.data = {
+          ouDName: adParams.ouDisplayName,
+          hierarchyOu: adParams.oldOuName,
+          newOuName: adParams.newOuName,
+        };
+        break;
+      case RequestType.RENAME_ROLE: //Reviewed with Orin, EditRoleName
+        message.data = {
+          userT: adParams.samAccountName,
+          newRole: adParams.jobTitle,
+        };
+        break;
+      case RequestType.DISCONNECT_ROLE: // Reviewed with Orin, DisconnectRole
+        message.data = {
+          userID: adParams.samAccountName,
+        };
+        break;
+      case RequestType.CHANGE_ROLE_HIERARCHY: // ChangeRole
+        message.data = {
+          userT: adParams.samAccountName,
+          ouDisplayName: adParams.ouDisplayName,
+        };
+        break;
+      default:
+        throw new Error('type not supported!');
+    }
+  } else {
+    switch (request.type) {
+      case RequestType.CREATE_OG: //Reviewed with Orin, CreateOU
+        message.data = {
+          ouDName: adParams.ouDisplayName,
+          hierarchyOu: adParams.ouName,
+          newOuName: adParams.name,
+        };
+        break;
+      case RequestType.CREATE_ROLE: //reviewed with Orin, CreateRole
+        if (
+          request.adParams &&
+          request.adParams.upn !== undefined &&
+          request.adParams.upn !== null
+        ) {
+          if (adStage === undefined || adStage === ADStage.FIRST_AD_STAGE) {
+            //First Stage - Create Role
+            message.id = `${message.id}@1`;
+            message.data = {
+              userID: adParams.samAccountName,
+              ouName: adParams.ouDisplayName,
+              roleName: adParams.jobTitle,
+            };
+          } else {
+            message.id = `${message.id}@2`;
+            //secondStage - treat it like ConnectNewRole
+            message.type =
+              C.shmuelRequestTypes[
+                requestTypeToJSON(RequestType.ASSIGN_ROLE_TO_ENTITY)
+              ];
+            const getJobTitle = splitFullName(adParams.jobTitle);
+            message.data = {
+              userID: adParams.samAccountName,
+              UPN: `${adParams.upn}@${C.upnSuffix}`,
+              firstName: getJobTitle.firstName,
+              lastName: getJobTitle.lastName,
+              fullName: getJobTitle.fullName,
+              rank: 'לא ידוע',
+              ID: adParams.samAccountName,
+              // pdoName: 'x',
+            };
+          }
+        } else {
           message.data = {
             userID: adParams.samAccountName,
             ouName: adParams.ouDisplayName,
             roleName: adParams.jobTitle,
           };
-        } else {
-          message.id = `${message.id}@2`;
-          //secondStage - treat it like ConnectNewRole
-          message.type =
-            C.shmuelRequestTypes[
-              requestTypeToJSON(RequestType.ASSIGN_ROLE_TO_ENTITY)
-            ];
-          const getJobTitle = splitFullName(adParams.jobTitle);
+        }
+        break;
+      case RequestType.ASSIGN_ROLE_TO_ENTITY: //reviewed with Orin
+        if (
+          request.kartoffelParams?.needDisconnect &&
+          adParams.oldSAMAccountName
+        ) {
+          //MoveRole
           message.data = {
-            userID: adParams.samAccountName,
+            samAccountName: adParams.oldSAMAccountName,
+            toSamAccountName: adParams.newSAMAccountName,
+            upn: `${adParams.upn}@${C.upnSuffix}`,
+            firstName: adParams.firstName,
+            lastName: adParams.lastName,
+            fullName: adParams.fullName,
+            nickname: adParams.fullName,
+            rank: adParams.rank ? adParams.rank : 'לא ידוע',
+            jobNumber: '0',
+          };
+        } else {
+          //ConnectNewRole
+          message.data = {
+            userID: adParams.newSAMAccountName,
             UPN: `${adParams.upn}@${C.upnSuffix}`,
-            firstName: getJobTitle.firstName,
-            lastName: getJobTitle.lastName,
-            fullName: getJobTitle.fullName,
-            rank: 'לא ידוע',
-            ID: adParams.samAccountName,
+            firstName: adParams.firstName,
+            lastName: adParams.lastName,
+            fullName: adParams.fullName,
+            rank: adParams.rank ? adParams.rank : 'לא ידוע',
+            ID: adParams.newSAMAccountName,
             // pdoName: 'x',
           };
         }
-      } else {
+        break;
+      case RequestType.RENAME_OG: //Reviewed with Orin, EditOU
+        message.data = {
+          ouDName: adParams.ouDisplayName,
+          hierarchyOu: adParams.oldOuName,
+          newOuName: adParams.newOuName,
+        };
+        break;
+      case RequestType.RENAME_ROLE: //Reviewed with Orin, EditRoleName
+        message.data = {
+          userT: adParams.samAccountName,
+          newRole: adParams.jobTitle,
+        };
+        break;
+      case RequestType.EDIT_ENTITY: //Reviewed with Orin, EditSpecialRole
+        message.data = {
+          samAccountName: adParams.samAccountName,
+          firstName: adParams.firstName,
+          lastName: adParams.lastName,
+          fullName: adParams.fullName,
+        };
+        break;
+      case RequestType.DELETE_ROLE: // Reviewed with Orin, PurgeRole
+        message.data = {
+          userT: adParams.samAccountName,
+        };
+        break;
+      case RequestType.DISCONNECT_ROLE: // Reviewed with Orin, DisconnectRole
         message.data = {
           userID: adParams.samAccountName,
-          ouName: adParams.ouDisplayName,
-          roleName: adParams.jobTitle,
         };
-      }
-      break;
-    case RequestType.ASSIGN_ROLE_TO_ENTITY: //reviewed with Orin
-      if (
-        request.kartoffelParams?.needDisconnect &&
-        adParams.oldSAMAccountName
-      ) {
-        //MoveRole
+        break;
+      case RequestType.CHANGE_ROLE_HIERARCHY: // ChangeRole
         message.data = {
-          samAccountName: adParams.oldSAMAccountName,
-          toSamAccountName: adParams.newSAMAccountName,
+          userT: adParams.samAccountName,
+          ouDisplayName: adParams.ouDisplayName,
+        };
+        if (adParams.newJobTitle) {
+          message.data.newName = adParams.newJobTitle;
+        }
+        break;
+      case RequestType.CONVERT_ENTITY_TYPE:
+        message.data = {
+          samAccountName: adParams.samAccountName,
           upn: `${adParams.upn}@${C.upnSuffix}`,
-          firstName: adParams.firstName,
-          lastName: adParams.lastName,
-          fullName: adParams.fullName,
-          nickname: adParams.fullName,
-          rank: adParams.rank ? adParams.rank : 'לא ידוע',
-          jobNumber: '0',
         };
-      } else {
-        //ConnectNewRole
-        message.data = {
-          userID: adParams.newSAMAccountName,
-          UPN: `${adParams.upn}@${C.upnSuffix}`,
-          firstName: adParams.firstName,
-          lastName: adParams.lastName,
-          fullName: adParams.fullName,
-          rank: adParams.rank ? adParams.rank : 'לא ידוע',
-          ID: adParams.newSAMAccountName,
-          // pdoName: 'x',
-        };
-      }
-      break;
-    case RequestType.RENAME_OG: //Reviewed with Orin, EditOU
-      message.data = {
-        ouDName: adParams.ouDisplayName,
-        hierarchyOu: adParams.oldOuName,
-        newOuName: adParams.newOuName,
-      };
-      break;
-    case RequestType.RENAME_ROLE: //Reviewed with Orin, EditRoleName
-      message.data = {
-        userT: adParams.samAccountName,
-        newRole: adParams.jobTitle,
-      };
-      break;
-    case RequestType.EDIT_ENTITY: //Reviewed with Orin, EditSpecialRole
-      message.data = {
-        samAccountName: adParams.samAccountName,
-        firstName: adParams.firstName,
-        lastName: adParams.lastName,
-        fullName: adParams.fullName,
-      };
-      break;
-    case RequestType.DELETE_ROLE: // Reviewed with Orin, PurgeRole
-      message.data = {
-        userT: adParams.samAccountName,
-      };
-      break;
-    case RequestType.DISCONNECT_ROLE: // Reviewed with Orin, DisconnectRole
-      message.data = {
-        userID: adParams.samAccountName,
-      };
-      break;
-    case RequestType.CHANGE_ROLE_HIERARCHY: // ChangeRole
-      message.data = {
-        userT: adParams.samAccountName,
-        ouDisplayName: adParams.ouDisplayName,
-      };
-      if (adParams.newJobTitle) {
-        message.data.newName = adParams.newJobTitle;
-      }
-      break;
-    case RequestType.CONVERT_ENTITY_TYPE:
-      message.data = {
-        samAccountName: adParams.samAccountName,
-        upn: `${adParams.upn}@${C.upnSuffix}`,
-      };
-      break;
-    default:
-      throw new Error('type not supported!');
+        break;
+      default:
+        throw new Error('type not supported!');
+    }
   }
   return message;
 }

@@ -8,9 +8,7 @@ export async function parseExcelFile(index: any) {
     let rows: any = await readXlsxFile(`${C.excelFilePath}`);
     rows.shift();
     let approvers: Array<string> = rows
-      .map((row: any) => {
-        return row[index];
-      })
+      .map((row: any) => row[index])
       .filter(
         (element: any) =>
           element && element !== null && EmailValidator.validate(element)
@@ -25,21 +23,15 @@ export async function parseExcelFileAdminAndSecurityAdmin(index: any) {
   try {
     let rows: any = await readXlsxFile(`${C.excelFilePath}`);
     rows.shift();
-    let approvers: Array<string> = rows.map((row: any) => {
-      return row[index];
-    });
+    let approvers: Array<string> = rows.map((row: any) => row[index]);
 
     let admin = approvers
-      .map((T) => {
-        return T?.split(',')[0];
-      })
+      .map((T) => T?.split(',')[0])
       .filter(
         (element: any) =>
           element && element !== null && EmailValidator.validate(element)
       );
-    let io = approvers.map((I) => {
-      return I?.split(',')[1];
-    });
+    let io = approvers.map((I) => I?.split(',')[1]);
     return {
       admin,
       io,

@@ -64,13 +64,12 @@ export class RollbackRepository {
                       message:
                         'ERROR The user is already logged in to this role',
                     };
-                  } else {
-                    return {
-                      isValid: true,
-                      message: 'OK',
-                    };
                   }
                 }
+                return {
+                  isValid: true,
+                  message: 'OK',
+                };
               }
             }
           } catch (error: any) {
@@ -105,7 +104,7 @@ export class RollbackRepository {
                 identifier = request.kartoffelParams?.personalNumber;
                 break;
               case C.external:
-                identifier = request.kartoffelParams?.employeeId;
+                identifier = `${request.kartoffelParams?.organization}-${request.kartoffelParams?.employeeNumber}`;
                 break;
             }
 
@@ -166,6 +165,7 @@ export class RollbackRepository {
             } else {
               const oldHierarchyArray: any =
                 request.kartoffelParams?.oldHierarchy?.split('/');
+
               const og: OrganizationGroup = await KartoffelService.getOGById({
                 id: request.kartoffelParams?.id as any,
               });
@@ -181,6 +181,35 @@ export class RollbackRepository {
               return { isValid: false, message: 'Is already exists ' };
             } else {
               return { isValid: true, message: 'OK' };
+            }
+          } catch (error: any) {
+            return { isValid: false, message: error.message };
+          }
+        }
+        case RequestType.CHANGE_ROLE_HIERARCHY: {
+          try {
+            const og: OrganizationGroup = await KartoffelService.getOGById({
+              id: request.kartoffelParams?.oldOGId as any,
+            });
+            if (og) {
+              const role: Role = await KartoffelService.getRoleByRoleId({
+                roleId: request.kartoffelParams?.roleId as any,
+              });
+              const isAlreadyTaken: IsJobTitleAlreadyTakenRes =
+                await KartoffelService.isJobTitleAlreadyTaken({
+                  jobTitle: role.jobTitle,
+                  directGroup: request.kartoffelParams?.oldDirectGroup,
+                } as any);
+              if (isAlreadyTaken.isJobTitleAlreadyTaken) {
+                return { isValid: false, message: 'Is already exists' };
+              } else {
+                return { isValid: true, message: 'OK' };
+              }
+            } else {
+              return {
+                isValid: false,
+                message: 'ERROR: The previous hierarchy does not exist',
+              };
             }
           } catch (error: any) {
             return { isValid: false, message: error.message };
@@ -214,36 +243,6 @@ export class RollbackRepository {
         //     return { isValid: true, message: 'OK' };
         //   }
         // }
-
-        case RequestType.CHANGE_ROLE_HIERARCHY: {
-          try {
-            const og: OrganizationGroup = await KartoffelService.getOGById({
-              id: request.kartoffelParams?.oldOGId as any,
-            });
-            if (og) {
-              const role: Role = await KartoffelService.getRoleByRoleId({
-                roleId: request.kartoffelParams?.roleId as any,
-              });
-              const isAlreadyTaken: IsJobTitleAlreadyTakenRes =
-                await KartoffelService.isJobTitleAlreadyTaken({
-                  jobTitle: role.jobTitle,
-                  directGroup: request.kartoffelParams?.oldDirectGroup,
-                } as any);
-              if (isAlreadyTaken.isJobTitleAlreadyTaken) {
-                return { isValid: false, message: 'Is already exists' };
-              } else {
-                return { isValid: true, message: 'OK' };
-              }
-            } else {
-              return {
-                isValid: false,
-                message: 'ERROR: The previous hierarchy does not exist',
-              };
-            }
-          } catch (error: any) {
-            return { isValid: false, message: error.message };
-          }
-        }
         default: {
           return {
             isValid: false,

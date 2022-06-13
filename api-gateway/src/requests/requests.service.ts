@@ -274,10 +274,13 @@ export class RequestsService {
     });
   }
 
-  static async updateKartoffelStatus(requestId: string) {
+  static async updateKartoffelStatus(
+    requestId: string,
+    status: StageStatus = StageStatus.STAGE_IN_PROGRESS
+  ) {
     const updateKartoffelStatusReq: UpdateKartoffelStatusReq = {
       requestId: requestId,
-      status: StageStatus.STAGE_IN_PROGRESS,
+      status: status,
     };
 
     logger.info(
@@ -711,8 +714,13 @@ export class RequestsService {
 
   // PUT
 
-  static async convertEntityTypeRequest(convertEntityTypeReq: ConvertEntityTypeReq) {
-    logger.info(`Call to convertEntityTypeRequest in GTW`, convertEntityTypeReq);
+  static async convertEntityTypeRequest(
+    convertEntityTypeReq: ConvertEntityTypeReq
+  ) {
+    logger.info(
+      `Call to convertEntityTypeRequest in GTW`,
+      convertEntityTypeReq
+    );
 
     return new Promise((resolve, reject) => {
       randomClient().ConvertEntityTypeRequest(
@@ -734,7 +742,6 @@ export class RequestsService {
       );
     });
   }
-
 
   static async removeApproverFromApprovers(
     removeApproverFromApproversReq: RemoveApproverFromApproversReq

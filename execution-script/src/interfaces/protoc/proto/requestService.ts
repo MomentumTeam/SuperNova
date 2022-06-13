@@ -204,6 +204,8 @@ export enum RequestStatus {
   IN_PROGRESS = 5,
   DONE = 6,
   FAILED = 7,
+  ROLLBACK_DONE = 8,
+  ROLLBACK_FAILED = 9,
   UNRECOGNIZED = -1,
 }
 
@@ -233,6 +235,12 @@ export function requestStatusFromJSON(object: any): RequestStatus {
     case 7:
     case "FAILED":
       return RequestStatus.FAILED;
+    case 8:
+    case "ROLLBACK_DONE":
+      return RequestStatus.ROLLBACK_DONE;
+    case 9:
+    case "ROLLBACK_FAILED":
+      return RequestStatus.ROLLBACK_FAILED;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -258,6 +266,10 @@ export function requestStatusToJSON(object: RequestStatus): string {
       return "DONE";
     case RequestStatus.FAILED:
       return "FAILED";
+    case RequestStatus.ROLLBACK_DONE:
+      return "ROLLBACK_DONE";
+    case RequestStatus.ROLLBACK_FAILED:
+      return "ROLLBACK_FAILED";
     default:
       return "UNKNOWN";
   }
@@ -271,6 +283,9 @@ export enum StageStatus {
   STAGE_IN_PROGRESS = 4,
   STAGE_DONE = 5,
   STAGE_FAILED = 6,
+  STAGE_ROLLBACK_DONE = 7,
+  STAGE_ROLLBACK_FAILED = 8,
+  STAGE_ROLLBACK_IN_PROGRESS = 9,
   UNRECOGNIZED = -1,
 }
 
@@ -297,6 +312,15 @@ export function stageStatusFromJSON(object: any): StageStatus {
     case 6:
     case "STAGE_FAILED":
       return StageStatus.STAGE_FAILED;
+    case 7:
+    case "STAGE_ROLLBACK_DONE":
+      return StageStatus.STAGE_ROLLBACK_DONE;
+    case 8:
+    case "STAGE_ROLLBACK_FAILED":
+      return StageStatus.STAGE_ROLLBACK_FAILED;
+    case 9:
+    case "STAGE_ROLLBACK_IN_PROGRESS":
+      return StageStatus.STAGE_ROLLBACK_IN_PROGRESS;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -320,6 +344,12 @@ export function stageStatusToJSON(object: StageStatus): string {
       return "STAGE_DONE";
     case StageStatus.STAGE_FAILED:
       return "STAGE_FAILED";
+    case StageStatus.STAGE_ROLLBACK_DONE:
+      return "STAGE_ROLLBACK_DONE";
+    case StageStatus.STAGE_ROLLBACK_FAILED:
+      return "STAGE_ROLLBACK_FAILED";
+    case StageStatus.STAGE_ROLLBACK_IN_PROGRESS:
+      return "STAGE_ROLLBACK_IN_PROGRESS";
     default:
       return "UNKNOWN";
   }

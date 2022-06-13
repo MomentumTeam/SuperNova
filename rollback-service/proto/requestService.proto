@@ -1631,6 +1631,8 @@ enum RequestStatus{
     IN_PROGRESS = 5;
     DONE = 6;
     FAILED = 7;
+    ROLLBACK_DONE = 8;
+    ROLLBACK_FAILED = 9;
 }
 
 enum StageStatus{
@@ -1641,6 +1643,9 @@ enum StageStatus{
     STAGE_IN_PROGRESS = 4;
     STAGE_DONE = 5;
     STAGE_FAILED = 6;
+    STAGE_ROLLBACK_DONE = 7;
+    STAGE_ROLLBACK_FAILED = 8;
+    STAGE_ROLLBACK_IN_PROGRESS = 9;
 }
 
 enum Decision{

@@ -213,6 +213,7 @@ export const deleteRole = async (deleteRoleRequest: DeleteRoleRequest) => {
   try {
     logger.info('deleteRole request received', deleteRoleRequest);
     const { roleId } = deleteRoleRequest;
+    // TODO DELETE ALSO THE DI
     const successMessage: SuccessMessage = await KartoffelService.deleteRole({
       roleId,
     });
@@ -294,26 +295,6 @@ export const updateEntity = async (
       properties: properties,
     });
     logger.info('Successfuly updated Entity', successMessage);
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const disconnectDIFromEntity = async (
-  disconnectDIFromEntityRequest: DisconnectDIFromEntityRequest
-) => {
-  try {
-    logger.info(
-      'disconnectDIFromEntity request received',
-      disconnectDIFromEntityRequest
-    );
-    const { id, uniqueId } = disconnectDIFromEntityRequest;
-    const successMessage: SuccessMessage =
-      await KartoffelService.disconnectDIFromEntity({
-        id: id,
-        uniqueId: uniqueId,
-      });
-    logger.info('Successfuly disconnected role from entity', successMessage);
   } catch (error) {
     throw error;
   }

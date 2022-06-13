@@ -54,6 +54,7 @@ import {
 } from './requests.utils';
 import { GetUserTypeRes } from '../interfaces/protoc/proto/approverService';
 import { config } from '../config';
+import { RollbackService } from '../rollback/rollback.service';
 
 export default class RequestsController {
   static async getSupportLink(req: any, res: Response) {
@@ -376,9 +377,15 @@ export default class RequestsController {
     const status: boolean = req.body.Status;
     // When the first stage of CreateRole with roleEntityType=GoalUser
     const specialCase: boolean = req.body.RequestID.indexOf('@') !== -1;
-    const requestId = specialCase
-      ? req.body.RequestID.split('@')[0]
-      : req.body.RequestID;
+    const rollbackCase: boolean = req.body.RequestID.indexOf('#') !== -1;
+    let requestId: string;
+    if (specialCase) {
+      requestId = req.body.RequestId.split('@')[0];
+    } else if (rollbackCase) {
+      requestId = req.body.RequestId.split('#')[0];
+    } else {
+      requestId = req.body.RequestID;
+    }
     const adStageSuffix = specialCase
       ? req.body.RequestID.split('@')[1]
       : undefined;
@@ -390,11 +397,18 @@ export default class RequestsController {
     let request: any;
     try {
       if (!retry) {
-        updateADStatus.status = status
-          ? StageStatus.STAGE_DONE
-          : StageStatus.STAGE_FAILED;
+        if (rollbackCase) {
+          updateADStatus.status = status
+            ? StageStatus.STAGE_ROLLBACK_DONE
+            : StageStatus.STAGE_ROLLBACK_FAILED;
+        } else {
+          updateADStatus.status = status
+            ? StageStatus.STAGE_DONE
+            : StageStatus.STAGE_FAILED;
+        }
         if (
           updateADStatus.status === StageStatus.STAGE_FAILED ||
+          updateADStatus.status === StageStatus.STAGE_ROLLBACK_FAILED ||
           adStageSuffix !== '1'
         ) {
           request = await RequestsService.updateADStatus(updateADStatus);
@@ -409,15 +423,28 @@ export default class RequestsController {
               ADStage.SECOND_AD_STAGE
             );
           } else {
-            //need to send to kartoffel
-            const produceRes =
-              (await ProducerController.produceToKartoffelQueue(
+            let produceRes: any;
+            if (rollbackCase) {
+              produceRes = await RollbackService.rollbackInKartoffel({
+                id: requestId,
+              });
+              if (produceRes.success) {
+                request = await RequestsService.updateKartoffelStatus({
+                  requestId: requestId,
+                  status: StageStatus.STAGE_ROLLBACK_IN_PROGRESS,
+                } as any);
+                return res.send(request);
+              }
+            } else {
+              produceRes = (await ProducerController.produceToKartoffelQueue(
                 requestId
               )) as SuccessMessage;
-            if (produceRes.success) {
-              //if produce was successful update Kartoffel Status
-              request = await RequestsService.updateKartoffelStatus(requestId);
-              return res.send(request);
+              if (produceRes.success) {
+                request = await RequestsService.updateKartoffelStatus(
+                  requestId
+                );
+                return res.send(request);
+              }
             }
           }
         }
@@ -438,7 +465,11 @@ export default class RequestsController {
             ADStage.SECOND_AD_STAGE
           );
         } else {
-          await ProducerController.produceToADQueue(requestId, res, true);
+          if (rollbackCase) {
+            await RollbackService.rollbackInAD({ id: requestId });
+          } else {
+            await ProducerController.produceToADQueue(requestId, res, true);
+          }
         }
       }
     } catch (error: any) {

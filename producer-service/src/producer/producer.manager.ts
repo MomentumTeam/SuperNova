@@ -32,6 +32,7 @@ export class RequestManager {
     produceRequest: ProduceRequest
   ): Promise<SuccessMessage> {
     try {
+      const isRollback: boolean = produceRequest.isRollback ? true : false;
       const request: Request = await this.requestService.getRequestById({
         id: produceRequest.id,
       });
@@ -45,8 +46,11 @@ export class RequestManager {
       if (
         !force &&
         (kartoffelStatus === StageStatus.STAGE_DONE ||
+          kartoffelStatus === StageStatus.STAGE_ROLLBACK_DONE ||
           kartoffelStatus === StageStatus.STAGE_FAILED ||
-          kartoffelStatus === StageStatus.STAGE_IN_PROGRESS)
+          kartoffelStatus === StageStatus.STAGE_ROLLBACK_FAILED ||
+          kartoffelStatus === StageStatus.STAGE_IN_PROGRESS ||
+          kartoffelStatus === StageStatus.STAGE_ROLLBACK_IN_PROGRESS)
       ) {
         return { success: true, message: 'No need' };
       }
@@ -85,12 +89,16 @@ export class RequestManager {
       } else if (requestType === RequestType.ADD_APPROVER) {
         await this.requestService.updateADStatus({
           requestId: produceRequest.id,
-          status: StageStatus.STAGE_DONE,
+          status: isRollback
+            ? StageStatus.STAGE_ROLLBACK_DONE
+            : StageStatus.STAGE_DONE,
           message: `AD stage is not part of ADD_APPROVER request!`,
         });
         await this.requestService.updateKartoffelStatus({
           requestId: produceRequest.id,
-          status: StageStatus.STAGE_DONE,
+          status: isRollback
+            ? StageStatus.STAGE_ROLLBACK_DONE
+            : StageStatus.STAGE_DONE,
           message: `Kartoffel stage is not part of ADD_APPROVER request!`,
         });
         return {
@@ -98,9 +106,6 @@ export class RequestManager {
           message: 'ADD_APPROVER',
         };
       } else {
-        const isRollback: any = produceRequest.isRollback
-          ? produceRequest.isRollback
-          : undefined;
         const message = generateKartoffelQueueMessage(request, isRollback);
         logger.info(
           `produceToKafkaQueue generated queue message : ${JSON.stringify(
@@ -123,7 +128,9 @@ export class RequestManager {
         );
         await this.requestService.updateKartoffelStatus({
           requestId: produceRequest.id,
-          status: StageStatus.STAGE_IN_PROGRESS,
+          status: isRollback
+            ? StageStatus.STAGE_ROLLBACK_IN_PROGRESS
+            : StageStatus.STAGE_IN_PROGRESS,
           message: `Pushed into kartoffel queue at ${new Date().toString()}`,
         });
         logger.info(
@@ -145,6 +152,7 @@ export class RequestManager {
     produceRequest: ProduceRequest
   ): Promise<SuccessMessage> {
     try {
+      const isRollback: boolean = produceRequest.isRollback ? true : false;
       const request: Request = await this.requestService.getRequestById({
         id: produceRequest.id,
       });
@@ -152,7 +160,9 @@ export class RequestManager {
       if (C.restrictADAccess && !C.adAllowedSubmitters.includes(submitterId)) {
         await this.requestService.updateADStatus({
           requestId: produceRequest.id,
-          status: StageStatus.STAGE_DONE,
+          status: isRollback
+            ? StageStatus.STAGE_ROLLBACK_DONE
+            : StageStatus.STAGE_DONE,
           message: `User ${submitterId} is not AD allowed submitter, AD stage has not been performed`,
         });
         const kartoffelSuccessMessage = await this.produceToKartoffelQueue({
@@ -170,8 +180,11 @@ export class RequestManager {
       if (
         !force &&
         (adStatus === StageStatus.STAGE_DONE ||
+          adStatus === StageStatus.STAGE_ROLLBACK_DONE ||
           adStatus === StageStatus.STAGE_FAILED ||
-          adStatus === StageStatus.STAGE_IN_PROGRESS)
+          adStatus === StageStatus.STAGE_ROLLBACK_FAILED ||
+          adStatus === StageStatus.STAGE_IN_PROGRESS ||
+          adStatus === StageStatus.STAGE_ROLLBACK_IN_PROGRESS)
       ) {
         return { success: true, message: 'No need' };
       }
@@ -210,12 +223,16 @@ export class RequestManager {
       } else if (requestType === RequestType.ADD_APPROVER) {
         await this.requestService.updateADStatus({
           requestId: produceRequest.id,
-          status: StageStatus.STAGE_DONE,
+          status: isRollback
+            ? StageStatus.STAGE_ROLLBACK_DONE
+            : StageStatus.STAGE_DONE,
           message: `AD stage is not part of ADD_APPROVER request!`,
         });
         await this.requestService.updateKartoffelStatus({
           requestId: produceRequest.id,
-          status: StageStatus.STAGE_DONE,
+          status: isRollback
+            ? StageStatus.STAGE_ROLLBACK_DONE
+            : StageStatus.STAGE_DONE,
           message: `Kartoffel stage is not part of ADD_APPROVER request!`,
         });
         return {
@@ -229,7 +246,9 @@ export class RequestManager {
       ) {
         await this.requestService.updateADStatus({
           requestId: produceRequest.id,
-          status: StageStatus.STAGE_DONE,
+          status: isRollback
+            ? StageStatus.STAGE_ROLLBACK_DONE
+            : StageStatus.STAGE_DONE,
           message: `AD stage is not part of ${requestTypeToJSON(
             requestType
           )} request!`,
@@ -245,7 +264,9 @@ export class RequestManager {
       ) {
         await this.requestService.updateADStatus({
           requestId: produceRequest.id,
-          status: StageStatus.STAGE_DONE,
+          status: isRollback
+            ? StageStatus.STAGE_ROLLBACK_DONE
+            : StageStatus.STAGE_DONE,
           message: `Entity does not have samAccountName, ADStage is not required!`,
         });
         const kartoffelSuccessMessage = await this.produceToKartoffelQueue({
@@ -256,7 +277,8 @@ export class RequestManager {
         const adStage: any = produceRequest.adStage
           ? produceRequest.adStage
           : undefined;
-        const message = generateADQueueMessage(request, adStage);
+
+        const message = generateADQueueMessage(request, adStage, isRollback);
         logger.info(
           `produceToADQueue generated queue message : ${JSON.stringify(
             message
@@ -278,7 +300,9 @@ export class RequestManager {
         );
         await this.requestService.updateADStatus({
           requestId: produceRequest.id,
-          status: StageStatus.STAGE_IN_PROGRESS,
+          status: isRollback
+            ? StageStatus.STAGE_ROLLBACK_IN_PROGRESS
+            : StageStatus.STAGE_IN_PROGRESS,
           message: `Pushed into AD queue at ${new Date().toString()}`,
         });
         logger.info(

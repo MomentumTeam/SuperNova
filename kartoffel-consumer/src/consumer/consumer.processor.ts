@@ -39,6 +39,7 @@ export const requestProcessor = async (incomingRequest: any) => {
   let requestObject = undefined;
   let type: any = undefined;
   let validReq = true;
+  let isRollback = undefined;
 
   try {
     requestObject = fromStringToObject(incomingRequest.value.toString());
@@ -46,8 +47,7 @@ export const requestProcessor = async (incomingRequest: any) => {
       incomingRequest: incomingRequest,
       requestObject: JSON.stringify(requestObject),
     });
-    let isRollback = requestObject.data.isRollback;
-
+    isRollback = requestObject.data.isRollback;
     if (requestObject && requestObject.type) {
       type =
         typeof requestObject.type === typeof ''
@@ -99,19 +99,11 @@ export const requestProcessor = async (incomingRequest: any) => {
           break;
         }
         case RequestType.RENAME_OG: {
-          if (isRollback) {
-            await renameOG(requestObject.data);
-          } else {
-            await renameOG(requestObject.data);
-          }
+          await renameOG(requestObject.data);
           break;
         }
         case RequestType.RENAME_ROLE: {
-          if (isRollback) {
-            await renameRole(requestObject.data);
-          } else {
-            await renameRole(requestObject.data);
-          }
+          await renameRole(requestObject.data);
           break;
         }
         case RequestType.EDIT_ENTITY: {
@@ -163,7 +155,9 @@ export const requestProcessor = async (incomingRequest: any) => {
     if (validReq) {
       await RequestService.UpdateKartoffelStatus({
         requestId: requestObject.id,
-        status: StageStatus.STAGE_DONE,
+        status: isRollback
+          ? StageStatus.STAGE_ROLLBACK_DONE
+          : StageStatus.STAGE_DONE,
         createdId: createdObjectId ? createdObjectId : '',
       });
       if (type === RequestType.CREATE_ROLE && createdObjectId) {
@@ -182,7 +176,14 @@ export const requestProcessor = async (incomingRequest: any) => {
       error: { message: error.message },
     });
     try {
-      if (requestObject && requestObject.id) {
+      if(isRollback){
+        await RequestService.UpdateKartoffelStatus({
+          requestId: requestObject.id,
+          status: StageStatus.STAGE_ROLLBACK_FAILED,
+          createdId: createdObjectId ? createdObjectId : '',
+        });
+      }
+      if (requestObject && requestObject.id && !isRollback) {
         const updatedRequest = await RequestService.IncrementKartoffelRetries({
           id: requestObject.id,
           message: error.message ? error.message.toString() : 'Kartoffel Error',
