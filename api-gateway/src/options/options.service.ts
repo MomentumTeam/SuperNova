@@ -41,7 +41,7 @@ function randomClient(): any {
 export class OptionsService {
   static async getUserOptions(
     getOptionsByEntityIdReq: GetOptionsByEntityIdReq
-  ) {
+  ): Promise<Options> {
     logger.info(
       `Call to getOptionsByEntityIdReq in GTW`,
       getOptionsByEntityIdReq

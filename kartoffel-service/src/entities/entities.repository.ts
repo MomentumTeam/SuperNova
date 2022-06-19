@@ -160,7 +160,9 @@ export class EntitiesRepository {
       } else {
         const image: string =
           await this.kartoffelUtils.kartoffelGetBufferStream(
-            `${C.kartoffelUrl}/api/entities/${encodeURIComponent(getPictureByEntityIdentifierRequest.identifier)}/pictures/profile`
+            `${C.kartoffelUrl}/api/entities/${encodeURIComponent(
+              getPictureByEntityIdentifierRequest.identifier
+            )}/pictures/profile`
           );
         return { image: image };
       }

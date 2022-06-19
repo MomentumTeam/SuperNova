@@ -12,15 +12,18 @@ import {
   IsRoleAlreadyTakenReq,
   GetPictureByEntityIdentifierRequest,
 } from '../interfaces/protoc/proto/kartoffelService';
+import { OptionsService } from '../options/options.service';
 import { AuthenticationError } from '../utils/errors/userErrors';
 import { statusCodeHandler } from '../utils/errors/errorHandlers';
 import { timeout } from '../utils/timeout';
 import { config } from '../config';
+import { Options } from '../interfaces/protoc/proto/optionsService';
 
 export default class KartoffelController {
   // Entities
   static async getMyUser(req: any, res: Response) {
     if (!req.user && !req.user.id) throw new AuthenticationError();
+    console.log('getMyUser');
     const getMyUserReq: GetEntityByIdRequest = { id: req.user.id };
 
     logger.info(`Call to getMyUser in GTW`, {
@@ -40,6 +43,7 @@ export default class KartoffelController {
   }
 
   static async getEntityByMongoId(req: Request, res: Response) {
+    console.log('getEntityByMongoId');
     const getEntityByMongoIdReq: GetEntityByIdRequest = { id: req.params.id };
     logger.info(`Call to getEntityByMongoId in GTW`, {
       callRequest: getEntityByMongoIdReq,
@@ -59,6 +63,7 @@ export default class KartoffelController {
   static async getMyPicture(req: any, res: Response) {
     if (!req.user && (!req.user.personalNumber || !req.user.identityCard))
       throw new AuthenticationError();
+    console.log('getMyPicture');
     const getPictureByEntityIdentifierReq: GetPictureByEntityIdentifierRequest =
       {
         identifier: req.user.personalNumber || req.user.identityCard,
@@ -76,10 +81,15 @@ export default class KartoffelController {
   }
 
   static async getPictureByEntityIdentifier(req: any, res: Response) {
+    console.log('getPictureByEntityIdentifier');
     try {
+      const { toggleProfilePicture } = await OptionsService.getUserOptions(req.params.identifier);
+      console.log(toggleProfilePicture);
+      if (!toggleProfilePicture) return res.send('');
       const userImage = await KartoffelService.getPictureByEntityIdentifier({
         identifier: req.params.identifier,
       });
+      console.log(userImage);
       res.send(userImage);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -88,6 +98,7 @@ export default class KartoffelController {
   }
 
   static async searchEntitiesByFullName(req: Request, res: Response) {
+    console.log('searchEntitiesByFullName');
     const searchEntitiesByFullNameReq: any = req.query;
 
     try {
@@ -102,14 +113,18 @@ export default class KartoffelController {
   }
 
   static async getEntityByIdentifier(req: Request, res: Response) {
+    console.log('getEntityByIdentifier');
     const getEntityByIdentifierReq: GetEntityByIdentifierRequest = {
       identifier: req.params.identifier,
     };
 
     try {
-      const entity = await KartoffelService.getEntityByIdentifier(
+      const entity: any = await KartoffelService.getEntityByIdentifier(
         getEntityByIdentifierReq
       );
+      const userOptions: Options = await OptionsService.getUserOptions(entity.id);
+      const { showPhoneNumber } = userOptions;
+      if (!showPhoneNumber) entity.mobilePhone = [];
       res.send(entity);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
@@ -118,6 +133,7 @@ export default class KartoffelController {
   }
 
   static async getEntityByRoleId(req: Request, res: Response) {
+    console.log('getEntityByRoleId');
     const getEntityByRoleIdReq: GetEntityByRoleIdRequest = {
       roleId: req.params.roleId,
     };
@@ -135,12 +151,17 @@ export default class KartoffelController {
 
   static async getEntitiesUnderOG(req: Request, res: Response) {
     const getEntitiesUnderOGReq: any = { ...req.params, ...req.query };
+    console.log(getEntitiesUnderOGReq);
 
     try {
-      const entities = await KartoffelService.getEntitiesUnderOG(
+      const entities: any = await KartoffelService.getEntitiesUnderOG(
         getEntitiesUnderOGReq
       );
-      res.send(entities);
+      console.log('Original', entities);
+      console.log('Right here');
+      const x = entities.map((entity: any) => entity.mobilePhone = '');
+      console.log('New', x);
+      res.send(entities.map((entity: any) => entity.mobilePhone = ''));
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);
