@@ -83,6 +83,7 @@ import {
   retrieveUPNByEntityId,
   retrieveUPNByIdentifier,
 } from '../services/teaHelper';
+import KartoffelService from '../services/kartoffelService';
 import { logger } from '../logger';
 import { MailType } from '../interfaces/protoc/proto/mailService';
 import { ApproverArray } from '../interfaces/protoc/proto/approverService';
@@ -110,9 +111,18 @@ export class RequestRepository {
         }
       } else if (type === RequestType.ASSIGN_ROLE_TO_ENTITY) {
         createRequestReq.adParams.upn = await retrieveUPNByEntityId(
-          createRequestReq.kartoffelParams.id
+          createRequestReq.kartoffelParams.id,
+          createRequestReq.kartoffelParams.entityType
         );
         createRequestReq.kartoffelParams.upn = createRequestReq.adParams.upn;
+        const upnType = createRequestReq.adParams.upn.split('')[0];
+        const entity = await KartoffelService.getEntityById(
+          createRequestReq.kartoffelParams.id
+        );
+        createRequestReq.adParams.oldUPN =
+          upnType === 's'
+            ? `c${entity.identityCard}`
+            : `s${entity.personalNumber}`;
       } else if (
         type === RequestType.CREATE_ENTITY ||
         type === RequestType.DELETE_ENTITY ||
