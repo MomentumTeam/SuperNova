@@ -313,9 +313,6 @@ export function generateADQueueMessage(
     type: C.shmuelRequestTypes[requestTypeToJSON(request.type)],
     source: C.oldDomain,
   };
-  if (isRollback) {
-    message.id = message.id + '#rollback';
-  }
   if (
     request.type === RequestType.ASSIGN_ROLE_TO_ENTITY &&
     request.kartoffelParams?.needDisconnect
@@ -324,6 +321,7 @@ export function generateADQueueMessage(
   }
   const adParams: any = request.adParams;
   if (isRollback) {
+    message.id = message.id + '#rollback';
     switch (request.type) {
       case RequestType.CREATE_OG: //Reviewed with Orin, CreateOU
         message.data = {
@@ -448,6 +446,7 @@ export function generateADQueueMessage(
             samAccountName: adParams.oldSAMAccountName,
             toSamAccountName: adParams.newSAMAccountName,
             upn: `${adParams.upn}@${C.upnSuffix}`,
+            oldUPN: `${adParams.oldUpn}@${C.upnSuffix}`,
             firstName: adParams.firstName,
             lastName: adParams.lastName,
             fullName: adParams.fullName,
