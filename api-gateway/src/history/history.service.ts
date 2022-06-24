@@ -10,15 +10,15 @@ import {
   Event,
 } from '../interfaces/protoc/proto/historyService';
 import { logger } from '../utils/logger/logger';
-import {
-  ApproverType,
-  Request,
-} from '../interfaces/protoc/proto/requestService';
-import {
-  DigitalIdentity,
-  Entity,
-  EntityArray,
-} from '../interfaces/protoc/proto/kartoffelService';
+// import {
+//   ApproverType,
+//   Request,
+// } from '../interfaces/protoc/proto/requestService';
+// import {
+//   DigitalIdentity,
+//   Entity,
+//   EntityArray,
+// } from '../interfaces/protoc/proto/kartoffelService';
 import { resolve } from 'path/posix';
 
 const PROTO_PATH = __dirname.includes('dist')
