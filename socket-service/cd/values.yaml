@@ -1,0 +1,49 @@
+name: "socket-service"
+# If you want to overide the full name you can include the 'fullnameOverride' value
+#fullname:
+replicaCount: 1
+
+images:
+  PullSecrets:
+    name: momentumacr
+  repository: momentumacr.azurecr.io/socket-service
+  tag: "latest"
+service:
+  ports:
+    - name: ws
+      port: "2001"
+    - name: http-sks
+      port: "8080"
+      
+
+config:
+  configmaps:
+    name: momentum-configmap
+ingress:
+  enabled: true
+  annotations:
+    nginx.ingress.kubernetes.io/affinity: cookie
+    nginx.ingress.kubernetes.io/session-cookie-name: socket_io_cookie
+  hosts:
+    - host: momentum.branch-yesodot.org
+      paths:
+        - path: /socket.io
+          service: socket-service
+          port: 2001
+
+livenessProbe:
+  exec:
+    command: ["/bin/grpc_health_probe", "-addr=:8080"]
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 3
+readinessProbe:
+  exec:
+    command: ["/bin/grpc_health_probe", "-addr=:8080"]
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 3

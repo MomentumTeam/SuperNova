@@ -1,0 +1,34 @@
+syntax = "proto3";
+import "requestService.proto";
+import "notificationService.proto";
+
+package SocketService;
+
+service SocketService {
+    rpc SendEvent(SendEventReq) returns (SuccessMessage) {}
+}
+
+message SendEventReq{
+    SocketEventType eventType = 1;
+    optional SocketEventData eventData = 2;
+}
+
+message SuccessMessage{
+    bool success = 1;
+}
+
+enum SocketEventType{
+    NEW_NOTIFICATION = 0; 
+    READ_NOTIFICATION = 1;
+    NEW_REQUEST = 2;
+    UPDATE_REQUEST = 3;
+    UPDATE_REQUEST_APPROVERS = 4;
+    DELETE_REQUEST = 5;
+}
+
+message SocketEventData  {
+    optional NotificationService.Notification notification = 1; 
+    optional RequestService.Request request = 2;
+    optional RequestService.Request oldRequest = 3;
+    repeated string additionalDests = 4;
+}

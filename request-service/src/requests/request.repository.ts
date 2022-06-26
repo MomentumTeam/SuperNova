@@ -86,6 +86,8 @@ import {
 import KartoffelService from '../services/kartoffelService';
 import { logger } from '../logger';
 import { MailType } from '../interfaces/protoc/proto/mailService';
+import { SocketService } from '../services/socketService';
+import { SocketEventType } from '../interfaces/protoc/proto/socketService';
 import { ApproverArray } from '../interfaces/protoc/proto/approverService';
 
 export class RequestRepository {
@@ -221,6 +223,7 @@ export class RequestRepository {
         request?.submittedBy?.directGroup,
         ...ancestors,
       ];
+
       const needAdminDecision = await ApproverService.includesSpecialGroup({
         groupIds: groupIds,
       });
@@ -230,7 +233,9 @@ export class RequestRepository {
         needAdminDecision.includes
       );
       request.type = requestTypeToJSON(type);
+      logger.info(`Creating request ${request.id}`);
       const createdCreateRequest = await request.save();
+      logger.info(`Request ${request.id} created`);
       const document = createdCreateRequest.toObject();
       turnObjectIdsToStrings(document);
 
@@ -242,6 +247,7 @@ export class RequestRepository {
           requestProperties: {
             status: requestStatusToJSON(RequestStatus.APPROVED_BY_SECURITY),
           },
+          sendSocket: false
         });
       } else if (this.isRequestApprovedByAdmin(request)) {
         await this.updateRequest({
@@ -249,6 +255,7 @@ export class RequestRepository {
           requestProperties: {
             status: requestStatusToJSON(RequestStatus.APPROVED_BY_ADMIN),
           },
+          sendSocket: false
         });
       } else if (this.isRequestApprovedByCommander(request)) {
         await this.updateRequest({
@@ -256,6 +263,7 @@ export class RequestRepository {
           requestProperties: {
             status: requestStatusToJSON(RequestStatus.APPROVED_BY_COMMANDER),
           },
+          sendSocket: false
         });
       }
 
@@ -302,6 +310,13 @@ export class RequestRepository {
           }
         }
       }
+      
+      const req = document as Request
+      SocketService.SendEvent({
+        eventType: SocketEventType.NEW_REQUEST,
+        eventData: { request: req, additionalDests: [] },
+      }).then().catch();
+     
       return document as Request;
     } catch (error) {
       throw error;
@@ -504,6 +519,15 @@ export class RequestRepository {
       if (documentAfter) {
         const documentObj = documentAfter.toObject();
         turnObjectIdsToStrings(documentObj);
+
+        SocketService.SendEvent({
+          eventType: SocketEventType.UPDATE_REQUEST_APPROVERS,
+          eventData: { request: documentObj as Request, oldRequest: request, additionalDests: [] },
+        })
+          .then()
+          .catch();
+       
+
         return documentObj as Request;
       } else {
         throw new Error(
@@ -559,6 +583,7 @@ export class RequestRepository {
         superSecurityDecision !== Decision.DECISION_UNKNOWN;
       const needSecurityDecision = request.needSecurityDecision;
       const needSuperSecurityDecision = request.needSuperSecurityDecision;
+
       const needAdminDecision = request.needAdminDecision;
       switch (type) {
         case ApproverType.COMMANDER:
@@ -655,6 +680,15 @@ export class RequestRepository {
       if (documentAfter) {
         const documentObj = documentAfter.toObject();
         turnObjectIdsToStrings(documentObj);
+
+     
+        SocketService.SendEvent({
+          eventType: SocketEventType.UPDATE_REQUEST_APPROVERS,
+          eventData: { request: documentObj as Request, oldRequest: request, additionalDests: [] },
+        })
+          .then()
+          .catch();
+    
         return documentObj as Request;
       } else {
         throw new Error(
@@ -678,6 +712,7 @@ export class RequestRepository {
       let updateQuery: any = {
         id: updateDecisionReq.id,
         requestProperties: {},
+        sendSocket: false,
       };
 
       let approverField;
@@ -1216,10 +1251,22 @@ export class RequestRepository {
         success: true,
         message: `Request ${deleteReq.id} was deleted successfully`,
       };
+      
+      // TODONETTA: add socket remove request
       await createNotifications(
         NotificationType.REQUEST_DELETED,
         requestBefore
       );
+
+      
+      SocketService.SendEvent({
+        eventType: SocketEventType.DELETE_REQUEST,
+        eventData: { oldRequest: requestBefore, additionalDests: [] },
+      })
+        .then()
+        .catch();
+    
+      
       return res;
     } catch (error) {
       throw error;
@@ -1281,6 +1328,16 @@ export class RequestRepository {
             await this.syncBulkRequest({ id: bulkRequestId });
           }
         }
+
+        if (!("sendSocket" in updateReq) || updateReq.sendSocket) {
+            SocketService.SendEvent({
+              eventType: SocketEventType.UPDATE_REQUEST,
+              eventData: { request: documentObj as Request, additionalDests: [] },
+            })
+            .then()
+            .catch();
+        } 
+
         return documentObj as Request;
       } else {
         throw new Error(`A request with {_id: ${updateReq.id}} was not found!`);

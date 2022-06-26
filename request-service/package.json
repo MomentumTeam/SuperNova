@@ -17,7 +17,7 @@
   "dependencies": {
     "@elastic/ecs-winston-format": "^1.1.0",
     "@grpc/grpc-js": "^1.4.4",
-    "@grpc/proto-loader": "^0.6.2",
+    "@grpc/proto-loader": "^0.6.4",
     "@types/lodash": "^4.14.176",
     "dotenv": "^10.0.0",
     "grpc-js-health-check": "^1.0.2",
@@ -25,10 +25,10 @@
     "mongoose": "^5.12.12",
     "mongoose-auto-increment": "^5.0.1",
     "mongoose-extend-schema": "^1.0.0",
-    "nodemon": "^2.0.7",
-    "ts-node": "^10.0.0",
-    "ts-proto": "^1.81.3",
-    "typescript": "^4.3.2",
+    "nodemon": "^2.0.12",
+    "ts-node": "^10.1.0",
+    "ts-proto": "^1.82.2",
+    "typescript": "^4.3.5",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.5.5"
   },

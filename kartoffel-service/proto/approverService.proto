@@ -42,6 +42,7 @@ message IncludesSpecialGroupReq{
 
 message GetAdminsByGroupIdsReq{
     repeated string groupIds = 1;
+    optional RequestService.ApproverType type = 2;
 }
 
 message IsApproverValidForOGReq{

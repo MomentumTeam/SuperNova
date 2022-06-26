@@ -69,7 +69,6 @@ export default class NotificationService {
         (err: any, notificationArray: NotificationArray) => {
           if (err) {
             resolve({ notifications: [], totalCount: 0 });
-            // reject(err);
           } else {
             resolve(notificationArray);
           }

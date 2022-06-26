@@ -24,7 +24,6 @@ volume:
     shareName: momentum/spike-utils
     type: azurefile
 
-
   - name: bulk-files-utils
     mounts:
       - mountPath: /bulkFiles

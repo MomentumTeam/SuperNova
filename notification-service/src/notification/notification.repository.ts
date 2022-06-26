@@ -6,19 +6,18 @@ import {
   Notification,
   NotificationArray,
   NotificationIdArray,
-  NotificationType,
   SuccessMessage,
 } from '../interfaces/protoc/proto/notificationService';
+import { SocketEventType } from '../interfaces/protoc/proto/socketService';
 import { NotificationModel } from '../models/notification.model';
+import { SocketService } from '../services/socket.service';
 import {
   generateNotifications,
   turnObjectIdsToStrings,
 } from '../utils/notificationHelper';
-
+import { logger } from '../logger';
 export class NotificationRepository {
-  async markAsRead(
-    notificationIdArray: NotificationIdArray
-  ): Promise<SuccessMessage> {
+  async markAsRead(notificationIdArray: NotificationIdArray): Promise<SuccessMessage> {
     try {
       await NotificationModel.updateMany(
         {
@@ -26,15 +25,14 @@ export class NotificationRepository {
         },
         { $set: { read: true } }
       );
+
       return { success: true };
     } catch (error) {
       throw error;
     }
   }
 
-  async markAllAsRead(
-    markAllAsReadReq: MarkAllAsReadReq
-  ): Promise<SuccessMessage> {
+  async markAllAsRead(markAllAsReadReq: MarkAllAsReadReq): Promise<SuccessMessage> {
     try {
       await NotificationModel.updateMany(
         {
@@ -42,29 +40,31 @@ export class NotificationRepository {
         },
         { $set: { read: true } }
       );
+
+      SocketService.SendEvent({
+        eventType: SocketEventType.READ_NOTIFICATION,
+        eventData: {additionalDests: [markAllAsReadReq.ownerId]}
+      }).then().catch();
+    
+
       return { success: true };
     } catch (error) {
       throw error;
     }
   }
 
-  async createNotifications(
-    createNotificationsReq: CreateNotificationsReq
-  ): Promise<NotificationArray> {
+  async createNotifications(createNotificationsReq: CreateNotificationsReq): Promise<NotificationArray> {
     return new Promise<NotificationArray>((resolve, reject) => {
       try {
         let promises: Promise<Notification>[] = [];
         if (createNotificationsReq.request) {
           if (createNotificationsReq.request.isPartOfBulk) {
-            throw new Error(
-              'Do not create notifications for requests which are parts of bulk!'
-            );
+            throw new Error("Do not create notifications for requests which are parts of bulk!");
           }
-          const createNotificationRequests: CreateCustomNotificationReq[] =
-            generateNotifications(
-              createNotificationsReq.type,
-              createNotificationsReq.request
-            );
+          const createNotificationRequests: CreateCustomNotificationReq[] = generateNotifications(
+            createNotificationsReq.type,
+            createNotificationsReq.request
+          );
           for (let createNotificationReq of createNotificationRequests) {
             promises.push(
               new Promise<Notification>((createResolve, createReject) => {
@@ -76,6 +76,7 @@ export class NotificationRepository {
               })
             );
           }
+
           Promise.all(promises)
             .then((createdNotifications: Notification[]) => {
               resolve({
@@ -87,7 +88,7 @@ export class NotificationRepository {
               reject(error);
             });
         } else {
-          reject(new Error('Request must be inserted!'));
+          reject(new Error("Request must be inserted!"));
         }
       } catch (error) {
         reject(error);
@@ -95,17 +96,18 @@ export class NotificationRepository {
     });
   }
 
-  async createCustomNotification(
-    createCustomNotificationReq: CreateCustomNotificationReq
-  ): Promise<Notification> {
+  async createCustomNotification(createCustomNotificationReq: CreateCustomNotificationReq): Promise<Notification> {
     try {
-      const notification: any = new NotificationModel(
-        createCustomNotificationReq
-      );
+      const notification: any = new NotificationModel(createCustomNotificationReq);
       notification.createdAt = new Date().getTime();
       const createdNotification = await notification.save();
       const document = createdNotification.toObject();
       turnObjectIdsToStrings(document);
+      SocketService.SendEvent({
+        eventType: SocketEventType.NEW_NOTIFICATION,
+        eventData: { notification: document as Notification, additionalDests: [] },
+      }).then().catch();
+      
       return document as Notification;
     } catch (error) {
       throw error;
@@ -129,12 +131,9 @@ export class NotificationRepository {
         {},
         {
           skip: getNotificationsByOwnerIdReq.from - 1,
-          limit:
-            getNotificationsByOwnerIdReq.to -
-            getNotificationsByOwnerIdReq.from +
-            1,
+          limit: getNotificationsByOwnerIdReq.to - getNotificationsByOwnerIdReq.from + 1,
         }
-      ).sort([['createdAt', -1]]);
+      ).sort([["createdAt", -1]]);
 
       if (notifications) {
         let documents: any = [];
