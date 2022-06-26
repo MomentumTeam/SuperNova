@@ -43,14 +43,14 @@ export class SocketService {
     return new Promise((resolve, reject) => {
       randomClient().SendEvent(sendEventReq, (err: any, response: SuccessMessage) => {
         if (err) {
-          logger.error(`SendEvent ERROR in AS`, {
+          logger.error(`SendEvent ERROR in SocketService`, {
             err,
             callRequest: sendEventReq,
           });
           reject(err);
         }
 
-        logger.info(`SendEvent OK in AS`, {
+        logger.info(`SendEvent OK in SocketService`, {
           response: response,
           callRequest: sendEventReq,
         });

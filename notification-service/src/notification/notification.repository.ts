@@ -42,7 +42,7 @@ export class NotificationRepository {
       );
 
       try {
-        await SocketService.SendEvent({
+        SocketService.SendEvent({
           eventType: SocketEventType.READ_NOTIFICATION,
           eventData: {additionalDests: [markAllAsReadReq.ownerId]}
         });
@@ -107,7 +107,7 @@ export class NotificationRepository {
       const document = createdNotification.toObject();
       turnObjectIdsToStrings(document);
       try {
-        await SocketService.SendEvent({
+        SocketService.SendEvent({
           eventType: SocketEventType.NEW_NOTIFICATION,
           eventData: { notification: document as Notification, additionalDests: [] },
         });

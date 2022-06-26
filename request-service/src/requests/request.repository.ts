@@ -300,7 +300,7 @@ export class RequestRepository {
       
       try {
         const req = document as Request
-        await SocketService.SendEvent({
+        SocketService.SendEvent({
           eventType: SocketEventType.NEW_REQUEST,
           eventData: { request: req, additionalDests: [] },
         });
@@ -512,7 +512,7 @@ export class RequestRepository {
         turnObjectIdsToStrings(documentObj);
 
         try {
-          await SocketService.SendEvent({
+          SocketService.SendEvent({
             eventType: SocketEventType.UPDATE_REQUEST_APPROVERS,
             eventData: { request: documentObj as Request, oldRequest: request, additionalDests: [] },
           });
@@ -675,7 +675,7 @@ export class RequestRepository {
         turnObjectIdsToStrings(documentObj);
 
         try {
-          await SocketService.SendEvent({
+          SocketService.SendEvent({
             eventType: SocketEventType.UPDATE_REQUEST_APPROVERS,
             eventData: { request: documentObj as Request, oldRequest: request, additionalDests: [] },
           });
@@ -1253,7 +1253,7 @@ export class RequestRepository {
       );
 
       try {
-        await SocketService.SendEvent({
+        SocketService.SendEvent({
           eventType: SocketEventType.DELETE_REQUEST,
           eventData: { oldRequest: requestBefore, additionalDests: [] },
         });
@@ -1325,7 +1325,7 @@ export class RequestRepository {
 
         if (!("sendSocket" in updateReq) || updateReq.sendSocket)
           try {
-            await SocketService.SendEvent({
+            SocketService.SendEvent({
               eventType: SocketEventType.UPDATE_REQUEST,
               eventData: { request: documentObj as Request, additionalDests: [] },
             });
