@@ -222,7 +222,9 @@ export class RequestRepository {
         needAdminDecision.includes
       );
       request.type = requestTypeToJSON(type);
+      logger.info(`Creating request ${request.id}`);
       const createdCreateRequest = await request.save();
+      logger.info(`Request ${request.id} created`);
       const document = createdCreateRequest.toObject();
       turnObjectIdsToStrings(document);
 
@@ -298,11 +300,11 @@ export class RequestRepository {
         }
       }
       
-      // const req = document as Request
-      // SocketService.SendEvent({
-      //   eventType: SocketEventType.NEW_REQUEST,
-      //   eventData: { request: req, additionalDests: [] },
-      // }).then().catch();
+      const req = document as Request
+      SocketService.SendEvent({
+        eventType: SocketEventType.NEW_REQUEST,
+        eventData: { request: req, additionalDests: [] },
+      }).then().catch();
      
       return document as Request;
     } catch (error) {
