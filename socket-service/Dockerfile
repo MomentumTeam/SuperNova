@@ -26,12 +26,19 @@ FROM node:14.17.5-alpine3.14
 
 RUN apk update 
 RUN apk add --no-cache nano vim
+
 RUN mkdir -p /usr/src/app && chown -R node:node /usr/src/app
+
 WORKDIR /usr/src/app
+
 COPY --chown=node:node ./package*.json ./
+
 RUN npm ci --production && npm cache clean --force
+
 COPY --from=builder --chown=node:node /app/dist .
+COPY --from=builder --chown=node:node /bin/grpc_health_probe /bin/grpc_health_probe
 COPY --from=builder --chown=node:node /app/proto proto
+
 USER node
 
 EXPOSE 8080
