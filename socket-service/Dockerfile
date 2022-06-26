@@ -9,6 +9,11 @@ RUN apk add --no-cache git ca-certificates
 COPY --chown=node:node ./package*.json ./
 COPY --chown=node:node ./tsconfig.json ./
 
+
+RUN GRPC_HEALTH_PROBE_VERSION=v0.4.4 && \
+    wget -qO/bin/grpc_health_probe https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/${GRPC_HEALTH_PROBE_VERSION}/grpc_health_probe-linux-amd64 && \
+    chmod +x /bin/grpc_health_probe && \
+    chown node:node /bin/grpc_health_probe
 # copy source code to /app/src folder
 COPY . .
 # RUN rm -rf /app/proto && git clone https://github.com/MomentumTeam/SuperNovaProto.git /app/proto

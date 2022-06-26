@@ -14,7 +14,7 @@ service:
       port: "2001"
     - name: http-sks
       port: "8080"
-
+      
 
 config:
   configmaps:
@@ -31,19 +31,19 @@ ingress:
           service: socket-service
           port: 2001
 
-# livenessProbe:
-#   exec:
-#     command: ["/bin/grpc_health_probe", "-addr=:8080"]
-#   initialDelaySeconds: 5
-#   periodSeconds: 5
-#   timeoutSeconds: 1
-#   successThreshold: 1
-#   failureThreshold: 3
-# readinessProbe:
-#   exec:
-#     command: ["/bin/grpc_health_probe", "-addr=:8080"]
-#   initialDelaySeconds: 5
-#   periodSeconds: 5
-#   timeoutSeconds: 1
-#   successThreshold: 1
-#   failureThreshold: 3
+livenessProbe:
+  exec:
+    command: ["/bin/grpc_health_probe", "-addr=:8080"]
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 3
+readinessProbe:
+  exec:
+    command: ["/bin/grpc_health_probe", "-addr=:8080"]
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 3
