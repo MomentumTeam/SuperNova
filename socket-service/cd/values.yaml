@@ -10,26 +10,26 @@ images:
   tag: "latest"
 service:
   ports:
-  - name: ws
-    port: "2001"
-  - name: http
-    port: "8080"
+    - name: ws
+      port: "2001"
+    - name: http-sks
+      port: "8080"
+      
 
 config:
   configmaps:
-      name: momentum-configmap
+    name: momentum-configmap
 ingress:
   enabled: true
   annotations:
     nginx.ingress.kubernetes.io/affinity: cookie
     nginx.ingress.kubernetes.io/session-cookie-name: socket_io_cookie
   hosts:
-  - host: momentum.branch-yesodot.org
-    paths:
-      - path: /socket.io
-        service: socket-service
-        port: 2001
-
+    - host: momentum.branch-yesodot.org
+      paths:
+        - path: /socket.io
+          service: socket-service
+          port: 2001
 
 livenessProbe:
   exec:
