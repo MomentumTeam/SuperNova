@@ -292,6 +292,7 @@ export function generateADQueueMessage(
           samAccountName: adParams.oldSAMAccountName,
           toSamAccountName: adParams.newSAMAccountName,
           upn: `${adParams.upn}@${C.upnSuffix}`,
+          oldUPN: `${adParams.oldUpn}@${C.upnSuffix}`,
           firstName: adParams.firstName,
           lastName: adParams.lastName,
           fullName: adParams.fullName,
@@ -304,6 +305,7 @@ export function generateADQueueMessage(
         message.data = {
           userID: adParams.newSAMAccountName,
           UPN: `${adParams.upn}@${C.upnSuffix}`,
+          oldUPN: `${adParams.oldUpn}@${C.upnSuffix}`,
           firstName: adParams.firstName,
           lastName: adParams.lastName,
           fullName: adParams.fullName,
