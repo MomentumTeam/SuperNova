@@ -298,16 +298,12 @@ export class RequestRepository {
         }
       }
       
-      try {
-        const req = document as Request
-        SocketService.SendEvent({
-          eventType: SocketEventType.NEW_REQUEST,
-          eventData: { request: req, additionalDests: [] },
-        });
-      } catch (error) {
-        logger.error("can't send socket info", error);
-      }
-
+      const req = document as Request
+      SocketService.SendEvent({
+        eventType: SocketEventType.NEW_REQUEST,
+        eventData: { request: req, additionalDests: [] },
+      }).then().catch();
+     
       return document as Request;
     } catch (error) {
       throw error;
@@ -511,15 +507,13 @@ export class RequestRepository {
         const documentObj = documentAfter.toObject();
         turnObjectIdsToStrings(documentObj);
 
-        try {
-          SocketService.SendEvent({
-            eventType: SocketEventType.UPDATE_REQUEST_APPROVERS,
-            eventData: { request: documentObj as Request, oldRequest: request, additionalDests: [] },
-          });
-        } catch (error) {
-          logger.error("can't send socket info", error);
-        }
-      
+        SocketService.SendEvent({
+          eventType: SocketEventType.UPDATE_REQUEST_APPROVERS,
+          eventData: { request: documentObj as Request, oldRequest: request, additionalDests: [] },
+        })
+          .then()
+          .catch();
+       
 
         return documentObj as Request;
       } else {
@@ -674,15 +668,14 @@ export class RequestRepository {
         const documentObj = documentAfter.toObject();
         turnObjectIdsToStrings(documentObj);
 
-        try {
-          SocketService.SendEvent({
-            eventType: SocketEventType.UPDATE_REQUEST_APPROVERS,
-            eventData: { request: documentObj as Request, oldRequest: request, additionalDests: [] },
-          });
-        } catch (error) {
-          logger.error("can't send socket info", error);
-        }
-      
+     
+        SocketService.SendEvent({
+          eventType: SocketEventType.UPDATE_REQUEST_APPROVERS,
+          eventData: { request: documentObj as Request, oldRequest: request, additionalDests: [] },
+        })
+          .then()
+          .catch();
+    
         return documentObj as Request;
       } else {
         throw new Error(
@@ -1252,14 +1245,14 @@ export class RequestRepository {
         requestBefore
       );
 
-      try {
-        SocketService.SendEvent({
-          eventType: SocketEventType.DELETE_REQUEST,
-          eventData: { oldRequest: requestBefore, additionalDests: [] },
-        });
-      } catch (error) {
-        logger.error("can't send socket info", error);
-      }
+      
+      SocketService.SendEvent({
+        eventType: SocketEventType.DELETE_REQUEST,
+        eventData: { oldRequest: requestBefore, additionalDests: [] },
+      })
+        .then()
+        .catch();
+    
       
       return res;
     } catch (error) {
@@ -1323,15 +1316,14 @@ export class RequestRepository {
           }
         }
 
-        if (!("sendSocket" in updateReq) || updateReq.sendSocket)
-          try {
+        if (!("sendSocket" in updateReq) || updateReq.sendSocket) {
             SocketService.SendEvent({
               eventType: SocketEventType.UPDATE_REQUEST,
               eventData: { request: documentObj as Request, additionalDests: [] },
-            });
-          } catch (error) {
-            logger.error("can't send socket info", error);
-          }
+            })
+            .then()
+            .catch();
+        } 
 
         return documentObj as Request;
       } else {
