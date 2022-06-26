@@ -1,8 +1,8 @@
 import * as grpc from "@grpc/grpc-js";
 import * as protoLoader from "@grpc/proto-loader";
 import * as C from "../config";
-import { SendEventReq, SuccessMessage } from '../interfaces/protoc/proto/socketService';
-import { logger } from '../logger';
+import { SendEventReq, SuccessMessage } from "../interfaces/protoc/proto/socketService";
+import { logger } from "../logger";
 import { findPath } from "../utils/path";
 
 const PROTO_PATH = `${findPath("proto")}/socketService.proto`;
@@ -31,25 +31,26 @@ function randomClient(): any {
 }
 
 export class SocketService {
-  static async SendEvent(sendEventReq: SendEventReq): Promise<SuccessMessage> {
+  static async SendEvent(sendEventReq: SendEventReq): Promise<void> {
     logger.info(`Call to SendEvent in SocketService`, sendEventReq);
-
-    return new Promise((resolve, reject) => {
-      randomClient().SendEvent(sendEventReq, (err: any, response: SuccessMessage) => {
+    try {
+      await randomClient().SendEvent(sendEventReq, (err: any, response: SuccessMessage) => {
         if (err) {
-          logger.error(`SendEvent ERROR in SKS`, {
+          logger.error(`SendEvent ERROR in SocketService`, {
             err,
             callRequest: sendEventReq,
           });
-          reject(err);
         }
-
-        logger.info(`SendEvent OK in SKS`, {
+        logger.info(`SendEvent OK in SocketService`, {
           response: response,
           callRequest: sendEventReq,
         });
-        resolve(response);
       });
-    });
+    } catch (error) {
+      logger.error(`SendEvent ERROR in SocketService`, {
+        err: error,
+        callRequest: sendEventReq,
+      });
+    }
   }
 }
