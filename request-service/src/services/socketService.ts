@@ -31,7 +31,7 @@ function randomClient(): any {
 }
 
 export class SocketService {
-  static async sendEvent(sendEventReq: SendEventReq): Promise<void> {
+  static async SendEvent(sendEventReq: SendEventReq): Promise<void> {
     logger.info(`Call to SendEvent in SocketService`, sendEventReq);
     try {
       await randomClient().SendEvent(sendEventReq, (err: any, response: SuccessMessage) => {
