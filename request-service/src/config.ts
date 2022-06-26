@@ -15,6 +15,8 @@ export const teaServiceUrl = process.env.RS_TS_URL || '0.0.0.0:8086';
 export const mailServiceUrl = process.env.RS_MS_URL || '0.0.0.0:8088';
 export const approverServiceUrl = process.env.RS_APS_URL || '0.0.0.0:8085';
 export const rootId = process.env.RS_ROOT_ID || '619e3193f235dc001846bb4f';
+export const civilian = process.env.RS_CIVILIAN || 'Civilian';
+export const soldier = process.env.RS_SOLDIER || 'Soldier';
 export const mongoConnectionRetries =
   process.env.MONGO_RECONNECT_ATTEMPTS || '5';
 export const mongoReconnectTimeout =

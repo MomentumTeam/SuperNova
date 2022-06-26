@@ -111,18 +111,18 @@ export class RequestRepository {
         }
       } else if (type === RequestType.ASSIGN_ROLE_TO_ENTITY) {
         createRequestReq.adParams.upn = await retrieveUPNByEntityId(
-          createRequestReq.kartoffelParams.id,
-          createRequestReq.kartoffelParams.entityType
-        );
-        createRequestReq.kartoffelParams.upn = createRequestReq.adParams.upn;
-        const upnType = createRequestReq.adParams.upn.split('')[0];
-        const entity = await KartoffelService.getEntityById(
           createRequestReq.kartoffelParams.id
         );
-        createRequestReq.adParams.oldUPN =
-          upnType === 's'
-            ? `c${entity.identityCard}`
-            : `s${entity.personalNumber}`;
+        createRequestReq.kartoffelParams.upn = createRequestReq.adParams.upn;
+        const oldEntityType = createRequestReq.adParams.upn.startsWith(
+          's'
+        )
+          ? C.civilian
+          : C.soldier;
+        createRequestReq.adParams.oldUPN = await retrieveUPNByEntityId(
+          createRequestReq.kartoffelParams.id,
+          oldEntityType
+        );
       } else if (
         type === RequestType.CREATE_ENTITY ||
         type === RequestType.DELETE_ENTITY ||
