@@ -41,14 +41,11 @@ export class NotificationRepository {
         { $set: { read: true } }
       );
 
-      try {
-        SocketService.SendEvent({
-          eventType: SocketEventType.READ_NOTIFICATION,
-          eventData: {additionalDests: [markAllAsReadReq.ownerId]}
-        });
-      } catch (error) {
-        logger.error("can't send socket info", error);
-      }
+      SocketService.SendEvent({
+        eventType: SocketEventType.READ_NOTIFICATION,
+        eventData: {additionalDests: [markAllAsReadReq.ownerId]}
+      }).then().catch();
+    
 
       return { success: true };
     } catch (error) {
@@ -106,15 +103,11 @@ export class NotificationRepository {
       const createdNotification = await notification.save();
       const document = createdNotification.toObject();
       turnObjectIdsToStrings(document);
-      try {
-        SocketService.SendEvent({
-          eventType: SocketEventType.NEW_NOTIFICATION,
-          eventData: { notification: document as Notification, additionalDests: [] },
-        });
-      } catch (error) {
-        logger.error("can't send socket info", error);
-      }
-
+      SocketService.SendEvent({
+        eventType: SocketEventType.NEW_NOTIFICATION,
+        eventData: { notification: document as Notification, additionalDests: [] },
+      }).then().catch();
+      
       return document as Notification;
     } catch (error) {
       throw error;

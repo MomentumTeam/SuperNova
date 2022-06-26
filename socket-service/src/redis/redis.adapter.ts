@@ -2,7 +2,7 @@ import * as socketIO from "socket.io";
 import { createClient, RedisClientType } from "redis";
 import { config } from "../config";
 import { logger } from "../utils/logger/logger";
-import { createAdapter } from '@socket.io/redis-adapter';
+import { createAdapter } from "@socket.io/redis-adapter";
 
 export class RedisConnAdapter {
   pubClient: RedisClientType<any, any> | null = null;
@@ -18,7 +18,9 @@ export class RedisConnAdapter {
   initRedis = async (io: socketIO.Server) => {
     // publish client that sends messages
     this.pubClient = createClient({
-      url: `redis://:${config.redis.password}@${config.redis.host}:${config.redis.port}`,
+      url: `redis://${config.redis.password && ":" + config.redis.password + "@"}${config.redis.host}:${
+        config.redis.port
+      }`,
     });
 
     // subscriber client that receives messages

@@ -213,11 +213,10 @@ export class RequestRepository {
         request?.submittedBy?.directGroup,
         ...ancestors,
       ];
-      logger.info(`groupIds: ${groupIds}`);
+
       const needAdminDecision = await ApproverService.includesSpecialGroup({
         groupIds: groupIds,
       });
-      logger.info(`needAdminDecision: ${needAdminDecision}`);
       this.setNeedApproversDecisionsValues(
         request,
         type,
