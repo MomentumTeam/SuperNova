@@ -298,11 +298,11 @@ export class RequestRepository {
         }
       }
       
-      const req = document as Request
-      SocketService.SendEvent({
-        eventType: SocketEventType.NEW_REQUEST,
-        eventData: { request: req, additionalDests: [] },
-      }).then().catch();
+      // const req = document as Request
+      // SocketService.SendEvent({
+      //   eventType: SocketEventType.NEW_REQUEST,
+      //   eventData: { request: req, additionalDests: [] },
+      // }).then().catch();
      
       return document as Request;
     } catch (error) {
