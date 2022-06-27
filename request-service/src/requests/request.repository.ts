@@ -83,7 +83,6 @@ import {
   retrieveUPNByEntityId,
   retrieveUPNByIdentifier,
 } from '../services/teaHelper';
-import KartoffelService from '../services/kartoffelService';
 import { logger } from '../logger';
 import { MailType } from '../interfaces/protoc/proto/mailService';
 import { ApproverArray } from '../interfaces/protoc/proto/approverService';

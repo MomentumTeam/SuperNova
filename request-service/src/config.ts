@@ -9,7 +9,6 @@ export const mongoUrl =
 export const maxQueueRetries = process.env.RS_MAX_QUEUE_RETRIES
   ? parseInt(process.env.RS_MAX_QUEUE_RETRIES)
   : 5;
-export const kartoffelSericeUrl = process.env.RS_KS_URL || '0.0.0.0:8082';
 export const notificationServiceUrl = process.env.RS_NS_URL || '0.0.0.0:8084';
 export const teaServiceUrl = process.env.RS_TS_URL || '0.0.0.0:8086';
 export const mailServiceUrl = process.env.RS_MS_URL || '0.0.0.0:8088';
