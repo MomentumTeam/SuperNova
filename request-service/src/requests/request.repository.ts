@@ -125,9 +125,8 @@ export class RequestRepository {
             : `s${entity.personalNumber}`;
       } else if (
         type === RequestType.CREATE_ENTITY ||
-        type === RequestType.DELETE_ENTITY ||
-        type === RequestType.DELETE_OG
-      ) {
+        type === RequestType.DELETE_ENTITY
+        ) {
         // CASES WITH NO NEED FOR AD UPDATE
         createRequestReq.adStatus = {
           status: stageStatusToJSON(StageStatus.STAGE_DONE),

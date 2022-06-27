@@ -1035,18 +1035,23 @@ message EditEntityADParams{
 //8.DeleteOGRequest
 message DeleteOGKartoffelParams{
     string id = 1;
+    optional string name = 2;
 }
 
 message DeleteOGADParams{
     string ouDisplayName = 1;
-    string ouName = 2;
-    string name = 3;
 }
 
 //9.DeleteRoleRequest
 message DeleteRoleKartoffelParams{
     string roleId = 1;
     string uniqueId = 2;
+    
+    optional string jobTitle = 3;
+    optional string firstName = 4;
+    optional string lastName = 5;
+    optional string identityCard = 6;
+    optional string personalNumber = 7;
 }
 
 message DeleteRoleADParams{

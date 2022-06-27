@@ -340,7 +340,7 @@ export class GroupsRepository {
           }
           return { groups: groups } as OGArray;
         } else {
-          let groups = [];
+          let groups:any = [];
           if (getChildrenOfOGRequest.withParent) {
             const parent = await this.getOGById({
               id: getChildrenOfOGRequest.id,

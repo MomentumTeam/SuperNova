@@ -239,6 +239,7 @@ export function generateADQueueMessage(
   }
   const adParams: any = request.adParams;
   switch (request.type) {
+    // OG
     case RequestType.CREATE_OG: //Reviewed with Orin, CreateOU
       message.data = {
         ouDName: adParams.ouDisplayName,
@@ -246,12 +247,12 @@ export function generateADQueueMessage(
         newOuName: adParams.name,
       };
       break;
+    case RequestType.DELETE_OG:
+      message.data = {
+        displayName: adParams.ouDisplayName,
+      };
     case RequestType.CREATE_ROLE: //reviewed with Orin, CreateRole
-      if (
-        request.adParams &&
-        request.adParams.upn !== undefined &&
-        request.adParams.upn !== null
-      ) {
+      if (request.adParams && request.adParams.upn !== undefined && request.adParams.upn !== null) {
         if (adStage === undefined || adStage === ADStage.FIRST_AD_STAGE) {
           //First Stage - Create Role
           message.id = `${message.id}@1`;
@@ -263,10 +264,7 @@ export function generateADQueueMessage(
         } else {
           message.id = `${message.id}@2`;
           //secondStage - treat it like ConnectNewRole
-          message.type =
-            C.shmuelRequestTypes[
-              requestTypeToJSON(RequestType.ASSIGN_ROLE_TO_ENTITY)
-            ];
+          message.type = C.shmuelRequestTypes[requestTypeToJSON(RequestType.ASSIGN_ROLE_TO_ENTITY)];
           const getJobTitle = splitFullName(adParams.jobTitle);
           message.data = {
             userID: adParams.samAccountName,
@@ -274,7 +272,7 @@ export function generateADQueueMessage(
             firstName: getJobTitle.firstName,
             lastName: getJobTitle.lastName,
             fullName: getJobTitle.fullName,
-            rank: 'לא ידוע',
+            rank: "לא ידוע",
             ID: adParams.samAccountName,
             // pdoName: 'x',
           };
@@ -288,10 +286,7 @@ export function generateADQueueMessage(
       }
       break;
     case RequestType.ASSIGN_ROLE_TO_ENTITY: //reviewed with Orin
-      if (
-        request.kartoffelParams?.needDisconnect &&
-        adParams.oldSAMAccountName
-      ) {
+      if (request.kartoffelParams?.needDisconnect && adParams.oldSAMAccountName) {
         //MoveRole
         message.data = {
           samAccountName: adParams.oldSAMAccountName,
@@ -302,8 +297,8 @@ export function generateADQueueMessage(
           lastName: adParams.lastName,
           fullName: adParams.fullName,
           nickname: adParams.fullName,
-          rank: adParams.rank ? adParams.rank : 'לא ידוע',
-          jobNumber: '0',
+          rank: adParams.rank ? adParams.rank : "לא ידוע",
+          jobNumber: "0",
         };
       } else {
         //ConnectNewRole
@@ -314,7 +309,7 @@ export function generateADQueueMessage(
           firstName: adParams.firstName,
           lastName: adParams.lastName,
           fullName: adParams.fullName,
-          rank: adParams.rank ? adParams.rank : 'לא ידוע',
+          rank: adParams.rank ? adParams.rank : "לא ידוע",
           ID: adParams.newSAMAccountName,
           // pdoName: 'x',
         };
@@ -343,7 +338,7 @@ export function generateADQueueMessage(
       break;
     case RequestType.DELETE_ROLE: // Reviewed with Orin, PurgeRole
       message.data = {
-        userT: adParams.samAccountName,
+        samAccountName: adParams.samAccountName,
       };
       break;
     case RequestType.DISCONNECT_ROLE: // Reviewed with Orin, DisconnectRole
@@ -367,7 +362,7 @@ export function generateADQueueMessage(
       };
       break;
     default:
-      throw new Error('type not supported!');
+      throw new Error("type not supported!");
   }
   return message;
 }

@@ -64,6 +64,7 @@ import {
   searchRolesByRoleId,
 } from './roles/roles.controller';
 import { getIsHealthy } from './health/health.controller';
+import { searchSamAccountName } from './ldap/ldap.controller';
 
 const PROTO_PATH = `${findPath('proto')}/kartoffelService.proto`;
 
@@ -167,6 +168,9 @@ export class Server {
 
         // Health
         GetIsHealthy: getIsHealthy,
+
+        // LDAP
+        SearchSamAccountName: searchSamAccountName,
       });
       logger.info(`Grpc services were successfully added to the server`);
     } catch (error: any) {

@@ -209,13 +209,32 @@ export const deleteOG = async (deleteOGrequest: DeleteOGRequest) => {
   }
 };
 
-export const deleteRole = async (deleteRoleRequest: DeleteRoleRequest) => {
+export const deleteRole = async (deleteRoleRequest: any) => {
   try {
     logger.info('deleteRole request received', deleteRoleRequest);
-    const { roleId } = deleteRoleRequest;
+    const { roleId, uniqueId } = deleteRoleRequest;
+
+    // Disconnect role and DI
+    await KartoffelService.disconnectRoleAndDI({
+      roleId,
+      uniqueId,
+    });
+
+    // Delete Role
     const successMessage: SuccessMessage = await KartoffelService.deleteRole({
       roleId,
     });
+
+    // Delete DI
+    const entity = await KartoffelService.getEntityByDI(uniqueId)
+    if (entity) {
+       await KartoffelService.disconnectDIFromEntity({
+         id: entity.id,
+         uniqueId: uniqueId,
+       });
+    }
+    await KartoffelService.deleteDI({id: uniqueId})
+
     logger.info('Successfuly deleted role', successMessage);
   } catch (error) {
     throw error;

@@ -45,6 +45,8 @@ import {
   SearchEntitiesByFullNameRequest,
   SearchOGRequest,
   SearchRoleByRoleIdReq,
+  SearchSamAccountNameReq,
+  SearchSamAccountNameRes,
 } from '../interfaces/protoc/proto/kartoffelService';
 
 const PROTO_PATH = __dirname.includes('dist')
@@ -768,6 +770,29 @@ export class KartoffelService {
           resolve(response);
         }
       );
+    });
+  }
+
+  // LDAP
+  static async searchSamAccountName(searchSamAccountNameReq: SearchSamAccountNameReq) {
+    logger.info(`Call to searchSamAccountName in GTW`, searchSamAccountNameReq);
+
+    return new Promise((resolve, reject) => {
+      randomClient().SearchSamAccountName(searchSamAccountNameReq, (err: any, response: SearchSamAccountNameRes) => {
+        if (err) {
+          logger.error(`searchSamAccountName ERROR in GTW`, {
+            err,
+            callRequest: searchSamAccountNameReq,
+          });
+          reject(err);
+        }
+
+        logger.info(`searchSamAccountName OK in GTW`, {
+          response: response,
+          callRequest: searchSamAccountNameReq,
+        });
+        resolve(response);
+      });
     });
   }
 }
