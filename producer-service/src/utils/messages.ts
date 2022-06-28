@@ -95,7 +95,7 @@ export function generateKartoffelQueueMessage(request: Request): any {
         message.data.firstName = getJobTitle.firstName;
         message.data.lastName = getJobTitle.lastName;
         message.data.fullName = getJobTitle.fullName;
-        message.data.upn = kartoffelParams.upn;
+        message.data.upn = `${kartoffelParams.upn}@${C.upnSuffix}`;
       }
       break;
     case RequestType.CREATE_ENTITY:
@@ -139,7 +139,7 @@ export function generateKartoffelQueueMessage(request: Request): any {
         message.data.needDisconnect = false;
       }
       if (kartoffelParams.upn !== undefined) {
-        message.data.upn = kartoffelParams.upn;
+        message.data.upn = `${kartoffelParams.upn}@${C.upnSuffix}`;
       }
       break;
     case RequestType.RENAME_OG:
@@ -207,7 +207,7 @@ export function generateKartoffelQueueMessage(request: Request): any {
         id: kartoffelParams.id,
         uniqueId: kartoffelParams.uniqueId,
         newEntityType: kartoffelParams.newEntityType,
-        upn: kartoffelParams.upn,
+        upn: `${kartoffelParams.upn}@${C.upnSuffix}`,
       };
       if (kartoffelParams.identifier) {
         message.data.identifier = kartoffelParams.identifier;
@@ -252,7 +252,11 @@ export function generateADQueueMessage(
         displayName: adParams.ouDisplayName,
       };
     case RequestType.CREATE_ROLE: //reviewed with Orin, CreateRole
-      if (request.adParams && request.adParams.upn !== undefined && request.adParams.upn !== null) {
+      if (
+        request.adParams &&
+        request.adParams.upn !== undefined &&
+        request.adParams.upn !== null
+      ) {
         if (adStage === undefined || adStage === ADStage.FIRST_AD_STAGE) {
           //First Stage - Create Role
           message.id = `${message.id}@1`;
@@ -264,7 +268,10 @@ export function generateADQueueMessage(
         } else {
           message.id = `${message.id}@2`;
           //secondStage - treat it like ConnectNewRole
-          message.type = C.shmuelRequestTypes[requestTypeToJSON(RequestType.ASSIGN_ROLE_TO_ENTITY)];
+          message.type =
+            C.shmuelRequestTypes[
+              requestTypeToJSON(RequestType.ASSIGN_ROLE_TO_ENTITY)
+            ];
           const getJobTitle = splitFullName(adParams.jobTitle);
           message.data = {
             userID: adParams.samAccountName,
@@ -272,7 +279,7 @@ export function generateADQueueMessage(
             firstName: getJobTitle.firstName,
             lastName: getJobTitle.lastName,
             fullName: getJobTitle.fullName,
-            rank: "לא ידוע",
+            rank: 'לא ידוע',
             ID: adParams.samAccountName,
             // pdoName: 'x',
           };
@@ -286,7 +293,10 @@ export function generateADQueueMessage(
       }
       break;
     case RequestType.ASSIGN_ROLE_TO_ENTITY: //reviewed with Orin
-      if (request.kartoffelParams?.needDisconnect && adParams.oldSAMAccountName) {
+      if (
+        request.kartoffelParams?.needDisconnect &&
+        adParams.oldSAMAccountName
+      ) {
         //MoveRole
         message.data = {
           samAccountName: adParams.oldSAMAccountName,
@@ -297,8 +307,8 @@ export function generateADQueueMessage(
           lastName: adParams.lastName,
           fullName: adParams.fullName,
           nickname: adParams.fullName,
-          rank: adParams.rank ? adParams.rank : "לא ידוע",
-          jobNumber: "0",
+          rank: adParams.rank ? adParams.rank : 'לא ידוע',
+          jobNumber: '0',
         };
       } else {
         //ConnectNewRole
@@ -309,7 +319,7 @@ export function generateADQueueMessage(
           firstName: adParams.firstName,
           lastName: adParams.lastName,
           fullName: adParams.fullName,
-          rank: adParams.rank ? adParams.rank : "לא ידוע",
+          rank: adParams.rank ? adParams.rank : 'לא ידוע',
           ID: adParams.newSAMAccountName,
           // pdoName: 'x',
         };
@@ -362,7 +372,7 @@ export function generateADQueueMessage(
       };
       break;
     default:
-      throw new Error("type not supported!");
+      throw new Error('type not supported!');
   }
   return message;
 }
