@@ -217,6 +217,7 @@ export class KartoffelFaker {
         organization: '',
         employeeNumber: '',
         employeeId: '',
+        fullClearance: '',
       };
       return entity;
     } catch (err) {
@@ -280,6 +281,7 @@ export class KartoffelFaker {
         organization: '',
         employeeNumber: '',
         employeeId: '',
+        fullClearance: '',
       };
       return entity;
     } catch (err) {
