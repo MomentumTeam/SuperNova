@@ -53,3 +53,30 @@ export async function sendCustomMail(call: any, callback: any): Promise<void> {
     );
   }
 }
+
+
+
+export async function sendHierarchyDataMail(call: any, callback: any): Promise<void> {
+  try {
+    logger.info('Call to sendHierarchyDataMail', { callRequest: call.request });
+    const mail = await mailManager.sendHierarchyDataMail(call.request);
+    logger.info('sendHierarchyDataMail OK', {
+      callRequest: call.request,
+      mail,
+    });
+    callback(null, mail);
+  } catch (error: any) {
+    logger.error('sendHierarchyDataMail OK', {
+      callRequest: call.request,
+      error: { message: error.message },
+    });
+    callback(
+      {
+        code: 400,
+        message: error,
+        status: grpc.status.CANCELLED,
+      },
+      null
+    );
+  }
+}

@@ -6,7 +6,15 @@ package MailService;
 service MailService {
     rpc SendCustomMail(SendCustomMailReq) returns (SuccessMessage) {} 
     rpc SendMail(SendMailReq) returns (SuccessMessage){}
+    rpc SendHierarchyDataMail(SendHierarchyDataReq) returns (SuccessMessage){}
 
+}
+
+message SendHierarchyDataReq{
+    string entityId = 1;
+    string hierarchy = 2;
+    bool withRoles = 3;
+    optional bool direct = 4;
 }
 
 message SendCustomMailReq{

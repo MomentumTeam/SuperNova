@@ -74,16 +74,16 @@ export class RolesRepository {
             });
           }
         }
-        if (rolesUnderGroup.roles.length === 0) {
+        // if (rolesUnderGroup.roles.length === 0) {
           return { suffix: C.defaultRoleIdSuffix };
-        } else {
-          const firstRole = rolesUnderGroup.roles[0];
-          const suffix = firstRole.roleId.substring(
-            firstRole.roleId.indexOf('@') + 1,
-            firstRole.roleId.length
-          );
-          return { suffix: suffix };
-        }
+        // } else {
+          // const firstRole = rolesUnderGroup.roles[0];
+          // const suffix = firstRole.roleId.substring(
+            // firstRole.roleId.indexOf('@') + 1,
+            // firstRole.roleId.length
+          // );
+          // return { suffix: suffix };
+        // }
       }
     } catch (error) {
       throw error;

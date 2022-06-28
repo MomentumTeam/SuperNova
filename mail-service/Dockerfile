@@ -27,10 +27,12 @@ RUN apk add --no-cache nano vim
 
 
 RUN mkdir -p /logs && chown -R node:node /logs
+RUN mkdir -p /mailImages && chown -R node:node /mailImages
 RUN mkdir -p /usr/src/app && chown -R node:node /usr/src/app
 WORKDIR /usr/src/app
 
 COPY --chown=node:node ./package*.json ./
+COPY --chown=node:node ./src/images /mailImages
 
 RUN npm ci --production && npm cache clean --force
 
