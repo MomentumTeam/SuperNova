@@ -123,15 +123,6 @@ export const exportHierarchyData = async (
       }
 
       try {
-        const di = await diRepository.getDIByUniqueId({
-          uniqueId: role.digitalIdentityUniqueId,
-        });
-        newRow['upn'] = di?.upn ? di.upn : '---';
-      } catch (error) {
-        newRow['upn'] = 'לא ידוע';
-      }
-
-      try {
         const entity = await entitiesRepository.getEntityByRoleId({
           roleId: role.roleId,
         });
@@ -142,8 +133,27 @@ export const exportHierarchyData = async (
             ? entity.fullName
             : entity.displayName;
         }
+
+        const relevantDi = entity.digitalIdentities.find((di) =>
+          C.diSources.includes(di.source)
+        );
+
+        if (relevantDi) {
+          newRow['upn'] = relevantDi?.upn ? relevantDi.upn : '---';
+        } else {
+          newRow['upn'] = 'לא ידוע';
+        }
       } catch (error) {
         newRow['entity'] = 'לא ידוע';
+
+        try {
+          const di = await diRepository.getDIByUniqueId({
+            uniqueId: role.digitalIdentityUniqueId,
+          });
+          newRow['upn'] = di?.upn ? di.upn : '---';
+        } catch (error) {
+          newRow['upn'] = 'לא ידוע';
+        }
       }
 
       return newRow as HierarchyData;
