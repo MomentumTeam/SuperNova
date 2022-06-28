@@ -548,6 +548,7 @@ message Entity{
     string organization = 28;
     string employeeNumber = 29;
     string employeeId = 30; // organization-employeeNUmber
+    string fullClearance = 31;
 }
 
 message DigitalIdentity{
