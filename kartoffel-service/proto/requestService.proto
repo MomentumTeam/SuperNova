@@ -1035,18 +1035,23 @@ message EditEntityADParams{
 //8.DeleteOGRequest
 message DeleteOGKartoffelParams{
     string id = 1;
+    optional string name = 2;
 }
 
 message DeleteOGADParams{
     string ouDisplayName = 1;
-    string ouName = 2;
-    string name = 3;
 }
 
 //9.DeleteRoleRequest
 message DeleteRoleKartoffelParams{
     string roleId = 1;
     string uniqueId = 2;
+    
+    optional string jobTitle = 3;
+    optional string firstName = 4;
+    optional string lastName = 5;
+    optional string identityCard = 6;
+    optional string personalNumber = 7;
 }
 
 message DeleteRoleADParams{
@@ -1079,11 +1084,12 @@ message AssignRoleToEntityADParams{
     optional string oldSAMAccountName = 1;
     string newSAMAccountName = 2;
     optional string upn = 3;
-    string firstName = 4;
-    string lastName = 5;
-    string fullName = 6;
-    optional string rank = 7;
-    string roleSerialCode = 8;
+    optional string oldUpn = 4;
+    string firstName = 5;
+    string lastName = 6;
+    string fullName = 7;
+    optional string rank = 8;
+    string roleSerialCode = 9;
 }
 
 //12.DisconnectRoleFromEntityRequest
@@ -1468,21 +1474,22 @@ message ADParams{
     optional string oldSAMAccountName = 6;
     optional string newSAMAccountName = 7;
     optional string upn = 8;
-    optional string firstName = 9;
-    optional string lastName = 10;
-    optional string fullName = 11;
-    optional string rank = 12;
-    optional string roleSerialCode = 13;
+    optional string oldUpn = 9;
+    optional string firstName = 10;
+    optional string lastName = 11;
+    optional string fullName = 12;
+    optional string rank = 13;
+    optional string roleSerialCode = 14;
     //CreateEntity - nothing
 
     //RenameOG
     //string ouDisplayName = ;
-    optional string oldOuName = 14;
-    optional string newOuName = 15;
+    optional string oldOuName = 15;
+    optional string newOuName = 16;
 
     //RenameRole
     // string samAccountName = ;
-    optional string newJobTitle = 16;
+    optional string newJobTitle = 17;
 
     //CHANGE ROLE HIERARCHY
     // optional string samAccountName = 1;

@@ -11,7 +11,7 @@ export function ogNameExists(ogArray: OGArray, name: string): boolean {
 }
 
 export function getOgNameSuggestions(ogArray: OGArray, ogName: string): string[] {
-  let suggestions = [];
+  let suggestions: any = [];
   let suggestion = "";
   const ogNameSplit: string[] = ogName.replace(/  +/g, " ").split(" ");
   let firstNumIndex: any = ogNameSplit.length - 1;

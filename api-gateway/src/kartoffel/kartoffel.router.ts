@@ -143,4 +143,11 @@ KartoffelRouter.get(
   KartoffelValidator.isGetDIByUniqueIdValid,
   KartoffelController.getDIByUniqueId
 );
+
+// LDAP
+KartoffelRouter.get(
+  '/ldap/user',
+  KartoffelValidator.isSearchSamAccountNameValid,
+  KartoffelController.searchSamAccountName,
+)
 export default KartoffelRouter;

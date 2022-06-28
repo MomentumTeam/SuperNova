@@ -1610,18 +1610,22 @@ export interface EditEntityADParams {
 /** 8.DeleteOGRequest */
 export interface DeleteOGKartoffelParams {
   id: string;
+  name?: string | undefined;
 }
 
 export interface DeleteOGADParams {
   ouDisplayName: string;
-  ouName: string;
-  name: string;
 }
 
 /** 9.DeleteRoleRequest */
 export interface DeleteRoleKartoffelParams {
   roleId: string;
   uniqueId: string;
+  jobTitle?: string | undefined;
+  firstName?: string | undefined;
+  lastName?: string | undefined;
+  identityCard?: string | undefined;
+  personalNumber?: string | undefined;
 }
 
 export interface DeleteRoleADParams {
@@ -1654,6 +1658,7 @@ export interface AssignRoleToEntityADParams {
   oldSAMAccountName?: string | undefined;
   newSAMAccountName: string;
   upn?: string | undefined;
+  oldUpn?: string | undefined;
   firstName: string;
   lastName: string;
   fullName: string;
@@ -2019,6 +2024,7 @@ export interface ADParams {
   oldSAMAccountName?: string | undefined;
   newSAMAccountName?: string | undefined;
   upn?: string | undefined;
+  oldUpn?: string | undefined;
   firstName?: string | undefined;
   lastName?: string | undefined;
   fullName?: string | undefined;
@@ -24786,6 +24792,9 @@ export const DeleteOGKartoffelParams = {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
+    if (message.name !== undefined) {
+      writer.uint32(18).string(message.name);
+    }
     return writer;
   },
 
@@ -24804,6 +24813,9 @@ export const DeleteOGKartoffelParams = {
         case 1:
           message.id = reader.string();
           break;
+        case 2:
+          message.name = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -24821,12 +24833,18 @@ export const DeleteOGKartoffelParams = {
     } else {
       message.id = "";
     }
+    if (object.name !== undefined && object.name !== null) {
+      message.name = String(object.name);
+    } else {
+      message.name = undefined;
+    }
     return message;
   },
 
   toJSON(message: DeleteOGKartoffelParams): unknown {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
+    message.name !== undefined && (obj.name = message.name);
     return obj;
   },
 
@@ -24841,15 +24859,16 @@ export const DeleteOGKartoffelParams = {
     } else {
       message.id = "";
     }
+    if (object.name !== undefined && object.name !== null) {
+      message.name = object.name;
+    } else {
+      message.name = undefined;
+    }
     return message;
   },
 };
 
-const baseDeleteOGADParams: object = {
-  ouDisplayName: "",
-  ouName: "",
-  name: "",
-};
+const baseDeleteOGADParams: object = { ouDisplayName: "" };
 
 export const DeleteOGADParams = {
   encode(
@@ -24858,12 +24877,6 @@ export const DeleteOGADParams = {
   ): _m0.Writer {
     if (message.ouDisplayName !== "") {
       writer.uint32(10).string(message.ouDisplayName);
-    }
-    if (message.ouName !== "") {
-      writer.uint32(18).string(message.ouName);
-    }
-    if (message.name !== "") {
-      writer.uint32(26).string(message.name);
     }
     return writer;
   },
@@ -24877,12 +24890,6 @@ export const DeleteOGADParams = {
       switch (tag >>> 3) {
         case 1:
           message.ouDisplayName = reader.string();
-          break;
-        case 2:
-          message.ouName = reader.string();
-          break;
-        case 3:
-          message.name = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -24899,16 +24906,6 @@ export const DeleteOGADParams = {
     } else {
       message.ouDisplayName = "";
     }
-    if (object.ouName !== undefined && object.ouName !== null) {
-      message.ouName = String(object.ouName);
-    } else {
-      message.ouName = "";
-    }
-    if (object.name !== undefined && object.name !== null) {
-      message.name = String(object.name);
-    } else {
-      message.name = "";
-    }
     return message;
   },
 
@@ -24916,8 +24913,6 @@ export const DeleteOGADParams = {
     const obj: any = {};
     message.ouDisplayName !== undefined &&
       (obj.ouDisplayName = message.ouDisplayName);
-    message.ouName !== undefined && (obj.ouName = message.ouName);
-    message.name !== undefined && (obj.name = message.name);
     return obj;
   },
 
@@ -24927,16 +24922,6 @@ export const DeleteOGADParams = {
       message.ouDisplayName = object.ouDisplayName;
     } else {
       message.ouDisplayName = "";
-    }
-    if (object.ouName !== undefined && object.ouName !== null) {
-      message.ouName = object.ouName;
-    } else {
-      message.ouName = "";
-    }
-    if (object.name !== undefined && object.name !== null) {
-      message.name = object.name;
-    } else {
-      message.name = "";
     }
     return message;
   },
@@ -24954,6 +24939,21 @@ export const DeleteRoleKartoffelParams = {
     }
     if (message.uniqueId !== "") {
       writer.uint32(18).string(message.uniqueId);
+    }
+    if (message.jobTitle !== undefined) {
+      writer.uint32(26).string(message.jobTitle);
+    }
+    if (message.firstName !== undefined) {
+      writer.uint32(34).string(message.firstName);
+    }
+    if (message.lastName !== undefined) {
+      writer.uint32(42).string(message.lastName);
+    }
+    if (message.identityCard !== undefined) {
+      writer.uint32(50).string(message.identityCard);
+    }
+    if (message.personalNumber !== undefined) {
+      writer.uint32(58).string(message.personalNumber);
     }
     return writer;
   },
@@ -24975,6 +24975,21 @@ export const DeleteRoleKartoffelParams = {
           break;
         case 2:
           message.uniqueId = reader.string();
+          break;
+        case 3:
+          message.jobTitle = reader.string();
+          break;
+        case 4:
+          message.firstName = reader.string();
+          break;
+        case 5:
+          message.lastName = reader.string();
+          break;
+        case 6:
+          message.identityCard = reader.string();
+          break;
+        case 7:
+          message.personalNumber = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -24998,6 +25013,31 @@ export const DeleteRoleKartoffelParams = {
     } else {
       message.uniqueId = "";
     }
+    if (object.jobTitle !== undefined && object.jobTitle !== null) {
+      message.jobTitle = String(object.jobTitle);
+    } else {
+      message.jobTitle = undefined;
+    }
+    if (object.firstName !== undefined && object.firstName !== null) {
+      message.firstName = String(object.firstName);
+    } else {
+      message.firstName = undefined;
+    }
+    if (object.lastName !== undefined && object.lastName !== null) {
+      message.lastName = String(object.lastName);
+    } else {
+      message.lastName = undefined;
+    }
+    if (object.identityCard !== undefined && object.identityCard !== null) {
+      message.identityCard = String(object.identityCard);
+    } else {
+      message.identityCard = undefined;
+    }
+    if (object.personalNumber !== undefined && object.personalNumber !== null) {
+      message.personalNumber = String(object.personalNumber);
+    } else {
+      message.personalNumber = undefined;
+    }
     return message;
   },
 
@@ -25005,6 +25045,13 @@ export const DeleteRoleKartoffelParams = {
     const obj: any = {};
     message.roleId !== undefined && (obj.roleId = message.roleId);
     message.uniqueId !== undefined && (obj.uniqueId = message.uniqueId);
+    message.jobTitle !== undefined && (obj.jobTitle = message.jobTitle);
+    message.firstName !== undefined && (obj.firstName = message.firstName);
+    message.lastName !== undefined && (obj.lastName = message.lastName);
+    message.identityCard !== undefined &&
+      (obj.identityCard = message.identityCard);
+    message.personalNumber !== undefined &&
+      (obj.personalNumber = message.personalNumber);
     return obj;
   },
 
@@ -25023,6 +25070,31 @@ export const DeleteRoleKartoffelParams = {
       message.uniqueId = object.uniqueId;
     } else {
       message.uniqueId = "";
+    }
+    if (object.jobTitle !== undefined && object.jobTitle !== null) {
+      message.jobTitle = object.jobTitle;
+    } else {
+      message.jobTitle = undefined;
+    }
+    if (object.firstName !== undefined && object.firstName !== null) {
+      message.firstName = object.firstName;
+    } else {
+      message.firstName = undefined;
+    }
+    if (object.lastName !== undefined && object.lastName !== null) {
+      message.lastName = object.lastName;
+    } else {
+      message.lastName = undefined;
+    }
+    if (object.identityCard !== undefined && object.identityCard !== null) {
+      message.identityCard = object.identityCard;
+    } else {
+      message.identityCard = undefined;
+    }
+    if (object.personalNumber !== undefined && object.personalNumber !== null) {
+      message.personalNumber = object.personalNumber;
+    } else {
+      message.personalNumber = undefined;
     }
     return message;
   },
@@ -25437,20 +25509,23 @@ export const AssignRoleToEntityADParams = {
     if (message.upn !== undefined) {
       writer.uint32(26).string(message.upn);
     }
+    if (message.oldUpn !== undefined) {
+      writer.uint32(34).string(message.oldUpn);
+    }
     if (message.firstName !== "") {
-      writer.uint32(34).string(message.firstName);
+      writer.uint32(42).string(message.firstName);
     }
     if (message.lastName !== "") {
-      writer.uint32(42).string(message.lastName);
+      writer.uint32(50).string(message.lastName);
     }
     if (message.fullName !== "") {
-      writer.uint32(50).string(message.fullName);
+      writer.uint32(58).string(message.fullName);
     }
     if (message.rank !== undefined) {
-      writer.uint32(58).string(message.rank);
+      writer.uint32(66).string(message.rank);
     }
     if (message.roleSerialCode !== "") {
-      writer.uint32(66).string(message.roleSerialCode);
+      writer.uint32(74).string(message.roleSerialCode);
     }
     return writer;
   },
@@ -25477,18 +25552,21 @@ export const AssignRoleToEntityADParams = {
           message.upn = reader.string();
           break;
         case 4:
-          message.firstName = reader.string();
+          message.oldUpn = reader.string();
           break;
         case 5:
-          message.lastName = reader.string();
+          message.firstName = reader.string();
           break;
         case 6:
-          message.fullName = reader.string();
+          message.lastName = reader.string();
           break;
         case 7:
-          message.rank = reader.string();
+          message.fullName = reader.string();
           break;
         case 8:
+          message.rank = reader.string();
+          break;
+        case 9:
           message.roleSerialCode = reader.string();
           break;
         default:
@@ -25523,6 +25601,11 @@ export const AssignRoleToEntityADParams = {
       message.upn = String(object.upn);
     } else {
       message.upn = undefined;
+    }
+    if (object.oldUpn !== undefined && object.oldUpn !== null) {
+      message.oldUpn = String(object.oldUpn);
+    } else {
+      message.oldUpn = undefined;
     }
     if (object.firstName !== undefined && object.firstName !== null) {
       message.firstName = String(object.firstName);
@@ -25559,6 +25642,7 @@ export const AssignRoleToEntityADParams = {
     message.newSAMAccountName !== undefined &&
       (obj.newSAMAccountName = message.newSAMAccountName);
     message.upn !== undefined && (obj.upn = message.upn);
+    message.oldUpn !== undefined && (obj.oldUpn = message.oldUpn);
     message.firstName !== undefined && (obj.firstName = message.firstName);
     message.lastName !== undefined && (obj.lastName = message.lastName);
     message.fullName !== undefined && (obj.fullName = message.fullName);
@@ -25594,6 +25678,11 @@ export const AssignRoleToEntityADParams = {
       message.upn = object.upn;
     } else {
       message.upn = undefined;
+    }
+    if (object.oldUpn !== undefined && object.oldUpn !== null) {
+      message.oldUpn = object.oldUpn;
+    } else {
+      message.oldUpn = undefined;
     }
     if (object.firstName !== undefined && object.firstName !== null) {
       message.firstName = object.firstName;
@@ -31018,29 +31107,32 @@ export const ADParams = {
     if (message.upn !== undefined) {
       writer.uint32(66).string(message.upn);
     }
+    if (message.oldUpn !== undefined) {
+      writer.uint32(74).string(message.oldUpn);
+    }
     if (message.firstName !== undefined) {
-      writer.uint32(74).string(message.firstName);
+      writer.uint32(82).string(message.firstName);
     }
     if (message.lastName !== undefined) {
-      writer.uint32(82).string(message.lastName);
+      writer.uint32(90).string(message.lastName);
     }
     if (message.fullName !== undefined) {
-      writer.uint32(90).string(message.fullName);
+      writer.uint32(98).string(message.fullName);
     }
     if (message.rank !== undefined) {
-      writer.uint32(98).string(message.rank);
+      writer.uint32(106).string(message.rank);
     }
     if (message.roleSerialCode !== undefined) {
-      writer.uint32(106).string(message.roleSerialCode);
+      writer.uint32(114).string(message.roleSerialCode);
     }
     if (message.oldOuName !== undefined) {
-      writer.uint32(114).string(message.oldOuName);
+      writer.uint32(122).string(message.oldOuName);
     }
     if (message.newOuName !== undefined) {
-      writer.uint32(122).string(message.newOuName);
+      writer.uint32(130).string(message.newOuName);
     }
     if (message.newJobTitle !== undefined) {
-      writer.uint32(130).string(message.newJobTitle);
+      writer.uint32(138).string(message.newJobTitle);
     }
     return writer;
   },
@@ -31077,27 +31169,30 @@ export const ADParams = {
           message.upn = reader.string();
           break;
         case 9:
-          message.firstName = reader.string();
+          message.oldUpn = reader.string();
           break;
         case 10:
-          message.lastName = reader.string();
+          message.firstName = reader.string();
           break;
         case 11:
-          message.fullName = reader.string();
+          message.lastName = reader.string();
           break;
         case 12:
-          message.rank = reader.string();
+          message.fullName = reader.string();
           break;
         case 13:
-          message.roleSerialCode = reader.string();
+          message.rank = reader.string();
           break;
         case 14:
-          message.oldOuName = reader.string();
+          message.roleSerialCode = reader.string();
           break;
         case 15:
-          message.newOuName = reader.string();
+          message.oldOuName = reader.string();
           break;
         case 16:
+          message.newOuName = reader.string();
+          break;
+        case 17:
           message.newJobTitle = reader.string();
           break;
         default:
@@ -31156,6 +31251,11 @@ export const ADParams = {
     } else {
       message.upn = undefined;
     }
+    if (object.oldUpn !== undefined && object.oldUpn !== null) {
+      message.oldUpn = String(object.oldUpn);
+    } else {
+      message.oldUpn = undefined;
+    }
     if (object.firstName !== undefined && object.firstName !== null) {
       message.firstName = String(object.firstName);
     } else {
@@ -31213,6 +31313,7 @@ export const ADParams = {
     message.newSAMAccountName !== undefined &&
       (obj.newSAMAccountName = message.newSAMAccountName);
     message.upn !== undefined && (obj.upn = message.upn);
+    message.oldUpn !== undefined && (obj.oldUpn = message.oldUpn);
     message.firstName !== undefined && (obj.firstName = message.firstName);
     message.lastName !== undefined && (obj.lastName = message.lastName);
     message.fullName !== undefined && (obj.fullName = message.fullName);
@@ -31273,6 +31374,11 @@ export const ADParams = {
       message.upn = object.upn;
     } else {
       message.upn = undefined;
+    }
+    if (object.oldUpn !== undefined && object.oldUpn !== null) {
+      message.oldUpn = object.oldUpn;
+    } else {
+      message.oldUpn = undefined;
     }
     if (object.firstName !== undefined && object.firstName !== null) {
       message.firstName = object.firstName;

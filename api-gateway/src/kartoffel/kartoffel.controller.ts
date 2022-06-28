@@ -456,4 +456,16 @@ export default class KartoffelController {
       res.status(statusCode).send(error.message);
     }
   }
+
+  static async searchSamAccountName(req: Request, res: Response) {
+    const searchSamAccountNameReq: any = { ...req.query, ...req.params };
+
+    try {
+      const user = await KartoffelService.searchSamAccountName(searchSamAccountNameReq);
+      res.send(user);
+    } catch (error: any) {
+      const statusCode = statusCodeHandler(error);
+      res.status(statusCode).send(error.message);
+    }
+  }
 }

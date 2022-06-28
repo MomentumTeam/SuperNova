@@ -9,6 +9,7 @@ export const mongoUrl =
 export const maxQueueRetries = process.env.RS_MAX_QUEUE_RETRIES
   ? parseInt(process.env.RS_MAX_QUEUE_RETRIES)
   : 5;
+export const kartoffelSericeUrl = process.env.RS_KS_URL || '0.0.0.0:8082';
 export const notificationServiceUrl = process.env.RS_NS_URL || '0.0.0.0:8084';
 export const teaServiceUrl = process.env.RS_TS_URL || '0.0.0.0:8086';
 export const mailServiceUrl = process.env.RS_MS_URL || '0.0.0.0:8088';
@@ -31,8 +32,9 @@ export const grpcPoolSize = process.env.GLOBAL_GRPC_POOL_SIZE
   : 2;
 export const goalUser = process.env.RS_KARTOFFEL_GOAL_USER || 'GoalUser';
 
-export const groupsWithSecurityAdmin =
-  process.env.RS_GROUPS_WITH_SECURITY_ADMIN ? process.env.RS_GROUPS_WITH_SECURITY_ADMIN.split(','): [];
+export const groupsWithSecurityAdmin = process.env.RS_GROUPS_WITH_SECURITY_ADMIN
+  ? process.env.RS_GROUPS_WITH_SECURITY_ADMIN.split(',')
+  : [];
 
 export const searchFields = [
   { name: 'submittedBy.displayName' },

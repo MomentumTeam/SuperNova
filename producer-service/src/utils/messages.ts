@@ -95,7 +95,7 @@ export function generateKartoffelQueueMessage(request: Request): any {
         message.data.firstName = getJobTitle.firstName;
         message.data.lastName = getJobTitle.lastName;
         message.data.fullName = getJobTitle.fullName;
-        message.data.upn = kartoffelParams.upn;
+        message.data.upn = `${kartoffelParams.upn}@${C.upnSuffix}`;
       }
       break;
     case RequestType.CREATE_ENTITY:
@@ -139,7 +139,7 @@ export function generateKartoffelQueueMessage(request: Request): any {
         message.data.needDisconnect = false;
       }
       if (kartoffelParams.upn !== undefined) {
-        message.data.upn = kartoffelParams.upn;
+        message.data.upn = `${kartoffelParams.upn}@${C.upnSuffix}`;
       }
       break;
     case RequestType.RENAME_OG:
@@ -207,7 +207,7 @@ export function generateKartoffelQueueMessage(request: Request): any {
         id: kartoffelParams.id,
         uniqueId: kartoffelParams.uniqueId,
         newEntityType: kartoffelParams.newEntityType,
-        upn: kartoffelParams.upn,
+        upn: `${kartoffelParams.upn}@${C.upnSuffix}`,
       };
       if (kartoffelParams.identifier) {
         message.data.identifier = kartoffelParams.identifier;
@@ -239,6 +239,7 @@ export function generateADQueueMessage(
   }
   const adParams: any = request.adParams;
   switch (request.type) {
+    // OG
     case RequestType.CREATE_OG: //Reviewed with Orin, CreateOU
       message.data = {
         ouDName: adParams.ouDisplayName,
@@ -246,6 +247,10 @@ export function generateADQueueMessage(
         newOuName: adParams.name,
       };
       break;
+    case RequestType.DELETE_OG:
+      message.data = {
+        displayName: adParams.ouDisplayName,
+      };
     case RequestType.CREATE_ROLE: //reviewed with Orin, CreateRole
       if (
         request.adParams &&
@@ -297,6 +302,7 @@ export function generateADQueueMessage(
           samAccountName: adParams.oldSAMAccountName,
           toSamAccountName: adParams.newSAMAccountName,
           upn: `${adParams.upn}@${C.upnSuffix}`,
+          oldUPN: `${adParams.oldUpn}@${C.upnSuffix}`,
           firstName: adParams.firstName,
           lastName: adParams.lastName,
           fullName: adParams.fullName,
@@ -309,6 +315,7 @@ export function generateADQueueMessage(
         message.data = {
           userID: adParams.newSAMAccountName,
           UPN: `${adParams.upn}@${C.upnSuffix}`,
+          oldUPN: `${adParams.oldUpn}@${C.upnSuffix}`,
           firstName: adParams.firstName,
           lastName: adParams.lastName,
           fullName: adParams.fullName,
@@ -341,7 +348,7 @@ export function generateADQueueMessage(
       break;
     case RequestType.DELETE_ROLE: // Reviewed with Orin, PurgeRole
       message.data = {
-        userT: adParams.samAccountName,
+        samAccountName: adParams.samAccountName,
       };
       break;
     case RequestType.DISCONNECT_ROLE: // Reviewed with Orin, DisconnectRole

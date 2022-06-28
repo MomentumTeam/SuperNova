@@ -252,3 +252,13 @@ export const GetDIByUniqueIdValidSchema = Joi.object({
   },
   query: {},
 });
+
+// LDAP
+export const SearchSamAccountNameValidSchema = Joi.object({
+  body: {},
+  params: {
+  },
+  query: {
+    samAccountName: Joi.string().required(),
+  },
+});

@@ -23,6 +23,7 @@
     "dotenv": "^10.0.0",
     "faker": "^5.5.3",
     "grpc-js-health-check": "^1.0.2",
+    "ldapts": "^3.2.4",
     "mocha": "^9.1.3",
     "mongoose": "^5.13.2",
     "nodemon": "^2.0.7",
