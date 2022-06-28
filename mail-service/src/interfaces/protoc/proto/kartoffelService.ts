@@ -490,6 +490,7 @@ export interface Entity {
   employeeNumber: string;
   /** organization-employeeNUmber */
   employeeId: string;
+  fullClearance: string;
 }
 
 export interface DigitalIdentity {
@@ -7472,6 +7473,7 @@ const baseEntity: object = {
   organization: "",
   employeeNumber: "",
   employeeId: "",
+  fullClearance: "",
 };
 
 export const Entity = {
@@ -7568,6 +7570,9 @@ export const Entity = {
     }
     if (message.employeeId !== "") {
       writer.uint32(242).string(message.employeeId);
+    }
+    if (message.fullClearance !== "") {
+      writer.uint32(250).string(message.fullClearance);
     }
     return writer;
   },
@@ -7673,6 +7678,9 @@ export const Entity = {
           break;
         case 30:
           message.employeeId = reader.string();
+          break;
+        case 31:
+          message.fullClearance = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -7840,6 +7848,11 @@ export const Entity = {
     } else {
       message.employeeId = "";
     }
+    if (object.fullClearance !== undefined && object.fullClearance !== null) {
+      message.fullClearance = String(object.fullClearance);
+    } else {
+      message.fullClearance = "";
+    }
     return message;
   },
 
@@ -7897,6 +7910,8 @@ export const Entity = {
     message.employeeNumber !== undefined &&
       (obj.employeeNumber = message.employeeNumber);
     message.employeeId !== undefined && (obj.employeeId = message.employeeId);
+    message.fullClearance !== undefined &&
+      (obj.fullClearance = message.fullClearance);
     return obj;
   },
 
@@ -8057,6 +8072,11 @@ export const Entity = {
       message.employeeId = object.employeeId;
     } else {
       message.employeeId = "";
+    }
+    if (object.fullClearance !== undefined && object.fullClearance !== null) {
+      message.fullClearance = object.fullClearance;
+    } else {
+      message.fullClearance = "";
     }
     return message;
   },
