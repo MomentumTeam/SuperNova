@@ -5,6 +5,7 @@ import RequestsRouter from './requests/requests.router';
 import NotificationRouter from './notifications/notifications.router';
 import ApproverRouter from './approver/approver.router';
 import BulkRouter from './bulk/bulk.router';
+import HistoryRouter from './history/history.router';
 
 const mainRouter = Router();
 
@@ -12,7 +13,7 @@ mainRouter.use('/approvers', ApproverRouter);
 mainRouter.use('/notifications', NotificationRouter);
 mainRouter.use('/kartoffel', KartoffelRouter);
 mainRouter.use('/requests', RequestsRouter);
-// mainRouter.use('/history', HistoryRouter);
+mainRouter.use('/history', HistoryRouter);
 mainRouter.use('/bulk', BulkRouter);
 mainRouter.get("/config", (req, res) =>res.send(config.ui));
 

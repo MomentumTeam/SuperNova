@@ -1,14 +1,5 @@
 import { HistoryManager } from './history.manager';
 import * as grpc from '@grpc/grpc-js';
-import {
-  IsRequestApprovedRes,
-  Request,
-  RequestReq,
-  RequestType,
-  requestTypeToJSON,
-  SuccessMessage,
-  UpdateApproverDecisionReq,
-} from '../interfaces/protoc/proto/requestService';
 import { logger } from '../logger';
 
 const historyManager: HistoryManager = new HistoryManager();

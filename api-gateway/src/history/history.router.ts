@@ -28,3 +28,5 @@ HistoryRouter.get(
   HistoryValidator.isGetEventsSubmmitedByEntityIdValid,
   HistoryController.getDoneRequestsBySubmittedEntityId
 );
+
+export default HistoryRouter;

@@ -2215,6 +2215,7 @@ export class RequestRepository {
       ];
       const query: any = {
         status: requestStatusToJSON(RequestStatus.DONE),
+        type: {"$in" : requestTypes},
         $or: [
           { 'kartoffelParams.roleId': checkIfCreateWasInLegoReq.idCheck },
           {
@@ -2222,35 +2223,9 @@ export class RequestRepository {
           },
         ],
       };
-      const requests: any = await RequestModel.find(query, {})
-        .sort([['updatedAt', 1]])
-        .limit(1);
-
-      if(requests.length === 0) {
-        return {
-          isItCreateInLego: false,
-        };
-      }
-      // switch(requests[0].toObject().type)
-      const tempRequest = requests[0];
-      // tempRequest.toObject();
-      // turnObjectIdsToStrings(tempRequest);
-      // const typeOfTheRequest = tempRequest.type;
-
-      const typeOfTheRequest =
-      typeof tempRequest.type === typeof ''
-          ? requestTypeFromJSON(tempRequest.type)
-          : tempRequest.type;
-
-      for (let i = 0; i < requestTypes.length; i++) {
-        if ((typeOfTheRequest === requestTypes[i]) || (tempRequest.type === requestTypes[i])) {
-          return {
-            isItCreateInLego: true,
-          };
-        }
-      }
+      const exists: any = await RequestModel.exists(query)
       return {
-        isItCreateInLego: false,
+        isItCreateInLego: exists,
       };
     } catch (error) {
       throw error;
