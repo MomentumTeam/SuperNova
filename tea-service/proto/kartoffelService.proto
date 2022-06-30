@@ -571,3 +571,11 @@ message RoleIdMessage {
 message UniqueIdMessage {
     string uniqueId = 1;
 }
+
+enum EntityType{
+    Soldier = 0;
+    Civilian = 1;
+    GoalUser = 2;
+    External = 3;
+
+}

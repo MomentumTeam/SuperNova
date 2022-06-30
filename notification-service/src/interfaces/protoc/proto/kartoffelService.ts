@@ -4,6 +4,50 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "Kartoffel";
 
+export enum EntityType {
+  Soldier = 0,
+  Civilian = 1,
+  GoalUser = 2,
+  External = 3,
+  UNRECOGNIZED = -1,
+}
+
+export function entityTypeFromJSON(object: any): EntityType {
+  switch (object) {
+    case 0:
+    case "Soldier":
+      return EntityType.Soldier;
+    case 1:
+    case "Civilian":
+      return EntityType.Civilian;
+    case 2:
+    case "GoalUser":
+      return EntityType.GoalUser;
+    case 3:
+    case "External":
+      return EntityType.External;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return EntityType.UNRECOGNIZED;
+  }
+}
+
+export function entityTypeToJSON(object: EntityType): string {
+  switch (object) {
+    case EntityType.Soldier:
+      return "Soldier";
+    case EntityType.Civilian:
+      return "Civilian";
+    case EntityType.GoalUser:
+      return "GoalUser";
+    case EntityType.External:
+      return "External";
+    default:
+      return "UNKNOWN";
+  }
+}
+
 export interface SearchSamAccountNameReq {
   samAccountName: string;
 }

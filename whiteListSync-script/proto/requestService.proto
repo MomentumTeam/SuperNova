@@ -975,7 +975,7 @@ message AdditionalParams{
     string directGroup = 8;
     optional string groupInChargeId = 9;
     optional string specialGroupId = 10;
-    
+
 }
 
 //5.RenameOGRequest
@@ -1023,6 +1023,11 @@ message EditEntityKartoffelParams{
     optional string sex = 11;
     optional int64 birthdate = 12;
     optional string entityType = 13;
+    string oldFirstName = 14;
+    string oldLastName = 15;
+    optional string oldIdentityCard = 16;
+    optional string oldMobilePhone=17;
+    optional string oldRank = 18;    
 }
 
 message EditEntityADParams{
@@ -1433,6 +1438,13 @@ message KartoffelParams{
     optional string newEntityType = 38;
     optional string identifier = 39;
     //EditEntity
+
+    string oldFirstName = 40;
+    string oldLastName = 41;
+    optional string oldIdentityCard = 42;
+    optional string oldMobilePhone=43;
+    optional string oldRank = 44;  
+
     // string firstName = 25;
     // string lastName = 26;
     // string identityCard = 27;

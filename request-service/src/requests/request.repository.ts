@@ -86,6 +86,10 @@ import {
 import { logger } from '../logger';
 import { MailType } from '../interfaces/protoc/proto/mailService';
 import { ApproverArray } from '../interfaces/protoc/proto/approverService';
+import {
+  EntityType,
+  entityTypeFromJSON,
+} from '../interfaces/protoc/proto/kartoffelService';
 
 export class RequestRepository {
   async createRequest(
@@ -113,9 +117,7 @@ export class RequestRepository {
           createRequestReq.kartoffelParams.id
         );
         createRequestReq.kartoffelParams.upn = createRequestReq.adParams.upn;
-        const oldEntityType = createRequestReq.adParams.upn.startsWith(
-          's'
-        )
+        const oldEntityType = createRequestReq.adParams.upn.startsWith('s')
           ? C.civilian
           : C.soldier;
         createRequestReq.adParams.oldUPN = await retrieveUPNByEntityId(
@@ -125,7 +127,7 @@ export class RequestRepository {
       } else if (
         type === RequestType.CREATE_ENTITY ||
         type === RequestType.DELETE_ENTITY
-        ) {
+      ) {
         // CASES WITH NO NEED FOR AD UPDATE
         createRequestReq.adStatus = {
           status: stageStatusToJSON(StageStatus.STAGE_DONE),
@@ -159,17 +161,34 @@ export class RequestRepository {
           createRequestReq.adParams.upn = upn;
         }
 
-        //automatically approved
-        const approverDecision = {
-          approver: createRequestReq.submittedBy
-            ? createRequestReq.submittedBy
-            : { id: '', displayName: '', personalNumber: '', identityCard: '' },
-          decision: decisionToJSON(Decision.APPROVED),
-        };
-        createRequestReq.commanderDecision = approverDecision;
-        createRequestReq.securityDecision = approverDecision;
-        createRequestReq.superSecurityDecision = approverDecision;
-        createRequestReq.adminDecision = approverDecision;
+        const entityType =
+          typeof createRequestReq.kartoffelParams?.entityType === typeof ''
+            ? entityTypeFromJSON(createRequestReq.kartoffelParams?.entityType)
+            : createRequestReq.kartoffelParams?.entityType;
+
+        if (
+          createRequestReq.kartoffelParams.entityType === EntityType.Civilian ||
+          type === RequestType.CONVERT_ENTITY_TYPE
+        ) {
+          //automatically approved
+          const approverDecision = {
+            approver: createRequestReq.submittedBy
+              ? createRequestReq.submittedBy
+              : {
+                  id: '',
+                  displayName: '',
+                  personalNumber: '',
+                  identityCard: '',
+                },
+            decision: decisionToJSON(Decision.APPROVED),
+          };
+
+          createRequestReq.commanderDecision = approverDecision;
+          createRequestReq.securityDecision = approverDecision;
+          createRequestReq.superSecurityDecision = approverDecision;
+          createRequestReq.adminDecision = approverDecision;
+        }
+
         createRequestReq.adStatus = {
           status: stageStatusToJSON(StageStatus.STAGE_WAITING_FOR_PUSH),
           message: '',
@@ -375,8 +394,15 @@ export class RequestRepository {
         typeof request.type === typeof ''
           ? requestTypeFromJSON(request.type)
           : request.type;
+
+      const entityType =
+        typeof request.kartoffelParams?.entityType === typeof ''
+          ? entityTypeFromJSON(request.kartoffelParams?.entityType)
+          : request.kartoffelParams?.entityType;
+
       if (
-        requestType === RequestType.EDIT_ENTITY ||
+        (requestType === RequestType.EDIT_ENTITY &&
+          entityType === EntityType.Civilian) ||
         requestType === RequestType.CONVERT_ENTITY_TYPE
       ) {
         return { isRequestApproved: true };

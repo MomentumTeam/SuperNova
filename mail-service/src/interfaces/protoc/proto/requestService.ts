@@ -1598,6 +1598,11 @@ export interface EditEntityKartoffelParams {
   sex?: string | undefined;
   birthdate?: number | undefined;
   entityType?: string | undefined;
+  oldFirstName: string;
+  oldLastName: string;
+  oldIdentityCard?: string | undefined;
+  oldMobilePhone?: string | undefined;
+  oldRank?: string | undefined;
 }
 
 export interface EditEntityADParams {
@@ -1992,23 +1997,13 @@ export interface KartoffelParams {
   rank?: string | undefined;
   /** ConvertEntityType */
   newEntityType?: string | undefined;
-  /**
-   * EditEntity
-   * string firstName = 25;
-   * string lastName = 26;
-   * string identityCard = 27;
-   * string personalNumber = 28;
-   * string serviceType = 29;
-   * repeated string phone = 30;
-   * repeated string mobilePhone = 31;
-   * string address = 32;
-   * string clearance = 33;
-   * string sex = 34;
-   * int64 birthdate = 35;
-   * string entityType = 36;
-   * string id =
-   */
+  /** EditEntity */
   identifier?: string | undefined;
+  oldFirstName: string;
+  oldLastName: string;
+  oldIdentityCard?: string | undefined;
+  oldMobilePhone?: string | undefined;
+  oldRank?: string | undefined;
 }
 
 export interface ADParams {
@@ -24378,6 +24373,8 @@ const baseEditEntityKartoffelParams: object = {
   lastName: "",
   phone: "",
   mobilePhone: "",
+  oldFirstName: "",
+  oldLastName: "",
 };
 
 export const EditEntityKartoffelParams = {
@@ -24423,6 +24420,21 @@ export const EditEntityKartoffelParams = {
     }
     if (message.entityType !== undefined) {
       writer.uint32(106).string(message.entityType);
+    }
+    if (message.oldFirstName !== "") {
+      writer.uint32(114).string(message.oldFirstName);
+    }
+    if (message.oldLastName !== "") {
+      writer.uint32(122).string(message.oldLastName);
+    }
+    if (message.oldIdentityCard !== undefined) {
+      writer.uint32(130).string(message.oldIdentityCard);
+    }
+    if (message.oldMobilePhone !== undefined) {
+      writer.uint32(138).string(message.oldMobilePhone);
+    }
+    if (message.oldRank !== undefined) {
+      writer.uint32(146).string(message.oldRank);
     }
     return writer;
   },
@@ -24479,6 +24491,21 @@ export const EditEntityKartoffelParams = {
           break;
         case 13:
           message.entityType = reader.string();
+          break;
+        case 14:
+          message.oldFirstName = reader.string();
+          break;
+        case 15:
+          message.oldLastName = reader.string();
+          break;
+        case 16:
+          message.oldIdentityCard = reader.string();
+          break;
+        case 17:
+          message.oldMobilePhone = reader.string();
+          break;
+        case 18:
+          message.oldRank = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -24559,6 +24586,34 @@ export const EditEntityKartoffelParams = {
     } else {
       message.entityType = undefined;
     }
+    if (object.oldFirstName !== undefined && object.oldFirstName !== null) {
+      message.oldFirstName = String(object.oldFirstName);
+    } else {
+      message.oldFirstName = "";
+    }
+    if (object.oldLastName !== undefined && object.oldLastName !== null) {
+      message.oldLastName = String(object.oldLastName);
+    } else {
+      message.oldLastName = "";
+    }
+    if (
+      object.oldIdentityCard !== undefined &&
+      object.oldIdentityCard !== null
+    ) {
+      message.oldIdentityCard = String(object.oldIdentityCard);
+    } else {
+      message.oldIdentityCard = undefined;
+    }
+    if (object.oldMobilePhone !== undefined && object.oldMobilePhone !== null) {
+      message.oldMobilePhone = String(object.oldMobilePhone);
+    } else {
+      message.oldMobilePhone = undefined;
+    }
+    if (object.oldRank !== undefined && object.oldRank !== null) {
+      message.oldRank = String(object.oldRank);
+    } else {
+      message.oldRank = undefined;
+    }
     return message;
   },
 
@@ -24588,6 +24643,15 @@ export const EditEntityKartoffelParams = {
     message.sex !== undefined && (obj.sex = message.sex);
     message.birthdate !== undefined && (obj.birthdate = message.birthdate);
     message.entityType !== undefined && (obj.entityType = message.entityType);
+    message.oldFirstName !== undefined &&
+      (obj.oldFirstName = message.oldFirstName);
+    message.oldLastName !== undefined &&
+      (obj.oldLastName = message.oldLastName);
+    message.oldIdentityCard !== undefined &&
+      (obj.oldIdentityCard = message.oldIdentityCard);
+    message.oldMobilePhone !== undefined &&
+      (obj.oldMobilePhone = message.oldMobilePhone);
+    message.oldRank !== undefined && (obj.oldRank = message.oldRank);
     return obj;
   },
 
@@ -24663,6 +24727,34 @@ export const EditEntityKartoffelParams = {
       message.entityType = object.entityType;
     } else {
       message.entityType = undefined;
+    }
+    if (object.oldFirstName !== undefined && object.oldFirstName !== null) {
+      message.oldFirstName = object.oldFirstName;
+    } else {
+      message.oldFirstName = "";
+    }
+    if (object.oldLastName !== undefined && object.oldLastName !== null) {
+      message.oldLastName = object.oldLastName;
+    } else {
+      message.oldLastName = "";
+    }
+    if (
+      object.oldIdentityCard !== undefined &&
+      object.oldIdentityCard !== null
+    ) {
+      message.oldIdentityCard = object.oldIdentityCard;
+    } else {
+      message.oldIdentityCard = undefined;
+    }
+    if (object.oldMobilePhone !== undefined && object.oldMobilePhone !== null) {
+      message.oldMobilePhone = object.oldMobilePhone;
+    } else {
+      message.oldMobilePhone = undefined;
+    }
+    if (object.oldRank !== undefined && object.oldRank !== null) {
+      message.oldRank = object.oldRank;
+    } else {
+      message.oldRank = undefined;
     }
     return message;
   },
@@ -30331,6 +30423,8 @@ const baseKartoffelParams: object = {
   needDisconnect: false,
   phone: "",
   mobilePhone: "",
+  oldFirstName: "",
+  oldLastName: "",
 };
 
 export const KartoffelParams = {
@@ -30454,6 +30548,21 @@ export const KartoffelParams = {
     }
     if (message.identifier !== undefined) {
       writer.uint32(314).string(message.identifier);
+    }
+    if (message.oldFirstName !== "") {
+      writer.uint32(322).string(message.oldFirstName);
+    }
+    if (message.oldLastName !== "") {
+      writer.uint32(330).string(message.oldLastName);
+    }
+    if (message.oldIdentityCard !== undefined) {
+      writer.uint32(338).string(message.oldIdentityCard);
+    }
+    if (message.oldMobilePhone !== undefined) {
+      writer.uint32(346).string(message.oldMobilePhone);
+    }
+    if (message.oldRank !== undefined) {
+      writer.uint32(354).string(message.oldRank);
     }
     return writer;
   },
@@ -30583,6 +30692,21 @@ export const KartoffelParams = {
           break;
         case 39:
           message.identifier = reader.string();
+          break;
+        case 40:
+          message.oldFirstName = reader.string();
+          break;
+        case 41:
+          message.oldLastName = reader.string();
+          break;
+        case 42:
+          message.oldIdentityCard = reader.string();
+          break;
+        case 43:
+          message.oldMobilePhone = reader.string();
+          break;
+        case 44:
+          message.oldRank = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -30797,6 +30921,34 @@ export const KartoffelParams = {
     } else {
       message.identifier = undefined;
     }
+    if (object.oldFirstName !== undefined && object.oldFirstName !== null) {
+      message.oldFirstName = String(object.oldFirstName);
+    } else {
+      message.oldFirstName = "";
+    }
+    if (object.oldLastName !== undefined && object.oldLastName !== null) {
+      message.oldLastName = String(object.oldLastName);
+    } else {
+      message.oldLastName = "";
+    }
+    if (
+      object.oldIdentityCard !== undefined &&
+      object.oldIdentityCard !== null
+    ) {
+      message.oldIdentityCard = String(object.oldIdentityCard);
+    } else {
+      message.oldIdentityCard = undefined;
+    }
+    if (object.oldMobilePhone !== undefined && object.oldMobilePhone !== null) {
+      message.oldMobilePhone = String(object.oldMobilePhone);
+    } else {
+      message.oldMobilePhone = undefined;
+    }
+    if (object.oldRank !== undefined && object.oldRank !== null) {
+      message.oldRank = String(object.oldRank);
+    } else {
+      message.oldRank = undefined;
+    }
     return message;
   },
 
@@ -30864,6 +31016,15 @@ export const KartoffelParams = {
     message.newEntityType !== undefined &&
       (obj.newEntityType = message.newEntityType);
     message.identifier !== undefined && (obj.identifier = message.identifier);
+    message.oldFirstName !== undefined &&
+      (obj.oldFirstName = message.oldFirstName);
+    message.oldLastName !== undefined &&
+      (obj.oldLastName = message.oldLastName);
+    message.oldIdentityCard !== undefined &&
+      (obj.oldIdentityCard = message.oldIdentityCard);
+    message.oldMobilePhone !== undefined &&
+      (obj.oldMobilePhone = message.oldMobilePhone);
+    message.oldRank !== undefined && (obj.oldRank = message.oldRank);
     return obj;
   },
 
@@ -31071,6 +31232,34 @@ export const KartoffelParams = {
       message.identifier = object.identifier;
     } else {
       message.identifier = undefined;
+    }
+    if (object.oldFirstName !== undefined && object.oldFirstName !== null) {
+      message.oldFirstName = object.oldFirstName;
+    } else {
+      message.oldFirstName = "";
+    }
+    if (object.oldLastName !== undefined && object.oldLastName !== null) {
+      message.oldLastName = object.oldLastName;
+    } else {
+      message.oldLastName = "";
+    }
+    if (
+      object.oldIdentityCard !== undefined &&
+      object.oldIdentityCard !== null
+    ) {
+      message.oldIdentityCard = object.oldIdentityCard;
+    } else {
+      message.oldIdentityCard = undefined;
+    }
+    if (object.oldMobilePhone !== undefined && object.oldMobilePhone !== null) {
+      message.oldMobilePhone = object.oldMobilePhone;
+    } else {
+      message.oldMobilePhone = undefined;
+    }
+    if (object.oldRank !== undefined && object.oldRank !== null) {
+      message.oldRank = object.oldRank;
+    } else {
+      message.oldRank = undefined;
     }
     return message;
   },
