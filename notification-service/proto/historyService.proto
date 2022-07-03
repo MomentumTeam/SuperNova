@@ -34,6 +34,6 @@ message Event{
 message EventArray{
     repeated Event events = 1;
     int32 totalCount = 2;
-    int32 till = 3;
+
 }
 

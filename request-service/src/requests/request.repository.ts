@@ -2196,7 +2196,7 @@ export class RequestRepository {
     }
   }
 
-  async wasCreateBeenInLego(
+  async createdInLegoCheck(
     checkIfCreateWasInLegoReq: CheckIfCreateWasInLegoReq
   ): Promise<BoolCheck> {
     try {
@@ -2220,7 +2220,7 @@ export class RequestRepository {
 
       if(requests.length === 0) {
         return {
-          isItCreateInLego: false,
+          createdInLego: false,
         };
       }
       // switch(requests[0].toObject().type)
@@ -2237,12 +2237,12 @@ export class RequestRepository {
       for (let i = 0; i < requestTypes.length; i++) {
         if ((typeOfTheRequest === requestTypes[i]) || (tempRequest.type === requestTypes[i])) {
           return {
-            isItCreateInLego: true,
+            createdInLego: true,
           };
         }
       }
       return {
-        isItCreateInLego: false,
+        createdInLego: false,
       };
     } catch (error) {
       throw error;

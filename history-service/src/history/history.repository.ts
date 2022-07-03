@@ -22,7 +22,7 @@ import {
   OrganizationGroup,
 } from '../interfaces/protoc/proto/kartoffelService';
 
-// import { wasCreateBeenInLego, } from '../services/requestService';
+// import { CreatedInLegoCheck, } from '../services/requestService';
 
 import { logger } from '../logger';
 import { MailType } from '../interfaces/protoc/proto/mailService';
@@ -42,13 +42,13 @@ export class HistoryRepository {
   ): Promise<EventArray> {
     try {
       //צריך לעשות בקשה שמזחריה אם הבקשה ראשונה הייתה בקשה מסוג יצירת תפקיד (כלומר אם זה קרה בלגו או לא) אם לא נוסיף אחד
-      const doesCreateBeenInLego : BoolCheck = await this.requestService.wasCreateBeenInLego({
+      const createdInLego : BoolCheck = await this.requestService.createdInLegoCheck({
         idCheck:getDoneRequestsByRoleIdReq.roleId,
       });
       let fromVal = getDoneRequestsByRoleIdReq.from;
       let toVal = getDoneRequestsByRoleIdReq.to;
       
-      if(!doesCreateBeenInLego.isItCreateInLego) {
+      if(!createdInLego.createdInLego) {
         const tempVar = getDoneRequestsByRoleIdReq.from;
         fromVal = tempVar !== 1 ? tempVar-1 : tempVar;
         const tempVar2 = getDoneRequestsByRoleIdReq.to;
@@ -64,14 +64,15 @@ export class HistoryRepository {
         events: [],
         totalCount: requestsArr.totalCount,
         ////////till: requestsArr.totalCount>=getDoneRequestsByRoleIdReq.to ? getDoneRequestsByRoleIdReq.to: requestsArr.totalCount,
-        till: doesCreateBeenInLego.isItCreateInLego?getDoneRequestsByRoleIdReq.to:getDoneRequestsByRoleIdReq.to - 1,
+        // till: createdInLego.createdInLego?getDoneRequestsByRoleIdReq.to:getDoneRequestsByRoleIdReq.to - 1,
         //till: Math.min(getDoneRequestsByRoleIdReq.to,requestsArr.totalCount),
       };
+      let tillTemp = createdInLego.createdInLego?getDoneRequestsByRoleIdReq.to:getDoneRequestsByRoleIdReq.to - 1;
       
       if (requestsArr?.totalCount === 0) {
-        if ((getDoneRequestsByRoleIdReq.from === 1)&&(!doesCreateBeenInLego.isItCreateInLego)) {
+        if ((getDoneRequestsByRoleIdReq.from === 1)&&(!createdInLego.createdInLego)) {
           eventArr.totalCount += 1;
-          eventArr.till = 1;
+          tillTemp = 1;
           const temporaryEvent: Event = { message: '', date: new Date().getTime() };
           const tempRole : Role = await KartoffelService.GetRoleByRoleId({roleId:getDoneRequestsByRoleIdReq.roleId});
           temporaryEvent.message = `  ${tempRole?.createdAt.toLocaleString()} בתאריך ${tempRole?.displayName} בקשת "יצירת תפקיד" קרתה, שם התפקיד - `;
@@ -89,7 +90,7 @@ export class HistoryRepository {
       // getDoneRequestsByRoleIdReq.from === 1 &&
       //   firstRequestType !== RequestType.CREATE_ROLE
       if (
-        !doesCreateBeenInLego.isItCreateInLego
+        !createdInLego.createdInLego
       ) {
         eventArr.totalCount += 1; //////////////////////////////////////////////////////////////from =1
         //יכול לקרות מצב שיש פחות בקשות ממה שהפגיניישן רוצה ואז יקרה מצב שזה יפתח את האיבנטים בשני דפים שונים (צריך לבדוק מה עושים במצב כזה) זה קורה שיש מעט מאוד בקשותת
@@ -116,7 +117,7 @@ export class HistoryRepository {
       //if (numberOfRequest > )                                                                                   /// שים לב
       ////////////////////////////const theMin = Math.min(toVal, requestsArr.totalCount);
       /////////////////////////let numberOfRequest = Math.min(toVal - fromVal + 1, requestsArr.totalCount);
-      // if ((!doesCreateBeenInLego.isItCreateInLego) && (getDoneRequestsByRoleIdReq.from === 1)) {
+      // if ((!createdInLego.createdInLego) && (getDoneRequestsByRoleIdReq.from === 1)) {
       //   --numberOfRequest;
       // }
       for (let i = 0; i < numberOfRequest; i++) {
@@ -152,8 +153,8 @@ export class HistoryRepository {
         eventArr.events.push(tempEvent);
       }
       // eventArr.events.reverse();
-      if (!doesCreateBeenInLego.isItCreateInLego) {
-        eventArr.till+=1;
+      if (!createdInLego.createdInLego) {
+        tillTemp+=1;
       }
       return eventArr as EventArray;
       // Request tempR requestsArr.requests.forEach()
@@ -180,15 +181,16 @@ export class HistoryRepository {
       const eventArr: EventArray = {
         events: [],
         totalCount: requestsArr.totalCount,
-        till: getDoneRequestsByOGIdReq.to,
+        // till: getDoneRequestsByOGIdReq.to,
       };
+      let tillTemp = getDoneRequestsByOGIdReq.to;
       //צריך לעשות בקשה שמזחריה אם הבקשה ראשונה הייתה בקשה מסוג יצירת תפקיד (כלומר אם זה קרה בלגו או לא) אם לא נוסיף אחד
-      const doesCreateBeenInLego : BoolCheck = await this.requestService.wasCreateBeenInLego({
+      const createdInLego : BoolCheck = await this.requestService.createdInLegoCheck({
         idCheck:getDoneRequestsByOGIdReq.groupId,
       });
 
       if (requestsArr.requests.length === 0) {
-        if ((getDoneRequestsByOGIdReq.from === 1)&&(!doesCreateBeenInLego.isItCreateInLego)) {
+        if ((getDoneRequestsByOGIdReq.from === 1)&&(!createdInLego.createdInLego)) {
           eventArr.totalCount += 1;
           const temporaryEvent: Event = { message: '', date: new Date().getTime() };
           const tempOG : OrganizationGroup = await KartoffelService.GetOGById({id: getDoneRequestsByOGIdReq.groupId,});
@@ -207,13 +209,13 @@ export class HistoryRepository {
       // getDoneRequestsByRoleIdReq.from === 1 &&
       //   firstRequestType !== RequestType.CREATE_ROLE
       if (
-        !doesCreateBeenInLego.isItCreateInLego
+        !createdInLego.createdInLego
       ) {
         eventArr.totalCount += 1;
         //יכול לקרות מצב שיש פחות בקשות ממה שהפגיניישן רוצה ואז יקרה מצב שזה יפתח את האיבנטים בשני דפים שונים (צריך לבדוק מה עושים במצב כזה) זה קורה שיש מעט מאוד בקשותת
         if (getDoneRequestsByOGIdReq.from === 1) {
           
-          eventArr.till -= 1;
+          tillTemp -= 1;
           const temporaryEvent: Event = { message: '', date: new Date().getTime() };
           const tempOG : OrganizationGroup = await KartoffelService.GetOGById({id: getDoneRequestsByOGIdReq.groupId,});
           temporaryEvent.message = `  ${tempOG?.createdAt.toLocaleString()} בתאריך ${tempOG?.name} בקשת "יצירת תפקיד" קרתה, שם התפקיד - `;
@@ -222,7 +224,7 @@ export class HistoryRepository {
       }
       // const rows: CreateRoleRow[] = requestsUnderBulk.requests.map(
       // const numberOfRequest = requestsArr.totalCount;
-      const numberOfRequest = eventArr.till -
+      const numberOfRequest = tillTemp -
       getDoneRequestsByOGIdReq.from +
       1;
       for (let i = 0; i++; i < numberOfRequest) {
@@ -273,15 +275,16 @@ export class HistoryRepository {
       const eventArr: EventArray = {
         events: [],
         totalCount: requestsArr.totalCount,
-        till: getDoneRequestsByEntityIdReq.to,
+        // till: getDoneRequestsByEntityIdReq.to,
       };
+      let tillTemp = getDoneRequestsByEntityIdReq.to;
       //צריך לעשות בקשה שמזחריה אם הבקשה ראשונה הייתה בקשה מסוג יצירת תפקיד (כלומר אם זה קרה בלגו או לא) אם לא נוסיף אחד
-      const doesCreateBeenInLego : BoolCheck = await this.requestService.wasCreateBeenInLego({
+      const createdInLego : BoolCheck = await this.requestService.createdInLegoCheck({
         idCheck:getDoneRequestsByEntityIdReq.entityId,
       });
 
       if (requestsArr.requests.length === 0) {
-        if ((getDoneRequestsByEntityIdReq.from === 1)&&(!doesCreateBeenInLego.isItCreateInLego)) {
+        if ((getDoneRequestsByEntityIdReq.from === 1)&&(!createdInLego.createdInLego)) {
           eventArr.totalCount += 1;
           const temporaryEvent: Event = { message: '', date: new Date().getTime() };
           const tempEntity : Entity = await KartoffelService.getEntityById({id: getDoneRequestsByEntityIdReq.entityId,});
@@ -300,13 +303,13 @@ export class HistoryRepository {
       // getDoneRequestsByRoleIdReq.from === 1 &&
       //   firstRequestType !== RequestType.CREATE_ROLE
       if (
-        !doesCreateBeenInLego.isItCreateInLego
+        !createdInLego.createdInLego
       ) {
         eventArr.totalCount += 1;
         //יכול לקרות מצב שיש פחות בקשות ממה שהפגיניישן רוצה ואז יקרה מצב שזה יפתח את האיבנטים בשני דפים שונים (צריך לבדוק מה עושים במצב כזה) זה קורה שיש מעט מאוד בקשותת
         if (getDoneRequestsByEntityIdReq.from === 1) {
           
-          eventArr.till -= 1;
+          tillTemp -= 1;
           const temporaryEvent: Event = { message: '', date: new Date().getTime() };
           const tempEntity : Entity = await KartoffelService.getEntityById({id: getDoneRequestsByEntityIdReq.entityId,});
           temporaryEvent.message = `  ${tempEntity?.createdAt.toLocaleString()} בתאריך ${tempEntity?.displayName} בקשת "יצירת תפקיד" קרתה, שם התפקיד - `;
@@ -315,7 +318,7 @@ export class HistoryRepository {
       }
       // const rows: CreateRoleRow[] = requestsUnderBulk.requests.map(
       // const numberOfRequest = requestsArr.totalCount;
-      const numberOfRequest = eventArr.till -
+      const numberOfRequest = tillTemp -
       getDoneRequestsByEntityIdReq.from +
       1;
       for (let i = 0; i++; i < numberOfRequest) {
@@ -365,15 +368,16 @@ export class HistoryRepository {
       const eventArr: EventArray = {
         events: [],
         totalCount: requestsArr.totalCount,
-        till: getDoneRequestsByEntityIdReq.to,
+        // till: getDoneRequestsByEntityIdReq.to,
       };
+      // let tillTemp = getDoneRequestsByEntityIdReq.to;
       //צריך לעשות בקשה שמזחריה אם הבקשה ראשונה הייתה בקשה מסוג יצירת תפקיד (כלומר אם זה קרה בלגו או לא) אם לא נוסיף אחד
-      // const doesCreateBeenInLego = this.requestService.wasCreateBeenInLego({
+      // const createdInLego = this.requestService.createdInLegoCheck({
       //   idCheck:getDoneRequestsByEntityIdReq.entityId,
       // });
 
       if (requestsArr.requests.length === 0) {
-        // if ((getDoneRequestsByEntityIdReq.from === 1)&&(!doesCreateBeenInLego.isItCreateInLego)) {
+        // if ((getDoneRequestsByEntityIdReq.from === 1)&&(!createdInLego.createdInLego)) {
         //   eventArr.totalCount += 1;
         //   const temporaryEvent: Event = { message: '', date: new Date().getTime() };
         //   const tempEntity : Entity = this.requestService.getEntityByEntityId;
@@ -393,7 +397,7 @@ export class HistoryRepository {
       //   firstRequestType !== RequestType.CREATE_ROLE
 
       /*if (
-        !doesCreateBeenInLego.isItCreateInLego
+        !createdInLego.createdInLego
       ) {
         eventArr.totalCount += 1;
         //יכול לקרות מצב שיש פחות בקשות ממה שהפגיניישן רוצה ואז יקרה מצב שזה יפתח את האיבנטים בשני דפים שונים (צריך לבדוק מה עושים במצב כזה) זה קורה שיש מעט מאוד בקשותת
@@ -409,7 +413,7 @@ export class HistoryRepository {
 
       // const rows: CreateRoleRow[] = requestsUnderBulk.requests.map(
       // const numberOfRequest = requestsArr.totalCount;
-      const numberOfRequest = eventArr.till -
+      const numberOfRequest = getDoneRequestsByEntityIdReq.to -
       getDoneRequestsByEntityIdReq.from +
       1;
       for (let i = 0; i++; i < numberOfRequest) {
