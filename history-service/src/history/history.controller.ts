@@ -42,21 +42,21 @@ export async function getEventsByRoleId(
   }
 }
 
-export async function getEventsOGByOGId(
+export async function getEventsByGroupId(
   call: any,
   callback: any
 ): Promise<void> {
   try {
-    logger.info(`Call to getOGByOGId`, {
+    logger.info(`Call to getEventsByGroupId`, {
       callRequest: call.request,
     });
     const response = await historyManager.getEventsOGByOGId(call.request);
-    logger.info(`getOGByOGId OK`, {
+    logger.info(`getEventsByGroupId OK`, {
       callRequest: call.request,
     });
     callback(null, response);
   } catch (error: any) {
-    logger.error(`getOGByOGId ERROR`, {
+    logger.error(`getEventsByGroupId ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
     });
@@ -100,21 +100,21 @@ export async function getEventsByEntityId(
   }
 }
 
-export async function getEventsBySubmittedEntityId(
+export async function getEventsSubmmitedByEntityId(
   call: any,
   callback: any
 ): Promise<void> {
   try {
-    logger.info(`Call to getEventsBySubmittedEntityId`, {
+    logger.info(`Call to getEventsSubmmitedByEntityId`, {
       callRequest: call.request,
     });
     const response = await historyManager.getEventsBySubmittedEntityId(call.request);
-    logger.info(`getEventsBySubmittedEntityId OK`, {
+    logger.info(`getEventsSubmmitedByEntityId OK`, {
       callRequest: call.request,
     });
     callback(null, response);
   } catch (error: any) {
-    logger.error(`getEventsBySubmittedEntityId ERROR`, {
+    logger.error(`getEventsSubmmitedByEntityId ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
     });

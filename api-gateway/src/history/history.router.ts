@@ -6,25 +6,25 @@ const HistoryRouter: Router = Router();
 
 // GET
 HistoryRouter.get(
-  '/role/',
-  HistoryValidator.isDoneRequestsEventsValid,
+  '/roles',
+  HistoryValidator.isGetEventsByRoleIdValid,
   HistoryController.getDoneRequestsByRoleId
 );
 
 HistoryRouter.get(
-  '/approve/all',
-  HistoryValidator.isDoneRequestsEventsValid,
+  '/groups',
+  HistoryValidator.isGetEventsByGroupIdSchemaValid,
   HistoryController.getDoneRequestsByGroupId
 );
 
 HistoryRouter.get(
-  '/approve/my',
-  HistoryValidator.isDoneRequestsEventsValid,
+  '/entitys',
+  HistoryValidator.isGetEventsByEntityIdValid,
   HistoryController.getDoneRequestsByEntityId
 );
 
 HistoryRouter.get(
-  '/:id',
-  HistoryValidator.isDoneRequestsEventsValid,
-  HistoryController.getDoneRequestsSubmmitedByEntityId
+  '/submmitedEntitys',
+  HistoryValidator.isGetEventsSubmmitedByEntityIdValid,
+  HistoryController.getDoneRequestsBySubmittedEntityId
 );

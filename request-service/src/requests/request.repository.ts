@@ -94,6 +94,8 @@ export class RequestRepository {
     type: RequestType
   ): Promise<Request> {
     try {
+      let adStatus = createRequestReq.adStatus;
+      let kartoffelStatus = createRequestReq.kartoffelStatus;
       if (type === RequestType.CREATE_ROLE) {
         const tea = await retrieveTeaByOGId(
           createRequestReq.kartoffelParams.directGroup
@@ -120,7 +122,7 @@ export class RequestRepository {
         type === RequestType.DELETE_OG
       ) {
         // CASES WITH NO NEED FOR AD UPDATE
-        createRequestReq.adStatus = {
+        createRequestReq.adStatus =  {
           status: stageStatusToJSON(StageStatus.STAGE_DONE),
           message: 'No need for AD update in this case',
           failedRetries: 0,
@@ -139,6 +141,7 @@ export class RequestRepository {
             : { id: '', displayName: '', personalNumber: '', identityCard: '' },
           decision: decisionToJSON(Decision.APPROVED),
         };
+
         createRequestReq.commanderDecision = approverDecision;
         createRequestReq.securityDecision = approverDecision;
         createRequestReq.superSecurityDecision = approverDecision;
@@ -157,7 +160,12 @@ export class RequestRepository {
           RequestStatus.IN_PROGRESS
         );
       }
-
+      if(adStatus){
+        createRequestReq.adStatus = adStatus;
+      }
+      if(kartoffelStatus){
+        createRequestReq.kartoffelStatus = kartoffelStatus;
+      }
       let submitterGroups: any[] = [createRequestReq.submittedBy.directGroup];
 
       if (
@@ -2068,7 +2076,7 @@ export class RequestRepository {
       };
       const totalCount = await RequestModel.count(query);
       const requests: any = await RequestModel.find(query, {}, pagination).sort(
-        [['updatedAt', -1]]
+        [['updatedAt', 1]]
       );
 
       if (requests) {
@@ -2126,7 +2134,7 @@ export class RequestRepository {
       };
       const totalCount = await RequestModel.count(query);
       const requests: any = await RequestModel.find(query, {}, pagination).sort(
-        [['updatedAt', -1]]
+        [['updatedAt', 1]]
       );
 
       if (requests) {
@@ -2170,7 +2178,7 @@ export class RequestRepository {
       };
       const totalCount = await RequestModel.count(query);
       const requests: any = await RequestModel.find(query, {}, pagination).sort(
-        [['updatedAt', -1]]
+        [['updatedAt', 1]]
       );
 
       if (requests) {

@@ -56,53 +56,52 @@ services:
       - SS_KARTOFFEL_AUDIENCE=kartoffel
       - SS_LOG_PATH=/logs
 
-  # request-service:
-  #   image: request-service
-  #   build: ./request-service
-  #   env_file:
-  #     - ./supernova.env
-  #   ports:
-  #     - '8081:8080'
-  #   depends_on:
-  #     - mongo
-  #     - notification-service
-  #     - tea-service
-  #     - mail-service
-  #     # - approver-service
-  #   volumes:
-  #     - logs:/logs
-  #   environment:
-  #     - RS_MONGO_URL=mongodb://mongo:27017/supernova
-  #     - RS_NS_URL=notification-service:8080
-  #     - RS_TS_URL=tea-service:8080
-  #     - RS_MS_URL=mail-service:8080
-  #     - RS_APS_URL=approver-service:8080
-  #     - RS_ROOT_ID=619e3193f235dc001846bb4f
-  #     - RS_KARTOFFEL_GOAL_USER=GoalUser
-  #     - RS_LOG_PATH=/logs
+  request-service:
+    image: request-service
+    build: ./request-service
+    env_file:
+      - ./supernova.env
+    ports:
+      - '8081:8080'
+    depends_on:
+      - mongo
+      - notification-service
+      - tea-service
+      - mail-service
+    volumes:
+      - logs:/logs
+    environment:
+      - RS_MONGO_URL=mongodb://mongo:27017/supernova
+      - RS_NS_URL=notification-service:8080
+      - RS_TS_URL=tea-service:8080
+      - RS_MS_URL=mail-service:8080
+      - RS_ROOT_ID=619e3193f235dc001846bb4f
+      - RS_KARTOFFEL_GOAL_USER=GoalUser
+      - RS_APS_URL=approver-service:8080
+      - RS_LOG_PATH=/logs
 
-  # kartoffel-service:
-  #   image: kartoffel-service
-  #   build: ./kartoffel-service/
-  #   env_file:
-  #     - ./supernova.env
-  #   ports:
-  #     - '8082:8080'
-  #   depends_on:
-  #     - spike-service
-  #   volumes:
-  #     - logs:/logs
-  #   environment:
-  #     - KS_USE_FAKER=false
-  #     - KS_SS_URL=spike-service:8080
-  #     - KS_ROOT_ID=6184af202da776001134110b
-  #     - KS_DEFAULT_ROLE_SOURCE=sf_name
-  #     - KS_DEFAULT_DI_SOURCE=es_name
-  #     - KS_DEFAULT_OG_SOURCE=sf_name
-  #     - KS_DI_SOURCES=es_name,es_name
-  #     - KS_DEFAULT_ROLE_ID_SUFFIX=oneTree
-  #     - KS_SEARCH_WITH_RANKS=true
-  #     - KS_LOG_PATH=/logs
+  kartoffel-service:
+    image: kartoffel-service
+    build: ./kartoffel-service/
+    env_file:
+      - ./supernova.env
+    ports:
+      - '8082:8080'
+    depends_on:
+      - spike-service
+    volumes:
+      - logs:/logs
+    environment:
+      - KS_USE_FAKER=false
+      - KS_SS_URL=spike-service:8080
+      - KS_ROOT_ID=6184af202da776001134110b
+      - KS_DEFAULT_ROLE_SOURCE=sf_name
+      - KS_DEFAULT_DI_SOURCE=sf_name
+      - KS_DEFAULT_OG_SOURCE=sf_name
+      - KS_DI_SOURCES=sf_name,sf_name
+      - KS_DEFAULT_ROLE_ID_SUFFIX=oneTree
+      - KS_SEARCH_WITH_RANKS=true
+      - KS_LOG_PATH=/logs
 
   producer-service:
     image: producer-service
@@ -128,8 +127,6 @@ services:
       - PS_AD_ALLOWED_SUBMITTERS=1111,2222,3333,4444
       - PS_AD_UPN_SUFFIX=gmail.com
       - PS_KARTOFFEL_GOAL_USER=GoalUser
-      - PS_KARTOFFEL_SOLDIER=Soldier
-      - PS_KARTOFFEL_EXTERNAL=External
       - PS_LOG_PATH=/logs
 
   notification-service:
@@ -152,41 +149,40 @@ services:
       - ./supernova.env
     ports:
       - '8085:8080'
-    # depends_on:
-      # - request-service
-      # - kartoffel-service
+    depends_on:
+      - request-service
+      - kartoffel-service
     volumes:
       - logs:/logs
     environment:
       - APS_MONGO_URL=mongodb://mongo:27017/supernova
-      - APS_KS_URL=0.0.0.0:8082
-      - APS_RS_URL=0.0.0.0:8081
+      - APS_KS_URL=kartoffel-service:8080
+      - APS_RS_URL=request-service:8080
       - APS_OG_VALIDATION_DEPTH=4
       - APS_ALWAYS_VALID_COMMANDERS=1111,2222,3333,4444
-      - APS_CREATE_EXTERNAL_ALLOWED_APPROVERS=619e3193f235dc001846bb4f,619a44fe5ce9f30018d8abba
       - APS_LOG_PATH=/logs
 
-  # tea-service:
-  #   image: tea-service
-  #   build: ./tea-service/
-  #   env_file:
-  #     - ./supernova.env
-  #   volumes:
-  #     - logs:/logs
-  #     - ./tea-service/src/excelFiles:/teaUtils
-  #   ports:
-  #     - '8086:8080'
-  #   environment:
-  #     - TS_KS_URL=0.0.0.0:8082
-  #     - TS_MONGO_URL=mongodb://mongo:27017/supernova
-  #     - TS_LOG_PATH=/logs
-  #     - TS_NEED_INIT=true
-  #     - TS_INIT_EMPTY_ARRAYS=true
-  #     - TS_EXCEL_INIT_FOLDER=/teaUtils
-  #     - TS_EXCEL_INIT_FILE=initPrefixes.xlsx
-  #     - TS_OLD_SUFFIX=gmail.com
-  #     - TS_NEW_SUFFIX=gmail.com
-  #     - TS_BROL=brol
+  tea-service:
+    image: tea-service
+    build: ./tea-service/
+    env_file:
+      - ./supernova.env
+    volumes:
+      - logs:/logs
+      - ./tea-service/src/excelFiles:/teaUtils
+    ports:
+      - '8086:8080'
+    environment:
+      - TS_KS_URL=kartoffel-service:8080
+      - TS_MONGO_URL=mongodb://mongo:27017/supernova
+      - TS_LOG_PATH=/logs
+      - TS_NEED_INIT=true
+      - TS_INIT_EMPTY_ARRAYS=true
+      - TS_EXCEL_INIT_FOLDER=/teaUtils
+      - TS_EXCEL_INIT_FILE=initPrefixes.xlsx
+      - TS_OLD_SUFFIX=gmail.com
+      - TS_NEW_SUFFIX=gmail.com
+      - TS_BROL=brol
 
   bulk-service:
     image: bulk-service
@@ -227,7 +223,7 @@ services:
     depends_on:
       - kartoffel-service
     environment:
-      - MS_KS_URL=0.0.0.0:8082
+      - MS_KS_URL=kartoffel-service:8080
       - MS_MAIL_SERVICE=hotmail
       - MS_MAIL_ADDRESS=mayatest4321@outlook.com
       - MS_MAIL_USER=mayatest4321@outlook.com
@@ -239,35 +235,35 @@ services:
       - MS_EMAILS_FOR_TEST=enterEmailForTest
       - MS_LEGO_ADDRESS=http://localhost:3000
 
-  # kartoffel-consumer:
-  #   image: kartoffel-consumer
-  #   build: ./kartoffel-consumer/
-  #   env_file:
-  #     - ./supernova.env
-  #   depends_on:
-  #     - request-service
-  #     - kartoffel-service
-  #     - tea-service
-  #   volumes:
-  #     - logs:/logs
-  #   environment:
-  #     - KC_KAFKA_HOSTS=google.com:9092,amazon.com:9092,ebay.com:9092
-  #     - KC_KAFKA_GROUP_ID=kafka-kartoffel
-  #     - KC_KAFKA_TOPIC=baraktest
-  #     - KC_KAFKA_USERNAME=guest
-  #     - KC_KAFKA_PASSWORD=password
-  #     - KC_RS_URL=request-service:8080
-  #     - KC_TS_URL=tea-service:8080
-  #     - KC_KS_URL=kartoffel-service:8080
-  #     - KC_DEFAULT_ROLE_SOURCE=sf_name
-  #     - KC_DEFAULT_DI_SOURCE=es_name
-  #     - KC_DI_SOURCES=es_name,es_name
-  #     - KC_KARTOFFEL_GOAL_USER=GoalUser
-  #     - KC_KARTOFFEL_DOMAIN_USER=domainUser
-  #     - KC_CIVILIAN=Civilian
-  #     - KC_SEND_UPN_TO_KARTOFFEL=true
-  #     - KC_CIVILIAN_DEFAULT_RANK=לא ידוע
-  #     - KC_LOG_PATH=/logs
+  kartoffel-consumer:
+    image: kartoffel-consumer
+    build: ./kartoffel-consumer/
+    env_file:
+      - ./supernova.env
+    depends_on:
+      - request-service
+      - kartoffel-service
+      - tea-service
+    volumes:
+      - logs:/logs
+    environment:
+      - KC_KAFKA_HOSTS=google.com:9092,amazon.com:9092,ebay.com:9092
+      - KC_KAFKA_GROUP_ID=kafka-kartoffel
+      - KC_KAFKA_TOPIC=baraktest
+      - KC_KAFKA_USERNAME=guest
+      - KC_KAFKA_PASSWORD=password
+      - KC_RS_URL=request-service:8080
+      - KC_TS_URL=tea-service:8080
+      - KC_KS_URL=kartoffel-service:8080
+      - KC_DEFAULT_ROLE_SOURCE=sf_name
+      - KC_DEFAULT_DI_SOURCE=sf_name
+      - KC_DI_SOURCES=sf_name,sf_name
+      - KC_KARTOFFEL_GOAL_USER=GoalUser
+      - KC_KARTOFFEL_DOMAIN_USER=domainUser
+      - KC_CIVILIAN=Civilian
+      - KC_SEND_UPN_TO_KARTOFFEL=true
+      - KC_CIVILIAN_DEFAULT_RANK=לא ידוע
+      - KC_LOG_PATH=/logs
 
   # execution-script:
   #   image: execution-script
@@ -335,74 +331,74 @@ services:
   #     - POS_GENERATE_COUNT=50
   #     - POS_LOG_PATH=/logs
 
-  # authentication-service:
-  #   image: authentication-service
-  #   build: ./authentication-service/
-  #   env_file:
-  #     - ./supernova.env
-  #   ports:
-  #     - '9000:8080'
-  #   depends_on:
-  #     - kartoffel-service
-  #     - approver-service
-  #   volumes:
-  #     - logs:/logs
-  #   environment:
-  #     - AS_PORT=8080
-  #     - AS_SHRAGA_URL=https://shraga.shraga.branch-yesodot.org
-  #     # - AS_CLIENT_ENDPOINT=http://localhost
-  #     - AS_CLIENT_ENDPOINT=http://localhost:3000
-  #     - AS_KS_URL=kartoffel-service:8080
-  #     - AS_APS_URL=approver-service:8080
-  #     - AS_KARTOFFEL_ENRICH=false
-  #     - AS_APPROVER_ENRICH=true
-  #     - AS_USE_SHRAGA_LOCAL_MAP=true
-  #     - AS_SHRAGA_LOCAL_MAP_IDS=619e3a6fe4de0300121d78c7,619e406ee4de0300121dc4c8,619e42b6e4de0300121dc4e3,619e5132e4de0300121dc528,619f8aa0e4de0300121dd3f4
-  #     - AS_SHRAGA_LOCAL_MAP_DIS=t23458789sh@jello,t25458789sh@jello,t25458711sh@jello,gggUsersh@rabiran,e595300134sh@turtle
-  #     - AS_LOG_PATH=/logs
+  authentication-service:
+    image: authentication-service
+    build: ./authentication-service/
+    env_file:
+      - ./supernova.env
+    ports:
+      - '9000:8080'
+    depends_on:
+      - kartoffel-service
+      - approver-service
+    volumes:
+      - logs:/logs
+    environment:
+      - AS_PORT=8080
+      - AS_SHRAGA_URL=https://shraga.shraga.branch-yesodot.org
+      - AS_CLIENT_ENDPOINT=http://localhost
+      # - AS_CLIENT_ENDPOINT=http://localhost:3000
+      - AS_KS_URL=kartoffel-service:8080
+      - AS_APS_URL=approver-service:8080
+      - AS_KARTOFFEL_ENRICH=false
+      - AS_APPROVER_ENRICH=true
+      - AS_USE_SHRAGA_LOCAL_MAP=true
+      - AS_SHRAGA_LOCAL_MAP_IDS=619e3a6fe4de0300121d78c7,619e406ee4de0300121dc4c8,619e42b6e4de0300121dc4e3,619e5132e4de0300121dc528,619f8aa0e4de0300121dd3f4
+      - AS_SHRAGA_LOCAL_MAP_DIS=t23458789@jello.com,t25458789@jello.com,t25458711@jello.com,gggUser@rabiran.com,e595300134@turtle.com
+      - AS_LOG_PATH=/logs
 
-  # api-gateway:
-  #   image: api-gateway
-  #   build: ./api-gateway/
-  #   env_file:
-  #     - ./supernova.env
-  #   volumes:
-  #     - bulk-files:/bulkFiles
-  #     - spike-utils:/spikeUtils
-  #     - logs:/logs
-  #   ports:
-  #     - '2000:8080'
-  #   depends_on:
-  #     - spike-service
-  #     - kartoffel-service
-  #     - producer-service
-  #     - request-service
-  #     - authentication-service
-  #     - notification-service
-  #     - mail-service
-  #     - approver-service
-  #     - tea-service
-  #     - bulk-service
-  #   # - apm-server
-  #   environment:
-  #     - GATEWAY_KS_URL=kartoffel-service:8080
-  #     - GATEWAY_RS_URL=request-service:8080
-  #     - GATEWAY_PS_URL=producer-service:8080
-  #     - GATEWAY_NS_URL=notification-service:8080
-  #     - GATEWAY_AS_URL=http://localhost:9000
-  #     # - GATEWAY_AS_URL=http://localhost
-  #     - GATEWAY_BS_URL=bulk-service:8080
-  #     - GATEWAY_APS_URL=approver-service:8080
-  #     - GATEWAY_BS_FOLDER_PATH=/bulkFiles
-  #     - GATEWAY_AUTHENTICATION_REQUIRED=true
-  #     - GATEWAY_APM_URL=http://apm-server:8200
-  #     - GATEWAY_TS_URL=tea-service:8080
-  #     - GATEWAY_SPIKE_AUDIENCE_ID=bwwIB0gSS0xay_odirl0OCAJ3gUlXkKMKijbDY_e
-  #     - GATEWAY_SPIKE_PUBLIC_KEY_FULL_PATH=/spikeUtils/publickey.pem
-  #     - GATEWAY_WRITE_SCOPE_NAME=write
-  #     - GATEWAY_SUPPORT_LINK=https://www.lego.com/en-us/service
-  #     - GATEWAY_ROOT_ID=619e3193f235dc001846bb4f
-  #     - GATEWAY_LOG_PATH=/logs
+  api-gateway:
+    image: api-gateway
+    build: ./api-gateway/
+    env_file:
+      - ./supernova.env
+    volumes:
+      - bulk-files:/bulkFiles
+      - spike-utils:/spikeUtils
+      - logs:/logs
+    ports:
+      - '2000:8080'
+    depends_on:
+      - spike-service
+      - kartoffel-service
+      - producer-service
+      - request-service
+      - authentication-service
+      - notification-service
+      - mail-service
+      - approver-service
+      - tea-service
+      - bulk-service
+    # - apm-server
+    environment:
+      - GATEWAY_KS_URL=kartoffel-service:8080
+      - GATEWAY_RS_URL=request-service:8080
+      - GATEWAY_PS_URL=producer-service:8080
+      - GATEWAY_NS_URL=notification-service:8080
+      # - GATEWAY_AS_URL=http://localhost:9000
+      - GATEWAY_AS_URL=http://localhost
+      - GATEWAY_BS_URL=bulk-service:8080
+      - GATEWAY_APS_URL=approver-service:8080
+      - GATEWAY_BS_FOLDER_PATH=/bulkFiles
+      - GATEWAY_AUTHENTICATION_REQUIRED=true
+      - GATEWAY_APM_URL=http://apm-server:8200
+      - GATEWAY_TS_URL=tea-service:8080
+      - GATEWAY_SPIKE_AUDIENCE_ID=bwwIB0gSS0xay_odirl0OCAJ3gUlXkKMKijbDY_e
+      - GATEWAY_SPIKE_PUBLIC_KEY_FULL_PATH=/spikeUtils/publickey.pem
+      - GATEWAY_WRITE_SCOPE_NAME=write
+      - GATEWAY_SUPPORT_LINK=https://www.lego.com/en-us/service
+      - GATEWAY_ROOT_ID=619e3193f235dc001846bb4f
+      - GATEWAY_LOG_PATH=/logs
 
   # supernova-ui:
   #   image: supernova-ui
@@ -416,16 +412,7 @@ services:
   #   environment:
   #     - UI_REACT_APP_BASE_URL=http://localhost:2000
   #     - UI_REACT_TOKEN_NAME=sp-token
-  #     - UI_USER_SOURCE_DI=es_name
-
-volumes:
-  bulk-files:
-  spike-utils:
-  ais-excel-files:
-  tea-utils:
-  logs:
-  esdata:
-    driver: local
+  #     - UI_USER_SOURCE_DI=sf_name
 
   # # Kafka GUI
   # kouncil:
@@ -520,11 +507,12 @@ volumes:
   #   volumes:
   #     - logs:/logs
   #     - ./filebeat.yml:/usr/share/filebeat/filebeat.yml
-# volumes:
-#   bulk-files:
-#   spike-utils:
-#   ais-excel-files:
-#   tea-utils:
-#   logs:
-#   esdata:
-#     driver: local
+
+volumes:
+  bulk-files:
+  spike-utils:
+  ais-excel-files:
+  tea-utils:
+  logs:
+  esdata:
+    driver: local
