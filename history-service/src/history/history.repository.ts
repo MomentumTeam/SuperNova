@@ -35,12 +35,12 @@ export class HistoryRepository {
   ): Promise<EventArray> {
     try {
       //צריך לעשות בקשה שמזחריה אם הבקשה ראשונה הייתה בקשה מסוג יצירת תפקיד (כלומר אם זה קרה בלגו או לא) אם לא נוסיף אחד
-      const doesCreateBeenInLego : BoolCheck = await this.requestService.wasCreateBeenInL                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ego({
+      const createdInLego : BoolCheck = await this.requestService.wasCreateBeenInLego({
         idCheck:getDoneRequestsByRoleIdReq.roleId,
       });
       let fromVal = getDoneRequestsByRoleIdReq.from, toVal = getDoneRequestsByRoleIdReq.to;
       
-      if(!doesCreateBeenInLego.isItCreateInLego) {
+      if(!createdInLego.isItCreateInLego) {
         fromVal = fromVal !== 1 ? fromVal - 1 : fromVal;
         toVal = toVal !== 1 ? toVal-1 : toVal;
       }
@@ -55,18 +55,18 @@ export class HistoryRepository {
       //נוסיף תנאי של 1-1
       // let requestsArr: RequestArray = {requests:[],totalCount:0};
       // כל עוד אנחנו במצב שזה גם לא נוצר בלגו וגם שפרום והטו 1 אז תאפס את הפונקציה 
-      if (!doesCreateBeenInLego.isItCreateInLego && getDoneRequestsByRoleIdReq.to === 1 && getDoneRequestsByRoleIdReq.from === 1) {
+      if (!createdInLego.isItCreateInLego && getDoneRequestsByRoleIdReq.to === 1 && getDoneRequestsByRoleIdReq.from === 1) {
         requestsArr.requests = [];
       }
 
       const eventArr: EventArray = {
         events: [],
         totalCount: requestsArr.totalCount,
-        till: doesCreateBeenInLego.isItCreateInLego?getDoneRequestsByRoleIdReq.to:getDoneRequestsByRoleIdReq.to - 1,
+        till: createdInLego.isItCreateInLego?getDoneRequestsByRoleIdReq.to:getDoneRequestsByRoleIdReq.to - 1,
       };
 
       if (requestsArr?.totalCount === 0) { // maybe ignore?
-        if (getDoneRequestsByRoleIdReq.from === 1&&!doesCreateBeenInLego.isItCreateInLego) {
+        if (getDoneRequestsByRoleIdReq.from === 1&&!createdInLego.isItCreateInLego) {
           eventArr.totalCount += 1;
           eventArr.till = 1;
           const temporaryEvent: Event = { message: '', date: new Date().getTime() };
@@ -83,7 +83,7 @@ export class HistoryRepository {
       }
 
       if (
-        !doesCreateBeenInLego.isItCreateInLego
+        !createdInLego.isItCreateInLego
       ) { // check maybe can be deleted
         eventArr.totalCount += 1; //////////////////////////////////////////////////////////////from =1
         //יכול לקרות מצב שיש פחות בקשות ממה שהפגיניישן רוצה ואז יקרה מצב שזה יפתח את האיבנטים בשני דפים שונים (צריך לבדוק מה עושים במצב כזה) זה קורה שיש מעט מאוד בקשותת
@@ -98,6 +98,7 @@ export class HistoryRepository {
 
       let numberOfRequest = requestsArr.requests.length;
 
+      
       for (let i = 0; i < numberOfRequest; i++) {
         const tempEvent: Event = { message: '', date: new Date().getTime() };
         const tempRequest: Request = requestsArr.requests[i];
@@ -116,13 +117,13 @@ export class HistoryRepository {
   ): Promise<EventArray> {
     try {
       //צריך לעשות בקשה שמזחריה אם הבקשה ראשונה הייתה בקשה מסוג יצירת תפקיד (כלומר אם זה קרה בלגו או לא) אם לא נוסיף אחד
-      const doesCreateBeenInLego : BoolCheck = await this.requestService.wasCreateBeenInLego({
+      const createdInLego : BoolCheck = await this.requestService.wasCreateBeenInLego({
         idCheck:getDoneRequestsByOGIdReq.groupId,
       });
       let fromVal = getDoneRequestsByOGIdReq.from;
       let toVal = getDoneRequestsByOGIdReq.to;
       
-      if(!doesCreateBeenInLego.isItCreateInLego) {
+      if(!createdInLego.isItCreateInLego) {
         const tempVar = getDoneRequestsByOGIdReq.from;
         fromVal = (tempVar !== 1 ? tempVar-1 : tempVar);
         const tempVar2 = getDoneRequestsByOGIdReq.to;
@@ -140,19 +141,19 @@ export class HistoryRepository {
       //נוסיף תנאי של 1-1
       // let requestsArr: RequestArray = {requests:[],totalCount:0};
       // כל עוד אנחנו במצב שזה גם לא נוצר בלגו וגם שפרום והטו 1 אז תאפס את הפונקציה 
-      if (((!doesCreateBeenInLego.isItCreateInLego) && (getDoneRequestsByOGIdReq.to === 1) && (getDoneRequestsByOGIdReq.from === 1))) {
+      if (((!createdInLego.isItCreateInLego) && (getDoneRequestsByOGIdReq.to === 1) && (getDoneRequestsByOGIdReq.from === 1))) {
         requestsArr.requests = [];
       }
 
       const eventArr: EventArray = {
         events: [],
         totalCount: requestsArr.totalCount,
-        till: doesCreateBeenInLego.isItCreateInLego?getDoneRequestsByOGIdReq.to:getDoneRequestsByOGIdReq.to - 1,
+        till: createdInLego.isItCreateInLego?getDoneRequestsByOGIdReq.to:getDoneRequestsByOGIdReq.to - 1,
 
       };
 
       if (requestsArr?.totalCount === 0) {
-        if ((getDoneRequestsByOGIdReq.from === 1)&&(!doesCreateBeenInLego.isItCreateInLego)) {
+        if ((getDoneRequestsByOGIdReq.from === 1)&&(!createdInLego.isItCreateInLego)) {
           eventArr.totalCount += 1;
           eventArr.till = 1;
           const temporaryEvent: Event = { message: '', date: new Date().getTime() };
@@ -169,7 +170,7 @@ export class HistoryRepository {
       }
 
       if (
-        !doesCreateBeenInLego.isItCreateInLego
+        !createdInLego.isItCreateInLego
       ) {
         eventArr.totalCount += 1; //////////////////////////////////////////////////////////////from =1
         //יכול לקרות מצב שיש פחות בקשות ממה שהפגיניישן רוצה ואז יקרה מצב שזה יפתח את האיבנטים בשני דפים שונים (צריך לבדוק מה עושים במצב כזה) זה קורה שיש מעט מאוד בקשותת
@@ -215,7 +216,7 @@ export class HistoryRepository {
         eventArr.events.push(tempEvent);
       }
       // eventArr.events.reverse();
-      if (!doesCreateBeenInLego.isItCreateInLego) {
+      if (!createdInLego.isItCreateInLego) {
         eventArr.till+=1;
       }
       return eventArr as EventArray;
@@ -243,12 +244,12 @@ export class HistoryRepository {
         till: getDoneRequestsByOGIdReq.to,
       };
       //צריך לעשות בקשה שמזחריה אם הבקשה ראשונה הייתה בקשה מסוג יצירת תפקיד (כלומר אם זה קרה בלגו או לא) אם לא נוסיף אחד
-      const doesCreateBeenInLego : BoolCheck = await this.requestService.wasCreateBeenInLego({
+      const createdInLego : BoolCheck = await this.requestService.wasCreateBeenInLego({
         idCheck:getDoneRequestsByOGIdReq.groupId,
       });
 
       if (requestsArr.requests.length === 0) {
-        if ((getDoneRequestsByOGIdReq.from === 1)&&(!doesCreateBeenInLego.isItCreateInLego)) {
+        if ((getDoneRequestsByOGIdReq.from === 1)&&(!createdInLego.isItCreateInLego)) {
           eventArr.totalCount += 1;
           const temporaryEvent: Event = { message: '', date: new Date().getTime() };
           const tempOG : OrganizationGroup = await KartoffelService.GetOGById({id: getDoneRequestsByOGIdReq.groupId,});
@@ -267,7 +268,7 @@ export class HistoryRepository {
       // getDoneRequestsByRoleIdReq.from === 1 &&
       //   firstRequestType !== RequestType.CREATE_ROLE
       if (
-        !doesCreateBeenInLego.isItCreateInLego
+        !createdInLego.isItCreateInLego
       ) {
         eventArr.totalCount += 1;
         //יכול לקרות מצב שיש פחות בקשות ממה שהפגיניישן רוצה ואז יקרה מצב שזה יפתח את האיבנטים בשני דפים שונים (צריך לבדוק מה עושים במצב כזה) זה קורה שיש מעט מאוד בקשותת
@@ -325,13 +326,13 @@ export class HistoryRepository {
   ): Promise<EventArray> {
     try {
       //צריך לעשות בקשה שמזחריה אם הבקשה ראשונה הייתה בקשה מסוג יצירת תפקיד (כלומר אם זה קרה בלגו או לא) אם לא נוסיף אחד
-      const doesCreateBeenInLego : BoolCheck = await this.requestService.wasCreateBeenInLego({
+      const createdInLego : BoolCheck = await this.requestService.wasCreateBeenInLego({
         idCheck:getDoneRequestsByEntityIdReq.entityId,
       });
       let fromVal = getDoneRequestsByEntityIdReq.from;
       let toVal = getDoneRequestsByEntityIdReq.to;
       
-      if(!doesCreateBeenInLego.isItCreateInLego) {
+      if(!createdInLego.isItCreateInLego) {
         const tempVar = getDoneRequestsByEntityIdReq.from;
         fromVal = (tempVar !== 1 ? tempVar-1 : tempVar);
         const tempVar2 = getDoneRequestsByEntityIdReq.to;
@@ -348,19 +349,19 @@ export class HistoryRepository {
       //נוסיף תנאי של 1-1
       // let requestsArr: RequestArray = {requests:[],totalCount:0};
       // כל עוד אנחנו במצב שזה גם לא נוצר בלגו וגם שפרום והטו 1 אז תאפס את הפונקציה 
-      if (((!doesCreateBeenInLego.isItCreateInLego) && (getDoneRequestsByEntityIdReq.to === 1) && (getDoneRequestsByEntityIdReq.from === 1))) {
+      if (((!createdInLego.isItCreateInLego) && (getDoneRequestsByEntityIdReq.to === 1) && (getDoneRequestsByEntityIdReq.from === 1))) {
         requestsArr.requests = [];
       }
 
       const eventArr: EventArray = {
         events: [],
         totalCount: requestsArr.totalCount,
-        till: doesCreateBeenInLego.isItCreateInLego?getDoneRequestsByEntityIdReq.to:getDoneRequestsByEntityIdReq.to - 1,
+        till: createdInLego.isItCreateInLego?getDoneRequestsByEntityIdReq.to:getDoneRequestsByEntityIdReq.to - 1,
 
       };
 
       if (requestsArr?.totalCount === 0) {
-        if ((getDoneRequestsByEntityIdReq.from === 1)&&(!doesCreateBeenInLego.isItCreateInLego)) {
+        if ((getDoneRequestsByEntityIdReq.from === 1)&&(!createdInLego.isItCreateInLego)) {
           eventArr.totalCount += 1;
           eventArr.till = 1;
           const temporaryEvent: Event = { message: '', date: new Date().getTime() };
@@ -377,7 +378,7 @@ export class HistoryRepository {
       }
 
       if (
-        !doesCreateBeenInLego.isItCreateInLego
+        !createdInLego.isItCreateInLego
       ) {
         eventArr.totalCount += 1; //////////////////////////////////////////////////////////////from =1
         //יכול לקרות מצב שיש פחות בקשות ממה שהפגיניישן רוצה ואז יקרה מצב שזה יפתח את האיבנטים בשני דפים שונים (צריך לבדוק מה עושים במצב כזה) זה קורה שיש מעט מאוד בקשותת
@@ -422,7 +423,7 @@ export class HistoryRepository {
         eventArr.events.push(tempEvent);
       }
       // eventArr.events.reverse();
-      if (!doesCreateBeenInLego.isItCreateInLego) {
+      if (!createdInLego.isItCreateInLego) {
         eventArr.till+=1;
       }
       return eventArr as EventArray;
@@ -448,12 +449,12 @@ export class HistoryRepository {
         till: getDoneRequestsByEntityIdReq.to,
       };
       //צריך לעשות בקשה שמזחריה אם הבקשה ראשונה הייתה בקשה מסוג יצירת תפקיד (כלומר אם זה קרה בלגו או לא) אם לא נוסיף אחד
-      const doesCreateBeenInLego : BoolCheck = await this.requestService.wasCreateBeenInLego({
+      const createdInLego : BoolCheck = await this.requestService.wasCreateBeenInLego({
         idCheck:getDoneRequestsByEntityIdReq.entityId,
       });
 
       if (requestsArr.requests.length === 0) {
-        if ((getDoneRequestsByEntityIdReq.from === 1)&&(!doesCreateBeenInLego.isItCreateInLego)) {
+        if ((getDoneRequestsByEntityIdReq.from === 1)&&(!createdInLego.isItCreateInLego)) {
           eventArr.totalCount += 1;
           const temporaryEvent: Event = { message: '', date: new Date().getTime() };
           const tempEntity : Entity = await KartoffelService.getEntityById({id: getDoneRequestsByEntityIdReq.entityId,});
@@ -472,7 +473,7 @@ export class HistoryRepository {
       // getDoneRequestsByRoleIdReq.from === 1 &&
       //   firstRequestType !== RequestType.CREATE_ROLE
       if (
-        !doesCreateBeenInLego.isItCreateInLego
+        !createdInLego.isItCreateInLego
       ) {
         eventArr.totalCount += 1;
         //יכול לקרות מצב שיש פחות בקשות ממה שהפגיניישן רוצה ואז יקרה מצב שזה יפתח את האיבנטים בשני דפים שונים (צריך לבדוק מה עושים במצב כזה) זה קורה שיש מעט מאוד בקשותת
@@ -530,13 +531,13 @@ export class HistoryRepository {
   ): Promise<EventArray> {
     try {
       //צריך לעשות בקשה שמזחריה אם הבקשה ראשונה הייתה בקשה מסוג יצירת תפקיד (כלומר אם זה קרה בלגו או לא) אם לא נוסיף אחד
-      // const doesCreateBeenInLego : BoolCheck = await this.requestService.wasCreateBeenInLego({
+      // const createdInLego : BoolCheck = await this.requestService.wasCreateBeenInLego({
       //   idCheck:getDoneRequestsByEntityIdReq.entityId,
       // });
       let fromVal = getDoneRequestsByEntityIdReq.from;
       let toVal = getDoneRequestsByEntityIdReq.to;
       
-      // if(!doesCreateBeenInLego.isItCreateInLego) {
+      // if(!createdInLego.isItCreateInLego) {
       //   const tempVar = getDoneRequestsByEntityIdReq.from;
       //   fromVal = (tempVar !== 1 ? tempVar-1 : tempVar);
       //   const tempVar2 = getDoneRequestsByEntityIdReq.to;
@@ -553,7 +554,7 @@ export class HistoryRepository {
       //נוסיף תנאי של 1-1
       // let requestsArr: RequestArray = {requests:[],totalCount:0};
       // כל עוד אנחנו במצב שזה גם לא נוצר בלגו וגם שפרום והטו 1 אז תאפס את הפונקציה 
-      // if (((!doesCreateBeenInLego.isItCreateInLego) && (getDoneRequestsByEntityIdReq.to === 1) && (getDoneRequestsByEntityIdReq.from === 1))) {
+      // if (((!createdInLego.isItCreateInLego) && (getDoneRequestsByEntityIdReq.to === 1) && (getDoneRequestsByEntityIdReq.from === 1))) {
       //   requestsArr.requests = [];
       // }
 
@@ -565,7 +566,7 @@ export class HistoryRepository {
       };
 
       if (requestsArr?.totalCount === 0) {
-        // if ((getDoneRequestsByEntityIdReq.from === 1)&&(!doesCreateBeenInLego.isItCreateInLego)) {
+        // if ((getDoneRequestsByEntityIdReq.from === 1)&&(!createdInLego.isItCreateInLego)) {
         //   eventArr.totalCount += 1;
         //   eventArr.till = 1;
         //   const temporaryEvent: Event = { message: '', date: new Date().getTime() };
@@ -582,7 +583,7 @@ export class HistoryRepository {
       }
 
       // if (
-      //   !doesCreateBeenInLego.isItCreateInLego
+      //   !createdInLego.isItCreateInLego
       // ) {
       //   eventArr.totalCount += 1; //////////////////////////////////////////////////////////////from =1
       //   //יכול לקרות מצב שיש פחות בקשות ממה שהפגיניישן רוצה ואז יקרה מצב שזה יפתח את האיבנטים בשני דפים שונים (צריך לבדוק מה עושים במצב כזה) זה קורה שיש מעט מאוד בקשותת
@@ -629,7 +630,7 @@ export class HistoryRepository {
         eventArr.events.push(tempEvent);
       }
       // eventArr.events.reverse();
-      // if (!doesCreateBeenInLego.isItCreateInLego) {
+      // if (!createdInLego.isItCreateInLego) {
       //   eventArr.till+=1;
       // }
       return eventArr as EventArray;
@@ -655,12 +656,12 @@ export class HistoryRepository {
         till: getDoneRequestsByEntityIdReq.to,
       };
       //צריך לעשות בקשה שמזחריה אם הבקשה ראשונה הייתה בקשה מסוג יצירת תפקיד (כלומר אם זה קרה בלגו או לא) אם לא נוסיף אחד
-      // const doesCreateBeenInLego = this.requestService.wasCreateBeenInLego({
+      // const createdInLego = this.requestService.wasCreateBeenInLego({
       //   idCheck:getDoneRequestsByEntityIdReq.entityId,
       // });
 
       if (requestsArr.requests.length === 0) {
-        // if ((getDoneRequestsByEntityIdReq.from === 1)&&(!doesCreateBeenInLego.isItCreateInLego)) {
+        // if ((getDoneRequestsByEntityIdReq.from === 1)&&(!createdInLego.isItCreateInLego)) {
         //   eventArr.totalCount += 1;
         //   const temporaryEvent: Event = { message: '', date: new Date().getTime() };
         //   const tempEntity : Entity = this.requestService.getEntityByEntityId;
@@ -680,7 +681,7 @@ export class HistoryRepository {
       //   firstRequestType !== RequestType.CREATE_ROLE
 
       /*if (
-        !doesCreateBeenInLego.isItCreateInLego
+        !createdInLego.isItCreateInLego
       ) {
         eventArr.totalCount += 1;
         //יכול לקרות מצב שיש פחות בקשות ממה שהפגיניישן רוצה ואז יקרה מצב שזה יפתח את האיבנטים בשני דפים שונים (צריך לבדוק מה עושים במצב כזה) זה קורה שיש מעט מאוד בקשותת
