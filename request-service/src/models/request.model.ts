@@ -377,6 +377,11 @@ const RequestSchema = new Schema(
       entityId: { type: String, default: null },
       newEntityType: { type: String, default: null },
       identifier: { type: String, default: null },
+      oldFirstName: { type: String, default: null },
+      oldLastName: { type: String, default: null },
+      oldIdentityCard: { type: String, default: null },
+      oldMobilePhone: { type: String, default: null },
+      oldRank: { type: String, default: null },
     },
     adParams: {
       ouDisplayName: { type: String, default: null },

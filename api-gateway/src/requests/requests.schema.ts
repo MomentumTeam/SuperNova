@@ -323,7 +323,7 @@ const ConvertEntityTypeADParamsObj = Joi.object({
   fullName: Joi.string().required(),
   rank: Joi.string(),
   roleSerialCode: Joi.string().required(),
-})
+});
 
 export const convertEntityTypeSchema = Joi.object({
   body: {
@@ -344,7 +344,7 @@ export const convertEntityTypeSchema = Joi.object({
   },
   params: {},
   query: {},
-})
+});
 
 const createOGKartoffelParamsObj = Joi.object({
   name: Joi.string().required(),
@@ -528,7 +528,7 @@ export const renameRoleSchema = Joi.object({
 const editEntityKartoffelParamsObj = Joi.object({
   id: Joi.string().required(),
   firstName: Joi.string().required(),
-  lastName: Joi.string().required(),
+  lastName: Joi.string(),
   identityCard: Joi.string().allow('', null),
   personalNumber: Joi.string().allow('', null),
   serviceType: Joi.string(),
@@ -539,12 +539,17 @@ const editEntityKartoffelParamsObj = Joi.object({
   sex: Joi.string(),
   birthdate: Joi.number().unsafe(),
   entityType: Joi.string(),
+  oldFirstName: Joi.string(),
+  oldLastName: Joi.string(),
+  oldIdentityCard: Joi.string().allow('', null),
+  oldMobilePhone: Joi.array().items(Joi.string().allow('')),
+  oldRank: Joi.string(),
 });
 
 const editEntityADParamsObj = Joi.object({
   samAccountName: Joi.string().allow('', null),
   firstName: Joi.string().required(),
-  lastName: Joi.string().required(),
+  lastName: Joi.string(),
   fullName: Joi.string().required(),
 });
 
@@ -647,7 +652,7 @@ export const deleteRoleSchema = Joi.object({
 
 const deleteOGKartoffelParamsObj = Joi.object({
   id: Joi.string().required(),
-  name: Joi.string()
+  name: Joi.string(),
 });
 
 const deleteOGADParamsObj = Joi.object({

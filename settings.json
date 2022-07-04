@@ -1,0 +1,10 @@
+{
+    "emeraldwalk.runonsave": {
+        "commands": [
+            {
+                "match": "\\.proto$",
+                "cmd": "clang-format -i ${file}"
+            }
+        ]
+    }
+}

@@ -1,72 +1,69 @@
 syntax = "proto3";
-import "requestService.proto"; 
+import "requestService.proto";
 
 package BulkService;
 
 service BulkService {
-    rpc CreateRoleBulkRequest(RequestService.CreateRoleBulkReq) returns (RequestService.CreateRoleBulkRes){}
-    rpc ChangeRoleHierarchyBulkRequest(RequestService.ChangeRoleHierarchyBulkReq) returns (RequestService.ChangeRoleHierarchyBulkRes){}
+  rpc CreateRoleBulkRequest(RequestService.CreateRoleBulkReq)
+      returns (RequestService.CreateRoleBulkRes) {}
+  rpc ChangeRoleHierarchyBulkRequest(RequestService.ChangeRoleHierarchyBulkReq)
+      returns (RequestService.ChangeRoleHierarchyBulkRes) {}
 
-    rpc GetBulkRequestExample(GetBulkRequestExampleReq) returns (GetBulkRequestExampleRes){}
-    rpc GetCreateRoleBulkRequestById(GetBulkRequestByIdReq) returns (DetailedCreateRoleBulkRequest){}
-    rpc GetChangeRoleHierarchyBulkRequestById(GetBulkRequestByIdReq) returns (DetailedChangeRoleHierarchyBulkRequest){}
+  rpc GetBulkRequestExample(GetBulkRequestExampleReq)
+      returns (GetBulkRequestExampleRes) {}
+  rpc GetCreateRoleBulkRequestById(GetBulkRequestByIdReq)
+      returns (DetailedCreateRoleBulkRequest) {}
+  rpc GetChangeRoleHierarchyBulkRequestById(GetBulkRequestByIdReq)
+      returns (DetailedChangeRoleHierarchyBulkRequest) {}
 
-    rpc IsBulkFileValid(IsBulkFileValidReq) returns (IsBulkFileValidRes){}
+  rpc IsBulkFileValid(IsBulkFileValidReq) returns (IsBulkFileValidRes) {}
 }
 
-message IsBulkFileValidReq{
-    string fileName = 1;
-    BulkType type = 2;
+message IsBulkFileValidReq {
+  string fileName = 1;
+  BulkType type = 2;
 }
 
-message IsBulkFileValidRes{
-    bool isFileValid = 1;
-    // repeated int32 errorRows = 2;
-
+message IsBulkFileValidRes {
+  bool isFileValid = 1;
+  // repeated int32 errorRows = 2;
 }
 
-message GetBulkRequestExampleReq {
-    BulkType bulkType = 1;
+message GetBulkRequestExampleReq { BulkType bulkType = 1; }
+
+enum BulkType {
+  CREATE_ROLE_REQUEST = 0;
+  CHANGE_ROLE_HIERARCHY_REQUEST = 1;
 }
 
-enum BulkType{
-    CREATE_ROLE_REQUEST = 0;
-    CHANGE_ROLE_HIERARCHY_REQUEST = 1;
+message GetBulkRequestExampleRes { string bulkFileName = 1; }
+
+message GetBulkRequestByIdReq { string id = 1; }
+
+message DetailedCreateRoleBulkRequest {
+  RequestService.Request request = 1;
+  repeated CreateRoleRow rows = 2;
 }
 
-message GetBulkRequestExampleRes {
-    string bulkFileName = 1;
+message DetailedChangeRoleHierarchyBulkRequest {
+  RequestService.Request request = 1;
+  repeated ChangeRoleHierarchyRow rows = 2;
 }
 
-message GetBulkRequestByIdReq{
-    string id = 1;
+message CreateRoleRow {
+  string id = 1;
+  string jobTitle = 2;
+  string clearance = 3;
+  string roleEntityType = 4;
+  string rowNumber = 5;
+  optional RequestService.RequestStatus status = 6;
 }
 
-message DetailedCreateRoleBulkRequest{
-    RequestService.Request request = 1;
-    repeated CreateRoleRow rows = 2;
-}
-
-message DetailedChangeRoleHierarchyBulkRequest{
-    RequestService.Request request = 1;
-    repeated ChangeRoleHierarchyRow rows = 2;
-}
-
-message CreateRoleRow{
-    string id = 1;
-    string jobTitle = 2;
-    string clearance = 3;
-    string roleEntityType = 4;
-    string rowNumber = 5;
-    optional RequestService.RequestStatus status = 6;
-
-}
-
-message ChangeRoleHierarchyRow{
-    string id = 1;
-    string roleId = 2;
-    string currentJobTitle = 3;
-    string newJobTitle = 4;
-    string rowNumber = 5;
-    optional RequestService.RequestStatus status = 6;
+message ChangeRoleHierarchyRow {
+  string id = 1;
+  string roleId = 2;
+  string currentJobTitle = 3;
+  string newJobTitle = 4;
+  string rowNumber = 5;
+  optional RequestService.RequestStatus status = 6;
 }

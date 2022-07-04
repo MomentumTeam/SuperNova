@@ -4,570 +4,522 @@ package Kartoffel;
 
 service Kartoffel {
 
-    //Entities
-    rpc CreateEntity(CreateEntityRequest) returns (IdMessage){}
-    rpc GetEntityByDI(GetEntityByDIRequest) returns (Entity){}
-    rpc GetEntityByRoleId(GetEntityByRoleIdRequest) returns (Entity){}
-    rpc GetEntitiesUnderOG(GetEntitiesUnderOGRequest) returns (EntityArray){}
-    rpc GetEntitiesByHierarchy(GetEntitiesByHierarchyRequest) returns (EntityArray){}
-    rpc GetEntityByIdentifier(GetEntityByIdentifierRequest) returns (Entity){}
-    rpc SearchEntitiesByFullName(SearchEntitiesByFullNameRequest) returns (EntityArray){}
-    rpc GetEntityById(GetEntityByIdRequest) returns (Entity){}
-    rpc GetPictureByEntityIdentifier(GetPictureByEntityIdentifierRequest) returns (Image){}
-    rpc DeleteEntity(DeleteEntityRequest) returns (SuccessMessage){}
-    rpc UpdateEntity(UpdateEntityRequest) returns (Entity){}
-    rpc ConnectEntityAndDI(ConnectEntityAndDIRequest) returns (SuccessMessage){}
-    rpc DisconnectDIFromEntity(DisconnectDIFromEntityRequest) returns (SuccessMessage){}
-    rpc SearchCommandersByFullName(SearchCommandersByFullNameRequest) returns (EntityArray){}
-    rpc SearchHighCommandersByFullName(SearchCommandersByFullNameRequest) returns (EntityArray){}
+  // Entities
+  rpc CreateEntity(CreateEntityRequest) returns (IdMessage) {}
+  rpc GetEntityByDI(GetEntityByDIRequest) returns (Entity) {}
+  rpc GetEntityByRoleId(GetEntityByRoleIdRequest) returns (Entity) {}
+  rpc GetEntitiesUnderOG(GetEntitiesUnderOGRequest) returns (EntityArray) {}
+  rpc GetEntitiesByHierarchy(GetEntitiesByHierarchyRequest)
+      returns (EntityArray) {}
+  rpc GetEntityByIdentifier(GetEntityByIdentifierRequest) returns (Entity) {}
+  rpc SearchEntitiesByFullName(SearchEntitiesByFullNameRequest)
+      returns (EntityArray) {}
+  rpc GetEntityById(GetEntityByIdRequest) returns (Entity) {}
+  rpc GetPictureByEntityIdentifier(GetPictureByEntityIdentifierRequest)
+      returns (Image) {}
+  rpc DeleteEntity(DeleteEntityRequest) returns (SuccessMessage) {}
+  rpc UpdateEntity(UpdateEntityRequest) returns (Entity) {}
+  rpc ConnectEntityAndDI(ConnectEntityAndDIRequest) returns (SuccessMessage) {}
+  rpc DisconnectDIFromEntity(DisconnectDIFromEntityRequest)
+      returns (SuccessMessage) {}
+  rpc SearchCommandersByFullName(SearchCommandersByFullNameRequest)
+      returns (EntityArray) {}
+  rpc SearchHighCommandersByFullName(SearchCommandersByFullNameRequest)
+      returns (EntityArray) {}
 
-    //Groups
-    rpc CreateOG(CreateOGRequest) returns (IdMessage){}        
-    rpc GetAllOGs(GetAllOGsRequest) returns (OGArray){}        
-    rpc GetOGByHierarchyName(GetOGByHierarchyNameRequest) returns (OrganizationGroup){}   
-    rpc SearchOG(SearchOGRequest) returns (OGArray) {}          
-    rpc GetChildrenOfOG(GetChildrenOfOGRequest) returns (OGArray){}
-    rpc GetChildrenOfRootOG(GetChildrenOfRootOGRequest) returns (OGArray){}
-    rpc GetOGById(GetOGByIdRequest) returns (OrganizationGroup){}   
-    rpc GetOGTree(GetOGTreeRequest) returns (OGTree){}
-    rpc DeleteOG(DeleteOGRequest) returns (SuccessMessage){}            
-    rpc UpdateOGParent(UpdateOGParentRequest) returns (SuccessMessage){}
-    rpc RenameOG(RenameOGRequest) returns (SuccessMessage){}
-    rpc GetPrefixByOGId(GetPrefixByOGIdRequest) returns (OGPrefix){}
-    rpc IsOGNameAlreadyTaken(IsOGNameAlreadyTakenReq) returns (IsOGNameAlreadyTakenRes){}
-    rpc ExportHierarchyData(ExportHierarchyDataReq) returns (ExportHierarchyDataRes){}
+  // Groups
+  rpc CreateOG(CreateOGRequest) returns (IdMessage) {}
+  rpc GetAllOGs(GetAllOGsRequest) returns (OGArray) {}
+  rpc GetOGByHierarchyName(GetOGByHierarchyNameRequest)
+      returns (OrganizationGroup) {}
+  rpc SearchOG(SearchOGRequest) returns (OGArray) {}
+  rpc GetChildrenOfOG(GetChildrenOfOGRequest) returns (OGArray) {}
+  rpc GetChildrenOfRootOG(GetChildrenOfRootOGRequest) returns (OGArray) {}
+  rpc GetOGById(GetOGByIdRequest) returns (OrganizationGroup) {}
+  rpc GetOGTree(GetOGTreeRequest) returns (OGTree) {}
+  rpc DeleteOG(DeleteOGRequest) returns (SuccessMessage) {}
+  rpc UpdateOGParent(UpdateOGParentRequest) returns (SuccessMessage) {}
+  rpc RenameOG(RenameOGRequest) returns (SuccessMessage) {}
+  rpc GetPrefixByOGId(GetPrefixByOGIdRequest) returns (OGPrefix) {}
+  rpc IsOGNameAlreadyTaken(IsOGNameAlreadyTakenReq)
+      returns (IsOGNameAlreadyTakenRes) {}
+  rpc ExportHierarchyData(ExportHierarchyDataReq)
+      returns (ExportHierarchyDataRes) {}
 
-    //DI    
-    rpc CreateDI(CreateDIRequest) returns (UniqueIdMessage){}
-    rpc GetAllDIs(GetAllDIsRequest) returns (DigitalIdentities){}
-    rpc GetDIByRoleId(GetDIByRoleIdRequest) returns (DigitalIdentity){}
-    rpc SearchDIByUniqueId(SearchDIByUniqueIdRequest) returns (DigitalIdentities){}
-    rpc GetDIByUniqueId(GetDIByUniqueIdRequest) returns (DigitalIdentity){} 
-    rpc DeleteDI(DeleteDIRequest) returns (SuccessMessage){}  
-    rpc UpdateDI(UpdateDIRequest) returns (SuccessMessage){} 
+  // DI
+  rpc CreateDI(CreateDIRequest) returns (UniqueIdMessage) {}
+  rpc GetAllDIs(GetAllDIsRequest) returns (DigitalIdentities) {}
+  rpc GetDIByRoleId(GetDIByRoleIdRequest) returns (DigitalIdentity) {}
+  rpc SearchDIByUniqueId(SearchDIByUniqueIdRequest)
+      returns (DigitalIdentities) {}
+  rpc GetDIByUniqueId(GetDIByUniqueIdRequest) returns (DigitalIdentity) {}
+  rpc DeleteDI(DeleteDIRequest) returns (SuccessMessage) {}
+  rpc UpdateDI(UpdateDIRequest) returns (SuccessMessage) {}
 
-    // Roles
-    rpc CreateRole(CreateRoleRequest) returns (RoleIdMessage){}
-    rpc GetAllRoles(GetAllRolesRequest) returns (RoleArray){}
-    rpc GetRoleByRoleId(GetRoleByRoleIdRequest) returns (Role){}
-    rpc GetRolesUnderOG(GetRolesUnderOGRequest) returns (RoleArray){}
-    rpc ConnectRoleAndDI(ConnectRoleAndDIRequest) returns (SuccessMessage){}
-    rpc DisconnectRoleAndDI(DisconnectRoleAndDIRequest) returns (SuccessMessage){}
-    rpc DeleteRole(DeleteRoleRequest) returns (SuccessMessage){} 
-    rpc RenameRole(RenameRoleRequest) returns (SuccessMessage){}
-    rpc ChangeRoleOG(ChangeRoleOGRequest) returns (SuccessMessage){}
-    rpc IsRoleAlreadyTaken(IsRoleAlreadyTakenReq) returns (IsRoleAlreadyTakenRes){}
-    rpc IsJobTitleAlreadyTaken(IsJobTitleAlreadyTakenReq) returns (IsJobTitleAlreadyTakenRes){}
-    rpc GetRolesByHierarchy(GetRolesByHierarchyRequest) returns (RoleArray){}
-    rpc GetRoleIdSuffixByOG(GetRoleIdSuffixByOGReq) returns (RoleIdSuffix){}
-    rpc SearchRoleByRoleId(SearchRoleByRoleIdReq) returns (RoleArray){}
+  // Roles
+  rpc CreateRole(CreateRoleRequest) returns (RoleIdMessage) {}
+  rpc GetAllRoles(GetAllRolesRequest) returns (RoleArray) {}
+  rpc GetRoleByRoleId(GetRoleByRoleIdRequest) returns (Role) {}
+  rpc GetRolesUnderOG(GetRolesUnderOGRequest) returns (RoleArray) {}
+  rpc ConnectRoleAndDI(ConnectRoleAndDIRequest) returns (SuccessMessage) {}
+  rpc DisconnectRoleAndDI(DisconnectRoleAndDIRequest) returns (SuccessMessage) {
+  }
+  rpc DeleteRole(DeleteRoleRequest) returns (SuccessMessage) {}
+  rpc RenameRole(RenameRoleRequest) returns (SuccessMessage) {}
+  rpc ChangeRoleOG(ChangeRoleOGRequest) returns (SuccessMessage) {}
+  rpc IsRoleAlreadyTaken(IsRoleAlreadyTakenReq)
+      returns (IsRoleAlreadyTakenRes) {}
+  rpc IsJobTitleAlreadyTaken(IsJobTitleAlreadyTakenReq)
+      returns (IsJobTitleAlreadyTakenRes) {}
+  rpc GetRolesByHierarchy(GetRolesByHierarchyRequest) returns (RoleArray) {}
+  rpc GetRoleIdSuffixByOG(GetRoleIdSuffixByOGReq) returns (RoleIdSuffix) {}
+  rpc SearchRoleByRoleId(SearchRoleByRoleIdReq) returns (RoleArray) {}
 
-    // Health
-    rpc GetIsHealthy(GetIsHealthyReq) returns (GetIsHealthyRes){}
+  // Health
+  rpc GetIsHealthy(GetIsHealthyReq) returns (GetIsHealthyRes) {}
 
-    // LDAP
-    rpc SearchSamAccountName(SearchSamAccountNameReq) returns (SearchSamAccountNameRes) {}
+  // LDAP
+  rpc SearchSamAccountName(SearchSamAccountNameReq)
+      returns (SearchSamAccountNameRes) {}
 }
 
-message SearchSamAccountNameReq {
-    string samAccountName = 1;
+message SearchSamAccountNameReq { string samAccountName = 1; }
+
+message SearchSamAccountNameRes { string lastLogonTimestamp = 1; }
+
+message GetRoleIdSuffixByOGReq { string id = 1; }
+message RoleIdSuffix { string suffix = 1; }
+
+message IdMessage { string id = 1; }
+
+message IsRoleAlreadyTakenReq { string roleId = 1; }
+
+message IsRoleAlreadyTakenRes { bool isRoleAlreadyTaken = 1; }
+
+message IsOGNameAlreadyTakenReq {
+  string name = 1;
+  string parent = 2;
 }
 
-message SearchSamAccountNameRes {
-    string lastLogonTimestamp = 1;
+message IsOGNameAlreadyTakenRes { bool isOGNameAlreadyTaken = 1; }
+
+message ExportHierarchyDataReq {
+  string hierarchy = 1;
+  bool withRoles = 2;
+  optional bool direct = 3;
 }
 
-message GetRoleIdSuffixByOGReq{
-    string id = 1;
-}
-message RoleIdSuffix{
-    string suffix = 1;
+message ExportHierarchyDataRes {
+  repeated HierarchyData hierarchyData = 1;
+  string fatherHierarchyName = 2;
 }
 
-message IdMessage{
-    string id = 1;
+message HierarchyData {
+  string hierarchyName = 1;
+  string jobTitle = 2;
+  string roleId = 3;
+  string upn = 4;
+  string entity = 5;
 }
 
-message IsRoleAlreadyTakenReq{
-    string roleId = 1;
+message IsJobTitleAlreadyTakenReq {
+  string jobTitle = 1;
+  string directGroup = 2;
 }
 
-message IsRoleAlreadyTakenRes{
-    bool isRoleAlreadyTaken = 1;
+message IsJobTitleAlreadyTakenRes {
+  bool isJobTitleAlreadyTaken = 1;
+  repeated string suggestions = 2;
 }
 
-message IsOGNameAlreadyTakenReq{
-    string name = 1;
-    string parent = 2;
+message SearchCommandersByFullNameRequest {
+  string fullName = 1;
+  optional string source = 2;
 }
 
-message IsOGNameAlreadyTakenRes{
-    bool isOGNameAlreadyTaken = 1;
+message GetAllOGsRequest {
+  optional string source = 1;
+  optional string akaUnit = 2;
+  optional string updatedFrom = 3;
+  int32 page = 4;
+  int32 pageSize = 5;
 }
 
-message ExportHierarchyDataReq{
-    string hierarchy = 1;
-    bool withRoles = 2;
-    optional bool direct = 3;
+message UpdateDIRequest {
+  string id = 1;
+  optional bool isRoleAttachable = 2;
+  optional string mail = 3;
 }
 
-message ExportHierarchyDataRes{
-    repeated HierarchyData hierarchyData=1;
-    string fatherHierarchyName = 2;
-}
+message GetDIByUniqueIdRequest { string uniqueId = 1; }
 
-message HierarchyData{
-    string hierarchyName=1;
-    string jobTitle=2;
-    string roleId=3; 
-    string upn=4; 
-    string entity=5; 
-}
-
-message IsJobTitleAlreadyTakenReq{
-    string jobTitle = 1;
-    string directGroup = 2;
-}
-
-message IsJobTitleAlreadyTakenRes{
-    bool isJobTitleAlreadyTaken = 1;
-    repeated string suggestions = 2;
-}
-
-message SearchCommandersByFullNameRequest{
-    string fullName = 1;
-    optional string source = 2;
-}
-
-message GetAllOGsRequest{
-    optional string source = 1;
-    optional string akaUnit = 2;
-    optional string updatedFrom = 3;
-    int32 page = 4;
-    int32 pageSize = 5;
-}
-
-message UpdateDIRequest{
-    string id = 1;
-    optional bool isRoleAttachable = 2;
-    optional string mail = 3;
-}
-
-message GetDIByUniqueIdRequest{
-    string uniqueId = 1;
-}
-
-message SearchDIByUniqueIdRequest{
-    string uniqueId = 1;
-}
+message SearchDIByUniqueIdRequest { string uniqueId = 1; }
 
 message SearchRoleByRoleIdReq {
-    string roleId = 1;
-    optional string hierarchy = 2;
+  string roleId = 1;
+  optional string hierarchy = 2;
 }
 
-message GetDIByRoleIdRequest{
-    string roleId = 1;
+message GetDIByRoleIdRequest { string roleId = 1; }
+
+message DigitalIdentities { repeated DigitalIdentity digitalIdentities = 1; }
+
+message GetAllDIsRequest {
+  optional string updatedFrom = 1;
+  int32 page = 2;
+  int32 pageSize = 3;
+  optional bool expanded = 4;
 }
 
-message DigitalIdentities{
-    repeated DigitalIdentity digitalIdentities = 1;
+message UpdateOGParentRequest {
+  string id = 1;
+  string parentId = 2;
 }
 
-message GetAllDIsRequest{
-    optional string updatedFrom = 1;
-    int32 page = 2;
-    int32 pageSize = 3;
-    optional bool expanded = 4;
+message GetOGByIdRequest { string id = 1; }
+
+message GetOGByHierarchyNameRequest {
+  string hierarchy = 1;
+  bool withRoles = 2;
+  optional bool direct = 3;
 }
 
-message UpdateOGParentRequest{
-    string id = 1;
-    string parentId =2;
+message DeleteEntityRequest { string id = 1; }
+
+message GetEntityByIdentifierRequest { string identifier = 1; }
+
+message GetEntitiesByHierarchyRequest {
+  string hierarchy = 1;
+  bool direct = 2;
+  int32 page = 3;
+  int32 pageSize = 4;
 }
 
-message GetOGByIdRequest{
-    string id = 1;
+message GetEntityByDIRequest { string uniqueId = 1; }
+
+message UpdateEntityRequest {
+  string id = 1;
+  UpdateEntityProperties properties = 2;
 }
 
-message GetOGByHierarchyNameRequest{
-    string hierarchy = 1;
-    bool withRoles = 2;
-    optional bool direct = 3;
-
+message UpdateEntityProperties {
+  optional string firstName = 1;
+  optional string lastName = 2;
+  optional string identityCard = 3;
+  optional string personalNumber = 4;
+  optional string serviceType = 5;
+  repeated string phone = 6;
+  repeated string mobilePhone = 7;
+  optional string address = 8;
+  optional string clearance = 9;
+  optional string sex = 10;
+  optional string birthDate = 11;
+  optional string entityType = 12;
+  optional string akaUnit = 13;
+  optional string dischargeDay = 14;
+  optional string rank = 15;
 }
 
-message DeleteEntityRequest{
-    string id = 1;
+message RenameOGRequest {
+  string id = 1;
+  string name = 2;
 }
 
-message GetEntityByIdentifierRequest{
-    string identifier = 1;
-}
-
-message GetEntitiesByHierarchyRequest{
-    string hierarchy = 1;
-    bool direct = 2;
-    int32 page = 3;
-    int32 pageSize = 4;
-}
-
-message GetEntityByDIRequest{
-    string uniqueId = 1;
-}
-
-
-message UpdateEntityRequest{
-    string id = 1;
-    UpdateEntityProperties properties = 2;
-}
-
-message UpdateEntityProperties{
-    optional string firstName = 1;
-    optional string lastName = 2;
-    optional string identityCard = 3;
-    optional string personalNumber = 4;
-    optional string serviceType = 5;
-    repeated string phone = 6;
-    repeated string mobilePhone = 7;
-    optional string address = 8;
-    optional string clearance = 9;
-    optional string sex = 10;
-    optional string birthDate = 11;
-    optional string entityType = 12;
-    optional string akaUnit = 13;
-    optional string dischargeDay = 14;
-    optional string rank = 15;
-}
-
-message RenameOGRequest{
-    string id = 1;
-    string name = 2;
-}
-
-message GetPictureByEntityIdentifierRequest{
-    string identifier = 1;
-}
-message Image {
-    string image = 1;
-}
+message GetPictureByEntityIdentifierRequest { string identifier = 1; }
+message Image { string image = 1; }
 
 // SearchEntitiesByFullName
-message SearchEntitiesByFullNameRequest{
-    string fullName = 1;
-    optional string rank = 2;
-    optional string entityType = 3;
-    optional string underGroupId = 4;
-    optional string status = 5;
-    optional string source = 6;
+message SearchEntitiesByFullNameRequest {
+  string fullName = 1;
+  optional string rank = 2;
+  optional string entityType = 3;
+  optional string underGroupId = 4;
+  optional string status = 5;
+  optional string source = 6;
 }
 
-message GetOGTreeRequest{
-    string directGroupId = 1;
-}
+message GetOGTreeRequest { string directGroupId = 1; }
 
-message OGTree{
-    string id = 1;
-    string label = 2;
-    repeated OGTree children = 3;
+message OGTree {
+  string id = 1;
+  string label = 2;
+  repeated OGTree children = 3;
 }
 
 // SearchOG
-message SearchOGRequest{
-    string nameAndHierarchy = 1;
-    optional string underGroupId = 2;
-    optional string source = 3;
-    bool withRoles = 4;
+message SearchOGRequest {
+  string nameAndHierarchy = 1;
+  optional string underGroupId = 2;
+  optional string source = 3;
+  bool withRoles = 4;
 }
 
-message OGArray{
-    repeated OrganizationGroup groups = 1;
-}
+message OGArray { repeated OrganizationGroup groups = 1; }
 
-message GetPrefixByOGIdRequest{
-    string id = 1;
-}
+message GetPrefixByOGIdRequest { string id = 1; }
 
 message OGPrefix {
-    string prefix = 1;
-    string source = 2;
+  string prefix = 1;
+  string source = 2;
 }
 
 // CreateOG
-message CreateOGRequest{
-    string name = 1;
-    string directGroup = 2;
-    string source = 3;
-    optional string diPrefix = 4;
+message CreateOGRequest {
+  string name = 1;
+  string directGroup = 2;
+  string source = 3;
+  optional string diPrefix = 4;
 }
 
 // CreateDI
-message CreateDIRequest{
-    bool isRoleAttachable = 1;
-    string mail = 2;
-    string source = 3;
-    string type = 4;
-    string uniqueId = 5;
+message CreateDIRequest {
+  bool isRoleAttachable = 1;
+  string mail = 2;
+  string source = 3;
+  string type = 4;
+  string uniqueId = 5;
 }
 /**  ROLES **/
 
 // GetAllRoles
 message GetAllRolesRequest {
-    optional string updatedFrom = 1;
-    int32 page = 2;
-    int32 pageSize = 3;
+  optional string updatedFrom = 1;
+  int32 page = 2;
+  int32 pageSize = 3;
 }
 
 // CreateRole
-message CreateRoleRequest{
-    string jobTitle = 1;
-    string directGroup = 2;
-    string source = 3;
-    string roleId = 4;
-    optional string clearance = 5;
+message CreateRoleRequest {
+  string jobTitle = 1;
+  string directGroup = 2;
+  string source = 3;
+  string roleId = 4;
+  optional string clearance = 5;
 }
 
 // DeleteRole
-message DeleteRoleRequest{
-    string roleId = 1;
-}
+message DeleteRoleRequest { string roleId = 1; }
 
 // RenameRole
-message RenameRoleRequest{
-    string roleId = 1;
-    string jobTitle = 2;
-    optional string clearance = 3;
+message RenameRoleRequest {
+  string roleId = 1;
+  string jobTitle = 2;
+  optional string clearance = 3;
 }
 
 // ConnectRoleAndDI
-message ConnectRoleAndDIRequest{
-    string roleId = 1; // id of role
-    string uniqueId = 2; //uniqueId of DI
+message ConnectRoleAndDIRequest {
+  string roleId = 1;   // id of role
+  string uniqueId = 2; // uniqueId of DI
 }
 
 // DisconnectRoleAndDI
 message DisconnectRoleAndDIRequest {
-    string roleId = 1; // id of role
-    string uniqueId = 2; //uniqueId of DI
+  string roleId = 1;   // id of role
+  string uniqueId = 2; // uniqueId of DI
 }
 
 // GetRoleByRoleId
-message GetRoleByRoleIdRequest{
-    string roleId = 1;
-}
+message GetRoleByRoleIdRequest { string roleId = 1; }
 
 // GetRolesUnderOG
-message GetRolesUnderOGRequest{
-    string groupId = 1;
-    bool direct = 2;
-    optional int32 page = 3;
-    optional int32 pageSize = 4;
+message GetRolesUnderOGRequest {
+  string groupId = 1;
+  bool direct = 2;
+  optional int32 page = 3;
+  optional int32 pageSize = 4;
 }
 
 // GetRolesByDI
-message GetRoleByDIRequest {
-    string uniqueId = 1;
-}
+message GetRoleByDIRequest { string uniqueId = 1; }
 
 // GetRolesByHierarchy
 message GetRolesByHierarchyRequest {
-    string hierarchy = 1;
-    bool direct = 2;
-    int32 page = 3;
-    int32 pageSize = 4;
+  string hierarchy = 1;
+  bool direct = 2;
+  int32 page = 3;
+  int32 pageSize = 4;
 }
 
 // ChangeRoleOG
 message ChangeRoleOGRequest {
-    string roleId = 1;
-    string groupId = 2;
+  string roleId = 1;
+  string groupId = 2;
 }
 
-message EntityArray{
-    repeated Entity entities = 1;
-}
+message EntityArray { repeated Entity entities = 1; }
 
-message RoleArray{
-    repeated Role roles = 1;
-}
+message RoleArray { repeated Role roles = 1; }
 
 // ConnectEntityAndDI
-message ConnectEntityAndDIRequest{
-    string id = 1; //mongoId of entity
-    string uniqueId = 2; //uniqueId of DI (taken from the role)
-    optional string upn = 3; //upn generated by TS of the entity
+message ConnectEntityAndDIRequest {
+  string id = 1;           // mongoId of entity
+  string uniqueId = 2;     // uniqueId of DI (taken from the role)
+  optional string upn = 3; // upn generated by TS of the entity
 }
 
 // CreateEntity
-message CreateEntityRequest{
-    string firstName = 1;
-    optional string lastName = 2;
-    optional string identityCard = 3;
-    optional string personalNumber = 4;
-    optional string serviceType = 5;
-    repeated string phone = 6;
-    repeated string mobilePhone = 7;
-    optional string address = 8;
-    optional string clearance = 9;
-    optional string sex = 10;
-    optional string birthDate = 11;
-    string entityType = 12;
-    optional string akaUnit = 13;
-    optional string dischargeDay = 14;
-    optional string rank = 15;
-    optional string goalUserId = 16;
-    optional string organization = 17;
-    optional string employeeNumber = 18;
+message CreateEntityRequest {
+  string firstName = 1;
+  optional string lastName = 2;
+  optional string identityCard = 3;
+  optional string personalNumber = 4;
+  optional string serviceType = 5;
+  repeated string phone = 6;
+  repeated string mobilePhone = 7;
+  optional string address = 8;
+  optional string clearance = 9;
+  optional string sex = 10;
+  optional string birthDate = 11;
+  string entityType = 12;
+  optional string akaUnit = 13;
+  optional string dischargeDay = 14;
+  optional string rank = 15;
+  optional string goalUserId = 16;
+  optional string organization = 17;
+  optional string employeeNumber = 18;
 }
 
 // GetEntityByRoleId
-message GetEntityByRoleIdRequest{
-    string roleId = 1;
-}
+message GetEntityByRoleIdRequest { string roleId = 1; }
 
 // DisconnectDIFromEntity
-message DisconnectDIFromEntityRequest{
-    string id = 1; //mongoId of entity
-    string uniqueId = 2; //uniqueId of DI (taken from the role)
+message DisconnectDIFromEntityRequest {
+  string id = 1;       // mongoId of entity
+  string uniqueId = 2; // uniqueId of DI (taken from the role)
 }
 
 // GetEntityByMongoId
-message GetEntityByIdRequest{
-    string id = 1; //mongoId of entity
-    optional bool withPicture = 2;
+message GetEntityByIdRequest {
+  string id = 1; // mongoId of entity
+  optional bool withPicture = 2;
 }
 
 // DeleteOG
-message DeleteOGRequest{
-    string id = 1; //mongoId of OG
+message DeleteOGRequest {
+  string id = 1; // mongoId of OG
 }
 
 // GetChildrenOfOG
-message GetChildrenOfOGRequest{
-    string id = 1; //mongoId of OG
-    optional int32 page = 2;
-    optional int32 pageSize = 3;
-    bool direct = 4;
-    bool withRoles = 5;
-    optional bool withParent = 6;
+message GetChildrenOfOGRequest {
+  string id = 1; // mongoId of OG
+  optional int32 page = 2;
+  optional int32 pageSize = 3;
+  bool direct = 4;
+  bool withRoles = 5;
+  optional bool withParent = 6;
 }
 
 // GetChildrenOfRootOG
-message GetChildrenOfRootOGRequest{
-
-}
+message GetChildrenOfRootOGRequest {}
 
 // DeleteDI
-message DeleteDIRequest{
-    string id = 1; //uniqueId of DI (taken from the role)
+message DeleteDIRequest {
+  string id = 1; // uniqueId of DI (taken from the role)
 }
 
 // GetEntitiesUnderOG
-message GetEntitiesUnderOGRequest{
-    string id = 1; //mongoIds of OG
-    bool direct = 2;
-    optional int32 page = 3;
-    optional int32 pageSize = 4;
+message GetEntitiesUnderOGRequest {
+  string id = 1; // mongoIds of OG
+  bool direct = 2;
+  optional int32 page = 3;
+  optional int32 pageSize = 4;
 }
 
-//SuccessMessage
-message SuccessMessage{
-    bool success = 1;
-}
+// SuccessMessage
+message SuccessMessage { bool success = 1; }
 
 // GetIsHealthyReq
-message GetIsHealthyReq{
+message GetIsHealthyReq {}
 
-}
-
-message GetIsHealthyRes {
-    bool isHealthy = 1;
-}
+message GetIsHealthyRes { bool isHealthy = 1; }
 
 // Kartoffel messages
 
-message OrganizationGroup{
-    string id = 1;
-    string name = 2;
-    string source = 3;
-    repeated string ancestors = 4;
-    string hierarchy = 5;
-    string status = 6;
-    bool isLeaf = 7;
-    string createdAt = 8;
-    string updatedAt = 9;
-    repeated Entity directEntities = 10;
-    repeated Role directRoles = 11;
-    optional string diPrefix = 12;
-    string directGroup = 13;
+message OrganizationGroup {
+  string id = 1;
+  string name = 2;
+  string source = 3;
+  repeated string ancestors = 4;
+  string hierarchy = 5;
+  string status = 6;
+  bool isLeaf = 7;
+  string createdAt = 8;
+  string updatedAt = 9;
+  repeated Entity directEntities = 10;
+  repeated Role directRoles = 11;
+  optional string diPrefix = 12;
+  string directGroup = 13;
 }
 
-message Role{
-    string roleId = 1;
-    string jobTitle = 2;
-    string digitalIdentityUniqueId = 3;
-    string directGroup = 4;
-    string hierarchy = 5;
-    repeated string hierarchyIds = 6;
-    string clearance = 7;
-    string source = 8;
-    string createdAt = 9;
-    string updatedAt = 10;
-    string displayName = 11;
+message Role {
+  string roleId = 1;
+  string jobTitle = 2;
+  string digitalIdentityUniqueId = 3;
+  string directGroup = 4;
+  string hierarchy = 5;
+  repeated string hierarchyIds = 6;
+  string clearance = 7;
+  string source = 8;
+  string createdAt = 9;
+  string updatedAt = 10;
+  string displayName = 11;
 }
 
-
-message Entity{
-    string id = 1;
-    string displayName = 2;
-    string directGroup = 3;
-    string hierarchy = 4;
-    string entityType = 5;
-    string identityCard = 6;
-    string personalNumber = 7;
-    string serviceType = 8;
-    string firstName = 9;
-    string lastName = 10;
-    string fullName = 11;
-    string akaUnit = 12;
-    string dischargeDay = 13;
-    string rank = 14;
-    string mail = 15;
-    string jobTitle = 16;
-    repeated string phone = 17;
-    repeated string mobilePhone = 18;
-    string address = 19;
-    string clearance = 20;
-    string sex = 21;
-    string birthDate = 22;
-    string createdAt = 23;
-    string updatedAt = 24;
-    repeated DigitalIdentity digitalIdentities = 25;
-    string picture = 26;
-    string goalUserID = 27;
-    string organization = 28;
-    string employeeNumber = 29;
-    string employeeId = 30; // organization-employeeNUmber
-    string fullClearance = 31;
+message Entity {
+  string id = 1;
+  string displayName = 2;
+  string directGroup = 3;
+  string hierarchy = 4;
+  string entityType = 5;
+  string identityCard = 6;
+  string personalNumber = 7;
+  string serviceType = 8;
+  string firstName = 9;
+  string lastName = 10;
+  string fullName = 11;
+  string akaUnit = 12;
+  string dischargeDay = 13;
+  string rank = 14;
+  string mail = 15;
+  string jobTitle = 16;
+  repeated string phone = 17;
+  repeated string mobilePhone = 18;
+  string address = 19;
+  string clearance = 20;
+  string sex = 21;
+  string birthDate = 22;
+  string createdAt = 23;
+  string updatedAt = 24;
+  repeated DigitalIdentity digitalIdentities = 25;
+  string picture = 26;
+  string goalUserID = 27;
+  string organization = 28;
+  string employeeNumber = 29;
+  string employeeId = 30; // organization-employeeNUmber
+  string fullClearance = 31;
 }
 
-message DigitalIdentity{
-    string type = 1;      
-    string source = 2;       
-    string mail = 3;         
-    string uniqueId = 4;      
-    optional string entityId = 5;      
-    string createdAt = 6;      
-    string updatedAt = 7;    
-    bool isRoleAttachable = 8;   
-    optional Role role = 9;  
-    optional string upn = 10;      
+message DigitalIdentity {
+  string type = 1;
+  string source = 2;
+  string mail = 3;
+  string uniqueId = 4;
+  optional string entityId = 5;
+  string createdAt = 6;
+  string updatedAt = 7;
+  bool isRoleAttachable = 8;
+  optional Role role = 9;
+  optional string upn = 10;
 }
 
-message RoleIdMessage {
-    string roleId = 1;
-}
+message RoleIdMessage { string roleId = 1; }
 
-message UniqueIdMessage {
-    string uniqueId = 1;
+message UniqueIdMessage { string uniqueId = 1; }
+
+enum EntityType {
+  Soldier = 0;
+  Civilian = 1;
+  GoalUser = 2;
+  External = 3;
 }
