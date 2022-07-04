@@ -528,7 +528,7 @@ export const renameRoleSchema = Joi.object({
 const editEntityKartoffelParamsObj = Joi.object({
   id: Joi.string().required(),
   firstName: Joi.string().required(),
-  lastName: Joi.string().required(),
+  lastName: Joi.string(),
   identityCard: Joi.string().allow('', null),
   personalNumber: Joi.string().allow('', null),
   serviceType: Joi.string(),
@@ -549,7 +549,7 @@ const editEntityKartoffelParamsObj = Joi.object({
 const editEntityADParamsObj = Joi.object({
   samAccountName: Joi.string().allow('', null),
   firstName: Joi.string().required(),
-  lastName: Joi.string().required(),
+  lastName: Joi.string(),
   fullName: Joi.string().required(),
 });
 
