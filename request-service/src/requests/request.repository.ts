@@ -167,7 +167,7 @@ export class RequestRepository {
             : createRequestReq.kartoffelParams?.entityType;
 
         if (
-          createRequestReq.kartoffelParams.entityType === EntityType.Civilian ||
+          entityType === EntityType.Civilian ||
           type === RequestType.CONVERT_ENTITY_TYPE
         ) {
           //automatically approved
