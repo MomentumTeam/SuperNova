@@ -187,21 +187,22 @@ export class RequestRepository {
           createRequestReq.securityDecision = approverDecision;
           createRequestReq.superSecurityDecision = approverDecision;
           createRequestReq.adminDecision = approverDecision;
-        }
 
-        createRequestReq.adStatus = {
-          status: stageStatusToJSON(StageStatus.STAGE_WAITING_FOR_PUSH),
-          message: '',
-          failedRetries: 0,
-        };
-        createRequestReq.kartoffelStatus = {
-          status: stageStatusToJSON(StageStatus.STAGE_WAITING_FOR_AD),
-          message: '',
-          failedRetries: 0,
-        };
-        createRequestReq.status = requestStatusToJSON(
-          RequestStatus.IN_PROGRESS
-        );
+          createRequestReq.adStatus = {
+            status: stageStatusToJSON(StageStatus.STAGE_WAITING_FOR_PUSH),
+            message: '',
+            failedRetries: 0,
+          };
+          createRequestReq.kartoffelStatus = {
+            status: stageStatusToJSON(StageStatus.STAGE_WAITING_FOR_AD),
+            message: '',
+            failedRetries: 0,
+          };
+
+          createRequestReq.status = requestStatusToJSON(
+            RequestStatus.IN_PROGRESS
+          );
+        }
       }
 
       let submitterGroups: any[] = [createRequestReq.submittedBy.directGroup];
