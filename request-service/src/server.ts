@@ -34,7 +34,7 @@ import {
   getDoneRequestsByEntityId,
   getDoneRequestsByGroupId,
   getDoneRequestsByRoleId,
-  CreatedInLegoCheck,
+  createdInLegoCheck,
 } from './requests/request.controller';
 import { RequestType } from './interfaces/protoc/proto/requestService';
 import { findPath } from './utils/path';
