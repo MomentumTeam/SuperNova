@@ -1040,11 +1040,12 @@ message EditEntityKartoffelParams {
   optional string sex = 11;
   optional int64 birthdate = 12;
   optional string entityType = 13;
-  string oldFirstName = 14;
-  string oldLastName = 15;
-  optional string oldIdentityCard = 16;
-  optional string oldMobilePhone = 17;
-  optional string oldRank = 18;
+  optional string rank = 14;
+  string oldFirstName = 15;
+  string oldLastName = 16;
+  optional string oldIdentityCard = 17;
+  optional string oldMobilePhone = 18;
+  optional string oldRank = 19;
 }
 
 message EditEntityADParams {
