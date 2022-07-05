@@ -32006,7 +32006,7 @@ export interface RequestService {
   GetDoneRequestsSubmittedByEntityId(
     request: GetDoneRequestsByEntityIdReq
   ): Promise<RequestArray>;
-  createdInLegoCheck(request: CheckIfCreateWasInLegoReq): Promise<BoolCheck>;
+  CreatedInLegoCheck(request: CheckIfCreateWasInLegoReq): Promise<BoolCheck>;
 }
 
 export class RequestServiceClientImpl implements RequestService {
@@ -32067,7 +32067,7 @@ export class RequestServiceClientImpl implements RequestService {
     this.GetDoneRequestsByEntityId = this.GetDoneRequestsByEntityId.bind(this);
     this.GetDoneRequestsSubmittedByEntityId =
       this.GetDoneRequestsSubmittedByEntityId.bind(this);
-    this.createdInLegoCheck = this.createdInLegoCheck.bind(this);
+    this.CreatedInLegoCheck = this.CreatedInLegoCheck.bind(this);
   }
   CreateRoleRequest(request: CreateRoleReq): Promise<CreateRoleRes> {
     const data = CreateRoleReq.encode(request).finish();
@@ -32583,11 +32583,11 @@ export class RequestServiceClientImpl implements RequestService {
     return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
   }
 
-  createdInLegoCheck(request: CheckIfCreateWasInLegoReq): Promise<BoolCheck> {
+  CreatedInLegoCheck(request: CheckIfCreateWasInLegoReq): Promise<BoolCheck> {
     const data = CheckIfCreateWasInLegoReq.encode(request).finish();
     const promise = this.rpc.request(
       "RequestService.RequestService",
-      "createdInLegoCheck",
+      "CreatedInLegoCheck",
       data
     );
     return promise.then((data) => BoolCheck.decode(new _m0.Reader(data)));

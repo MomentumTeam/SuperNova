@@ -57,7 +57,7 @@ service RequestService {
     rpc GetDoneRequestsByEntityId(GetDoneRequestsByEntityIdReq) returns (RequestArray) {}
     rpc GetDoneRequestsSubmittedByEntityId(GetDoneRequestsByEntityIdReq) returns (RequestArray) {}
 
-    rpc createdInLegoCheck(CheckIfCreateWasInLegoReq) returns (BoolCheck) {}
+    rpc CreatedInLegoCheck(CheckIfCreateWasInLegoReq) returns (BoolCheck) {}
 
 }
 

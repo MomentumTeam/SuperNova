@@ -147,7 +147,7 @@ export class Server {
       this.server.bindAsync(
         `${C.host}:${C.port}`,
         grpc.ServerCredentials.createInsecure(),
-        (bindError) => {
+        (bindError: any) => {
           if (bindError) {
             logger.error(`Error while binding to ${C.host}:${C.port}`, {
               error: bindError,
