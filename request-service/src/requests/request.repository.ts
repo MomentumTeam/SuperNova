@@ -2204,7 +2204,7 @@ export class RequestRepository {
     }
   }
 
-  async wasCreateBeenInLego(
+  async createdInLegoCheck(
     checkIfCreateWasInLegoReq: CheckIfCreateWasInLegoReq
   ): Promise<BoolCheck> {
     try {
@@ -2225,7 +2225,36 @@ export class RequestRepository {
       };
       const exists: any = await RequestModel.exists(query)
       return {
-        isItCreateInLego: exists,
+        createdInLego: exists,
+      // const requests: any = await RequestModel.find(query, {})
+      //   .sort([['updatedAt', 1]])
+      //   .limit(1);
+
+      // if(requests.length === 0) {
+      //   return {
+      //     createdInLego: false,
+      //   };
+      // }
+      // // switch(requests[0].toObject().type)
+      // const tempRequest = requests[0];
+      // // tempRequest.toObject();
+      // // turnObjectIdsToStrings(tempRequest);
+      // // const typeOfTheRequest = tempRequest.type;
+
+      // const typeOfTheRequest =
+      // typeof tempRequest.type === typeof ''
+      //     ? requestTypeFromJSON(tempRequest.type)
+      //     : tempRequest.type;
+
+      // for (let i = 0; i < requestTypes.length; i++) {
+      //   if ((typeOfTheRequest === requestTypes[i]) || (tempRequest.type === requestTypes[i])) {
+      //     return {
+      //       createdInLego: true,
+      //     };
+      //   }
+      // }
+      // return {
+      //   createdInLego: false,
       };
     } catch (error) {
       throw error;

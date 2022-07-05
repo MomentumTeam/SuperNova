@@ -930,21 +930,21 @@ export async function getDoneRequestsSubmmitedByEntityId(
   }
 }
 
-export async function wasCreateBeenInLego(
+export async function createdInLegoCheck(
   call: any,
   callback: any
 ): Promise<void> {
   try {
-    logger.info(`Call to WasCreateBeenInLego`, {
+    logger.info(`Call to CreatedInLegoCheck`, {
       callRequest: call.request,
     });
-    const requests = await requestManager.wasCreateBeenInLego(call.request);
-    logger.info(`WasCreateBeenInLego OK`, {
+    const requests = await requestManager.createdInLegoCheck(call.request);
+    logger.info(`CreatedInLegoCheck OK`, {
       callRequest: call.request,
     });
     callback(null, requests);
   } catch (error: any) {
-    logger.error(`WasCreateBeenInLego ERROR`, {
+    logger.error(`CreatedInLegoCheck ERROR`, {
       callRequest: call.request,
       error: { message: error.message },
     });

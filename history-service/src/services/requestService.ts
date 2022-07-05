@@ -23,7 +23,7 @@ import { logger } from '../logger';
 const PROTO_PATH = `${findPath('proto')}/requestService.proto`;
 
 export class RequestService {
-  static wasCreateBeenInLego(arg0: { idCheck: string; }): BoolCheck | PromiseLike<BoolCheck> {
+  static createdInLegoCheck(arg0: { idCheck: string; }): BoolCheck | PromiseLike<BoolCheck> {
     throw new Error('Method not implemented.');
   }
   clients: any[];
@@ -115,17 +115,17 @@ export class RequestService {
   }
 
 
-  async wasCreateBeenInLego(req: CheckIfCreateWasInLegoReq): Promise<BoolCheck> {
-    logger.info('wasCreateBeenInLego in RequestService', { req });
+  async createdInLegoCheck(req: CheckIfCreateWasInLegoReq): Promise<BoolCheck> {
+    logger.info('CreatedInLegoCheck in RequestService', { req });
     return new Promise((resolve, reject) => {
-      this.randomClient().WasCreateBeenInLego(req, (error: any, res: any) => {
+      this.randomClient().createdInLegoCheck(req, (error: any, res: any) => {
         if (error) {
-          logger.error('wasCreateBeenInLego in RequestService ERROR', {
+          logger.error('CreatedInLegoCheck in RequestService ERROR', {
             error: { message: error.message },
           });
           reject(error);
         } else {
-          logger.info('wasCreateBeenInLego in RequestService OK', {
+          logger.info('CreatedInLegoCheck in RequestService OK', {
             res,
           });
           resolve(res as BoolCheck);

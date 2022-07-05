@@ -57,7 +57,7 @@ service RequestService {
     rpc GetDoneRequestsByEntityId(GetDoneRequestsByEntityIdReq) returns (RequestArray) {}
     rpc GetDoneRequestsSubmittedByEntityId(GetDoneRequestsByEntityIdReq) returns (RequestArray) {}
 
-    rpc WasCreateBeenInLego(CheckIfCreateWasInLegoReq) returns (BoolCheck) {}
+    rpc createdInLegoCheck(CheckIfCreateWasInLegoReq) returns (BoolCheck) {}
 
 }
 
@@ -1111,7 +1111,7 @@ message CheckIfCreateWasInLegoReq {
 }
 
 message BoolCheck {
-    bool isItCreateInLego = 1;
+    bool createdInLego = 1;
 }
 
 // ---------------------------------------------Other Functions Objects------------------------------------------------------------

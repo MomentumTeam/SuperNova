@@ -401,11 +401,11 @@ export class RequestManager {
       throw error;
     }
   }
-  async wasCreateBeenInLego(
+  async createdInLegoCheck(
     checkIfCreateWasInLegoReq: CheckIfCreateWasInLegoReq
   ) {
     try {
-      return await this.requestRepository.wasCreateBeenInLego(
+      return await this.requestRepository.createdInLegoCheck(
         checkIfCreateWasInLegoReq
       );
     } catch (error) {

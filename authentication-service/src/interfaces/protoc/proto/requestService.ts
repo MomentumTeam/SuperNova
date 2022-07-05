@@ -1718,7 +1718,7 @@ export interface CheckIfCreateWasInLegoReq {
 }
 
 export interface BoolCheck {
-  isItCreateInLego: boolean;
+  createdInLego: boolean;
 }
 
 export interface UpdateReq {
@@ -25561,15 +25561,15 @@ export const CheckIfCreateWasInLegoReq = {
   },
 };
 
-const baseBoolCheck: object = { isItCreateInLego: false };
+const baseBoolCheck: object = { createdInLego: false };
 
 export const BoolCheck = {
   encode(
     message: BoolCheck,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.isItCreateInLego === true) {
-      writer.uint32(8).bool(message.isItCreateInLego);
+    if (message.createdInLego === true) {
+      writer.uint32(8).bool(message.createdInLego);
     }
     return writer;
   },
@@ -25582,7 +25582,7 @@ export const BoolCheck = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.isItCreateInLego = reader.bool();
+          message.createdInLego = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -25594,33 +25594,27 @@ export const BoolCheck = {
 
   fromJSON(object: any): BoolCheck {
     const message = { ...baseBoolCheck } as BoolCheck;
-    if (
-      object.isItCreateInLego !== undefined &&
-      object.isItCreateInLego !== null
-    ) {
-      message.isItCreateInLego = Boolean(object.isItCreateInLego);
+    if (object.createdInLego !== undefined && object.createdInLego !== null) {
+      message.createdInLego = Boolean(object.createdInLego);
     } else {
-      message.isItCreateInLego = false;
+      message.createdInLego = false;
     }
     return message;
   },
 
   toJSON(message: BoolCheck): unknown {
     const obj: any = {};
-    message.isItCreateInLego !== undefined &&
-      (obj.isItCreateInLego = message.isItCreateInLego);
+    message.createdInLego !== undefined &&
+      (obj.createdInLego = message.createdInLego);
     return obj;
   },
 
   fromPartial(object: DeepPartial<BoolCheck>): BoolCheck {
     const message = { ...baseBoolCheck } as BoolCheck;
-    if (
-      object.isItCreateInLego !== undefined &&
-      object.isItCreateInLego !== null
-    ) {
-      message.isItCreateInLego = object.isItCreateInLego;
+    if (object.createdInLego !== undefined && object.createdInLego !== null) {
+      message.createdInLego = object.createdInLego;
     } else {
-      message.isItCreateInLego = false;
+      message.createdInLego = false;
     }
     return message;
   },
@@ -32012,7 +32006,7 @@ export interface RequestService {
   GetDoneRequestsSubmittedByEntityId(
     request: GetDoneRequestsByEntityIdReq
   ): Promise<RequestArray>;
-  WasCreateBeenInLego(request: CheckIfCreateWasInLegoReq): Promise<BoolCheck>;
+  createdInLegoCheck(request: CheckIfCreateWasInLegoReq): Promise<BoolCheck>;
 }
 
 export class RequestServiceClientImpl implements RequestService {
@@ -32073,7 +32067,7 @@ export class RequestServiceClientImpl implements RequestService {
     this.GetDoneRequestsByEntityId = this.GetDoneRequestsByEntityId.bind(this);
     this.GetDoneRequestsSubmittedByEntityId =
       this.GetDoneRequestsSubmittedByEntityId.bind(this);
-    this.WasCreateBeenInLego = this.WasCreateBeenInLego.bind(this);
+    this.createdInLegoCheck = this.createdInLegoCheck.bind(this);
   }
   CreateRoleRequest(request: CreateRoleReq): Promise<CreateRoleRes> {
     const data = CreateRoleReq.encode(request).finish();
@@ -32589,11 +32583,11 @@ export class RequestServiceClientImpl implements RequestService {
     return promise.then((data) => RequestArray.decode(new _m0.Reader(data)));
   }
 
-  WasCreateBeenInLego(request: CheckIfCreateWasInLegoReq): Promise<BoolCheck> {
+  createdInLegoCheck(request: CheckIfCreateWasInLegoReq): Promise<BoolCheck> {
     const data = CheckIfCreateWasInLegoReq.encode(request).finish();
     const promise = this.rpc.request(
       "RequestService.RequestService",
-      "WasCreateBeenInLego",
+      "createdInLegoCheck",
       data
     );
     return promise.then((data) => BoolCheck.decode(new _m0.Reader(data)));
