@@ -539,6 +539,7 @@ const editEntityKartoffelParamsObj = Joi.object({
   sex: Joi.string(),
   birthdate: Joi.number().unsafe(),
   entityType: Joi.string(),
+  rank: Joi.string(),
   oldFirstName: Joi.string(),
   oldLastName: Joi.string(),
   oldIdentityCard: Joi.string().allow('', null),
