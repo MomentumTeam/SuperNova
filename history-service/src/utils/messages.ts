@@ -29,18 +29,18 @@ const getEventMessageByRequest = (request : Request) => {
 
       const getEventsMassageByKartoffelObj = (kartoffelObject: Entity | OrganizationGroup | Role) => {
         
-          if (kartoffelObject instanceof Entity) {
+          // if (kartoffelObject instanceof Entity) {
 
-          } else if (kartoffelObject instanceof Role){
-            return `  ${kartoffelObject?.createdAt.toLocaleString()} בתאריך ${
-              kartoffelObject?.displayName
-            } בקשת "יצירת תפקיד" קרתה, שם התפקיד - `;
+          // } else if (kartoffelObject instanceof Role){
+          //   return `  ${kartoffelObject?.createdAt.toLocaleString()} בתאריך ${
+          //     kartoffelObject?.displayName
+          //   } בקשת "יצירת תפקיד" קרתה, שם התפקיד - `;
 
 
-          } else if (kartoffelObject instanceof OrganizationGroup) {
+          // } else if (kartoffelObject instanceof OrganizationGroup) {
 
-          }
-
+          // }
+       }
 
 
 
@@ -65,7 +65,7 @@ const getEventMessageByRequest = (request : Request) => {
         //       default:
         //           throw new Error("Request type not supported!");
         //     }
-          }
+         
 export {getEventMessageByRequest}
 //////להוסיף גם את הפונקציה של getEventsMassageByKartoffelObj
 
