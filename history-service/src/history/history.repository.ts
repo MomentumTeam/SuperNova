@@ -71,60 +71,78 @@ export class HistoryRepository {
         ? getDoneRequestsByRoleIdReq.to
         : getDoneRequestsByRoleIdReq.to - 1;
 
-      if (requestsArr?.totalCount === 0) { // maybe ignore?
-        if (getDoneRequestsByRoleIdReq.from === 1 &&
-          !createdInLego.createdInLego) {
-          eventArr.totalCount += 1;
-          tillTemp = 1;
-          const temporaryEvent: Event = {
-            message: '',
-            date: new Date().getTime() };
-          try {
-          const tempRole : Role = await KartoffelService.GetRoleByRoleId({
-            roleId:getDoneRequestsByRoleIdReq.roleId
-          });
-          temporaryEvent.message = `  ${tempRole?.createdAt.toLocaleString()} בתאריך ${
-            tempRole?.displayName
-          } בקשת "יצירת תפקיד" קרתה, שם התפקיד - `;
-          eventArr.events.push(temporaryEvent); // maybe push at the start instead
-          } catch (error) {
-            eventArr.totalCount = 0;
-            console.log(error, 'faild to get Kartoffel roleId');
-          }
+      // if (requestsArr?.totalCount === 0) { // maybe ignore?
+      //   if (getDoneRequestsByRoleIdReq.from === 1 &&
+      //     !createdInLego.createdInLego) {
+      //     eventArr.totalCount += 1;
+      //     tillTemp = 1;
+      //     const temporaryEvent: Event = {
+      //       message: '',
+      //       date: new Date().getTime() };
+      //     try {
+      //     const tempRole : Role = await KartoffelService.GetRoleByRoleId({
+      //       roleId:getDoneRequestsByRoleIdReq.roleId
+      //     });
+      //     temporaryEvent.message = `  ${tempRole?.createdAt.toLocaleString()} בתאריך ${
+      //       tempRole?.displayName
+      //     } בקשת "יצירת תפקיד" קרתה, שם התפקיד - `;
+      //     eventArr.events.push(temporaryEvent); // maybe push at the start instead
+      //     } catch (error) {
+      //       eventArr.totalCount = 0;
+      //       console.log(error, 'faild to get Kartoffel roleId');
+      //     }
+      //   }
+      //   return eventArr;
+      // }
+
+
+      // if (
+      //   !createdInLego.createdInLego
+      // ) { // check maybe can be deleted
+      //   eventArr.totalCount += 1; //////////////////////////////////////////////////////////////from =1
+
+      //   if (getDoneRequestsByRoleIdReq.from === 1) {
+
+
+      //     const temporaryEvent: Event = {
+      //       message: "",
+      //       date: new Date().getTime(),
+      //     };
+      //     const tempRole: Role = await KartoffelService.GetRoleByRoleId({
+      //       roleId: getDoneRequestsByRoleIdReq.roleId,
+      //     });
+      //     temporaryEvent.message = `  ${tempRole?.createdAt.toLocaleString()} בתאריך ${
+      //       tempRole?.displayName
+      //     } בקשת "יצירת תפקיד" קרתה, שם התפקיד - `;
+      //     eventArr.events.push(temporaryEvent);
+      //   }
+      // }
+     
+      if (getDoneRequestsByRoleIdReq.from === 1 &&
+        !createdInLego.createdInLego) {
+        eventArr.totalCount += 1;
+        tillTemp = 1;
+        const temporaryEvent: Event = {
+          message: '',
+          date: new Date().getTime() };
+        try {
+        const tempRole : Role = await KartoffelService.GetRoleByRoleId({
+          roleId:getDoneRequestsByRoleIdReq.roleId
+        });
+        // temporaryEvent.message = getEventsMassageByKartoffelObj(tempRole);
+        temporaryEvent.message = `  ${tempRole?.createdAt.toLocaleString()} בתאריך ${
+          tempRole?.displayName
+        } בקשת "יצירת תפקיד" קרתה, שם התפקיד - `;
+        eventArr.events.push(temporaryEvent); // maybe push at the start instead
+        } catch (error) {
+          eventArr.totalCount = 0;
+          console.log(error, 'faild to get Kartoffel roleId');
         }
+      }
+      if (requestsArr?.totalCount === 0) {
         return eventArr;
       }
-      // eventArr.totalCount = requestsArr.totalCount
-
-      if (
-        !createdInLego.createdInLego
-      ) { // check maybe can be deleted
-        eventArr.totalCount += 1; //////////////////////////////////////////////////////////////from =1
-        //יכול לקרות מצב שיש פחות בקשות ממה שהפגיניישן רוצה ואז יקרה מצב שזה יפתח את האיבנטים בשני דפים שונים (צריך לבדוק מה עושים במצב כזה) זה קורה שיש מעט מאוד בקשותת
-        if (getDoneRequestsByRoleIdReq.from === 1) {
-          /////// if ((eventArr.till !== 1)||(getDoneRequestsByRoleIdReq.to === 1)) {
-          ///////   eventArr.till -= 1;
-          /////// }
-
-          const temporaryEvent: Event = {
-            message: "",
-            date: new Date().getTime(),
-          };
-          const tempRole: Role = await KartoffelService.GetRoleByRoleId({
-            roleId: getDoneRequestsByRoleIdReq.roleId,
-          });
-          temporaryEvent.message = `  ${tempRole?.createdAt.toLocaleString()} בתאריך ${
-            tempRole?.displayName
-          } בקשת "יצירת תפקיד" קרתה, שם התפקיד - `;
-          eventArr.events.push(temporaryEvent);
-        }
-      }
-      // const rows: CreateRoleRow[] = requestsUnderBulk.requests.map(
-      // const numberOfRequest = requestsArr.totalCount;
-
-      // let numberOfRequest = toVal -
-      // fromVal +
-      // 1;
+      
 
       let numberOfRequest = requestsArr.requests.length;
 
