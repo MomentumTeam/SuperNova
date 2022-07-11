@@ -129,7 +129,7 @@ export interface EntityMin {
   akaUnit: string;
   personalNumber?: string | undefined;
   identityCard?: string | undefined;
-  goalUserID?: string | undefined;
+  goalUserId?: string | undefined;
   firstName?: string | undefined;
   lastName?: string | undefined;
   employeeNumber?: string | undefined;
@@ -1571,8 +1571,8 @@ export const EntityMin = {
     if (message.identityCard !== undefined) {
       writer.uint32(34).string(message.identityCard);
     }
-    if (message.goalUserID !== undefined) {
-      writer.uint32(42).string(message.goalUserID);
+    if (message.goalUserId !== undefined) {
+      writer.uint32(42).string(message.goalUserId);
     }
     if (message.firstName !== undefined) {
       writer.uint32(50).string(message.firstName);
@@ -1606,7 +1606,7 @@ export const EntityMin = {
           message.identityCard = reader.string();
           break;
         case 5:
-          message.goalUserID = reader.string();
+          message.goalUserId = reader.string();
           break;
         case 6:
           message.firstName = reader.string();
@@ -1647,10 +1647,10 @@ export const EntityMin = {
     } else {
       message.identityCard = undefined;
     }
-    if (object.goalUserID !== undefined && object.goalUserID !== null) {
-      message.goalUserID = String(object.goalUserID);
+    if (object.goalUserId !== undefined && object.goalUserId !== null) {
+      message.goalUserId = String(object.goalUserId);
     } else {
-      message.goalUserID = undefined;
+      message.goalUserId = undefined;
     }
     if (object.firstName !== undefined && object.firstName !== null) {
       message.firstName = String(object.firstName);
@@ -1678,7 +1678,7 @@ export const EntityMin = {
       (obj.personalNumber = message.personalNumber);
     message.identityCard !== undefined &&
       (obj.identityCard = message.identityCard);
-    message.goalUserID !== undefined && (obj.goalUserID = message.goalUserID);
+    message.goalUserId !== undefined && (obj.goalUserId = message.goalUserId);
     message.firstName !== undefined && (obj.firstName = message.firstName);
     message.lastName !== undefined && (obj.lastName = message.lastName);
     message.employeeNumber !== undefined &&
@@ -1708,10 +1708,10 @@ export const EntityMin = {
     } else {
       message.identityCard = undefined;
     }
-    if (object.goalUserID !== undefined && object.goalUserID !== null) {
-      message.goalUserID = object.goalUserID;
+    if (object.goalUserId !== undefined && object.goalUserId !== null) {
+      message.goalUserId = object.goalUserId;
     } else {
-      message.goalUserID = undefined;
+      message.goalUserId = undefined;
     }
     if (object.firstName !== undefined && object.firstName !== null) {
       message.firstName = object.firstName;

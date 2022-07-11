@@ -39,5 +39,5 @@ export interface IUser {
   birthDate?: Date;
   updatedAt?: Date;
   createdAt?: Date;
-  goalUserID?: string;
+  goalUserId?: string;
 }

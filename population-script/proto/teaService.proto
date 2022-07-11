@@ -101,7 +101,7 @@ message EntityMin {
   string akaUnit = 2;
   optional string personalNumber = 3;
   optional string identityCard = 4;
-  optional string goalUserID = 5;
+  optional string goalUserId = 5;
   optional string firstName = 6;
   optional string lastName = 7;
   optional string employeeNumber = 8;
