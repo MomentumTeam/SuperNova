@@ -67,9 +67,9 @@ export class HistoryRepository {
         totalCount: requestsArr.totalCount,
         // till: createdInLego.isItCreateInLego?getDoneRequestsByRoleIdReq.to:getDoneRequestsByRoleIdReq.to - 1,
       };
-      let tillTemp = createdInLego.createdInLego
-        ? getDoneRequestsByRoleIdReq.to
-        : getDoneRequestsByRoleIdReq.to - 1;
+      // let tillTemp = createdInLego.createdInLego
+      //   ? getDoneRequestsByRoleIdReq.to
+      //   : getDoneRequestsByRoleIdReq.to - 1;
 
       // if (requestsArr?.totalCount === 0) { // maybe ignore?
       //   if (getDoneRequestsByRoleIdReq.from === 1 &&
@@ -121,7 +121,7 @@ export class HistoryRepository {
       if (getDoneRequestsByRoleIdReq.from === 1 &&
         !createdInLego.createdInLego) {
         eventArr.totalCount += 1;
-        tillTemp = 1;
+        // tillTemp = 1;
         const temporaryEvent: Event = {
           message: '',
           date: new Date().getTime() };

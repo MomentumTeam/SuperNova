@@ -1,30 +1,30 @@
 import { Router } from 'express';
-import HistoryController from './History.controller';
-import { HistoryValidator } from './History.validator';
+import HistoryController from './history.controller';
+import { HistoryValidator } from './history.validator';
 
 const HistoryRouter: Router = Router();
 
 // GET
 HistoryRouter.get(
-  '/roles',
+  '/roles/:roleId',
   HistoryValidator.isGetEventsByRoleIdValid,
   HistoryController.getDoneRequestsByRoleId
 );
 
 HistoryRouter.get(
-  '/groups',
+  '/groups/:groupId',
   HistoryValidator.isGetEventsByGroupIdSchemaValid,
   HistoryController.getDoneRequestsByGroupId
 );
 
 HistoryRouter.get(
-  '/entitys',
+  '/entities/:entityId',
   HistoryValidator.isGetEventsByEntityIdValid,
   HistoryController.getDoneRequestsByEntityId
 );
 
 HistoryRouter.get(
-  '/submmitedEntitys',
+  '/submmitedBy/:entityId',
   HistoryValidator.isGetEventsSubmmitedByEntityIdValid,
   HistoryController.getDoneRequestsBySubmittedEntityId
 );

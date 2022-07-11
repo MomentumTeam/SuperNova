@@ -56,6 +56,28 @@ services:
       - SS_KARTOFFEL_AUDIENCE=kartoffel
       - SS_LOG_PATH=/logs
 
+  # history-service:
+  #   image: history-service
+  #   build: ./history-service
+  #   env_file:
+  #     - ./supernova.env
+  #   ports:
+  #     - '8080:8080'
+  #   depends_on:
+  #     - redis
+  #   volumes:
+  #     - history-utils:/historyUtils
+  #     - logs:/logs
+  #   environment:
+  #     - SS_REDIS_HOST=redis
+  #     - SS_REDIS_PORT=6379
+  #     - SS_REDIS_PASSWORD=mozart
+  #     - SS_HISTORY_PUBLIC_KEY_FULL_PATH=/historyUtils/publickey.pem
+  #     - SS_SHMUEL_AUDIENCE=shmuel
+  #     - SS_KARTOFFEL_AUDIENCE=kartoffel
+  #     - SS_LOG_PATH=/logs
+
+   
   request-service:
     image: request-service
     build: ./request-service
