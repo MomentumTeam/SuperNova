@@ -56,28 +56,6 @@ services:
       - SS_KARTOFFEL_AUDIENCE=kartoffel
       - SS_LOG_PATH=/logs
 
-  # history-service:
-  #   image: history-service
-  #   build: ./history-service
-  #   env_file:
-  #     - ./supernova.env
-  #   ports:
-  #     - '8080:8080'
-  #   depends_on:
-  #     - redis
-  #   volumes:
-  #     - history-utils:/historyUtils
-  #     - logs:/logs
-  #   environment:
-  #     - SS_REDIS_HOST=redis
-  #     - SS_REDIS_PORT=6379
-  #     - SS_REDIS_PASSWORD=mozart
-  #     - SS_HISTORY_PUBLIC_KEY_FULL_PATH=/historyUtils/publickey.pem
-  #     - SS_SHMUEL_AUDIENCE=shmuel
-  #     - SS_KARTOFFEL_AUDIENCE=kartoffel
-  #     - SS_LOG_PATH=/logs
-
-   
   request-service:
     image: request-service
     build: ./request-service
@@ -90,6 +68,7 @@ services:
       - notification-service
       - tea-service
       - mail-service
+      # - approver-service
     volumes:
       - logs:/logs
     environment:
@@ -97,9 +76,9 @@ services:
       - RS_NS_URL=notification-service:8080
       - RS_TS_URL=tea-service:8080
       - RS_MS_URL=mail-service:8080
+      - RS_APS_URL=approver-service:8080
       - RS_ROOT_ID=619e3193f235dc001846bb4f
       - RS_KARTOFFEL_GOAL_USER=GoalUser
-      - RS_APS_URL=approver-service:8080
       - RS_LOG_PATH=/logs
 
   kartoffel-service:
@@ -118,9 +97,9 @@ services:
       - KS_SS_URL=spike-service:8080
       - KS_ROOT_ID=6184af202da776001134110b
       - KS_DEFAULT_ROLE_SOURCE=sf_name
-      - KS_DEFAULT_DI_SOURCE=sf_name
+      - KS_DEFAULT_DI_SOURCE=es_name
       - KS_DEFAULT_OG_SOURCE=sf_name
-      - KS_DI_SOURCES=sf_name,sf_name
+      - KS_DI_SOURCES=es_name,es_name
       - KS_DEFAULT_ROLE_ID_SUFFIX=oneTree
       - KS_SEARCH_WITH_RANKS=true
       - KS_LOG_PATH=/logs
@@ -149,8 +128,32 @@ services:
       - PS_AD_ALLOWED_SUBMITTERS=1111,2222,3333,4444
       - PS_AD_UPN_SUFFIX=gmail.com
       - PS_KARTOFFEL_GOAL_USER=GoalUser
+      - PS_KARTOFFEL_SOLDIER=Soldier
+      - PS_KARTOFFEL_EXTERNAL=External
       - PS_LOG_PATH=/logs
 
+# history-service:
+    #   image: history-service
+    #   build: ./history-service
+    #   env_file:
+    #     - ./supernova.env
+    #   ports:
+    #     - '8080:8080'
+    #   depends_on:
+    #     - redis
+    #   volumes:
+    #     - history-utils:/historyUtils
+    #     - logs:/logs
+    #   environment:
+    #     - SS_REDIS_HOST=redis
+    #     - SS_REDIS_PORT=6379
+    #     - SS_REDIS_PASSWORD=mozart
+    #     - SS_HISTORY_PUBLIC_KEY_FULL_PATH=/historyUtils/publickey.pem
+    #     - SS_SHMUEL_AUDIENCE=shmuel
+    #     - SS_KARTOFFEL_AUDIENCE=kartoffel
+    #     - SS_LOG_PATH=/logs
+  
+     
   notification-service:
     image: notification-service
     build: ./notification-service/
@@ -182,6 +185,7 @@ services:
       - APS_RS_URL=request-service:8080
       - APS_OG_VALIDATION_DEPTH=4
       - APS_ALWAYS_VALID_COMMANDERS=1111,2222,3333,4444
+      - APS_CREATE_EXTERNAL_ALLOWED_APPROVERS=619e3193f235dc001846bb4f,619a44fe5ce9f30018d8abba
       - APS_LOG_PATH=/logs
 
   tea-service:
@@ -281,8 +285,8 @@ services:
       - KC_TS_URL=tea-service:8080
       - KC_KS_URL=kartoffel-service:8080
       - KC_DEFAULT_ROLE_SOURCE=sf_name
-      - KC_DEFAULT_DI_SOURCE=sf_name
-      - KC_DI_SOURCES=sf_name,sf_name
+      - KC_DEFAULT_DI_SOURCE=es_name
+      - KC_DI_SOURCES=es_name,es_name
       - KC_KARTOFFEL_GOAL_USER=GoalUser
       - KC_KARTOFFEL_DOMAIN_USER=domainUser
       - KC_CIVILIAN=Civilian
@@ -290,24 +294,24 @@ services:
       - KC_CIVILIAN_DEFAULT_RANK=לא ידוע
       - KC_LOG_PATH=/logs
 
-  # execution-script:
-  #   image: execution-script
-  #   build: ./execution-script/
-  #   env_file:
-  #     - ./supernova.env
-  #   depends_on:
-  #     - request-service
-  #     - producer-service
-  #   volumes:
-  #     - logs:/logs
-  #   environment:
-  #     - EXS_RS_URL=request-service:8080
-  #     - EXS_PS_URL=producer-service:8080
-  #     - EXS_APS_URL=approver-service:8080
-  #     - EXS_MINUTE=5
-  #     - EXS_CRON_JOB=false
-  #     - EXS_ROOT_ID=619e3193f235dc001846bb4f
-  #     - EXS_LOG_PATH=/logs
+  execution-script:
+    image: execution-script
+    build: ./execution-script/
+    env_file:
+      - ./supernova.env
+    depends_on:
+      - request-service
+      - producer-service
+    volumes:
+      - logs:/logs
+    environment:
+      - EXS_RS_URL=request-service:8080
+      - EXS_PS_URL=producer-service:8080
+      - EXS_APS_URL=approver-service:8080
+      - EXS_MINUTE=5
+      - EXS_CRON_JOB=false
+      - EXS_ROOT_ID=619e3193f235dc001846bb4f
+      - EXS_LOG_PATH=/logs
 
   whiteListSync-script:
     image: whitelistsync-script
@@ -371,15 +375,15 @@ services:
     environment:
       - AS_PORT=8080
       - AS_SHRAGA_URL=https://shraga.shraga.branch-yesodot.org
-      - AS_CLIENT_ENDPOINT=http://localhost
-      # - AS_CLIENT_ENDPOINT=http://localhost:3000
+      # - AS_CLIENT_ENDPOINT=http://localhost
+      - AS_CLIENT_ENDPOINT=http://localhost:3000
       - AS_KS_URL=kartoffel-service:8080
       - AS_APS_URL=approver-service:8080
       - AS_KARTOFFEL_ENRICH=false
       - AS_APPROVER_ENRICH=true
       - AS_USE_SHRAGA_LOCAL_MAP=true
       - AS_SHRAGA_LOCAL_MAP_IDS=619e3a6fe4de0300121d78c7,619e406ee4de0300121dc4c8,619e42b6e4de0300121dc4e3,619e5132e4de0300121dc528,619f8aa0e4de0300121dd3f4
-      - AS_SHRAGA_LOCAL_MAP_DIS=t23458789@jello.com,t25458789@jello.com,t25458711@jello.com,gggUser@rabiran.com,e595300134@turtle.com
+      - AS_SHRAGA_LOCAL_MAP_DIS=t23458789sh@jello,t25458789sh@jello,t25458711sh@jello,gggUsersh@rabiran,e595300134sh@turtle
       - AS_LOG_PATH=/logs
 
   api-gateway:
@@ -411,8 +415,8 @@ services:
       - GATEWAY_RS_URL=request-service:8080
       - GATEWAY_PS_URL=producer-service:8080
       - GATEWAY_NS_URL=notification-service:8080
-      # - GATEWAY_AS_URL=http://localhost:9000
-      - GATEWAY_AS_URL=http://localhost
+      - GATEWAY_AS_URL=http://localhost:9000
+      # - GATEWAY_AS_URL=http://localhost
       - GATEWAY_BS_URL=bulk-service:8080
       - GATEWAY_APS_URL=approver-service:8080
       - GATEWAY_MS_URL=mail-service:8080
@@ -427,19 +431,19 @@ services:
       - GATEWAY_ROOT_ID=619e3193f235dc001846bb4f
       - GATEWAY_LOG_PATH=/logs
 
-  supernova-ui:
-    image: supernova-ui
-    build: ./SuperNovaUI/
-    env_file:
-      - ./supernova.env
-    depends_on:
-      - api-gateway
-    ports:
-      - '3000:80'
-    environment:
-      - UI_REACT_APP_BASE_URL=http://localhost:2000
-      - UI_REACT_TOKEN_NAME=sp-token
-      - UI_USER_SOURCE_DI=es_name
+  # supernova-ui:
+  #   image: supernova-ui
+  #   build: ./SuperNovaUI/
+  #   env_file:
+  #     - ./supernova.env
+  #   depends_on:
+  #     - api-gateway
+  #   ports:
+  #     - '3000:80'
+  #   environment:
+  #     - UI_REACT_APP_BASE_URL=http://localhost:2000
+  #     - UI_REACT_TOKEN_NAME=sp-token
+  #     - UI_USER_SOURCE_DI=es_name
 
 volumes:
   bulk-files:
@@ -544,12 +548,11 @@ volumes:
   #   volumes:
   #     - logs:/logs
   #     - ./filebeat.yml:/usr/share/filebeat/filebeat.yml
-
-volumes:
-  bulk-files:
-  spike-utils:
-  ais-excel-files:
-  tea-utils:
-  logs:
-  esdata:
-    driver: local
+# volumes:
+#   bulk-files:
+#   spike-utils:
+#   ais-excel-files:
+#   tea-utils:
+#   logs:
+#   esdata:
+#     driver: local
