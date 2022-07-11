@@ -529,7 +529,7 @@ export interface Entity {
   updatedAt: string;
   digitalIdentities: DigitalIdentity[];
   picture: string;
-  goalUserID: string;
+  goalUserId: string;
   organization: string;
   employeeNumber: string;
   /** organization-employeeNUmber */
@@ -7513,7 +7513,7 @@ const baseEntity: object = {
   createdAt: "",
   updatedAt: "",
   picture: "",
-  goalUserID: "",
+  goalUserId: "",
   organization: "",
   employeeNumber: "",
   employeeId: "",
@@ -7603,8 +7603,8 @@ export const Entity = {
     if (message.picture !== "") {
       writer.uint32(210).string(message.picture);
     }
-    if (message.goalUserID !== "") {
-      writer.uint32(218).string(message.goalUserID);
+    if (message.goalUserId !== "") {
+      writer.uint32(218).string(message.goalUserId);
     }
     if (message.organization !== "") {
       writer.uint32(226).string(message.organization);
@@ -7712,7 +7712,7 @@ export const Entity = {
           message.picture = reader.string();
           break;
         case 27:
-          message.goalUserID = reader.string();
+          message.goalUserId = reader.string();
           break;
         case 28:
           message.organization = reader.string();
@@ -7872,10 +7872,10 @@ export const Entity = {
     } else {
       message.picture = "";
     }
-    if (object.goalUserID !== undefined && object.goalUserID !== null) {
-      message.goalUserID = String(object.goalUserID);
+    if (object.goalUserId !== undefined && object.goalUserId !== null) {
+      message.goalUserId = String(object.goalUserId);
     } else {
-      message.goalUserID = "";
+      message.goalUserId = "";
     }
     if (object.organization !== undefined && object.organization !== null) {
       message.organization = String(object.organization);
@@ -7948,7 +7948,7 @@ export const Entity = {
       obj.digitalIdentities = [];
     }
     message.picture !== undefined && (obj.picture = message.picture);
-    message.goalUserID !== undefined && (obj.goalUserID = message.goalUserID);
+    message.goalUserId !== undefined && (obj.goalUserId = message.goalUserId);
     message.organization !== undefined &&
       (obj.organization = message.organization);
     message.employeeNumber !== undefined &&
@@ -8097,10 +8097,10 @@ export const Entity = {
     } else {
       message.picture = "";
     }
-    if (object.goalUserID !== undefined && object.goalUserID !== null) {
-      message.goalUserID = object.goalUserID;
+    if (object.goalUserId !== undefined && object.goalUserId !== null) {
+      message.goalUserId = object.goalUserId;
     } else {
-      message.goalUserID = "";
+      message.goalUserId = "";
     }
     if (object.organization !== undefined && object.organization !== null) {
       message.organization = object.organization;

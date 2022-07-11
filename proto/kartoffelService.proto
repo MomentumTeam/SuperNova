@@ -493,7 +493,7 @@ message Entity {
   string updatedAt = 24;
   repeated DigitalIdentity digitalIdentities = 25;
   string picture = 26;
-  string goalUserID = 27;
+  string goalUserId = 27;
   string organization = 28;
   string employeeNumber = 29;
   string employeeId = 30; // organization-employeeNUmber

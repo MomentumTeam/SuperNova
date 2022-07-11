@@ -1598,6 +1598,7 @@ export interface EditEntityKartoffelParams {
   sex?: string | undefined;
   birthdate?: number | undefined;
   entityType?: string | undefined;
+  rank?: string | undefined;
   oldFirstName: string;
   oldLastName: string;
   oldIdentityCard?: string | undefined;
@@ -1880,7 +1881,10 @@ export interface AreAllSubRequestsFinishedRes {
   areAllSubRequestsFinished: boolean;
 }
 
-/** ---------------------------------------------Other Objects------------------------------------------------------------ */
+/**
+ * ---------------------------------------------Other
+ * Objects------------------------------------------------------------
+ */
 export interface RequestIdArray {
   requestIds: string[];
   count: number;
@@ -2107,7 +2111,7 @@ export interface HasSecurityAdminReq {
   groupsIds: string[];
   /** במקרה שסוג הבקשה היא ADD_APPROVER */
   approverTypeToAdd?: ApproverType | undefined;
-  /** למקרה עתידי שבו יהיה צורך להפריד בין בקשות : "מעבר תפקיד" ו"חיבור משתמש חדש" */
+  /** למקרה עתידי שבו יהיה צורך להפריד בין בקשות */
   needDisconnect?: boolean | undefined;
 }
 
@@ -24421,20 +24425,23 @@ export const EditEntityKartoffelParams = {
     if (message.entityType !== undefined) {
       writer.uint32(106).string(message.entityType);
     }
+    if (message.rank !== undefined) {
+      writer.uint32(114).string(message.rank);
+    }
     if (message.oldFirstName !== "") {
-      writer.uint32(114).string(message.oldFirstName);
+      writer.uint32(122).string(message.oldFirstName);
     }
     if (message.oldLastName !== "") {
-      writer.uint32(122).string(message.oldLastName);
+      writer.uint32(130).string(message.oldLastName);
     }
     if (message.oldIdentityCard !== undefined) {
-      writer.uint32(130).string(message.oldIdentityCard);
+      writer.uint32(138).string(message.oldIdentityCard);
     }
     if (message.oldMobilePhone !== undefined) {
-      writer.uint32(138).string(message.oldMobilePhone);
+      writer.uint32(146).string(message.oldMobilePhone);
     }
     if (message.oldRank !== undefined) {
-      writer.uint32(146).string(message.oldRank);
+      writer.uint32(154).string(message.oldRank);
     }
     return writer;
   },
@@ -24493,18 +24500,21 @@ export const EditEntityKartoffelParams = {
           message.entityType = reader.string();
           break;
         case 14:
-          message.oldFirstName = reader.string();
+          message.rank = reader.string();
           break;
         case 15:
-          message.oldLastName = reader.string();
+          message.oldFirstName = reader.string();
           break;
         case 16:
-          message.oldIdentityCard = reader.string();
+          message.oldLastName = reader.string();
           break;
         case 17:
-          message.oldMobilePhone = reader.string();
+          message.oldIdentityCard = reader.string();
           break;
         case 18:
+          message.oldMobilePhone = reader.string();
+          break;
+        case 19:
           message.oldRank = reader.string();
           break;
         default:
@@ -24586,6 +24596,11 @@ export const EditEntityKartoffelParams = {
     } else {
       message.entityType = undefined;
     }
+    if (object.rank !== undefined && object.rank !== null) {
+      message.rank = String(object.rank);
+    } else {
+      message.rank = undefined;
+    }
     if (object.oldFirstName !== undefined && object.oldFirstName !== null) {
       message.oldFirstName = String(object.oldFirstName);
     } else {
@@ -24643,6 +24658,7 @@ export const EditEntityKartoffelParams = {
     message.sex !== undefined && (obj.sex = message.sex);
     message.birthdate !== undefined && (obj.birthdate = message.birthdate);
     message.entityType !== undefined && (obj.entityType = message.entityType);
+    message.rank !== undefined && (obj.rank = message.rank);
     message.oldFirstName !== undefined &&
       (obj.oldFirstName = message.oldFirstName);
     message.oldLastName !== undefined &&
@@ -24727,6 +24743,11 @@ export const EditEntityKartoffelParams = {
       message.entityType = object.entityType;
     } else {
       message.entityType = undefined;
+    }
+    if (object.rank !== undefined && object.rank !== null) {
+      message.rank = object.rank;
+    } else {
+      message.rank = undefined;
     }
     if (object.oldFirstName !== undefined && object.oldFirstName !== null) {
       message.oldFirstName = object.oldFirstName;
