@@ -227,10 +227,10 @@ services:
       - BS_KARTOFFEL_DOMAIN_USER=domainUser
       - BS_CRH_EXAMPLE_FILE=changeRoleHierarchyBulk.xlsx
       - BS_CR_EXAMPLE_FILE=createRoleBulk.xlsx
-      - BS_SOLDIER=soldier
-      - BS_RESERVED=reserved
-      - BS_CIVILIAN=civilian
-      - BS_GOAL_USER=goalUser
+      - BS_SOLDIER=Soldier
+      - BS_RESERVED=Reserved
+      - BS_CIVILIAN=Civilian
+      - BS_GOAL_USER=GoalUser
       - BS_LOG_PATH=/logs
 
   mail-service:
@@ -240,6 +240,7 @@ services:
       - ./supernova.env
     volumes:
       - logs:/logs
+      - mail-images:/mailImages
     ports:
       - '8088:8080'
     depends_on:
@@ -247,15 +248,17 @@ services:
     environment:
       - MS_KS_URL=kartoffel-service:8080
       - MS_MAIL_SERVICE=hotmail
-      - MS_MAIL_ADDRESS=mayatest4321@outlook.com
-      - MS_MAIL_USER=mayatest4321@outlook.com
-      - MS_MAIL_PASSWORD=testpass4321
-      - MS_MAIL_SERVER_HOST=smtp.office365.com
+      - MS_MAIL_ADDRESS=legotestsapir@outlook.com
+      - MS_MAIL_USER=legotestsapir@outlook.com
+      - MS_MAIL_PASSWORD=Aa123456789!
+      - MS_MAIL_SERVER_HOST=smtp-mail.outlook.com
       - MS_MAIL_SERVER_PORT=587
       - MS_MAIL_SERVER_SECURE=false
       - MS_IS_TEST=true
-      - MS_EMAILS_FOR_TEST=enterEmailForTest
+      - MS_EMAILS_FOR_TEST=steindl.barak@gmail.com,liorayacob10@gmail.com
       - MS_LEGO_ADDRESS=http://localhost:3000
+      - MS_IMAGES_PATH=/mailImages
+
 
   kartoffel-consumer:
     image: kartoffel-consumer
@@ -306,22 +309,22 @@ services:
   #     - EXS_ROOT_ID=619e3193f235dc001846bb4f
   #     - EXS_LOG_PATH=/logs
 
-  # whiteListSync-script:
-  #   image: whitelistsync-script
-  #   build: ./whiteListSync-script/
-  #   env_file:
-  #     - ./supernova.env
-  #   depends_on:
-  #     - approver-service
-  #   volumes:
-  #     - logs:/logs
-  #   environment:
-  #     - WLS_APS_URL=approver-service:8080
-  #     - WLS_HOUR=10
-  #     - WLS_MINUTE=0
-  #     - WLS_CRON_JOB=false
-  #     - WLS_LOG_PATH=/logs
-
+  whiteListSync-script:
+    image: whitelistsync-script
+    build: ./whiteListSync-script/
+    env_file:
+      - ./supernova.env
+    depends_on:
+      - approver-service
+    volumes:
+      - logs:/logs
+    environment:
+      - WLS_APS_URL=approver-service:8080
+      - WLS_HOUR=10
+      - WLS_MINUTE=0
+      - WLS_CRON_JOB=false
+      - WLS_LOG_PATH=/logs
+      
   # approvers-init-script:
   #   image: approvers-init-script
   #   build: ./approvers-init-script/
@@ -387,6 +390,7 @@ services:
     volumes:
       - bulk-files:/bulkFiles
       - spike-utils:/spikeUtils
+      - mail-images:/mailImages
       - logs:/logs
     ports:
       - '2000:8080'
@@ -411,6 +415,7 @@ services:
       - GATEWAY_AS_URL=http://localhost
       - GATEWAY_BS_URL=bulk-service:8080
       - GATEWAY_APS_URL=approver-service:8080
+      - GATEWAY_MS_URL=mail-service:8080
       - GATEWAY_BS_FOLDER_PATH=/bulkFiles
       - GATEWAY_AUTHENTICATION_REQUIRED=true
       - GATEWAY_APM_URL=http://apm-server:8200
@@ -422,19 +427,29 @@ services:
       - GATEWAY_ROOT_ID=619e3193f235dc001846bb4f
       - GATEWAY_LOG_PATH=/logs
 
-  # supernova-ui:
-  #   image: supernova-ui
-  #   build: ./SuperNovaUI/
-  #   env_file:
-  #     - ./supernova.env
-  #   depends_on:
-  #     - api-gateway
-  #   ports:
-  #     - '3000:80'
-  #   environment:
-  #     - UI_REACT_APP_BASE_URL=http://localhost:2000
-  #     - UI_REACT_TOKEN_NAME=sp-token
-  #     - UI_USER_SOURCE_DI=sf_name
+  supernova-ui:
+    image: supernova-ui
+    build: ./SuperNovaUI/
+    env_file:
+      - ./supernova.env
+    depends_on:
+      - api-gateway
+    ports:
+      - '3000:80'
+    environment:
+      - UI_REACT_APP_BASE_URL=http://localhost:2000
+      - UI_REACT_TOKEN_NAME=sp-token
+      - UI_USER_SOURCE_DI=es_name
+
+volumes:
+  bulk-files:
+  spike-utils:
+  mail-images:
+  ais-excel-files:
+  tea-utils:
+  logs:
+  esdata:
+    driver: local
 
   # # Kafka GUI
   # kouncil:

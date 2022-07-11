@@ -14,6 +14,8 @@ export const teaServiceUrl = process.env.RS_TS_URL || '0.0.0.0:8086';
 export const mailServiceUrl = process.env.RS_MS_URL || '0.0.0.0:8088';
 export const approverServiceUrl = process.env.RS_APS_URL || '0.0.0.0:8085';
 export const rootId = process.env.RS_ROOT_ID || '619e3193f235dc001846bb4f';
+export const civilian = process.env.RS_CIVILIAN || 'Civilian';
+export const soldier = process.env.RS_SOLDIER || 'Soldier';
 export const mongoConnectionRetries =
   process.env.MONGO_RECONNECT_ATTEMPTS || '5';
 export const mongoReconnectTimeout =
@@ -31,8 +33,9 @@ export const grpcPoolSize = process.env.GLOBAL_GRPC_POOL_SIZE
   : 2;
 export const goalUser = process.env.RS_KARTOFFEL_GOAL_USER || 'GoalUser';
 
-export const groupsWithSecurityAdmin =
-  process.env.RS_GROUPS_WITH_SECURITY_ADMIN ? process.env.RS_GROUPS_WITH_SECURITY_ADMIN.split(','): [];
+export const groupsWithSecurityAdmin = process.env.RS_GROUPS_WITH_SECURITY_ADMIN
+  ? process.env.RS_GROUPS_WITH_SECURITY_ADMIN.split(',')
+  : [];
 
 export const searchFields = [
   { name: 'submittedBy.displayName' },

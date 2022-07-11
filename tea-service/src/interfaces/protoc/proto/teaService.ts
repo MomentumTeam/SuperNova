@@ -115,6 +115,13 @@ export interface RetrieveByEntityReq {
 export interface RetrieveByEntityIdReq {
   domain: Domain;
   entityId: string;
+  entityType?: string | undefined;
+}
+
+export interface RetrieveByIdentifierReq {
+  domain: Domain;
+  identifier: string;
+  entityType: string;
 }
 
 export interface EntityMin {
@@ -122,7 +129,7 @@ export interface EntityMin {
   akaUnit: string;
   personalNumber?: string | undefined;
   identityCard?: string | undefined;
-  goalUserID?: string | undefined;
+  goalUserId?: string | undefined;
   firstName?: string | undefined;
   lastName?: string | undefined;
   employeeNumber?: string | undefined;
@@ -1354,6 +1361,9 @@ export const RetrieveByEntityIdReq = {
     if (message.entityId !== "") {
       writer.uint32(18).string(message.entityId);
     }
+    if (message.entityType !== undefined) {
+      writer.uint32(26).string(message.entityType);
+    }
     return writer;
   },
 
@@ -1372,6 +1382,9 @@ export const RetrieveByEntityIdReq = {
           break;
         case 2:
           message.entityId = reader.string();
+          break;
+        case 3:
+          message.entityType = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -1393,6 +1406,11 @@ export const RetrieveByEntityIdReq = {
     } else {
       message.entityId = "";
     }
+    if (object.entityType !== undefined && object.entityType !== null) {
+      message.entityType = String(object.entityType);
+    } else {
+      message.entityType = undefined;
+    }
     return message;
   },
 
@@ -1400,6 +1418,7 @@ export const RetrieveByEntityIdReq = {
     const obj: any = {};
     message.domain !== undefined && (obj.domain = domainToJSON(message.domain));
     message.entityId !== undefined && (obj.entityId = message.entityId);
+    message.entityType !== undefined && (obj.entityType = message.entityType);
     return obj;
   },
 
@@ -1416,6 +1435,118 @@ export const RetrieveByEntityIdReq = {
       message.entityId = object.entityId;
     } else {
       message.entityId = "";
+    }
+    if (object.entityType !== undefined && object.entityType !== null) {
+      message.entityType = object.entityType;
+    } else {
+      message.entityType = undefined;
+    }
+    return message;
+  },
+};
+
+const baseRetrieveByIdentifierReq: object = {
+  domain: 0,
+  identifier: "",
+  entityType: "",
+};
+
+export const RetrieveByIdentifierReq = {
+  encode(
+    message: RetrieveByIdentifierReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.domain !== 0) {
+      writer.uint32(8).int32(message.domain);
+    }
+    if (message.identifier !== "") {
+      writer.uint32(18).string(message.identifier);
+    }
+    if (message.entityType !== "") {
+      writer.uint32(26).string(message.entityType);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): RetrieveByIdentifierReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseRetrieveByIdentifierReq,
+    } as RetrieveByIdentifierReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.domain = reader.int32() as any;
+          break;
+        case 2:
+          message.identifier = reader.string();
+          break;
+        case 3:
+          message.entityType = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RetrieveByIdentifierReq {
+    const message = {
+      ...baseRetrieveByIdentifierReq,
+    } as RetrieveByIdentifierReq;
+    if (object.domain !== undefined && object.domain !== null) {
+      message.domain = domainFromJSON(object.domain);
+    } else {
+      message.domain = 0;
+    }
+    if (object.identifier !== undefined && object.identifier !== null) {
+      message.identifier = String(object.identifier);
+    } else {
+      message.identifier = "";
+    }
+    if (object.entityType !== undefined && object.entityType !== null) {
+      message.entityType = String(object.entityType);
+    } else {
+      message.entityType = "";
+    }
+    return message;
+  },
+
+  toJSON(message: RetrieveByIdentifierReq): unknown {
+    const obj: any = {};
+    message.domain !== undefined && (obj.domain = domainToJSON(message.domain));
+    message.identifier !== undefined && (obj.identifier = message.identifier);
+    message.entityType !== undefined && (obj.entityType = message.entityType);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<RetrieveByIdentifierReq>
+  ): RetrieveByIdentifierReq {
+    const message = {
+      ...baseRetrieveByIdentifierReq,
+    } as RetrieveByIdentifierReq;
+    if (object.domain !== undefined && object.domain !== null) {
+      message.domain = object.domain;
+    } else {
+      message.domain = 0;
+    }
+    if (object.identifier !== undefined && object.identifier !== null) {
+      message.identifier = object.identifier;
+    } else {
+      message.identifier = "";
+    }
+    if (object.entityType !== undefined && object.entityType !== null) {
+      message.entityType = object.entityType;
+    } else {
+      message.entityType = "";
     }
     return message;
   },
@@ -1440,8 +1571,8 @@ export const EntityMin = {
     if (message.identityCard !== undefined) {
       writer.uint32(34).string(message.identityCard);
     }
-    if (message.goalUserID !== undefined) {
-      writer.uint32(42).string(message.goalUserID);
+    if (message.goalUserId !== undefined) {
+      writer.uint32(42).string(message.goalUserId);
     }
     if (message.firstName !== undefined) {
       writer.uint32(50).string(message.firstName);
@@ -1475,7 +1606,7 @@ export const EntityMin = {
           message.identityCard = reader.string();
           break;
         case 5:
-          message.goalUserID = reader.string();
+          message.goalUserId = reader.string();
           break;
         case 6:
           message.firstName = reader.string();
@@ -1516,10 +1647,10 @@ export const EntityMin = {
     } else {
       message.identityCard = undefined;
     }
-    if (object.goalUserID !== undefined && object.goalUserID !== null) {
-      message.goalUserID = String(object.goalUserID);
+    if (object.goalUserId !== undefined && object.goalUserId !== null) {
+      message.goalUserId = String(object.goalUserId);
     } else {
-      message.goalUserID = undefined;
+      message.goalUserId = undefined;
     }
     if (object.firstName !== undefined && object.firstName !== null) {
       message.firstName = String(object.firstName);
@@ -1547,7 +1678,7 @@ export const EntityMin = {
       (obj.personalNumber = message.personalNumber);
     message.identityCard !== undefined &&
       (obj.identityCard = message.identityCard);
-    message.goalUserID !== undefined && (obj.goalUserID = message.goalUserID);
+    message.goalUserId !== undefined && (obj.goalUserId = message.goalUserId);
     message.firstName !== undefined && (obj.firstName = message.firstName);
     message.lastName !== undefined && (obj.lastName = message.lastName);
     message.employeeNumber !== undefined &&
@@ -1577,10 +1708,10 @@ export const EntityMin = {
     } else {
       message.identityCard = undefined;
     }
-    if (object.goalUserID !== undefined && object.goalUserID !== null) {
-      message.goalUserID = object.goalUserID;
+    if (object.goalUserId !== undefined && object.goalUserId !== null) {
+      message.goalUserId = object.goalUserId;
     } else {
-      message.goalUserID = undefined;
+      message.goalUserId = undefined;
     }
     if (object.firstName !== undefined && object.firstName !== null) {
       message.firstName = object.firstName;
@@ -1606,6 +1737,9 @@ export interface Tea {
   RetrieveTeaByPrefix(request: RetrieveTeaByPrefixReq): Promise<TeaMessage>;
   RetrieveUPNByEntity(request: RetrieveByEntityReq): Promise<UPNMessage>;
   RetrieveUPNByEntityId(request: RetrieveByEntityIdReq): Promise<UPNMessage>;
+  RetrieveUPNByIdentifier(
+    request: RetrieveByIdentifierReq
+  ): Promise<UPNMessage>;
   ReportTeaSuccess(request: ReportTeaReq): Promise<SuccessMessage>;
   ReportTeaFail(request: ReportTeaReq): Promise<SuccessMessage>;
   ThrowTea(request: ReportTeaReq): Promise<SuccessMessage>;
@@ -1625,6 +1759,7 @@ export class TeaClientImpl implements Tea {
     this.RetrieveTeaByPrefix = this.RetrieveTeaByPrefix.bind(this);
     this.RetrieveUPNByEntity = this.RetrieveUPNByEntity.bind(this);
     this.RetrieveUPNByEntityId = this.RetrieveUPNByEntityId.bind(this);
+    this.RetrieveUPNByIdentifier = this.RetrieveUPNByIdentifier.bind(this);
     this.ReportTeaSuccess = this.ReportTeaSuccess.bind(this);
     this.ReportTeaFail = this.ReportTeaFail.bind(this);
     this.ThrowTea = this.ThrowTea.bind(this);
@@ -1656,6 +1791,18 @@ export class TeaClientImpl implements Tea {
   RetrieveUPNByEntityId(request: RetrieveByEntityIdReq): Promise<UPNMessage> {
     const data = RetrieveByEntityIdReq.encode(request).finish();
     const promise = this.rpc.request("Tea.Tea", "RetrieveUPNByEntityId", data);
+    return promise.then((data) => UPNMessage.decode(new _m0.Reader(data)));
+  }
+
+  RetrieveUPNByIdentifier(
+    request: RetrieveByIdentifierReq
+  ): Promise<UPNMessage> {
+    const data = RetrieveByIdentifierReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "Tea.Tea",
+      "RetrieveUPNByIdentifier",
+      data
+    );
     return promise.then((data) => UPNMessage.decode(new _m0.Reader(data)));
   }
 

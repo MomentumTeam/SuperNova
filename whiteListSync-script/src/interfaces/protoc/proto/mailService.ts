@@ -91,6 +91,13 @@ export function mailTypeToJSON(object: MailType): string {
   }
 }
 
+export interface SendHierarchyDataReq {
+  entityId: string;
+  hierarchy: string;
+  withRoles: boolean;
+  direct?: boolean | undefined;
+}
+
 export interface SendCustomMailReq {
   entityId: string;
   title: string;
@@ -107,6 +114,122 @@ export interface SendMailReq {
   type: MailType;
   request: Request | undefined;
 }
+
+const baseSendHierarchyDataReq: object = {
+  entityId: "",
+  hierarchy: "",
+  withRoles: false,
+};
+
+export const SendHierarchyDataReq = {
+  encode(
+    message: SendHierarchyDataReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.entityId !== "") {
+      writer.uint32(10).string(message.entityId);
+    }
+    if (message.hierarchy !== "") {
+      writer.uint32(18).string(message.hierarchy);
+    }
+    if (message.withRoles === true) {
+      writer.uint32(24).bool(message.withRoles);
+    }
+    if (message.direct !== undefined) {
+      writer.uint32(32).bool(message.direct);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): SendHierarchyDataReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseSendHierarchyDataReq } as SendHierarchyDataReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.entityId = reader.string();
+          break;
+        case 2:
+          message.hierarchy = reader.string();
+          break;
+        case 3:
+          message.withRoles = reader.bool();
+          break;
+        case 4:
+          message.direct = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SendHierarchyDataReq {
+    const message = { ...baseSendHierarchyDataReq } as SendHierarchyDataReq;
+    if (object.entityId !== undefined && object.entityId !== null) {
+      message.entityId = String(object.entityId);
+    } else {
+      message.entityId = "";
+    }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = String(object.hierarchy);
+    } else {
+      message.hierarchy = "";
+    }
+    if (object.withRoles !== undefined && object.withRoles !== null) {
+      message.withRoles = Boolean(object.withRoles);
+    } else {
+      message.withRoles = false;
+    }
+    if (object.direct !== undefined && object.direct !== null) {
+      message.direct = Boolean(object.direct);
+    } else {
+      message.direct = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: SendHierarchyDataReq): unknown {
+    const obj: any = {};
+    message.entityId !== undefined && (obj.entityId = message.entityId);
+    message.hierarchy !== undefined && (obj.hierarchy = message.hierarchy);
+    message.withRoles !== undefined && (obj.withRoles = message.withRoles);
+    message.direct !== undefined && (obj.direct = message.direct);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<SendHierarchyDataReq>): SendHierarchyDataReq {
+    const message = { ...baseSendHierarchyDataReq } as SendHierarchyDataReq;
+    if (object.entityId !== undefined && object.entityId !== null) {
+      message.entityId = object.entityId;
+    } else {
+      message.entityId = "";
+    }
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = object.hierarchy;
+    } else {
+      message.hierarchy = "";
+    }
+    if (object.withRoles !== undefined && object.withRoles !== null) {
+      message.withRoles = object.withRoles;
+    } else {
+      message.withRoles = false;
+    }
+    if (object.direct !== undefined && object.direct !== null) {
+      message.direct = object.direct;
+    } else {
+      message.direct = undefined;
+    }
+    return message;
+  },
+};
 
 const baseSendCustomMailReq: object = {
   entityId: "",
@@ -378,6 +501,7 @@ export const SendMailReq = {
 export interface MailService {
   SendCustomMail(request: SendCustomMailReq): Promise<SuccessMessage>;
   SendMail(request: SendMailReq): Promise<SuccessMessage>;
+  SendHierarchyDataMail(request: SendHierarchyDataReq): Promise<SuccessMessage>;
 }
 
 export class MailServiceClientImpl implements MailService {
@@ -386,6 +510,7 @@ export class MailServiceClientImpl implements MailService {
     this.rpc = rpc;
     this.SendCustomMail = this.SendCustomMail.bind(this);
     this.SendMail = this.SendMail.bind(this);
+    this.SendHierarchyDataMail = this.SendHierarchyDataMail.bind(this);
   }
   SendCustomMail(request: SendCustomMailReq): Promise<SuccessMessage> {
     const data = SendCustomMailReq.encode(request).finish();
@@ -402,6 +527,18 @@ export class MailServiceClientImpl implements MailService {
     const promise = this.rpc.request(
       "MailService.MailService",
       "SendMail",
+      data
+    );
+    return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));
+  }
+
+  SendHierarchyDataMail(
+    request: SendHierarchyDataReq
+  ): Promise<SuccessMessage> {
+    const data = SendHierarchyDataReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "MailService.MailService",
+      "SendHierarchyDataMail",
       data
     );
     return promise.then((data) => SuccessMessage.decode(new _m0.Reader(data)));

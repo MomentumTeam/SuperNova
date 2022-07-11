@@ -4,6 +4,58 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "Kartoffel";
 
+export enum EntityType {
+  Soldier = 0,
+  Civilian = 1,
+  GoalUser = 2,
+  External = 3,
+  UNRECOGNIZED = -1,
+}
+
+export function entityTypeFromJSON(object: any): EntityType {
+  switch (object) {
+    case 0:
+    case "Soldier":
+      return EntityType.Soldier;
+    case 1:
+    case "Civilian":
+      return EntityType.Civilian;
+    case 2:
+    case "GoalUser":
+      return EntityType.GoalUser;
+    case 3:
+    case "External":
+      return EntityType.External;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return EntityType.UNRECOGNIZED;
+  }
+}
+
+export function entityTypeToJSON(object: EntityType): string {
+  switch (object) {
+    case EntityType.Soldier:
+      return "Soldier";
+    case EntityType.Civilian:
+      return "Civilian";
+    case EntityType.GoalUser:
+      return "GoalUser";
+    case EntityType.External:
+      return "External";
+    default:
+      return "UNKNOWN";
+  }
+}
+
+export interface SearchSamAccountNameReq {
+  samAccountName: string;
+}
+
+export interface SearchSamAccountNameRes {
+  lastLogonTimestamp: string;
+}
+
 export interface GetRoleIdSuffixByOGReq {
   id: string;
 }
@@ -31,6 +83,25 @@ export interface IsOGNameAlreadyTakenReq {
 
 export interface IsOGNameAlreadyTakenRes {
   isOGNameAlreadyTaken: boolean;
+}
+
+export interface ExportHierarchyDataReq {
+  hierarchy: string;
+  withRoles: boolean;
+  direct?: boolean | undefined;
+}
+
+export interface ExportHierarchyDataRes {
+  hierarchyData: HierarchyData[];
+  fatherHierarchyName: string;
+}
+
+export interface HierarchyData {
+  hierarchyName: string;
+  jobTitle: string;
+  roleId: string;
+  upn: string;
+  entity: string;
 }
 
 export interface IsJobTitleAlreadyTakenReq {
@@ -102,6 +173,7 @@ export interface GetOGByIdRequest {
 export interface GetOGByHierarchyNameRequest {
   hierarchy: string;
   withRoles: boolean;
+  direct?: boolean | undefined;
 }
 
 export interface DeleteEntityRequest {
@@ -457,11 +529,12 @@ export interface Entity {
   updatedAt: string;
   digitalIdentities: DigitalIdentity[];
   picture: string;
-  goalUserID: string;
+  goalUserId: string;
   organization: string;
   employeeNumber: string;
   /** organization-employeeNUmber */
   employeeId: string;
+  fullClearance: string;
 }
 
 export interface DigitalIdentity {
@@ -484,6 +557,152 @@ export interface RoleIdMessage {
 export interface UniqueIdMessage {
   uniqueId: string;
 }
+
+const baseSearchSamAccountNameReq: object = { samAccountName: "" };
+
+export const SearchSamAccountNameReq = {
+  encode(
+    message: SearchSamAccountNameReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.samAccountName !== "") {
+      writer.uint32(10).string(message.samAccountName);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): SearchSamAccountNameReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseSearchSamAccountNameReq,
+    } as SearchSamAccountNameReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.samAccountName = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SearchSamAccountNameReq {
+    const message = {
+      ...baseSearchSamAccountNameReq,
+    } as SearchSamAccountNameReq;
+    if (object.samAccountName !== undefined && object.samAccountName !== null) {
+      message.samAccountName = String(object.samAccountName);
+    } else {
+      message.samAccountName = "";
+    }
+    return message;
+  },
+
+  toJSON(message: SearchSamAccountNameReq): unknown {
+    const obj: any = {};
+    message.samAccountName !== undefined &&
+      (obj.samAccountName = message.samAccountName);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<SearchSamAccountNameReq>
+  ): SearchSamAccountNameReq {
+    const message = {
+      ...baseSearchSamAccountNameReq,
+    } as SearchSamAccountNameReq;
+    if (object.samAccountName !== undefined && object.samAccountName !== null) {
+      message.samAccountName = object.samAccountName;
+    } else {
+      message.samAccountName = "";
+    }
+    return message;
+  },
+};
+
+const baseSearchSamAccountNameRes: object = { lastLogonTimestamp: "" };
+
+export const SearchSamAccountNameRes = {
+  encode(
+    message: SearchSamAccountNameRes,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.lastLogonTimestamp !== "") {
+      writer.uint32(10).string(message.lastLogonTimestamp);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): SearchSamAccountNameRes {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseSearchSamAccountNameRes,
+    } as SearchSamAccountNameRes;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.lastLogonTimestamp = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SearchSamAccountNameRes {
+    const message = {
+      ...baseSearchSamAccountNameRes,
+    } as SearchSamAccountNameRes;
+    if (
+      object.lastLogonTimestamp !== undefined &&
+      object.lastLogonTimestamp !== null
+    ) {
+      message.lastLogonTimestamp = String(object.lastLogonTimestamp);
+    } else {
+      message.lastLogonTimestamp = "";
+    }
+    return message;
+  },
+
+  toJSON(message: SearchSamAccountNameRes): unknown {
+    const obj: any = {};
+    message.lastLogonTimestamp !== undefined &&
+      (obj.lastLogonTimestamp = message.lastLogonTimestamp);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<SearchSamAccountNameRes>
+  ): SearchSamAccountNameRes {
+    const message = {
+      ...baseSearchSamAccountNameRes,
+    } as SearchSamAccountNameRes;
+    if (
+      object.lastLogonTimestamp !== undefined &&
+      object.lastLogonTimestamp !== null
+    ) {
+      message.lastLogonTimestamp = object.lastLogonTimestamp;
+    } else {
+      message.lastLogonTimestamp = "";
+    }
+    return message;
+  },
+};
 
 const baseGetRoleIdSuffixByOGReq: object = { id: "" };
 
@@ -954,6 +1173,334 @@ export const IsOGNameAlreadyTakenRes = {
       message.isOGNameAlreadyTaken = object.isOGNameAlreadyTaken;
     } else {
       message.isOGNameAlreadyTaken = false;
+    }
+    return message;
+  },
+};
+
+const baseExportHierarchyDataReq: object = { hierarchy: "", withRoles: false };
+
+export const ExportHierarchyDataReq = {
+  encode(
+    message: ExportHierarchyDataReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.hierarchy !== "") {
+      writer.uint32(10).string(message.hierarchy);
+    }
+    if (message.withRoles === true) {
+      writer.uint32(16).bool(message.withRoles);
+    }
+    if (message.direct !== undefined) {
+      writer.uint32(24).bool(message.direct);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): ExportHierarchyDataReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseExportHierarchyDataReq } as ExportHierarchyDataReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.hierarchy = reader.string();
+          break;
+        case 2:
+          message.withRoles = reader.bool();
+          break;
+        case 3:
+          message.direct = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ExportHierarchyDataReq {
+    const message = { ...baseExportHierarchyDataReq } as ExportHierarchyDataReq;
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = String(object.hierarchy);
+    } else {
+      message.hierarchy = "";
+    }
+    if (object.withRoles !== undefined && object.withRoles !== null) {
+      message.withRoles = Boolean(object.withRoles);
+    } else {
+      message.withRoles = false;
+    }
+    if (object.direct !== undefined && object.direct !== null) {
+      message.direct = Boolean(object.direct);
+    } else {
+      message.direct = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: ExportHierarchyDataReq): unknown {
+    const obj: any = {};
+    message.hierarchy !== undefined && (obj.hierarchy = message.hierarchy);
+    message.withRoles !== undefined && (obj.withRoles = message.withRoles);
+    message.direct !== undefined && (obj.direct = message.direct);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<ExportHierarchyDataReq>
+  ): ExportHierarchyDataReq {
+    const message = { ...baseExportHierarchyDataReq } as ExportHierarchyDataReq;
+    if (object.hierarchy !== undefined && object.hierarchy !== null) {
+      message.hierarchy = object.hierarchy;
+    } else {
+      message.hierarchy = "";
+    }
+    if (object.withRoles !== undefined && object.withRoles !== null) {
+      message.withRoles = object.withRoles;
+    } else {
+      message.withRoles = false;
+    }
+    if (object.direct !== undefined && object.direct !== null) {
+      message.direct = object.direct;
+    } else {
+      message.direct = undefined;
+    }
+    return message;
+  },
+};
+
+const baseExportHierarchyDataRes: object = { fatherHierarchyName: "" };
+
+export const ExportHierarchyDataRes = {
+  encode(
+    message: ExportHierarchyDataRes,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.hierarchyData) {
+      HierarchyData.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.fatherHierarchyName !== "") {
+      writer.uint32(18).string(message.fatherHierarchyName);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): ExportHierarchyDataRes {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseExportHierarchyDataRes } as ExportHierarchyDataRes;
+    message.hierarchyData = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.hierarchyData.push(
+            HierarchyData.decode(reader, reader.uint32())
+          );
+          break;
+        case 2:
+          message.fatherHierarchyName = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ExportHierarchyDataRes {
+    const message = { ...baseExportHierarchyDataRes } as ExportHierarchyDataRes;
+    message.hierarchyData = [];
+    if (object.hierarchyData !== undefined && object.hierarchyData !== null) {
+      for (const e of object.hierarchyData) {
+        message.hierarchyData.push(HierarchyData.fromJSON(e));
+      }
+    }
+    if (
+      object.fatherHierarchyName !== undefined &&
+      object.fatherHierarchyName !== null
+    ) {
+      message.fatherHierarchyName = String(object.fatherHierarchyName);
+    } else {
+      message.fatherHierarchyName = "";
+    }
+    return message;
+  },
+
+  toJSON(message: ExportHierarchyDataRes): unknown {
+    const obj: any = {};
+    if (message.hierarchyData) {
+      obj.hierarchyData = message.hierarchyData.map((e) =>
+        e ? HierarchyData.toJSON(e) : undefined
+      );
+    } else {
+      obj.hierarchyData = [];
+    }
+    message.fatherHierarchyName !== undefined &&
+      (obj.fatherHierarchyName = message.fatherHierarchyName);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<ExportHierarchyDataRes>
+  ): ExportHierarchyDataRes {
+    const message = { ...baseExportHierarchyDataRes } as ExportHierarchyDataRes;
+    message.hierarchyData = [];
+    if (object.hierarchyData !== undefined && object.hierarchyData !== null) {
+      for (const e of object.hierarchyData) {
+        message.hierarchyData.push(HierarchyData.fromPartial(e));
+      }
+    }
+    if (
+      object.fatherHierarchyName !== undefined &&
+      object.fatherHierarchyName !== null
+    ) {
+      message.fatherHierarchyName = object.fatherHierarchyName;
+    } else {
+      message.fatherHierarchyName = "";
+    }
+    return message;
+  },
+};
+
+const baseHierarchyData: object = {
+  hierarchyName: "",
+  jobTitle: "",
+  roleId: "",
+  upn: "",
+  entity: "",
+};
+
+export const HierarchyData = {
+  encode(
+    message: HierarchyData,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.hierarchyName !== "") {
+      writer.uint32(10).string(message.hierarchyName);
+    }
+    if (message.jobTitle !== "") {
+      writer.uint32(18).string(message.jobTitle);
+    }
+    if (message.roleId !== "") {
+      writer.uint32(26).string(message.roleId);
+    }
+    if (message.upn !== "") {
+      writer.uint32(34).string(message.upn);
+    }
+    if (message.entity !== "") {
+      writer.uint32(42).string(message.entity);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): HierarchyData {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseHierarchyData } as HierarchyData;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.hierarchyName = reader.string();
+          break;
+        case 2:
+          message.jobTitle = reader.string();
+          break;
+        case 3:
+          message.roleId = reader.string();
+          break;
+        case 4:
+          message.upn = reader.string();
+          break;
+        case 5:
+          message.entity = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): HierarchyData {
+    const message = { ...baseHierarchyData } as HierarchyData;
+    if (object.hierarchyName !== undefined && object.hierarchyName !== null) {
+      message.hierarchyName = String(object.hierarchyName);
+    } else {
+      message.hierarchyName = "";
+    }
+    if (object.jobTitle !== undefined && object.jobTitle !== null) {
+      message.jobTitle = String(object.jobTitle);
+    } else {
+      message.jobTitle = "";
+    }
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = String(object.roleId);
+    } else {
+      message.roleId = "";
+    }
+    if (object.upn !== undefined && object.upn !== null) {
+      message.upn = String(object.upn);
+    } else {
+      message.upn = "";
+    }
+    if (object.entity !== undefined && object.entity !== null) {
+      message.entity = String(object.entity);
+    } else {
+      message.entity = "";
+    }
+    return message;
+  },
+
+  toJSON(message: HierarchyData): unknown {
+    const obj: any = {};
+    message.hierarchyName !== undefined &&
+      (obj.hierarchyName = message.hierarchyName);
+    message.jobTitle !== undefined && (obj.jobTitle = message.jobTitle);
+    message.roleId !== undefined && (obj.roleId = message.roleId);
+    message.upn !== undefined && (obj.upn = message.upn);
+    message.entity !== undefined && (obj.entity = message.entity);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<HierarchyData>): HierarchyData {
+    const message = { ...baseHierarchyData } as HierarchyData;
+    if (object.hierarchyName !== undefined && object.hierarchyName !== null) {
+      message.hierarchyName = object.hierarchyName;
+    } else {
+      message.hierarchyName = "";
+    }
+    if (object.jobTitle !== undefined && object.jobTitle !== null) {
+      message.jobTitle = object.jobTitle;
+    } else {
+      message.jobTitle = "";
+    }
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = object.roleId;
+    } else {
+      message.roleId = "";
+    }
+    if (object.upn !== undefined && object.upn !== null) {
+      message.upn = object.upn;
+    } else {
+      message.upn = "";
+    }
+    if (object.entity !== undefined && object.entity !== null) {
+      message.entity = object.entity;
+    } else {
+      message.entity = "";
     }
     return message;
   },
@@ -2073,6 +2620,9 @@ export const GetOGByHierarchyNameRequest = {
     if (message.withRoles === true) {
       writer.uint32(16).bool(message.withRoles);
     }
+    if (message.direct !== undefined) {
+      writer.uint32(24).bool(message.direct);
+    }
     return writer;
   },
 
@@ -2093,6 +2643,9 @@ export const GetOGByHierarchyNameRequest = {
           break;
         case 2:
           message.withRoles = reader.bool();
+          break;
+        case 3:
+          message.direct = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -2116,6 +2669,11 @@ export const GetOGByHierarchyNameRequest = {
     } else {
       message.withRoles = false;
     }
+    if (object.direct !== undefined && object.direct !== null) {
+      message.direct = Boolean(object.direct);
+    } else {
+      message.direct = undefined;
+    }
     return message;
   },
 
@@ -2123,6 +2681,7 @@ export const GetOGByHierarchyNameRequest = {
     const obj: any = {};
     message.hierarchy !== undefined && (obj.hierarchy = message.hierarchy);
     message.withRoles !== undefined && (obj.withRoles = message.withRoles);
+    message.direct !== undefined && (obj.direct = message.direct);
     return obj;
   },
 
@@ -2141,6 +2700,11 @@ export const GetOGByHierarchyNameRequest = {
       message.withRoles = object.withRoles;
     } else {
       message.withRoles = false;
+    }
+    if (object.direct !== undefined && object.direct !== null) {
+      message.direct = object.direct;
+    } else {
+      message.direct = undefined;
     }
     return message;
   },
@@ -6949,10 +7513,11 @@ const baseEntity: object = {
   createdAt: "",
   updatedAt: "",
   picture: "",
-  goalUserID: "",
+  goalUserId: "",
   organization: "",
   employeeNumber: "",
   employeeId: "",
+  fullClearance: "",
 };
 
 export const Entity = {
@@ -7038,8 +7603,8 @@ export const Entity = {
     if (message.picture !== "") {
       writer.uint32(210).string(message.picture);
     }
-    if (message.goalUserID !== "") {
-      writer.uint32(218).string(message.goalUserID);
+    if (message.goalUserId !== "") {
+      writer.uint32(218).string(message.goalUserId);
     }
     if (message.organization !== "") {
       writer.uint32(226).string(message.organization);
@@ -7049,6 +7614,9 @@ export const Entity = {
     }
     if (message.employeeId !== "") {
       writer.uint32(242).string(message.employeeId);
+    }
+    if (message.fullClearance !== "") {
+      writer.uint32(250).string(message.fullClearance);
     }
     return writer;
   },
@@ -7144,7 +7712,7 @@ export const Entity = {
           message.picture = reader.string();
           break;
         case 27:
-          message.goalUserID = reader.string();
+          message.goalUserId = reader.string();
           break;
         case 28:
           message.organization = reader.string();
@@ -7154,6 +7722,9 @@ export const Entity = {
           break;
         case 30:
           message.employeeId = reader.string();
+          break;
+        case 31:
+          message.fullClearance = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -7301,10 +7872,10 @@ export const Entity = {
     } else {
       message.picture = "";
     }
-    if (object.goalUserID !== undefined && object.goalUserID !== null) {
-      message.goalUserID = String(object.goalUserID);
+    if (object.goalUserId !== undefined && object.goalUserId !== null) {
+      message.goalUserId = String(object.goalUserId);
     } else {
-      message.goalUserID = "";
+      message.goalUserId = "";
     }
     if (object.organization !== undefined && object.organization !== null) {
       message.organization = String(object.organization);
@@ -7320,6 +7891,11 @@ export const Entity = {
       message.employeeId = String(object.employeeId);
     } else {
       message.employeeId = "";
+    }
+    if (object.fullClearance !== undefined && object.fullClearance !== null) {
+      message.fullClearance = String(object.fullClearance);
+    } else {
+      message.fullClearance = "";
     }
     return message;
   },
@@ -7372,12 +7948,14 @@ export const Entity = {
       obj.digitalIdentities = [];
     }
     message.picture !== undefined && (obj.picture = message.picture);
-    message.goalUserID !== undefined && (obj.goalUserID = message.goalUserID);
+    message.goalUserId !== undefined && (obj.goalUserId = message.goalUserId);
     message.organization !== undefined &&
       (obj.organization = message.organization);
     message.employeeNumber !== undefined &&
       (obj.employeeNumber = message.employeeNumber);
     message.employeeId !== undefined && (obj.employeeId = message.employeeId);
+    message.fullClearance !== undefined &&
+      (obj.fullClearance = message.fullClearance);
     return obj;
   },
 
@@ -7519,10 +8097,10 @@ export const Entity = {
     } else {
       message.picture = "";
     }
-    if (object.goalUserID !== undefined && object.goalUserID !== null) {
-      message.goalUserID = object.goalUserID;
+    if (object.goalUserId !== undefined && object.goalUserId !== null) {
+      message.goalUserId = object.goalUserId;
     } else {
-      message.goalUserID = "";
+      message.goalUserId = "";
     }
     if (object.organization !== undefined && object.organization !== null) {
       message.organization = object.organization;
@@ -7538,6 +8116,11 @@ export const Entity = {
       message.employeeId = object.employeeId;
     } else {
       message.employeeId = "";
+    }
+    if (object.fullClearance !== undefined && object.fullClearance !== null) {
+      message.fullClearance = object.fullClearance;
+    } else {
+      message.fullClearance = "";
     }
     return message;
   },
@@ -7935,6 +8518,9 @@ export interface Kartoffel {
   IsOGNameAlreadyTaken(
     request: IsOGNameAlreadyTakenReq
   ): Promise<IsOGNameAlreadyTakenRes>;
+  ExportHierarchyData(
+    request: ExportHierarchyDataReq
+  ): Promise<ExportHierarchyDataRes>;
   /** DI */
   CreateDI(request: CreateDIRequest): Promise<UniqueIdMessage>;
   GetAllDIs(request: GetAllDIsRequest): Promise<DigitalIdentities>;
@@ -7968,6 +8554,10 @@ export interface Kartoffel {
   SearchRoleByRoleId(request: SearchRoleByRoleIdReq): Promise<RoleArray>;
   /** Health */
   GetIsHealthy(request: GetIsHealthyReq): Promise<GetIsHealthyRes>;
+  /** LDAP */
+  SearchSamAccountName(
+    request: SearchSamAccountNameReq
+  ): Promise<SearchSamAccountNameRes>;
 }
 
 export class KartoffelClientImpl implements Kartoffel {
@@ -8005,6 +8595,7 @@ export class KartoffelClientImpl implements Kartoffel {
     this.RenameOG = this.RenameOG.bind(this);
     this.GetPrefixByOGId = this.GetPrefixByOGId.bind(this);
     this.IsOGNameAlreadyTaken = this.IsOGNameAlreadyTaken.bind(this);
+    this.ExportHierarchyData = this.ExportHierarchyData.bind(this);
     this.CreateDI = this.CreateDI.bind(this);
     this.GetAllDIs = this.GetAllDIs.bind(this);
     this.GetDIByRoleId = this.GetDIByRoleId.bind(this);
@@ -8027,6 +8618,7 @@ export class KartoffelClientImpl implements Kartoffel {
     this.GetRoleIdSuffixByOG = this.GetRoleIdSuffixByOG.bind(this);
     this.SearchRoleByRoleId = this.SearchRoleByRoleId.bind(this);
     this.GetIsHealthy = this.GetIsHealthy.bind(this);
+    this.SearchSamAccountName = this.SearchSamAccountName.bind(this);
   }
   CreateEntity(request: CreateEntityRequest): Promise<IdMessage> {
     const data = CreateEntityRequest.encode(request).finish();
@@ -8306,6 +8898,20 @@ export class KartoffelClientImpl implements Kartoffel {
     );
   }
 
+  ExportHierarchyData(
+    request: ExportHierarchyDataReq
+  ): Promise<ExportHierarchyDataRes> {
+    const data = ExportHierarchyDataReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "ExportHierarchyData",
+      data
+    );
+    return promise.then((data) =>
+      ExportHierarchyDataRes.decode(new _m0.Reader(data))
+    );
+  }
+
   CreateDI(request: CreateDIRequest): Promise<UniqueIdMessage> {
     const data = CreateDIRequest.encode(request).finish();
     const promise = this.rpc.request("Kartoffel.Kartoffel", "CreateDI", data);
@@ -8512,6 +9118,20 @@ export class KartoffelClientImpl implements Kartoffel {
       data
     );
     return promise.then((data) => GetIsHealthyRes.decode(new _m0.Reader(data)));
+  }
+
+  SearchSamAccountName(
+    request: SearchSamAccountNameReq
+  ): Promise<SearchSamAccountNameRes> {
+    const data = SearchSamAccountNameReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "Kartoffel.Kartoffel",
+      "SearchSamAccountName",
+      data
+    );
+    return promise.then((data) =>
+      SearchSamAccountNameRes.decode(new _m0.Reader(data))
+    );
   }
 }
 

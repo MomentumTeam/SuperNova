@@ -20,7 +20,7 @@ import {
   searchEntitiesByFullName,
   searchHighCommandersByFullName,
   updateEntity,
-} from "./entities/entities.controller";
+} from './entities/entities.controller';
 import {
   getAllOGs,
   createOG,
@@ -35,6 +35,7 @@ import {
   getOGTree,
   getPrefixByOGId,
   isOGNameAlreadyTaken,
+  exportHierarchyData,
 } from './groups/groups.controller';
 import {
   getAllDIs,
@@ -63,6 +64,7 @@ import {
   searchRolesByRoleId,
 } from './roles/roles.controller';
 import { getIsHealthy } from './health/health.controller';
+import { searchSamAccountName } from './ldap/ldap.controller';
 
 const PROTO_PATH = `${findPath('proto')}/kartoffelService.proto`;
 
@@ -137,6 +139,7 @@ export class Server {
         GetOGTree: getOGTree,
         GetPrefixByOGId: getPrefixByOGId,
         IsOGNameAlreadyTaken: isOGNameAlreadyTaken,
+        ExportHierarchyData: exportHierarchyData,
 
         //digitalIdentities
         GetAllDIs: getAllDIs,
@@ -164,7 +167,10 @@ export class Server {
         SearchRoleByRoleId: searchRolesByRoleId,
 
         // Health
-        GetIsHealthy: getIsHealthy
+        GetIsHealthy: getIsHealthy,
+
+        // LDAP
+        SearchSamAccountName: searchSamAccountName,
       });
       logger.info(`Grpc services were successfully added to the server`);
     } catch (error: any) {

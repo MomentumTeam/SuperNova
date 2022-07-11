@@ -15,6 +15,7 @@ import {
   UpdateEntityRequest,
   DisconnectRoleAndDIRequest,
   DeleteEntityRequest,
+  DisconnectDIFromEntityRequest,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { logger } from '../utils/logger';
 import { config } from '../config';
@@ -42,7 +43,6 @@ export const createOG = async (createOGRequest: any) => {
 export const createRole = async (data: any) => {
   try {
     logger.info('createRole request received.', data);
-
     const {
       type,
       source,
@@ -52,6 +52,8 @@ export const createRole = async (data: any) => {
       roleEntityType,
       clearance,
       upn,
+      firstName,
+      lastName,
     } = data;
     const newDI: DigitalIdentity = await KartoffelService.createDI({
       isRoleAttachable: isRoleAttachable,
@@ -82,10 +84,10 @@ export const createRole = async (data: any) => {
 
     if (roleEntityType === config.goalUser && upn !== undefined) {
       //If goal user
+      //TODO add given firstName and lastName
       const goalUserEntity = await KartoffelService.createEntity({
-        firstName: jobTitle,
-        // lastName: jobTitle,
-        // lastName: '',
+        firstName: firstName,
+        lastName: lastName,
         entityType: config.goalUser,
         phone: [],
         mobilePhone: [],
@@ -119,7 +121,7 @@ export const createEntity = async (createEntityRequest: any) => {
       serviceType,
       entityType,
       organization,
-      employeeNumber
+      employeeNumber,
     } = createEntityRequest;
     logger.info('createEntity request received', createEntityRequest);
 
@@ -137,7 +139,7 @@ export const createEntity = async (createEntityRequest: any) => {
       rank: rank !== undefined ? rank : config.civilianDefaultRank,
       serviceType: serviceType,
       organization: organization,
-      employeeNumber: employeeNumber
+      employeeNumber: employeeNumber,
     });
     logger.info('Successfuly created Entity', createdEntity);
     return createdEntity.id;
@@ -207,13 +209,32 @@ export const deleteOG = async (deleteOGrequest: DeleteOGRequest) => {
   }
 };
 
-export const deleteRole = async (deleteRoleRequest: DeleteRoleRequest) => {
+export const deleteRole = async (deleteRoleRequest: any) => {
   try {
     logger.info('deleteRole request received', deleteRoleRequest);
-    const { roleId } = deleteRoleRequest;
+    const { roleId, uniqueId } = deleteRoleRequest;
+
+    // Disconnect role and DI
+    await KartoffelService.disconnectRoleAndDI({
+      roleId,
+      uniqueId,
+    });
+
+    // Delete Role
     const successMessage: SuccessMessage = await KartoffelService.deleteRole({
       roleId,
     });
+
+    // Delete DI
+    const entity = await KartoffelService.getEntityByDI(uniqueId)
+    if (entity) {
+       await KartoffelService.disconnectDIFromEntity({
+         id: entity.id,
+         uniqueId: uniqueId,
+       });
+    }
+    await KartoffelService.deleteDI({id: uniqueId})
+
     logger.info('Successfuly deleted role', successMessage);
   } catch (error) {
     throw error;
@@ -279,21 +300,21 @@ export const updateEntity = async (
   }
 };
 
-export const disconnectRoleAndDI = async (
-  disconnectRoleAndDIRequest: DisconnectRoleAndDIRequest
+export const disconnectDIFromEntity = async (
+  disconnectDIFromEntityRequest: DisconnectDIFromEntityRequest
 ) => {
   try {
     logger.info(
-      'disconnectRoleAndDI request received',
-      disconnectRoleAndDIRequest
+      'disconnectDIFromEntity request received',
+      disconnectDIFromEntityRequest
     );
-    const { roleId, uniqueId } = disconnectRoleAndDIRequest;
+    const { id, uniqueId } = disconnectDIFromEntityRequest;
     const successMessage: SuccessMessage =
-      await KartoffelService.disconnectRoleAndDI({
-        roleId: roleId,
+      await KartoffelService.disconnectDIFromEntity({
+        id: id,
         uniqueId: uniqueId,
       });
-    logger.info('Successfuly disconnected role from DI', successMessage);
+    logger.info('Successfuly disconnected role from entity', successMessage);
   } catch (error) {
     throw error;
   }
@@ -319,6 +340,36 @@ export const changeRoleOG = async (changeRoleHierarchyReq: any) => {
         changeRoleHierarchyReq,
       });
     }
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const convertEntity = async (convertEntityRequest: any) => {
+  try {
+    logger.info('convertEntity request received', convertEntityRequest);
+    const { id, uniqueId, newEntityType, identifier, upn } = convertEntityRequest;
+    await KartoffelService.disconnectDIFromEntity({
+      id: id,
+      uniqueId: uniqueId,
+    });
+
+    let updateEntityRequest: any = {
+      id: id,
+      properties: {
+        entityType: newEntityType,
+      },
+    };
+    if (identifier) {
+      if (newEntityType === config.civilian) {
+        updateEntityRequest.properties.identityCard = identifier;
+      } else {
+        updateEntityRequest.properties.personalNumber = identifier;
+      }
+    }
+    await KartoffelService.updateEntity(updateEntityRequest);
+    await KartoffelService.connectEntityAndDI({ id: id, uniqueId: uniqueId, upn: upn });    
+    logger.info('Successfuly converted entity');
   } catch (error) {
     throw error;
   }

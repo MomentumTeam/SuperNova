@@ -1,90 +1,87 @@
 syntax = "proto3";
-import "requestService.proto"; 
+import "requestService.proto";
 
 package NotificationService;
 
 service NotificationService {
-    rpc CreateCustomNotification(CreateCustomNotificationReq) returns (Notification) {}
-    rpc GetNotificationsByOwnerId(GetNotificationsByOwnerIdReq) returns (NotificationArray) {}
-    rpc MarkAsRead(NotificationIdArray) returns (SuccessMessage){}
-    rpc MarkAllAsRead(MarkAllAsReadReq) returns (SuccessMessage){}
-    rpc CreateNotifications(CreateNotificationsReq) returns (NotificationArray){}
+  rpc CreateCustomNotification(CreateCustomNotificationReq)
+      returns (Notification) {}
+  rpc GetNotificationsByOwnerId(GetNotificationsByOwnerIdReq)
+      returns (NotificationArray) {}
+  rpc MarkAsRead(NotificationIdArray) returns (SuccessMessage) {}
+  rpc MarkAllAsRead(MarkAllAsReadReq) returns (SuccessMessage) {}
+  rpc CreateNotifications(CreateNotificationsReq) returns (NotificationArray) {}
 }
 
-message MarkAllAsReadReq{
-    string ownerId = 1;
+message MarkAllAsReadReq { string ownerId = 1; }
+
+message CreateNotificationsReq {
+  NotificationType type = 1;
+  RequestService.Request request = 2;
 }
 
-message CreateNotificationsReq{
-    NotificationType type = 1;
-    RequestService.Request request = 2;
+message SuccessMessage { bool success = 1; }
+
+message NotificationIdArray { repeated string notificationIds = 1; }
+
+enum NotificationType {
+  REQUEST_SUBMITTED = 0;
+  REQUEST_APPROVED_1 = 1;
+  REQUEST_DECLINED_1 = 2;
+  REQUEST_APPROVED_2 = 3;
+  REQUEST_DECLINED_2 = 4;
+  REQUEST_APPROVED_3 = 5;
+  REQUEST_DECLINED_3 = 6;
+  REQUEST_IN_PROGRESS = 7;
+  REQUEST_DECLINED = 8;
+  KARTOFFEL_STAGE_DONE = 9;
+  KARTOFFEL_STAGE_FAILED = 10;
+  AD_STAGE_DONE = 11;
+  AD_STAGE_FAILED = 12;
+  REQUEST_DONE = 13;
+  REQUEST_FAILED = 14;
+  REQUEST_DELETED = 15;
+  CHANGE_ROLE_HIERARCHY = 16;
 }
 
-message SuccessMessage{
-    bool success = 1;
+enum OwnerType {
+  SUBMITTER = 0;
+  COMMANDER = 1;
+  SECURITY_APPROVER = 2;
+  SUPER_SECURITY_APPROVER = 3;
+  ADMIN = 4;
 }
 
-message NotificationIdArray{
-    repeated string notificationIds = 1;
+message CreateCustomNotificationReq {
+  NotificationType type = 1;
+  string ownerId = 2;
+  OwnerType ownerType = 3;
+  string requestId = 4;
+  string message = 5;
+  string reason = 6;
 }
 
-enum NotificationType{
-    REQUEST_SUBMITTED = 0;
-    REQUEST_APPROVED_1 = 1;
-    REQUEST_DECLINED_1 = 2;
-    REQUEST_APPROVED_2 = 3;
-    REQUEST_DECLINED_2 = 4;
-    REQUEST_APPROVED_3 = 5;
-    REQUEST_DECLINED_3 = 6;
-    REQUEST_IN_PROGRESS = 7;
-    REQUEST_DECLINED = 8;
-    KARTOFFEL_STAGE_DONE = 9;
-    KARTOFFEL_STAGE_FAILED = 10;
-    AD_STAGE_DONE = 11;
-    AD_STAGE_FAILED = 12;
-    REQUEST_DONE = 13;
-    REQUEST_FAILED = 14;
-    REQUEST_DELETED = 15;
-
+message Notification {
+  string id = 1;
+  NotificationType type = 2;
+  string ownerId = 3;
+  OwnerType ownerType = 4;
+  string requestId = 5;
+  string message = 6;
+  int64 createdAt = 7;
+  bool read = 8;
+  string reason = 9;
 }
 
-enum OwnerType{
-    SUBMITTER = 0;
-    COMMANDER = 1;
-    SECURITY_APPROVER = 2;
-    SUPER_SECURITY_APPROVER = 3;
+message GetNotificationsByOwnerIdReq {
+  string ownerId = 1;
+  int64 startTime = 2;
+  int32 from = 3;
+  int32 to = 4;
+  optional string read = 5;
 }
 
-message CreateCustomNotificationReq{
-    NotificationType type = 1;
-    string ownerId = 2;
-    OwnerType ownerType = 3;
-    string requestId = 4;
-    string message = 5;
-    string reason = 6;
-}
-
-message Notification{
-    string id = 1;
-    NotificationType type = 2;
-    string ownerId = 3;
-    OwnerType ownerType = 4;
-    string requestId = 5;
-    string message = 6;
-    int64 createdAt = 7;
-    bool read = 8;
-    string reason = 9;
-}
-
-message GetNotificationsByOwnerIdReq{
-    string ownerId = 1;
-    int64 startTime = 2;
-    int32 from = 3;
-    int32 to = 4; 
-    optional string read = 5;
-}
-
-message NotificationArray{
-    repeated Notification notifications = 1;
-    int32 totalCount = 2;
+message NotificationArray {
+  repeated Notification notifications = 1;
+  int32 totalCount = 2;
 }

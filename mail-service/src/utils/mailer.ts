@@ -9,9 +9,34 @@ import {
   MailType,
   mailTypeFromJSON,
 } from '../interfaces/protoc/proto/mailService';
+import path from 'path';
+
+const images = [
+  {
+    filename: 'yesodotLogo.png',
+    path: path.join(`${C.localMailImagesFullPath}/logo.png`),
+    cid: 'yesodotLogo@cid',
+  },
+  {
+    filename: 'lego.png',
+    path: path.join(`${C.localMailImagesFullPath}/lego2.png`),
+    cid: 'lego@cid',
+  },
+  {
+    filename: 'sapirLogo.svg',
+    path: path.join(`${C.localMailImagesFullPath}/sapirLogo.svg`),
+    cid: 'sapirLogo@cid',
+  },
+];
 
 export function sendMail(mailOptions: any) {
   return new Promise((resolve, reject) => {
+    if (mailOptions?.attachments) {
+      mailOptions.attachments = mailOptions.attachments.concat(images);
+    } else {
+      mailOptions.attachments = images;
+    }
+
     const transporter = nodemailer.createTransport({
       host: C.mailServerHost,
       port: C.mailServerPort,
@@ -21,7 +46,8 @@ export function sendMail(mailOptions: any) {
         pass: C.mailPassword,
       },
     });
-    transporter.sendMail(mailOptions, function (error, info) {
+
+    transporter.sendMail(mailOptions, function (error: any, info: any) {
       if (error) {
         reject(error);
       } else {

@@ -2,7 +2,11 @@ import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 import * as C from './config';
 import { logger } from './logger';
-import { sendMail, sendCustomMail } from './mail/mail.controller';
+import {
+  sendMail,
+  sendCustomMail,
+  sendHierarchyDataMail,
+} from './mail/mail.controller';
 
 import { addHealthService } from './health';
 import { findPath } from './utils/path';
@@ -44,6 +48,7 @@ export class Server {
       this.server.addService(mailServiceDescriptor.MailService.service, {
         SendMail: sendMail,
         SendCustomMail: sendCustomMail,
+        SendHierarchyDataMail: sendHierarchyDataMail,
       });
       logger.info(`Grpc services were successfully added to the server`);
     } catch (error) {

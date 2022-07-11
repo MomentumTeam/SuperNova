@@ -9,6 +9,7 @@ import {
   DigitalIdentity,
   Entity,
   EntityArray,
+  ExportHierarchyDataRes,
   GetAllOGsRequest,
   GetAllRolesRequest,
   GetChildrenOfOGRequest,
@@ -44,6 +45,8 @@ import {
   SearchEntitiesByFullNameRequest,
   SearchOGRequest,
   SearchRoleByRoleIdReq,
+  SearchSamAccountNameReq,
+  SearchSamAccountNameRes,
 } from '../interfaces/protoc/proto/kartoffelService';
 
 const PROTO_PATH = __dirname.includes('dist')
@@ -484,6 +487,32 @@ export class KartoffelService {
     });
   }
 
+  static async exportHierarchyData(
+    exportHierarchyDataReq: ExportHierarchyDataRes
+  ) {
+    logger.info(`Call to exportHierarchyData in GTW`, exportHierarchyDataReq);
+
+    return new Promise((resolve, reject) => {
+      randomClient().ExportHierarchyData(
+        exportHierarchyDataReq,
+        (err: any, response: ExportHierarchyDataRes) => {
+          if (err) {
+            logger.error(`exportHierarchyData ERROR in GTW`, {
+              err,
+              callRequest: exportHierarchyDataReq,
+            });
+            reject(err);
+          }
+
+          logger.info(`exportHierarchyData OK in GTW`, {
+            callRequest: exportHierarchyDataReq,
+          });
+          resolve(response);
+        }
+      );
+    });
+  }
+
   // Roles
   static async getRoleById(getRoleByIdReq: GetRoleByRoleIdRequest) {
     logger.info(`Call to getRoleById in GTW`, getRoleByIdReq);
@@ -741,6 +770,29 @@ export class KartoffelService {
           resolve(response);
         }
       );
+    });
+  }
+
+  // LDAP
+  static async searchSamAccountName(searchSamAccountNameReq: SearchSamAccountNameReq) {
+    logger.info(`Call to searchSamAccountName in GTW`, searchSamAccountNameReq);
+
+    return new Promise((resolve, reject) => {
+      randomClient().SearchSamAccountName(searchSamAccountNameReq, (err: any, response: SearchSamAccountNameRes) => {
+        if (err) {
+          logger.error(`searchSamAccountName ERROR in GTW`, {
+            err,
+            callRequest: searchSamAccountNameReq,
+          });
+          reject(err);
+        }
+
+        logger.info(`searchSamAccountName OK in GTW`, {
+          response: response,
+          callRequest: searchSamAccountNameReq,
+        });
+        resolve(response);
+      });
     });
   }
 }

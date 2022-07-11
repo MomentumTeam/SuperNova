@@ -1,4 +1,5 @@
 import {
+  KartoffelParams,
   Request,
   RequestType,
   requestTypeToJSON,
@@ -19,6 +20,26 @@ function isValidMobilePhone(mobilePhone: any) {
     const re = /^\d{2,3}-?\d{7}$/;
     return re.test(mobilePhone[0]);
   }
+}
+
+function splitFullName(jobTitle: string) {
+  let lastName: string;
+  let firstName: string;
+  let fullName: string;
+  let arrayName: string[] = jobTitle.trim().split(/[,.\s/]+/g);
+  firstName = arrayName[0];
+  if (arrayName.length > 1) {
+    let sliceFullName: string[] = arrayName.slice(1);
+    lastName = sliceFullName.join(' ');
+  } else {
+    lastName = C.brolDefaultLastName;
+  }
+  fullName = `${firstName} ${lastName}`;
+  return {
+    fullName,
+    firstName,
+    lastName,
+  };
 }
 
 function isValidPhone(phone: any) {
@@ -70,8 +91,11 @@ export function generateKartoffelQueueMessage(request: Request): any {
         roleEntityType: kartoffelParams.roleEntityType,
       };
       if (kartoffelParams.upn !== undefined) {
-        // the brol
-        message.data.upn = kartoffelParams.upn;
+        const getJobTitle = splitFullName(kartoffelParams.jobTitle);
+        message.data.firstName = getJobTitle.firstName;
+        message.data.lastName = getJobTitle.lastName;
+        message.data.fullName = getJobTitle.fullName;
+        message.data.upn = `${kartoffelParams.upn}@${C.upnSuffix}`;
       }
       break;
     case RequestType.CREATE_ENTITY:
@@ -115,7 +139,7 @@ export function generateKartoffelQueueMessage(request: Request): any {
         message.data.needDisconnect = false;
       }
       if (kartoffelParams.upn !== undefined) {
-        message.data.upn = kartoffelParams.upn;
+        message.data.upn = `${kartoffelParams.upn}@${C.upnSuffix}`;
       }
       break;
     case RequestType.RENAME_OG:
@@ -178,6 +202,17 @@ export function generateKartoffelQueueMessage(request: Request): any {
         message.data.newJobTitle = kartoffelParams.newJobTitle;
       }
       break;
+    case RequestType.CONVERT_ENTITY_TYPE:
+      message.data = {
+        id: kartoffelParams.id,
+        uniqueId: kartoffelParams.uniqueId,
+        newEntityType: kartoffelParams.newEntityType,
+        upn: `${kartoffelParams.upn}@${C.upnSuffix}`,
+      };
+      if (kartoffelParams.identifier) {
+        message.data.identifier = kartoffelParams.identifier;
+      }
+      break;
     default:
       throw new Error('type not supported!');
   }
@@ -204,6 +239,7 @@ export function generateADQueueMessage(
   }
   const adParams: any = request.adParams;
   switch (request.type) {
+    // OG
     case RequestType.CREATE_OG: //Reviewed with Orin, CreateOU
       message.data = {
         ouDName: adParams.ouDisplayName,
@@ -211,6 +247,10 @@ export function generateADQueueMessage(
         newOuName: adParams.name,
       };
       break;
+    case RequestType.DELETE_OG:
+      message.data = {
+        displayName: adParams.ouDisplayName,
+      };
     case RequestType.CREATE_ROLE: //reviewed with Orin, CreateRole
       if (
         request.adParams &&
@@ -232,12 +272,13 @@ export function generateADQueueMessage(
             C.shmuelRequestTypes[
               requestTypeToJSON(RequestType.ASSIGN_ROLE_TO_ENTITY)
             ];
+          const getJobTitle = splitFullName(adParams.jobTitle);
           message.data = {
             userID: adParams.samAccountName,
             UPN: `${adParams.upn}@${C.upnSuffix}`,
-            firstName: adParams.jobTitle,
-            lastName: adParams.jobTitle,
-            fullName: adParams.jobTitle,
+            firstName: getJobTitle.firstName,
+            lastName: getJobTitle.lastName,
+            fullName: getJobTitle.fullName,
             rank: 'לא ידוע',
             ID: adParams.samAccountName,
             // pdoName: 'x',
@@ -261,6 +302,10 @@ export function generateADQueueMessage(
           samAccountName: adParams.oldSAMAccountName,
           toSamAccountName: adParams.newSAMAccountName,
           upn: `${adParams.upn}@${C.upnSuffix}`,
+          oldUPN:
+            adParams.oldUpn && adParams.oldUpn.length > 1
+              ? `${adParams.oldUpn}@${C.upnSuffix}`
+              : undefined,
           firstName: adParams.firstName,
           lastName: adParams.lastName,
           fullName: adParams.fullName,
@@ -273,6 +318,7 @@ export function generateADQueueMessage(
         message.data = {
           userID: adParams.newSAMAccountName,
           UPN: `${adParams.upn}@${C.upnSuffix}`,
+          oldUPN: `${adParams.oldUpn}@${C.upnSuffix}`,
           firstName: adParams.firstName,
           lastName: adParams.lastName,
           fullName: adParams.fullName,
@@ -305,7 +351,7 @@ export function generateADQueueMessage(
       break;
     case RequestType.DELETE_ROLE: // Reviewed with Orin, PurgeRole
       message.data = {
-        userT: adParams.samAccountName,
+        samAccountName: adParams.samAccountName,
       };
       break;
     case RequestType.DISCONNECT_ROLE: // Reviewed with Orin, DisconnectRole
@@ -321,6 +367,12 @@ export function generateADQueueMessage(
       if (adParams.newJobTitle) {
         message.data.newName = adParams.newJobTitle;
       }
+      break;
+    case RequestType.CONVERT_ENTITY_TYPE:
+      message.data = {
+        samAccountName: adParams.samAccountName,
+        upn: `${adParams.upn}@${C.upnSuffix}`,
+      };
       break;
     default:
       throw new Error('type not supported!');

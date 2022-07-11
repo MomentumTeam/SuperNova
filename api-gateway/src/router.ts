@@ -6,6 +6,7 @@ import NotificationRouter from './notifications/notifications.router';
 import ApproverRouter from './approver/approver.router';
 import BulkRouter from './bulk/bulk.router';
 import HistoryRouter from './history/history.router';
+import MailRouter from './mail/mail.router';
 
 const mainRouter = Router();
 
@@ -15,6 +16,8 @@ mainRouter.use('/kartoffel', KartoffelRouter);
 mainRouter.use('/requests', RequestsRouter);
 mainRouter.use('/history', HistoryRouter);
 mainRouter.use('/bulk', BulkRouter);
+mainRouter.use('/mail', MailRouter);
+
 mainRouter.get("/config", (req, res) =>res.send(config.ui));
 
 export default mainRouter;

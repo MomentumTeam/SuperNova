@@ -95,6 +95,7 @@ export enum RequestType {
   CHANGE_ROLE_HIERARCHY = 12,
   CREATE_ROLE_BULK = 13,
   CHANGE_ROLE_HIERARCHY_BULK = 14,
+  CONVERT_ENTITY_TYPE = 15,
   UNRECOGNIZED = -1,
 }
 
@@ -145,6 +146,9 @@ export function requestTypeFromJSON(object: any): RequestType {
     case 14:
     case "CHANGE_ROLE_HIERARCHY_BULK":
       return RequestType.CHANGE_ROLE_HIERARCHY_BULK;
+    case 15:
+    case "CONVERT_ENTITY_TYPE":
+      return RequestType.CONVERT_ENTITY_TYPE;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -184,6 +188,8 @@ export function requestTypeToJSON(object: RequestType): string {
       return "CREATE_ROLE_BULK";
     case RequestType.CHANGE_ROLE_HIERARCHY_BULK:
       return "CHANGE_ROLE_HIERARCHY_BULK";
+    case RequestType.CONVERT_ENTITY_TYPE:
+      return "CONVERT_ENTITY_TYPE";
     default:
       return "UNKNOWN";
   }
@@ -1448,6 +1454,55 @@ export interface ChangeRoleHierarchyBulkADParams {
   newJobTitle?: string | undefined;
 }
 
+export interface ConvertEntityTypeReq {
+  submittedBy: EntityMin | undefined;
+  status?: RequestStatus | undefined;
+  commanderDecision?: ApproverDecision | undefined;
+  securityDecision?: ApproverDecision | undefined;
+  superSecurityDecision?: ApproverDecision | undefined;
+  adminDecision?: ApproverDecision | undefined;
+  commanders: EntityMin[];
+  securityApprovers: EntityMin[];
+  superSecurityApprovers: EntityMin[];
+  adminApprovers: EntityMin[];
+  kartoffelStatus?: KartoffelStatus | undefined;
+  adStatus?: ADStatus | undefined;
+  kartoffelParams: ConvertEntityTypeKartoffelParams | undefined;
+  adParams: ConvertEntityTypeADParams | undefined;
+  comments?: string | undefined;
+  approversComments?: ApproversComments | undefined;
+  due?: number | undefined;
+}
+
+export interface ConvertEntityTypeRes {
+  submittedBy: EntityMin | undefined;
+  status: RequestStatus;
+  commanderDecision: ApproverDecision | undefined;
+  securityDecision: ApproverDecision | undefined;
+  superSecurityDecision: ApproverDecision | undefined;
+  adminDecision: ApproverDecision | undefined;
+  commanders: EntityMin[];
+  securityApprovers: EntityMin[];
+  superSecurityApprovers: EntityMin[];
+  adminApprovers: EntityMin[];
+  kartoffelStatus: KartoffelStatus | undefined;
+  adStatus: ADStatus | undefined;
+  kartoffelParams: ConvertEntityTypeKartoffelParams | undefined;
+  adParams: ConvertEntityTypeADParams | undefined;
+  comments: string;
+  approversComments: ApproversComments | undefined;
+  due: number;
+  id: string;
+  createdAt: number;
+  updatedAt: number;
+  type: RequestType;
+  serialNumber: string;
+  needSecurityDecision: boolean;
+  needSuperSecurityDecision: boolean;
+  needAdminDecision: boolean;
+  hasSecurityAdmin: boolean;
+}
+
 export interface SendSubmissionMailReq {
   id: string;
 }
@@ -1581,6 +1636,12 @@ export interface EditEntityKartoffelParams {
   sex?: string | undefined;
   birthdate?: number | undefined;
   entityType?: string | undefined;
+  rank?: string | undefined;
+  oldFirstName: string;
+  oldLastName: string;
+  oldIdentityCard?: string | undefined;
+  oldMobilePhone?: string | undefined;
+  oldRank?: string | undefined;
 }
 
 export interface EditEntityADParams {
@@ -1593,18 +1654,22 @@ export interface EditEntityADParams {
 /** 8.DeleteOGRequest */
 export interface DeleteOGKartoffelParams {
   id: string;
+  name?: string | undefined;
 }
 
 export interface DeleteOGADParams {
   ouDisplayName: string;
-  ouName: string;
-  name: string;
 }
 
 /** 9.DeleteRoleRequest */
 export interface DeleteRoleKartoffelParams {
   roleId: string;
   uniqueId: string;
+  jobTitle?: string | undefined;
+  firstName?: string | undefined;
+  lastName?: string | undefined;
+  identityCard?: string | undefined;
+  personalNumber?: string | undefined;
 }
 
 export interface DeleteRoleADParams {
@@ -1637,6 +1702,7 @@ export interface AssignRoleToEntityADParams {
   oldSAMAccountName?: string | undefined;
   newSAMAccountName: string;
   upn?: string | undefined;
+  oldUpn?: string | undefined;
   firstName: string;
   lastName: string;
   fullName: string;
@@ -1692,33 +1758,23 @@ export interface RemoveApproverFromApproversReq {
   type: ApproverType;
 }
 
-/** 16.GetDoneRequests (historyService) */
-export interface GetDoneRequestsByEntityIdReq {
-  entityId: string;
-  from: number;
-  to: number;
+/** 16.ConvertEntityTypeRequest */
+export interface ConvertEntityTypeKartoffelParams {
+  id: string;
+  uniqueId: string;
+  newEntityType: string;
+  upn: string;
+  identifier?: string | undefined;
 }
 
-export interface GetDoneRequestsByGroupIdReq {
-  groupId: string;
-  from: number;
-  to: number;
-  showRoles: boolean;
-}
-
-export interface GetDoneRequestsByRoleIdReq {
-  roleId: string;
-  from: number;
-  to: number;
-}
-
-export interface CheckIfCreateWasInLegoReq {
-  typeOfCheck?: CheckingOpsions | undefined;
-  idCheck: string;
-}
-
-export interface BoolCheck {
-  createdInLego: boolean;
+export interface ConvertEntityTypeADParams {
+  samAccountName: string;
+  upn?: string | undefined;
+  firstName: string;
+  lastName: string;
+  fullName: string;
+  rank?: string | undefined;
+  roleSerialCode: string;
 }
 
 export interface UpdateReq {
@@ -1769,7 +1825,39 @@ export interface UpdateADStatusReq {
   failedRetries?: number | undefined;
 }
 
-/** DeleteRequest */
+/** 16.GetDoneRequests (historyService) */
+export interface GetDoneRequestsByEntityIdReq {
+  entityId: string;
+  from: number;
+  to: number;
+}
+
+export interface GetDoneRequestsByGroupIdReq {
+  groupId: string;
+  from: number;
+  to: number;
+  showRoles: boolean;
+}
+
+export interface GetDoneRequestsByRoleIdReq {
+  roleId: string;
+  from: number;
+  to: number;
+}
+
+export interface CheckIfCreateWasInLegoReq {
+  typeOfCheck?: CheckingOpsions | undefined;
+  idCheck: string;
+}
+
+export interface BoolCheck {
+  createdInLego: boolean;
+}
+
+/**
+ * ---------------------------------------------Other Functions Objects------------------------------------------------------------
+ * DeleteRequest
+ */
 export interface DeleteReq {
   id: string;
 }
@@ -1863,7 +1951,10 @@ export interface AreAllSubRequestsFinishedRes {
   areAllSubRequestsFinished: boolean;
 }
 
-/** ---------------------------------------------Other Objects------------------------------------------------------------ */
+/**
+ * ---------------------------------------------Other
+ * Objects------------------------------------------------------------
+ */
 export interface RequestIdArray {
   requestIds: string[];
   count: number;
@@ -1977,23 +2068,16 @@ export interface KartoffelParams {
   upn?: string | undefined;
   role?: Role | undefined;
   entityId?: string | undefined;
-  /**
-   * EditEntity
-   * string firstName = 25;
-   * string lastName = 26;
-   * string identityCard = 27;
-   * string personalNumber = 28;
-   * string serviceType = 29;
-   * repeated string phone = 30;
-   * repeated string mobilePhone = 31;
-   * string address = 32;
-   * string clearance = 33;
-   * string sex = 34;
-   * int64 birthdate = 35;
-   * string entityType = 36;
-   * string id =
-   */
   rank?: string | undefined;
+  /** ConvertEntityType */
+  newEntityType?: string | undefined;
+  /** EditEntity */
+  identifier?: string | undefined;
+  oldFirstName: string;
+  oldLastName: string;
+  oldIdentityCard?: string | undefined;
+  oldMobilePhone?: string | undefined;
+  oldRank?: string | undefined;
 }
 
 export interface ADParams {
@@ -2001,7 +2085,7 @@ export interface ADParams {
   ouDisplayName?: string | undefined;
   ouName?: string | undefined;
   name?: string | undefined;
-  /** CreateRole */
+  /** CreateRole and ConvertEntityType */
   samAccountName?: string | undefined;
   /** string ouDisplayName = ; */
   jobTitle?: string | undefined;
@@ -2009,6 +2093,7 @@ export interface ADParams {
   oldSAMAccountName?: string | undefined;
   newSAMAccountName?: string | undefined;
   upn?: string | undefined;
+  oldUpn?: string | undefined;
   firstName?: string | undefined;
   lastName?: string | undefined;
   fullName?: string | undefined;
@@ -2096,7 +2181,7 @@ export interface HasSecurityAdminReq {
   groupsIds: string[];
   /** במקרה שסוג הבקשה היא ADD_APPROVER */
   approverTypeToAdd?: ApproverType | undefined;
-  /** למקרה עתידי שבו יהיה צורך להפריד בין בקשות : "מעבר תפקיד" ו"חיבור משתמש חדש" */
+  /** למקרה עתידי שבו יהיה צורך להפריד בין בקשות */
   needDisconnect?: boolean | undefined;
 }
 
@@ -21364,6 +21449,1262 @@ export const ChangeRoleHierarchyBulkADParams = {
   },
 };
 
+const baseConvertEntityTypeReq: object = {};
+
+export const ConvertEntityTypeReq = {
+  encode(
+    message: ConvertEntityTypeReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.submittedBy !== undefined) {
+      EntityMin.encode(message.submittedBy, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.status !== undefined) {
+      writer.uint32(16).int32(message.status);
+    }
+    if (message.commanderDecision !== undefined) {
+      ApproverDecision.encode(
+        message.commanderDecision,
+        writer.uint32(26).fork()
+      ).ldelim();
+    }
+    if (message.securityDecision !== undefined) {
+      ApproverDecision.encode(
+        message.securityDecision,
+        writer.uint32(34).fork()
+      ).ldelim();
+    }
+    if (message.superSecurityDecision !== undefined) {
+      ApproverDecision.encode(
+        message.superSecurityDecision,
+        writer.uint32(42).fork()
+      ).ldelim();
+    }
+    if (message.adminDecision !== undefined) {
+      ApproverDecision.encode(
+        message.adminDecision,
+        writer.uint32(50).fork()
+      ).ldelim();
+    }
+    for (const v of message.commanders) {
+      EntityMin.encode(v!, writer.uint32(58).fork()).ldelim();
+    }
+    for (const v of message.securityApprovers) {
+      EntityMin.encode(v!, writer.uint32(66).fork()).ldelim();
+    }
+    for (const v of message.superSecurityApprovers) {
+      EntityMin.encode(v!, writer.uint32(74).fork()).ldelim();
+    }
+    for (const v of message.adminApprovers) {
+      EntityMin.encode(v!, writer.uint32(82).fork()).ldelim();
+    }
+    if (message.kartoffelStatus !== undefined) {
+      KartoffelStatus.encode(
+        message.kartoffelStatus,
+        writer.uint32(90).fork()
+      ).ldelim();
+    }
+    if (message.adStatus !== undefined) {
+      ADStatus.encode(message.adStatus, writer.uint32(98).fork()).ldelim();
+    }
+    if (message.kartoffelParams !== undefined) {
+      ConvertEntityTypeKartoffelParams.encode(
+        message.kartoffelParams,
+        writer.uint32(106).fork()
+      ).ldelim();
+    }
+    if (message.adParams !== undefined) {
+      ConvertEntityTypeADParams.encode(
+        message.adParams,
+        writer.uint32(114).fork()
+      ).ldelim();
+    }
+    if (message.comments !== undefined) {
+      writer.uint32(122).string(message.comments);
+    }
+    if (message.approversComments !== undefined) {
+      ApproversComments.encode(
+        message.approversComments,
+        writer.uint32(130).fork()
+      ).ldelim();
+    }
+    if (message.due !== undefined) {
+      writer.uint32(136).int64(message.due);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): ConvertEntityTypeReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseConvertEntityTypeReq } as ConvertEntityTypeReq;
+    message.commanders = [];
+    message.securityApprovers = [];
+    message.superSecurityApprovers = [];
+    message.adminApprovers = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.submittedBy = EntityMin.decode(reader, reader.uint32());
+          break;
+        case 2:
+          message.status = reader.int32() as any;
+          break;
+        case 3:
+          message.commanderDecision = ApproverDecision.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 4:
+          message.securityDecision = ApproverDecision.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 5:
+          message.superSecurityDecision = ApproverDecision.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 6:
+          message.adminDecision = ApproverDecision.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 7:
+          message.commanders.push(EntityMin.decode(reader, reader.uint32()));
+          break;
+        case 8:
+          message.securityApprovers.push(
+            EntityMin.decode(reader, reader.uint32())
+          );
+          break;
+        case 9:
+          message.superSecurityApprovers.push(
+            EntityMin.decode(reader, reader.uint32())
+          );
+          break;
+        case 10:
+          message.adminApprovers.push(
+            EntityMin.decode(reader, reader.uint32())
+          );
+          break;
+        case 11:
+          message.kartoffelStatus = KartoffelStatus.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 12:
+          message.adStatus = ADStatus.decode(reader, reader.uint32());
+          break;
+        case 13:
+          message.kartoffelParams = ConvertEntityTypeKartoffelParams.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 14:
+          message.adParams = ConvertEntityTypeADParams.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 15:
+          message.comments = reader.string();
+          break;
+        case 16:
+          message.approversComments = ApproversComments.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 17:
+          message.due = longToNumber(reader.int64() as Long);
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ConvertEntityTypeReq {
+    const message = { ...baseConvertEntityTypeReq } as ConvertEntityTypeReq;
+    message.commanders = [];
+    message.securityApprovers = [];
+    message.superSecurityApprovers = [];
+    message.adminApprovers = [];
+    if (object.submittedBy !== undefined && object.submittedBy !== null) {
+      message.submittedBy = EntityMin.fromJSON(object.submittedBy);
+    } else {
+      message.submittedBy = undefined;
+    }
+    if (object.status !== undefined && object.status !== null) {
+      message.status = requestStatusFromJSON(object.status);
+    } else {
+      message.status = undefined;
+    }
+    if (
+      object.commanderDecision !== undefined &&
+      object.commanderDecision !== null
+    ) {
+      message.commanderDecision = ApproverDecision.fromJSON(
+        object.commanderDecision
+      );
+    } else {
+      message.commanderDecision = undefined;
+    }
+    if (
+      object.securityDecision !== undefined &&
+      object.securityDecision !== null
+    ) {
+      message.securityDecision = ApproverDecision.fromJSON(
+        object.securityDecision
+      );
+    } else {
+      message.securityDecision = undefined;
+    }
+    if (
+      object.superSecurityDecision !== undefined &&
+      object.superSecurityDecision !== null
+    ) {
+      message.superSecurityDecision = ApproverDecision.fromJSON(
+        object.superSecurityDecision
+      );
+    } else {
+      message.superSecurityDecision = undefined;
+    }
+    if (object.adminDecision !== undefined && object.adminDecision !== null) {
+      message.adminDecision = ApproverDecision.fromJSON(object.adminDecision);
+    } else {
+      message.adminDecision = undefined;
+    }
+    if (object.commanders !== undefined && object.commanders !== null) {
+      for (const e of object.commanders) {
+        message.commanders.push(EntityMin.fromJSON(e));
+      }
+    }
+    if (
+      object.securityApprovers !== undefined &&
+      object.securityApprovers !== null
+    ) {
+      for (const e of object.securityApprovers) {
+        message.securityApprovers.push(EntityMin.fromJSON(e));
+      }
+    }
+    if (
+      object.superSecurityApprovers !== undefined &&
+      object.superSecurityApprovers !== null
+    ) {
+      for (const e of object.superSecurityApprovers) {
+        message.superSecurityApprovers.push(EntityMin.fromJSON(e));
+      }
+    }
+    if (object.adminApprovers !== undefined && object.adminApprovers !== null) {
+      for (const e of object.adminApprovers) {
+        message.adminApprovers.push(EntityMin.fromJSON(e));
+      }
+    }
+    if (
+      object.kartoffelStatus !== undefined &&
+      object.kartoffelStatus !== null
+    ) {
+      message.kartoffelStatus = KartoffelStatus.fromJSON(
+        object.kartoffelStatus
+      );
+    } else {
+      message.kartoffelStatus = undefined;
+    }
+    if (object.adStatus !== undefined && object.adStatus !== null) {
+      message.adStatus = ADStatus.fromJSON(object.adStatus);
+    } else {
+      message.adStatus = undefined;
+    }
+    if (
+      object.kartoffelParams !== undefined &&
+      object.kartoffelParams !== null
+    ) {
+      message.kartoffelParams = ConvertEntityTypeKartoffelParams.fromJSON(
+        object.kartoffelParams
+      );
+    } else {
+      message.kartoffelParams = undefined;
+    }
+    if (object.adParams !== undefined && object.adParams !== null) {
+      message.adParams = ConvertEntityTypeADParams.fromJSON(object.adParams);
+    } else {
+      message.adParams = undefined;
+    }
+    if (object.comments !== undefined && object.comments !== null) {
+      message.comments = String(object.comments);
+    } else {
+      message.comments = undefined;
+    }
+    if (
+      object.approversComments !== undefined &&
+      object.approversComments !== null
+    ) {
+      message.approversComments = ApproversComments.fromJSON(
+        object.approversComments
+      );
+    } else {
+      message.approversComments = undefined;
+    }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = Number(object.due);
+    } else {
+      message.due = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: ConvertEntityTypeReq): unknown {
+    const obj: any = {};
+    message.submittedBy !== undefined &&
+      (obj.submittedBy = message.submittedBy
+        ? EntityMin.toJSON(message.submittedBy)
+        : undefined);
+    message.status !== undefined &&
+      (obj.status =
+        message.status !== undefined
+          ? requestStatusToJSON(message.status)
+          : undefined);
+    message.commanderDecision !== undefined &&
+      (obj.commanderDecision = message.commanderDecision
+        ? ApproverDecision.toJSON(message.commanderDecision)
+        : undefined);
+    message.securityDecision !== undefined &&
+      (obj.securityDecision = message.securityDecision
+        ? ApproverDecision.toJSON(message.securityDecision)
+        : undefined);
+    message.superSecurityDecision !== undefined &&
+      (obj.superSecurityDecision = message.superSecurityDecision
+        ? ApproverDecision.toJSON(message.superSecurityDecision)
+        : undefined);
+    message.adminDecision !== undefined &&
+      (obj.adminDecision = message.adminDecision
+        ? ApproverDecision.toJSON(message.adminDecision)
+        : undefined);
+    if (message.commanders) {
+      obj.commanders = message.commanders.map((e) =>
+        e ? EntityMin.toJSON(e) : undefined
+      );
+    } else {
+      obj.commanders = [];
+    }
+    if (message.securityApprovers) {
+      obj.securityApprovers = message.securityApprovers.map((e) =>
+        e ? EntityMin.toJSON(e) : undefined
+      );
+    } else {
+      obj.securityApprovers = [];
+    }
+    if (message.superSecurityApprovers) {
+      obj.superSecurityApprovers = message.superSecurityApprovers.map((e) =>
+        e ? EntityMin.toJSON(e) : undefined
+      );
+    } else {
+      obj.superSecurityApprovers = [];
+    }
+    if (message.adminApprovers) {
+      obj.adminApprovers = message.adminApprovers.map((e) =>
+        e ? EntityMin.toJSON(e) : undefined
+      );
+    } else {
+      obj.adminApprovers = [];
+    }
+    message.kartoffelStatus !== undefined &&
+      (obj.kartoffelStatus = message.kartoffelStatus
+        ? KartoffelStatus.toJSON(message.kartoffelStatus)
+        : undefined);
+    message.adStatus !== undefined &&
+      (obj.adStatus = message.adStatus
+        ? ADStatus.toJSON(message.adStatus)
+        : undefined);
+    message.kartoffelParams !== undefined &&
+      (obj.kartoffelParams = message.kartoffelParams
+        ? ConvertEntityTypeKartoffelParams.toJSON(message.kartoffelParams)
+        : undefined);
+    message.adParams !== undefined &&
+      (obj.adParams = message.adParams
+        ? ConvertEntityTypeADParams.toJSON(message.adParams)
+        : undefined);
+    message.comments !== undefined && (obj.comments = message.comments);
+    message.approversComments !== undefined &&
+      (obj.approversComments = message.approversComments
+        ? ApproversComments.toJSON(message.approversComments)
+        : undefined);
+    message.due !== undefined && (obj.due = message.due);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<ConvertEntityTypeReq>): ConvertEntityTypeReq {
+    const message = { ...baseConvertEntityTypeReq } as ConvertEntityTypeReq;
+    message.commanders = [];
+    message.securityApprovers = [];
+    message.superSecurityApprovers = [];
+    message.adminApprovers = [];
+    if (object.submittedBy !== undefined && object.submittedBy !== null) {
+      message.submittedBy = EntityMin.fromPartial(object.submittedBy);
+    } else {
+      message.submittedBy = undefined;
+    }
+    if (object.status !== undefined && object.status !== null) {
+      message.status = object.status;
+    } else {
+      message.status = undefined;
+    }
+    if (
+      object.commanderDecision !== undefined &&
+      object.commanderDecision !== null
+    ) {
+      message.commanderDecision = ApproverDecision.fromPartial(
+        object.commanderDecision
+      );
+    } else {
+      message.commanderDecision = undefined;
+    }
+    if (
+      object.securityDecision !== undefined &&
+      object.securityDecision !== null
+    ) {
+      message.securityDecision = ApproverDecision.fromPartial(
+        object.securityDecision
+      );
+    } else {
+      message.securityDecision = undefined;
+    }
+    if (
+      object.superSecurityDecision !== undefined &&
+      object.superSecurityDecision !== null
+    ) {
+      message.superSecurityDecision = ApproverDecision.fromPartial(
+        object.superSecurityDecision
+      );
+    } else {
+      message.superSecurityDecision = undefined;
+    }
+    if (object.adminDecision !== undefined && object.adminDecision !== null) {
+      message.adminDecision = ApproverDecision.fromPartial(
+        object.adminDecision
+      );
+    } else {
+      message.adminDecision = undefined;
+    }
+    if (object.commanders !== undefined && object.commanders !== null) {
+      for (const e of object.commanders) {
+        message.commanders.push(EntityMin.fromPartial(e));
+      }
+    }
+    if (
+      object.securityApprovers !== undefined &&
+      object.securityApprovers !== null
+    ) {
+      for (const e of object.securityApprovers) {
+        message.securityApprovers.push(EntityMin.fromPartial(e));
+      }
+    }
+    if (
+      object.superSecurityApprovers !== undefined &&
+      object.superSecurityApprovers !== null
+    ) {
+      for (const e of object.superSecurityApprovers) {
+        message.superSecurityApprovers.push(EntityMin.fromPartial(e));
+      }
+    }
+    if (object.adminApprovers !== undefined && object.adminApprovers !== null) {
+      for (const e of object.adminApprovers) {
+        message.adminApprovers.push(EntityMin.fromPartial(e));
+      }
+    }
+    if (
+      object.kartoffelStatus !== undefined &&
+      object.kartoffelStatus !== null
+    ) {
+      message.kartoffelStatus = KartoffelStatus.fromPartial(
+        object.kartoffelStatus
+      );
+    } else {
+      message.kartoffelStatus = undefined;
+    }
+    if (object.adStatus !== undefined && object.adStatus !== null) {
+      message.adStatus = ADStatus.fromPartial(object.adStatus);
+    } else {
+      message.adStatus = undefined;
+    }
+    if (
+      object.kartoffelParams !== undefined &&
+      object.kartoffelParams !== null
+    ) {
+      message.kartoffelParams = ConvertEntityTypeKartoffelParams.fromPartial(
+        object.kartoffelParams
+      );
+    } else {
+      message.kartoffelParams = undefined;
+    }
+    if (object.adParams !== undefined && object.adParams !== null) {
+      message.adParams = ConvertEntityTypeADParams.fromPartial(object.adParams);
+    } else {
+      message.adParams = undefined;
+    }
+    if (object.comments !== undefined && object.comments !== null) {
+      message.comments = object.comments;
+    } else {
+      message.comments = undefined;
+    }
+    if (
+      object.approversComments !== undefined &&
+      object.approversComments !== null
+    ) {
+      message.approversComments = ApproversComments.fromPartial(
+        object.approversComments
+      );
+    } else {
+      message.approversComments = undefined;
+    }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = object.due;
+    } else {
+      message.due = undefined;
+    }
+    return message;
+  },
+};
+
+const baseConvertEntityTypeRes: object = {
+  status: 0,
+  comments: "",
+  due: 0,
+  id: "",
+  createdAt: 0,
+  updatedAt: 0,
+  type: 0,
+  serialNumber: "",
+  needSecurityDecision: false,
+  needSuperSecurityDecision: false,
+  needAdminDecision: false,
+  hasSecurityAdmin: false,
+};
+
+export const ConvertEntityTypeRes = {
+  encode(
+    message: ConvertEntityTypeRes,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.submittedBy !== undefined) {
+      EntityMin.encode(message.submittedBy, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.status !== 0) {
+      writer.uint32(16).int32(message.status);
+    }
+    if (message.commanderDecision !== undefined) {
+      ApproverDecision.encode(
+        message.commanderDecision,
+        writer.uint32(26).fork()
+      ).ldelim();
+    }
+    if (message.securityDecision !== undefined) {
+      ApproverDecision.encode(
+        message.securityDecision,
+        writer.uint32(34).fork()
+      ).ldelim();
+    }
+    if (message.superSecurityDecision !== undefined) {
+      ApproverDecision.encode(
+        message.superSecurityDecision,
+        writer.uint32(42).fork()
+      ).ldelim();
+    }
+    if (message.adminDecision !== undefined) {
+      ApproverDecision.encode(
+        message.adminDecision,
+        writer.uint32(50).fork()
+      ).ldelim();
+    }
+    for (const v of message.commanders) {
+      EntityMin.encode(v!, writer.uint32(58).fork()).ldelim();
+    }
+    for (const v of message.securityApprovers) {
+      EntityMin.encode(v!, writer.uint32(66).fork()).ldelim();
+    }
+    for (const v of message.superSecurityApprovers) {
+      EntityMin.encode(v!, writer.uint32(74).fork()).ldelim();
+    }
+    for (const v of message.adminApprovers) {
+      EntityMin.encode(v!, writer.uint32(82).fork()).ldelim();
+    }
+    if (message.kartoffelStatus !== undefined) {
+      KartoffelStatus.encode(
+        message.kartoffelStatus,
+        writer.uint32(90).fork()
+      ).ldelim();
+    }
+    if (message.adStatus !== undefined) {
+      ADStatus.encode(message.adStatus, writer.uint32(98).fork()).ldelim();
+    }
+    if (message.kartoffelParams !== undefined) {
+      ConvertEntityTypeKartoffelParams.encode(
+        message.kartoffelParams,
+        writer.uint32(106).fork()
+      ).ldelim();
+    }
+    if (message.adParams !== undefined) {
+      ConvertEntityTypeADParams.encode(
+        message.adParams,
+        writer.uint32(114).fork()
+      ).ldelim();
+    }
+    if (message.comments !== "") {
+      writer.uint32(122).string(message.comments);
+    }
+    if (message.approversComments !== undefined) {
+      ApproversComments.encode(
+        message.approversComments,
+        writer.uint32(130).fork()
+      ).ldelim();
+    }
+    if (message.due !== 0) {
+      writer.uint32(136).int64(message.due);
+    }
+    if (message.id !== "") {
+      writer.uint32(146).string(message.id);
+    }
+    if (message.createdAt !== 0) {
+      writer.uint32(152).int64(message.createdAt);
+    }
+    if (message.updatedAt !== 0) {
+      writer.uint32(160).int64(message.updatedAt);
+    }
+    if (message.type !== 0) {
+      writer.uint32(168).int32(message.type);
+    }
+    if (message.serialNumber !== "") {
+      writer.uint32(178).string(message.serialNumber);
+    }
+    if (message.needSecurityDecision === true) {
+      writer.uint32(184).bool(message.needSecurityDecision);
+    }
+    if (message.needSuperSecurityDecision === true) {
+      writer.uint32(192).bool(message.needSuperSecurityDecision);
+    }
+    if (message.needAdminDecision === true) {
+      writer.uint32(200).bool(message.needAdminDecision);
+    }
+    if (message.hasSecurityAdmin === true) {
+      writer.uint32(208).bool(message.hasSecurityAdmin);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): ConvertEntityTypeRes {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseConvertEntityTypeRes } as ConvertEntityTypeRes;
+    message.commanders = [];
+    message.securityApprovers = [];
+    message.superSecurityApprovers = [];
+    message.adminApprovers = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.submittedBy = EntityMin.decode(reader, reader.uint32());
+          break;
+        case 2:
+          message.status = reader.int32() as any;
+          break;
+        case 3:
+          message.commanderDecision = ApproverDecision.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 4:
+          message.securityDecision = ApproverDecision.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 5:
+          message.superSecurityDecision = ApproverDecision.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 6:
+          message.adminDecision = ApproverDecision.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 7:
+          message.commanders.push(EntityMin.decode(reader, reader.uint32()));
+          break;
+        case 8:
+          message.securityApprovers.push(
+            EntityMin.decode(reader, reader.uint32())
+          );
+          break;
+        case 9:
+          message.superSecurityApprovers.push(
+            EntityMin.decode(reader, reader.uint32())
+          );
+          break;
+        case 10:
+          message.adminApprovers.push(
+            EntityMin.decode(reader, reader.uint32())
+          );
+          break;
+        case 11:
+          message.kartoffelStatus = KartoffelStatus.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 12:
+          message.adStatus = ADStatus.decode(reader, reader.uint32());
+          break;
+        case 13:
+          message.kartoffelParams = ConvertEntityTypeKartoffelParams.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 14:
+          message.adParams = ConvertEntityTypeADParams.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 15:
+          message.comments = reader.string();
+          break;
+        case 16:
+          message.approversComments = ApproversComments.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 17:
+          message.due = longToNumber(reader.int64() as Long);
+          break;
+        case 18:
+          message.id = reader.string();
+          break;
+        case 19:
+          message.createdAt = longToNumber(reader.int64() as Long);
+          break;
+        case 20:
+          message.updatedAt = longToNumber(reader.int64() as Long);
+          break;
+        case 21:
+          message.type = reader.int32() as any;
+          break;
+        case 22:
+          message.serialNumber = reader.string();
+          break;
+        case 23:
+          message.needSecurityDecision = reader.bool();
+          break;
+        case 24:
+          message.needSuperSecurityDecision = reader.bool();
+          break;
+        case 25:
+          message.needAdminDecision = reader.bool();
+          break;
+        case 26:
+          message.hasSecurityAdmin = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ConvertEntityTypeRes {
+    const message = { ...baseConvertEntityTypeRes } as ConvertEntityTypeRes;
+    message.commanders = [];
+    message.securityApprovers = [];
+    message.superSecurityApprovers = [];
+    message.adminApprovers = [];
+    if (object.submittedBy !== undefined && object.submittedBy !== null) {
+      message.submittedBy = EntityMin.fromJSON(object.submittedBy);
+    } else {
+      message.submittedBy = undefined;
+    }
+    if (object.status !== undefined && object.status !== null) {
+      message.status = requestStatusFromJSON(object.status);
+    } else {
+      message.status = 0;
+    }
+    if (
+      object.commanderDecision !== undefined &&
+      object.commanderDecision !== null
+    ) {
+      message.commanderDecision = ApproverDecision.fromJSON(
+        object.commanderDecision
+      );
+    } else {
+      message.commanderDecision = undefined;
+    }
+    if (
+      object.securityDecision !== undefined &&
+      object.securityDecision !== null
+    ) {
+      message.securityDecision = ApproverDecision.fromJSON(
+        object.securityDecision
+      );
+    } else {
+      message.securityDecision = undefined;
+    }
+    if (
+      object.superSecurityDecision !== undefined &&
+      object.superSecurityDecision !== null
+    ) {
+      message.superSecurityDecision = ApproverDecision.fromJSON(
+        object.superSecurityDecision
+      );
+    } else {
+      message.superSecurityDecision = undefined;
+    }
+    if (object.adminDecision !== undefined && object.adminDecision !== null) {
+      message.adminDecision = ApproverDecision.fromJSON(object.adminDecision);
+    } else {
+      message.adminDecision = undefined;
+    }
+    if (object.commanders !== undefined && object.commanders !== null) {
+      for (const e of object.commanders) {
+        message.commanders.push(EntityMin.fromJSON(e));
+      }
+    }
+    if (
+      object.securityApprovers !== undefined &&
+      object.securityApprovers !== null
+    ) {
+      for (const e of object.securityApprovers) {
+        message.securityApprovers.push(EntityMin.fromJSON(e));
+      }
+    }
+    if (
+      object.superSecurityApprovers !== undefined &&
+      object.superSecurityApprovers !== null
+    ) {
+      for (const e of object.superSecurityApprovers) {
+        message.superSecurityApprovers.push(EntityMin.fromJSON(e));
+      }
+    }
+    if (object.adminApprovers !== undefined && object.adminApprovers !== null) {
+      for (const e of object.adminApprovers) {
+        message.adminApprovers.push(EntityMin.fromJSON(e));
+      }
+    }
+    if (
+      object.kartoffelStatus !== undefined &&
+      object.kartoffelStatus !== null
+    ) {
+      message.kartoffelStatus = KartoffelStatus.fromJSON(
+        object.kartoffelStatus
+      );
+    } else {
+      message.kartoffelStatus = undefined;
+    }
+    if (object.adStatus !== undefined && object.adStatus !== null) {
+      message.adStatus = ADStatus.fromJSON(object.adStatus);
+    } else {
+      message.adStatus = undefined;
+    }
+    if (
+      object.kartoffelParams !== undefined &&
+      object.kartoffelParams !== null
+    ) {
+      message.kartoffelParams = ConvertEntityTypeKartoffelParams.fromJSON(
+        object.kartoffelParams
+      );
+    } else {
+      message.kartoffelParams = undefined;
+    }
+    if (object.adParams !== undefined && object.adParams !== null) {
+      message.adParams = ConvertEntityTypeADParams.fromJSON(object.adParams);
+    } else {
+      message.adParams = undefined;
+    }
+    if (object.comments !== undefined && object.comments !== null) {
+      message.comments = String(object.comments);
+    } else {
+      message.comments = "";
+    }
+    if (
+      object.approversComments !== undefined &&
+      object.approversComments !== null
+    ) {
+      message.approversComments = ApproversComments.fromJSON(
+        object.approversComments
+      );
+    } else {
+      message.approversComments = undefined;
+    }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = Number(object.due);
+    } else {
+      message.due = 0;
+    }
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    if (object.createdAt !== undefined && object.createdAt !== null) {
+      message.createdAt = Number(object.createdAt);
+    } else {
+      message.createdAt = 0;
+    }
+    if (object.updatedAt !== undefined && object.updatedAt !== null) {
+      message.updatedAt = Number(object.updatedAt);
+    } else {
+      message.updatedAt = 0;
+    }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = requestTypeFromJSON(object.type);
+    } else {
+      message.type = 0;
+    }
+    if (object.serialNumber !== undefined && object.serialNumber !== null) {
+      message.serialNumber = String(object.serialNumber);
+    } else {
+      message.serialNumber = "";
+    }
+    if (
+      object.needSecurityDecision !== undefined &&
+      object.needSecurityDecision !== null
+    ) {
+      message.needSecurityDecision = Boolean(object.needSecurityDecision);
+    } else {
+      message.needSecurityDecision = false;
+    }
+    if (
+      object.needSuperSecurityDecision !== undefined &&
+      object.needSuperSecurityDecision !== null
+    ) {
+      message.needSuperSecurityDecision = Boolean(
+        object.needSuperSecurityDecision
+      );
+    } else {
+      message.needSuperSecurityDecision = false;
+    }
+    if (
+      object.needAdminDecision !== undefined &&
+      object.needAdminDecision !== null
+    ) {
+      message.needAdminDecision = Boolean(object.needAdminDecision);
+    } else {
+      message.needAdminDecision = false;
+    }
+    if (
+      object.hasSecurityAdmin !== undefined &&
+      object.hasSecurityAdmin !== null
+    ) {
+      message.hasSecurityAdmin = Boolean(object.hasSecurityAdmin);
+    } else {
+      message.hasSecurityAdmin = false;
+    }
+    return message;
+  },
+
+  toJSON(message: ConvertEntityTypeRes): unknown {
+    const obj: any = {};
+    message.submittedBy !== undefined &&
+      (obj.submittedBy = message.submittedBy
+        ? EntityMin.toJSON(message.submittedBy)
+        : undefined);
+    message.status !== undefined &&
+      (obj.status = requestStatusToJSON(message.status));
+    message.commanderDecision !== undefined &&
+      (obj.commanderDecision = message.commanderDecision
+        ? ApproverDecision.toJSON(message.commanderDecision)
+        : undefined);
+    message.securityDecision !== undefined &&
+      (obj.securityDecision = message.securityDecision
+        ? ApproverDecision.toJSON(message.securityDecision)
+        : undefined);
+    message.superSecurityDecision !== undefined &&
+      (obj.superSecurityDecision = message.superSecurityDecision
+        ? ApproverDecision.toJSON(message.superSecurityDecision)
+        : undefined);
+    message.adminDecision !== undefined &&
+      (obj.adminDecision = message.adminDecision
+        ? ApproverDecision.toJSON(message.adminDecision)
+        : undefined);
+    if (message.commanders) {
+      obj.commanders = message.commanders.map((e) =>
+        e ? EntityMin.toJSON(e) : undefined
+      );
+    } else {
+      obj.commanders = [];
+    }
+    if (message.securityApprovers) {
+      obj.securityApprovers = message.securityApprovers.map((e) =>
+        e ? EntityMin.toJSON(e) : undefined
+      );
+    } else {
+      obj.securityApprovers = [];
+    }
+    if (message.superSecurityApprovers) {
+      obj.superSecurityApprovers = message.superSecurityApprovers.map((e) =>
+        e ? EntityMin.toJSON(e) : undefined
+      );
+    } else {
+      obj.superSecurityApprovers = [];
+    }
+    if (message.adminApprovers) {
+      obj.adminApprovers = message.adminApprovers.map((e) =>
+        e ? EntityMin.toJSON(e) : undefined
+      );
+    } else {
+      obj.adminApprovers = [];
+    }
+    message.kartoffelStatus !== undefined &&
+      (obj.kartoffelStatus = message.kartoffelStatus
+        ? KartoffelStatus.toJSON(message.kartoffelStatus)
+        : undefined);
+    message.adStatus !== undefined &&
+      (obj.adStatus = message.adStatus
+        ? ADStatus.toJSON(message.adStatus)
+        : undefined);
+    message.kartoffelParams !== undefined &&
+      (obj.kartoffelParams = message.kartoffelParams
+        ? ConvertEntityTypeKartoffelParams.toJSON(message.kartoffelParams)
+        : undefined);
+    message.adParams !== undefined &&
+      (obj.adParams = message.adParams
+        ? ConvertEntityTypeADParams.toJSON(message.adParams)
+        : undefined);
+    message.comments !== undefined && (obj.comments = message.comments);
+    message.approversComments !== undefined &&
+      (obj.approversComments = message.approversComments
+        ? ApproversComments.toJSON(message.approversComments)
+        : undefined);
+    message.due !== undefined && (obj.due = message.due);
+    message.id !== undefined && (obj.id = message.id);
+    message.createdAt !== undefined && (obj.createdAt = message.createdAt);
+    message.updatedAt !== undefined && (obj.updatedAt = message.updatedAt);
+    message.type !== undefined && (obj.type = requestTypeToJSON(message.type));
+    message.serialNumber !== undefined &&
+      (obj.serialNumber = message.serialNumber);
+    message.needSecurityDecision !== undefined &&
+      (obj.needSecurityDecision = message.needSecurityDecision);
+    message.needSuperSecurityDecision !== undefined &&
+      (obj.needSuperSecurityDecision = message.needSuperSecurityDecision);
+    message.needAdminDecision !== undefined &&
+      (obj.needAdminDecision = message.needAdminDecision);
+    message.hasSecurityAdmin !== undefined &&
+      (obj.hasSecurityAdmin = message.hasSecurityAdmin);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<ConvertEntityTypeRes>): ConvertEntityTypeRes {
+    const message = { ...baseConvertEntityTypeRes } as ConvertEntityTypeRes;
+    message.commanders = [];
+    message.securityApprovers = [];
+    message.superSecurityApprovers = [];
+    message.adminApprovers = [];
+    if (object.submittedBy !== undefined && object.submittedBy !== null) {
+      message.submittedBy = EntityMin.fromPartial(object.submittedBy);
+    } else {
+      message.submittedBy = undefined;
+    }
+    if (object.status !== undefined && object.status !== null) {
+      message.status = object.status;
+    } else {
+      message.status = 0;
+    }
+    if (
+      object.commanderDecision !== undefined &&
+      object.commanderDecision !== null
+    ) {
+      message.commanderDecision = ApproverDecision.fromPartial(
+        object.commanderDecision
+      );
+    } else {
+      message.commanderDecision = undefined;
+    }
+    if (
+      object.securityDecision !== undefined &&
+      object.securityDecision !== null
+    ) {
+      message.securityDecision = ApproverDecision.fromPartial(
+        object.securityDecision
+      );
+    } else {
+      message.securityDecision = undefined;
+    }
+    if (
+      object.superSecurityDecision !== undefined &&
+      object.superSecurityDecision !== null
+    ) {
+      message.superSecurityDecision = ApproverDecision.fromPartial(
+        object.superSecurityDecision
+      );
+    } else {
+      message.superSecurityDecision = undefined;
+    }
+    if (object.adminDecision !== undefined && object.adminDecision !== null) {
+      message.adminDecision = ApproverDecision.fromPartial(
+        object.adminDecision
+      );
+    } else {
+      message.adminDecision = undefined;
+    }
+    if (object.commanders !== undefined && object.commanders !== null) {
+      for (const e of object.commanders) {
+        message.commanders.push(EntityMin.fromPartial(e));
+      }
+    }
+    if (
+      object.securityApprovers !== undefined &&
+      object.securityApprovers !== null
+    ) {
+      for (const e of object.securityApprovers) {
+        message.securityApprovers.push(EntityMin.fromPartial(e));
+      }
+    }
+    if (
+      object.superSecurityApprovers !== undefined &&
+      object.superSecurityApprovers !== null
+    ) {
+      for (const e of object.superSecurityApprovers) {
+        message.superSecurityApprovers.push(EntityMin.fromPartial(e));
+      }
+    }
+    if (object.adminApprovers !== undefined && object.adminApprovers !== null) {
+      for (const e of object.adminApprovers) {
+        message.adminApprovers.push(EntityMin.fromPartial(e));
+      }
+    }
+    if (
+      object.kartoffelStatus !== undefined &&
+      object.kartoffelStatus !== null
+    ) {
+      message.kartoffelStatus = KartoffelStatus.fromPartial(
+        object.kartoffelStatus
+      );
+    } else {
+      message.kartoffelStatus = undefined;
+    }
+    if (object.adStatus !== undefined && object.adStatus !== null) {
+      message.adStatus = ADStatus.fromPartial(object.adStatus);
+    } else {
+      message.adStatus = undefined;
+    }
+    if (
+      object.kartoffelParams !== undefined &&
+      object.kartoffelParams !== null
+    ) {
+      message.kartoffelParams = ConvertEntityTypeKartoffelParams.fromPartial(
+        object.kartoffelParams
+      );
+    } else {
+      message.kartoffelParams = undefined;
+    }
+    if (object.adParams !== undefined && object.adParams !== null) {
+      message.adParams = ConvertEntityTypeADParams.fromPartial(object.adParams);
+    } else {
+      message.adParams = undefined;
+    }
+    if (object.comments !== undefined && object.comments !== null) {
+      message.comments = object.comments;
+    } else {
+      message.comments = "";
+    }
+    if (
+      object.approversComments !== undefined &&
+      object.approversComments !== null
+    ) {
+      message.approversComments = ApproversComments.fromPartial(
+        object.approversComments
+      );
+    } else {
+      message.approversComments = undefined;
+    }
+    if (object.due !== undefined && object.due !== null) {
+      message.due = object.due;
+    } else {
+      message.due = 0;
+    }
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    if (object.createdAt !== undefined && object.createdAt !== null) {
+      message.createdAt = object.createdAt;
+    } else {
+      message.createdAt = 0;
+    }
+    if (object.updatedAt !== undefined && object.updatedAt !== null) {
+      message.updatedAt = object.updatedAt;
+    } else {
+      message.updatedAt = 0;
+    }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = object.type;
+    } else {
+      message.type = 0;
+    }
+    if (object.serialNumber !== undefined && object.serialNumber !== null) {
+      message.serialNumber = object.serialNumber;
+    } else {
+      message.serialNumber = "";
+    }
+    if (
+      object.needSecurityDecision !== undefined &&
+      object.needSecurityDecision !== null
+    ) {
+      message.needSecurityDecision = object.needSecurityDecision;
+    } else {
+      message.needSecurityDecision = false;
+    }
+    if (
+      object.needSuperSecurityDecision !== undefined &&
+      object.needSuperSecurityDecision !== null
+    ) {
+      message.needSuperSecurityDecision = object.needSuperSecurityDecision;
+    } else {
+      message.needSuperSecurityDecision = false;
+    }
+    if (
+      object.needAdminDecision !== undefined &&
+      object.needAdminDecision !== null
+    ) {
+      message.needAdminDecision = object.needAdminDecision;
+    } else {
+      message.needAdminDecision = false;
+    }
+    if (
+      object.hasSecurityAdmin !== undefined &&
+      object.hasSecurityAdmin !== null
+    ) {
+      message.hasSecurityAdmin = object.hasSecurityAdmin;
+    } else {
+      message.hasSecurityAdmin = false;
+    }
+    return message;
+  },
+};
+
 const baseSendSubmissionMailReq: object = { id: "" };
 
 export const SendSubmissionMailReq = {
@@ -23106,6 +24447,8 @@ const baseEditEntityKartoffelParams: object = {
   lastName: "",
   phone: "",
   mobilePhone: "",
+  oldFirstName: "",
+  oldLastName: "",
 };
 
 export const EditEntityKartoffelParams = {
@@ -23151,6 +24494,24 @@ export const EditEntityKartoffelParams = {
     }
     if (message.entityType !== undefined) {
       writer.uint32(106).string(message.entityType);
+    }
+    if (message.rank !== undefined) {
+      writer.uint32(114).string(message.rank);
+    }
+    if (message.oldFirstName !== "") {
+      writer.uint32(122).string(message.oldFirstName);
+    }
+    if (message.oldLastName !== "") {
+      writer.uint32(130).string(message.oldLastName);
+    }
+    if (message.oldIdentityCard !== undefined) {
+      writer.uint32(138).string(message.oldIdentityCard);
+    }
+    if (message.oldMobilePhone !== undefined) {
+      writer.uint32(146).string(message.oldMobilePhone);
+    }
+    if (message.oldRank !== undefined) {
+      writer.uint32(154).string(message.oldRank);
     }
     return writer;
   },
@@ -23207,6 +24568,24 @@ export const EditEntityKartoffelParams = {
           break;
         case 13:
           message.entityType = reader.string();
+          break;
+        case 14:
+          message.rank = reader.string();
+          break;
+        case 15:
+          message.oldFirstName = reader.string();
+          break;
+        case 16:
+          message.oldLastName = reader.string();
+          break;
+        case 17:
+          message.oldIdentityCard = reader.string();
+          break;
+        case 18:
+          message.oldMobilePhone = reader.string();
+          break;
+        case 19:
+          message.oldRank = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -23287,6 +24666,39 @@ export const EditEntityKartoffelParams = {
     } else {
       message.entityType = undefined;
     }
+    if (object.rank !== undefined && object.rank !== null) {
+      message.rank = String(object.rank);
+    } else {
+      message.rank = undefined;
+    }
+    if (object.oldFirstName !== undefined && object.oldFirstName !== null) {
+      message.oldFirstName = String(object.oldFirstName);
+    } else {
+      message.oldFirstName = "";
+    }
+    if (object.oldLastName !== undefined && object.oldLastName !== null) {
+      message.oldLastName = String(object.oldLastName);
+    } else {
+      message.oldLastName = "";
+    }
+    if (
+      object.oldIdentityCard !== undefined &&
+      object.oldIdentityCard !== null
+    ) {
+      message.oldIdentityCard = String(object.oldIdentityCard);
+    } else {
+      message.oldIdentityCard = undefined;
+    }
+    if (object.oldMobilePhone !== undefined && object.oldMobilePhone !== null) {
+      message.oldMobilePhone = String(object.oldMobilePhone);
+    } else {
+      message.oldMobilePhone = undefined;
+    }
+    if (object.oldRank !== undefined && object.oldRank !== null) {
+      message.oldRank = String(object.oldRank);
+    } else {
+      message.oldRank = undefined;
+    }
     return message;
   },
 
@@ -23316,6 +24728,16 @@ export const EditEntityKartoffelParams = {
     message.sex !== undefined && (obj.sex = message.sex);
     message.birthdate !== undefined && (obj.birthdate = message.birthdate);
     message.entityType !== undefined && (obj.entityType = message.entityType);
+    message.rank !== undefined && (obj.rank = message.rank);
+    message.oldFirstName !== undefined &&
+      (obj.oldFirstName = message.oldFirstName);
+    message.oldLastName !== undefined &&
+      (obj.oldLastName = message.oldLastName);
+    message.oldIdentityCard !== undefined &&
+      (obj.oldIdentityCard = message.oldIdentityCard);
+    message.oldMobilePhone !== undefined &&
+      (obj.oldMobilePhone = message.oldMobilePhone);
+    message.oldRank !== undefined && (obj.oldRank = message.oldRank);
     return obj;
   },
 
@@ -23391,6 +24813,39 @@ export const EditEntityKartoffelParams = {
       message.entityType = object.entityType;
     } else {
       message.entityType = undefined;
+    }
+    if (object.rank !== undefined && object.rank !== null) {
+      message.rank = object.rank;
+    } else {
+      message.rank = undefined;
+    }
+    if (object.oldFirstName !== undefined && object.oldFirstName !== null) {
+      message.oldFirstName = object.oldFirstName;
+    } else {
+      message.oldFirstName = "";
+    }
+    if (object.oldLastName !== undefined && object.oldLastName !== null) {
+      message.oldLastName = object.oldLastName;
+    } else {
+      message.oldLastName = "";
+    }
+    if (
+      object.oldIdentityCard !== undefined &&
+      object.oldIdentityCard !== null
+    ) {
+      message.oldIdentityCard = object.oldIdentityCard;
+    } else {
+      message.oldIdentityCard = undefined;
+    }
+    if (object.oldMobilePhone !== undefined && object.oldMobilePhone !== null) {
+      message.oldMobilePhone = object.oldMobilePhone;
+    } else {
+      message.oldMobilePhone = undefined;
+    }
+    if (object.oldRank !== undefined && object.oldRank !== null) {
+      message.oldRank = object.oldRank;
+    } else {
+      message.oldRank = undefined;
     }
     return message;
   },
@@ -23520,6 +24975,9 @@ export const DeleteOGKartoffelParams = {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
+    if (message.name !== undefined) {
+      writer.uint32(18).string(message.name);
+    }
     return writer;
   },
 
@@ -23538,6 +24996,9 @@ export const DeleteOGKartoffelParams = {
         case 1:
           message.id = reader.string();
           break;
+        case 2:
+          message.name = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -23555,12 +25016,18 @@ export const DeleteOGKartoffelParams = {
     } else {
       message.id = "";
     }
+    if (object.name !== undefined && object.name !== null) {
+      message.name = String(object.name);
+    } else {
+      message.name = undefined;
+    }
     return message;
   },
 
   toJSON(message: DeleteOGKartoffelParams): unknown {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
+    message.name !== undefined && (obj.name = message.name);
     return obj;
   },
 
@@ -23575,15 +25042,16 @@ export const DeleteOGKartoffelParams = {
     } else {
       message.id = "";
     }
+    if (object.name !== undefined && object.name !== null) {
+      message.name = object.name;
+    } else {
+      message.name = undefined;
+    }
     return message;
   },
 };
 
-const baseDeleteOGADParams: object = {
-  ouDisplayName: "",
-  ouName: "",
-  name: "",
-};
+const baseDeleteOGADParams: object = { ouDisplayName: "" };
 
 export const DeleteOGADParams = {
   encode(
@@ -23592,12 +25060,6 @@ export const DeleteOGADParams = {
   ): _m0.Writer {
     if (message.ouDisplayName !== "") {
       writer.uint32(10).string(message.ouDisplayName);
-    }
-    if (message.ouName !== "") {
-      writer.uint32(18).string(message.ouName);
-    }
-    if (message.name !== "") {
-      writer.uint32(26).string(message.name);
     }
     return writer;
   },
@@ -23611,12 +25073,6 @@ export const DeleteOGADParams = {
       switch (tag >>> 3) {
         case 1:
           message.ouDisplayName = reader.string();
-          break;
-        case 2:
-          message.ouName = reader.string();
-          break;
-        case 3:
-          message.name = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -23633,16 +25089,6 @@ export const DeleteOGADParams = {
     } else {
       message.ouDisplayName = "";
     }
-    if (object.ouName !== undefined && object.ouName !== null) {
-      message.ouName = String(object.ouName);
-    } else {
-      message.ouName = "";
-    }
-    if (object.name !== undefined && object.name !== null) {
-      message.name = String(object.name);
-    } else {
-      message.name = "";
-    }
     return message;
   },
 
@@ -23650,8 +25096,6 @@ export const DeleteOGADParams = {
     const obj: any = {};
     message.ouDisplayName !== undefined &&
       (obj.ouDisplayName = message.ouDisplayName);
-    message.ouName !== undefined && (obj.ouName = message.ouName);
-    message.name !== undefined && (obj.name = message.name);
     return obj;
   },
 
@@ -23661,16 +25105,6 @@ export const DeleteOGADParams = {
       message.ouDisplayName = object.ouDisplayName;
     } else {
       message.ouDisplayName = "";
-    }
-    if (object.ouName !== undefined && object.ouName !== null) {
-      message.ouName = object.ouName;
-    } else {
-      message.ouName = "";
-    }
-    if (object.name !== undefined && object.name !== null) {
-      message.name = object.name;
-    } else {
-      message.name = "";
     }
     return message;
   },
@@ -23688,6 +25122,21 @@ export const DeleteRoleKartoffelParams = {
     }
     if (message.uniqueId !== "") {
       writer.uint32(18).string(message.uniqueId);
+    }
+    if (message.jobTitle !== undefined) {
+      writer.uint32(26).string(message.jobTitle);
+    }
+    if (message.firstName !== undefined) {
+      writer.uint32(34).string(message.firstName);
+    }
+    if (message.lastName !== undefined) {
+      writer.uint32(42).string(message.lastName);
+    }
+    if (message.identityCard !== undefined) {
+      writer.uint32(50).string(message.identityCard);
+    }
+    if (message.personalNumber !== undefined) {
+      writer.uint32(58).string(message.personalNumber);
     }
     return writer;
   },
@@ -23709,6 +25158,21 @@ export const DeleteRoleKartoffelParams = {
           break;
         case 2:
           message.uniqueId = reader.string();
+          break;
+        case 3:
+          message.jobTitle = reader.string();
+          break;
+        case 4:
+          message.firstName = reader.string();
+          break;
+        case 5:
+          message.lastName = reader.string();
+          break;
+        case 6:
+          message.identityCard = reader.string();
+          break;
+        case 7:
+          message.personalNumber = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -23732,6 +25196,31 @@ export const DeleteRoleKartoffelParams = {
     } else {
       message.uniqueId = "";
     }
+    if (object.jobTitle !== undefined && object.jobTitle !== null) {
+      message.jobTitle = String(object.jobTitle);
+    } else {
+      message.jobTitle = undefined;
+    }
+    if (object.firstName !== undefined && object.firstName !== null) {
+      message.firstName = String(object.firstName);
+    } else {
+      message.firstName = undefined;
+    }
+    if (object.lastName !== undefined && object.lastName !== null) {
+      message.lastName = String(object.lastName);
+    } else {
+      message.lastName = undefined;
+    }
+    if (object.identityCard !== undefined && object.identityCard !== null) {
+      message.identityCard = String(object.identityCard);
+    } else {
+      message.identityCard = undefined;
+    }
+    if (object.personalNumber !== undefined && object.personalNumber !== null) {
+      message.personalNumber = String(object.personalNumber);
+    } else {
+      message.personalNumber = undefined;
+    }
     return message;
   },
 
@@ -23739,6 +25228,13 @@ export const DeleteRoleKartoffelParams = {
     const obj: any = {};
     message.roleId !== undefined && (obj.roleId = message.roleId);
     message.uniqueId !== undefined && (obj.uniqueId = message.uniqueId);
+    message.jobTitle !== undefined && (obj.jobTitle = message.jobTitle);
+    message.firstName !== undefined && (obj.firstName = message.firstName);
+    message.lastName !== undefined && (obj.lastName = message.lastName);
+    message.identityCard !== undefined &&
+      (obj.identityCard = message.identityCard);
+    message.personalNumber !== undefined &&
+      (obj.personalNumber = message.personalNumber);
     return obj;
   },
 
@@ -23757,6 +25253,31 @@ export const DeleteRoleKartoffelParams = {
       message.uniqueId = object.uniqueId;
     } else {
       message.uniqueId = "";
+    }
+    if (object.jobTitle !== undefined && object.jobTitle !== null) {
+      message.jobTitle = object.jobTitle;
+    } else {
+      message.jobTitle = undefined;
+    }
+    if (object.firstName !== undefined && object.firstName !== null) {
+      message.firstName = object.firstName;
+    } else {
+      message.firstName = undefined;
+    }
+    if (object.lastName !== undefined && object.lastName !== null) {
+      message.lastName = object.lastName;
+    } else {
+      message.lastName = undefined;
+    }
+    if (object.identityCard !== undefined && object.identityCard !== null) {
+      message.identityCard = object.identityCard;
+    } else {
+      message.identityCard = undefined;
+    }
+    if (object.personalNumber !== undefined && object.personalNumber !== null) {
+      message.personalNumber = object.personalNumber;
+    } else {
+      message.personalNumber = undefined;
     }
     return message;
   },
@@ -24171,20 +25692,23 @@ export const AssignRoleToEntityADParams = {
     if (message.upn !== undefined) {
       writer.uint32(26).string(message.upn);
     }
+    if (message.oldUpn !== undefined) {
+      writer.uint32(34).string(message.oldUpn);
+    }
     if (message.firstName !== "") {
-      writer.uint32(34).string(message.firstName);
+      writer.uint32(42).string(message.firstName);
     }
     if (message.lastName !== "") {
-      writer.uint32(42).string(message.lastName);
+      writer.uint32(50).string(message.lastName);
     }
     if (message.fullName !== "") {
-      writer.uint32(50).string(message.fullName);
+      writer.uint32(58).string(message.fullName);
     }
     if (message.rank !== undefined) {
-      writer.uint32(58).string(message.rank);
+      writer.uint32(66).string(message.rank);
     }
     if (message.roleSerialCode !== "") {
-      writer.uint32(66).string(message.roleSerialCode);
+      writer.uint32(74).string(message.roleSerialCode);
     }
     return writer;
   },
@@ -24211,18 +25735,21 @@ export const AssignRoleToEntityADParams = {
           message.upn = reader.string();
           break;
         case 4:
-          message.firstName = reader.string();
+          message.oldUpn = reader.string();
           break;
         case 5:
-          message.lastName = reader.string();
+          message.firstName = reader.string();
           break;
         case 6:
-          message.fullName = reader.string();
+          message.lastName = reader.string();
           break;
         case 7:
-          message.rank = reader.string();
+          message.fullName = reader.string();
           break;
         case 8:
+          message.rank = reader.string();
+          break;
+        case 9:
           message.roleSerialCode = reader.string();
           break;
         default:
@@ -24257,6 +25784,11 @@ export const AssignRoleToEntityADParams = {
       message.upn = String(object.upn);
     } else {
       message.upn = undefined;
+    }
+    if (object.oldUpn !== undefined && object.oldUpn !== null) {
+      message.oldUpn = String(object.oldUpn);
+    } else {
+      message.oldUpn = undefined;
     }
     if (object.firstName !== undefined && object.firstName !== null) {
       message.firstName = String(object.firstName);
@@ -24293,6 +25825,7 @@ export const AssignRoleToEntityADParams = {
     message.newSAMAccountName !== undefined &&
       (obj.newSAMAccountName = message.newSAMAccountName);
     message.upn !== undefined && (obj.upn = message.upn);
+    message.oldUpn !== undefined && (obj.oldUpn = message.oldUpn);
     message.firstName !== undefined && (obj.firstName = message.firstName);
     message.lastName !== undefined && (obj.lastName = message.lastName);
     message.fullName !== undefined && (obj.fullName = message.fullName);
@@ -24328,6 +25861,11 @@ export const AssignRoleToEntityADParams = {
       message.upn = object.upn;
     } else {
       message.upn = undefined;
+    }
+    if (object.oldUpn !== undefined && object.oldUpn !== null) {
+      message.oldUpn = object.oldUpn;
+    } else {
+      message.oldUpn = undefined;
     }
     if (object.firstName !== undefined && object.firstName !== null) {
       message.firstName = object.firstName;
@@ -25136,25 +26674,32 @@ export const RemoveApproverFromApproversReq = {
   },
 };
 
-const baseGetDoneRequestsByEntityIdReq: object = {
-  entityId: "",
-  from: 0,
-  to: 0,
+const baseConvertEntityTypeKartoffelParams: object = {
+  id: "",
+  uniqueId: "",
+  newEntityType: "",
+  upn: "",
 };
 
-export const GetDoneRequestsByEntityIdReq = {
+export const ConvertEntityTypeKartoffelParams = {
   encode(
-    message: GetDoneRequestsByEntityIdReq,
+    message: ConvertEntityTypeKartoffelParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.entityId !== "") {
-      writer.uint32(10).string(message.entityId);
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
     }
-    if (message.from !== 0) {
-      writer.uint32(16).int32(message.from);
+    if (message.uniqueId !== "") {
+      writer.uint32(18).string(message.uniqueId);
     }
-    if (message.to !== 0) {
-      writer.uint32(24).int32(message.to);
+    if (message.newEntityType !== "") {
+      writer.uint32(26).string(message.newEntityType);
+    }
+    if (message.upn !== "") {
+      writer.uint32(34).string(message.upn);
+    }
+    if (message.identifier !== undefined) {
+      writer.uint32(42).string(message.identifier);
     }
     return writer;
   },
@@ -25162,137 +26707,29 @@ export const GetDoneRequestsByEntityIdReq = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): GetDoneRequestsByEntityIdReq {
+  ): ConvertEntityTypeKartoffelParams {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseGetDoneRequestsByEntityIdReq,
-    } as GetDoneRequestsByEntityIdReq;
+      ...baseConvertEntityTypeKartoffelParams,
+    } as ConvertEntityTypeKartoffelParams;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.entityId = reader.string();
+          message.id = reader.string();
           break;
         case 2:
-          message.from = reader.int32();
+          message.uniqueId = reader.string();
           break;
         case 3:
-          message.to = reader.int32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): GetDoneRequestsByEntityIdReq {
-    const message = {
-      ...baseGetDoneRequestsByEntityIdReq,
-    } as GetDoneRequestsByEntityIdReq;
-    if (object.entityId !== undefined && object.entityId !== null) {
-      message.entityId = String(object.entityId);
-    } else {
-      message.entityId = "";
-    }
-    if (object.from !== undefined && object.from !== null) {
-      message.from = Number(object.from);
-    } else {
-      message.from = 0;
-    }
-    if (object.to !== undefined && object.to !== null) {
-      message.to = Number(object.to);
-    } else {
-      message.to = 0;
-    }
-    return message;
-  },
-
-  toJSON(message: GetDoneRequestsByEntityIdReq): unknown {
-    const obj: any = {};
-    message.entityId !== undefined && (obj.entityId = message.entityId);
-    message.from !== undefined && (obj.from = message.from);
-    message.to !== undefined && (obj.to = message.to);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<GetDoneRequestsByEntityIdReq>
-  ): GetDoneRequestsByEntityIdReq {
-    const message = {
-      ...baseGetDoneRequestsByEntityIdReq,
-    } as GetDoneRequestsByEntityIdReq;
-    if (object.entityId !== undefined && object.entityId !== null) {
-      message.entityId = object.entityId;
-    } else {
-      message.entityId = "";
-    }
-    if (object.from !== undefined && object.from !== null) {
-      message.from = object.from;
-    } else {
-      message.from = 0;
-    }
-    if (object.to !== undefined && object.to !== null) {
-      message.to = object.to;
-    } else {
-      message.to = 0;
-    }
-    return message;
-  },
-};
-
-const baseGetDoneRequestsByGroupIdReq: object = {
-  groupId: "",
-  from: 0,
-  to: 0,
-  showRoles: false,
-};
-
-export const GetDoneRequestsByGroupIdReq = {
-  encode(
-    message: GetDoneRequestsByGroupIdReq,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.groupId !== "") {
-      writer.uint32(10).string(message.groupId);
-    }
-    if (message.from !== 0) {
-      writer.uint32(16).int32(message.from);
-    }
-    if (message.to !== 0) {
-      writer.uint32(24).int32(message.to);
-    }
-    if (message.showRoles === true) {
-      writer.uint32(32).bool(message.showRoles);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): GetDoneRequestsByGroupIdReq {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseGetDoneRequestsByGroupIdReq,
-    } as GetDoneRequestsByGroupIdReq;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.groupId = reader.string();
-          break;
-        case 2:
-          message.from = reader.int32();
-          break;
-        case 3:
-          message.to = reader.int32();
+          message.newEntityType = reader.string();
           break;
         case 4:
-          message.showRoles = reader.bool();
+          message.upn = reader.string();
+          break;
+        case 5:
+          message.identifier = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -25302,87 +26739,117 @@ export const GetDoneRequestsByGroupIdReq = {
     return message;
   },
 
-  fromJSON(object: any): GetDoneRequestsByGroupIdReq {
+  fromJSON(object: any): ConvertEntityTypeKartoffelParams {
     const message = {
-      ...baseGetDoneRequestsByGroupIdReq,
-    } as GetDoneRequestsByGroupIdReq;
-    if (object.groupId !== undefined && object.groupId !== null) {
-      message.groupId = String(object.groupId);
+      ...baseConvertEntityTypeKartoffelParams,
+    } as ConvertEntityTypeKartoffelParams;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
     } else {
-      message.groupId = "";
+      message.id = "";
     }
-    if (object.from !== undefined && object.from !== null) {
-      message.from = Number(object.from);
+    if (object.uniqueId !== undefined && object.uniqueId !== null) {
+      message.uniqueId = String(object.uniqueId);
     } else {
-      message.from = 0;
+      message.uniqueId = "";
     }
-    if (object.to !== undefined && object.to !== null) {
-      message.to = Number(object.to);
+    if (object.newEntityType !== undefined && object.newEntityType !== null) {
+      message.newEntityType = String(object.newEntityType);
     } else {
-      message.to = 0;
+      message.newEntityType = "";
     }
-    if (object.showRoles !== undefined && object.showRoles !== null) {
-      message.showRoles = Boolean(object.showRoles);
+    if (object.upn !== undefined && object.upn !== null) {
+      message.upn = String(object.upn);
     } else {
-      message.showRoles = false;
+      message.upn = "";
+    }
+    if (object.identifier !== undefined && object.identifier !== null) {
+      message.identifier = String(object.identifier);
+    } else {
+      message.identifier = undefined;
     }
     return message;
   },
 
-  toJSON(message: GetDoneRequestsByGroupIdReq): unknown {
+  toJSON(message: ConvertEntityTypeKartoffelParams): unknown {
     const obj: any = {};
-    message.groupId !== undefined && (obj.groupId = message.groupId);
-    message.from !== undefined && (obj.from = message.from);
-    message.to !== undefined && (obj.to = message.to);
-    message.showRoles !== undefined && (obj.showRoles = message.showRoles);
+    message.id !== undefined && (obj.id = message.id);
+    message.uniqueId !== undefined && (obj.uniqueId = message.uniqueId);
+    message.newEntityType !== undefined &&
+      (obj.newEntityType = message.newEntityType);
+    message.upn !== undefined && (obj.upn = message.upn);
+    message.identifier !== undefined && (obj.identifier = message.identifier);
     return obj;
   },
 
   fromPartial(
-    object: DeepPartial<GetDoneRequestsByGroupIdReq>
-  ): GetDoneRequestsByGroupIdReq {
+    object: DeepPartial<ConvertEntityTypeKartoffelParams>
+  ): ConvertEntityTypeKartoffelParams {
     const message = {
-      ...baseGetDoneRequestsByGroupIdReq,
-    } as GetDoneRequestsByGroupIdReq;
-    if (object.groupId !== undefined && object.groupId !== null) {
-      message.groupId = object.groupId;
+      ...baseConvertEntityTypeKartoffelParams,
+    } as ConvertEntityTypeKartoffelParams;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
     } else {
-      message.groupId = "";
+      message.id = "";
     }
-    if (object.from !== undefined && object.from !== null) {
-      message.from = object.from;
+    if (object.uniqueId !== undefined && object.uniqueId !== null) {
+      message.uniqueId = object.uniqueId;
     } else {
-      message.from = 0;
+      message.uniqueId = "";
     }
-    if (object.to !== undefined && object.to !== null) {
-      message.to = object.to;
+    if (object.newEntityType !== undefined && object.newEntityType !== null) {
+      message.newEntityType = object.newEntityType;
     } else {
-      message.to = 0;
+      message.newEntityType = "";
     }
-    if (object.showRoles !== undefined && object.showRoles !== null) {
-      message.showRoles = object.showRoles;
+    if (object.upn !== undefined && object.upn !== null) {
+      message.upn = object.upn;
     } else {
-      message.showRoles = false;
+      message.upn = "";
+    }
+    if (object.identifier !== undefined && object.identifier !== null) {
+      message.identifier = object.identifier;
+    } else {
+      message.identifier = undefined;
     }
     return message;
   },
 };
 
-const baseGetDoneRequestsByRoleIdReq: object = { roleId: "", from: 0, to: 0 };
+const baseConvertEntityTypeADParams: object = {
+  samAccountName: "",
+  firstName: "",
+  lastName: "",
+  fullName: "",
+  roleSerialCode: "",
+};
 
-export const GetDoneRequestsByRoleIdReq = {
+export const ConvertEntityTypeADParams = {
   encode(
-    message: GetDoneRequestsByRoleIdReq,
+    message: ConvertEntityTypeADParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.roleId !== "") {
-      writer.uint32(10).string(message.roleId);
+    if (message.samAccountName !== "") {
+      writer.uint32(10).string(message.samAccountName);
     }
-    if (message.from !== 0) {
-      writer.uint32(16).int32(message.from);
+    if (message.upn !== undefined) {
+      writer.uint32(18).string(message.upn);
     }
-    if (message.to !== 0) {
-      writer.uint32(24).int32(message.to);
+    if (message.firstName !== "") {
+      writer.uint32(26).string(message.firstName);
+    }
+    if (message.lastName !== "") {
+      writer.uint32(34).string(message.lastName);
+    }
+    if (message.fullName !== "") {
+      writer.uint32(42).string(message.fullName);
+    }
+    if (message.rank !== undefined) {
+      writer.uint32(50).string(message.rank);
+    }
+    if (message.roleSerialCode !== "") {
+      writer.uint32(58).string(message.roleSerialCode);
     }
     return writer;
   },
@@ -25390,23 +26857,35 @@ export const GetDoneRequestsByRoleIdReq = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): GetDoneRequestsByRoleIdReq {
+  ): ConvertEntityTypeADParams {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseGetDoneRequestsByRoleIdReq,
-    } as GetDoneRequestsByRoleIdReq;
+      ...baseConvertEntityTypeADParams,
+    } as ConvertEntityTypeADParams;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.roleId = reader.string();
+          message.samAccountName = reader.string();
           break;
         case 2:
-          message.from = reader.int32();
+          message.upn = reader.string();
           break;
         case 3:
-          message.to = reader.int32();
+          message.firstName = reader.string();
+          break;
+        case 4:
+          message.lastName = reader.string();
+          break;
+        case 5:
+          message.fullName = reader.string();
+          break;
+        case 6:
+          message.rank = reader.string();
+          break;
+        case 7:
+          message.roleSerialCode = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -25416,205 +26895,102 @@ export const GetDoneRequestsByRoleIdReq = {
     return message;
   },
 
-  fromJSON(object: any): GetDoneRequestsByRoleIdReq {
+  fromJSON(object: any): ConvertEntityTypeADParams {
     const message = {
-      ...baseGetDoneRequestsByRoleIdReq,
-    } as GetDoneRequestsByRoleIdReq;
-    if (object.roleId !== undefined && object.roleId !== null) {
-      message.roleId = String(object.roleId);
+      ...baseConvertEntityTypeADParams,
+    } as ConvertEntityTypeADParams;
+    if (object.samAccountName !== undefined && object.samAccountName !== null) {
+      message.samAccountName = String(object.samAccountName);
     } else {
-      message.roleId = "";
+      message.samAccountName = "";
     }
-    if (object.from !== undefined && object.from !== null) {
-      message.from = Number(object.from);
+    if (object.upn !== undefined && object.upn !== null) {
+      message.upn = String(object.upn);
     } else {
-      message.from = 0;
+      message.upn = undefined;
     }
-    if (object.to !== undefined && object.to !== null) {
-      message.to = Number(object.to);
+    if (object.firstName !== undefined && object.firstName !== null) {
+      message.firstName = String(object.firstName);
     } else {
-      message.to = 0;
+      message.firstName = "";
+    }
+    if (object.lastName !== undefined && object.lastName !== null) {
+      message.lastName = String(object.lastName);
+    } else {
+      message.lastName = "";
+    }
+    if (object.fullName !== undefined && object.fullName !== null) {
+      message.fullName = String(object.fullName);
+    } else {
+      message.fullName = "";
+    }
+    if (object.rank !== undefined && object.rank !== null) {
+      message.rank = String(object.rank);
+    } else {
+      message.rank = undefined;
+    }
+    if (object.roleSerialCode !== undefined && object.roleSerialCode !== null) {
+      message.roleSerialCode = String(object.roleSerialCode);
+    } else {
+      message.roleSerialCode = "";
     }
     return message;
   },
 
-  toJSON(message: GetDoneRequestsByRoleIdReq): unknown {
+  toJSON(message: ConvertEntityTypeADParams): unknown {
     const obj: any = {};
-    message.roleId !== undefined && (obj.roleId = message.roleId);
-    message.from !== undefined && (obj.from = message.from);
-    message.to !== undefined && (obj.to = message.to);
+    message.samAccountName !== undefined &&
+      (obj.samAccountName = message.samAccountName);
+    message.upn !== undefined && (obj.upn = message.upn);
+    message.firstName !== undefined && (obj.firstName = message.firstName);
+    message.lastName !== undefined && (obj.lastName = message.lastName);
+    message.fullName !== undefined && (obj.fullName = message.fullName);
+    message.rank !== undefined && (obj.rank = message.rank);
+    message.roleSerialCode !== undefined &&
+      (obj.roleSerialCode = message.roleSerialCode);
     return obj;
   },
 
   fromPartial(
-    object: DeepPartial<GetDoneRequestsByRoleIdReq>
-  ): GetDoneRequestsByRoleIdReq {
+    object: DeepPartial<ConvertEntityTypeADParams>
+  ): ConvertEntityTypeADParams {
     const message = {
-      ...baseGetDoneRequestsByRoleIdReq,
-    } as GetDoneRequestsByRoleIdReq;
-    if (object.roleId !== undefined && object.roleId !== null) {
-      message.roleId = object.roleId;
+      ...baseConvertEntityTypeADParams,
+    } as ConvertEntityTypeADParams;
+    if (object.samAccountName !== undefined && object.samAccountName !== null) {
+      message.samAccountName = object.samAccountName;
     } else {
-      message.roleId = "";
+      message.samAccountName = "";
     }
-    if (object.from !== undefined && object.from !== null) {
-      message.from = object.from;
+    if (object.upn !== undefined && object.upn !== null) {
+      message.upn = object.upn;
     } else {
-      message.from = 0;
+      message.upn = undefined;
     }
-    if (object.to !== undefined && object.to !== null) {
-      message.to = object.to;
+    if (object.firstName !== undefined && object.firstName !== null) {
+      message.firstName = object.firstName;
     } else {
-      message.to = 0;
+      message.firstName = "";
     }
-    return message;
-  },
-};
-
-const baseCheckIfCreateWasInLegoReq: object = { idCheck: "" };
-
-export const CheckIfCreateWasInLegoReq = {
-  encode(
-    message: CheckIfCreateWasInLegoReq,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.typeOfCheck !== undefined) {
-      writer.uint32(8).int32(message.typeOfCheck);
-    }
-    if (message.idCheck !== "") {
-      writer.uint32(18).string(message.idCheck);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): CheckIfCreateWasInLegoReq {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseCheckIfCreateWasInLegoReq,
-    } as CheckIfCreateWasInLegoReq;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.typeOfCheck = reader.int32() as any;
-          break;
-        case 2:
-          message.idCheck = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): CheckIfCreateWasInLegoReq {
-    const message = {
-      ...baseCheckIfCreateWasInLegoReq,
-    } as CheckIfCreateWasInLegoReq;
-    if (object.typeOfCheck !== undefined && object.typeOfCheck !== null) {
-      message.typeOfCheck = checkingOpsionsFromJSON(object.typeOfCheck);
+    if (object.lastName !== undefined && object.lastName !== null) {
+      message.lastName = object.lastName;
     } else {
-      message.typeOfCheck = undefined;
+      message.lastName = "";
     }
-    if (object.idCheck !== undefined && object.idCheck !== null) {
-      message.idCheck = String(object.idCheck);
+    if (object.fullName !== undefined && object.fullName !== null) {
+      message.fullName = object.fullName;
     } else {
-      message.idCheck = "";
+      message.fullName = "";
     }
-    return message;
-  },
-
-  toJSON(message: CheckIfCreateWasInLegoReq): unknown {
-    const obj: any = {};
-    message.typeOfCheck !== undefined &&
-      (obj.typeOfCheck =
-        message.typeOfCheck !== undefined
-          ? checkingOpsionsToJSON(message.typeOfCheck)
-          : undefined);
-    message.idCheck !== undefined && (obj.idCheck = message.idCheck);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<CheckIfCreateWasInLegoReq>
-  ): CheckIfCreateWasInLegoReq {
-    const message = {
-      ...baseCheckIfCreateWasInLegoReq,
-    } as CheckIfCreateWasInLegoReq;
-    if (object.typeOfCheck !== undefined && object.typeOfCheck !== null) {
-      message.typeOfCheck = object.typeOfCheck;
+    if (object.rank !== undefined && object.rank !== null) {
+      message.rank = object.rank;
     } else {
-      message.typeOfCheck = undefined;
+      message.rank = undefined;
     }
-    if (object.idCheck !== undefined && object.idCheck !== null) {
-      message.idCheck = object.idCheck;
+    if (object.roleSerialCode !== undefined && object.roleSerialCode !== null) {
+      message.roleSerialCode = object.roleSerialCode;
     } else {
-      message.idCheck = "";
-    }
-    return message;
-  },
-};
-
-const baseBoolCheck: object = { createdInLego: false };
-
-export const BoolCheck = {
-  encode(
-    message: BoolCheck,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.createdInLego === true) {
-      writer.uint32(8).bool(message.createdInLego);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): BoolCheck {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseBoolCheck } as BoolCheck;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.createdInLego = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): BoolCheck {
-    const message = { ...baseBoolCheck } as BoolCheck;
-    if (object.createdInLego !== undefined && object.createdInLego !== null) {
-      message.createdInLego = Boolean(object.createdInLego);
-    } else {
-      message.createdInLego = false;
-    }
-    return message;
-  },
-
-  toJSON(message: BoolCheck): unknown {
-    const obj: any = {};
-    message.createdInLego !== undefined &&
-      (obj.createdInLego = message.createdInLego);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<BoolCheck>): BoolCheck {
-    const message = { ...baseBoolCheck } as BoolCheck;
-    if (object.createdInLego !== undefined && object.createdInLego !== null) {
-      message.createdInLego = object.createdInLego;
-    } else {
-      message.createdInLego = false;
+      message.roleSerialCode = "";
     }
     return message;
   },
@@ -26602,6 +27978,490 @@ export const UpdateADStatusReq = {
       message.failedRetries = object.failedRetries;
     } else {
       message.failedRetries = undefined;
+    }
+    return message;
+  },
+};
+
+const baseGetDoneRequestsByEntityIdReq: object = {
+  entityId: "",
+  from: 0,
+  to: 0,
+};
+
+export const GetDoneRequestsByEntityIdReq = {
+  encode(
+    message: GetDoneRequestsByEntityIdReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.entityId !== "") {
+      writer.uint32(10).string(message.entityId);
+    }
+    if (message.from !== 0) {
+      writer.uint32(16).int32(message.from);
+    }
+    if (message.to !== 0) {
+      writer.uint32(24).int32(message.to);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GetDoneRequestsByEntityIdReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseGetDoneRequestsByEntityIdReq,
+    } as GetDoneRequestsByEntityIdReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.entityId = reader.string();
+          break;
+        case 2:
+          message.from = reader.int32();
+          break;
+        case 3:
+          message.to = reader.int32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetDoneRequestsByEntityIdReq {
+    const message = {
+      ...baseGetDoneRequestsByEntityIdReq,
+    } as GetDoneRequestsByEntityIdReq;
+    if (object.entityId !== undefined && object.entityId !== null) {
+      message.entityId = String(object.entityId);
+    } else {
+      message.entityId = "";
+    }
+    if (object.from !== undefined && object.from !== null) {
+      message.from = Number(object.from);
+    } else {
+      message.from = 0;
+    }
+    if (object.to !== undefined && object.to !== null) {
+      message.to = Number(object.to);
+    } else {
+      message.to = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: GetDoneRequestsByEntityIdReq): unknown {
+    const obj: any = {};
+    message.entityId !== undefined && (obj.entityId = message.entityId);
+    message.from !== undefined && (obj.from = message.from);
+    message.to !== undefined && (obj.to = message.to);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<GetDoneRequestsByEntityIdReq>
+  ): GetDoneRequestsByEntityIdReq {
+    const message = {
+      ...baseGetDoneRequestsByEntityIdReq,
+    } as GetDoneRequestsByEntityIdReq;
+    if (object.entityId !== undefined && object.entityId !== null) {
+      message.entityId = object.entityId;
+    } else {
+      message.entityId = "";
+    }
+    if (object.from !== undefined && object.from !== null) {
+      message.from = object.from;
+    } else {
+      message.from = 0;
+    }
+    if (object.to !== undefined && object.to !== null) {
+      message.to = object.to;
+    } else {
+      message.to = 0;
+    }
+    return message;
+  },
+};
+
+const baseGetDoneRequestsByGroupIdReq: object = {
+  groupId: "",
+  from: 0,
+  to: 0,
+  showRoles: false,
+};
+
+export const GetDoneRequestsByGroupIdReq = {
+  encode(
+    message: GetDoneRequestsByGroupIdReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.groupId !== "") {
+      writer.uint32(10).string(message.groupId);
+    }
+    if (message.from !== 0) {
+      writer.uint32(16).int32(message.from);
+    }
+    if (message.to !== 0) {
+      writer.uint32(24).int32(message.to);
+    }
+    if (message.showRoles === true) {
+      writer.uint32(32).bool(message.showRoles);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GetDoneRequestsByGroupIdReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseGetDoneRequestsByGroupIdReq,
+    } as GetDoneRequestsByGroupIdReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.groupId = reader.string();
+          break;
+        case 2:
+          message.from = reader.int32();
+          break;
+        case 3:
+          message.to = reader.int32();
+          break;
+        case 4:
+          message.showRoles = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetDoneRequestsByGroupIdReq {
+    const message = {
+      ...baseGetDoneRequestsByGroupIdReq,
+    } as GetDoneRequestsByGroupIdReq;
+    if (object.groupId !== undefined && object.groupId !== null) {
+      message.groupId = String(object.groupId);
+    } else {
+      message.groupId = "";
+    }
+    if (object.from !== undefined && object.from !== null) {
+      message.from = Number(object.from);
+    } else {
+      message.from = 0;
+    }
+    if (object.to !== undefined && object.to !== null) {
+      message.to = Number(object.to);
+    } else {
+      message.to = 0;
+    }
+    if (object.showRoles !== undefined && object.showRoles !== null) {
+      message.showRoles = Boolean(object.showRoles);
+    } else {
+      message.showRoles = false;
+    }
+    return message;
+  },
+
+  toJSON(message: GetDoneRequestsByGroupIdReq): unknown {
+    const obj: any = {};
+    message.groupId !== undefined && (obj.groupId = message.groupId);
+    message.from !== undefined && (obj.from = message.from);
+    message.to !== undefined && (obj.to = message.to);
+    message.showRoles !== undefined && (obj.showRoles = message.showRoles);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<GetDoneRequestsByGroupIdReq>
+  ): GetDoneRequestsByGroupIdReq {
+    const message = {
+      ...baseGetDoneRequestsByGroupIdReq,
+    } as GetDoneRequestsByGroupIdReq;
+    if (object.groupId !== undefined && object.groupId !== null) {
+      message.groupId = object.groupId;
+    } else {
+      message.groupId = "";
+    }
+    if (object.from !== undefined && object.from !== null) {
+      message.from = object.from;
+    } else {
+      message.from = 0;
+    }
+    if (object.to !== undefined && object.to !== null) {
+      message.to = object.to;
+    } else {
+      message.to = 0;
+    }
+    if (object.showRoles !== undefined && object.showRoles !== null) {
+      message.showRoles = object.showRoles;
+    } else {
+      message.showRoles = false;
+    }
+    return message;
+  },
+};
+
+const baseGetDoneRequestsByRoleIdReq: object = { roleId: "", from: 0, to: 0 };
+
+export const GetDoneRequestsByRoleIdReq = {
+  encode(
+    message: GetDoneRequestsByRoleIdReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.roleId !== "") {
+      writer.uint32(10).string(message.roleId);
+    }
+    if (message.from !== 0) {
+      writer.uint32(16).int32(message.from);
+    }
+    if (message.to !== 0) {
+      writer.uint32(24).int32(message.to);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GetDoneRequestsByRoleIdReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseGetDoneRequestsByRoleIdReq,
+    } as GetDoneRequestsByRoleIdReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.roleId = reader.string();
+          break;
+        case 2:
+          message.from = reader.int32();
+          break;
+        case 3:
+          message.to = reader.int32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetDoneRequestsByRoleIdReq {
+    const message = {
+      ...baseGetDoneRequestsByRoleIdReq,
+    } as GetDoneRequestsByRoleIdReq;
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = String(object.roleId);
+    } else {
+      message.roleId = "";
+    }
+    if (object.from !== undefined && object.from !== null) {
+      message.from = Number(object.from);
+    } else {
+      message.from = 0;
+    }
+    if (object.to !== undefined && object.to !== null) {
+      message.to = Number(object.to);
+    } else {
+      message.to = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: GetDoneRequestsByRoleIdReq): unknown {
+    const obj: any = {};
+    message.roleId !== undefined && (obj.roleId = message.roleId);
+    message.from !== undefined && (obj.from = message.from);
+    message.to !== undefined && (obj.to = message.to);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<GetDoneRequestsByRoleIdReq>
+  ): GetDoneRequestsByRoleIdReq {
+    const message = {
+      ...baseGetDoneRequestsByRoleIdReq,
+    } as GetDoneRequestsByRoleIdReq;
+    if (object.roleId !== undefined && object.roleId !== null) {
+      message.roleId = object.roleId;
+    } else {
+      message.roleId = "";
+    }
+    if (object.from !== undefined && object.from !== null) {
+      message.from = object.from;
+    } else {
+      message.from = 0;
+    }
+    if (object.to !== undefined && object.to !== null) {
+      message.to = object.to;
+    } else {
+      message.to = 0;
+    }
+    return message;
+  },
+};
+
+const baseCheckIfCreateWasInLegoReq: object = { idCheck: "" };
+
+export const CheckIfCreateWasInLegoReq = {
+  encode(
+    message: CheckIfCreateWasInLegoReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.typeOfCheck !== undefined) {
+      writer.uint32(8).int32(message.typeOfCheck);
+    }
+    if (message.idCheck !== "") {
+      writer.uint32(18).string(message.idCheck);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): CheckIfCreateWasInLegoReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseCheckIfCreateWasInLegoReq,
+    } as CheckIfCreateWasInLegoReq;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.typeOfCheck = reader.int32() as any;
+          break;
+        case 2:
+          message.idCheck = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CheckIfCreateWasInLegoReq {
+    const message = {
+      ...baseCheckIfCreateWasInLegoReq,
+    } as CheckIfCreateWasInLegoReq;
+    if (object.typeOfCheck !== undefined && object.typeOfCheck !== null) {
+      message.typeOfCheck = checkingOpsionsFromJSON(object.typeOfCheck);
+    } else {
+      message.typeOfCheck = undefined;
+    }
+    if (object.idCheck !== undefined && object.idCheck !== null) {
+      message.idCheck = String(object.idCheck);
+    } else {
+      message.idCheck = "";
+    }
+    return message;
+  },
+
+  toJSON(message: CheckIfCreateWasInLegoReq): unknown {
+    const obj: any = {};
+    message.typeOfCheck !== undefined &&
+      (obj.typeOfCheck =
+        message.typeOfCheck !== undefined
+          ? checkingOpsionsToJSON(message.typeOfCheck)
+          : undefined);
+    message.idCheck !== undefined && (obj.idCheck = message.idCheck);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<CheckIfCreateWasInLegoReq>
+  ): CheckIfCreateWasInLegoReq {
+    const message = {
+      ...baseCheckIfCreateWasInLegoReq,
+    } as CheckIfCreateWasInLegoReq;
+    if (object.typeOfCheck !== undefined && object.typeOfCheck !== null) {
+      message.typeOfCheck = object.typeOfCheck;
+    } else {
+      message.typeOfCheck = undefined;
+    }
+    if (object.idCheck !== undefined && object.idCheck !== null) {
+      message.idCheck = object.idCheck;
+    } else {
+      message.idCheck = "";
+    }
+    return message;
+  },
+};
+
+const baseBoolCheck: object = { createdInLego: false };
+
+export const BoolCheck = {
+  encode(
+    message: BoolCheck,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.createdInLego === true) {
+      writer.uint32(8).bool(message.createdInLego);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): BoolCheck {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseBoolCheck } as BoolCheck;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.createdInLego = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): BoolCheck {
+    const message = { ...baseBoolCheck } as BoolCheck;
+    if (object.createdInLego !== undefined && object.createdInLego !== null) {
+      message.createdInLego = Boolean(object.createdInLego);
+    } else {
+      message.createdInLego = false;
+    }
+    return message;
+  },
+
+  toJSON(message: BoolCheck): unknown {
+    const obj: any = {};
+    message.createdInLego !== undefined &&
+      (obj.createdInLego = message.createdInLego);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<BoolCheck>): BoolCheck {
+    const message = { ...baseBoolCheck } as BoolCheck;
+    if (object.createdInLego !== undefined && object.createdInLego !== null) {
+      message.createdInLego = object.createdInLego;
+    } else {
+      message.createdInLego = false;
     }
     return message;
   },
@@ -29138,6 +30998,8 @@ const baseKartoffelParams: object = {
   needDisconnect: false,
   phone: "",
   mobilePhone: "",
+  oldFirstName: "",
+  oldLastName: "",
 };
 
 export const KartoffelParams = {
@@ -29255,6 +31117,27 @@ export const KartoffelParams = {
     }
     if (message.rank !== undefined) {
       writer.uint32(298).string(message.rank);
+    }
+    if (message.newEntityType !== undefined) {
+      writer.uint32(306).string(message.newEntityType);
+    }
+    if (message.identifier !== undefined) {
+      writer.uint32(314).string(message.identifier);
+    }
+    if (message.oldFirstName !== "") {
+      writer.uint32(322).string(message.oldFirstName);
+    }
+    if (message.oldLastName !== "") {
+      writer.uint32(330).string(message.oldLastName);
+    }
+    if (message.oldIdentityCard !== undefined) {
+      writer.uint32(338).string(message.oldIdentityCard);
+    }
+    if (message.oldMobilePhone !== undefined) {
+      writer.uint32(346).string(message.oldMobilePhone);
+    }
+    if (message.oldRank !== undefined) {
+      writer.uint32(354).string(message.oldRank);
     }
     return writer;
   },
@@ -29378,6 +31261,27 @@ export const KartoffelParams = {
           break;
         case 37:
           message.rank = reader.string();
+          break;
+        case 38:
+          message.newEntityType = reader.string();
+          break;
+        case 39:
+          message.identifier = reader.string();
+          break;
+        case 40:
+          message.oldFirstName = reader.string();
+          break;
+        case 41:
+          message.oldLastName = reader.string();
+          break;
+        case 42:
+          message.oldIdentityCard = reader.string();
+          break;
+        case 43:
+          message.oldMobilePhone = reader.string();
+          break;
+        case 44:
+          message.oldRank = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -29582,6 +31486,44 @@ export const KartoffelParams = {
     } else {
       message.rank = undefined;
     }
+    if (object.newEntityType !== undefined && object.newEntityType !== null) {
+      message.newEntityType = String(object.newEntityType);
+    } else {
+      message.newEntityType = undefined;
+    }
+    if (object.identifier !== undefined && object.identifier !== null) {
+      message.identifier = String(object.identifier);
+    } else {
+      message.identifier = undefined;
+    }
+    if (object.oldFirstName !== undefined && object.oldFirstName !== null) {
+      message.oldFirstName = String(object.oldFirstName);
+    } else {
+      message.oldFirstName = "";
+    }
+    if (object.oldLastName !== undefined && object.oldLastName !== null) {
+      message.oldLastName = String(object.oldLastName);
+    } else {
+      message.oldLastName = "";
+    }
+    if (
+      object.oldIdentityCard !== undefined &&
+      object.oldIdentityCard !== null
+    ) {
+      message.oldIdentityCard = String(object.oldIdentityCard);
+    } else {
+      message.oldIdentityCard = undefined;
+    }
+    if (object.oldMobilePhone !== undefined && object.oldMobilePhone !== null) {
+      message.oldMobilePhone = String(object.oldMobilePhone);
+    } else {
+      message.oldMobilePhone = undefined;
+    }
+    if (object.oldRank !== undefined && object.oldRank !== null) {
+      message.oldRank = String(object.oldRank);
+    } else {
+      message.oldRank = undefined;
+    }
     return message;
   },
 
@@ -29646,6 +31588,18 @@ export const KartoffelParams = {
       (obj.role = message.role ? Role.toJSON(message.role) : undefined);
     message.entityId !== undefined && (obj.entityId = message.entityId);
     message.rank !== undefined && (obj.rank = message.rank);
+    message.newEntityType !== undefined &&
+      (obj.newEntityType = message.newEntityType);
+    message.identifier !== undefined && (obj.identifier = message.identifier);
+    message.oldFirstName !== undefined &&
+      (obj.oldFirstName = message.oldFirstName);
+    message.oldLastName !== undefined &&
+      (obj.oldLastName = message.oldLastName);
+    message.oldIdentityCard !== undefined &&
+      (obj.oldIdentityCard = message.oldIdentityCard);
+    message.oldMobilePhone !== undefined &&
+      (obj.oldMobilePhone = message.oldMobilePhone);
+    message.oldRank !== undefined && (obj.oldRank = message.oldRank);
     return obj;
   },
 
@@ -29844,6 +31798,44 @@ export const KartoffelParams = {
     } else {
       message.rank = undefined;
     }
+    if (object.newEntityType !== undefined && object.newEntityType !== null) {
+      message.newEntityType = object.newEntityType;
+    } else {
+      message.newEntityType = undefined;
+    }
+    if (object.identifier !== undefined && object.identifier !== null) {
+      message.identifier = object.identifier;
+    } else {
+      message.identifier = undefined;
+    }
+    if (object.oldFirstName !== undefined && object.oldFirstName !== null) {
+      message.oldFirstName = object.oldFirstName;
+    } else {
+      message.oldFirstName = "";
+    }
+    if (object.oldLastName !== undefined && object.oldLastName !== null) {
+      message.oldLastName = object.oldLastName;
+    } else {
+      message.oldLastName = "";
+    }
+    if (
+      object.oldIdentityCard !== undefined &&
+      object.oldIdentityCard !== null
+    ) {
+      message.oldIdentityCard = object.oldIdentityCard;
+    } else {
+      message.oldIdentityCard = undefined;
+    }
+    if (object.oldMobilePhone !== undefined && object.oldMobilePhone !== null) {
+      message.oldMobilePhone = object.oldMobilePhone;
+    } else {
+      message.oldMobilePhone = undefined;
+    }
+    if (object.oldRank !== undefined && object.oldRank !== null) {
+      message.oldRank = object.oldRank;
+    } else {
+      message.oldRank = undefined;
+    }
     return message;
   },
 };
@@ -29879,29 +31871,32 @@ export const ADParams = {
     if (message.upn !== undefined) {
       writer.uint32(66).string(message.upn);
     }
+    if (message.oldUpn !== undefined) {
+      writer.uint32(74).string(message.oldUpn);
+    }
     if (message.firstName !== undefined) {
-      writer.uint32(74).string(message.firstName);
+      writer.uint32(82).string(message.firstName);
     }
     if (message.lastName !== undefined) {
-      writer.uint32(82).string(message.lastName);
+      writer.uint32(90).string(message.lastName);
     }
     if (message.fullName !== undefined) {
-      writer.uint32(90).string(message.fullName);
+      writer.uint32(98).string(message.fullName);
     }
     if (message.rank !== undefined) {
-      writer.uint32(98).string(message.rank);
+      writer.uint32(106).string(message.rank);
     }
     if (message.roleSerialCode !== undefined) {
-      writer.uint32(106).string(message.roleSerialCode);
+      writer.uint32(114).string(message.roleSerialCode);
     }
     if (message.oldOuName !== undefined) {
-      writer.uint32(114).string(message.oldOuName);
+      writer.uint32(122).string(message.oldOuName);
     }
     if (message.newOuName !== undefined) {
-      writer.uint32(122).string(message.newOuName);
+      writer.uint32(130).string(message.newOuName);
     }
     if (message.newJobTitle !== undefined) {
-      writer.uint32(130).string(message.newJobTitle);
+      writer.uint32(138).string(message.newJobTitle);
     }
     return writer;
   },
@@ -29938,27 +31933,30 @@ export const ADParams = {
           message.upn = reader.string();
           break;
         case 9:
-          message.firstName = reader.string();
+          message.oldUpn = reader.string();
           break;
         case 10:
-          message.lastName = reader.string();
+          message.firstName = reader.string();
           break;
         case 11:
-          message.fullName = reader.string();
+          message.lastName = reader.string();
           break;
         case 12:
-          message.rank = reader.string();
+          message.fullName = reader.string();
           break;
         case 13:
-          message.roleSerialCode = reader.string();
+          message.rank = reader.string();
           break;
         case 14:
-          message.oldOuName = reader.string();
+          message.roleSerialCode = reader.string();
           break;
         case 15:
-          message.newOuName = reader.string();
+          message.oldOuName = reader.string();
           break;
         case 16:
+          message.newOuName = reader.string();
+          break;
+        case 17:
           message.newJobTitle = reader.string();
           break;
         default:
@@ -30017,6 +32015,11 @@ export const ADParams = {
     } else {
       message.upn = undefined;
     }
+    if (object.oldUpn !== undefined && object.oldUpn !== null) {
+      message.oldUpn = String(object.oldUpn);
+    } else {
+      message.oldUpn = undefined;
+    }
     if (object.firstName !== undefined && object.firstName !== null) {
       message.firstName = String(object.firstName);
     } else {
@@ -30074,6 +32077,7 @@ export const ADParams = {
     message.newSAMAccountName !== undefined &&
       (obj.newSAMAccountName = message.newSAMAccountName);
     message.upn !== undefined && (obj.upn = message.upn);
+    message.oldUpn !== undefined && (obj.oldUpn = message.oldUpn);
     message.firstName !== undefined && (obj.firstName = message.firstName);
     message.lastName !== undefined && (obj.lastName = message.lastName);
     message.fullName !== undefined && (obj.fullName = message.fullName);
@@ -30134,6 +32138,11 @@ export const ADParams = {
       message.upn = object.upn;
     } else {
       message.upn = undefined;
+    }
+    if (object.oldUpn !== undefined && object.oldUpn !== null) {
+      message.oldUpn = object.oldUpn;
+    } else {
+      message.oldUpn = undefined;
     }
     if (object.firstName !== undefined && object.firstName !== null) {
       message.firstName = object.firstName;
@@ -31950,6 +33959,9 @@ export interface RequestService {
   ChangeRoleHierarchyBulkRequest(
     request: ChangeRoleHierarchyBulkReq
   ): Promise<ChangeRoleHierarchyBulkRes>;
+  ConvertEntityTypeRequest(
+    request: ConvertEntityTypeReq
+  ): Promise<ConvertEntityTypeRes>;
   UpdateRequest(request: UpdateReq): Promise<Request>;
   UpdateKartoffelStatus(request: UpdateKartoffelStatusReq): Promise<Request>;
   UpdateADStatus(request: UpdateADStatusReq): Promise<Request>;
@@ -31993,7 +34005,6 @@ export interface RequestService {
     request: RemoveApproverFromApproversReq
   ): Promise<Request>;
   SendSubmissionMail(request: SendSubmissionMailReq): Promise<Request>;
-  HasSecurityAdmin(request: HasSecurityAdminReq): Promise<HasSecurityAdminRes>;
   GetDoneRequestsByRoleId(
     request: GetDoneRequestsByRoleIdReq
   ): Promise<RequestArray>;
@@ -32007,6 +34018,7 @@ export interface RequestService {
     request: GetDoneRequestsByEntityIdReq
   ): Promise<RequestArray>;
   CreatedInLegoCheck(request: CheckIfCreateWasInLegoReq): Promise<BoolCheck>;
+  HasSecurityAdmin(request: HasSecurityAdminReq): Promise<HasSecurityAdminRes>;
 }
 
 export class RequestServiceClientImpl implements RequestService {
@@ -32031,6 +34043,7 @@ export class RequestServiceClientImpl implements RequestService {
     this.CreateRoleBulkRequest = this.CreateRoleBulkRequest.bind(this);
     this.ChangeRoleHierarchyBulkRequest =
       this.ChangeRoleHierarchyBulkRequest.bind(this);
+    this.ConvertEntityTypeRequest = this.ConvertEntityTypeRequest.bind(this);
     this.UpdateRequest = this.UpdateRequest.bind(this);
     this.UpdateKartoffelStatus = this.UpdateKartoffelStatus.bind(this);
     this.UpdateADStatus = this.UpdateADStatus.bind(this);
@@ -32061,13 +34074,13 @@ export class RequestServiceClientImpl implements RequestService {
     this.RemoveApproverFromApprovers =
       this.RemoveApproverFromApprovers.bind(this);
     this.SendSubmissionMail = this.SendSubmissionMail.bind(this);
-    this.HasSecurityAdmin = this.HasSecurityAdmin.bind(this);
     this.GetDoneRequestsByRoleId = this.GetDoneRequestsByRoleId.bind(this);
     this.GetDoneRequestsByGroupId = this.GetDoneRequestsByGroupId.bind(this);
     this.GetDoneRequestsByEntityId = this.GetDoneRequestsByEntityId.bind(this);
     this.GetDoneRequestsSubmittedByEntityId =
       this.GetDoneRequestsSubmittedByEntityId.bind(this);
     this.CreatedInLegoCheck = this.CreatedInLegoCheck.bind(this);
+    this.HasSecurityAdmin = this.HasSecurityAdmin.bind(this);
   }
   CreateRoleRequest(request: CreateRoleReq): Promise<CreateRoleRes> {
     const data = CreateRoleReq.encode(request).finish();
@@ -32240,6 +34253,20 @@ export class RequestServiceClientImpl implements RequestService {
     );
     return promise.then((data) =>
       ChangeRoleHierarchyBulkRes.decode(new _m0.Reader(data))
+    );
+  }
+
+  ConvertEntityTypeRequest(
+    request: ConvertEntityTypeReq
+  ): Promise<ConvertEntityTypeRes> {
+    const data = ConvertEntityTypeReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "ConvertEntityTypeRequest",
+      data
+    );
+    return promise.then((data) =>
+      ConvertEntityTypeRes.decode(new _m0.Reader(data))
     );
   }
 
@@ -32523,18 +34550,6 @@ export class RequestServiceClientImpl implements RequestService {
     return promise.then((data) => Request.decode(new _m0.Reader(data)));
   }
 
-  HasSecurityAdmin(request: HasSecurityAdminReq): Promise<HasSecurityAdminRes> {
-    const data = HasSecurityAdminReq.encode(request).finish();
-    const promise = this.rpc.request(
-      "RequestService.RequestService",
-      "HasSecurityAdmin",
-      data
-    );
-    return promise.then((data) =>
-      HasSecurityAdminRes.decode(new _m0.Reader(data))
-    );
-  }
-
   GetDoneRequestsByRoleId(
     request: GetDoneRequestsByRoleIdReq
   ): Promise<RequestArray> {
@@ -32591,6 +34606,18 @@ export class RequestServiceClientImpl implements RequestService {
       data
     );
     return promise.then((data) => BoolCheck.decode(new _m0.Reader(data)));
+  }
+
+  HasSecurityAdmin(request: HasSecurityAdminReq): Promise<HasSecurityAdminRes> {
+    const data = HasSecurityAdminReq.encode(request).finish();
+    const promise = this.rpc.request(
+      "RequestService.RequestService",
+      "HasSecurityAdmin",
+      data
+    );
+    return promise.then((data) =>
+      HasSecurityAdminRes.decode(new _m0.Reader(data))
+    );
   }
 }
 

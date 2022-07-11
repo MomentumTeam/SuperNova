@@ -2,6 +2,7 @@ import {
   SendCustomMailReq,
   SuccessMessage,
   SendMailReq,
+  SendHierarchyDataReq,
 } from '../interfaces/protoc/proto/mailService';
 import { MailRepository } from './mail.repository';
 
@@ -24,6 +25,18 @@ export class MailManager {
   ): Promise<SuccessMessage> {
     try {
       return await this.mailRepository.sendCustomMail(sendCustomMailReq);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async sendHierarchyDataMail(
+    sendHierarchyDataReq: SendHierarchyDataReq
+  ): Promise<SuccessMessage> {
+    try {
+      return await this.mailRepository.sendHierarchyDataMail(
+        sendHierarchyDataReq
+      );
     } catch (error) {
       throw error;
     }

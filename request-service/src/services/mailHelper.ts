@@ -9,8 +9,7 @@ export async function sendMail(type: MailType, request: Request) {
       type: type,
       request: request,
     };
-    const successMessage = await MailService.sendMail(sendMailReq);
-    return successMessage;
+    await MailService.sendMail(sendMailReq);
   } catch (error: any) {
     logger.error('Error while sending mails', {
       error: { message: error.message },

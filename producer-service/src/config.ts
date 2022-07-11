@@ -32,6 +32,7 @@ export const shmuelRequestTypes: any = {
   DISCONNECT_ROLE: 'DisconnectRole',
   CHANGE_ROLE_HIERARCHY: 'ChangeRole',
   DELETE_ROLE: 'PurgeRole',
+  CONVERT_ENTITY_TYPE: 'ChangeUPN',
 };
 
 export const adAllowedSubmitters = process.env.PS_AD_ALLOWED_SUBMITTERS
@@ -55,3 +56,6 @@ export const storeLogs = process.env.GLOBAL_STORE_LOGS
 export const soldier = process.env.PS_KARTOFFEL_SOLDIER || 'Soldier';
 
 export const external = process.env.PS_KARTOFFEL_EXTERNAL || 'External';
+
+export const brolDefaultLastName =
+  process.env.PS_BROL_DEFAULT_LAST_NAME || 'מס';

@@ -22,10 +22,16 @@ import {
   IsOGNameAlreadyTakenReq,
   IsOGNameAlreadyTakenRes,
   IdMessage,
+  ExportHierarchyDataReq,
+  ExportHierarchyDataRes,
 } from '../interfaces/protoc/proto/kartoffelService';
 import { cleanUnderscoreFields } from '../utils/json.utils';
 import { EntitiesRepository } from '../entities/entities.repository';
-import { getDirectRolesForGroups, isOgNameOrJobTitleAlreadyTaken } from './groups.utils';
+import {
+  getDirectRolesForGroups,
+  isOgNameOrJobTitleAlreadyTaken,
+  exportHierarchyData,
+} from './groups.utils';
 
 export class GroupsRepository {
   private kartoffelFaker: KartoffelFaker;
@@ -51,7 +57,11 @@ export class GroupsRepository {
         let res: any = { isOGNameAlreadyTaken: isOGNameAlreadyTaken };
         return res as IsOGNameAlreadyTakenRes;
       } else {
-        const isOGTaken = await isOgNameOrJobTitleAlreadyTaken(this, isOGNameAlreadyTakenReq.name, isOGNameAlreadyTakenReq.parent);
+        const isOGTaken = await isOgNameOrJobTitleAlreadyTaken(
+          this,
+          isOGNameAlreadyTakenReq.name,
+          isOGNameAlreadyTakenReq.parent
+        );
         return { isOGNameAlreadyTaken: isOGTaken.isAlreadyTaken };
       }
     } catch (error) {
@@ -180,12 +190,44 @@ export class GroupsRepository {
 
         let group = res;
         if (getOGByHierarchyName.withRoles) {
-          let groupwithroles = await getDirectRolesForGroups([res]);
+          const direct = getOGByHierarchyName?.direct;
+
+          let groupwithroles = await getDirectRolesForGroups([res], direct);
           group = groupwithroles[0];
         }
 
         return group as OrganizationGroup;
       }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async exportHierarchyData(
+    exportHierarchyDataReq: ExportHierarchyDataReq
+  ): Promise<ExportHierarchyDataRes> {
+    try {
+      cleanUnderscoreFields(exportHierarchyDataReq);
+      //TODO - add faker
+
+      const groupData = await this.getOGByHierarchyName(exportHierarchyDataReq);
+     
+      groupData.directRoles.sort((a: any, b: any) =>
+        a.directGroup > b.directGroup ? 1 : -1
+      );
+
+      const hierarchyData: any[] = await exportHierarchyData(
+        groupData,
+        this,
+        exportHierarchyDataReq.direct
+      );
+
+      const res: ExportHierarchyDataRes = {
+        hierarchyData: hierarchyData,
+        fatherHierarchyName: groupData.name,
+      };
+
+      return res as ExportHierarchyDataRes;
     } catch (error) {
       throw error;
     }
@@ -302,7 +344,7 @@ export class GroupsRepository {
           }
           return { groups: groups } as OGArray;
         } else {
-          let groups = [];
+          let groups:any = [];
           if (getChildrenOfOGRequest.withParent) {
             const parent = await this.getOGById({
               id: getChildrenOfOGRequest.id,

@@ -10,13 +10,13 @@ export async function getUPN(entity: EntityMin): Promise<string> {
   try {
     switch (entity.entityType) {
       case C.soldier:
-        return `s${entity.personalNumber}`;
+        return `s${entity.personalNumber ? entity.personalNumber : ''}`;
       case C.reserved:
-        return `s${entity.identityCard}`;
+        return `s${entity.identityCard ? entity.identityCard : ''}`;
       case C.civilian:
-        return `c${entity.identityCard}`;
+        return `c${entity.identityCard ? entity.identityCard : ''}`;
       case C.external:
-        return `c${entity.employeeNumber}`;
+        return `c${entity.employeeNumber ? entity.employeeNumber : ''}`;
       case C.goalUser:
         const documentAfterInc = await PrefixModel.findOneAndUpdate(
           { prefix: C.brol },

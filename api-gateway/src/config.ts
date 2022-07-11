@@ -72,6 +72,7 @@ export const config = {
     tea: env.get('GATEWAY_TS_URL').default('0.0.0.0:8086').asString(),
     bulk: env.get('GATEWAY_BS_URL').default('0.0.0.0:8087').asString(),
     history: env.get('GATEWAY_HS_URL').default('0.0.0.0:8089').asString(),
+    mail: env.get('GATEWAY_MS_URL').default('0.0.0.0:8088').asString(),
     apm: env
       .get('GATEWAY_APM_URL')
       .default('http://52.169.23.32:8200')
@@ -122,7 +123,7 @@ export const config = {
       .asString(),
     USER_EXTERNAL_ENTITY_TYPE: env
       .get('UI_USER_EXTERNAL_ENTITY_TYPE')
-      .default('external')
+      .default('External')
       .asString(),
     USER_CLEARANCE: env
       .get('UI_USER_CLEARANCE')
@@ -142,15 +143,27 @@ export const config = {
     USER_DI_TYPE: env.get('UI_DI_TYPE').default('domainUser').asString(),
     USER_ROLE_ENTITY_TYPE: env
       .get('UI_ROLE_ENTITY_TYPE')
-      .default('goalUser')
+      .default('GoalUser')
+      .asString(),
+    TOMY_LINK: env
+      .get('UI_TOMY_LINK')
+      .default('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
+      .asString(),
+    TECH_OPS_PHONE_NUMBER: env
+      .get('UI_TECH_OPS_PHONE_NUMBER')
+      .default('0524586749')
+      .asString(),
+    TECH_OPS_MAIL: env
+      .get('UI_TECH_OPS_MAIL')
+      .default('T82130222@gmail.com')
       .asString(),
     SECURITY_MAIL: env
       .get('UI_SECURITY_MAIL')
-      .default('T82130201@gmail.com')
+      .default('T82130233@gmail.com')
       .asString(),
     SUPER_SECURITY_MAIL: env
       .get('UI_SUPER_SECURITY_MAIL')
-      .default('T02250B49@gmail.com')
+      .default('T02250678@gmail.com')
       .asString(),
     INSTRUCTION_VIDEOS: env
       .get('UI_INSTRUCTION_VIDEOS')
@@ -213,6 +226,10 @@ export const config = {
       .default('טוראי,רב"ט,סמל,סמ"ר')
       .asString()
       ?.split(','),
+    SHOW_CONVERT_BUTTON: env
+      .get('UI_SHOW_CONVERT_BUTTON')
+      .default('true')
+      .asBool(),
     KARTOFFEL_SERVICE_TYPES: env
       .get('UI_KARTOFFEL_SERVICE_TYPES')
       .default('חובה,חובה בתנאי קבע,קבע,מילואים')

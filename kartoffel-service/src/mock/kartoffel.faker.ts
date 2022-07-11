@@ -119,7 +119,7 @@ export class KartoffelFaker {
     });
     if (pageSize) length = pageSize;
 
-    let DigitalIdentities = [];
+    let DigitalIdentities: any = [];
     for (let i = 0; i < length; i++) {
       DigitalIdentities.push(this.randomDI());
     }
@@ -213,10 +213,11 @@ export class KartoffelFaker {
         updatedAt: faker.datatype.datetime().toString(),
         digitalIdentities: this.randomDiArray().digitalIdentities,
         picture: '',
-        goalUserID: mongoose.Types.ObjectId().toString(),
+        goalUserId: mongoose.Types.ObjectId().toString(),
         organization: '',
         employeeNumber: '',
         employeeId: '',
+        fullClearance: '',
       };
       return entity;
     } catch (err) {
@@ -252,7 +253,7 @@ export class KartoffelFaker {
         displayName: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
         directGroup: mongoose.Types.ObjectId().toString(),
         hierarchy: `${faker.company.companyName()}/${faker.company.companyName()}/${faker.company.companyName()}`,
-        entityType: 'soldier',
+        entityType: 'Soldier',
         identityCard: this.randomIdentityCard(),
         personalNumber: faker.datatype
           .number({ min: 100000000, max: 999999999 })
@@ -276,10 +277,11 @@ export class KartoffelFaker {
         updatedAt: faker.datatype.datetime().toString(),
         digitalIdentities: this.randomDiArray().digitalIdentities,
         picture: picture.image,
-        goalUserID: mongoose.Types.ObjectId().toString(),
+        goalUserId: mongoose.Types.ObjectId().toString(),
         organization: '',
         employeeNumber: '',
         employeeId: '',
+        fullClearance: '',
       };
       return entity;
     } catch (err) {
@@ -291,7 +293,7 @@ export class KartoffelFaker {
     if (layers == 0) {
       return [];
     }
-    let children = [];
+    let children: any = [];
     const childrenCount = Math.floor(Math.random() * 4);
     for (let i = 0; i < childrenCount; i++) {
       children.push({
@@ -339,7 +341,7 @@ export class KartoffelFaker {
     });
     if (pageSize) length = pageSize;
 
-    let roleArray = [];
+    let roleArray: any = [];
     for (let i = 0; i < length; i++) {
       roleArray.push(this.randomRole());
     }
@@ -357,7 +359,7 @@ export class KartoffelFaker {
       });
       if (pageSize) length = pageSize;
 
-      let entityArray = [];
+      let entityArray: any = [];
       for (let i = 0; i < length; i++) {
         let entity: Entity = await this.randomEntity(needPicture);
         entityArray.push(entity);

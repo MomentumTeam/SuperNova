@@ -32,7 +32,7 @@ export function getJobTitleSuggestions(
   roleArray: RoleArray,
   jobTitle: string
 ): string[] {
-  let suggestions = [];
+  let suggestions: any = [];
   let suggestion = '';
   const jobTitleSplit: string[] = jobTitle.replace(/  +/g, ' ').split(' ');
   let firstNumIndex: any = jobTitleSplit.length - 1;

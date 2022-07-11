@@ -70,6 +70,13 @@ KartoffelRouter.get(
   KartoffelValidator.isGetOGByHierarchyNameValid,
   KartoffelController.getOGByHierarchyName
 );
+
+KartoffelRouter.get(
+  '/groups/roles',
+  KartoffelValidator.isExportHierarchyDataValid,
+  KartoffelController.ExportHierarchyData
+);
+
 KartoffelRouter.get('/groups/children', KartoffelController.getOGRootChildren);
 KartoffelRouter.get(
   '/groups/:id/children',
@@ -136,4 +143,11 @@ KartoffelRouter.get(
   KartoffelValidator.isGetDIByUniqueIdValid,
   KartoffelController.getDIByUniqueId
 );
+
+// LDAP
+KartoffelRouter.get(
+  '/ldap/user',
+  KartoffelValidator.isSearchSamAccountNameValid,
+  KartoffelController.searchSamAccountName,
+)
 export default KartoffelRouter;

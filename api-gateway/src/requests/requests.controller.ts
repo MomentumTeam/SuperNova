@@ -41,6 +41,7 @@ import {
   approverTypeToJSON,
   RemoveApproverFromApproversReq,
   RequestType,
+  ConvertEntityTypeReq,
 } from '../interfaces/protoc/proto/requestService';
 import { RequestsService } from './requests.service';
 import { AuthenticationError } from '../utils/errors/userErrors';
@@ -300,9 +301,9 @@ export default class RequestsController {
       case ApproverType.SECURITY_ADMIN:
         approversComments.securityComment = req.body.commentForApprovers;
         break;
-        case ApproverType.ADMIN:
-        case ApproverType.COMMANDER:
-        if(request.needAdminDecision && type === ApproverType.ADMIN ) {
+      case ApproverType.ADMIN:
+      case ApproverType.COMMANDER:
+        if (request.needAdminDecision && type === ApproverType.ADMIN) {
           approversComments.adminComment = req.body.commentForApprovers;
         } else {
           approversComments.commanderComment = req.body.commentForApprovers;
@@ -633,6 +634,38 @@ export default class RequestsController {
       } catch (executeError) {}
 
       res.status(200).send(assignRole);
+    } catch (error: any) {
+      const statusCode = statusCodeHandler(error);
+      res.status(statusCode).send(error.message);
+    }
+  }
+
+  static async convertEntityTypeRequest(req: any, res: Response) {
+    if (!req.user && !req.user.id) throw new AuthenticationError();
+
+    const submittedBy: EntityMin = {
+      id: req.user.id,
+      displayName: req.user.displayName,
+      identityCard: req.user.identityCard,
+      personalNumber: req.user.personalNumber,
+      directGroup: req.user.directGroup,
+      ancestors: req.user.ancestors,
+    };
+
+    const convertEntityTypeReq: ConvertEntityTypeReq = {
+      submittedBy: submittedBy,
+      ...req.body,
+    };
+
+    try {
+      const request: any = await approveUserRequest(req, convertEntityTypeReq);
+      const convertEntityType: any =
+        await RequestsService.convertEntityTypeRequest(request);
+      try {
+        await RequestsService.executeRequestIfNeeded(convertEntityType);
+      } catch (executeError) {}
+
+      res.status(200).send(convertEntityType);
     } catch (error: any) {
       const statusCode = statusCodeHandler(error);
       res.status(statusCode).send(error.message);

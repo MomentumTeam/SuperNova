@@ -16,10 +16,11 @@ import {
   renameRole,
   renameOG,
   updateEntity,
-  disconnectRoleAndDI,
   deleteEntity,
   changeRoleOG,
   connectEntityAndDI,
+  convertEntity,
+  disconnectDIFromEntity,
 } from './consumer.kartoffel';
 import { logger } from '../utils/logger';
 import TeaService from '../services/teaService';
@@ -93,11 +94,15 @@ export const requestProcessor = async (incomingRequest: any) => {
           break;
         }
         case RequestType.DISCONNECT_ROLE: {
-          await disconnectRoleAndDI(requestObject.data);
+          await disconnectDIFromEntity(requestObject.data);
           break;
         }
         case RequestType.CHANGE_ROLE_HIERARCHY: {
           await changeRoleOG(requestObject.data);
+          break;
+        }
+        case RequestType.CONVERT_ENTITY_TYPE: {
+          await convertEntity(requestObject.data);
           break;
         }
         default: {

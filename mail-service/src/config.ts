@@ -56,9 +56,14 @@ export const requestTypeToHebrew = {
   [requestTypeToJSON(RequestType.CHANGE_ROLE_HIERARCHY)]: 'מעבר היררכיה לתפקיד',
   [requestTypeToJSON(RequestType.CHANGE_ROLE_HIERARCHY_BULK)]:
     'שינוי היררכיות לתפקידים',
+  [requestTypeToJSON(RequestType.CONVERT_ENTITY_TYPE)]: 'שינוי סוג ישות',
 };
 
 export const legoAddress =
   process.env.MS_LEGO_ADDRESS || 'http://localhost:3000';
 
 export const diDefaultSource = process.env.MS_DI_DEFAULT_SOURCE || 'OneTree';
+
+export const localMailImagesFullPath =
+  process.env.MS_IMAGES_PATH ||
+  '/home/barak/Desktop/SuperNova/mail-service/src/images';
