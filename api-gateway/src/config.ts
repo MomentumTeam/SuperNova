@@ -144,13 +144,25 @@ export const config = {
       .get('UI_ROLE_ENTITY_TYPE')
       .default('GoalUser')
       .asString(),
+    TOMY_LINK: env
+      .get('UI_TOMY_LINK')
+      .default('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
+      .asString(),
+    TECH_OPS_PHONE_NUMBER: env
+      .get('UI_TECH_OPS_PHONE_NUMBER')
+      .default('0524586749')
+      .asString(),
+    TECH_OPS_MAIL: env
+      .get('UI_TECH_OPS_MAIL')
+      .default('T82130222@gmail.com')
+      .asString(),
     SECURITY_MAIL: env
       .get('UI_SECURITY_MAIL')
-      .default('T82130201@gmail.com')
+      .default('T82130233@gmail.com')
       .asString(),
     SUPER_SECURITY_MAIL: env
       .get('UI_SUPER_SECURITY_MAIL')
-      .default('T02250B49@gmail.com')
+      .default('T02250678@gmail.com')
       .asString(),
     INSTRUCTION_VIDEOS: env
       .get('UI_INSTRUCTION_VIDEOS')
