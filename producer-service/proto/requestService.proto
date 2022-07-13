@@ -1015,7 +1015,7 @@ message RenameRoleKartoffelParams {
   string jobTitle = 1;
   string roleId = 2;
   optional string oldJobTitle = 3;
-  optional string clearance = 4;
+  string clearance = 4;
   Kartoffel.Role role = 5;
   optional string entityId = 6;
 }
@@ -1095,6 +1095,8 @@ message AssignRoleToEntityKartoffelParams {
   optional string upn = 7;
   Kartoffel.Role role = 8;
   optional string name = 9; // currentroleat name
+  string clearance = 10; // for blue roles approvers
+
 }
 
 message AssignRoleToEntityADParams {
@@ -1126,6 +1128,7 @@ message ChangeRoleHierarchyKartoffelParams {
   string hierarchy = 5;
   string oldHierarchy = 6;
   Kartoffel.Role role = 7;
+  string clearance = 8; // for blue roles approvers
 }
 
 message ChangeRoleHierarchyADParams {
