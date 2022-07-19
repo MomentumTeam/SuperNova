@@ -169,6 +169,9 @@ export function generateKartoffelQueueMessage(request: Request): any {
       if (kartoffelParams.birthdate) {
         message.data.properties.birthDate = kartoffelParams.birthdate;
       }
+      if (kartoffelParams.entityType === C.soldier && kartoffelParams.rank) {
+        message.data.properties.rank = kartoffelParams.rank;
+      }
       break;
     case RequestType.DELETE_OG:
       message.data = {
