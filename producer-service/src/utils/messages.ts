@@ -352,7 +352,7 @@ export function generateADQueueMessage(
         fullName: adParams.fullName,
       };
       break;
-    case RequestType.DELETE_ROLE: // Reviewed with Orin, PurgeRole
+    case RequestType.DELETE_ROLE: // Reviewed with Orin, DeleteRole
       message.data = {
         samAccountName: adParams.samAccountName,
       };
