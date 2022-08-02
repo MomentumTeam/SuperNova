@@ -31,7 +31,7 @@ export const shmuelRequestTypes: any = {
   EDIT_ENTITY: 'EditSpecialRole',
   DISCONNECT_ROLE: 'DisconnectRole',
   CHANGE_ROLE_HIERARCHY: 'ChangeRole',
-  DELETE_ROLE: 'PurgeRole',
+  DELETE_ROLE: 'DeleteRole',
   CONVERT_ENTITY_TYPE: 'ChangeUPN',
 };
 
